@@ -582,3 +582,16 @@ export type {
   Lifecycle,
   SourceKind,
 } from './instruction-compiler.js';
+
+export {
+  canonicalizeClaims,
+  signLicenseClaims,
+  verifyLicenseReceipt,
+  generateAuthorityKeyPair,
+} from './licensing/ed25519-verifier.js';
+export type {
+  LicenseTier,
+  LicenseClaims,
+  LicenseReceipt,
+  VerificationResult,
+} from './licensing/ed25519-verifier.js';

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { engineerJulesPrompt } from '../prompt-engineer.mjs';
 import { validatePatch } from '../sentinel-validator.mjs';
 import { architectPreflight, weaverTasteReview, sentinelAudit, consultSageMemory } from '../council-gate.mjs';
+import { performMakerCheckerReview } from '../maker-checker.mjs';
 
 test('Architect Preflight approves well-scoped tasks and assigns lead agent', () => {
   const profile = {
@@ -109,3 +110,154 @@ diff --git a/src/feature.ts b/src/feature.ts
   assert.equal(weaverReport.approved, false);
   assert.ok(weaverReport.warnings.some(w => w.includes('slop/placeholder')));
 });
+
+test('Maker/Checker flags banned prestige words and AI slop', () => {
+  const badDiff = `
+diff --git a/content/intro.md b/content/intro.md
+--- a/content/intro.md
++++ b/content/intro.md
+@@ -1,2 +1,3 @@
++# Welcome to the future
++We will delve deeply into this pivotal testament to human ingenuity to seamlessly elevate your workflow.
+`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/frankx.ai-vercel-website',
+    taskDescription: 'Update intro copy',
+    diffText: badDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, false);
+  assert.ok(review.feedback.some(f => f.includes('delve')));
+  assert.ok(review.feedback.some(f => f.includes('testament to')));
+  assert.ok(review.feedback.some(f => f.includes('seamlessly')));
+});
+
+test('Maker/Checker enforces Next.js 16 async params invariant', () => {
+  const badParamDiff = `
+diff --git a/app/blog/[slug]/page.tsx b/app/blog/[slug]/page.tsx
+--- a/app/blog/[slug]/page.tsx
++++ b/app/blog/[slug]/page.tsx
+@@ -1,3 +1,3 @@
+-export default function Page() {}
++export default function Page({ params }: { params: { slug: string } }) {
++  return <div>{params.slug}</div>;
++}
+`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/arcanea-ai-app',
+    taskDescription: 'Fix slug page',
+    diffText: badParamDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, false);
+  assert.ok(review.feedback.some(f => f.includes('Next.js 16 / React 19 invariant')));
+});
+
+test('Maker/Checker approves clean, tactile, compliant implementation', () => {
+  const goodDiff = `
+diff --git a/components/header.tsx b/components/header.tsx
+--- a/components/header.tsx
++++ b/components/header.tsx
+@@ -1,5 +1,6 @@
++export function Header() {
++  return (
++    <header className="fixed top-0 inset-x-0 bg-[#08090C]/80 backdrop-blur border-b border-white/10 h-16">
++      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-full">
++        <span className="text-sm font-mono text-zinc-400">Starlight</span>
++      </div>
++    </header>
++  );
++}
+`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/arcanea-ai-app',
+    taskDescription: 'Refactor header styling',
+    diffText: goodDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, true);
+  assert.equal(review.score, 100);
+});
+
+test('Maker/Checker detects keyboard accessibility violations with onClick on div/span', () => {
+  const inaccessibleDiff = `
+diff --git a/components/modal.tsx b/components/modal.tsx
+--- a/components/modal.tsx
++++ b/components/modal.tsx
+@@ -1,5 +1,6 @@
++export function Modal({ onClose }: { onClose: () => void }) {
++  return (
++    <div className="backdrop" onClick={onClose}>
++      <div className="modal-content">Content</div>
++    </div>
++  );
++}
++`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/arcanea-ai-app',
+    taskDescription: 'Add modal backdrop',
+    diffText: inaccessibleDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, false);
+  assert.ok(review.feedback.some(f => f.includes('Accessibility violation')));
+});
+
+test('Sage Memory retrieves proven architectural patterns from technical-vault.md', () => {
+  const memories = consultSageMemory('frankxai/arcanea-ai-app', ['pattern', 'architecture', 'visual']);
+  assert.ok(Array.isArray(memories));
+  assert.ok(memories.length > 0);
+  assert.ok(memories.some(m => m.type === 'proven_pattern' || m.type === 'operational_lesson'));
+});
+
+test('Telemetry Server metrics format conforms to live HUD schema', async () => {
+  const { getTelemetryMetrics } = await import('../telemetry-server.mjs');
+  const metrics = getTelemetryMetrics();
+
+  assert.ok(metrics.timestamp);
+  assert.ok(typeof metrics.ram.rssMb === 'number');
+  assert.ok(typeof metrics.slots.active === 'number');
+  assert.equal(metrics.throughput.dailyTarget, 300);
+  assert.ok(Array.isArray(metrics.recentPRs));
+  assert.ok(['HEALTHY', 'HIGH_MEMORY', 'DEGRADED'].includes(metrics.health));
+});
+
+test('Maker/Checker CEO Truth Gate blocks unverified partner claims and badges', () => {
+  const fakeClaimsDiff = `
+diff --git a/components/partner.tsx b/components/partner.tsx
+--- a/components/partner.tsx
++++ b/components/partner.tsx
+@@ -1,5 +1,6 @@
++export function PartnerCard() {
++  return (
++    <div>
++      <span className="badge">Verified Workbench</span>
++      <a href="/go/tool">Official Partner Link</a>
++    </div>
++  );
++}
++`;
+
+  const review = performMakerCheckerReview({
+    repo: 'frankxai/frankx.ai-vercel-website',
+    taskDescription: 'Add partner component',
+    diffText: fakeClaimsDiff,
+    repoProfile: { type: 'fullstack-nextjs' },
+  });
+
+  assert.equal(review.approved, false);
+  assert.equal(review.ceo.passed, false);
+  assert.ok(review.feedback.some(f => f.includes('CEO Truth Veto')));
+  assert.ok(review.feedback.some(f => f.includes('Verified Workbench')));
+  assert.ok(review.feedback.some(f => f.includes('Official Partner')));
+});
+
+

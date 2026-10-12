@@ -4,11 +4,11 @@
   "attestation": "Built on SIP",
   "engine": "frontier-council",
   "runtime": {
-    "pollIntervalSeconds": 180,
-    "maxConcurrentSessions": 3,
-    "maxLedgerActiveEntries": 50,
+    "pollIntervalSeconds": 120,
+    "maxConcurrentSessions": 4,
+    "maxLedgerActiveEntries": 100,
     "lowRamMode": true,
-    "memoryCapMb": 100
+    "memoryCapMb": 120
   },
   "automation": {
     "autoMerge": true,
@@ -20,7 +20,8 @@
     "architectPreflight": true,
     "sentinelSecurityAudit": true,
     "weaverTasteReview": true,
-    "sageMemoryInjection": true
+    "sageMemoryInjection": true,
+    "queenAutonomicOversight": true
   },
   "repoProfiles": {
     "frankxai/Starlight-Intelligence-System": {
@@ -28,6 +29,7 @@
       "primaryAgent": "starlight-architect",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/Starlight-Intelligence-System",
       "allowedScopes": ["src/**", "tools/**", "test/**", "memory/**", "docs/**"]
     },
     "frankxai/arcanea-ai-app": {
@@ -35,6 +37,7 @@
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint && npm run build",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/arcanea-ai-app",
       "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
     },
     "frankxai/gencreator.ai": {
@@ -42,6 +45,7 @@
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/gencreator.ai",
       "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
     },
     "frankxai/frankx.ai-vercel-website": {
@@ -49,6 +53,7 @@
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/frankx.ai-vercel-website",
       "allowedScopes": ["src/**", "app/**", "components/**", "content/**"]
     },
     "frankxai/vibeclubs": {
@@ -56,6 +61,7 @@
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm test",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/vibeclubs.ai",
       "allowedScopes": ["src/**", "components/**", "lib/**"]
     },
     "frankxai/agentic-ops": {
@@ -63,6 +69,7 @@
       "primaryAgent": "starlight-architect",
       "qualityGate": "npm test",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/agentic-ops",
       "allowedScopes": ["src/**", "workers/**", "scripts/**"]
     },
     "frankxai/agentic-creator-os": {
@@ -70,6 +77,7 @@
       "primaryAgent": "starlight-navigator",
       "qualityGate": "npm test",
       "targetBranch": "main",
+      "localPath": "C:/Users/frank/agentic-creator-os",
       "allowedScopes": ["src/**", "modules/**", "templates/**"]
     },
     "frankxai/agenticincome": {
@@ -78,6 +86,78 @@
       "qualityGate": "npm test",
       "targetBranch": "main",
       "allowedScopes": ["src/**", "app/**", "lib/**"]
+    },
+    "frankxai/second-brain-os": {
+      "type": "second-brain",
+      "primaryAgent": "starlight-secondbrain",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "localPath": "C:/Users/frank/second-brain-os",
+      "allowedScopes": ["src/**", "docs/**", "memory/**"]
+    },
+    "frankxai/starlightintelligence.ai": {
+      "type": "fullstack-nextjs",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm run lint",
+      "targetBranch": "main",
+      "localPath": "C:/Users/frank/starlightintelligence.ai",
+      "allowedScopes": ["src/**", "app/**", "components/**"]
+    },
+    "frankxai/starlight-genesis": {
+      "type": "genesis-engine",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "templates/**", "docs/**"]
+    },
+    "frankxai/mcp-doctor": {
+      "type": "mcp-diagnostics",
+      "primaryAgent": "starlight-sentinel",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "tools/**"]
+    },
+    "frankxai/creator-launch-os": {
+      "type": "creator-launch",
+      "primaryAgent": "starlight-navigator",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "docs/**"]
+    },
+    "frankxai/starlight-creator-mcp": {
+      "type": "creator-mcp",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "tools/**", "docs/**"]
+    },
+    "frankxai/starlight-voice": {
+      "type": "voice-operator",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "sidecar/**", "docs/**"]
+    },
+    "frankxai/starlight-command-center": {
+      "type": "desktop-cockpit",
+      "primaryAgent": "starlight-architect",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "components/**"]
+    },
+    "frankxai/starlight-memory": {
+      "type": "memory-substrate",
+      "primaryAgent": "starlight-sage",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["src/**", "lib/**"]
+    },
+    "frankxai/starlight-design-intelligence": {
+      "type": "design-intelligence",
+      "primaryAgent": "starlight-weaver",
+      "qualityGate": "npm test",
+      "targetBranch": "main",
+      "allowedScopes": ["brand-packs/**", "tokens/**", "docs/**"]
     },
     "default": {
       "type": "generic",

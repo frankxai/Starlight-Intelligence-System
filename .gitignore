@@ -128,3 +128,8 @@ tools/arena/out/
 # estate-guard pack — per-machine files, never tracked
 .claude/settings.local.json
 .claude/ci/estate-guard/last-scan.json
+
+# Starlight Jules Conductor runtime logs and daemon PID
+tools/jules-conductor/logs/
+tools/jules-conductor/state/*.pid
+

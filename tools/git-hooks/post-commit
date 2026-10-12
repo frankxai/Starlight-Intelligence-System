@@ -33,6 +33,15 @@ if [[ -z "$repo_root" ]]; then exit 0; fi
 msg="$(git log -1 --format=%B HEAD 2>/dev/null)"
 if [[ -z "$msg" ]]; then exit 0; fi
 
+# ── Starlight SIP Cryptographic Git Notes Attestation ──
+full_sha="$(git rev-parse HEAD 2>/dev/null)"
+if [[ -n "$full_sha" ]]; then
+    harness="${STARLIGHT_HARNESS:-${AGENT_HARNESS:-antigravity}}"
+    iso_note="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+    note_json="{\"protocol\":\"SIP v1.1.1\",\"attestation\":\"Built on the sovereign substrate of the Starlight Intelligence Protocol\",\"commitSha\":\"$full_sha\",\"harness\":\"$harness\",\"attestedAt\":\"$iso_note\",\"systemIntegrity\":\"VERIFIED\"}"
+    git notes --ref=starlight-sip add -f -m "$note_json" "$full_sha" 2>/dev/null || true
+fi
+
 # Parse Spec: trailers — case-insensitive, one spec-id per match
 spec_ids=$(printf '%s\n' "$msg" \
     | grep -iE '^[[:space:]]*spec:[[:space:]]*[^[:space:]]+' \

@@ -1,319 +1,778 @@
 {
   "queue": [
     {
-      "id": "task_1791600984198_516",
+      "id": "task_1791737595757_14",
+      "repo": "frankxai/second-brain-os",
+      "issueNumber": 14,
+      "title": "Continuity: non-coder setup and two-vault recovery",
+      "description": "Issue #14: Continuity: non-coder setup and two-vault recovery\n\n**Outcome:** a non-coder founder can turn on session continuity and recover a task after a crash, without a terminal, inside the existing two-vault Second Brain install.\n\n**Build:**\n- A guided setup step that checks for SIS, then writes a draft trust policy from the user's own native goal records (never invented IDs) for them to approve.\n- A one-click \"what was I doing\" view that links to the Canvas `/continuity` page.\n- A recovery runbook covering two-vault backup and restore of `~/.starlight/c",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-11T16:53:15.757Z"
+    },
+    {
+      "id": "task_1791737595757_10",
+      "repo": "frankxai/second-brain-os",
+      "issueNumber": 10,
+      "title": "Complete Kura capture ingestion and personal vault activation",
+      "description": "Issue #10: Complete Kura capture ingestion and personal vault activation\n\nKura browser captures need to enter the existing two-vault pipeline without exposing raw chat content to MCP or replacing curated notes.\r\r\n\r\r\nImplemented in PR #9: six-platform Kura v0.2.0 Markdown intake, bounded discovery, verified source ID joins, hash-based incremental receipts, private source revisions, preservation of curated notes and richer official exports, a one-pass PowerShell command, and daily/weekly SOPs. Agent mode does not call a model. Local suite: 149 passed, one platform-speci",
+      "type": "security",
+      "harvestedAt": "2026-10-11T16:53:15.757Z"
+    },
+    {
+      "id": "task_1791737595757_7",
+      "repo": "frankxai/second-brain-os",
+      "issueNumber": 7,
+      "title": "Keep clipboard and second brain on Starlight, not Arcanea",
+      "description": "Issue #7: Keep clipboard and second brain on Starlight, not Arcanea\n\nClipboard and the second brain are Starlight operator memory. They are not Arcanea canon.\n\n- Copies: `C:\\Users\\frank\\.starlight\\clipboard-index`\n- Kept prompts: `C:\\Users\\frank\\.starlight\\prompt-fabric`\n- Vault ingest: one atom, and only when Frank asks. Do not bulk-import the clipboard.\n\nArcanea's free reader and `@arcanea/studio-mcp` must not read or write this vault. The second-brain checkout on this machine is `agent/claude/foundation-docs-0717`. Do not commit this note onto that branch.\n",
+      "type": "knowledge_graph_ontology",
+      "harvestedAt": "2026-10-11T16:53:15.757Z"
+    },
+    {
+      "id": "task_1791737595757_5",
+      "repo": "frankxai/second-brain-os",
+      "issueNumber": 5,
+      "title": "P0: Non-coder Claude Code + Codex activation with two-vault privacy proof",
+      "description": "Issue #5: P0: Non-coder Claude Code + Codex activation with two-vault privacy proof\n\n## Outcome\n\nLet a non-coding founder safely activate the public Second Brain OS using Claude Code or Codex by pasting one prompt, reviewing a plan, and verifying a disposable-vault proof.\n\nParent architecture epic: https://github.com/frankxai/Starlight-Intelligence-System/issues/48\n\n## Scope\n\n- Add a human-first quickstart requiring no prior Git, MCP, YAML, or terminal knowledge.\n- Add client-neutral instructions plus thin adapters:\n  - Claude Code project skill: `.claude/skills/<name>/SKILL.md`",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-11T16:53:15.757Z"
+    },
+    {
+      "id": "task_1791737618371_8",
+      "repo": "frankxai/mcp-doctor",
+      "issueNumber": 8,
+      "title": "Release repaired MCP Doctor through a tested-archive OIDC pipeline",
+      "description": "Issue #8: Release repaired MCP Doctor through a tested-archive OIDC pipeline\n\nMain contains the repaired protocol-health audits, but the registry remains on the earlier package and the repository has no release workflow. Add a manual, main-only workflow that reuses all four Windows/Linux Node 18/24 behavioral and installed-consumer checks, verifies actual tar members and hashes, and stages the selected tested archive without rebuilding it. Preserve existing environment protection, legitimate npm publisher configuration and final human 2FA approval.\n\nAcceptance: exact-revi",
+      "type": "security",
+      "harvestedAt": "2026-10-11T16:53:38.371Z"
+    },
+    {
+      "id": "task_1791737620079_3",
+      "repo": "frankxai/creator-launch-os",
+      "issueNumber": 3,
+      "title": "release: assign the public Creator Launch domain and exact artifact receipt",
+      "description": "Issue #3: release: assign the public Creator Launch domain and exact artifact receipt\n\n## Why\n\nPR #2 is merged and its current application artifact is READY, but unauthenticated requests to the generated Vercel URL reach the Vercel Login page. The project has no production target or custom-domain alias. A successful protected build is not a public launch, even though the product itself passed its premium visual gate.\n\n## Release contract\n\n- [x] Inspect desktop at 1440×1000 and mobile at 390×844.\n- [x] Verify keyboard focus, contrast, overflow, console, coarse pointer, and prefers-",
+      "type": "security",
+      "harvestedAt": "2026-10-11T16:53:40.079Z"
+    },
+    {
+      "id": "task_1791803273846_352",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 352,
+      "title": "[Epic] Subscription-Facing Modular Packs: Managed Durability, Fleet Mesh & Enterprise Benevolence Governance",
+      "description": "Issue #352: [Epic] Subscription-Facing Modular Packs: Managed Durability, Fleet Mesh & Enterprise Benevolence Governance\n\n## Summary\nImplement initial subscription-facing modular packs cleanly separated from the MIT open-core substrate:\n1. **Managed Durability Pack**: Automatic multi-region replication, continuous snapshot backup, and Arweave/IPFS archival anchoring.\n2. **Fleet Mesh Overlay Pack**: Distributed multi-node agent orchestration, cross-machine blackboard synchronization, and Langfuse/OpenRouter telemetry hooks.\n3. **Benevolence Governance Pack**: Executable charter enforcement, real-time GUARDRAILS emis",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.846Z"
+    },
+    {
+      "id": "task_1791803273847_351",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 351,
+      "title": "[Epic] Starlight Sovereign Marketplace: Curated Hub for Third-Party Skills, Harness Configs & Attested Packs",
+      "description": "Issue #351: [Epic] Starlight Sovereign Marketplace: Curated Hub for Third-Party Skills, Harness Configs & Attested Packs\n\n## Summary\nArchitect and implement the Starlight Marketplace distribution model:\n- Community publishing protocol for harness configurations (Claude Code, Grok, Windsurf, Cursor, Antigravity), agent skills, and vertical packs.\n- Sovereign verification: SIP § 1 attestation validation, cryptographic signature verification, and security linting before inclusion.\n- Starlight curation & distribution registry with tier flags (free / open-core vs verified paid/subscription packs).\n\n### Rationale & SOUL ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.847Z"
+    },
+    {
+      "id": "task_1791803273847_350",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 350,
+      "title": "[Epic] Starlight Queen Orchestration: Autonomous Single-Operator Fleet Engine & Fail-Closed Gateways",
+      "description": "Issue #350: [Epic] Starlight Queen Orchestration: Autonomous Single-Operator Fleet Engine & Fail-Closed Gateways\n\n## Summary\nImplement Crystalite Queen as the practical single-operator layer that handles background operations the human is not thinking about:\n- Continuous proactive health monitoring across fleet nodes.\n- Automated memory consolidation, dreaming loops, and promotion triage.\n- Cross-runtime task routing (Claude Code, Grok, Codex, Antigravity, OpenAgent).\n- Fail-closed escalation when irreversible actions (money, high-risk code, external deployments) are encountered.\n\n### Rationale & SOUL Invar",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.847Z"
+    },
+    {
+      "id": "task_1791803273848_349",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 349,
+      "title": "[Epic] Robot Fleet Continuity: Unified Starlight Kernel for Embodied & Autonomous Agent Fleets",
+      "description": "Issue #349: [Epic] Robot Fleet Continuity: Unified Starlight Kernel for Embodied & Autonomous Agent Fleets\n\n## Summary\nBridge multi-agent cognitive fleets and physical/robotic fleets as a continuous state and knowledge problem:\n- Same core cognitive kernel (SIP, memory vaults, goal checklists, Sentinel audit).\n- Actuator abstraction: virtual agents (code, text, browser) vs physical actuators (ROS2, Zenoh, embedded GPIO, spatial teleoperation).\n- Spatial/state memory preservation across agent handoffs and physical embodiment shifts.\n\n### Rationale & SOUL Invariants\n- Invariant 1: *Sovereignty before co",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.848Z"
+    },
+    {
+      "id": "task_1791803273848_348",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 348,
+      "title": "[Epic] Sovereign Vault Durability: Local, Managed Cloud, and Blockchain-Anchored Permanence",
+      "description": "Issue #348: [Epic] Sovereign Vault Durability: Local, Managed Cloud, and Blockchain-Anchored Permanence\n\n## Summary\nIntegrate 3-tier sovereign storage durability into the Starlight Intelligence System:\n1. **Tier 1 - Sovereign Local**: Local SQLite FTS5 + append-only JSONL event logs (zero network dependency).\n2. **Tier 2 - Managed Cloud**: Encrypted multi-node sync and high-availability backup with continuous replication.\n3. **Tier 3 - Blockchain-Anchored Permanence**: Immutable decentralized storage (Arweave / IPFS / Filecoin) and cryptographic proof-of-state anchoring for Horizon and Memory Vault",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.848Z"
+    },
+    {
+      "id": "task_1791803273849_329",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 329,
+      "title": "Release: verify SIS scope migration and sequence the three-namespace npm strategy",
+      "description": "Issue #329: Release: verify SIS scope migration and sequence the three-namespace npm strategy\n\n## Outcome\n\nPrepare a safe, reproducible first release of @starlight-intelligence/system and its legacy migration, then advance the three-scope package strategy by dependency order. This issue records the checked plan; it does not establish publish readiness or authorize unattended ecosystem releases.\n\nSource: Frank's comprehensive npm audit and architecture request, 10 October 2026.\n\n## Verified baseline\n\nPublic npm registry queried directly on 10 October 2026:\n- maintainer:frankxai returns 40 ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.849Z"
+    },
+    {
+      "id": "task_1791803273850_323",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 323,
+      "title": "Reconcile label PR261 with October studio source without duplicating runtimes",
+      "description": "Issue #323: Reconcile label PR261 with October studio source without duplicating runtimes\n\nCurrent read: label operating PR #261 remains draft/unmerged and reports mergeable=false; October operated studio source lives in frankxai/music-intelligence-os PR #4 and portable execution/customer distribution in frankxai/agentic-music-producer-os.\n\nAcceptance:\n- Inspect current main and resolve PR261 conflicts in an isolated checkout, preserving registries, canon and truthful no-simulation safeguards.\n- Retain label policies/Notion bindings here; point execution to the existing operated core ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.850Z"
+    },
+    {
+      "id": "task_1791803273851_302",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "issueNumber": 302,
+      "title": "Validator: add minLength, minimum and maximum to protocol/lib/jsonschema.mjs (upstream from Reality Architect)",
+      "description": "Issue #302: Validator: add minLength, minimum and maximum to protocol/lib/jsonschema.mjs (upstream from Reality Architect)\n\n## Outcome\nSIS's dependency-free JSON Schema validator (`protocol/lib/jsonschema.mjs`) supports `minLength`, `minimum` and `maximum`.\n\nThe reality-architecture kernel schemas use these keywords. The validator deliberately refuses any keyword it does not know, so today it cannot check those schemas without ajv. Check how kernel CI validates them now, and say so in the PR.\n\n## Context\n- Reality Architect vendors this validator, pinned to SIS commit `5d4312c96b803d749f8ebefc68a91bd8f2299c5a`.\n- It ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.851Z"
+    },
+    {
+      "id": "task_1791803273851_533",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 533,
+      "title": "Fix-forward blocked PRs: #447 chat history, #448 media analyze, #490 browser proof (cross-family findings posted)",
+      "description": "Issue #533: Fix-forward blocked PRs: #447 chat history, #448 media analyze, #490 browser proof (cross-family findings posted)\n\n**Goal:** turn the cross-family BLOCKs into FIXED; the findings are posted on each PR.\n- **#447:** `chat/sessions` GET hardcodes `messageCount: 0`; give `created_at` cursor paging a unique tie-break; a stale cursor must not surface as a 503.\n- **#448:** the `media/analyze` skip lookup is an unordered `limit=2000` read, so batches roll back and later runs return 502. Also: `force=true` doesn't send `on_conflict`; unvalidated filters in `media/taste`; `public_url` is sent to the model without a ho",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.851Z"
+    },
+    {
+      "id": "task_1791803273851_532",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 532,
+      "title": "Creation Engine P2: durable video with Vercel Workflow (Veo 3.1 / Wan via AI Gateway)",
+      "description": "Issue #532: Creation Engine P2: durable video with Vercel Workflow (Veo 3.1 / Wan via AI Gateway)\n\n**Goal:** phase P2. Video no longer polls a provider inside a request.\n\n**Do:**\n- Build a Workflow (`\"use workflow\"` and `\"use step\"`) with the steps admit → debit (idempotent) → generate (`experimental_generateVideo`: `google/veo-3.1-generate-001` and `alibaba/wan-v2.6-i2v-flash`; Kling via fal.ai only as a fallback) → store (MediaStore) → link (asset) → notify, plus refund on failure.\n- Add a `generation_jobs` table.\n- Stream progress to the UI so the gallery updates live and survives a reload",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.851Z"
+    },
+    {
+      "id": "task_1791803273852_531",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 531,
+      "title": "Creation Engine P1: AI Gateway model registry, assets graph, MediaStore adapter (R2)",
+      "description": "Issue #531: Creation Engine P1: AI Gateway model registry, assets graph, MediaStore adapter (R2)\n\n**Goal:** phase P1 of `docs/architecture/CREATION-ENGINE-2026-10.md` (#528).\n\n**Do:**\n1. Create `lib/models/registry.ts`, the single source for models: capability, Gateway id, inputs, unit cost and credit price. Prices are placeholders, flagged for Frank.\n2. Port image generation to AI SDK 7 `generateImage` through AI Gateway (OIDC on Vercel), with a fallback chain through `providerOptions.gateway.models`. Remove direct xAI, OpenRouter and Gemini calls from the request path.\n3. Add Supabase tabl",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.852Z"
+    },
+    {
+      "id": "task_1791803273853_529",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 529,
+      "title": "P0 trust: atomic idempotent credit debit, refund on provider failure, BotID on paid routes",
+      "description": "Issue #529: P0 trust: atomic idempotent credit debit, refund on provider failure, BotID on paid routes\n\n**Goal:** make a credit spend a real, single, refundable debit, and keep bots off paid generation.\n\n**Why:**\n- `/api/credits/spend` writes `purchased`, `daily_used`, `daily_reset` and `is_forge`, but the migration `supabase/migrations/20260324000001_credits_system.sql` defines `purchased_credits`, `daily_credits_remaining`, `daily_credits_reset_at` and `is_forge_subscriber`.\n- It ignores upsert errors, so `success: true` is not a debit receipt (see #449's state note).\n- #449 (image) and #524 (vi",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.853Z"
+    },
+    {
+      "id": "task_1791803273853_518",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 518,
+      "title": "PR triage: 41 open (34 drafts)",
+      "description": "Issue #518: PR triage: 41 open (34 drafts)\n\n## Outcome\r\nLand what moves capture and the world-builder path first.\r\n\r\n## Exit proof\r\nDisposition table for every PR; counts before and after\r\n\r\n## Done when\r\n- [ ] Every PR dispositioned with a one-line reason\r\n- [ ] Capture and waitlist PRs (#494, #497, #498) first\r\n- [ ] Close or park what has no owner\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): grok (pr-gate)\r\n\r\n## Suggested team\r\nsteward-arcanea, corps-engineering\r\n\r\nBoard: https://github.com/users/frankxai/projec",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.853Z"
+    },
+    {
+      "id": "task_1791803273854_517",
+      "repo": "frankxai/arcanea-ai-app",
+      "issueNumber": 517,
+      "title": "Publish one canonical Arcanea MCP server to npm and the official MCP Registry",
+      "description": "Issue #517: Publish one canonical Arcanea MCP server to npm and the official MCP Registry\n\n## Outcome\r\nFree discovery. The registry lists no Arcanea or FrankX server today and the package exists in four repos at four versions.\r\n\r\n## Exit proof\r\nnpx install works; server listed in the official registry\r\n\r\n## Done when\r\n- [ ] Decide the canonical package and repo\r\n- [ ] server.json added\r\n- [ ] Published from CI with provenance\r\n- [ ] Install tested on a clean machine\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): grok (pr-gate)\r\n\r\n## Suggested team\r\nsteward-releas",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.854Z"
+    },
+    {
+      "id": "task_1791803273854_516",
       "repo": "frankxai/arcanea-ai-app",
       "issueNumber": 516,
       "title": "Pillar guide 2: AI disclosure and canon provenance for novelists and game developers",
       "description": "Issue #516: Pillar guide 2: AI disclosure and canon provenance for novelists and game developers\n\n## Outcome\r\nThe most useful practical page on the topic, with every rule sourced.\r\n\r\n## Exit proof\r\nPublished guide citing current Steam, KDP and Copyright Office positions with dates\r\n\r\n## Done when\r\n- [ ] Each platform rule linked to its source and dated\r\n- [ ] Worked example using the canon-state workflow\r\n- [ ] Capture link and UTM\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\nResearch Librarian, steward-arcanea, content-polisher\r\n\r\nBoard: h",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:24.198Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.854Z"
     },
     {
-      "id": "task_1791600984198_515",
+      "id": "task_1791803273854_515",
       "repo": "frankxai/arcanea-ai-app",
       "issueNumber": 515,
       "title": "Stage the day-1 library: four templates and a World Proof Lab outline",
       "description": "Issue #515: Stage the day-1 library: four templates and a World Proof Lab outline\n\n## Outcome\r\nA world builder gets working canon tooling on day one.\r\n\r\n## Exit proof\r\nSeries Bible, Campaign Ledger, Quest Kit and VN Branch Kit each with a worked example\r\n\r\n## Done when\r\n- [ ] Four templates with a worked example each\r\n- [ ] Canon provenance fields included\r\n- [ ] Sourced claims only\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\nsteward-arcanea, Master Story Architect, canon-guardian skill\r\n\r\nBoard: https://github.com/users/fra",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:24.198Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.854Z"
     },
     {
-      "id": "task_1791600992533_147",
+      "id": "task_1791803273855_150",
+      "repo": "frankxai/gencreator.ai",
+      "issueNumber": 150,
+      "title": "Pillar guide 3: a creator workflow that turns raw footage into posts",
+      "description": "Issue #150: Pillar guide 3: a creator workflow that turns raw footage into posts\n\n## Outcome\r\nA concrete result a non-technical creator can copy.\r\n\r\n## Exit proof\r\nPublished guide plus a short screen recording of the workflow\r\n\r\n## Done when\r\n- [ ] Run on real media\r\n- [ ] Time saved measured, not estimated\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\ngencreator-product-lead, social-content-generator\r\n\r\nBoard: https://github.com/users/frankxai/projects/10 · Contract: maker is not checker; exit proof or it is not done.\r\n",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.855Z"
+    },
+    {
+      "id": "task_1791803273855_147",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 147,
       "title": "Creator operations: one multi-brand plan and supplied SaaS audit across native plugin and MCP",
       "description": "Issue #147: Creator operations: one multi-brand plan and supplied SaaS audit across native plugin and MCP\n\nFrank's weekly job is to turn owned source and reviewed research into distinct brand editions, route each exact social destination through one publishing owner, and review subscription exposure without losing IP lineage or claiming unverified connections.\n\nExtends #119 and #68 under the #5 product outcome record. Base candidate: PR #139, commit 3161f5f31340f5bf1ac7c7e4060e032ea25faf2f. Current decision: GenCreator owns source/evidence/revisions/review/results; publishing and research providers r",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.533Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.855Z"
     },
     {
-      "id": "task_1791600992533_143",
+      "id": "task_1791803273856_143",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 143,
       "title": "Track the executable craft check",
       "description": "Issue #143: Track the executable craft check\n\nDraft pull request https://github.com/frankxai/gencreator.ai/pull/142 (head 1cf5d19) adds scripts/craft-check.cjs and two fixtures. It does not change Territory B or open a checkout.\n\nRun: node --test scripts/tests/test_craft_check.cjs\n\nThe emoji fixture must exit 1. The sentence-case fixture must exit 0. Leave the pull request draft until a reviewer other than the author approves it. Pull request 93 stays held. Estate record: https://github.com/frankxai/agentic-ops-hub/pull/107\r\n",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.533Z"
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.856Z"
     },
     {
-      "id": "task_1791600992537_136",
+      "id": "task_1791803273856_136",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 136,
       "title": "Tools and usage: connected subscriptions, capability evidence and bounded API bundles",
       "description": "Issue #136: Tools and usage: connected subscriptions, capability evidence and bounded API bundles\n\n## Product job and status — 2 October 2026\n\nMatilde and other creators want one GenCreator workspace to understand their existing creative subscriptions and execute a source-to-story-to-media workflow through supported tools. They should see what is connected, which actions work, who pays and what remains manual.\n\nStatus: implementation proposal, not shipped functionality or a public paid offer. Extends #119/#96 and the merged story/agency PRD/spec from #124; #122 owns story composition, #123 ow",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.537Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.856Z"
     },
     {
-      "id": "task_1791600992537_133",
+      "id": "task_1791803273857_133",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 133,
       "title": "Science documentary pilot: source-bound film, Shorts, evaluations and cost proof",
       "description": "Issue #133: Science documentary pilot: source-bound film, Shorts, evaluations and cost proof\n\n## User outcome\nFrank wants a repeatable, truthful science documentary workflow: one 8–12 minute film, three independently coherent Shorts, cited research notes, editable masters and a portable production packet. It must preserve sources, caveats, rights, creator voice, exact revisions and costs.\n\nThis is a bounded documentary capability proposal under #96, using story work from #122 and publication/outcome work from #68. #5 still owns persistence/activation prerequisites. It is not a new produc",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.538Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.857Z"
     },
     {
-      "id": "task_1791600992538_125",
-      "repo": "frankxai/gencreator.ai",
-      "issueNumber": 125,
-      "title": "Ship SOURCE free edition: guide, reusable skill, comment delivery and first-user proof",
-      "description": "Issue #125: Ship SOURCE free edition: guide, reusable skill, comment delivery and first-user proof\n\n## Decision and user job\nBuild the first free edition as a real reusable asset, with Frank as user 0. Audience: an expert-led creator with a source recording or article who wants credible output they can review and share. A first win is one source-linked artifact the creator edits, approves and exports. Align to ADR-007/010 and the current brand system; this is an acquisition and activation slice, not a competing product thesis.\n\n[Portfolio operating plan in Notion](https://app.notion.com/p/3ea2",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.538Z"
-    },
-    {
-      "id": "task_1791600992538_123",
+      "id": "task_1791803273857_123",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 123,
       "title": "Agency production cell: client capture brief → footage triage → exact approval → weekly release",
       "description": "Issue #123: Agency production cell: client capture brief → footage triage → exact approval → weekly release\n\n## Agency operator job\n\nA social manager receives an inbound client request, learns what the client should be known for, plans the month, gives one specific 30-minute capture brief, receives a messy Drive folder of clips, finds usable moments, cuts next week's posts, gets each exact version approved, schedules them, and reports what happened. The client sees the content and approval decision; the internal calendar, Notion and production machinery stay with the operator. This extends #122 and #11",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.538Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.857Z"
     },
     {
-      "id": "task_1791600992539_122",
+      "id": "task_1791803273858_122",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 122,
       "title": "Story-first Reel Studio: researched hooks, spoken beats, middle rehook and learning loop",
       "description": "Issue #122: Story-first Reel Studio: researched hooks, spoken beats, middle rehook and learning loop\n\n## Creator job\n\nA creator brings a real moment, point of view and goal. GenCreator returns **a story she can actually say on camera**: several researched opening hooks, a deliberate second hook in the middle, spoken beats, a visual/shot plan, and a CTA earned by the story. She chooses and edits; the system learns from her edits and results. This is the first vertical slice of #119's content strategy → creation → distribution → learning loop. Do not use a private customer's name in public example",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.539Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.858Z"
     },
     {
-      "id": "task_1791600992540_119",
+      "id": "task_1791803273859_119",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 119,
       "title": "Roadmap: Creator Agent Pack MVP → agent-driven workspace → team kit",
       "description": "Issue #119: Roadmap: Creator Agent Pack MVP → agent-driven workspace → team kit\n\nThe MVP is `/pack` (PR #118). A new creator can connect their AI to the public MCP, install the plugin, the content-planner agent and HyperFrames, use their own Notion or Drive through their client's connectors, and plan a week. Everything below is the queue behind it, ordered by what unblocks the vision soonest. Each item names its owning seat on the GenCreator product team (see #111).\n\n## Now: finish what the team opened today\n- [ ] **#116 backend hardening** (backend-engineer): close the roun",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.540Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.859Z"
     },
     {
-      "id": "task_1791600992540_103",
+      "id": "task_1791803273859_103",
       "repo": "frankxai/gencreator.ai",
       "issueNumber": 103,
       "title": "No creator coin. A per-export meter waits on one signed packet.",
       "description": "Issue #103: No creator coin. A per-export meter waits on one signed packet.\n\nGenCreator stays a local studio. The creator signs. Nothing here is a coin, a collection, or an agent passport for sale.\n\nA later machine payment is allowed only as a meter on one export an outside agent requests:\n\n- Rail `machine-payment`, protocol `x402` or `mpp`, asset `usdc` or `eurc`, unit `request`.\n- A spend cap the creator raises. The agent does not hold a wallet.\n- Checkout stays closed until a stranger has signed one real packet and the release gate passes.\n\nDo not add this meter in th",
       "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:32.540Z"
+      "harvestedAt": "2026-10-12T11:07:53.859Z"
     },
     {
-      "id": "task_1791600997275_932",
+      "id": "task_1791803273860_96",
+      "repo": "frankxai/gencreator.ai",
+      "issueNumber": 96,
+      "title": "Build portable creator workflows, governed media library and bring-your-own-tools adapters",
+      "description": "Issue #96: Build portable creator workflows, governed media library and bring-your-own-tools adapters\n\n## Decision and customer job\nBuild a portable creation workflow inside `frankxai/gencreator.ai` for expert creators who own talks, interviews, methods, and reusable media. One authorized source becomes a cited, editable week of work; a user can choose a human-recorded clip, generated B-roll, or an authorized avatar, then approve exact bytes and export or create an unsent social draft. This extends ADR-007/008/010 and does not activate public checkout or autonomous publication.\n\n## Existing owner",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.860Z"
+    },
+    {
+      "id": "task_1791803273860_932",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 932,
       "title": "ADR waitlist post is the first public experiment",
       "description": "Issue #932: ADR waitlist post is the first public experiment\n\nDraft PR: https://github.com/frankxai/frankx.ai-vercel-website/pull/931\nCommit f3167a8d4 on agent/grok/adr-waitlist-20261008.\n\nOne offer: the seven-field architecture decision record and ADR-0001, then the shared waitlist. The questions are price band, who they are, and what they are trying to do. No checkout.\n\nThe live page is not up until this merges, then check https://www.frankx.ai/blog/one-architecture-decision-you-can-use-today. A second post, Arcanea then Reality Architect, waits on a rea",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.860Z"
     },
     {
-      "id": "task_1791600997275_905",
+      "id": "task_1791803273860_927",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "issueNumber": 927,
+      "title": "Soulbook price/guarantee data still ships in the client bundle via lib/soulbook/soulbook-data.ts",
+      "description": "Issue #927: Soulbook price/guarantee data still ships in the client bundle via lib/soulbook/soulbook-data.ts\n\n## Problem\n`/soulbook` no longer renders paid prices or guarantees (#899), but the data still ships to the browser. `lib/soulbook/soulbook-data.ts` holds the `lifeBooks` price/guarantee fields and `pricingTiers` (97-897), and three client components import from it:\n\n- `app/soulbook/page.tsx` (`'use client'`) imports `philosophyStatements`\n- `components/soulbook/LifeBookSelector.tsx` (`'use client'`)\n- `components/soulbook/TestimonialsSection.tsx` (client) imports `lifeBooks`\n\nSince the module is",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.860Z"
+    },
+    {
+      "id": "task_1791803273861_905",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 905,
       "title": "Measure first: enable analytics, read GA4, verify Search Console, then fix SEO P0s",
       "description": "Issue #905: Measure first: enable analytics, read GA4, verify Search Console, then fix SEO P0s\n\n## Outcome\nfrankx.ai has a measured baseline: real visitors, top pages, traffic sources and the effect of the funnel, so \"unmeasured\" can be replaced with dated numbers.\n\n## Findings (2026-10-05)\n- Vercel Web Analytics is not enabled on `frankx-ai-vercel-website` (project `prj_NHVIKZtglNidOE1FJiq6eYx5QjIL`, team `starlight-intelligence`): the API returns 404 \"Web Analytics not found\" by name and by project ID. The site already ships `@vercel/analytics` and `@vercel/speed-insights` in `components",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.861Z"
     },
     {
-      "id": "task_1791600997275_904",
+      "id": "task_1791803273861_904",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 904,
       "title": "U3 platform: React 19.3 (from 18.3.1), Node 24, Next 16.3.8, AI SDK 7, Analytics 2",
       "description": "Issue #904: U3 platform: React 19.3 (from 18.3.1), Node 24, Next 16.3.8, AI SDK 7, Analytics 2\n\n**Goal:** the frankx.ai baseline.\n\n**Audit:**\n- Vercel runs Node 22.x while `.nvmrc` says 20.\n- React is 18.3.1 with Next 16.3.6.\n- `ai` is 6.0.190.\n- Analytics is 1.6.1 and Speed Insights 1.3.1.\n- Tailwind is 3.4.\n\n**Ownership:** lane 7 (Grok) owns this repo. Send it a heads-up and coordinate before starting.\n\n**Do:** move React and react-dom to 19.3 (check types and third-party React 18 peers), next to 16.3.8, `.nvmrc` to 24, AI SDK 7 through AI Gateway, analytics and speed-insights to 2.x. Fr",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.861Z"
     },
     {
-      "id": "task_1791600997275_903",
+      "id": "task_1791803273861_903",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 903,
       "title": "Publish: AI compute stack guide, October 2026 (draft + design set)",
       "description": "Issue #903: Publish: AI compute stack guide, October 2026 (draft + design set)\n\n## Agent brief (self-contained)\n\n**Goal:** finish and publish \"The AI Compute Stack Guide, October 2026\" with its design set, safely, through the repo's gates.\n\n**State**\n- Draft: `content/blog/_drafts/ai-compute-stack-guide-october-2026.mdx` on branch `agent/claude/blog-compute-guide-2026-10` (pushed, no PR). `_drafts/` is not routed; publishing means moving it to `content/blog/` and merging.\n- An independent claims audit already ran once and its 15 findings were fixed. Evidence base is the sou",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.861Z"
     },
     {
-      "id": "task_1791600997275_900",
+      "id": "task_1791803273862_889",
       "repo": "frankxai/frankx.ai-vercel-website",
-      "issueNumber": 900,
-      "title": "Build a verified Higgsfield guide workbench and learning path",
-      "description": "Issue #900: Build a verified Higgsfield guide workbench and learning path\n\nUser job: choose a Higgsfield workflow, prepare a reusable production brief, and apply an attributed tutorial.\n\nBase: 0ff16a8dce94131601718f01e19ca1102c4d4b3d. Branch: agent/codex/higgsfield-learning-guide.\n\nScope: preserve /guides/higgsfield-ai-video-guide and /learn/higgsfield-mastery. Replace unsupported scores/settings/API claims and broken hero; add an accessible workflow selector and brief, native tutorial embeds with attribution, official resource links, disclosed immutable referral desti",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "issueNumber": 889,
+      "title": "[visual QA] Music corner chip overlaps the \"Map the Ecosystem\" button at 375 px",
+      "description": "Issue #889: [visual QA] Music corner chip overlaps the \"Map the Ecosystem\" button at 375 px\n\nFound by the Agent OS visual watch (headless Chrome, 375×812, light and dark). It reproduced in two runs on 2026-10-04 and 2026-10-05, and the lead confirmed it by eye on the screenshot.\n\n**What a phone visitor sees:** on first view of `/`, the fixed ♪ chip at bottom-right sits over the right end of the secondary call to action, \"Map the Ecosystem\".\nEvidence: `www-frankx-ai-375-light.png` in the `visual-watch` artifact of [run 37254953519](https://github.com/frankxai/agentic-creator-os/actions/r",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.862Z"
     },
     {
-      "id": "task_1791600997275_887",
+      "id": "task_1791803273862_887",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 887,
       "title": "PR triage: 25 open (21 drafts). Land money path, batch dependencies, close superseded",
       "description": "Issue #887: PR triage: 25 open (21 drafts). Land money path, batch dependencies, close superseded\n\n## Outcome\r\nOpen PRs fall from 25 to the set that is actually landing. Ties to #519.\r\n\r\n## Exit proof\r\nDisposition table (land / revise / close / park) for every PR; counts before and after\r\n\r\n## Done when\r\n- [ ] Every PR dispositioned with a one-line reason\r\n- [ ] Starting buckets from titles, unverified: capture and auth (#803, #810, #802, #831), honesty (#853, #879, #829), dependencies (#822), CI (#844), content (#823, #847), larger (#855, #862)\r\n- [ ] Nothing closed without a comment explain",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.862Z"
     },
     {
-      "id": "task_1791600997275_886",
+      "id": "task_1791803273863_886",
       "repo": "frankxai/frankx.ai-vercel-website",
       "issueNumber": 886,
       "title": "Claims-audit CI check for public pages",
       "description": "Issue #886: Claims-audit CI check for public pages\n\n## Outcome\r\nAgent-built pages stop inventing numbers. Test the check with a deliberately bad PR.\r\n\r\n## Exit proof\r\nCI job that blocks a PR containing an unbacked benchmark, receipt, SLA or testimonial\r\n\r\n## Done when\r\n- [ ] Rule set written from past fabrications\r\n- [ ] Fails on a seeded bad page, passes on a clean one\r\n- [ ] Escape hatch requires a linked evidence path\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\ncorps-engineering, adversarial",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:37.275Z"
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.863Z"
     },
     {
-      "id": "task_1791601002985_18",
+      "id": "task_1791803273863_885",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "issueNumber": 885,
+      "title": "Ten prompt-pattern pages, each with real eval results",
+      "description": "Issue #885: Ten prompt-pattern pages, each with real eval results\n\n## Outcome\r\nLong-tail pages that are useful, not thin.\r\n\r\n## Exit proof\r\nTen live pages; none published without a recorded eval result\r\n\r\n## Done when\r\n- [ ] Each page shows the pattern, examples and the eval output\r\n- [ ] Internal links to the pillar guide\r\n- [ ] Structured data and answer-first summary\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\nprompt-conductor, prompt-evaluator, performance-guardian\r\n\r\nBoard: https://github.com/users/frank",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.863Z"
+    },
+    {
+      "id": "task_1791803273864_884",
+      "repo": "frankxai/frankx.ai-vercel-website",
+      "issueNumber": 884,
+      "title": "Pillar guide 1: Claude Code skills with evals (2,500+ words, original data)",
+      "description": "Issue #884: Pillar guide 1: Claude Code skills with evals (2,500+ words, original data)\n\n## Outcome\r\nOne article worth linking to, not another post.\r\n\r\n## Exit proof\r\nPublished guide with its own measured data and a capture link; indexed\r\n\r\n## Done when\r\n- [ ] Original data from the pattern evals\r\n- [ ] Every claim sourced or measured\r\n- [ ] Humanizer pass; adversarial skeptical-reader review\r\n- [ ] Capture link and UTM on every outbound link\r\n\r\n## Maker / checker\r\nMaker: claude · Checker (different provider): codex\r\n\r\n## Suggested team\r\ncontent-polisher, exec-cmo, seo-optimization ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.864Z"
+    },
+    {
+      "id": "task_1791803273864_18",
       "repo": "frankxai/vibeclubs",
       "issueNumber": 18,
       "title": "[Interface excellence] Upgrade vibeclubs.ai through a verified user journey",
       "description": "Issue #18: [Interface excellence] Upgrade vibeclubs.ai through a verified user journey\n\n<!-- interface-excellence-program-20261003 -->\n\n## Interface excellence adoption, 3 October 2026\n\nFounder requests a substantial improvement in human design, narrative, engineering and performance across every estate interface. This adoption work is queued; the issue does not authorize an automatic production release.\n\nSurfaces: vibeclubs.ai. These mappings come from a dated property registry; verify current domain, Git owner, deployment and SHA before implementation.\n\nPrimary outcome: Reconstru",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:42.985Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.864Z"
     },
     {
-      "id": "task_1791601007963_211",
+      "id": "task_1791803273864_211",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 211,
       "title": "Review cross-assistant continuity strategy and integration ownership",
       "description": "Issue #211: Review cross-assistant continuity strategy and integration ownership\n\n## Decision to review\r\n\r\nFrank requested saving the full Chrome repair, chat organization, Second Brain integration and suite/commercial proposal into the correct repositories and existing plans/issues/portfolio board. The documentation branch preserves that request and its evidence; it does not authorize a product release or new commercial terms.\r\n\r\nRead [full strategy](https://github.com/frankxai/agentic-ops/blob/agent/codex/chat-continuity-save-20261009/docs/STARLIGHT-CHAT-CONTINUITY-STRATEGY",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.963Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.864Z"
     },
     {
-      "id": "task_1791601007964_204",
+      "id": "task_1791803273865_204",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 204,
       "title": "Continuity: consume the private capture spool with fresh verification and bounded bundles",
       "description": "Issue #204: Continuity: consume the private capture spool with fresh verification and bounded bundles\n\nFollow-up to #181 and starlight-agent-config #102.\n\nAdd `--spool <capture-spool.jsonl>` to `lifecycle/sis-continuity.js`. Treat hook records as claims: reverify checkout/workspace and match the independently captured snapshot cwd; refuse unknown scopes and skip unverified claims with fixed issue codes. Deduplicate by engine/session and split deterministically into bundles of at most 32 bindings.\n\nRetain explicit owner/work/project/source bindings and transcript/native-goal authority; the spool c",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.865Z"
     },
     {
-      "id": "task_1791601007964_200",
+      "id": "task_1791803273865_200",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 200,
       "title": "Produce benchmark and bounded model–harness pilot — due 27 Nov",
       "description": "Issue #200: Produce benchmark and bounded model–harness pilot — due 27 Nov\n\nParent: #196\nNotion project: https://app.notion.com/p/3f226ac2b7f681ac9b97fd3c87f637d2\n\nStatus: scheduled preparation; dependencies remain gates. Accountable: Frank Riemer. No spend, submissions, outreach or new research runtime authorised by creation of this issue.\n\n## Tasks\n- [ ] **FC-08 — Freeze research hypothesis and prior-art comparison** · 2026-10-12 → 2026-10-16 · P1\n  - Depends on: none\n  - Acceptance: One bounded question; current alternatives; A/B/C/D design; hidden-test and stop crit",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.865Z"
     },
     {
-      "id": "task_1791601007964_199",
+      "id": "task_1791803273871_199",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 199,
       "title": "Prepare BSC, UvA, RVO and SURF collaboration routes — due 22 Oct",
       "description": "Issue #199: Prepare BSC, UvA, RVO and SURF collaboration routes — due 22 Oct\n\nParent: #196\nNotion project: https://app.notion.com/p/3f226ac2b7f681ac9b97fd3c87f637d2\n\nStatus: scheduled preparation; dependencies remain gates. Accountable: Frank Riemer. No spend, submissions, outreach or new research runtime authorised by creation of this issue.\n\n## Tasks\n- [ ] **FC-09 — Prepare BSC and EuroHPC Playground request** · 2026-10-16 → 2026-10-19 · P1\n  - Depends on: FC-01, FC-02, FC-08\n  - Acceptance: Technical abstract, lawful data, qualified lead and profiled resource request r",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.871Z"
     },
     {
-      "id": "task_1791601007964_198",
+      "id": "task_1791803273871_198",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 198,
       "title": "Prepare NVIDIA, AWS, Microsoft and Google applications — due 15 Oct",
       "description": "Issue #198: Prepare NVIDIA, AWS, Microsoft and Google applications — due 15 Oct\n\nParent: #196\nNotion project: https://app.notion.com/p/3f226ac2b7f681ac9b97fd3c87f637d2\n\nStatus: scheduled preparation; dependencies remain gates. Accountable: Frank Riemer. No spend, submissions, outreach or new research runtime authorised by creation of this issue.\n\n## Tasks\n- [ ] **FC-04 — Prepare NVIDIA Inception application** · 2026-10-12 → 2026-10-14 · P1\n  - Depends on: FC-01, FC-03\n  - Acceptance: Incorporation/developer/website/exclusions checked; application ready with evidence.\n  - Nex",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.871Z"
     },
     {
-      "id": "task_1791601007964_197",
+      "id": "task_1791803273871_197",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 197,
       "title": "Verify applicant, budget and application pack — due 12 Oct",
       "description": "Issue #197: Verify applicant, budget and application pack — due 12 Oct\n\nParent: #196\nNotion project: https://app.notion.com/p/3f226ac2b7f681ac9b97fd3c87f637d2\n\nStatus: scheduled preparation; dependencies remain gates. Accountable: Frank Riemer. No spend, submissions, outreach or new research runtime authorised by creation of this issue.\n\n## Tasks\n- [ ] **FC-01 — Verify applicant entity, ownership, IP and prior credits** · 2026-10-07 → 2026-10-09 · P0\n  - Depends on: none\n  - Acceptance: Company facts backed by current records; unresolved facts explicitly flagged.\n  ",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.871Z"
     },
     {
-      "id": "task_1791601007964_196",
+      "id": "task_1791803273872_196",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 196,
       "title": "Funding, compute and research execution plan — Oct 2026 to Mar 2027",
       "description": "Issue #196: Funding, compute and research execution plan — Oct 2026 to Mar 2027\n\n## Outcome\nPrepare truthful startup-program applications, a bounded compute/research pilot and evidence-gated grant submissions. Notion project and full application packet: https://app.notion.com/p/3f226ac2b7f681ac9b97fd3c87f637d2\n\n## Contract\nUser-authorised planning and tracking. This issue does not approve spending, external outreach, programme submission, training, public release or a new portfolio architecture. Research claims and funding remain unverified until evidence exists. Respect rev",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.872Z"
     },
     {
-      "id": "task_1791601007964_189",
+      "id": "task_1791803273872_189",
       "repo": "frankxai/agentic-ops",
       "issueNumber": 189,
       "title": "Lane 7: write the local-to-cloud cost rule",
       "description": "Issue #189: Lane 7: write the local-to-cloud cost rule\n\n## Already done\n\nDo not reopen the frankx.ai library. These pull requests are merged on `frankxai/frankx.ai-vercel-website` and `7893ebcdd` is an ancestor of `main` `5117897ae`:\n\n- Shelf completion, PR 843, `bfdce9366`\n- Music corner chip, PR 848, `368315296`\n- Sacred-text depth, PR 856, `e08408841`\n- Reading column, PR 864, `7893ebcdd`\n\nLive check 2026-10-06: https://www.frankx.ai/library/bhagavad-gita deploy `dpl_5sVXxRsxVRjCQbZJpuyESnQksSaC` still has italic Playfair, Sir Edwin Arnold, and th",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:47.964Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.872Z"
     },
     {
-      "id": "task_1791601011217_103",
-      "repo": "frankxai/agentic-creator-os",
-      "issueNumber": 103,
-      "title": "GenCreator Social: integrate ACOS routing, native Producer and recoverable editions",
-      "description": "Issue #103: GenCreator Social: integrate ACOS routing, native Producer and recoverable editions\n\nKeep one GenCreator creator experience with reusable ACOS commands and portable methods owned by gencreator-skills. The current ACOS company projection already belongs to GenCreator; repository consolidation and URL renaming are outside this slice.\n\nImplement the existing `/generate-social` workflow using the installed GenCreator Producer, source-linked complete drafts, exact-revision checks and a durable unsent packet. Replace fixed machine paths, universal posting times and invented completion",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
-    },
-    {
-      "id": "task_1791601011217_100",
+      "id": "task_1791803273873_100",
       "repo": "frankxai/agentic-creator-os",
       "issueNumber": 100,
       "title": "After #86 merges: land #92 on main, add the malicious-domain test, stop PR runs cancelling each other",
       "description": "Issue #100: After #86 merges: land #92 on main, add the malicious-domain test, stop PR runs cancelling each other\n\n## Context (2026-10-06)\n\n- **#86** (Agent OS) is green on `d8ca548` and waiting for Frank's merge. This repo allows **squash merges only**.\n- **#92** (visual-check temp-dir cleanup: commit `d93ee3e`, +31/−12, 2 files) is stacked on #86's branch. After #86 squash-merges and its branch is deleted, #92 retargets to `main` still carrying #86's original commits, so its diff balloons.\n- Cross-family review of #86 (Grok, then Codex on the fix delta) left one **P2**: `scripts/org-import.mjs` needs a tes",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.873Z"
     },
     {
-      "id": "task_1791601011217_99",
+      "id": "task_1791803273873_99",
       "repo": "frankxai/agentic-creator-os",
       "issueNumber": 99,
       "title": "Agent OS: studio v2 — zero-credit card compositing, review lifecycle, publish-package schema",
       "description": "Issue #99: Agent OS: studio v2 — zero-credit card compositing, review lifecycle, publish-package schema\n\n## Outcome\nThe studio finishes the job without spending credits. Social cards are composited from an approved image plus HTML text and rendered by the renderer. Reviewed assets carry a lifecycle state. The publisher returns a machine-checkable package rather than prose.\n\n## Why\nThe first producer run staged three drafts for this repository's social preview; one passed the art-asset bar. The remaining steps are manual today:\n- putting the title on the image (text belongs in HTML, never in pixels)",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.873Z"
     },
     {
-      "id": "task_1791601011217_98",
+      "id": "task_1791803273874_98",
       "repo": "frankxai/agentic-creator-os",
       "issueNumber": 98,
       "title": "P4: cross-family review gate as a mesh member, plus #86 follow-ups",
       "description": "Issue #98: P4: cross-family review gate as a mesh member, plus #86 follow-ups\n\n**Goal:** every NEEDS-CROSS-FAMILY PR gets a second-family verdict automatically, with a receipt.\n\n**Do (after #86 merges):**\n- Add a `review` mesh member that picks lean local Codex when 2.5 GiB or more is free, otherwise Grok in plan mode with no tools. Prototype: `frankxai/agentic-ops/scripts/review/grok-review.sh`.\n- Post `CROSS-FAMILY REVIEW … head=<sha>` and write a receipt to the dispatch dir.\n- For PRs with more than 300 files, use a risky-paths patch pack, because the diff API returns 4",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.874Z"
     },
     {
-      "id": "task_1791601011217_97",
+      "id": "task_1791803273874_97",
       "repo": "frankxai/agentic-creator-os",
       "issueNumber": 97,
       "title": "Agent OS: eval harness v2 — fresh-session runs, cross-family grading, regression gate",
       "description": "Issue #97: Agent OS: eval harness v2 — fresh-session runs, cross-family grading, regression gate\n\n## Outcome\nAgent changes are graded like code. Each eval case runs in a fresh headless session and is graded by a different model family. Results land in a log, and CI blocks a change that lowers an agent's last passing score.\n\n## Why\nThe first native runs (logged in `evals/agents/RESULTS.md`) exposed three problems:\n- A running session caches each agent definition at first load, so three \"native\" re-runs tested the old prompt. A fresh session per case avoids that.\n- Grading was done by the same",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.874Z"
     },
     {
-      "id": "task_1791601011217_96",
-      "repo": "frankxai/agentic-creator-os",
-      "issueNumber": 96,
-      "title": "Agent OS: adopter path in CI (init → compile → audit → render)",
-      "description": "Issue #96: Agent OS: adopter path in CI (init → compile → audit → render)\n\n## Outcome\nThe adopter path stays green: a CI job does what a new user does (create an instance, compile Generals, audit, render) and fails when any step breaks.\n\n## Why\n`docs/agent-os/ADOPT.md` promises \"from a clone to your own Generals in about ten minutes\". Nothing checks that promise end to end. Today the template only compiles inside the unit tests' temp folders.\n\n## Task contract\n- **Repo:** frankxai/agentic-creator-os\n- **Issue:** this one\n- **Owner lane:** Agent OS (frank-f1); executed ",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.217Z"
-    },
-    {
-      "id": "task_1791601011218_95",
-      "repo": "frankxai/agentic-creator-os",
-      "issueNumber": 95,
-      "title": "Agent OS: visual-check v2 — accessibility tree, WCAG 2.5.8 target size, contrast, persistent-finding watch",
-      "description": "Issue #95: Agent OS: visual-check v2 — accessibility tree, WCAG 2.5.8 target size, contrast, persistent-finding watch\n\n## Outcome\n`scripts/visual-check.mjs` stops guessing. Accessible names and visibility come from the browser's accessibility tree. Target size follows WCAG 2.2 2.5.8, exceptions included. Text contrast is measured. The weekly watch files an issue only for findings that persist.\n\n## Why\nThe first live runs over 7 brand sites hit two false positives, both from heuristics:\n- a visually hidden skip link reported as covered (fixed in `cb02621`);\n- links inside a closed `<details>` menu reported as unn",
-      "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.218Z"
-    },
-    {
-      "id": "task_1791601011218_87",
+      "id": "task_1791803273875_87",
       "repo": "frankxai/agentic-creator-os",
       "issueNumber": 87,
       "title": "Package Agentic Creator OS as a downloadable product with licence keys",
       "description": "Issue #87: Package Agentic Creator OS as a downloadable product with licence keys\n\n## Outcome\r\nA buyer installs it into their own Claude Code and reaches a working result in under 15 minutes.\r\n\r\n## Exit proof\r\nPolar product with files and licence-key benefit; install verified on a clean machine\r\n\r\n## Done when\r\n- [ ] Release zip built from a tagged commit; README install path tested on a clean profile\r\n- [ ] Version SSOT and doctor pass (see #40)\r\n- [ ] Polar draft product gets files and licence-key benefit attached\r\n- [ ] Buyer-simulation transcript filed; every defect fixed ",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.875Z"
+    },
+    {
+      "id": "task_1791803273875_41",
+      "repo": "frankxai/agentic-creator-os",
+      "issueNumber": 41,
+      "title": "v13 Generic Creator OS: progressive T0–T4 ladder + Hermes/Codex adapters (after Wave 0)",
+      "description": "Issue #41: v13 Generic Creator OS: progressive T0–T4 ladder + Hermes/Codex adapters (after Wave 0)\n\n## Depends on\nWave 0 honesty issue + #35.\n\n## Scope (not Wave 0)\n- README T0–T4 with scriptable per-tier checks\n- Platform matrix Verified/Partial/Planned\n- Hermes skill projection (optional orchestrator)\n- Real Codex pack (not one-line .codexrules)\n- System map ACOS↔CIS↔Studio (wire don't fuse)\n- Multi-CLI recipe docs (not implied always-on fleet)\n\n## Non-goals\n- Merging GenCreator-Studio into this repo\n- Private Frank growth workflows\n- Claiming multi-harness parity until smoke-tested",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.875Z"
+    },
+    {
+      "id": "task_1791803273876_85",
+      "repo": "frankxai/starlightintelligence.ai",
+      "issueNumber": 85,
+      "title": "Track the executable craft check",
+      "description": "Issue #85: Track the executable craft check\n\nDraft pull request https://github.com/frankxai/starlightintelligence.ai/pull/84 (head 1514e4b) adds scripts/craft-check.cjs and two fixtures. starlight-intelligence-web is this same GitHub repository (id 1333657540), so this issue covers both names. The public .ai site was not edited. .org stays out of this change.\n\nRun: node --test scripts/tests/test_craft_check.cjs\n\nThe emoji fixture must exit 1. The sentence-case fixture must exit 0. Leave the pull request draft until a reviewer other than th",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.876Z"
+    },
+    {
+      "id": "task_1791803273876_77",
+      "repo": "frankxai/starlightintelligence.ai",
+      "issueNumber": 77,
+      "title": "Agent Kits: ship customer-owned Railway briefing workflows and prove repeatable revenue",
+      "description": "Issue #77: Agent Kits: ship customer-owned Railway briefing workflows and prove repeatable revenue\n\nBuild one owned Starlight Agent Kits product line for customer-owned Railway agents; reuse the existing Starlight app, public OpenClaw wrapper, canonical Hermes profiles and deployed launchpad operator.\n\nBuyer: developer-led automation studios and 1–10 person product teams already operating agents. First job: approved-source evidence briefing → checked draft → human acceptance. Free MIT starter; proposed operating-value offers €149 delivery, €750 bounded activation and €39/month proven maintenan",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.876Z"
+    },
+    {
+      "id": "task_1791803273877_75",
+      "repo": "frankxai/starlightintelligence.ai",
+      "issueNumber": 75,
+      "title": "Validate Agent Kits paid activation and fulfillment before adding checkout",
+      "description": "Issue #75: Validate Agent Kits paid activation and fulfillment before adding checkout\n\nCommercial hypothesis: developer-led automation studios and small product teams pay for accountable deployment, accepted results, recovery and maintained compatibility. The MIT starter remains free. Academy knowledge, rubrics and access remain unaffected (see #23). Dependencies: #42 and the Agent Kits clean-host issue.\n\nOwner role: product/delivery owner, independent acceptance verifier. Review target: 2026-10-15.\nProposed prices, not live SKUs: €149 outcome-pack delivery; €750 activation (one r",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.877Z"
+    },
+    {
+      "id": "task_1791803273877_74",
+      "repo": "frankxai/starlightintelligence.ai",
+      "issueNumber": 74,
+      "title": "Verify Agent Kits clean Railway install, current runtime and recovery before template publication",
+      "description": "Issue #74: Verify Agent Kits clean Railway install, current runtime and recovery before template publication\n\nThe source preview is https://github.com/frankxai/openclaw-acos-skills-railway-template/pull/1 at `e000c3988cc55836bd19e9dfb8c9004b9e66d4d8`. Runtime work belongs in that repository; its Issues feature is disabled, so this release gate is tracked here alongside #42.\n\nBuyer job: an automation studio creates a source-backed draft briefing in its own project and recovers after interruption. Owner role: runtime engineer; a separate verifier performs the fresh-project run. Review target: 2026-10-08.\n",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.877Z"
+    },
+    {
+      "id": "task_1791803273877_4",
+      "repo": "frankxai/starlight-creator-mcp",
+      "issueNumber": 4,
+      "title": "Runtime: productionize the first Capability Foundry release candidate",
+      "description": "Issue #4: Runtime: productionize the first Capability Foundry release candidate\n\nCross-repository parent: https://github.com/frankxai/Starlight-Intelligence-System/issues/123  \nArchitecture: https://github.com/frankxai/Starlight-Intelligence-System/pull/122\n\n## Outcome\n\nMake starlight-creator-mcp the first production-shaped reference runtime for Starlight Capability Foundry and supply deterministic staging fixtures for P0 host runners.\n\n## Scope\n\n- Remote streamable-HTTP MCP endpoint.\n- Health, build, schema, policy, and version metadata.\n- Least-privilege OAuth or documente",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.877Z"
+    },
+    {
+      "id": "task_1791803273878_2",
+      "repo": "frankxai/starlight-voice",
+      "issueNumber": 2,
+      "title": "Implement Grok/OpenAI voice edge against shared MCP contract",
+      "description": "Issue #2: Implement Grok/OpenAI voice edge against shared MCP contract\n\nImplements the contracts and bake-off proposed in PR #1.\n\n## Scope\n\n- short-lived browser credentials for xAI and OpenAI\n- provider adapters using one VoiceSessionPolicy\n- seven-tool remote MCP allowlist\n- asynchronous dispatch to Agent Mesh v1\n- VoiceTurnReceipt capture without raw audio by default\n- run the fixed 12-case provider corpus\n\n## Acceptance\n\n- [ ] no provider key reaches browser/client code\n- [ ] 100% consequential requests are denied or create approval records\n- [ ] 0 private-memor",
       "type": "bugfix",
-      "harvestedAt": "2026-10-10T02:56:51.218Z"
+      "harvestedAt": "2026-10-12T11:07:53.878Z"
+    },
+    {
+      "id": "task_1791803273878_69",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 69,
+      "title": "Connect native Voice to Command Center and verify session acceptance",
+      "description": "Issue #69: Connect native Voice to Command Center and verify session acceptance\n\nConnect the existing Command Center `/voice` page to Starlight Voice's native audio engine, while preserving text status, independent coding harnesses and the existing mission/proposal approval flow.\n\nThe implementation uses the pinned Voice client and worklet from `5c6e0f1`, with its MIT license and source hashes. A bounded same-origin route relays fixed voice actions to an explicitly configured numeric-loopback broker. Provider credentials, pinned models, scoped tools and approved memory proje",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.878Z"
+    },
+    {
+      "id": "task_1791803273878_62",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 62,
+      "title": "Oversight console: reuse decision and read-only first cut",
+      "description": "Issue #62: Oversight console: reuse decision and read-only first cut\n\n## The spec (Frank, 2026-10-05)\n\n- **One console** for every agent session Frank runs:\n  - Yoga Book, C940, phone, cloud\n  - Claude Code, Grok, Codex, Remote Control\n- **Session cards:** machine; harness and model; repo and branch; tokens and cost; the goal it serves; status (running, idle, waiting on Frank).\n- **Views:** a weekly goals board, and a PR merge queue whose button **triggers the Grok review gate** (a review, never a merge).\n- **Task form:** the five-line contract (Goal, Repo, Done w",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.878Z"
+    },
+    {
+      "id": "task_1791803273879_61",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 61,
+      "title": "Security: 100 open Dependabot alerts on main (29 high)",
+      "description": "Issue #61: Security: 100 open Dependabot alerts on main (29 high)\n\nFound on 2026-10-06 while pushing the Hermes branches: GitHub reports open Dependabot alerts on the default branch. Count at the time: 100 open (29 high, 61 medium, 10 low).\n\n## Work\n1. List the alerts grouped by package and by direct versus transitive. Many are likely duplicates across the Electron shell, `apps/observatory` and any other lockfile.\n2. Fix in the fewest PRs: one for `apps/observatory` (pnpm), one for the root Electron app if needed. Bump to patched versions; no `--force`, no over",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.879Z"
+    },
+    {
+      "id": "task_1791803273879_60",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 60,
+      "title": "Journeys view: per-brand funnel with live, blocked and unmeasured stages",
+      "description": "Issue #60: Journeys view: per-brand funnel with live, blocked and unmeasured stages\n\n## Outcome\nA `/journeys` view that shows, per brand and domain, who arrives, where they find us, what they see, what we ask of them and what they can pay for, with every stage marked live, blocked or unmeasured. Frank can see where demand is lost and what to measure first.\n\n## Context\n- Real facts exist but are scattered: demand doors and their 2026-09-19 status in `TRUTH.md` section 5 and `OBJECTIVES.md` O1; per-product offer design (waitlist threshold, gift, founding cohort, milestones) in `gr",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.879Z"
+    },
+    {
+      "id": "task_1791803273880_59",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 59,
+      "title": "Site wall: real screenshots with provenance and capture history in the Observatory",
+      "description": "Issue #59: Site wall: real screenshots with provenance and capture history in the Observatory\n\n## Outcome\nA `/sites` route in the existing Observatory that shows every live estate site as it actually looks today, with a dated capture history, so site edits and design-lab work are visible without opening each site.\n\n## Context\n- A prototype (branch `agent/claude/estate-atlas-prototype` on `frankxai/frankx-mind-palace`, folder `atlas-app/`) proved the lens with 24 screenshots via a rate-limited third-party API. That is not a dependable collector; replace it with a real browser.\n- Site list ",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.880Z"
+    },
+    {
+      "id": "task_1791803273880_58",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 58,
+      "title": "Adopt and land the Hermes /estate and /registry routes in the Observatory",
+      "description": "Issue #58: Adopt and land the Hermes /estate and /registry routes in the Observatory\n\n## Outcome\nLand the two dormant Hermes routes inside the existing Observatory, rebased and verified, so the estate overview and the brand/social registry exist as real routes. No second cockpit (#28).\n\n## Context\n- `agent/hermes/estate-overview-premium` (2e7b619): `ESTATE-OVERVIEW-DESIGN-BRIEF.md`, `ESTATE-INTELLIGENCE-ARCHITECTURE.md`, `estate-overview-premium.html`, `app/estate/page.tsx`. Based on da05f98 (2026-08-14), 47 commits behind main. The page sits at repo-root `app/estate/`, not `apps",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.880Z"
+    },
+    {
+      "id": "task_1791803273881_57",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 57,
+      "title": "Fix-forward #51: capacity reservation ledger (Codex BLOCK, 4 P1s)",
+      "description": "Issue #57: Fix-forward #51: capacity reservation ledger (Codex BLOCK, 4 P1s)\n\nCodex's cross-family review (posted on #51) found:\n1. An abandoned `reservation.lock` is never reclaimed (the Claude review found it independently).\n2. Windows skips the directory fsync after rename.\n3. A replayed `markResourceDispatched` with the same evidence id isn't distinguished from a first call.\n4. Reservations aren't validated against pool ids and required units.\n\nAlso (P2): the MCP tool bypasses the GET route's `local` gate.\n\n**Done when:** each finding has a test, CI is green, and a Co",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.881Z"
+    },
+    {
+      "id": "task_1791803273881_56",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 56,
+      "title": "Starlight Home 3/3: Observatory /home on localhost and protected Vercel",
+      "description": "Issue #56: Starlight Home 3/3: Observatory /home on localhost and protected Vercel\n\nPart of #53. Depends on 1/3.\n\n**Outcome:** Frank opens one page on the laptop or the phone and sees what is waiting on him, the prompt deck with copy buttons, and the handover feed.\n\n**Do:**\n1. Add an `/home` route to `apps/observatory`. It is a server component that reads `ops/home/feed.json` and `state.json` from GitHub through a read-only token in `STARLIGHT_HOME_GITHUB_TOKEN`, so localhost:4321 and Vercel run the same code.\n2. Port the sections and behaviour of `apps/starlight-home/starlight",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.881Z"
+    },
+    {
+      "id": "task_1791803273882_55",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 55,
+      "title": "Starlight Home 2/3: home_feed, home_next, home_mark on the shared tool plane",
+      "description": "Issue #55: Starlight Home 2/3: home_feed, home_next, home_mark on the shared tool plane\n\nPart of #53. Depends on 1/3.\n\n**Outcome:** Claude, Codex, Grok and Gemini sessions call one MCP surface to see the next action and record progress.\n\n**Context:** the shared tool plane (`127.0.0.1:7317/mcp`, streamable HTTP, bearer auth) is built from this repo's `apps/observatory` (release manifest source). Backends are namespaced and fail-closed; read the existing backend registry there before adding one.\n\n**Do:**\n1. Add a `home` backend exposing:\n   - `home_feed({section?})`: gates, prompts, h",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.882Z"
+    },
+    {
+      "id": "task_1791803273882_54",
+      "repo": "frankxai/starlight-command-center",
+      "issueNumber": 54,
+      "title": "Starlight Home 1/3: feed and state in git (ops/home)",
+      "description": "Issue #54: Starlight Home 1/3: feed and state in git (ops/home)\n\nPart of #53. Plan: `docs/starlight-home-plan.md` on `agent/claude/home-feed` (PR #52); build on that branch or on main once #52 lands.\n\n**Outcome:** every harness reads the same next-action feed and status from this private repo, with no Claude-only storage.\n\n**Do:**\n1. Add `--commit` to `ops/home-feed.mjs`: write `ops/home/feed.json` only when content changed (compare everything except `compiledAt`), then commit with `[skip ci]`.\n2. Add `ops/home-state.mjs` with `mark(id, status, by, note)`. It",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.882Z"
+    },
+    {
+      "id": "task_1791803273883_28",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 28,
+      "title": "Frontmatter writer does not escape scalars (newline key injection)",
+      "description": "Issue #28: Frontmatter writer does not escape scalars (newline key injection)\n\nFound while fixing review findings on #25 (trajectory record, PR frankxai/starlight-memory#25).\n\n`stringifyFrontmatter` in `src/mcp/vault-store.mjs` writes scalars as raw `${key}: ${value}` with no escaping. Any writer that passes an unvalidated string containing a newline can add or override frontmatter keys in the stored file. #25 closes this for trajectories only (control characters and newlines rejected in provider and model, section-header lines rejected in free text). `memory_remember` and",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.883Z"
+    },
+    {
+      "id": "task_1791803273883_24",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 24,
+      "title": "Continuity: scoped recall projection of recovered work (derived, never authority)",
+      "description": "Issue #24: Continuity: scoped recall projection of recovered work (derived, never authority)\n\n**Outcome:** agents asking \"what was I doing in this repo?\" get a scoped recall answer derived from SIS continuity status, without memory becoming a second task authority.\n\n**Build:**\n- A read-only projection from `starlight.continuity-status.v1` (via `node dist/continuity-cli.js status --json`) into recall entries scoped to company plus one unit, consistent with SIS PR269's scoped recall.\n- Each entry carries work ID, state, reported state and its verification, checkout or workspace, and a prov",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.883Z"
+    },
+    {
+      "id": "task_1791803273884_23",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 23,
+      "title": "Memory R&D E2: Granite embedder vs MiniLM, paired and receipted",
+      "description": "Issue #23: Memory R&D E2: Granite embedder vs MiniLM, paired and receipted\n\nFrom `docs/research/memory-rd-brief-2026-10-01.md` (experiment E2) and hub NEXT-PROMPTS F0b.\n\n**Outcome:** a measured answer to whether swapping MiniLM for a Granite embedder improves recall, with a paired significance test, so the switch is made on evidence.\n\n**Do:**\n1. Make the embedding cache key include the model id first. Today a model swap can reuse stale vectors.\n2. Add the Granite embedder behind the existing embedder interface.\n3. Run `eval/retrieval-v2.mjs` on the 76-query synthetic se",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.884Z"
+    },
+    {
+      "id": "task_1791803273884_22",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 22,
+      "title": "Trajectory record type with grader≠maker check (jj plan gate G3)",
+      "description": "Issue #22: Trajectory record type with grader≠maker check (jj plan gate G3)\n\nPart of the agent-version-control plan: see frankxai/agentic-ops-hub `ops/sessions/2026-10-06.md` (draft PR #170), gate G3.\n\n## What\n\nAdd one record type to `starlight-memory`: a trajectory. Fields: task, steps, outcome score, critique, grader identity. The grader must differ from the maker (provider, not just model). Retrieve similar past trajectories through the existing Retrieval v2. No second memory system.\n\nThis replaces the ReasoningBank in upstream `agentic-jujutsu`, whose scores are self",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.884Z"
+    },
+    {
+      "id": "task_1791803273885_20",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 20,
+      "title": "Connect source-backed intentions and work graph to memory, Queen and private views",
+      "description": "Issue #20: Connect source-backed intentions and work graph to memory, Queen and private views\n\nConnect founder intentions and source prompts to goals, projects, repositories, agent sessions, decisions, task evidence and durable memory. Use the existing SIS graph contracts, Markdown authority, objective ledger, Queen task identities and operator surface.\n\nThe first implementation is a private source projection in `starlight-memory`: a zero-dependency compiler, typed ontology, curation input, repository skill and agent instructions. It preserves explicit relationships and exposes missing ro",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.885Z"
+    },
+    {
+      "id": "task_1791803273885_8",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 8,
+      "title": "P0: Memory Admission Protocol, dual lifecycle, and Recall Receipt v1",
+      "description": "Issue #8: P0: Memory Admission Protocol, dual lifecycle, and Recall Receipt v1\n\n## Outcome\n\nTurn Starlight Memory's existing typed records into the canonical, testable governance contract for the Starlight Second Brain.\n\nParent architecture epic: https://github.com/frankxai/Starlight-Intelligence-System/issues/48\n\n## Scope\n\n- Define epistemic states: observed → candidate → ratified → superseded/revoked.\n- Define visibility states independently: private → explicitly shareable → publication candidate → human-approved public.\n- Add transition rules, rejection reasons, reviewer",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.885Z"
+    },
+    {
+      "id": "task_1791803273886_7",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 7,
+      "title": "chore(agents): add CLAUDE.md for starlight-memory",
+      "description": "Issue #7: chore(agents): add CLAUDE.md for starlight-memory\n\n# chore(agents): add CLAUDE.md for starlight-memory\n\n**Repo:** frankxai/starlight-memory\n**Missing:** CLAUDE.md only (AGENTS.md exists)\n**Campaign:** https://github.com/frankxai/frankx.ai-vercel-website/issues/286\n**Portfolio tracker:** https://github.com/frankxai/frankx.ai-vercel-website/issues/285\n\nContext: memory store layout + API conventions for multi-agent memory bus consumers.\n\n# Add missing agent instruction files (AGENTS.md / CLAUDE.md)\n\n**Campaign:** Portfolio standardization for multi",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.886Z"
+    },
+    {
+      "id": "task_1791803273886_3",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 3,
+      "title": "Adapter: Supermemory enterprise connector/session ingest provider",
+      "description": "Issue #3: Adapter: Supermemory enterprise connector/session ingest provider\n\n## Goal\nImplement Supermemory as the enterprise connector/session ingest backend, not core truth.\n\n## Requirements\n- Implements provider adapter for session/document ingest\n- Container/tag strategy maps from tenant/workspace policy\n- Context fencing to avoid recursive memory pollution\n- Batch session-end ingest by default\n- ProviderCapabilities: remote_api, per_agent_instance_allowed=false\n- Tests for container scoping, redaction, batching, and failure isolation.",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.886Z"
+    },
+    {
+      "id": "task_1791803273886_2",
+      "repo": "frankxai/starlight-memory",
+      "issueNumber": 2,
+      "title": "Adapter: Hindsight graph projection provider",
+      "description": "Issue #2: Adapter: Hindsight graph projection provider\n\n## Goal\nImplement Hindsight as the graph/entity/reflection backend for SIS memory records.\n\n## Requirements\n- Implements MemoryProvider or graph-specific extension\n- Supports cloud or one shared local daemon\n- Projects entities/relations from SISMemoryRecord\n- Keeps SIS memory_id canonical and Hindsight IDs as provider_shadow_refs\n- ProviderCapabilities: shared_daemon_or_remote_api, per_agent_instance_allowed=false\n- Tests for entity graph projection, recall, reflection routing, and daemon singl",
+      "type": "frontend_excellence",
+      "harvestedAt": "2026-10-12T11:07:53.886Z"
+    },
+    {
+      "id": "task_1791803273887_48",
+      "repo": "frankxai/starlight-design-intelligence",
+      "issueNumber": 48,
+      "title": "Align v0 brand-system imports with existing Product Foundry and product workflows",
+      "description": "Issue #48: Align v0 brand-system imports with existing Product Foundry and product workflows\n\nThe existing FrankX Product Foundry already distinguishes 19 v0 interface studies from repository-owned products. Extend that workflow across the existing brand packs so a design generated for GenCreator, Arcanea or Starlight starts from the correct components, typography and product decision.\n\nThe current v0 Design Systems 2.0 import accepts design-system source, a consumer app and visual references. Treat its saved skill as a projection of the owned brand pack, with a recorded source revision.",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.887Z"
+    },
+    {
+      "id": "task_1791803273887_44",
+      "repo": "frankxai/starlight-design-intelligence",
+      "issueNumber": 44,
+      "title": "[Honor foundation] Encode gratitude and legacy as distinct brand-pack behavior",
+      "description": "Issue #44: [Honor foundation] Encode gratitude and legacy as distinct brand-pack behavior\n\nParent: https://github.com/frankxai/agentic-ops-hub/issues/201\n\n## Outcome\n\nMake the owner's accepted shared foundation implementable in the existing brand packs: **Honor what you received. Take responsibility for what you pass on.**\n\nThis is a focused constitution/copy-contract change. Keep existing visual identities and typography authorities. The user has authorized this principle; new lore, unsupported capabilities and personal stories are not needed.\n\n## Paste-ready task\n\nRead the current b",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.887Z"
+    },
+    {
+      "id": "task_1791803273887_12",
+      "repo": "frankxai/starlight-design-intelligence",
+      "issueNumber": 12,
+      "title": "feat(runtime): bind release evidence to VIS assets and generate harness adapters",
+      "description": "Issue #12: feat(runtime): bind release evidence to VIS assets and generate harness adapters\n\n## Context\nDraft PR #11 establishes schema-valid runtime packs, release evidence, approval thresholds, and a Hermes adapter contract.\n\n## Remaining control-plane gap\nThe runtime still needs a canonical linkage from approved release evidence to VIS asset/version/provenance records, plus generated adapters for the non-Hermes harnesses.\n\n## Deliverables\n- [ ] Add a versioned asset-evidence binding contract: VIS asset ID, immutable version ID, SHA-256, rights/provenance status, derivative lineage, r",
+      "type": "overflow_testing_qa",
+      "harvestedAt": "2026-10-12T11:07:53.887Z"
+    },
+    {
+      "id": "task_1791803273888_2",
+      "repo": "frankxai/starlight-design-intelligence",
+      "issueNumber": 2,
+      "title": "chore(agents): add AGENTS.md and CLAUDE.md for design OS + brand-image-system",
+      "description": "Issue #2: chore(agents): add AGENTS.md and CLAUDE.md for design OS + brand-image-system\n\n# chore(agents): add AGENTS.md and CLAUDE.md for design OS + brand-image-system\n\n**Repo:** frankxai/starlight-design-intelligence\n**Missing:** AGENTS.md + CLAUDE.md\n**Campaign:** https://github.com/frankxai/frankx.ai-vercel-website/issues/286\n**Portfolio tracker:** https://github.com/frankxai/frankx.ai-vercel-website/issues/285\n\nContext: brand-image-system and design OS are SSOT for premium visuals; agents currently lack in-repo instruction entrypoints.\n\n# Add missing agent instruction files (AG",
+      "type": "security",
+      "harvestedAt": "2026-10-12T11:07:53.888Z"
     }
   ]
 }
