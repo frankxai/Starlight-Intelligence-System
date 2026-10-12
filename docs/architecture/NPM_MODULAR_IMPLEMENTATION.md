@@ -1,14 +1,32 @@
 # Modular npm implementation
 
-Status: implementation branch; publication and acceptance gates remain open.
+Status: accepted core, AI SDK and MCP implementation; 0.2.1 release preparation.
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
 
-Current review gate: [PR 342](https://github.com/frankxai/Starlight-Intelligence-System/pull/342).
-The packages remain 0.2.0 candidates. Final measurements belong to the hosted
-artifact manifest and consumer receipt for the exact accepted revision; sizes in
-the historical checkpoints below must not be reused as current release evidence.
-Codex and GitHub Copilot reviews exposed production defects despite passing CI.
-The fixes and remaining deployment/provider/account gaps are tracked in the PR.
+The 12 October accepted source is `3ff9a5a9309c8ed43bc72c73d15f81faab85af41`.
+Core recall [PR364](https://github.com/frankxai/Starlight-Intelligence-System/pull/364),
+MCP method bindings [PR366](https://github.com/frankxai/Starlight-Intelligence-System/pull/366)
+and archive measurements [PR367](https://github.com/frankxai/Starlight-Intelligence-System/pull/367)
+are merged. Exact-source independent reviews and receiving archive/consumer checks
+are recorded in issue 329. These establish package-fixture acceptance, not live
+browser/edge/provider behavior or customer outcomes.
+
+Changesets 3.0.3 prepares all three packages at 0.2.1, consuming the pending adapter
+development update and the core/MCP recall changeset. Source, dependency versions,
+lockfile, protocol schemas, root package and publication workflow are unchanged.
+The 0.2.0 registry stages remain intact and reserve their version numbers. Fresh
+0.2.1 source review, hosted tarball/installed-consumer evidence, normal protected
+merge and receiving verification are required before publication.
+
+Public registry reads on 12 October show only 0.0.0-stage placeholders for these three
+names. A successful native account read does not prove publisher authority.
+Supported trust inspection previously returned 403; stage metadata is separately
+readable. No token, 2FA, trust permission or registry content has been changed by
+this release preparation. Require exact publisher configuration and actual
+registry integrity/provenance before claiming public delivery.
+
+The following checkpoints retain their original revision and date boundaries.
+Their versions, measurements and acceptance states do not describe this candidate.
 
 10 October follow-up: adversarial fixtures reproduced acceptance of unterminated
 archives and ambiguous paths in the release/static-audit parser. The parser now
