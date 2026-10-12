@@ -14,10 +14,10 @@ The format is a DSSE v1 envelope around an in-toto Statement v1, signed with Ed2
 | `run` | `id`, `kind` (e.g. `desk.brief`, `publish`), `host` (e.g. `claude-code`), `startedAt`, `endedAt`, optional `correlationId`. |
 | `subject` | The artifact the run produced: `name` and `digest.sha256`. The digest is what the signature names. |
 | `stages` | Ordered list of `{ name, status, model?, provider?, inputTokens?, outputTokens?, costEur?, latencyMs?, note? }`. At least one. |
-| `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. May exceed the stage sums (overhead), never fall below them. |
+| `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. Cost and tokens may exceed the stage sums (overhead), never fall below them. `latencyMs` is wall time: stages can overlap, so it is never below the longest stage. Token counts are whole numbers. |
 | `decisions` | Gates crossed: `{ gate, decidedBy: human\|agent\|policy, actorId, outcome: approved\|rejected\|deferred, at }`. Empty list allowed. |
 | `evidence` | `{ kind, ref, sha256? }` a verifier can go and look at. Empty list allowed. |
-| `verdict` | `PASS`, `FAIL`, or `PARTIAL`. A `FAIL` receipt is signable; a signed record of a failed run is still proof. |
+| `verdict` | `PASS`, `FAIL`, or `PARTIAL`. `PASS` is refused when any stage failed. A `FAIL` receipt is signable; a signed record of a failed run is still proof. |
 
 `receiptProblems()` in `src/run-receipt.ts` checks all of this on both sides. A receipt with any problem is neither signed nor shown as verified.
 
@@ -42,7 +42,7 @@ node --experimental-strip-types scripts/receipts/issue-and-share.mts scripts/rec
 
 The draft carries `run`, `subject` (`path` to the produced file; its sha256 becomes the digest), `stages`, and optionally `issuer`, `decisions`, `evidence`, `totals`, `verdict`. The script writes `.starlight/receipts/<receiptId>.envelope.json`, `.share.txt` (the link) and `.card.html` (an A5 card with a 64 mm QR; open it and print), and with `--ledger` appends the signed envelope to `memory/_audit/receipts.jsonl`, as `sis.receipt.issue` does.
 
-The link is the compact form, `https://starlightintelligence.ai/verify?r=z:…`: deflate-raw over the envelope with its statement stored decoded, base64url, about 1.3k characters for a four-stage receipt. The plain form, `r=b64u:<base64url of the envelope JSON>`, is about 3.8k characters, past what a QR holds (2953 bytes). Both restore the envelope byte for byte, so the signature check is the same. `src/receipt-share.ts` produces and parses both; the site parses both.
+The link is the compact form, `https://starlightintelligence.ai/verify?r=z:…`: deflate-raw over the envelope with its statement stored decoded, base64url, about 1.3k characters for a four-stage receipt. The plain form, `r=b64u:<base64url of the envelope JSON>`, is about 3.8k characters, past what a QR holds (2953 bytes). Both restore the envelope byte for byte, so the signature check is the same. `src/receipt-share.ts` produces both and `parseShareParam` restores the envelope from either. The site's `/verify` page does not read run receipts yet; today it checks only SIS's own SIP receipt.
 
 ## Issue a receipt over MCP
 
@@ -80,15 +80,9 @@ Locally, over MCP:
   "arguments": { "envelope": { "...": "the envelope from issue" }, "public_key_path": ".starlight/keys/sip-signing.pub" } }
 ```
 
-With `trust_ledger: true` the server also trusts every `*.pub` file under `SIS_TRUSTED_KEYS_DIR`. The result is `{ ok: true, verified, keyid, reasons, receipt }`; `verified: false` is a completed check, not an error. In code, `verifyRunReceipt(envelope, [publicKeyPem])` from `src/run-receipt.ts` does the same with no I/O.
+With `trust_ledger: true` the server also trusts every `*.pub` file under `SIS_TRUSTED_KEYS_DIR`. The result is `{ ok: true, verified, keyid, reasons, receipt }`; `verified: false` means the check ran and the receipt failed it; errors are reported separately. In code, `verifyRunReceipt(envelope, [publicKeyPem])` from `src/run-receipt.ts` does the same with no I/O.
 
-Publicly, paste the envelope and the public key at https://starlightintelligence.ai/verify, or:
-
-```bash
-curl -X POST https://starlightintelligence.ai/api/v1/receipts/verify \
-  -H 'content-type: application/json' \
-  -d '{ "envelope": { "...": "..." }, "publicKeys": ["-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"] }'
-```
+There is no public verifier for run receipts yet. `https://starlightintelligence.ai/verify` checks only SIS's own SIP receipt, and `/api/v1/receipts/verify` does not exist. Until a public verifier ships, verify with `sis.receipt.verify` or `verifyRunReceipt` and the issuer's public key.
 
 ## The rule
 
@@ -96,6 +90,6 @@ A draft is not proof. It is a receipt the issuer wrote down and nobody signed.
 
 A signature is a statement by the key holder that this is what happened. It binds the receipt to the subject digest and to a key; it does not make the contents true.
 
-The verifier trusts the key, not the words. Decide which public keys you trust, verify against those, and read the receipt only after it verifies.
+The verifier trusts only the keys you give it. Decide which public keys you trust, verify against those, and read the receipt only after it verifies.
 
 Built on SIP.

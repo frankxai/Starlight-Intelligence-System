@@ -114,7 +114,7 @@ ${stages}
 </tbody></table>
 <div class="totals"><span><b>cost</b>${euros(receipt.totals.costEur)}</span><span><b>time</b>${(receipt.totals.latencyMs / 1000).toFixed(1)} s</span><span><b>tokens</b>${receipt.totals.tokens.input.toLocaleString('en-US')} in · ${receipt.totals.tokens.output.toLocaleString('en-US')} out</span></div>
 ${decisions ? `<p class="muted">decisions: ${decisions}</p>` : ''}
-<div class="qr">${qrBlock}<div><p><strong>Scan to verify.</strong></p><p>The QR carries the signed receipt. The site checks the Ed25519 signature against the Starlight key registry and shows the verdict.</p><p class="muted">keyid ${escapeHtml(keyid)}</p><p class="muted">${escapeHtml(new URL(shareUrl).host)}/verify</p></div></div>
+<div class="qr">${qrBlock}<div><p><strong>Scan for the receipt.</strong></p><p>The QR carries the signed receipt. Check its Ed25519 signature with sis.receipt.verify and the issuer's public key.</p><p class="muted">keyid ${escapeHtml(keyid)}</p><p class="muted">${escapeHtml(new URL(shareUrl).host)}/verify</p></div></div>
 </div></body></html>
 `;
 }

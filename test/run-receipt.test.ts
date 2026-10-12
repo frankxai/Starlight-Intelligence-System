@@ -141,10 +141,38 @@ describe('run receipt — receiptProblems', () => {
     assert.ok(problems.some((p) => p.includes('no stages')), problems.join('; '));
   });
 
+  it('accepts wall time below the stage sum when stages overlap, but not below the longest stage', () => {
+    const parallel: RunReceiptStage[] = [
+      { name: 'lane-a', status: 'ok', latencyMs: 1000 },
+      { name: 'lane-b', status: 'ok', latencyMs: 1000 },
+    ];
+    const wall = { costEur: 0, latencyMs: 1050, tokens: { input: 0, output: 0 } };
+    assert.deepEqual(receiptProblems(receipt({ stages: parallel, totals: wall })), []);
+    const tooShort = receiptProblems(receipt({ stages: parallel, totals: { ...wall, latencyMs: 999 } }));
+    assert.ok(tooShort.some((p) => p.includes('totals.latencyMs 999 is below the longest stage 1000')), tooShort.join('; '));
+  });
+
+  it('refuses fractional token counts', () => {
+    const stages: RunReceiptStage[] = [{ name: 'synthesize', status: 'ok', inputTokens: 0.5, outputTokens: 2 }];
+    const problems = receiptProblems(receipt({ stages, totals: { costEur: 0, latencyMs: 0, tokens: { input: 1.5, output: 2 } } }));
+    assert.ok(problems.some((p) => p.includes('synthesize.inputTokens is not a non-negative integer')), problems.join('; '));
+    assert.ok(problems.some((p) => p.includes('totals.tokens.input and totals.tokens.output are required non-negative integers')), problems.join('; '));
+  });
+
+  it('refuses a PASS verdict when a stage failed', () => {
+    const stages: RunReceiptStage[] = [
+      { name: 'retrieve', status: 'ok', latencyMs: 10 },
+      { name: 'synthesize', status: 'failed', latencyMs: 5 },
+    ];
+    const problems = receiptProblems(receipt({ stages, totals: totalsFromStages(stages), verdict: 'PASS' }));
+    assert.ok(problems.some((p) => p.includes('verdict is PASS but stage synthesize failed')), problems.join('; '));
+    assert.deepEqual(receiptProblems(receipt({ stages, totals: totalsFromStages(stages), verdict: 'PARTIAL' })), []);
+  });
+
   it('catches totals below the stage sums', () => {
     const problems = receiptProblems(receipt({ totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } } }));
     assert.ok(problems.some((p) => p.includes('totals.costEur') && p.includes('below the stage sum')), problems.join('; '));
-    assert.ok(problems.some((p) => p.includes('totals.latencyMs') && p.includes('below the stage sum')));
+    assert.ok(problems.some((p) => p.includes('totals.latencyMs') && p.includes('below the longest stage')));
     assert.ok(problems.some((p) => p.includes('totals.tokens.input') && p.includes('below the stage sum')));
   });
 
