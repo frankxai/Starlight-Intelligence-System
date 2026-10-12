@@ -14,8 +14,8 @@ Build one **production spine** with five planes and run every revenue stream on 
 
 1. **Control plane: SIS.** Contracts, identity, memory policy, attestation, budgets, the registry of streams and experiments. Already exists; this doc adds two registries (§6, §7).
 2. **Runtime plane: managed agents, three providers, one contract.** Anthropic Managed Agents, the OpenAI Agents SDK over the Responses API, and Gemini managed agents (Interactions API, Antigravity agent) sit behind a single `ManagedAgentRuntime` port. Workload class decides the provider; policy decides the ceiling; every run emits a receipt.
-3. **Durable execution plane.** Cloudflare Workflows for agent-centric and cross-service jobs, Vercel Workflows for app-local jobs. One workflow, one durable owner. This is the accepted rule in `starlight-swarm/docs/TEAM-RUNTIME-ADR-2026-08-06.md` (4 October 2026 decision). Temporal, trigger.dev and n8n are not backbones.
-4. **Data and asset plane.** Supabase Postgres with row-level security for runtime state, Cloudflare R2 for media, Git for durable `MEMORY.md` state, Notion for intent. Unchanged from `STACK.md` L2.
+3. **Durable execution plane (proposed `STACK.md` L4 change).** Cloudflare Workflows for agent-centric and cross-service jobs, Vercel Workflows for app-local jobs. One workflow, one durable owner. This is the accepted rule inside `starlight-swarm/docs/TEAM-RUNTIME-ADR-2026-08-06.md` (4 October 2026 decision), but `STACK.md` L4 still names n8n as the automation default. Adopting the swarm rule estate-wide is a `STACK.md` edit and goes to `/starlight-board` first.
+4. **Data and asset plane (one proposed `STACK.md` L2 addition).** Supabase Postgres with row-level security for runtime state, Git for durable `MEMORY.md` state, Notion for intent, all as `STACK.md` L2 already says. Cloudflare R2 as the media store is new and is proposed here, not established.
 5. **Money plane: fail-closed, verify-only.** `payment-intelligence-system` verifies AP2 mandates and spend caps; rails (x402, ACP, MPP, card networks) settle elsewhere; humans approve capital. No agent in this architecture holds a transfer tool. This is non-negotiable and already encoded.
 
 The moat is not a model. It is **attested memory plus receipts plus governance plus distribution**, compounding across every stream the spine runs. A competitor can rent the same models tomorrow. They cannot rent four years of attested receipts, a registry of streams with kill criteria that fired, or an audience that trusts the receipts.
@@ -35,7 +35,7 @@ The moat is not a model. It is **attested memory plus receipts plus governance p
 | Estate commissioning workflow, SOW template, Trinity playbook | `Starlight-Intelligence-System/docs/delivery/` | v0.1, board-gated | Stream R1 and R2 delivery |
 | Wealth IS composition layer (DPI ledger, thesis engine, gate ladder) | `verticals/wealth/` | composition-layer v0.2 | Investment theses and gates for R10 |
 | Ops ledger, estate registry (68 repos, 12 production tier as of 2026-07-16) | `agentic-ops-hub/ops/`, `estate-registry.json` | live | Receipts of record |
-| Estate guard scanner and gate | `claude-skills-library/packs/estate-guard`, installed in twenty repos | live, weekly sweep | SDLC gate |
+| Estate guard scanner and gate | `claude-skills-library/packs/estate-guard`; the ops ledger entry of 2026-10-05 records the pack on `main` in twenty repos as of that date (snapshot, not a ledger metric) | live, weekly sweep | SDLC gate |
 
 Gaps the inventory exposes: no provider-neutral runtime contract above GenCreator, no registry of revenue streams with gates, no experiment ledger, no metered pass-through surface, and no capital-stack plan with dates. This document and the reference implementation close the first three and plan the last two.
 
@@ -79,13 +79,13 @@ Gaps the inventory exposes: no provider-neutral runtime contract above GenCreato
 
 | Need | Connector | Why this one | Fail mode handled by |
 |---|---|---|---|
-| Long-horizon agent with hosted sandbox, versioned config, outcomes grading, scheduled deployments | Anthropic Managed Agents (`client.beta.agents` / `sessions`, beta `managed-agents-2026-04-01`) | Harness and deployment supplied; session budgets are hard dollar caps; vault credentials never enter the sandbox | Session `budget_reached` pause, `tool_confirmation` deny when unattended |
+| Long-horizon agent with hosted sandbox, versioned config, outcomes grading, scheduled deployments | Anthropic Managed Agents (`client.beta.agents` / `sessions`, beta `managed-agents-2026-04-01`) | Harness and deployment supplied; session budgets are platform-enforced caps in whole cents; vault credentials never enter the sandbox | Session `budget_reached` pause (an in-flight request can still complete, so final cost may exceed the cap by one model request per thread; the runtime reserves a margin and settles the overrun, never treats the pause as an exact boundary), `tool_confirmation` deny when unattended |
 | Tool-heavy orchestration where we own the loop, handoffs, guardrails, tracing | OpenAI Agents SDK (`@openai/agents`) over the Responses API | Hosted tools (web search, file search, code interpreter, image generation) and handoffs with built-in tracing. AgentKit's Agent Builder and Evals are scheduled to stop on 30 November 2026 per OpenAI's own notice; ChatKit stays. Build on the SDK and Responses, not on Agent Builder. | Runner-level model settings and max turns; our budget wrapper |
 | Sandboxed research and file work at low token cost, free tier for experiments | Gemini managed agents (Interactions API, Antigravity agent on Gemini 3.8 Flash; docs updated 2026-09-17) | Google-hosted Linux sandbox with network allowlist and managed credentials; environment compute not billed during preview | Network allowlist, credential IDs injected at egress |
 | Durable multi-step jobs | Cloudflare Workflows, Vercel Workflows | Accepted estate rule, one durable owner per workflow | Leases, heartbeat timeouts, kill-switch names already in `runtime:prepare` bundles |
 | Video generation | Seedance 2.0 / 2.5 via BytePlus ModelArk (direct, lowest price), fal.ai (broadest catalog), Higgsfield (consumer and character consistency); Kling 3.0; Veo 3.1 | Price and quality tiers differ by a factor of four; route by shot class (§5.3). Sora API shut down on 24 September 2026, so nothing routes there. | Per-shot credit budget in the runtime; brand gate before publish |
 | Image generation | Nano Banana Pro via `scripts/nb-generate.mjs`, Seedream 5.0, FLUX.2 | Existing gen lanes in `lib/gen/lanes.ts` | Visual gate (`@visual-brand-guidelines`) |
-| Music | Suno via `/create-music`, catalog indexer, mastering QC | 12,000+ song catalog is an existing asset | Release manager refuses on QC fail |
+| Music | Suno via `/create-music`, catalog indexer, mastering QC | The song catalog is an existing asset; its count is the music catalog indexer's job, not this document's | Release manager refuses on QC fail |
 | Commerce | LemonSqueezy (digital), Whop (memberships), Stripe (services, invoices), Polar (open-source sponsorship) | `STACK.md` L5 default plus the Companion alpha's merchant-of-record rule | No public checkout until a stream passes its gate |
 | Agent commerce rails | x402 (settlement, Linux Foundation governed), AP2 (authorization), MPP (Stripe plus Tempo, recurring and streaming, launched March 2026), ACP (checkout) | Our MCP verifies; rails settle | Verify-only by design |
 | Distribution | Postiz self-hosted, YouTube Data API via vidIQ tools, TikTok Symphony Creative Studio (Symphony Agent announced October 2026), LinkedIn, Resend | Already in the ACOS and FrankX stacks | Human sends blasts and posts (hard stop) |
@@ -114,7 +114,7 @@ Reference implementation: `starlight-swarm/src/managed-runtime/`. Dry-run only. 
 | `volume-creator-work` | Anthropic or OpenAI by live cost | small tier | Router picks by measured cost per completed task, not per request |
 | `offline-sovereign` | self-hosted Llama or Mistral | n/a | Air-gapped canon work |
 
-Rules the router enforces: no provider receives raw vault content; every run carries a microdollar ceiling; a run that would exceed its ceiling escalates to `founder-board` through the swarm's `classify()`; a provider outage degrades to the next provider in the same class only for reversible work.
+Rules the router enforces: no provider receives raw vault content; every run carries a microdollar ceiling; a run that would exceed its ceiling escalates to `founder-board` through the swarm's `classify()`; a provider outage degrades to the next provider in the same class only for reversible work, and only when the run carries an idempotency key and the original run's outcome is known; an ambiguous outcome (side effect possibly completed, result not returned) fails closed and waits rather than replaying.
 
 ### 4.3 Evals and experiments
 
@@ -124,7 +124,7 @@ Promotion ladder, same as the swarm's: `dry-run → shadow → pilot → standin
 
 ### 4.4 Cost discipline
 
-Caches first (stable prefixes, deterministic tool lists), then effort, then model choice, then provider. Judge cost per completed task. One model per cache namespace. The runtime records `inputTokens`, `outputTokens`, `cacheReadTokens`, `costMicroUsd`, and `completed` on every receipt so the comparison is measured, never assumed.
+Caches first (stable prefixes, deterministic tool lists), then effort, then model choice, then provider. Judge cost per completed task. One model per cache namespace. The runtime records `inputTokens`, `outputTokens`, `cacheReadTokens`, `costMicroUsd`, and `completed` on every receipt so the comparison is measured, never assumed. Provider caps are coarser than the micro-USD reservation (Anthropic session budgets are whole cents and can overshoot by one in-flight request per thread), so the reservation includes a margin and settlement reports the overrun.
 
 ---
 
@@ -180,7 +180,7 @@ Ranking rule: recurring before one-off, owned asset before platform-dependent, v
 | R6 | Metered agent services | MCP endpoints and APIs sold per call to agents: marine knowledge, research, payments verification; x402 pay-per-call, API keys for Web2 | marine-mcp, payments-mcp verify-only, Cloudflare Workers, x402 | One external agent paying per call in a pilot | No external caller within 60 days of the pilot going live |
 | R7 | Memberships and retreats | GenCreator community, Vibeclubs formats, co-creation retreats | Whop or Skool, Circle, Resend | Cohort filled with delivery evidence complete | Cohort under minimum viable size |
 | R8 | Digital products and templates | Prompt library, packs, courses, books | LemonSqueezy, frankx.ai product routes | Product page passes integrity guard | Under threshold units in 90 days (owner sets) |
-| R9 | Agentic income network | Affiliate comparison engine, bound links, scheduled posts under queen gate | agenticincome, Postiz | Affiliate queen at Pilot | Payout below the stream cap for two quarters |
+| R9 | Agentic income network | Affiliate comparison engine, bound links, scheduled posts under queen gate | agenticincome, Postiz | Affiliate queen at Pilot | Payout below an owner-set minimum floor (dated, in the registry) for two consecutive quarters |
 | R10 | Capital and deal intelligence for principals | Advisory and co-investment theses for HNW and crypto-native principals, built on Wealth IS and Investment IS; never custody, never money movement | `/wealth-thesis-review`, Investment IS, SOW | One principal retains the thesis service | Thesis service produces no decision the principal acts on in two quarters |
 
 Portfolio rule: at most three streams in Pilot at once. The founder board decides which three. Everything else stays in dry-run or shadow and keeps writing receipts.
@@ -215,24 +215,26 @@ The buyers who move the portfolio are principals: founders, crypto-native operat
 | OpenAI for Startups | — | referral code from a partner VC; no published amount | — | Agents SDK |
 | Oracle for Startups | — | discount persists as you scale | ongoing | Enterprise lane; keep independence disclaimer |
 
-The bootstrapped stack totals roughly $18,000 to $22,000 across the four self-serve tiers. The partner door changes the order of magnitude. Decision: apply to every self-serve tier this month; take the partner door only through an investor or accelerator that sits in the Google, Cloudflare, and AWS partner networks.
+The bootstrapped stack totals up to $22,000 across the four self-serve tiers; two of the four are "up to" awards, so there is no guaranteed floor. The partner door changes the order of magnitude. Decision: apply to every self-serve tier this month; take the partner door only through an investor or accelerator that sits in the Google, Cloudflare, and AWS partner networks.
 
 ### 8.2 Entity and investor posture
 
-Starlight Holding BV and Arcanea BV already separate substrate from canon IP. Investors buy into the holding, never into encoded-self (SIP §5.7). A co-investment vehicle for R10 is a separate entity with licensed counsel; Wealth IS architects the system and does not give financial advice. Any raise is sized to the credits it unlocks and the three streams in Pilot, not to a narrative.
+The intended structure separates substrate from canon IP across Starlight Holding BV (in formation, per `SOUL.md`) and Arcanea BV; entity ownership of several verticals is still marked TBD at formation in `VERTICALS.md`, so this is a proposed posture until the canonical records carry the evidence. Investors buy into the holding, never into encoded-self (SIP §5.7). A co-investment vehicle for R10 is a separate entity with licensed counsel; Wealth IS architects the system and does not give financial advice. Any raise is sized to the credits it unlocks and the three streams in Pilot, not to a narrative.
 
 ---
 
 ## 9. 90-day plan (owners are agents; Frank approves gates)
 
+Owner names are the Agent OS General roster in `agentic-creator-os/.claude/agents/general-*.md` (`general-ceo`, `general-cfo`, `general-coo`, `general-cto`) and the visual composer `agentic-creator-os/.claude/agents/visual-design-gods.md`; `music-producer` is the same repo's music orchestrator. They are not in this repo's `agents/AGENT_REGISTRY.md`. Routing through SIS resolves them via the Agentic Creator OS registry, pinned to that repo's `main` at adoption time.
+
 | Window | Deliverable | Owner | Gate |
 |---|---|---|---|
-| Days 1–7 | Runtime port merged in starlight-swarm (this PR), stream and experiment registries populated with placeholders set by Frank | `general-cto`, `general-cfo` | Tests green, estate-guard clean |
+| Days 1–7 | Runtime port merged in starlight-swarm ([starlight-swarm#38](https://github.com/frankxai/starlight-swarm/pull/38), open draft; this document does not merge it), stream and experiment registries populated with placeholders set by Frank | `general-cto`, `general-cfo` | Tests green, estate-guard clean |
 | Days 1–14 | Apply to all self-serve credit tiers; record approvals in the ops ledger | `general-cfo` | Receipts in ledger |
-| Days 8–30 | First shadow run: Anthropic Managed Agents repo steward on one bounded repo, outcomes rubric, hard session budget | `general-cto` | Receipts, no side effects |
+| Days 8–30 | First shadow run: Anthropic Managed Agents repo steward on one bounded repo, outcomes rubric, session budget with margin, environment `networking: limited` (no unrestricted egress), toolset `permission_policy: always_ask` with every confirmation answered `deny`, repository mounted read-only with no push token | `general-cto` | Receipts, no side effects (enforced by the egress and permission settings, not declared) |
 | Days 8–30 | Media engine shadow: twelve shots across three shot classes with provenance sidecars; nothing published | `visual-design-gods`, `music-producer` | Visual council pass |
 | Days 15–45 | R1 pipeline: three qualified estate conversations, SOW template v0.2 | `general-ceo` | One signed SOW |
-| Days 30–60 | R6 pilot: marine-mcp metered endpoint behind Cloudflare Workers with API keys; x402 as optional rail | `general-cto` | One external caller |
+| Days 30–60 | R6 pilot: marine-mcp metered endpoint behind Cloudflare Workers with API keys; x402 as optional rail | `general-cto` | One external caller paying per call (same bar as the R6 promotion gate; free or subsidized callers do not count) |
 | Days 30–60 | Pick the three Pilot streams at `/starlight-board` | Frank | Board verdict recorded |
 | Days 45–90 | Promote one stream to Standing with scheduled deployment, budget, kill switch | `general-coo` | Four weekly receipts |
 | Day 90 | Portfolio review against kill criteria; kill at least one stream that missed | `general-ceo` | Ledger entry |
@@ -240,6 +242,8 @@ Starlight Holding BV and Arcanea BV already separate substrate from canon IP. In
 ---
 
 ## 10. The narrative (public, voice-compliant)
+
+Target state. This copy becomes publishable only when Standing receipts back every sentence; until then it is the bar, not a claim.
 
 We run an estate of intelligence systems on an open protocol. Every agent that works for us or for a client leaves a receipt: what ran, where, what it cost, what it changed, and who approved it. Money never moves without a human. The same spine that writes our music videos verifies a client's payment mandate and stewards a repository overnight. You can fork the protocol for free. You pay us to build and run the estate you own.
 
