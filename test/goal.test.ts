@@ -98,7 +98,7 @@ describe("SAGE Goal Engine", () => {
       const initialFile = join(dir, "initial.txt");
       writeFileSync(initialFile, "Initial content", "utf8");
       execSync("git add .", { cwd: dir, stdio: "ignore" });
-      execSync('git commit -m "Initial commit"', { cwd: dir, stdio: "ignore" });
+      execSync('git commit --no-verify -m "Initial commit"', { cwd: dir, stdio: "ignore" });
 
       const orchestrator = new GoalOrchestrator({ starlightDir: join(dir, ".starlight") });
       orchestrator.createChecklist("Git Test", ["Task 1"]);
