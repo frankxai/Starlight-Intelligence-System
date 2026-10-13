@@ -71,6 +71,13 @@ def posting_app(comment):
     return app.get('slug') if isinstance(app, dict) else None
 
 
+def edited(comment):
+    # GitHub keeps the original App attribution when a comment is edited, and the
+    # edit may come from a raw token. Only an unedited receipt is trusted.
+    created, updated = comment.get('created_at'), comment.get('updated_at')
+    return not created or not updated or created != updated
+
+
 def evaluate(repository, number, head, files, comments, auto_merge=None):
     if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
         return False, 'Missing or invalid source identity or changed files.'
@@ -83,7 +90,8 @@ def evaluate(repository, number, head, files, comments, auto_merge=None):
     for comment in reversed(comments):
         if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
                 or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
-                or posting_app(comment) not in TRUSTED_APPS):
+                or posting_app(comment) not in TRUSTED_APPS
+                or edited(comment)):
             continue
         body = comment.get('body', '')
         # Accept the Windows delimiter without rewriting the hashed report.

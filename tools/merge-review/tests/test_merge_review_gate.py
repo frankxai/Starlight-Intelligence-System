@@ -21,6 +21,7 @@ def receipt(**changes):
     body.update(changes)
     return {'id': 123, 'user': {'login': 'frankxai'}, 'author_association': 'OWNER',
             'performed_via_github_app': {'slug': 'cursor'},
+            'created_at': '2026-10-13T07:00:00Z', 'updated_at': '2026-10-13T07:00:00Z',
             'body': gate.MARKER + json.dumps(body)}
 
 
@@ -164,9 +165,6 @@ class MergeReviewTests(unittest.TestCase):
         self.assertFalse(self.evaluate([receipt(), receipt(blockingFindings=['unfixed'])]))
 
 
-if __name__ == '__main__':
-    unittest.main()
-
 
 class PostingAppTests(unittest.TestCase):
     def evaluate(self, comments):
@@ -201,3 +199,17 @@ class PostingAppTests(unittest.TestCase):
         forged['id'] = 124
         forged['performed_via_github_app'] = None
         self.assertTrue(self.evaluate([receipt(), forged]))
+
+    def test_edited_receipt_is_rejected(self):
+        comment = receipt()
+        comment['updated_at'] = '2026-10-13T07:05:00Z'
+        self.assertFalse(self.evaluate([comment]))
+        for key in ['created_at', 'updated_at']:
+            comment = receipt()
+            del comment[key]
+            with self.subTest(missing=key):
+                self.assertFalse(self.evaluate([comment]))
+
+
+if __name__ == '__main__':
+    unittest.main()
