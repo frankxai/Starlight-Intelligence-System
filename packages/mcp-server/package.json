@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "@types/node": "24.19.1",
+    "@types/node": "24.19.2",
     "@modelcontextprotocol/client": "2.3.1"
   },
   "exports": {
