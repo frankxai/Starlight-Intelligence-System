@@ -1,23 +1,34 @@
-name: Review boundary tests
+name: Merge review gate tests
 
 on:
   pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - '.github/workflows/merge-review*.yml'
-      - 'tools/merge-review/**'
-      - 'docs/merge-review.md'
+      - .github/workflows/merge-review.yml
+      - .github/workflows/merge-review-tests.yml
+      - tools/merge-review/**
+      - tools/jules-conductor/merge-gate.mjs
+      - tools/jules-conductor/tests/merge-gate.test.mjs
   push:
     branches: [main]
     paths:
-      - '.github/workflows/merge-review*.yml'
-      - 'tools/merge-review/**'
-      - 'docs/merge-review.md'
+      - .github/workflows/merge-review.yml
+      - .github/workflows/merge-review-tests.yml
+      - tools/merge-review/**
+      - tools/jules-conductor/merge-gate.mjs
+      - tools/jules-conductor/tests/merge-gate.test.mjs
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: merge-review-tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  fixtures:
+  merge-review-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
@@ -27,4 +38,7 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
-      - run: python -m unittest discover -s tools/merge-review/tests -v
+      - name: Verify receipt acceptance and denial
+        run: python -m unittest discover -s tools/merge-review/tests -p 'test_*.py' -v
+      - name: Verify separate-reviewer land policy
+        run: node --test tools/jules-conductor/tests/merge-gate.test.mjs
