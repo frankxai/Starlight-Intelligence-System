@@ -3,6 +3,12 @@ import importlib.util
 from pathlib import Path
 import json
 import unittest
+from unittest.mock import patch
+import contextlib
+import io
+import os
+import subprocess
+import tempfile
 
 spec = importlib.util.spec_from_file_location('gate', Path(__file__).parents[1] / 'merge_review_gate.py')
 gate = importlib.util.module_from_spec(spec)
@@ -267,6 +273,83 @@ class PostingAppTests(unittest.TestCase):
         gate.annotate_edit_history(comments, HEAD, lookup)
         self.assertEqual(len(calls), gate.MAX_EDIT_LOOKUPS)
         self.assertFalse(self.evaluate(comments))
+
+class WriterBoundaryTests(unittest.TestCase):
+    def run_gate(self, *, writer='98765', returned_writer=98765, comments=None,
+                 changed_head=False, changed_count=1, read_error=False, patch_error=False):
+        with tempfile.TemporaryDirectory() as temp:
+            event = Path(temp) / 'event.json'
+            event.write_text(json.dumps({'pull_request': {'number': 110}}), encoding='utf-8')
+            environment = {'GITHUB_REPOSITORY': 'frankxai/starlight-agent-config',
+                           'GITHUB_EVENT_PATH': str(event), 'MERGE_REVIEW_APP_ID': writer}
+            pr = {'state': 'open', 'head': {'sha': HEAD}, 'changed_files': changed_count,
+                  'base': {'sha': 'c' * 40}}
+            def transport(endpoint, payload=None, paginate=False):
+                if endpoint.endswith('/check-runs'):
+                    return {'id': 456, 'app': {'id': returned_writer}}
+                if '/files?' in endpoint:
+                    if read_error:
+                        raise RuntimeError('simulated read failure')
+                    return [dict(x) for x in FILES]
+                if '/comments?' in endpoint:
+                    return [receipt()] if comments is None else comments
+                result = json.loads(json.dumps(pr))
+                if changed_head and request.call_count > 1:
+                    result['head']['sha'] = 'd' * 40
+                return result
+            side_effect = subprocess.CalledProcessError(1, ['gh', 'api']) if patch_error else None
+            with patch.dict(os.environ, environment, clear=True), \
+                    patch.object(gate, 'api', side_effect=transport) as request, \
+                    patch.object(gate.subprocess, 'run', side_effect=side_effect) as publish, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                try:
+                    result = gate.main()
+                except (ValueError, subprocess.CalledProcessError) as error:
+                    return error, request.call_args_list, publish.call_args_list
+                return result, request.call_args_list, publish.call_args_list
+
+    def test_missing_invalid_or_shared_writer_never_calls_api(self):
+        for writer in ['', '15368', '0', '-1', '1.0', 'not-an-id', '9' * 13]:
+            with self.subTest(writer=writer):
+                result, requests, writes = self.run_gate(writer=writer)
+                self.assertIsInstance(result, ValueError)
+                self.assertEqual(requests, [])
+                self.assertEqual(writes, [])
+
+    def test_matching_writer_and_valid_receipt_logic_pass(self):
+        result, requests, writes = self.run_gate()
+        self.assertEqual(result, 0)
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(json.loads(writes[0].kwargs['input'])['conclusion'], 'success')
+        self.assertEqual(requests[1].args[1]['head_sha'], HEAD)
+
+    def test_wrong_writer_has_only_failing_finalization(self):
+        result, requests, writes = self.run_gate(returned_writer=15368)
+        self.assertEqual(result, 1)
+        self.assertEqual(len(requests), 2)
+        final = json.loads(writes[0].kwargs['input'])
+        self.assertEqual(final['conclusion'], 'failure')
+        self.assertIn('failed closed', final['output']['summary'])
+
+    def test_missing_or_revoked_receipt_fails_workflow(self):
+        for comments in [[], [receipt(), receipt(verdict='FAIL')]]:
+            with self.subTest(comments=comments):
+                result, _, writes = self.run_gate(comments=comments)
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(writes[0].kwargs['input'])['conclusion'], 'failure')
+
+    def test_head_race_partial_listing_or_read_failure_never_pass(self):
+        for options in [{'changed_head': True}, {'changed_count': 2}, {'read_error': True}]:
+            with self.subTest(options=options):
+                result, _, writes = self.run_gate(**options)
+                self.assertEqual(result, 1)
+                self.assertEqual(json.loads(writes[0].kwargs['input'])['conclusion'], 'failure')
+
+    def test_api_write_failure_never_reports_success(self):
+        result, _, writes = self.run_gate(patch_error=True)
+        self.assertIsInstance(result, subprocess.CalledProcessError)
+        self.assertEqual(len(writes), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
