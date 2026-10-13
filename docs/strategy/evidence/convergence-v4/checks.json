@@ -1,0 +1,174 @@
+[
+ {
+  "page": "convergence-map-v4.html",
+  "width": 1440,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 1440,
+  "clientWidth": 1440,
+  "height": 5339,
+  "focusable": 72,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "convergence-map-v4.html",
+  "width": 768,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 768,
+  "clientWidth": 768,
+  "height": 6286,
+  "focusable": 72,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "convergence-map-v4.html",
+  "width": 375,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 10917,
+  "focusable": 72,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "convergence-map-v4.html",
+  "width": 375,
+  "reducedMotion": "reduce",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 10917,
+  "focusable": 72,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "memory-log-prototype.html",
+  "width": 1440,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 1440,
+  "clientWidth": 1440,
+  "height": 1519,
+  "focusable": 8,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "memory-log-prototype.html",
+  "width": 768,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 768,
+  "clientWidth": 768,
+  "height": 2139,
+  "focusable": 8,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "memory-log-prototype.html",
+  "width": 375,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 3883,
+  "focusable": 8,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "memory-log-prototype.html",
+  "width": 375,
+  "reducedMotion": "reduce",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 3883,
+  "focusable": 8,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID",
+   "console: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ]
+ },
+ {
+  "page": "ledger-countersign-prototype.html",
+  "width": 1440,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 1440,
+  "clientWidth": 1440,
+  "height": 1593,
+  "focusable": 10,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "ledger-countersign-prototype.html",
+  "width": 768,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 768,
+  "clientWidth": 768,
+  "height": 2476,
+  "focusable": 10,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "ledger-countersign-prototype.html",
+  "width": 375,
+  "reducedMotion": "no-preference",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 3917,
+  "focusable": 10,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ },
+ {
+  "page": "ledger-countersign-prototype.html",
+  "width": 375,
+  "reducedMotion": "reduce",
+  "scrollWidth": 375,
+  "clientWidth": 375,
+  "height": 3917,
+  "focusable": 10,
+  "overflow": false,
+  "axeViolations": [],
+  "errors": [
+   "console: Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID"
+  ]
+ }
+]

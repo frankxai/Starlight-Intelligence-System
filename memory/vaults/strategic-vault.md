@@ -440,3 +440,45 @@ Core framework components implemented:
 *Every estate compounds the substrate. The client owns what is theirs; the factory serves the next sovereign.*
 *Starlight Intelligence System — Estate Factory continuation · 2026-06-17*
 
+
+---
+
+### [2026-09-21] Receipt-first — the convergence foundation is chosen
+
+**Confidence:** 0.9
+**Source:** Frank's direction ("go with receipt-first") after the three-foundation comparison; PR #189 on Starlight-Intelligence-System; companion PR on starlight-intelligence-web
+**Related:** `docs/strategy/2026-09-21-convergence-v2.md`, `docs/strategy/narrative.md`, `docs/receipts.md`, `protocol/run-receipt.v1.schema.json`, `src/run-receipt.ts`
+
+**Decision:** the signed run receipt is the product. Operator (Queen, Board, Claws, Console) and memory (six vaults, sidecar, palace) are how receipts are produced and kept. Operator-first and memory-first were compared and set aside as headlines; both remain in the plan as mechanisms.
+
+**Shipped in the same pass:**
+- `starlight.run-receipt.v1`: DSSE v1 + in-toto Statement v1 + Ed25519, same envelope as the SIP conformance receipt. Issuer and verifier are pure and byte-identical in SIS (`src/run-receipt.ts`) and the .ai site (`lib/run-receipt.ts`).
+- MCP: `sis.receipt.issue` / `verify` / `list` in the v0.1 server; ledger `memory/_audit/receipts.jsonl`. Drafts are explicit and are not proof.
+- starlightintelligence.ai: homepage on the sentence "Every run leaves a receipt", `/receipts`, `/verify`, `POST /api/v1/receipts/verify`, `verify_run_receipt` MCP tool, schema, discovery files. Key registry starts empty; keys are added by PR with owner and date.
+- Narrative doctrine: category "verifiable agent operations"; three words (receipt, key, veto); proof rule "every adjective gets a receipt or gets cut".
+
+**Invariants held:** substrate untouched (SIP, sovereignty clause, file contract, vault taxonomy). Schema ratification as a SIP graph extension is drift item 11 for `/starlight-board`. No hosted signing, ever. The public verifier stores nothing.
+
+**Falsifier carried forward:** the six receipt-native metrics (issued, verified by others, cost per artifact, human decisions per hundred runs, external registry keys, surfaces reading one receipt) start at zero. If they have not moved by the end of October, the foundation is a plan, not a product, and the vault should say so.
+
+**Next:** 23 Sept Desk issues the first real `desk.brief` receipt on stage and verifies it live on `/verify`; add Frank's Desk key to the registry by PR (drift item 12); Foundry lock pin refresh if a `test:receipts` script is wanted in `package.json`.
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1
+
+---
+
+### [2026-09-21] Convergence v4 — the option space for all twenty-one dimensions, chosen against the zero
+
+**Confidence:** 0.8
+**Source:** the convergence brief run a second time on the same day, stacked on PR #189 (v1, v2, v3); `docs/strategy/2026-09-21-convergence-v4.md`, appendices E and F, `convergence-map-v4.html`, `memory-log-prototype.html`, `ledger-countersign-prototype.html`
+**Related:** `2026-09-21-convergence-v3.md`, `narrative.md`, `docs/receipts.md`, `protocol/run-receipt.v1.schema.json`
+
+**Decision (operational tier; two items blocked on Board):** every direction is judged first by whether it moves the count of signed receipts verified by a key that is not ours, which is zero on this date (`memory/_audit/receipts.jsonl` absent; registry empty). Choices that differ from v3: the verifier becomes one MIT package (`@starlight/receipt`) rather than a copy; the constitution gates every route with the Queen inside it; two runtimes, one receipt (a conformance twin by Q4); the memory log with the six vaults as projections (Board proposal, section 7.1); the demo adds countersignature from the judge's phone; the twelve dimensions each get three directions, a cost at three scales and a falsifier.
+
+**Corrections that change arithmetic:** Nebius batch is 50 percent; Suno rights attach to downloads (20 or 60 a month); Nebius pins EU compute only on dedicated endpoints; Anthropic's first-party API has no EU inference geo; Claude Code reads CLAUDE.md natively rather than AGENTS.md.
+
+**Falsifier carried forward:** if by 2026-12-31 fewer than 100 countersignatures exist from keys that are not ours, the trust move failed and the plan says so.
+
+**Receipt:** unsigned draft `rcpt_1790034118905_5c0d1383`, subject sha256 `d849a34cb9a1d5bf852494b383c66d505f653de7bfbabaa6e0d87bf2b57970d2`; no signing key on the authoring machine.
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1
