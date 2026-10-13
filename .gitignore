@@ -109,6 +109,8 @@ tools/arena/workdir/
 .agents/
 .system_generated/
 .next-backup/
+.gstack/
+.worktrees/
 temp-*.json
 link-checker-report.json
 link-checker-report.txt
