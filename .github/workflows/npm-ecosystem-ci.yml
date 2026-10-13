@@ -81,6 +81,8 @@ jobs:
       - run: npm install --global pnpm@11.5.0
       - run: pnpm install --frozen-lockfile --ignore-scripts
       - run: pnpm run build:core
+      - name: Check ChatGPT plan worker and ambiguous execution recovery
+        run: node --import tsx --test test/chatgpt-plan-runtime.test.ts test/runtime-bridge.test.ts
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '18'

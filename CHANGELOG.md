@@ -2,6 +2,17 @@
 
 All notable releases. Dates in ISO 8601. Substrate (SIP) version tracked separately from package version.
 
+## Unreleased — Starlight Alexandria (domain sub-stack v0.1)
+
+**Catalogued intelligence with receipts: `verticals/alexandria/` + `src/alexandria/`, built to `dist/alexandria/`. A package `exports` entry is deferred because package.json is digest-pinned by the Foundry toolchain lock.**
+
+- **Catalogue:** `catalog/providers.json` — 20 providers / 47 capabilities (4 native: vaults, metrics ledger, research notes, vertical registry; 16 from Firecrawl's Alexandria catalogue) with real per-call credit prices reconciled against the catalogue digest on 2026-10-08, required-option groups and a routing tag vocabulary. `catalog/connectors.json` — 24 runtimes, generation lanes, distribution and money rails with credential env-var names only.
+- **Runtime:** deterministic `Library` routing (tag 3 / name 2 / description 1, cost tie-break; tags tokenised like the need), option validation against the contract, `Alexandria` router that reserves the price synchronously before the transport runs (per-record capabilities must declare a record ceiling) and restores spend per budget session from the ledger (a pending line holds the reservation before a paid call; uncertain outcomes, including Firecrawl 5xx, keep it until a retry of the same call with the same request id settles it; an unreported charge is never refunded; per-record ceilings are sent to the provider as its declared record-limit option; an overrun suspends the capability; a resumed session cannot raise its ceiling; holds never shrink on retry), Firecrawl request ids for idempotent retries and surfaced terms-gate details, `FirecrawlTransport` (injectable fetch), `NativeTransport` (free corpus reads), receipts with key-order-independent sha256, a call fingerprint, the provider's redistribution policy, reserved versus charged credits and an earned "Built on SIP" block only on successful calls, append-only owner-only JSONL ledger with a ledger-wide write lock that quarantines a cut-off final line, Forge experiment registry whose status machine refuses `proven`/`falsified` without ledger-backed, settled, successful receipts.
+- **MCP:** `src/alexandria/mcp.ts` — `alexandria_find`, `alexandria_plan`, `alexandria_execute`, `alexandria_receipts`, `alexandria_experiments` over stdio; unknown arguments rejected before any handler. `node dist/alexandria/mcp.js`.
+- **Docs:** 7-file contract plus ARCHITECTURE, SDLC, SWARM, REVENUE, CAPITAL, SUB-SYSTEMS, PROPOSAL, six House cards, Board record (PROCEED, three conditions).
+- **Tests:** `test/v93-alexandria.test.ts` (`.github/workflows/alexandria.yml`; `npm test` picks it up at the next toolchain relock); `alexandria` added to v79 declared-live sub-stacks.
+- **Known placeholders:** Similarweb and Firecrawl Trends capability paths are unreconciled (provider agreements unavailable at fetch time); they carry `status: unreconciled`, are left out of routing and refused by the router; recorded in `verticals/alexandria/MEMORY.md`.
+
 ## 8.5.2 (prepared)
 
 - Redact Supabase `sb_secret_` server keys and `supabase_secret_key` / `supabase_service_role_key` context values in System sanitization.
