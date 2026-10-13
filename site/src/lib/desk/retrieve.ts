@@ -1,0 +1,115 @@
+/**
+ * Retrieval. Sources arrive with their URLs attached, because a claim without
+ * a URL cannot be cited and an uncited claim never reaches the brief.
+ *
+ * Built on SIP — operational tier.
+ */
+import { PublicError } from "./public-error";
+
+export const TAVILY_URL = "https://api.tavily.com/search";
+export const DEFAULT_TIMEOUT_MS = 20_000;
+/**
+ * Caps on what one source may carry into the extract prompt. They bound the
+ * extract stage's input tokens (see WORST_CASE_RUN_TOKENS in cascade.ts). A
+ * URL longer than the cap is dropped rather than cut, because a cut URL
+ * cannot be cited.
+ */
+export const MAX_SOURCE_CHARS = 2400;
+export const MAX_TITLE_CHARS = 200;
+export const MAX_URL_CHARS = 512;
+
+export interface Source {
+  index: number;
+  title: string;
+  url: string;
+  content: string;
+}
+
+export interface RetrieveConfig {
+  apiKey: string;
+  fetchImpl?: typeof fetch;
+  now?: () => number;
+  endpoint?: string;
+  timeoutMs?: number;
+  /** The run's deadline; aborting it abandons the search. */
+  signal?: AbortSignal;
+}
+
+export interface RetrieveResult {
+  sources: Source[];
+  latencyMs: number;
+  calls: number;
+}
+
+/**
+ * Search, then keep the results that carry both a URL and a body. `maxResults`
+ * caps what the extraction stage has to read, and each source's text is cut to
+ * MAX_SOURCE_CHARS, which together cap its token bill.
+ */
+export async function retrieve(question: string, maxResults: number, config: RetrieveConfig): Promise<RetrieveResult> {
+  const fetchImpl = config.fetchImpl ?? fetch;
+  const now = config.now ?? (() => Date.now());
+  if (config.signal?.aborted) throw new PublicError("retrieval not called: the run's deadline passed", "deadline reached");
+  const controller = new AbortController();
+  const timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onDeadline = () => controller.abort();
+  config.signal?.addEventListener("abort", onDeadline, { once: true });
+  const startedAt = now();
+
+  try {
+    const response = await fetchImpl(config.endpoint ?? TAVILY_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${config.apiKey}` },
+      body: JSON.stringify({
+        query: question,
+        max_results: maxResults,
+        search_depth: "advanced",
+        include_raw_content: false,
+      }),
+      signal: controller.signal,
+    });
+
+    const latencyMs = Math.max(0, now() - startedAt);
+    if (!response.ok) {
+      throw new PublicError(`retrieval answered ${response.status}`, `retrieval answered HTTP ${response.status}`);
+    }
+
+    const payload: unknown = await response.json().catch(() => null);
+    return { sources: toSources(payload, maxResults), latencyMs, calls: 1 };
+  } catch (error) {
+    if (config.signal?.aborted) throw new PublicError("retrieval abandoned: the run's deadline passed", "deadline reached");
+    if (error instanceof PublicError) throw error;
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new PublicError(`retrieval did not answer within ${timeoutMs} ms`, "retrieval timed out");
+    }
+    throw new PublicError("retrieval call failed", "retrieval unreachable");
+  } finally {
+    clearTimeout(timer);
+    config.signal?.removeEventListener("abort", onDeadline);
+  }
+}
+
+function toSources(payload: unknown, maxResults: number): Source[] {
+  const results = payload && typeof payload === "object" ? (payload as { results?: unknown }).results : null;
+  if (!Array.isArray(results)) return [];
+  const sources: Source[] = [];
+  for (const entry of results) {
+    if (!entry || typeof entry !== "object") continue;
+    const record = entry as Record<string, unknown>;
+    const url = typeof record.url === "string" ? record.url : "";
+    const content = typeof record.content === "string" ? record.content : "";
+    // A URL with whitespace, quotes or angle brackets is not one the extract
+    // prompt can carry verbatim inside its delimiters, so it is not kept.
+    if (!url.startsWith("http") || url.length > MAX_URL_CHARS || /[\s<>"]/.test(url) || content.trim().length === 0) continue;
+    const title = typeof record.title === "string" && record.title.trim() ? record.title : url;
+    sources.push({
+      index: sources.length + 1,
+      title: title.slice(0, MAX_TITLE_CHARS),
+      url,
+      content: content.slice(0, MAX_SOURCE_CHARS),
+    });
+    if (sources.length >= maxResults) break;
+  }
+  return sources;
+}

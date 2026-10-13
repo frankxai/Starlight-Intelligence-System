@@ -2,7 +2,7 @@
 
 **Status:** proposed. Touches the SIP § 1 file contract, so `/starlight-board` runs before tag or merge, per `CLAUDE.md` § substrate-tier governance gate.
 **Scope of this change:** this repository only.
-**Owner:** `agent:starlight-cto` (topology) with `agent:starlight-caio` (substrate)
+**Owner:** `agent:starlight-architect` (topology) with `agent:starlight-orchestrator` (substrate). Reassigned on 2026-10-13 when the executive cards from #324 were reverted.
 
 ---
 

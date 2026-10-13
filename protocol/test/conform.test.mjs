@@ -466,3 +466,13 @@ test("jsonschema assertStrict validates reality architecture kernel schemas", ()
     assert.doesNotThrow(() => assertStrict(s), `assertStrict failed for ${name}.schema.json`);
   }
 });
+
+test("jsonschema assertStrict loads the run receipt v1 schema, and token counts are integers", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  assert.doesNotThrow(() => assertStrict(schema));
+  const stage = schema.properties.stages.items;
+  assert.deepEqual(validateAgainstSchema(stage, { name: "synthesize", status: "ok", inputTokens: 400, outputTokens: 20 }), []);
+  assert.ok(validateAgainstSchema(stage, { name: "synthesize", status: "ok", inputTokens: 0.5 }).length > 0);
+  const tokens = schema.properties.totals.properties.tokens;
+  assert.ok(validateAgainstSchema(tokens, { input: 1.5, output: 2 }).length > 0);
+});

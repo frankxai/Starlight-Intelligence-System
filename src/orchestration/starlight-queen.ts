@@ -14,49 +14,6 @@ import { createHash } from "node:crypto";
 
 export type ActionRiskTier = "low_autonomous" | "medium_review" | "high_irreversible_gate";
 
-export type RuntimeTarget = "claude_code" | "grok" | "codex" | "antigravity" | "openagent";
-
-export interface CrossRuntimeRouteResult {
-  target: RuntimeTarget;
-  confidence: number;
-  rationale: string;
-  fallbackTarget?: RuntimeTarget;
-}
-
-export interface FleetNodeStatus {
-  nodeId: string;
-  name?: string;
-  role: "agent" | "robot" | "gateway";
-  status: "healthy" | "degraded" | "unresponsive" | "error";
-  lastSeen: string;
-  hazardDetected?: boolean;
-}
-
-export interface FleetHealthReport {
-  totalNodes: number;
-  healthyCount: number;
-  degradedCount: number;
-  unresponsiveCount: number;
-  hazardsDetected: number;
-  status: "healthy" | "degraded" | "critical";
-  unresponsiveNodeIds: string[];
-}
-
-export interface MemoryCandidate {
-  id: string;
-  content: string;
-  confidence?: "high" | "medium" | "low" | number;
-  category?: string;
-  accessCount?: number;
-}
-
-export interface PromotionTriageResult {
-  promoted: string[];
-  retained: string[];
-  demoted: string[];
-  summary: string;
-}
-
 export interface QueenTaskAction {
   id: string;
   name: string;
@@ -107,8 +64,7 @@ export class StarlightQueen {
 
   /**
    * Evaluates the risk tier of an intended action.
-   * Enforces fail-closed policy: Money movement, public deploy, credential changes,
-   * and high-risk/irreversible code modifications ALWAYS require human gates.
+   * Enforces fail-closed policy: Money movement, public deploy, and credential changes ALWAYS require human gates.
    */
   public evaluateRisk(action: QueenTaskAction): ActionRiskTier {
     if (
@@ -116,202 +72,18 @@ export class StarlightQueen {
       action.category === "credential_access" ||
       action.category === "deployment" ||
       action.params?.irreversible === true ||
-      action.params?.highRisk === true
+      action.params?.highRisk === true ||
+      action.params?.production === true ||
+      action.params?.destructive === true
     ) {
+      // Fail closed: any action flagged irreversible, high-risk, production or
+      // destructive needs a human gate, whatever its category.
       return "high_irreversible_gate";
     }
     if (action.category === "code_edit") {
-      if (action.params?.production === true || action.params?.destructive === true) {
-        return "high_irreversible_gate";
-      }
       return "medium_review";
     }
     return "low_autonomous";
-  }
-
-  /**
-   * Routes a task across available cross-runtime harnesses (Claude Code, Grok, Codex, Antigravity, OpenAgent).
-   */
-  public routeTask(
-    input: string | { prompt: string; category?: string; forceRuntime?: RuntimeTarget }
-  ): CrossRuntimeRouteResult {
-    const prompt = typeof input === "string" ? input : input.prompt;
-    const force = typeof input === "object" ? input.forceRuntime : undefined;
-
-    if (force) {
-      return {
-        target: force,
-        confidence: 1.0,
-        rationale: `Explicitly forced target runtime '${force}' by task configuration.`,
-        fallbackTarget: "claude_code",
-      };
-    }
-
-    const lower = prompt.toLowerCase();
-
-    if (
-      lower.includes("swarm") ||
-      lower.includes("browser") ||
-      lower.includes("multi-perspective") ||
-      lower.includes("parallel agent")
-    ) {
-      return {
-        target: "antigravity",
-        confidence: 0.95,
-        rationale: "Swarm orchestration, browser control, and multi-perspective execution route to Antigravity.",
-        fallbackTarget: "claude_code",
-      };
-    }
-
-    if (
-      lower.includes("creative") ||
-      lower.includes("synthesis") ||
-      lower.includes("real-time") ||
-      lower.includes("personal excellence")
-    ) {
-      return {
-        target: "grok",
-        confidence: 0.9,
-        rationale: "Fast creative synthesis and personal excellence route to Grok.",
-        fallbackTarget: "claude_code",
-      };
-    }
-
-    if (
-      lower.includes("refactor") ||
-      lower.includes("test fix") ||
-      lower.includes("implementation") ||
-      lower.includes("adversary") ||
-      lower.includes("strict verify")
-    ) {
-      return {
-        target: "codex",
-        confidence: 0.92,
-        rationale: "Strict code implementation, test verification, and adversarial checks route to Codex.",
-        fallbackTarget: "claude_code",
-      };
-    }
-
-    if (
-      lower.includes("tool call") ||
-      lower.includes("background op") ||
-      lower.includes("open agent")
-    ) {
-      return {
-        target: "openagent",
-        confidence: 0.88,
-        rationale: "General background tool execution and open agent workflows route to OpenAgent.",
-        fallbackTarget: "claude_code",
-      };
-    }
-
-    return {
-      target: "claude_code",
-      confidence: 0.95,
-      rationale: "Primary canonical architecture and reasoning route to Claude Code.",
-      fallbackTarget: "codex",
-    };
-  }
-
-  /**
-   * Conducts an automated health audit across all registered fleet & robot nodes.
-   * Auto-escalates critical hazards or unresponsive nodes to the operator gate.
-   */
-  public auditFleetHealth(nodes: FleetNodeStatus[]): FleetHealthReport {
-    let healthyCount = 0;
-    let degradedCount = 0;
-    let unresponsiveCount = 0;
-    let hazardsDetected = 0;
-    const unresponsiveNodeIds: string[] = [];
-
-    for (const node of nodes) {
-      if (node.status === "healthy" && !node.hazardDetected) {
-        healthyCount++;
-      } else if (node.status === "degraded") {
-        degradedCount++;
-      } else if (node.status === "unresponsive" || node.status === "error") {
-        unresponsiveCount++;
-        unresponsiveNodeIds.push(node.nodeId);
-      }
-
-      if (node.hazardDetected) {
-        hazardsDetected++;
-      }
-    }
-
-    let status: "healthy" | "degraded" | "critical" = "healthy";
-    if (hazardsDetected > 0 || unresponsiveCount > 0) {
-      status = "critical";
-    } else if (degradedCount > 0) {
-      status = "degraded";
-    }
-
-    const report: FleetHealthReport = {
-      totalNodes: nodes.length,
-      healthyCount,
-      degradedCount,
-      unresponsiveCount,
-      hazardsDetected,
-      status,
-      unresponsiveNodeIds,
-    };
-
-    if (status === "critical") {
-      const gateId = `gate_fleet_hazard_${createHash("sha256").update(`fleet:${Date.now()}`).digest("hex").slice(0, 12)}`;
-      const gate: QueenEscalationGate = {
-        gateId,
-        actionId: "fleet_health_alarm",
-        reason: `Critical fleet hazard detected! ${hazardsDetected} hazard(s), ${unresponsiveCount} unresponsive node(s). Operator intervention required.`,
-        requiredRole: "human_operator",
-        status: "open",
-        createdAt: new Date().toISOString(),
-      };
-      this.openGates.set(gateId, gate);
-      this.emitTelemetry("fleet_critical_gate_opened", { report, gateId });
-    }
-
-    return report;
-  }
-
-  /**
-   * Triages memory candidates for consolidation into strategic/wisdom vaults or demotion.
-   */
-  public triageMemoryPromotion(candidates: MemoryCandidate[]): PromotionTriageResult {
-    const promoted: string[] = [];
-    const retained: string[] = [];
-    const demoted: string[] = [];
-
-    for (const candidate of candidates) {
-      const conf = candidate.confidence;
-      const accesses = candidate.accessCount ?? 0;
-
-      const isHighConf = conf === "high" || (typeof conf === "number" && conf >= 0.8);
-      const isLowConf = conf === "low" || (typeof conf === "number" && conf < 0.4);
-
-      if (isHighConf || accesses >= 3) {
-        promoted.push(candidate.id);
-      } else if (isLowConf) {
-        demoted.push(candidate.id);
-      } else {
-        retained.push(candidate.id);
-      }
-    }
-
-    return {
-      promoted,
-      retained,
-      demoted,
-      summary: `Evaluated ${candidates.length} memory entries: ${promoted.length} promoted, ${retained.length} retained, ${demoted.length} demoted.`,
-    };
-  }
-
-  /**
-   * Runs an automated dreaming loop to consolidate memory entries.
-   */
-  public runDreamingLoop(candidates: MemoryCandidate[]): PromotionTriageResult {
-    const result = this.triageMemoryPromotion(candidates);
-    this.emitTelemetry("dreaming_loop_complete", { ...result });
-    return result;
   }
 
   /**

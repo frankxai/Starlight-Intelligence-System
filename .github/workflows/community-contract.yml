@@ -15,6 +15,11 @@ on:
       - '.github/workflows/community-contract.yml'
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   weekly-loop:
     runs-on: ubuntu-latest

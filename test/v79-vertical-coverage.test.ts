@@ -90,6 +90,7 @@ const DOMAIN_SUB_STACKS: readonly string[] = [
   "music-is",
   "energy-intelligence",
   "crypto-intelligence",
+  "alexandria",
 ];
 
 const DECLARED_LIVE_VERTICALS: readonly string[] = [

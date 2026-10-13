@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060609">
+<title>Countersigned ledger prototype</title>
+<meta name="description" content="Prototype for convergence v4, trust direction: a public append-only ledger of run receipts where every verification by a stranger's phone is itself a signed statement in the log, with an inclusion proof computed in the page. Example values throughout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#060609;--ink:#e2e8f0;--ink-2:#94a3b8;--ink-3:#7c8aa0;--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--paper:#f4f1ea;--paperink:#161513;
+--surface:rgba(255,255,255,.025);--surface-2:rgba(255,255,255,.045);--border:rgba(255,255,255,.07);--border-2:rgba(255,255,255,.14);
+--serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--ease:cubic-bezier(.4,0,.2,1);color-scheme:dark}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--void);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-inline:clamp(16px,3vw,40px);padding-block:0 64px;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1100px 520px at 88% -10%,rgba(167,139,250,.14),transparent 60%),radial-gradient(900px 480px at 5% 5%,rgba(52,211,153,.07),transparent 60%)}
+.page{position:relative;z-index:1;max-width:1360px;margin:0 auto}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:.2em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border-2);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-2);background:var(--surface);letter-spacing:.04em}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block}
+.chip.warn{border-color:rgba(251,191,36,.4);color:var(--amber)}.chip.warn i{background:var(--amber)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:26px;height:26px;position:relative}
+.brand .mark::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff 0,var(--violet) 25%,transparent 62%)}
+.brand .mark::after{content:"";position:absolute;inset:6px;border:1px solid rgba(255,255,255,.35);border-radius:50%}
+.brand b{font-weight:600;font-size:14px}.brand span{color:var(--ink-3);font-size:13px}
+.top .right{display:flex;gap:8px;flex-wrap:wrap}
+.hero{padding-block:36px 22px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:end}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.8vw,60px);line-height:1.02;letter-spacing:-.015em;margin:0;text-wrap:balance}
+h1 em{font-style:italic;color:var(--emerald)}
+.lede{color:var(--ink-2);max-width:62ch;margin:14px 0 0;font-size:16px}
+.stack{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 300px;gap:16px;margin-top:20px;align-items:start}
+.panel{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:16px;min-width:0}
+.panel h2{margin:0 0 12px;font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.panel h2 span{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-3)}
+/* feed */
+.feed{list-style:none;margin:0;padding:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0a0b10}
+.row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;width:100%;background:transparent;border-left:0;border-right:0;border-top:0;color:var(--ink);font:inherit}
+.feed li:last-child .row{border-bottom:0}
+.row:hover{background:rgba(255,255,255,.03)}
+.row:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.row[aria-pressed="true"]{background:rgba(167,139,250,.1)}
+.row .i{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding-top:2px}
+.row .t{min-width:0}
+.row .t b{display:block;font-weight:500;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .t small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .c{font-family:var(--mono);font-size:11px;text-align:right;white-space:nowrap}
+.row .c b{display:block;color:var(--emerald);font-weight:500;font-size:14px}
+.row .c span{color:var(--ink-3)}
+.row .c.pass b{color:var(--emerald)}.row .c.fail b{color:var(--rose)}
+/* detail */
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.kv b{color:var(--ink);font-weight:500;word-break:break-all}
+.kv .hl{color:var(--cyan)}.kv .ok{color:var(--emerald)}.kv .bad{color:var(--rose)}
+.sub{margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.tree{font-family:var(--mono);font-size:11px;color:var(--ink-2);line-height:1.6;word-break:break-all}
+.tree .lvl{display:grid;grid-template-columns:52px 1fr;gap:8px}
+.tree .lvl span{color:var(--ink-3)}
+.tree .lvl b{font-weight:500;color:var(--ink)}
+.tree .lvl.root b{color:var(--emerald)}
+.sigs{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.sig{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-family:var(--mono);font-size:11px;background:var(--void)}
+.sig i{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 8px var(--emerald)}
+.sig.mine{border-color:rgba(167,139,250,.5)}.sig.mine i{background:var(--violet);box-shadow:0 0 8px var(--violet)}
+.sig .who{color:var(--ink)}.sig .who small{display:block;color:var(--ink-3)}
+.sig .when{color:var(--ink-3);text-align:right}
+/* phone */
+.phone{margin:0 auto;width:min(100%,268px);border-radius:32px;background:#0a0c12;border:1px solid rgba(226,232,240,.18);box-shadow:0 0 0 5px #111318,0 40px 70px -40px rgba(0,0,0,.9);position:relative;overflow:hidden;padding:44px 14px 16px;min-height:430px;display:flex;flex-direction:column;gap:10px}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:12px;background:#000}
+.url{font:500 10.5px/1 var(--mono);color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pstate{flex:1;background:#0e1118;border:1px solid var(--border);border-radius:16px;padding:12px;font-family:var(--mono);font-size:11px;line-height:1.55;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.verd{display:flex;align-items:center;gap:8px;font:600 11.5px/1 var(--mono);letter-spacing:.14em;color:var(--ink-3)}
+.verd i{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.verd.ok{color:var(--emerald)}.verd.ok i{background:var(--emerald);box-shadow:0 0 12px var(--emerald)}
+.check{display:grid;grid-template-columns:16px 1fr;gap:8px;color:var(--ink-3)}
+.check i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ink-3);display:grid;place-items:center;font-size:9px;color:var(--emerald)}
+.check.done{color:var(--ink)}.check.done i{border-color:var(--emerald)}
+.stmt{background:#0a0b10;border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--ink-2);white-space:pre-wrap;word-break:break-all;font-size:10.5px;line-height:1.5}
+.stmt b{color:var(--violet);font-weight:500}
+.pbtn{border:1px solid rgba(167,139,250,.55);background:linear-gradient(180deg,rgba(167,139,250,.28),rgba(167,139,250,.12));color:#fff;border-radius:10px;padding:11px 12px;font:600 12.5px var(--sans);cursor:pointer;min-height:42px}
+.pbtn:hover{background:linear-gradient(180deg,rgba(167,139,250,.4),rgba(167,139,250,.18))}
+.pbtn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.pbtn[disabled]{opacity:.5;cursor:default}
+.pbtn.sec{border-color:var(--border-2);background:transparent;color:var(--ink);font-weight:500}
+.pnote{font-family:var(--mono);font-size:10px;color:var(--ink-3);line-height:1.45}
+/* cards */
+.cards{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.card{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:14px 15px}
+.card h3{font:500 14.5px var(--sans);margin:0 0 6px}
+.card p{margin:0;color:var(--ink-2);font-size:13px;line-height:1.55}
+.card code{font-family:var(--mono);font-size:11.5px;color:var(--cyan)}
+.metric{margin-top:16px;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric div{min-width:0}
+.metric .n{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.02em}
+.metric .n small{font-size:12px;color:var(--ink-3);margin-left:4px}
+.metric .l{font-size:12px;color:var(--ink-2);margin-top:2px}
+.truth{margin-top:18px;border-left:2px solid var(--amber);padding:12px 16px;color:var(--ink-2);font-size:13.5px;max-width:78ch;line-height:1.6}
+.truth b{color:var(--ink);font-weight:500}
+.truth code{font-family:var(--mono);font-size:12px;color:var(--cyan)}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+@media (max-width:1100px){.stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.stage .ph{grid-column:1/-1}.metric{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.hero{grid-template-columns:1fr;gap:16px}.stage{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.metric{grid-template-columns:1fr 1fr}.row{grid-template-columns:24px 1fr}.row .c{grid-column:2;text-align:left}.row .c b{display:inline;margin-right:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.skip{position:absolute;left:12px;top:-60px;z-index:10;padding:8px 12px;border-radius:8px;background:#e2e8f0;color:#060609;font:500 13px/1 system-ui,sans-serif;text-decoration:none}.skip:focus-visible{top:12px;outline:2px solid #67e8f9;outline-offset:2px}
+h1,h2,h3{text-wrap:balance}p{text-wrap:pretty}main{display:block}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="page">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true"></div><b>Starlight Intelligence</b><span>Countersigned ledger prototype</span></div>
+    <div class="right">
+      <span class="chip warn"><i></i>Example values throughout</span>
+      <span class="chip"><i></i>Convergence v4 · trust direction C · off-chain transparency log</span>
+    </div>
+  </header>
+<main id="main" tabindex="-1">
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">The most consequential trust move</div>
+      <h1>A receipt is proof when <em>someone else</em> signs that they checked it.</h1>
+      <p class="lede">The public ledger is an append-only log of receipts the issuer chose to publish. Each entry has an inclusion proof against a published root. When a stranger's phone verifies a receipt, the phone signs a short statement with a key it just made and appends it. "Verified by others" stops being a counter on our server and becomes a list of signatures anyone can recount.</p>
+    </div>
+    <div class="stack">
+      <span class="chip"><i style="background:var(--violet)"></i>Issuer key in the registry · added by pull request</span>
+      <span class="chip"><i style="background:var(--cyan)"></i>Phone key: throwaway, made on the device, never uploaded as private</span>
+      <span class="chip"><i></i>Root hash published daily · off-chain first</span>
+    </div>
+  </section>
+
+  <section class="stage">
+    <div class="panel" aria-label="Public ledger">
+      <h2>Public ledger <span id="feedmeta" class="mono">0 entries</span></h2>
+      <ul class="feed" id="feed" aria-label="Ledger entries"></ul>
+      <p class="pnote" style="margin-top:10px">Only receipts the issuer published are here. A FAIL receipt is publishable; a signed record of a failed run is still proof. Payloads stay on the issuer's side; the log holds envelopes and hashes.</p>
+    </div>
+
+    <div class="panel" aria-label="Entry detail">
+      <h2>Entry <span id="entryid" class="mono">…</span></h2>
+      <div class="kv" id="detail"></div>
+      <div class="sub">
+        <div class="eyebrow" style="margin-bottom:6px">Inclusion proof · computed in this page</div>
+        <div class="tree" id="tree"></div>
+      </div>
+      <div class="sub">
+        <div class="eyebrow" style="margin-bottom:6px">Countersignatures <span id="sigcount" class="mono"></span></div>
+        <div class="sigs" id="sigs"></div>
+      </div>
+    </div>
+
+    <div class="panel ph" aria-label="Phone">
+      <h2>Your phone <span>verify, then countersign</span></h2>
+      <div class="phone">
+        <div class="notch" aria-hidden="true"></div>
+        <div class="url" id="purl">starlightintelligence.ai/verify?r=…</div>
+        <div class="pstate">
+          <div class="verd" id="pverd"><i></i>NOT CHECKED</div>
+          <div class="check" id="c1"><i></i><span>Fetched envelope from the ledger</span></div>
+          <div class="check" id="c2"><i></i><span>Signature verifies · registry key</span></div>
+          <div class="check" id="c3"><i></i><span>Inclusion proof matches root</span></div>
+          <div class="check" id="c4"><i></i><span>Totals not below stage sums</span></div>
+          <div class="stmt" id="stmt">statement: none yet</div>
+        </div>
+        <button class="pbtn" id="b-verify" type="button">Verify on this phone</button>
+        <button class="pbtn" id="b-sign" type="button" disabled>Countersign and append</button>
+        <button class="pbtn sec" id="b-reset" type="button">Reset</button>
+        <p class="pnote" id="cryptonote">Key: made on this device with WebCrypto Ed25519 when the browser supports it; otherwise simulated and labelled.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="metric" aria-label="Receipt-native metrics">
+    <div><div class="n" id="m-issued">0</div><div class="l">receipts published</div></div>
+    <div><div class="n" id="m-keys">0</div><div class="l">distinct countersigning keys</div></div>
+    <div><div class="n" id="m-ext">0<small>%</small></div><div class="l">verified by a key that is not the issuer's</div></div>
+    <div><div class="n" id="m-root">…</div><div class="l">root · <span id="m-size">0</span> leaves</div></div>
+  </div>
+
+  <section class="cards" aria-label="What a countersignature means">
+    <div class="card"><h3>What it says</h3><p>"This key checked receipt <code>rcpt_…</code> against registry key <code>c82e…</code> at this time and got PASS." It binds the verdict to the receipt digest and the log root the phone saw.</p></div>
+    <div class="card"><h3>What it does not say</h3><p>It does not say the run was good, only that the record verifies and was included. A thousand countersignatures on a FAIL receipt are a thousand people agreeing it failed.</p></div>
+    <div class="card"><h3>What the log promises</h3><p>Append only, root published, every entry provable. Off chain until an on-chain anchor earns its cost; the Crypto IS falsifier decides that, never the default.</p></div>
+  </section>
+
+  <p class="truth"><b>What is real and what is prototype.</b> Real today: <code>/verify</code>, <code>POST /api/v1/receipts/verify</code> and the <code>verify_run_receipt</code> MCP tool on the unmerged web branch; Ed25519 over DSSE in <code>src/run-receipt.ts</code>; a Sigstore keyless attestation of the SIP profile on every push to main that touches <code>protocol/</code> (<code>.github/workflows/sip-self-receipt.yml</code>), which is already an entry in a public transparency log. Prototype: the public ledger feed, the Merkle root and inclusion proof, the countersignature statement, the phone-made key, and the recount of external keys. The registry is empty on the day this was written. Every number on this page is an example.</p>
+
+</main>
+  <footer>
+    <span>Built on SIP · Starlight Intelligence Systems · countersigned ledger prototype · 2026-09-21</span>
+    <span>convergence v4 · trust direction C</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var enc = new TextEncoder();
+  function hex(buf){ return Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0'+b.toString(16)).slice(-2); }).join(''); }
+  function sha(s){ return crypto.subtle.digest('SHA-256', enc.encode(s)).then(hex); }
+
+  var entries = [
+    {id:'rcpt_1790035_c3ac', run:'desk.brief', host:'claude-code', subject:'brief.md', cost:0.0071, verdict:'PASS', issued:'2026-09-23 11:42', key:'c82e4bbc4f0751a1', decided:'publish · human · approved', sigs:[{key:'9a1f…e0', dev:'iOS Safari', at:'11:44'},{key:'0b7c…4d', dev:'Android Chrome', at:'11:44'},{key:'ff02…19', dev:'iOS Safari', at:'11:46'}]},
+    {id:'rcpt_1790036_7d10', run:'constellation.artifact', host:'workflow', subject:'post-linkedin.md', cost:0.0005, verdict:'PASS', issued:'2026-09-23 12:03', key:'c82e4bbc4f0751a1', decided:'none · truth class external evidence', sigs:[{key:'9a1f…e0', dev:'iOS Safari', at:'12:05'}]},
+    {id:'rcpt_1790037_2b9e', run:'render.higgsfield', host:'workflow', subject:'ugc-45s.mp4', cost:0.9, verdict:'PASS', issued:'2026-09-23 12:40', key:'c82e4bbc4f0751a1', decided:'spend · human · approved · €0.90', sigs:[]},
+    {id:'rcpt_1790038_a441', run:'publish', host:'claude-code', subject:'gencreator.ai/research/brief-0917', cost:0.0002, verdict:'PASS', issued:'2026-09-23 13:12', key:'c82e4bbc4f0751a1', decided:'publish · human · frank', sigs:[{key:'31d0…77', dev:'Android Chrome', at:'13:20'}]},
+    {id:'rcpt_1790039_e0c2', run:'eval.retrieval', host:'codex', subject:'eval-50.jsonl', cost:0.0018, verdict:'FAIL', issued:'2026-09-23 13:30', key:'c82e4bbc4f0751a1', decided:'none', sigs:[{key:'9a1f…e0', dev:'iOS Safari', at:'13:33'}]},
+    {id:'rcpt_1790040_51f8', run:'strategy.plan', host:'claude-code', subject:'2026-09-21-convergence-v4.md', cost:0.0, verdict:'PASS', issued:'2026-09-23 14:02', key:'c82e4bbc4f0751a1', decided:'publish · human · deferred', sigs:[]}
+  ];
+
+  var leaves = [], tree = [];
+  function buildTree(){
+    return Promise.all(entries.map(function(e){ return sha(e.id+'|'+e.subject+'|'+e.verdict+'|'+e.key); })).then(function(ls){
+      leaves = ls; tree = [ls.slice()];
+      var level = ls.slice();
+      var chain = Promise.resolve();
+      while(level.length > 1){
+        (function(lv){ chain = chain.then(function(){ var next=[]; var ps=[]; for(var i=0;i<lv.length;i+=2){ var a=lv[i], b=lv[i+1]||lv[i]; ps.push(sha(a+b)); } return Promise.all(ps).then(function(n){ tree.push(n); return n; }); }); })(level);
+        level = level.length%2 ? level.concat([level[level.length-1]]) : level; level = level.slice(0, Math.ceil(level.length/2));
+      }
+      return chain;
+    });
+  }
+  function proofFor(i){
+    var out=[]; var idx=i;
+    for(var l=0;l<tree.length-1;l++){ var lv=tree[l]; var sib = idx%2===0 ? (lv[idx+1]||lv[idx]) : lv[idx-1]; out.push({dir: idx%2===0?'right':'left', hash:sib}); idx=Math.floor(idx/2); }
+    return out;
+  }
+  function root(){ return tree.length ? tree[tree.length-1][0] : ''; }
+
+  var feed=document.getElementById('feed'), detail=document.getElementById('detail'), treeEl=document.getElementById('tree'), sigsEl=document.getElementById('sigs');
+  var sel=0, myKey=null, myKeyId=null, verified=false;
+
+  function renderFeed(){
+    feed.innerHTML = entries.map(function(e,i){
+      return '<li><button type="button" class="row" data-i="'+i+'" aria-pressed="'+(i===sel)+'"><span class="i">'+(i+1)+'</span><span class="t"><b>'+e.run+' · '+e.subject+'</b><small>'+e.id+' · '+e.host+' · '+e.issued+'</small></span><span class="c '+(e.verdict==='PASS'?'pass':'fail')+'"><b>'+e.verdict+'</b><span>€'+e.cost.toFixed(4)+' · '+e.sigs.length+' sig'+(e.sigs.length===1?'':'s')+'</span></span></button></li>';
+    }).join('');
+    document.getElementById('feedmeta').textContent = entries.length+' entries · root '+root().slice(0,8)+'…';
+    metrics();
+  }
+  function renderDetail(){
+    var e=entries[sel];
+    document.getElementById('entryid').textContent = e.id;
+    detail.innerHTML = '<span>run</span><b>'+e.run+' · '+e.host+'</b><span>subject</span><b>'+e.subject+' · <span class="hl">'+leaves[sel].slice(0,16)+'…</span></b><span>cost</span><b>€'+e.cost.toFixed(4)+'</b><span>decided</span><b>'+e.decided+'</b><span>issuer key</span><b>'+e.key+' <span class="hl">registry · Frank Riemer · added 2026-09-22</span></b><span>verdict</span><b class="'+(e.verdict==='PASS'?'ok':'bad')+'">'+e.verdict+'</b><span>issued</span><b>'+e.issued+'</b>';
+    var p=proofFor(sel);
+    treeEl.innerHTML = '<div class="lvl"><span>leaf '+sel+'</span><b>'+leaves[sel].slice(0,24)+'…</b></div>' + p.map(function(s,i){ return '<div class="lvl"><span>'+s.dir+' '+i+'</span><b>'+s.hash.slice(0,24)+'…</b></div>'; }).join('') + '<div class="lvl root"><span>root</span><b>'+root().slice(0,24)+'…</b></div><div class="lvl"><span>size</span><b>'+entries.length+' leaves · published 2026-09-23 · example</b></div>';
+    sigsEl.innerHTML = e.sigs.length ? e.sigs.map(function(s){ return '<div class="sig'+(s.mine?' mine':'')+'"><i></i><span class="who">'+s.key+(s.mine?' · this phone':'')+'<small>'+s.dev+' · PASS against '+e.key.slice(0,8)+'</small></span><span class="when">'+s.at+'</span></div>'; }).join('') : '<div class="pnote">No countersignature yet. Verify it on the phone and be the first.</div>';
+    document.getElementById('sigcount').textContent = e.sigs.length+' · '+distinctKeys(e)+' distinct keys';
+    document.getElementById('purl').textContent = 'starlightintelligence.ai/verify?r='+e.id;
+    resetPhone();
+  }
+  function distinctKeys(e){ var m={}; e.sigs.forEach(function(s){ m[s.key]=1; }); return Object.keys(m).length; }
+  function metrics(){
+    var keys={}, withExt=0;
+    entries.forEach(function(e){ var ext=false; e.sigs.forEach(function(s){ keys[s.key]=1; if(s.key!==e.key) ext=true; }); if(ext) withExt++; });
+    document.getElementById('m-issued').textContent = entries.length;
+    document.getElementById('m-keys').textContent = Object.keys(keys).length;
+    document.getElementById('m-ext').innerHTML = Math.round(withExt/entries.length*100)+'<small>%</small>';
+    document.getElementById('m-root').textContent = root().slice(0,8)+'…';
+    document.getElementById('m-size').textContent = entries.length;
+  }
+
+  feed.addEventListener('click', function(ev){ var b=ev.target.closest('.row'); if(!b) return; sel=+b.getAttribute('data-i'); renderFeed(); renderDetail(); var nb=feed.querySelector('.row[data-i="'+sel+'"]'); if(nb) nb.focus(); });
+
+  // phone
+  var checks=[1,2,3,4].map(function(n){ return document.getElementById('c'+n); });
+  var pverd=document.getElementById('pverd'), stmt=document.getElementById('stmt'), bSign=document.getElementById('b-sign');
+  var timers=[];
+  function resetPhone(){ timers.forEach(clearTimeout); timers=[]; verified=false; checks.forEach(function(c){ c.classList.remove('done'); c.querySelector('i').textContent=''; }); pverd.className='verd'; pverd.innerHTML='<i></i>NOT CHECKED'; stmt.innerHTML='statement: none yet'; bSign.disabled=true; }
+  function verify(){
+    resetPhone();
+    var e=entries[sel];
+    checks.forEach(function(c,k){ var t=reduce?0:300+k*380; timers.push(setTimeout(function(){ c.classList.add('done'); c.querySelector('i').textContent='✓'; }, t)); });
+    timers.push(setTimeout(function(){ verified=true; pverd.className='verd ok'; pverd.innerHTML='<i></i>VERIFIED · '+e.verdict; bSign.disabled=false;
+      stmt.innerHTML='<b>statement</b> (unsigned)\n{ receipt: "'+e.id+'",\n  verdict: "'+e.verdict+'",\n  issuerKey: "'+e.key.slice(0,8)+'…",\n  root: "'+root().slice(0,12)+'…",\n  at: "'+new Date().toISOString().slice(0,19)+'Z" }'; }, reduce?0:300+4*380+300));
+  }
+  function makeKey(){
+    if(myKey) return Promise.resolve(myKey);
+    var note=document.getElementById('cryptonote');
+    return crypto.subtle.generateKey({name:'Ed25519'}, true, ['sign','verify']).then(function(k){ return crypto.subtle.exportKey('spki', k.publicKey).then(function(spki){ return crypto.subtle.digest('SHA-256', spki); }).then(function(d){ myKey=k; myKeyId=hex(d); note.textContent='Key: made on this device with WebCrypto Ed25519 · keyid '+myKeyId.slice(0,12)+'… · private half never leaves the device.'; return k; }); })
+      .catch(function(){ myKey={sim:true}; myKeyId='sim'+Math.random().toString(16).slice(2,14); note.textContent='Key: this browser has no WebCrypto Ed25519; a simulated key id is shown and labelled.'; return myKey; });
+  }
+  function countersign(){
+    if(!verified) return;
+    var e=entries[sel];
+    makeKey().then(function(k){
+      var statement = JSON.stringify({receipt:e.id, verdict:e.verdict, issuerKey:e.key, root:root(), at:new Date().toISOString()});
+      var signP = k.sim ? sha('sim|'+statement) : crypto.subtle.sign({name:'Ed25519'}, k.privateKey, enc.encode(statement)).then(hex);
+      return signP.then(function(sig){
+        var label = myKeyId.slice(0,4)+'…'+myKeyId.slice(-2);
+        e.sigs.push({key:label, dev:(k.sim?'simulated · ':'')+(navigator.userAgent.indexOf('Mobile')>-1?'this phone':'this browser'), at:new Date().toISOString().slice(11,16), mine:true});
+        stmt.innerHTML='<b>signed</b> · ed25519 · '+sig.slice(0,32)+'…\n'+statement.replace(/,/g,',\n ');
+        bSign.disabled=true;
+        renderFeed(); renderDetailKeep();
+      });
+    });
+  }
+  function renderDetailKeep(){ var keep={v:verified}; renderDetail(); if(keep.v){ verified=true; checks.forEach(function(c){ c.classList.add('done'); c.querySelector('i').textContent='✓'; }); pverd.className='verd ok'; pverd.innerHTML='<i></i>VERIFIED · countersigned'; stmt.innerHTML='<b>appended</b> · your statement is entry '+(entries[sel].sigs.length)+' of this receipt\'s countersignatures'; } }
+  document.getElementById('b-verify').onclick=verify;
+  bSign.onclick=countersign;
+  document.getElementById('b-reset').onclick=resetPhone;
+
+  buildTree().then(function(){ renderFeed(); renderDetail(); });
+})();
+</script>
+</body>
+</html>

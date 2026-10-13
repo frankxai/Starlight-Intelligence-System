@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convergence option space</title>
+<meta name="description" content="Convergence v3: nine layers and the demo, three directions each, the chosen one lit. Cost at three scales, falsifier, SOUL invariant, receipt and Board verdict per direction. Illustrative numbers labelled.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060609;--fg:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--line:rgba(226,232,240,.1);--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--sans:Inter,system-ui,sans-serif;--serif:Newsreader,Georgia,serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:.2em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+header.top{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.chip{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:6px 9px;border-radius:999px}
+.chip.on{color:var(--emerald);border-color:rgba(52,211,153,.4)}.chip.warn{color:var(--amber);border-color:rgba(251,191,36,.4)}
+h1{font:400 clamp(32px,5.5vw,58px)/1.02 var(--serif);letter-spacing:-.02em;margin:34px 0 12px;max-width:18ch}
+h1 em{font-style:italic;color:var(--violet)}
+.lede{max-width:64ch;color:var(--muted);font-size:16.5px;margin:0 0 22px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font:500 11.5px var(--mono);color:var(--dim);margin:0 0 26px}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0;background:var(--dim)}
+.legend .ch::before{background:var(--emerald);box-shadow:0 0 10px var(--emerald)}.legend .cu::before{background:var(--violet)}.legend .ra::before{background:var(--rose)}.legend .co::before{background:var(--cyan)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
+.layers,.detail{min-width:0}
+@media(min-width:1024px){.layout{grid-template-columns:minmax(0,1fr) 380px}}
+.layers{display:grid;gap:14px}
+.layer{border:1px solid var(--line);border-radius:14px;padding:14px;background:linear-gradient(180deg,rgba(226,232,240,.025),transparent)}
+.layer .h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 10px;margin-bottom:10px}
+.layer h2{font:500 17px var(--sans);margin:0;letter-spacing:-.01em}
+.layer .v{font:500 10.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.layer .v.p{color:var(--emerald);border-color:rgba(52,211,153,.4)}.layer .v.r{color:var(--amber);border-color:rgba(251,191,36,.4)}.layer .v.b{color:var(--rose);border-color:rgba(251,113,133,.4)}
+.dirs{display:grid;gap:8px}
+@media(min-width:700px){.dirs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dir{display:block;width:100%;text-align:left;font:inherit;color:var(--fg);background:rgba(226,232,240,.02);border:1px solid var(--line);border-radius:10px;padding:11px 12px;cursor:pointer;min-height:64px;position:relative}
+.dir small{display:block;font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.dir b{font-weight:500;font-size:13.5px;line-height:1.3;display:block;overflow-wrap:anywhere}
+.dir i{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.dir.cu i{background:var(--violet)}.dir.ra i{background:var(--rose)}.dir.co i{background:var(--cyan)}
+.dir.chosen{border-color:rgba(52,211,153,.55);background:rgba(52,211,153,.06)}
+.dir.chosen i{background:var(--emerald);box-shadow:0 0 12px var(--emerald)}
+.dir.chosen::after{content:"chosen";position:absolute;right:26px;top:9px;font:500 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--emerald)}
+.dir[aria-pressed="true"]{outline:1px solid var(--cyan);outline-offset:2px}
+.dir:hover{border-color:rgba(226,232,240,.3)}
+.dir:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.detail{border:1px solid var(--line);border-radius:14px;padding:18px;background:#0a0c12;position:sticky;top:12px}
+@media(max-width:1023px){.detail{position:static}}
+.detail .k{font:500 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:14px 0 5px}
+.detail .k:first-child{margin-top:0}
+.detail h3{font:400 24px/1.15 var(--serif);margin:0 0 4px}
+.detail .tag{font:500 11px var(--mono);color:var(--muted)}
+.detail p{margin:0;color:var(--muted);font-size:13.5px}
+.detail p.fg{color:var(--fg)}
+.detail table{width:100%;border-collapse:collapse;font:400 12px var(--mono);color:var(--fg);margin-top:2px}
+.detail td{padding:6px 0;border-bottom:1px dotted var(--line);vertical-align:top}
+.detail td:first-child{color:var(--dim);width:38%}
+.detail .verdict{display:inline-block;margin-top:4px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.detail .verdict.p{color:var(--emerald);border-color:rgba(52,211,153,.5)}.detail .verdict.r{color:var(--amber);border-color:rgba(251,191,36,.5)}.detail .verdict.b{color:var(--rose);border-color:rgba(251,113,133,.5)}
+.note{margin:26px 0 10px;border-left:2px solid var(--amber);padding:10px 14px;color:var(--muted);font-size:13.5px;max-width:78ch}
+.note b{color:var(--fg);font-weight:500}
+footer{padding:18px 0 50px;border-top:1px solid var(--line);color:var(--dim);font:400 12px var(--mono);margin-top:30px}
+@media(prefers-reduced-motion:no-preference){.dir{transition:border-color .2s ease,background .2s ease}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <span class="chip on">Convergence v3</span>
+  <span class="chip">Option space · 10 rows · 30 directions</span>
+  <span class="chip warn">Costs illustrative · list prices 2026-09-21</span>
+  <span class="chip">Receipt-first</span>
+</header>
+<h1>The option space, <em>not just the path.</em></h1>
+<p class="lede">Nine layers and the demo. Each row shows three directions: the conservative one, the current choice from v1 and v2, and the radical one. The lit card is what v3 chose. Open any card for what it enables, what it costs at three scales, what it forbids, the observation that would prove it wrong, the SOUL invariant it stresses, the receipt it produces, and the Board verdict. The plan is <code>2026-09-21-convergence-v3.md</code>.</p>
+<div class="legend"><span class="ch">chosen</span><span class="co">conservative</span><span class="cu">current (v1, v2)</span><span class="ra">radical</span></div>
+
+<div class="layout">
+  <div class="layers" id="layers"></div>
+  <aside class="detail" id="detail" aria-live="polite"></aside>
+</div>
+
+<p class="note"><b>How to read the euros.</b> Founder, cohort of forty, and a thousand estates per month, from appendix C of the plan: inference on the Nebius cascade is €0.14 / €5.66 / €1,414; platform is €17 / €48 / paid by each client (or ≈ €21,800 if Starlight hosted). Each direction states its delta against those lines. Prices are third-party mirrors of a login-walled list; receipts replace them as they accumulate.</p>
+<footer>Starlight Intelligence · convergence map v3 · 2026-09-21 · Built on SIP</footer>
+</div>
+
+<script>
+var LAYERS=[
+{id:'surfaces',t:'1 · Surfaces',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Headless: everything through MCP, sites thin',en:'Zero UI beyond marketing pages; every host is the interface; the receipt travels as a tool result.',cost:'Founder €0 · cohort €0 · estates ≈ two small Railway services (~€9) for MCP hosting. Lowest of the three.',forb:'The room demo, the phone verify, anyone who does not run an agent, and the design bar as a differentiator.',fals:'By 2026-10-31 more than half of verifications arrive through MCP rather than /verify or the API.',soul:'5 · abundance toward alliances needs a door non-builders can open',rec:'Produces and consumes through tools only.'},
+ {k:'cu',chosen:true,t:'Four brand sites, shared verifier kernel, phone verify path',en:'Each brand keeps its register and audience; the verifier is one file copied into each surface; a stranger checks a receipt on a phone.',cost:'No delta: the four Vercel projects exist; the verifier adds no platform cost. Founder €0 · cohort €0 · estates: the client’s own projects.',forb:'One login across brands; there is none, by design.',fals:'By 2026-12-31 fewer than two surfaces other than .ai verify a receipt issued elsewhere.',soul:'1 · four surfaces could drift into four products',rec:'Consumes every kind; the sites issue none themselves.'},
+ {k:'ra',t:'One operator app that projects every brand',en:'One place for Desk, constellation, ledger and every publish queue; one auth, one billing; desktop and mobile shells fall out of it.',cost:'One more Vercel project plus Supabase auth for multi-tenant: founder €0 (local) · cohort +€22 (Supabase Pro) · estates per-tenant compute on top of the €21,800 hosted line.',forb:'Brand-native registers on the operator surface, and the .ai truth that no Starlight account exists.',fals:'By 2026-11-30 a founder outside the estate completes a Desk run and a publish approval without opening a brand site.',soul:'1 · the first hosted operator app is the object invariant 1 warns about; 6 · one register for four voices',rec:'Produces and consumes every kind.'}]},
+{id:'spine',t:'2 · Product spine',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Estate factory as the product',en:'Every client gets the whole loop as their operator; revenue is the retainer; DELIVERY §7 already describes it, Trinity is instance one.',cost:'Inference per estate as the chosen line; delivery is human time, priced outside the model; platform is the client’s.',forb:'Self-serve, and scale beyond the steward bench.',fals:'By 2026-12-31 fewer than three estates commissioned with the loop and a client-held key.',soul:'5 · retainers to alliances must stay gifts where the alliance is not a customer',rec:'estate.provision, then every kind the estate runs.'},
+ {k:'cu',chosen:true,t:'Desk → Constellation → Renderers → Publish',en:'One loop every surface projects; a receipt at four stages; stage one is the 23 September build.',cost:'Founder €0.14 · cohort €5.66 · estates €1,414 in inference (the baseline line). Renders are spend decisions on top.',forb:'Selling anything before a brief exists; renderers as the engine.',fals:'By 2026-10-15 no founder outside the estate has run the full loop to a published page with an approval receipt.',soul:'2 · every stage must earn its attestation',rec:'desk.brief, constellation.artifact, render.*, publish.'},
+ {k:'ra',t:'Marketplace of receipts',en:'Founders buy proven briefs and constellations, each with its receipt; the ledger is the catalog; cost per artifact becomes price discovery.',cost:'Same inference plus payment fees (Polar as merchant of record) and a public ledger route: founder €0 · cohort fees only · estates fees only.',forb:'Private-by-default receipts, and the .ai truth of no public checkout until KvK, BTW and Polar exist.',fals:'By 2027-01-31 fewer than ten receipts bought by someone other than their issuer.',soul:'1 · a marketplace is a platform, the receipt must stay exportable; 5 · selling briefs to alliances inverts the gift',rec:'Consumes desk.brief and constellation.artifact; produces sale (new kind). Deferred to Q1 as a projection of the ledger.'}]},
+{id:'operator',t:'3 · Operator',verdict:'PROCEED-WITH-REVISE',vc:'r',dirs:[
+ {k:'co',t:'Constitution: rules compiled from SOUL.md and the Board record',en:'A1 to A3 from the 2026-06-10 verdict run on every envelope as tests; partner estates adopt the rules without the Queen.',cost:'None beyond the compiler; it is a file and a test at every scale.',forb:'A route no rule allows, and "just this once".',fals:'By 2026-11-30 the constitution blocks a person-approved route more than ten times (too tight) or never (decorative).',soul:'1 · the compiled rules must be MIT and forkable with the substrate',rec:'route.check attached to every queen.route. Adopted for low-stakes classes only.'},
+ {k:'cu',chosen:true,t:'Queen plus Board plus council seats, with the constitution for low-stakes classes',en:'Typed envelopes, route receipts, Board gate on substrate change, a person at the irreversible; generals are the leadership tier with named domains.',cost:'No platform cost; routing runs inside whichever host is open.',forb:'Agents merging to production main, publishing, paying, rotating keys.',fals:'By 2026-10-31 the route ledger shows fewer than 50 routed envelopes or no ratified routing-table change.',soul:'4 · the Queen must never route around the sovereignty clause',rec:'queen.route (adapter, October), board.verdict. REVISE: re-derive the compiled rules on every Board record.'},
+ {k:'ra',t:'Market: seats bid for envelopes with budgets from receipts',en:'Cost-aware routing without a table; wasteful seats lose budget; generalises to partner seats we do not control.',cost:'A clearing service and a budget ledger: founder €0 · cohort +≈€9 (one Railway service) · estates one service per estate.',forb:'Any seat without a receipt history, and the Queen’s authority to route by doctrine when the price says otherwise.',fals:'By 2027-03-31 market routing beats the Queen’s table on cost per artifact by less than 10 percent on 200 matched envelopes.',soul:'4 · a market can route a high-stakes envelope to the cheapest bidder; 6 · markets talk in prices',rec:'Consumes every receipt as a price; produces bid, award. Rejected; may return for partner estates at a thousand receipts.'}]},
+{id:'adlc',t:'4 · ADLC',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Executable spec harness at the Prove gate',en:'The spec at gate one becomes a test the agents run; drift between spec and build is caught by the spec itself (2603.25697, 2608.20341, 2604.05278).',cost:'Authoring time and CI minutes; measure hours per spec on the first five features.',forb:'An ask without a spec that can run.',fals:'By 2026-11-30 the harness catches zero drift on ten features (ceremony) or blocks more than a third (wrong specs).',soul:'6 · executable specs can read as bureaucracy; one file per feature',rec:'spec.run attached to prove. Adopted as the instrument inside the seven gates.'},
+ {k:'cu',chosen:true,t:'Seven gates with one learn loop, spec harness at Prove',en:'Every gate names who may not self-grade; a receipt is required at Prove and Ship; Learn reads receipts, not chat.',cost:'CI minutes only at every scale.',forb:'A self-graded ship.',fals:'By 2026-10-31 fewer than 80 percent of merged PRs across the four brand repos carry a receiptId or a web-release-gate audit.',soul:'6 · gates written as ceremony read as enterprise process',rec:'prove, ship (adapters, week after).'},
+ {k:'ra',t:'Continuous eval-driven flow, no phases',en:'Every commit scored on the proving ground; no gate, only a threshold; the learn loop runs on every push.',cost:'Roughly one brief’s cost per eval run: founder +≈€0.30 (100 evals) · cohort +≈€12 · estates per estate.',forb:'A human gate before the irreversible; a threshold cannot sign.',fals:'By 2026-12-31 a passing change reaches production that a person would have stopped at Gate or Ship (2603.15676 names the failure class).',soul:'4 · no phases means no place for the sovereign to sign',rec:'eval per commit. Rejected.'}]},
+{id:'runtime',t:'5 · Runtime',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Self-hosted durable runtime on Railway',en:'No platform limits, private networking, SSE MCP that never sleeps, one bill.',cost:'Three to five Railway services plus Postgres: founder +≈€20 · cohort +≈€45 · estates a deployment per estate; engineering hours are the real cost.',forb:'Vercel’s preview-per-PR loop for the runtime, and toolApproval unless rebuilt.',fals:'By 2026-12-31 fewer than 99 percent successful step completions on a month of real runs, or more engineering hours than platform fees saved.',soul:'1 · more sovereign; 6 · ops toil reads as enterprise',rec:'Same shape, produced by our worker. Two daemons (SSE MCP, n8n) adopted now; the rest not.'},
+ {k:'cu',chosen:true,t:'AI SDK 7 ToolLoopAgent plus Workflow Development Kit on Vercel, Railway for daemons',en:'Agent-level toolApproval is the human gate; usage aggregates per step into the receipt; WDK steps with recorded I/O and replay; Gateway fallback by order; Token Factory is one createOpenAICompatible call.',cost:'Vercel Pro seat plus function usage; WDK data written $0.50 per GB beyond the free tier; Railway two services: founder €17 · cohort €48 · estates per-estate projects.',forb:'A step longer than the platform allows without WDK; a stateful MCP server on Vercel. WDK limits: 10,000 steps and 50 MB per run.',fals:'By 2026-10-31 a constellation run of 30 artifacts cannot complete as a WDK workflow with a receipt per artifact.',soul:'1 · Vercel-specific durable primitives are a capture risk; WDK is open source and the receipt is the interface',rec:'Every stage maps to a WDK step; usage maps to tokens and euros. Note: v1 and v2 said AI SDK 6; the major is 7 since 2026-06-25.'},
+ {k:'ra',t:'Actor model: every seat a long-lived process with a mailbox',en:'Seats hold state between envelopes; the Queen sends messages; partner estates run their own actors; matches the 144-seat registry one to one.',cost:'A supervisor and a mailbox store: founder +≈€30 · cohort hundreds of processes · estates a cluster per estate; the wrong cost shape for an estate that is mostly idle.',forb:'Stateless previews, serverless pricing, one call with a base URL.',fals:'By 2027-01-31 more than ten seats need state between envelopes rather than reading the vault.',soul:'1 · actors accumulate private state that is not in the vault; 6',rec:'Producible, but each actor needs its own or a delegated key, which the registry does not model. Rejected.'}]},
+{id:'harness',t:'6 · Harness',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Claude Code only, others as guests',en:'One harness to test; hooks and skills work as designed; zero portability work.',cost:'None.',forb:'The multi-CLI thesis, the Grok and Codex lanes, partner estates on other hosts.',fals:'By 2026-10-15 more than a quarter of receipts come from hosts other than Claude Code.',soul:'1 · single-vendor harness',rec:'Producible from one host only. Rejected.'},
+ {k:'cu',chosen:true,t:'AGENTS.md shared, supplements per CLI, packs by script, /si as dispatcher',en:'Four harnesses read one file; the web-excellence pack is in fifteen repos; the receipt records run.host, so the receipt is the drift detector.',cost:'None.',forb:'Harness-specific behaviour that is not written down.',fals:'By 2026-10-31 a run in Codex or Grok on the same brief produces stages that differ in kind from Claude Code’s.',soul:'6 · four instruction files drift in voice',rec:'Every host issues run.host correctly.'},
+ {k:'ra',t:'One compiled harness from SOUL.md and the registry',en:'No hand-edited instruction file anywhere; drift is a diff in CI; 44 repos get the same contract by script (agentic-ops-hub proves the mechanism).',cost:'The compiler and a CI job per repo; no platform cost.',forb:'A repo-local CLAUDE.md edit that is not upstreamed.',fals:'By 2026-11-30 fewer than half the active repos accept the compiled files without a manual override.',soul:'1 · the compiler must be MIT and runnable by any adopter; 6 · compiled prose reads compiled',rec:'harness.compile per repo. Adopted in Q4 for the instruction files only.'}]},
+{id:'memory',t:'7 · Memory',verdict:'PROCEED · blocked on Board for the whole-memory move',vc:'b',dirs:[
+ {k:'co',t:'Typed knowledge graph with promotion rules as objects',en:'Atoms carry types and edges; promotion from draft to canon is a rule with a receipt; contradiction detection becomes a graph query; one graph, as the contract requires.',cost:'sqlite tables first, then Postgres: founder €0 · cohort Supabase compute · estates per estate.',forb:'Untyped atoms (most of the vault today) and hosted graphs as truth.',fals:'By 2027-01-31 fewer than 30 percent of vault atoms are typed and linked, which makes the graph a second memory.',soul:'1 if the store is hosted; the graph contract’s four-graphs line',rec:'promote receipts per rule. Adopted as receipt kinds, not as a store.'},
+ {k:'cu',chosen:true,t:'Six JSONL vaults as truth, sqlite-vec sidecar, Supabase for shared state, palace, AgentDB derived, mem0 adapter',en:'Sovereignty by file format; hybrid recall with RRF measured by eval:retrieval; the receipts ledger is a seventh file beside the six.',cost:'Founder €0 · cohort +€22 (Supabase Pro for the room vault) · estates Supabase per estate or the client’s own.',forb:'A hosted vector store as truth. Pinecone stays rejected: an index that cannot be exported byte for byte fails "replaceable without a rewrite".',fals:'By 2026-11-30 recall at 10 on the retrieval eval falls below the sidecar’s number on a corpus over 50,000 atoms.',soul:'1 · served, in the good direction',rec:'Consumes; the receipts ledger is already event-sourced.'},
+ {k:'ra',t:'Event-sourced memory: one append-only log, projections per surface',en:'Vaults, palace, graph, Console and the Supabase index become rebuildable projections of one log; deletion and consent become replayable events.',cost:'A projection runner: founder €0 · cohort +≈€9 (one Railway job) · estates one per estate.',forb:'Hand-editing a vault; the six vaults being truth unless they become the log’s first projection, which is a taxonomy question.',fals:'By 2026-12-31 a projection rebuilt from the log differs from the hand-maintained vault by more than 2 percent of atoms.',soul:'1 in the good direction; the vault taxonomy boundary (Board)',rec:'memory.project per rebuild. Adopted for the receipts ledger only; the whole-memory move goes to Board.'}]},
+{id:'models',t:'8 · Models and cost',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Per-creator LoRA fleets',en:'A small Qwen3 carries each creator’s format after sixty briefs; the large model is paid only for judgment; the training set is a list of receiptIds (2606.02437, 2608.05483).',cost:'Serverless fine-tuning on Token Factory per creator (per-token training price login-walled, unverified) plus a per-creator lane: founder one job a quarter · cohort forty · estates a thousand a quarter.',forb:'A creator with fewer than sixty receipts; a training run without consent receipts.',fals:'By 2027-01-31 a blind rubric on ten creators does not prefer the LoRA output by more than the rubric’s noise.',soul:'1 · adapters must be exportable; Token Factory’s export terms unverified',rec:'train.lora with evidence = source receipts. Only where a receipt proves a stable format.'},
+ {k:'cu',chosen:true,t:'The cascade: small for mechanical, large for judgment, second family as judge; batch; cache where offered',en:'Euros per artifact printed on every receipt; provider swap by config string; EU hosting.',cost:'Brief €0.0029, artifact €0.000513: founder €0.14 · cohort €5.66 · estates €1,414. Sonnet 5 at list is €2.5 / €100 / €25,120; with cache and batch €0.82 / €32.7 / €8,180.',forb:'A lane without usage accounting; it cannot be in a signed receipt. Prompt caching is not offered on Token Factory (feature request in review).',fals:'By 2026-10-31 on twenty matched briefs the cascade does not beat one Haiku 4.5 call at equal rubric score; at list it is 10.8× cheaper, 3.3× after Haiku’s discounts, so the falsifier is quality.',soul:'1 · served by open weights',rec:'stages with model, provider, tokens, euros, milliseconds.'},
+ {k:'ra',t:'A router trained on our own receipts',en:'The routing table stops being hand-derived; receipts are the training data; A2’s sample floor becomes a dataset size (2604.14531 TRACER, 2604.23577 RouteNLP).',cost:'Training is a small classifier; the cost is the thousand receipts it needs.',forb:'Routing before the receipts exist; routing high-stakes classes (A1 holds).',fals:'By 2027-03-31 the router does not beat the hand cascade on cost per artifact at equal rubric score on 200 matched briefs.',soul:'4 · a router must not route around a human gate; the constitution check runs first',rec:'Consumes all; produces route.model with the router version. Adopted at a thousand receipts (Q1).'}]},
+{id:'design',t:'9 · Design',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'Surface-native systems sharing only the kernel',en:'Each surface moves at its own speed; the kernel pinned by commit is the only shared thing; the verifier is copied, not imported.',cost:'Duplication; no platform cost.',forb:'Cross-surface consistency beyond the kernel’s rules.',fals:'By 2026-12-31 the same component is built twice with different bugs.',soul:'6 · design drift is voice drift',rec:'web.release with screenshots as evidence.'},
+ {k:'cu',chosen:true,t:'Liquid objects on each surface’s tokens, kernel shared, the receipt card shared by copy',en:'Four registers stay distinct; the printed receipt is the one object with material everywhere; the web-excellence gate blocks a stop without an audit.',cost:'Review time only.',forb:'A component library that flattens the registers; anything that reads as generated.',fals:'Same as the conservative direction, from the other side: a component built twice.',soul:'6',rec:'web.release with screenshots at 375, 768, 1440.'},
+ {k:'ra',t:'One estate-wide design system package with four registers',en:'One @starlight/ui with tokens per register; receipt card, verify panel and constellation card ship once; @arcanea/design-system v0.3.0 is the precedent.',cost:'A package and a release process; every surface pays the import.',forb:'A surface-native component the package lacks; the fastest surface slows to the package.',fals:'By 2027-01-31 the package is imported by fewer than three surfaces; the web roadmap says extract when the second brand needs it, not before.',soul:'6 · a package encourages sameness; 1 · a private package is a soft dependency for partner estates',rec:'design.release per version. Deferred until a second surface asks for the same component twice.'}]},
+{id:'demo',t:'10 · Demo, 23 September',verdict:'PROCEED',vc:'p',dirs:[
+ {k:'co',t:'The Desk with room mode',en:'One founder question from the room becomes a cited brief with a receipt on stage; the room’s questions share a vault.',cost:'€0.0029 per question; a QR intake page.',forb:'Nothing.',fals:'The receipt on stage does not verify live.',soul:'2',rec:'desk.brief. Kept as the base.'},
+ {k:'cu',chosen:true,t:'Desk plus phone verify',en:'The judges verify the brief they watched being made; the QR on the printed receipt resolves to /verify?r=; the registry key is Frank’s Desk key added by PR the night before.',cost:'One route parameter, one QR, one registry key; no inference.',forb:'Nothing; it composes with the Desk.',fals:'Fewer than five phones in the room complete a verification during the pitch.',soul:'2 · a verification by a stranger is the attestation invariant made public',rec:'Consumes desk.brief; produces verify counts, numbers only. The most consequential new move; see phone-verify-prototype.html.'},
+ {k:'ra',t:'A live estate build in front of the room',en:'Commission the loop for a volunteer founder inside the build window; the strongest proof of the estate factory.',cost:'The whole build window; one person full time.',forb:'The Desk polish; judges may see setup instead of product.',fals:'The build finishes before 15:00 with a verified receipt; if it does, this direction was right.',soul:'5 · the volunteer gets a gift',rec:'estate.provision. Rejected for the day.'}]}
+];
+
+var KIND={co:'conservative',cu:'current (v1, v2)',ra:'radical'};
+var layersEl=document.getElementById('layers'), detailEl=document.getElementById('detail');
+var current=null;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function render(){
+  var html='';
+  LAYERS.forEach(function(L){
+    html+='<section class="layer" id="L-'+L.id+'"><div class="h"><h2>'+esc(L.t)+'</h2><span class="v '+L.vc+'">'+esc(L.verdict)+'</span></div><div class="dirs">';
+    L.dirs.forEach(function(d,i){
+      var id=L.id+'-'+i;
+      html+='<button class="dir '+d.k+(d.chosen?' chosen':'')+'" data-id="'+id+'" aria-pressed="false"><i aria-hidden="true"></i><small>'+esc(KIND[d.k])+'</small><b>'+esc(d.t)+'</b></button>';
+    });
+    html+='</div></section>';
+  });
+  layersEl.innerHTML=html;
+}
+function show(id){
+  var parts=id.split('-'); var L=LAYERS.filter(function(x){return x.id===parts[0];})[0]; var d=L.dirs[+parts[1]];
+  current=id;
+  Array.prototype.forEach.call(document.querySelectorAll('.dir'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-id')===id?'true':'false');});
+  detailEl.innerHTML=
+    '<div class="k">'+esc(L.t)+' · '+esc(KIND[d.k])+(d.chosen?' · chosen':'')+'</div>'+
+    '<h3>'+esc(d.t)+'</h3>'+
+    '<div class="k">Enables</div><p class="fg">'+esc(d.en)+'</p>'+
+    '<div class="k">Costs, per month (illustrative)</div><p>'+esc(d.cost)+'</p>'+
+    '<div class="k">Forbids</div><p>'+esc(d.forb)+'</p>'+
+    '<div class="k">Falsifier</div><p class="fg">'+esc(d.fals)+'</p>'+
+    '<table><tr><td>SOUL invariant stressed</td><td>'+esc(d.soul)+'</td></tr><tr><td>Receipt</td><td>'+esc(d.rec)+'</td></tr></table>'+
+    '<div class="k">Board verdict for the layer’s choice</div><span class="verdict '+L.vc+'">'+esc(L.verdict)+'</span>';
+}
+render();
+layersEl.addEventListener('click',function(e){var b=e.target.closest('.dir'); if(b) show(b.getAttribute('data-id'));});
+show('demo-1');
+</script>
+</body>
+</html>

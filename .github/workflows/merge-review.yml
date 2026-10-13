@@ -2,7 +2,7 @@ name: Merge review policy
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, auto_merge_enabled, auto_merge_disabled]
   issue_comment:
     types: [created, edited, deleted]
   workflow_dispatch:
