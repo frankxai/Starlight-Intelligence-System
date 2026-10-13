@@ -1,0 +1,158 @@
+name: Independent review runner
+
+# A reviewer from a different vendor than the maker reads a PR's diff through the API
+# as data and posts a STARLIGHT-INDEPENDENT-REVIEW-V1 receipt as the starlight-checker
+# GitHub App. Default: GitHub-hosted, API-key reviewer. Optional: the C940 self-hosted
+# runner with Frank's signed-in subscription CLIs, whose logins never leave that machine.
+# This repository is public: no job checks out, builds or executes PR source, and no
+# job runs for fork PRs. See docs/merge-review-runner.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to review
+        required: true
+        type: string
+      runner:
+        description: hosted (API-key reviewer) or c940 (signed-in CLI on the self-hosted runner)
+        required: true
+        default: hosted
+        type: choice
+        options: [hosted, c940]
+  pull_request_target:
+    types: [labeled]
+
+# The workflow token only reads this trusted workflow revision. The App token writes.
+permissions:
+  contents: read
+
+concurrency:
+  group: independent-review-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  review-hosted:
+    # Trusted default-branch code only. Label runs need the maintainer label, a
+    # same-repository head and the repository owner as the labeller.
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      ((github.event_name == 'workflow_dispatch' && inputs.runner == 'hosted') ||
+       (github.event.label.name == 'checker:review' &&
+        github.event.sender.login == github.repository_owner &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: ubuntu-latest
+    # Holds the App key and the reviewer API keys; deployment branches: default only.
+    environment: starlight-checker
+    timeout-minutes: 15
+    steps:
+      - name: Validate PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        run: |
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]{0,6}$ ]] || { echo 'Invalid PR number'; exit 1; }
+          echo "CHECKER_PR=$PR_NUMBER" >> "$GITHUB_ENV"
+
+      # The exact trusted workflow revision, never PR source or a floating branch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tools/merge-review
+
+      - name: Verify trusted checkout
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_WORKFLOW_SHA"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Mint checker App token
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.CHECKER_APP_ID }}
+          private-key: ${{ secrets.CHECKER_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: read
+          permission-issues: write
+          # Omitting owner and repositories scopes the token to this repository.
+          # The post-step revokes it when the job ends.
+
+      - name: Confirm App identity
+        env:
+          EXPECTED_SLUG: ${{ vars.CHECKER_APP_SLUG || 'starlight-checker' }}
+          ACTUAL_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: test "$ACTUAL_SLUG" = "$EXPECTED_SLUG" || { echo 'Token belongs to an unexpected App'; exit 1; }
+
+      - name: Review diff as data and post receipt
+        env:
+          CHECKER_MODE: hosted
+          CHECKER_TOKEN: ${{ steps.app.outputs.token }}
+          CHECKER_APP_SLUG: ${{ vars.CHECKER_APP_SLUG || 'starlight-checker' }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHECKER_GROK_MODEL: ${{ vars.CHECKER_GROK_MODEL }}
+          CHECKER_GEMINI_MODEL: ${{ vars.CHECKER_GEMINI_MODEL }}
+          CHECKER_CODEX_MODEL: ${{ vars.CHECKER_CODEX_MODEL }}
+          CHECKER_GROK_PRICE: ${{ vars.CHECKER_GROK_PRICE }}
+          CHECKER_GEMINI_PRICE: ${{ vars.CHECKER_GEMINI_PRICE }}
+          CHECKER_CODEX_PRICE: ${{ vars.CHECKER_CODEX_PRICE }}
+        run: python -I tools/merge-review/checker_runner.py
+
+  review-c940:
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      ((github.event_name == 'workflow_dispatch' && inputs.runner == 'c940') ||
+       (github.event.label.name == 'checker:review-c940' &&
+        github.event.sender.login == github.repository_owner &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: [self-hosted, starlight-checker]
+    environment: starlight-checker
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Validate PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        run: |
+          if ($env:PR_NUMBER -notmatch '^[1-9][0-9]{0,6}$') { throw 'Invalid PR number' }
+          "CHECKER_PR=$env:PR_NUMBER" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tools/merge-review
+
+      - name: Verify trusted checkout
+        run: |
+          if ((git rev-parse HEAD) -ne $env:GITHUB_WORKFLOW_SHA) { throw 'Checkout is not the workflow revision' }
+
+      - name: Mint checker App token
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.CHECKER_APP_ID }}
+          private-key: ${{ secrets.CHECKER_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: read
+          permission-issues: write
+
+      - name: Confirm App identity
+        env:
+          EXPECTED_SLUG: ${{ vars.CHECKER_APP_SLUG || 'starlight-checker' }}
+          ACTUAL_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          if ($env:ACTUAL_SLUG -cne $env:EXPECTED_SLUG) { throw 'Token belongs to an unexpected App' }
+
+      # No API keys here: this job uses the CLIs already signed in on the C940.
+      - name: Review diff as data and post receipt
+        env:
+          CHECKER_MODE: cli
+          CHECKER_TOKEN: ${{ steps.app.outputs.token }}
+          CHECKER_APP_SLUG: ${{ vars.CHECKER_APP_SLUG || 'starlight-checker' }}
+        run: python -I tools/merge-review/checker_runner.py

@@ -8,15 +8,25 @@ import subprocess
 
 MARKER = 'STARLIGHT-INDEPENDENT-REVIEW-V1\n'
 CHECK_NAME = 'independent-review-policy'
-# Only the repository owner may post a receipt. frankx-eth and jules are not trusted.
-TRUSTED_ATTESTORS = {'frankxai'}
-# A receipt counts only if GitHub records it as posted through an allowlisted App.
-# A null performed_via_github_app means a raw token (PAT or gh CLI) and is rejected.
-TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
+# Every harness on the owner's machine shares the owner's gh login, so a comment
+# authored by that login proves nothing (PR #377). A receipt counts only when the
+# checker GitHub App posted it with its own installation token.
+DEFAULT_CHECKER_APP_SLUG = 'starlight-checker'
 # Seats or models that may author a change. The reviewer must be a different one.
-MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
+MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules', 'grok'}
 # Valid separate reviewers. Jules is never a reviewer.
-REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto'}
+REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto', 'grok', 'gemini'}
+COST_SOURCES = {'billed', 'estimated', 'unknown'}
+
+
+def cost_valid(receipt):
+    """Unknown cost is null, never 0; a known cost is a non-negative number."""
+    usd, source = receipt['cost_usd'], receipt['cost_source']
+    if source == 'unknown':
+        return usd is None
+    return (source in COST_SOURCES and isinstance(usd, (int, float))
+            and not isinstance(usd, bool) and usd >= 0)
+HUMAN_ASSOCIATIONS = {'OWNER', 'MEMBER', 'COLLABORATOR'}
 # Paths that touch money, publish, secrets, auth, licensing or the gate itself.
 # These never auto-merge and need a CTO PASS.
 HIGH_RISK_PATTERNS = [
@@ -66,16 +76,21 @@ def reviewer_allowed(maker, provider, risky):
     return provider in INDEPENDENT_OF_CTO if maker == 'cto' else provider == 'cto'
 
 
-def posting_app(comment):
-    app = comment.get('performed_via_github_app')
-    return app.get('slug') if isinstance(app, dict) else None
+def checker_posted(comment, checker_slug, excluded_logins):
+    """True only for a comment the checker App wrote with its installation token."""
+    app = comment.get('performed_via_github_app') or {}
+    login = (comment.get('user') or {}).get('login', '')
+    # A user-to-server token of the same App still carries the human login, so the
+    # author must be the App's own bot account as well.
+    return (bool(checker_slug) and app.get('slug') == checker_slug
+            and login == f'{checker_slug}[bot]'
+            and login.lower() not in excluded_logins)
 
 
 def edited(comment):
-    # GitHub keeps the original App attribution when a comment is edited, and the
-    # edit may come from a raw token. REST timestamps have one-second resolution,
-    # so main() also asks GraphQL for lastEditedAt and the edit count. Only a
-    # receipt that was checked and never edited is trusted; anything else fails closed.
+    # GitHub keeps the original App attribution when a comment is edited. REST
+    # timestamps have one-second resolution, so main() also asks GraphQL for
+    # lastEditedAt and the edit count. Only a checked, never-edited receipt counts.
     created, updated = comment.get('created_at'), comment.get('updated_at')
     return (not created or not updated or created != updated
             or comment.get('edit_history_checked') is not True
@@ -85,16 +100,12 @@ def edited(comment):
 
 EDIT_QUERY = ('query($id: ID!) { node(id: $id) { ... on IssueComment { '
               'lastEditedAt userContentEdits(first: 1) { totalCount } } } }')
-
-
 MAX_EDIT_LOOKUPS = 5
 
 
-def receipt_candidate(comment, head):
+def receipt_candidate(comment, head, checker_slug, excluded_logins):
     """REST-only pre-check: could this comment be the receipt evaluate() decides on?"""
-    if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
-            or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
-            or posting_app(comment) not in TRUSTED_APPS
+    if (not checker_posted(comment, checker_slug, excluded_logins)
             or not comment.get('created_at') or comment.get('created_at') != comment.get('updated_at')):
         return False
     body = comment.get('body', '')
@@ -107,17 +118,15 @@ def receipt_candidate(comment, head):
         return False
 
 
-def annotate_edit_history(comments, head, lookup=None):
+def annotate_edit_history(comments, head, checker_slug, excluded_logins, lookup=None):
     """Record GraphQL edit provenance, newest candidate first, for at most a few receipts.
 
-    Only trusted, App-posted, REST-unedited, current-head receipts are looked up, and
-    the scan stops at the first one with a clean history: that is the receipt
-    evaluate() decides on. Unchecked candidates stay unannotated and fail closed.
+    Unchecked candidates stay unannotated and fail closed in edited().
     """
     lookup = lookup or graphql_edit_history
     lookups = 0
     for comment in reversed(comments):
-        if not receipt_candidate(comment, head) or not comment.get('node_id'):
+        if not receipt_candidate(comment, head, checker_slug, excluded_logins) or not comment.get('node_id'):
             continue
         if lookups >= MAX_EDIT_LOOKUPS:
             return
@@ -139,20 +148,29 @@ def graphql_edit_history(node_id):
     return (json.loads(run.stdout).get('data') or {}).get('node') or {}
 
 
-def evaluate(repository, number, head, files, comments, auto_merge=None):
-    if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
-        return False, 'Missing or invalid source identity or changed files.'
-    risky = any(high_risk(item.get('filename', '')) for item in files)
-    if risky and auto_merge:
-        return False, 'High-risk change has auto-merge armed; disable it. High-risk PRs never auto-merge.'
-    if not risky and all(routine_file(item) for item in files):
-        return True, 'Routine plain-text notes only; required CI still applies.'
-    expected_paths = {item['filename'] for item in files}
+def receipt_valid(receipt, repository, number, head, expected_paths, risky):
+    report = receipt['review']
+    return (
+        receipt['repository'] == repository
+        and type(receipt['pr']) is int and receipt['pr'] == number
+        and receipt['headSha'] == head
+        and receipt['maker'] in MAKERS
+        and reviewer_allowed(receipt['maker'], receipt['provider'], risky)
+        and receipt['verdict'] == 'PASS'
+        and receipt['blockingFindings'] == []
+        and set(receipt['reviewedFiles']) == expected_paths
+        and isinstance(report, str) and len(report) >= 80
+        and receipt['reviewSha256'] == hashlib.sha256(report.encode()).hexdigest()
+        and bool(re.fullmatch(r'[0-9a-f]{64}', receipt['packetSha256']))
+        and isinstance(receipt['resolution'], str) and bool(receipt['resolution'].strip())
+        and cost_valid(receipt)
+    )
+
+
+def latest_checker_receipt(comments, head, checker_slug, excluded_logins):
+    """Return (comment, receipt-or-None) for the newest parsed current-head checker receipt."""
     for comment in reversed(comments):
-        if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
-                or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
-                or posting_app(comment) not in TRUSTED_APPS
-                or edited(comment)):
+        if not checker_posted(comment, checker_slug, excluded_logins) or edited(comment):
             continue
         body = comment.get('body', '')
         # Accept the Windows delimiter without rewriting the hashed report.
@@ -161,30 +179,68 @@ def evaluate(repository, number, head, files, comments, auto_merge=None):
             continue
         try:
             receipt = json.loads(body[len(marker):])
-            if receipt.get('headSha') != head:
-                continue
-            report = receipt['review']
-            valid = (
-                receipt['repository'] == repository
-                and type(receipt['pr']) is int and receipt['pr'] == number
-                and receipt['headSha'] == head
-                and receipt['maker'] in MAKERS
-                and reviewer_allowed(receipt['maker'], receipt['provider'], risky)
-                and receipt['verdict'] == 'PASS'
-                and receipt['blockingFindings'] == []
-                and set(receipt['reviewedFiles']) == expected_paths
-                and isinstance(report, str) and len(report) >= 80
-                and receipt['reviewSha256'] == hashlib.sha256(report.encode()).hexdigest()
-                and re.fullmatch(r'[0-9a-f]{64}', receipt['packetSha256'])
-                and isinstance(receipt['resolution'], str) and receipt['resolution'].strip()
-            )
+        except ValueError:
+            return comment, None
+        if not isinstance(receipt, dict):
+            return comment, None
+        if receipt.get('headSha') != head:
+            continue
+        return comment, receipt
+    return None, None
+
+
+def human_review_state(reviews, head, excluded_logins):
+    """Latest APPROVED/CHANGES_REQUESTED per distinct human reviewer at the exact head."""
+    latest = {}
+    for review in reviews:
+        user = review.get('user') or {}
+        login = user.get('login', '')
+        if (review.get('commit_id') != head or user.get('type') != 'User'
+                or not login or login.lower() in excluded_logins
+                or review.get('author_association') not in HUMAN_ASSOCIATIONS):
+            continue
+        state = review.get('state')
+        if state in {'APPROVED', 'CHANGES_REQUESTED', 'DISMISSED'}:
+            latest[login] = (state, review.get('id'))
+    return latest
+
+
+def evaluate(repository, number, head, files, comments, auto_merge=None, *, reviews=(),
+             pr_author='', pushers=(), checker_slug=DEFAULT_CHECKER_APP_SLUG):
+    if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
+        return False, 'Missing or invalid source identity or changed files.'
+    if not pr_author:
+        return False, 'Missing PR author identity.'
+    risky = any(high_risk(item.get('filename', '')) for item in files)
+    if risky and auto_merge:
+        return False, 'High-risk change has auto-merge armed; disable it. High-risk PRs never auto-merge.'
+    if not risky and all(routine_file(item) for item in files):
+        return True, 'Routine plain-text notes only; required CI still applies.'
+    excluded = {login.lower() for login in (pr_author, *pushers) if login}
+    expected_paths = {item['filename'] for item in files}
+    humans = human_review_state(reviews, head, excluded)
+    blockers = sorted(login for login, (state, _) in humans.items() if state == 'CHANGES_REQUESTED')
+    if blockers:
+        return False, f'Changes requested at this head by {", ".join(blockers)}.'
+    comment, receipt = latest_checker_receipt(comments, head, checker_slug, excluded)
+    if comment is not None:
+        try:
+            valid = receipt is not None and receipt_valid(receipt, repository, number, head,
+                                                          expected_paths, risky)
         except (KeyError, TypeError, ValueError):
             valid = False
         if valid:
             return True, (f'Exact-head PASS by {receipt["provider"]} (maker {receipt["maker"]}) '
-                          f'at {head} in comment {comment["id"]}.')
-        return False, 'Latest trusted review receipt is invalid or reports blocking findings.'
-    return False, 'Sensitive or unknown paths require a trusted exact-head independent review receipt.'
+                          f'posted by App {checker_slug} at {head} in comment {comment["id"]}.')
+        # A newer checker FAIL/REVISE or malformed receipt revokes; a human approval
+        # does not override it. Push a fix and re-run the checker.
+        return False, 'Latest checker App receipt is invalid or reports blocking findings.'
+    approvers = sorted(login for login, (state, _) in humans.items() if state == 'APPROVED')
+    if approvers:
+        return True, (f'Exact-head GitHub review APPROVED by {", ".join(approvers)}, '
+                      f'distinct from the PR author and pushers.')
+    return False, (f'Sensitive or unknown paths require an exact-head receipt posted by the '
+                   f'{checker_slug} App, or an exact-head APPROVED review by a distinct human.')
 
 
 def api(endpoint, payload=None, paginate=False):
@@ -203,7 +259,8 @@ def main():
     repository = os.environ['GITHUB_REPOSITORY']
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
         raise ValueError('Invalid repository')
-    event = json.loads(open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8').read())
+    with open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8') as event_file:
+        event = json.load(event_file)
     value = (event.get('pull_request', {}).get('number')
              or (event.get('issue', {}).get('number') if event.get('issue', {}).get('pull_request') else None)
              or event.get('inputs', {}).get('pr'))
@@ -212,6 +269,9 @@ def main():
     number = int(value)
     if number < 1:
         raise ValueError('Invalid PR number')
+    checker_slug = os.environ.get('MERGE_REVIEW_CHECKER_APP_SLUG') or DEFAULT_CHECKER_APP_SLUG
+    if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,33}', checker_slug):
+        raise ValueError('Invalid checker App slug')
     endpoint = f'repos/{repository}/pulls/{number}'
     pr = api(endpoint)
     if pr['state'] != 'open':
@@ -238,8 +298,15 @@ def main():
                     if revision == wanted:
                         item['mode'] = modes.get(item['filename'])
         comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
-        annotate_edit_history(comments, head)
-        ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'))
+        reviews = api(endpoint + '/reviews?per_page=100', paginate=True)
+        commit = api(f'repos/{repository}/commits/{head}')
+        # The head commit's author and committer stand in for the last pusher.
+        pushers = [(commit.get(role) or {}).get('login', '') for role in ('author', 'committer')]
+        excluded = {login.lower() for login in (pr['user']['login'], *pushers) if login}
+        annotate_edit_history(comments, head, checker_slug, excluded)
+        ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'),
+                               reviews=reviews, pr_author=pr['user']['login'], pushers=pushers,
+                               checker_slug=checker_slug)
         if api(endpoint)['head']['sha'] != head:
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
     except Exception as error:

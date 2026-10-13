@@ -1,0 +1,23 @@
+{
+  "_comment": "Reviewer CLI templates for the self-hosted checker. The packet arrives on stdin; {schema} and {out} are substituted. An entry is used only once verifiedOn is set in a reviewed PR after the operator ran it read-only on the C940 runner account. None is verified yet, so the runner refuses every PR until then.",
+  "codex": {
+    "argv": ["codex", "exec", "--sandbox", "read-only", "--skip-git-repo-check",
+             "--output-schema", "{schema}", "--output-last-message", "{out}", "-"],
+    "outputFile": true,
+    "timeoutSeconds": 600,
+    "verifiedOn": null
+  },
+  "grok": {
+    "argv": ["grok", "--prompt", "Review the packet on stdin. Reply with only the JSON object it asks for. Do not use tools."],
+    "outputFile": false,
+    "timeoutSeconds": 600,
+    "verifiedOn": null
+  },
+  "gemini": {
+    "argv": ["gemini", "--approval-mode", "default", "--output-format", "json",
+             "--prompt", "Review the packet on stdin. Reply with only the JSON object it asks for. Do not use tools."],
+    "outputFile": false,
+    "timeoutSeconds": 600,
+    "verifiedOn": null
+  }
+}

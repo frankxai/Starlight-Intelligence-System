@@ -39,4 +39,6 @@ jobs:
       - name: Evaluate source paths and review receipt
         env:
           GH_TOKEN: ${{ github.token }}
+          # Only comments posted by this App's installation token count as receipts.
+          MERGE_REVIEW_CHECKER_APP_SLUG: ${{ vars.CHECKER_APP_SLUG || 'starlight-checker' }}
         run: python tools/merge-review/merge_review_gate.py
