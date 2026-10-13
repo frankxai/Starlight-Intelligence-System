@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone verify prototype</title>
+<meta name="description" content="Prototype: a printed Starlight run receipt with a QR that a stranger verifies from a phone in under a minute. Example values throughout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060609;--fg:#e2e8f0;--muted:#94a3b8;--dim:#64748b;--line:rgba(226,232,240,.1);--violet:#a78bfa;--cyan:#67e8f9;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--paper:#f4f1ea;--ink:#0b0d12;--sans:Inter,system-ui,sans-serif;--serif:Newsreader,Georgia,serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline;text-underline-offset:.2em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.chip{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:6px 9px;border-radius:999px}
+.chip.on{color:var(--emerald);border-color:rgba(52,211,153,.4)}
+.chip.warn{color:var(--amber);border-color:rgba(251,191,36,.4)}
+h1{font:400 clamp(34px,6vw,64px)/1.02 var(--serif);letter-spacing:-.02em;margin:38px 0 14px;max-width:16ch}
+h1 em{font-style:italic;color:var(--violet)}
+.lede{max-width:56ch;color:var(--muted);font-size:17px;margin:0 0 30px}
+.stage{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:start;padding:12px 0 40px}
+.stage>div{min-width:0}
+@media(min-width:960px){.stage{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:44px}}
+.k{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+
+/* printed receipt */
+.receipt{position:relative;background:var(--paper);color:var(--ink);max-width:min(440px,100%);font-family:var(--mono);font-size:12.5px;line-height:1.5;border:1px solid rgba(0,0,0,.2);
+ box-shadow:0 1px 0 rgba(255,255,255,.4) inset,18px 18px 0 rgba(103,232,249,.07),0 40px 70px -30px rgba(0,0,0,.8);
+ mask:radial-gradient(7px at 11px 0,transparent 98%,#000) top left/22px 10px repeat-x,linear-gradient(#000,#000) 0 10px/100% calc(100% - 10px) no-repeat}
+.receipt .head,.receipt .foot{display:flex;justify-content:space-between;gap:12px;padding:20px 20px 12px;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#59606a}
+.receipt .head{border-bottom:1px solid rgba(0,0,0,.16)}.receipt .head b{color:var(--ink);letter-spacing:.04em}
+.receipt .foot{border-top:1px solid rgba(0,0,0,.16);padding-bottom:20px}
+.receipt dl{margin:0;padding:4px 20px}
+.receipt .row{display:grid;grid-template-columns:minmax(80px,.55fr) minmax(0,1.45fr);gap:12px;padding:9px 0;border-bottom:1px dotted rgba(0,0,0,.22)}
+.receipt .row:last-child{border-bottom:0}.receipt dt{color:#68707b}.receipt dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.receipt .ok::before,.receipt .hu::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.receipt .ok::before{background:#1f8a99}.receipt .hu::before{background:#b8862b}
+.receipt .verdict{display:inline-block;padding:2px 8px;border:1px solid #1f8a99;color:#1f8a99;letter-spacing:.1em}
+.qrwrap{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;padding:14px 20px 6px;border-top:1px solid rgba(0,0,0,.16)}
+.qr{width:112px;height:112px;background:#fff;padding:6px;border:1px solid rgba(0,0,0,.15)}
+.qr svg{display:block;width:100%;height:100%}
+.qrwrap p{margin:0;font-size:11px;color:#59606a;line-height:1.45}
+.qrwrap p b{display:block;color:var(--ink);font-size:12px;letter-spacing:.02em}
+
+/* phone */
+.phone{margin:0 auto;width:min(100%,330px);aspect-ratio:9/19;border-radius:38px;background:#0a0c12;border:1px solid rgba(226,232,240,.18);box-shadow:0 0 0 6px #111318,0 50px 80px -40px rgba(0,0,0,.9);position:relative;overflow:hidden}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:96px;height:26px;border-radius:14px;background:#000;z-index:3}
+.screen{position:absolute;inset:0;padding:54px 18px 22px;display:flex;flex-direction:column}
+.state{position:absolute;inset:0;padding:54px 18px 22px;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s ease}
+.state.on{opacity:1;pointer-events:auto}
+.url{font:500 11px/1 var(--mono);color:var(--dim);letter-spacing:.02em;margin-bottom:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.finder{flex:1;border-radius:18px;background:radial-gradient(120% 80% at 50% 20%,#1b2030,#0a0c12 70%);position:relative;display:grid;place-items:center;overflow:hidden}
+.finder .corner{position:absolute;width:40px;height:40px;border:3px solid var(--cyan);opacity:.9}
+.finder .c1{top:18%;left:14%;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.finder .c2{top:18%;right:14%;border-left:0;border-bottom:0;border-radius:0 8px 0 0}
+.finder .c3{bottom:18%;left:14%;border-right:0;border-top:0;border-radius:0 0 0 8px}
+.finder .c4{bottom:18%;right:14%;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.finder .beam{position:absolute;left:14%;right:14%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);top:22%;opacity:.8}
+.finder .mini{width:44%;opacity:.55;filter:blur(.3px)}
+.finder .tip{position:absolute;bottom:14px;left:0;right:0;text-align:center;font:500 11px/1.4 var(--sans);color:var(--muted)}
+.checks{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.check{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.check i{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--dim);display:grid;place-items:center;font:600 10px var(--mono);color:var(--emerald)}
+.check.done{color:var(--fg)}.check.done i{border-color:var(--emerald)}
+.check small{font:400 11px var(--mono);color:var(--dim)}
+.panel{flex:1;background:#0e1118;border:1px solid var(--line);border-radius:18px;padding:16px;font-family:var(--mono);font-size:11.5px;line-height:1.55;overflow:auto}
+.verd{display:flex;align-items:center;gap:10px;font:600 12px/1 var(--mono);letter-spacing:.14em;color:var(--emerald);margin-bottom:10px}
+.verd i{width:9px;height:9px;border-radius:50%;background:var(--emerald);box-shadow:0 0 14px var(--emerald)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;color:var(--muted)}
+.kv b{color:var(--fg);font-weight:500;overflow-wrap:anywhere}
+.kv .hl{color:var(--cyan)}
+.sig{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);color:var(--dim);font-size:10.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+button.step{font:500 12px/1 var(--sans);color:var(--fg);background:transparent;border:1px solid var(--line);padding:10px 14px;border-radius:999px;cursor:pointer;min-height:40px}
+button.step:hover,button.step:focus-visible{border-color:var(--cyan);color:var(--cyan);outline:none}
+button.step.pri{background:rgba(167,139,250,.14);border-color:rgba(167,139,250,.5)}
+
+/* timing + ledger */
+.grid3{display:grid;gap:14px;margin:8px 0 40px}
+@media(min-width:760px){.grid3{grid-template-columns:repeat(3,1fr)}}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:linear-gradient(180deg,rgba(226,232,240,.03),transparent)}
+.card .n{font:500 30px/1 var(--mono);letter-spacing:-.02em;color:var(--fg)}
+.card .n small{font-size:14px;color:var(--dim);margin-left:4px}
+.card h3{font:500 15px var(--sans);margin:10px 0 4px}
+.card p{margin:0;color:var(--muted);font-size:13.5px}
+.ledger{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:40px}
+.ledger .r{display:grid;grid-template-columns:1fr;gap:4px;padding:14px 16px;border-bottom:1px solid var(--line);font:400 12.5px var(--mono);color:var(--muted)}
+.ledger .r:last-child{border-bottom:0}.ledger .r b{color:var(--fg);font-weight:500}
+@media(min-width:760px){.ledger .r{grid-template-columns:150px 1fr 120px 110px;align-items:baseline}}
+.ledger .h{color:var(--dim);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;background:rgba(226,232,240,.02)}
+.truth{border-left:2px solid var(--amber);padding:12px 16px;color:var(--muted);font-size:13.5px;margin-bottom:60px;max-width:70ch}
+.truth b{color:var(--fg);font-weight:500}
+footer{padding:20px 0 50px;border-top:1px solid var(--line);color:var(--dim);font:400 12px var(--mono)}
+@media(prefers-reduced-motion:reduce){.state{transition:none}.finder .beam{display:none}}
+@media(prefers-reduced-motion:no-preference){.finder .beam{animation:sweep 2.2s ease-in-out infinite alternate}@keyframes sweep{from{top:22%}to{top:78%}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <span class="chip on">Prototype</span>
+  <span class="chip">Phone verify · drift items 17 and 18</span>
+  <span class="chip warn">Example values throughout</span>
+  <span class="chip">starlightintelligence.ai/verify?r=</span>
+</header>
+
+<h1>Verify it from <em>your phone.</em></h1>
+<p class="lede">The printed receipt carries a QR. The QR opens the verifier with the receipt id. The phone fetches the envelope from the public ledger, checks the signature against the registry key, and shows the verdict, the cost and who decided. Under a minute, no account, no laptop.</p>
+
+<section class="stage" aria-label="Receipt and phone">
+  <div>
+    <p class="k">The printed receipt</p>
+    <aside class="receipt" aria-label="Example run receipt with QR">
+      <div class="head"><b>Run receipt</b><span>starlight.run-receipt.v1</span></div>
+      <dl>
+        <div class="row"><dt>run</dt><dd><b>desk.brief</b> · claude-code · rcpt_1790035…</dd></div>
+        <div class="row"><dt>subject</dt><dd>brief.md · sha256 9f86d081…</dd></div>
+        <div class="row"><dt>stages</dt><dd><span class="ok">retrieve · tavily</span> 0.9 s<br><span class="ok">extract · nemotron-3-nano</span> 1.1 s<br><span class="ok">synthesize · deepseek-v4-flash</span> 4.8 s<br><span class="ok">judge · gpt-oss-120b</span> 1.6 s</dd></div>
+        <div class="row"><dt>totals</dt><dd>€0.0071 · 8.4 s · 11.2k tokens</dd></div>
+        <div class="row"><dt>decision</dt><dd><span class="hu">publish · human · approved</span></dd></div>
+        <div class="row"><dt>verdict</dt><dd><span class="verdict">PASS</span></dd></div>
+      </dl>
+      <div class="qrwrap">
+        <div class="qr" aria-hidden="true"><svg id="qr" viewBox="0 0 29 29" shape-rendering="crispEdges"></svg></div>
+        <p><b>Scan to verify</b>Opens starlightintelligence.ai/verify?r=rcpt_1790035… and checks this receipt against the Starlight registry key. Example QR: a real one encodes the receipt id.</p>
+      </div>
+      <div class="foot"><span>Issued by the Desk</span><span>ed25519 · dsse v1</span></div>
+    </aside>
+  </div>
+
+  <div>
+    <p class="k">The phone, three states</p>
+    <div class="phone" role="group" aria-label="Phone verifier">
+      <div class="notch" aria-hidden="true"></div>
+      <div class="state on" id="s1" aria-label="Scanning">
+        <div class="url">camera</div>
+        <div class="finder">
+          <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+          <span class="beam" aria-hidden="true"></span>
+          <svg class="mini" viewBox="0 0 29 29" shape-rendering="crispEdges" id="qr2" aria-hidden="true"></svg>
+          <span class="tip">Point at the receipt</span>
+        </div>
+      </div>
+      <div class="state" id="s2" aria-label="Verifying">
+        <div class="url">starlightintelligence.ai/verify?r=rcpt_1790035…</div>
+        <div class="checks">
+          <div class="check" data-i="1"><i></i><span>Fetched envelope from the ledger</span><small>0.4 s</small></div>
+          <div class="check" data-i="2"><i></i><span>Signature verifies · registry key</span><small>12 ms</small></div>
+          <div class="check" data-i="3"><i></i><span>Statement is a run receipt</span><small>1 ms</small></div>
+          <div class="check" data-i="4"><i></i><span>Totals not below stage sums</span><small>1 ms</small></div>
+        </div>
+      </div>
+      <div class="state" id="s3" aria-label="Verified">
+        <div class="url">starlightintelligence.ai/verify?r=rcpt_1790035…</div>
+        <div class="panel">
+          <div class="verd"><i></i>VERIFIED</div>
+          <div class="kv">
+            <span>key</span><b>c82e4bbc4f0751a1… <span class="hl">registry · Frank Riemer · added 2026-09-22</span></b>
+            <span>run</span><b>desk.brief · claude-code</b>
+            <span>subject</span><b>brief.md · 9f86d081…</b>
+            <span>cost</span><b>€0.0071 · 8.4 s · 11.2k tokens</b>
+            <span>decided</span><b>publish · human · approved</b>
+            <span>evidence</span><b>6 sources · 1 eval · 1 ledger entry</b>
+            <span>verdict</span><b class="hl">PASS</b>
+          </div>
+          <div class="sig">Checked on this phone. Nothing was sent to Starlight except the receipt id. The verifier stores counts only.</div>
+        </div>
+      </div>
+    </div>
+    <div class="bar">
+      <button class="step pri" id="b1">Scan</button>
+      <button class="step" id="b2">Verify</button>
+      <button class="step" id="b3">Reset</button>
+      <button class="step" id="b4">Play</button>
+    </div>
+  </div>
+</section>
+
+<p class="k">What happened, in under a minute</p>
+<div class="grid3">
+  <div class="card"><div class="n">3<small>s</small></div><h3>Scan</h3><p>The camera reads the QR. The URL carries only the receipt id, never the payload, so the QR stays small enough to print at 28 mm.</p></div>
+  <div class="card"><div class="n">0.4<small>s</small></div><h3>Fetch</h3><p>The verifier reads the envelope from the public ledger entry the issuer chose to publish. Unpublished receipts cannot be fetched; they verify by paste.</p></div>
+  <div class="card"><div class="n">14<small>ms</small></div><h3>Verify</h3><p>Ed25519 over the DSSE pre-authentication encoding, the in-toto statement check, and the receipt's own arithmetic. Same code as the API and the MCP tool.</p></div>
+</div>
+
+<p class="k">The ledger entry it resolved</p>
+<div class="ledger" role="table" aria-label="Ledger entry">
+  <div class="r h" role="row"><span>receipt</span><span>subject · run</span><span>issued</span><span>verifications</span></div>
+  <div class="r" role="row"><b>rcpt_1790035…</b><span>brief.md · desk.brief · claude-code · €0.0071</span><span>2026-09-23 11:42</span><b>17 phones</b></div>
+</div>
+
+<p class="truth"><b>What is real and what is prototype.</b> Real today: <code>/verify</code>, <code>POST /api/v1/receipts/verify</code>, the MCP tool, the schema, the printed receipt card. Prototype: the <code>r</code> parameter, the public ledger read, the QR on the card, the registry key. Those are drift items 17, 18 and 25; the first key is added by pull request with an owner and a date. Every number on this page is an example.</p>
+
+<footer>Starlight Intelligence · phone verify prototype · 2026-09-21 · Built on SIP</footer>
+</div>
+
+<script>
+// Deterministic pseudo-QR so the page needs no library. A real QR encodes the URL.
+(function(){
+  function draw(el, seed){
+    var n=29, s=seed>>>0, cells=[];
+    function rnd(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }
+    var out='';
+    function finder(x,y){ for(var i=0;i<7;i++)for(var j=0;j<7;j++){ var edge=i===0||j===0||i===6||j===6, core=i>=2&&i<=4&&j>=2&&j<=4; if(edge||core) out+='<rect x="'+(x+j)+'" y="'+(y+i)+'" width="1" height="1"/>'; } }
+    for(var y=0;y<n;y++)for(var x=0;x<n;x++){
+      var inF=(x<8&&y<8)||(x>=n-8&&y<8)||(x<8&&y>=n-8); if(inF) continue;
+      if(rnd()<0.46) out+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>';
+    }
+    finder(0,0); finder(n-7,0); finder(0,n-7);
+    el.innerHTML='<g fill="#0b0d12">'+out+'</g>';
+  }
+  draw(document.getElementById('qr'), 1790035); draw(document.getElementById('qr2'), 1790035);
+
+  var states=[document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3')];
+  var checks=Array.prototype.slice.call(document.querySelectorAll('.check'));
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var timers=[];
+  function clear(){ timers.forEach(clearTimeout); timers=[]; }
+  function show(i){ states.forEach(function(s,j){ s.classList.toggle('on', i===j); }); }
+  function reset(){ clear(); checks.forEach(function(c){ c.classList.remove('done'); c.querySelector('i').textContent=''; }); show(0); }
+  function verify(){
+    clear(); show(1);
+    checks.forEach(function(c,k){
+      var t=reduced?0:350+k*420;
+      timers.push(setTimeout(function(){ c.classList.add('done'); c.querySelector('i').textContent='✓'; }, t));
+    });
+    timers.push(setTimeout(function(){ show(2); }, reduced?0:350+checks.length*420+500));
+  }
+  document.getElementById('b1').onclick=function(){ reset(); };
+  document.getElementById('b2').onclick=verify;
+  document.getElementById('b3').onclick=reset;
+  document.getElementById('b4').onclick=function(){ reset(); timers.push(setTimeout(verify, reduced?0:1400)); };
+})();
+</script>
+</body>
+</html>

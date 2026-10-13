@@ -157,6 +157,21 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **SIP commands:** `/gravity-capture` · `/gravity-brief` · `/gravity-publish` · `/gravity-room` · `/gravity-follow-through` · `/gravity-review`.
 - **Compounds:** FrankX (protocol-adoption narrative + consulting surface) + the engine's own catalog and any future managed tier.
 
+### Reality Architect
+- **Class:** sovereign vertical (operated, public)
+- **Domain:** The open practice for architecting a life — the `reality.md` + `soul.md` format, Reality Studio (local-first), the honest Library, and a read-only engine that projects a person's files into the Reality Architecture kernel. Meaning and mechanism, always labeled.
+- **Owner:** Frank Riemer.
+- **Status:** `active — standard v0.2, Studio, Library and engine live`.
+- **Primary repo:** [`frankxai/realityarchitect`](https://github.com/frankxai/realityarchitect) (PUBLIC, MIT).
+- **Public surface:** `realityarchitect.ai`.
+- **Canon:** **declines** — no canon layer; teacher names live only in its Library data, and Arcanea proper nouns stay out (register boundary).
+- **Composition (built ON SIP, never inside it):** A standalone vertical built on SIP. It **composes with** — but never requires — SIS. Its engine emits this kernel's `ra:<type>:<key>` IDs, registry types (v0.1.2) and relations, so a person's graph projects into SIS on consent. The kernel (GENESIS, ADR-000, schemas) stays here as doctrine; the format and engine stay in the vertical's repo.
+- **Mapping:** Bridge → FutureBranch + ActualizationPlan · Atlas gap → RealityDiff · Witness entry → self-reported ActualizationReceipt · approved snapshot → `world_state`.
+- **SIP attestation:** Reality Cards from `/threshold` carry `Built on SIP`.
+- **Substrate home (in-repo surface):** `verticals/reality-architect/` — pointer only (links out; no implementation).
+- **SIP commands:** the `reality-architect` plugin skills — `reality-onboard` · `reality-daily` · `reality-witness` · `reality-bridge` · `reality-snapshot` · `reality-decide` · `reality-vision-board` · `reality-library` · `reality-loop`.
+- **Compounds:** FrankX (the practice narrative) + Reality Architect's paid tiers (sync, renders, guides, school).
+
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
 - **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.
@@ -220,6 +235,20 @@ Domain sub-stacks are forkable reference verticals. Unlike the sovereign vertica
 - **Falsifier:** 1-week proof-of-pattern with House of On-Chain. If 4-5 named artifacts cannot ship in the week, Houses-as-sub-systems primitive failed for crypto → fall back to functional sub-systems matching People IS shape; re-iterate at PROPOSAL.md.
 - **Board verdict:** REVISE close-out 2026-05-17 — `docs/boards/2026-05-17-crypto-investment-spawn.md` (5 items closed same-session per v7.5.1 recovery precedent).
 - **Genius prerequisite gate:** CLOSED via `genius/profile-frankx.md` + `genius/freedom-path-frankx.md` (Path A in-repo corpus excavation, 2026-05-17).
+
+### Alexandria (Starlight Alexandria)
+- **Class:** sovereign domain sub-stack (reference vertical) — fourth reference; first to ship runtime before commands because the budget gate is the product.
+- **Domain:** Catalogued intelligence with receipts — typed capabilities under published contracts (Firecrawl Alexandria + the estate's own corpus), deterministic routing, price-before-run, receipt-after-run, earned SIP attestation, signed resale. Six Houses (Library · Scribe · Synthesis · Exchange · Forge · Treasury).
+- **Owner:** open reference (forkable). Composes under Second Brain IS; composes with Wealth IS (Crypto IS Houses), Creator IS, Code IS, Starlight Orchestrator.
+- **Status:** `v0.1 — runtime (src/alexandria), catalogue (20 providers / 47 capabilities / 24 connectors, counted from the file by test/v93-alexandria.test.ts, as of 2026-10-12), MCP server (5 tools), 6 House cards, 5 Forge experiments, /alexandria command. No revenue, partnership or pilot claimed.`
+- **Primary repo:** `verticals/alexandria/` + `src/alexandria/` in `frankxai/Starlight-Intelligence-System` (extraction target on Exchange proof: `github.com/frankxai/starlight-alexandria`).
+- **Canon:** declines.
+- **Compounds:** receipt graph (verifiable records) + catalogue curation + every downstream IS that cites records.
+- **SIP commands (v0.1):** `/alexandria`. **v0.2 gated on Forge proof-pass:** 23 House commands per `verticals/alexandria/SUB-SYSTEMS.md`.
+- **Synthesis edge:** Enterprise reference-architecture discipline × a working multi-vertical estate that already consumes the records × SIP attestation built for exactly this × creator distribution that turns receipted research into audience.
+- **Falsifier:** `exp-2026-10-08-catalogue-recall` (routing) and `exp-2026-10-08-pass-through-margin` (Exchange). If routing recall is under 60% after 50 needs, the planner flips to Firecrawl semantic find-tools; if zero paid pass-through calls at day 30, the Exchange folds into the brief subscription.
+- **Board verdict:** PROCEED 2026-10-08 — `docs/boards/2026-10-08-starlight-alexandria.md` (three conditions carried into MEMORY.md).
+- **Tests:** `test/v93-alexandria.test.ts` (`node --import tsx --test test/v93-alexandria.test.ts`).
 
 ---
 

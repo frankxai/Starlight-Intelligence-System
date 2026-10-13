@@ -38,7 +38,7 @@ Your Intent
 │  │  Contract · Attestation · MCP registry          │ │
 │  └─────────────────────────────────────────────────┘ │
 │  ┌──────────┐  ┌───────────┐  ┌────────────────────┐ │
-│  │ 6 Vaults │  │ MCP Server│  │ 56 Agents / 77 Skills│ │
+│  │ 6 Vaults │  │ MCP Server│  │144 Agents / 83 Skills│ │
 │  │  JSONL   │  │ sis_* tools│  │ Council + Specialists│ │
 │  └──────────┘  └───────────┘  └────────────────────┘ │
 └─────────────────────────────────────────────────────┘
@@ -140,8 +140,8 @@ frankxai/ (GitHub org)
 │
 ├── Starlight-Intelligence-System    ← SUBSTRATE (this repo)
 │   ├── SIP.md, STACK.md, SIS.md     Protocol specs
-│   ├── agents/                      56 agents (council + specialists)
-│   ├── skills/                      77 auto-activating skills
+│   ├── agents/                      144 agents (council + specialists)
+│   ├── skills/                      83 auto-activating skills
 │   ├── verticals/                   10 IS implementations
 │   ├── src/                         MCP server TypeScript source
 │   ├── core/                        Orchestrator runtime
@@ -731,7 +731,7 @@ cp cost-plane-config.template.json private/cost-plane-config.json
 
 ### Add Hermes to VPS
 
-See [HERMES-CLAUDE-CODE-GUIDE.md](./docs/guides/HERMES-CLAUDE-CODE-GUIDE.md) for the full dual-stack setup.
+See [HERMES-CLAUDE-CODE-GUIDE.md](./guides/HERMES-CLAUDE-CODE-GUIDE.md) for the full dual-stack setup.
 
 ### Add downstream OS repo
 

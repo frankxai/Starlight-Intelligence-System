@@ -7,7 +7,8 @@
  * Integrates with the Context Engine for memory-informed prompts.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, fsyncSync, closeSync, renameSync, unlinkSync } from "node:fs";
+import { randomUUID } from "node:crypto";
 import { dirname, join } from "node:path";
 import type {
   MemoryEntry,
@@ -114,7 +115,7 @@ export class MemoryManager {
     }
 
     // 2. If legacy JSON exists, read it (migration or initial sync)
-    if (existsSync(this.storagePath) && !this.storageTargetIsDirectory(this.storagePath)) {
+    if (needsMigration && existsSync(this.storagePath) && !this.storageTargetIsDirectory(this.storagePath)) {
       try {
         const raw = readFileSync(this.storagePath, "utf-8");
         const data = JSON.parse(raw) as MemoryEntry[];
@@ -176,20 +177,49 @@ export class MemoryManager {
       mkdirSync(dir, { recursive: true });
     }
     
-    // Compact the log
-    const compactedEvents: MemoryEvent[] = Array.from(this.entries.values()).map(entry => ({
-      type: "add",
-      payload: entry,
-      timestamp: Date.now()
-    }));
-    
-    const lines = compactedEvents.map(e => JSON.stringify(e)).join("\n") + "\n";
     withJsonlLock(this.eventLogPath, () => {
-      writeFileSync(this.eventLogPath, lines, "utf-8");
+      // The committed log, not this instance's potentially stale cache, owns state.
+      const current = new Map<string, MemoryEntry>();
+      if (existsSync(this.eventLogPath)) {
+        for (const line of readFileSync(this.eventLogPath, "utf8").split("\n")) {
+          if (!line.trim()) continue;
+          const event = JSON.parse(line) as MemoryEvent;
+          if (event.type === "add" && event.payload && typeof event.payload.id === "string"
+              && typeof event.payload.content === "string" && Array.isArray(event.payload.tags)) {
+            current.set(event.payload.id, event.payload);
+          } else if (event.type === "remove" && typeof event.id === "string") {
+            current.delete(event.id);
+          } else { throw new Error("Invalid committed memory event; preserved log"); }
+        }
+      } else {
+        for (const entry of this.entries.values()) current.set(entry.id, entry);
+      }
+      const entries = Array.from(current.values());
+      const lines = entries.map(payload => JSON.stringify({ type:"add",payload,timestamp:Date.now() })).join("\n");
+      // Legacy is a derivative. load never merges it over an existing JSONL log.
+      this.replaceFile(this.storagePath, JSON.stringify(entries, null, 2));
+      this.replaceFile(this.eventLogPath, lines ? lines + "\n" : "");
+      this.entries = current;
+      this.index = new WordIndex();
+      for (const entry of entries) this.index.add(entry.id, `${entry.content} ${entry.tags.join(" ")}`);
     });
-    
-    // Legacy support: update the old JSON file so other tools don't break
-    writeFileSync(this.storagePath, JSON.stringify(Array.from(this.entries.values()), null, 2), "utf-8");
+  }
+
+  private replaceFile(target: string, content: string): void {
+    const scratch = `${target}.${randomUUID()}.tmp`;
+    let fd: number | undefined;
+    let created = false;
+    try {
+      fd = openSync(scratch, "wx", 0o600); created = true;
+      writeFileSync(fd, content, "utf8"); fsyncSync(fd); closeSync(fd); fd = undefined;
+      renameSync(scratch, target);
+    } finally {
+      if (fd !== undefined) closeSync(fd);
+      if (created) {
+        try { unlinkSync(scratch); }
+        catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+      }
+    }
   }
 
   private storageTargetIsDirectory(targetPath: string): boolean {

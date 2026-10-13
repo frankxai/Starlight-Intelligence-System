@@ -85,7 +85,7 @@ export default async function VerticalPage({
           </Link>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px]">
             <span
-              className={`rounded-full border px-2.5 py-1 uppercase tracking-widest ${a.chip}`}
+              className={`rounded-full border px-2.5 py-1 normal-case tracking-wider ${a.chip}`}
             >
               {verticalStatusLabel(v.status)}
             </span>
@@ -107,16 +107,16 @@ export default async function VerticalPage({
               &ldquo;{v.heroQuote}&rdquo;
             </p>
             <footer
-              className={`mt-3 text-[10px] uppercase tracking-widest ${a.text}`}
+              className={`mt-3 text-[10px] normal-case tracking-wider ${a.text}`}
             >
               {v.name} · SOUL.md
             </footer>
           </blockquote>
 
           <dl className="mt-8 grid grid-cols-3 gap-2 border-t border-white/[0.04] pt-6 text-center">
-            <Stat label="sub-systems" value={v.counts.subSystems} />
-            <Stat label="commands" value={v.counts.commands} />
-            <Stat label="agents" value={v.counts.agents} />
+            <Stat label="Sub-systems" value={v.counts.subSystems} />
+            <Stat label="Commands" value={v.counts.commands} />
+            <Stat label="Agents" value={v.counts.agents} />
           </dl>
         </div>
       </section>
@@ -124,7 +124,7 @@ export default async function VerticalPage({
       {/* ── Sub-systems ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Sub-systems
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -158,7 +158,7 @@ export default async function VerticalPage({
       {/* ── Agents ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Agents
           </h2>
           <p className="mt-3 max-w-md text-xl font-semibold text-white">
@@ -186,7 +186,7 @@ export default async function VerticalPage({
       {/* ── Quick start ── */}
       <section className="border-b border-white/[0.04] px-6 py-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
+          <h2 className="text-[11px] font-medium normal-case tracking-wider text-slate-400">
             Quickstart
           </h2>
           <p className="mt-3 text-xl font-semibold text-white">
@@ -263,7 +263,7 @@ export default async function VerticalPage({
       {v.refusals.length > 0 && (
         <section className="border-b border-white/[0.04] px-6 py-20">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-[11px] font-medium uppercase tracking-widest text-rose-400">
+            <h2 className="text-[11px] font-medium normal-case tracking-wider text-rose-400">
               Refusals
             </h2>
             <p className="mt-3 text-xl font-semibold text-white">
@@ -321,7 +321,7 @@ export default async function VerticalPage({
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-widest text-slate-400">
+      <dt className="text-[10px] normal-case tracking-wider text-slate-400">
         {label}
       </dt>
       <dd className="mt-1 font-mono text-[12px] text-white">{value}</dd>

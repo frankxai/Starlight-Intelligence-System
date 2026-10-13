@@ -1,0 +1,312 @@
+{
+  "schema": "starlight.creative-draft.v1",
+  "tenantId": "demo-studio",
+  "worldId": "glass-tide",
+  "worldRevision": 7,
+  "revision": 1,
+  "currency": "USD",
+  "title": "The Glass Tide · coastal reveal",
+  "nodes": [
+    {
+      "id": "source",
+      "type": "source",
+      "label": "Creator brief",
+      "position": {
+        "x": 30,
+        "y": 30
+      },
+      "data": {
+        "text": "Create a coastal city reveal. Preserve Mara's silver coat and the lighthouse silhouette."
+      }
+    },
+    {
+      "id": "world",
+      "type": "context",
+      "label": "World continuity",
+      "position": {
+        "x": 30,
+        "y": 245
+      },
+      "data": {
+        "snapshot": "synthetic-world-r7",
+        "rule": "Light costs one memory.",
+        "character": "Mara",
+        "state": "accepted-fixture"
+      }
+    },
+    {
+      "id": "style",
+      "type": "context",
+      "label": "Visual identity",
+      "position": {
+        "x": 30,
+        "y": 460
+      },
+      "data": {
+        "snapshot": "synthetic-style-r2",
+        "lighting": "cool coastal light",
+        "materials": "glass, limestone, silver"
+      }
+    },
+    {
+      "id": "story",
+      "type": "storyboard",
+      "label": "Storyboard",
+      "position": {
+        "x": 270,
+        "y": 30
+      },
+      "data": {
+        "shots": 1,
+        "secondsPerShot": 5,
+        "instructionVersion": "fixture-1"
+      }
+    },
+    {
+      "id": "visual",
+      "type": "visual",
+      "label": "Visual brief",
+      "position": {
+        "x": 270,
+        "y": 245
+      },
+      "data": {
+        "aspect": "16:9",
+        "referenceId": "synthetic-mara-ref"
+      }
+    },
+    {
+      "id": "image-a",
+      "type": "image",
+      "label": "Frame variation A",
+      "position": {
+        "x": 510,
+        "y": 30
+      },
+      "data": {
+        "provider": "xai",
+        "model": "grok-imagine-image-2.0",
+        "quoteMinor": 4,
+        "currency": "USD",
+        "seed": 101,
+        "quoteState": "synthetic"
+      }
+    },
+    {
+      "id": "image-b",
+      "type": "image",
+      "label": "Frame variation B",
+      "position": {
+        "x": 510,
+        "y": 245
+      },
+      "data": {
+        "provider": "gemini",
+        "model": "existing-image-lane",
+        "quoteMinor": 8,
+        "currency": "USD",
+        "seed": 102,
+        "quoteState": "synthetic"
+      }
+    },
+    {
+      "id": "compare",
+      "type": "compare",
+      "label": "Compare candidates",
+      "position": {
+        "x": 750,
+        "y": 30
+      },
+      "data": {
+        "rubric": "identity, silhouette, rule, light"
+      }
+    },
+    {
+      "id": "select",
+      "type": "select",
+      "label": "Creator selection",
+      "position": {
+        "x": 750,
+        "y": 245
+      },
+      "data": {
+        "decisionState": "pending"
+      }
+    },
+    {
+      "id": "audio",
+      "type": "audio",
+      "label": "Approved sound",
+      "position": {
+        "x": 750,
+        "y": 460
+      },
+      "data": {
+        "assetId": "synthetic-ocean-bed",
+        "state": "approved-fixture"
+      }
+    },
+    {
+      "id": "video",
+      "type": "video",
+      "label": "Camera motion",
+      "position": {
+        "x": 990,
+        "y": 245
+      },
+      "data": {
+        "provider": "higgsfield",
+        "model": "model-to-verify",
+        "quoteMinor": 160,
+        "currency": "USD",
+        "duration": 5,
+        "quoteState": "synthetic"
+      }
+    },
+    {
+      "id": "review",
+      "type": "review",
+      "label": "Continuity review",
+      "position": {
+        "x": 990,
+        "y": 30
+      },
+      "data": {
+        "decisionState": "pending",
+        "checks": [
+          "identity",
+          "world-rule",
+          "rights",
+          "format"
+        ]
+      }
+    },
+    {
+      "id": "export",
+      "type": "export",
+      "label": "Release candidate",
+      "position": {
+        "x": 990,
+        "y": 460
+      },
+      "data": {
+        "state": "draft",
+        "destination": "local-download"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "source-story-brief",
+      "from": "source",
+      "output": "text",
+      "to": "story",
+      "input": "brief"
+    },
+    {
+      "id": "world-story-world",
+      "from": "world",
+      "output": "context",
+      "to": "story",
+      "input": "world"
+    },
+    {
+      "id": "story-visual-story",
+      "from": "story",
+      "output": "text",
+      "to": "visual",
+      "input": "story"
+    },
+    {
+      "id": "world-visual-world",
+      "from": "world",
+      "output": "context",
+      "to": "visual",
+      "input": "world"
+    },
+    {
+      "id": "style-visual-style",
+      "from": "style",
+      "output": "context",
+      "to": "visual",
+      "input": "style"
+    },
+    {
+      "id": "visual-image-a-prompt",
+      "from": "visual",
+      "output": "prompt",
+      "to": "image-a",
+      "input": "prompt"
+    },
+    {
+      "id": "visual-image-b-prompt",
+      "from": "visual",
+      "output": "prompt",
+      "to": "image-b",
+      "input": "prompt"
+    },
+    {
+      "id": "image-a-compare-first",
+      "from": "image-a",
+      "output": "image",
+      "to": "compare",
+      "input": "first"
+    },
+    {
+      "id": "image-b-compare-second",
+      "from": "image-b",
+      "output": "image",
+      "to": "compare",
+      "input": "second"
+    },
+    {
+      "id": "compare-select-selection",
+      "from": "compare",
+      "output": "selection",
+      "to": "select",
+      "input": "selection"
+    },
+    {
+      "id": "select-video-image",
+      "from": "select",
+      "output": "image",
+      "to": "video",
+      "input": "image"
+    },
+    {
+      "id": "visual-video-prompt",
+      "from": "visual",
+      "output": "prompt",
+      "to": "video",
+      "input": "prompt"
+    },
+    {
+      "id": "video-review-video",
+      "from": "video",
+      "output": "video",
+      "to": "review",
+      "input": "video"
+    },
+    {
+      "id": "audio-review-audio",
+      "from": "audio",
+      "output": "audio",
+      "to": "review",
+      "input": "audio"
+    },
+    {
+      "id": "world-review-world",
+      "from": "world",
+      "output": "context",
+      "to": "review",
+      "input": "world"
+    },
+    {
+      "id": "review-export-release",
+      "from": "review",
+      "output": "release",
+      "to": "export",
+      "input": "release"
+    }
+  ]
+}

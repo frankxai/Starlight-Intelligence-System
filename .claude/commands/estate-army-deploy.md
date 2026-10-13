@@ -2,7 +2,7 @@
 name: estate-army-deploy
 description: Production deploy / scale / Standing phase harness for a sovereign intelligence estate. Activates always-on Steward runtime, health loops, self-healing, attestation gates, cost plane hooks, and dashboard entry. Companion to estate-blueprint + estate-steward. Completes the Estate Factory commissioning (R4 + evolutions #8). Per 2026-06-16 Board PROCEED-WITH-REVISE.
 allowed-tools: Read, Write, Grep, Glob, Bash (limited)
-argument-hint: <estate-name> [subcommand: deploy | scale | health | attest | dashboard] [--blueprint path] [--target cloud|local|hybrid]
+argument-hint: "<estate-name> [subcommand: deploy | scale | health | attest | dashboard] [--blueprint path] [--target cloud|local|hybrid]"
 ---
 # /estate-army-deploy
 

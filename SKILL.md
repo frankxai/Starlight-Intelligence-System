@@ -42,7 +42,7 @@ Inside `skills/skill-rules.json`, rules are configured as follows:
 ### Process for Adding and Testing Skills
 1. **Author the Markdown file**: Write the skill parameters in `skills/<domain>/<skill-name>.md`.
 2. **Add the Rule**: Register the trigger conditions under `skills/skill-rules.json`.
-3. **Register the Skill**: Append the skill entry to [SKILL_REGISTRY.md](file:///C:/Users/frank/Starlight-Intelligence-System/skills/SKILL_REGISTRY.md) with date version and status (`stable` or `experimental`).
+3. **Register the Skill**: Append the skill entry to [SKILL_REGISTRY.md](skills/SKILL_REGISTRY.md) with date version and status (`stable` or `experimental`).
 4. **Run Verification**: Execute the unit-test validator:
    ```bash
    node --import tsx --test test/v77-skill-rules.test.ts
@@ -57,6 +57,9 @@ Inside `skills/skill-rules.json`, rules are configured as follows:
 5. "Built on SIP" means *real* composition. Never a decorative badge.
 6. **Declared file loads must be test-asserted to exist.** Every command in `.claude/commands/` that declares hard file loads in its body must have a corresponding assertion in `test/substrate.test.ts` that those files exist on disk.
 7. **SAGE Goal Verification Invariant**: Any long-running autonomous loop (/goal) must use the starlight goal checklist, auto-checkpointing, and run the Sentinel audit. The loop refuses to mark completion (<!-- GOAL_COMPLETE -->) without the cryptographic approval tag LGTM-SIS.
+8. **Second Brain Question-Filing Invariant**: Every distilled knowledge note, framework, or playbook must be titled by the specific question it answers, enabling question-driven retrieval across Obsidian, Smart Connections, and SQLite FTS5.
+9. **Swarm Memory Bus Invariant**: When autonomous swarms (ruflow, OpenAgent, Hermes) produce state-changing decisions or vault entries, they must attest through the Memory Bus with explicit SIP attribution before write.
+10. **Hermes Provenance Invariant**: Research retrieval and cross-repo synthesis must track verifiable provenance (file paths, commit SHAs, or source URLs).
 
 ## When to say no
 - When someone asks to fold a sovereign node into the substrate.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { FieldNotesMotion } from "@/components/FieldNotesMotion";
 import { publicFieldNotes } from "@/lib/field-notes";
 import styles from "./field-notes.module.css";
@@ -39,7 +40,7 @@ export default function PublicFieldNotesPage() {
           </p>
           <div className={styles.actions}>
             <a href="#public-field-notes">Read the visual record</a>
-            <a href="/protocol">Inspect the protocol</a>
+            <Link href="/protocol">Inspect the protocol</Link>
           </div>
         </div>
         <aside className={styles.contract} aria-label="Public proof contract">

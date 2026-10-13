@@ -2,7 +2,7 @@
 title: Starlight — State of Ground Truth (public stub)
 date: 2026-06-10
 status: Sanitized public pointer. The full ground-truth snapshot is operator instance state.
-attestation: Built on Starlight Protocol v1.1.1 (file: SIP.md)
+attestation: "Built on Starlight Protocol v1.1.1 (file: SIP.md)"
 ---
 
 # STATE.md — public stub

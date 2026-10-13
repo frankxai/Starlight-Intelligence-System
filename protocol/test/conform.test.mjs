@@ -434,3 +434,45 @@ test("a URL pinned to a full commit SHA is not a credential", () => {
   assert.deepEqual(findSecrets(webhook), ["long base64 blob"]);
   assert.deepEqual(findSecrets(`${pinned}?token=${"Zq8vR2mXkLp4NwYt7HsJd3Fc9GbVe6Ua1Qo5".repeat(2)}`), ["long base64 blob"]);
 });
+
+test("jsonschema validator supports minLength, minimum, and maximum keywords", () => {
+  const schema = {
+    type: "object",
+    properties: {
+      str: { type: "string", minLength: 3 },
+      val: { type: "number", minimum: 0, maximum: 10 },
+    },
+  };
+
+  assert.doesNotThrow(() => assertStrict(schema));
+
+  assert.deepEqual(validateAgainstSchema(schema, { str: "abc", val: 5 }), []);
+  assert.deepEqual(validateAgainstSchema(schema, { str: "ab", val: 5 }), [
+    "$.str: length 2 is shorter than minimum 3",
+  ]);
+  assert.deepEqual(validateAgainstSchema(schema, { str: "abc", val: -1 }), [
+    "$.val: -1 is less than minimum 0",
+  ]);
+  assert.deepEqual(validateAgainstSchema(schema, { str: "abc", val: 11 }), [
+    "$.val: 11 is greater than maximum 10",
+  ]);
+});
+
+test("jsonschema assertStrict validates reality architecture kernel schemas", () => {
+  const raSchemasDir = resolve(here, "..", "..", "docs", "reality-architecture", "schemas");
+  const schemaFiles = ["actualization-plan", "actualization-receipt", "future-branch", "reality-diff", "reality-event", "reality-object"];
+  for (const name of schemaFiles) {
+    const s = JSON.parse(readFileSync(join(raSchemasDir, `${name}.schema.json`), "utf8"));
+    assert.doesNotThrow(() => assertStrict(s), `assertStrict failed for ${name}.schema.json`);
+  }
+});
+
+test("jsonschema assertStrict loads the run receipt v1 schema, and token counts are integers", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  assert.doesNotThrow(() => assertStrict(schema));
+  const stage = schema.properties.stages.items;
+  assert.deepEqual(validateAgainstSchema(stage, { name: "synthesize", status: "ok", inputTokens: 400, outputTokens: 20 }), []);
+  assert.ok(validateAgainstSchema(stage, { name: "synthesize", status: "ok", inputTokens: 0.5 }).length > 0);
+  const tokens = schema.properties.totals.properties.tokens;
+  assert.ok(validateAgainstSchema(tokens, { input: 1.5, output: 2 }).length > 0);
+});

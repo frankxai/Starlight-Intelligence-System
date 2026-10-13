@@ -175,7 +175,7 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
 }`}</Code>
 
           <div className="mt-6 rounded-xl border border-violet-500/[0.18] bg-violet-500/[0.04] p-5">
-            <p className="text-[13px] font-medium uppercase tracking-wider text-violet-300">
+            <p className="text-[13px] font-medium normal-case tracking-wider text-violet-300">
               The Benediction Layer
             </p>
             <p className="mt-2 text-[14px] leading-relaxed text-slate-300">
@@ -325,8 +325,8 @@ function Field({
         <span className="font-semibold text-violet-300">{name}</span>
         <span className="text-slate-600">:</span>
         <span className="text-cyan-400/80">{type}</span>
-        <span className="ml-auto text-[10px] uppercase tracking-wider text-slate-600">
-          optional
+        <span className="ml-auto text-[10px] normal-case tracking-wider text-slate-600">
+          Optional
         </span>
       </div>
       <p className="mt-2 text-[13px] leading-relaxed text-slate-400">{desc}</p>
