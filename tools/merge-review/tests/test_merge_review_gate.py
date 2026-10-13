@@ -8,14 +8,14 @@ spec = importlib.util.spec_from_file_location('gate', Path(__file__).parents[1] 
 gate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gate)
 HEAD = 'a' * 40
-FILES = [{'filename': 'core/hooks/security.js', 'status': 'modified'}]
+FILES = [{'filename': 'core/lib/format.js', 'status': 'modified'}]
 
 
 def receipt(**changes):
     report = 'PASS: Independently inspected supplied security source; no blocking defect found.'
     body = {'repository': 'frankxai/starlight-agent-config', 'pr': 110,
             'headSha': HEAD, 'maker': 'codex', 'provider': 'antigravity', 'verdict': 'PASS',
-            'blockingFindings': [], 'reviewedFiles': ['core/hooks/security.js'],
+            'blockingFindings': [], 'reviewedFiles': ['core/lib/format.js'],
             'review': report, 'reviewSha256': hashlib.sha256(report.encode()).hexdigest(),
             'packetSha256': 'b' * 64, 'resolution': 'No blocking findings; static review only.'}
     body.update(changes)
@@ -24,19 +24,83 @@ def receipt(**changes):
 
 
 class MergeReviewTests(unittest.TestCase):
-    def evaluate(self, comments, files=FILES):
-        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, files, comments)[0]
+    def evaluate(self, comments, files=FILES, auto_merge=None):
+        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, files, comments, auto_merge)[0]
 
     def test_sensitive_requires_real_receipt(self):
         self.assertFalse(self.evaluate([]))
         self.assertTrue(self.evaluate([receipt()]))
-        self.assertTrue(self.evaluate([receipt(maker='jules')]))
+        self.assertTrue(self.evaluate([receipt(maker='jules', provider='codex')]))
 
-    def test_trusted_attestors_pass(self):
-        for user_login in ['frankxai', 'frankx-eth']:
+    def test_only_frankxai_attests(self):
+        for user_login in ['frankx-eth', 'jules', 'google-labs-jules[bot]']:
             comment = receipt()
             comment['user']['login'] = user_login
-            self.assertTrue(self.evaluate([comment]))
+            self.assertFalse(self.evaluate([comment]))
+
+    def test_self_review_never_counts(self):
+        for seat in ['codex', 'claude-code', 'antigravity', 'cto']:
+            with self.subTest(seat=seat):
+                self.assertFalse(self.evaluate([receipt(maker=seat, provider=seat)]))
+
+    def test_only_separate_seats_review(self):
+        for provider in ['codex', 'claude-code', 'cto']:
+            self.assertTrue(self.evaluate([receipt(maker='antigravity', provider=provider)]))
+        for provider in ['jules', 'grok', 'gemini', 'claude', 'frankx-eth']:
+            with self.subTest(provider=provider):
+                self.assertFalse(self.evaluate([receipt(provider=provider)]))
+
+    def test_high_risk_paths_need_cto_pass(self):
+        for path in ['src/payments/checkout.ts', 'scripts/publish.mjs', 'lib/auth/session.ts',
+                     'LICENSE', '.env.example', 'tools/merge-review/merge_review_gate.py',
+                     'tools/jules-conductor/config.json', '.github/workflows/ci.yml',
+                     'src/marketplace/catalog.ts']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_cto_authored_high_risk_needs_another_admitted_seat(self):
+        path = 'tools/merge-review/merge_review_gate.py'
+        files = [{'filename': path, 'status': 'modified'}]
+        for provider in ['codex', 'claude-code', 'antigravity']:
+            with self.subTest(provider=provider):
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider=provider)], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider='cto')], files))
+
+    def test_armed_auto_merge_fails_high_risk(self):
+        path = 'src/payments/checkout.ts'
+        files = [{'filename': path, 'status': 'modified'}]
+        good = [receipt(reviewedFiles=[path], provider='cto')]
+        self.assertTrue(self.evaluate(good, files))
+        self.assertFalse(self.evaluate(good, files, auto_merge={'merge_method': 'squash'}))
+        # Low-risk with auto-merge armed is still allowed after a separate PASS.
+        self.assertTrue(self.evaluate([receipt()], auto_merge={'merge_method': 'squash'}))
+
+    def test_instruction_files_are_high_risk(self):
+        for path in ['AGENTS.md', 'CLAUDE.md', 'skills/foo/SKILL.md', 'docs/notes/AGENTS.md']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified', 'mode': '100644'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_high_risk_notes_lose_routine_exemption(self):
+        for path in ['docs/notes/auth.md', 'docs/handovers/release.txt', 'docs/notes/payment.md']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified', 'mode': '100644'}]
+                self.assertFalse(self.evaluate([], files))
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_dependency_manifests_are_high_risk(self):
+        for path in ['package.json', 'packages/x/package.json', 'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_warn_is_not_a_pass(self):
+        self.assertFalse(self.evaluate([receipt(verdict='WARN')]))
 
     def test_windows_marker_preserves_report_digest(self):
         report = ('PASS: Independently inspected the complete supplied security source.\r\n'
@@ -70,7 +134,7 @@ class MergeReviewTests(unittest.TestCase):
     def test_stale_incomplete_tampered_or_blocked_receipts_deny(self):
         for change in [{'headSha': 'c' * 40}, {'reviewedFiles': []},
                        {'blockingFindings': ['unfixed']}, {'reviewSha256': 'd' * 64},
-                       {'provider': 'codex'}, {'maker': 'untrusted_maker'}, {'verdict': 'FAIL'}, {'pr': 111},
+                       {'provider': 'codex'}, {'maker': 'untrusted_maker'}, {'verdict': 'FAIL'}, {'pr': 111}, {'pr': '110'},
                        {'repository': 'attacker/repo'}, {'packetSha256': 'invalid'},
                        {'resolution': ''}, {'review': ''}]:
             with self.subTest(change=change):
@@ -83,10 +147,10 @@ class MergeReviewTests(unittest.TestCase):
             comment['author_association'] = association
             self.assertFalse(self.evaluate([comment]))
 
-    def test_jules_maker_and_frankx_eth_attestor_pass(self):
+    def test_jules_maker_with_frankx_eth_attestor_denies(self):
         comment = receipt(maker='jules', pr='110')
         comment['user']['login'] = 'frankx-eth'
-        self.assertTrue(self.evaluate([comment]))
+        self.assertFalse(self.evaluate([comment]))
 
     def test_malformed_comment_and_empty_listing_deny(self):
         comment = receipt()

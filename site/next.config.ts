@@ -16,13 +16,19 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 // injection in app/layout.tsx — replace with nonce-based CSP via middleware when ready.
 // 'unsafe-inline' on style-src is required by Tailwind's runtime style-injection;
 // hashable in a future hardening pass.
+// React's development build compiles with eval(), so a CSP without 'unsafe-eval'
+// leaves every client component inert under `next dev`: the page renders and
+// nothing responds. Production keeps the tight policy; development gets the one
+// concession it needs, so the local fallback path is a working app.
+const IS_DEV = process.env.NODE_ENV !== "production";
+
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${IS_DEV ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self'${IS_DEV ? " ws: wss:" : ""}`,
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

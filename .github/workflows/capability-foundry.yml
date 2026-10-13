@@ -32,8 +32,6 @@ on:
       - "package-lock.json"
       - "pnpm-lock.yaml"
       - ".github/workflows/capability-foundry.yml"
-  schedule:
-    - cron: "17 6 * * 1"
   workflow_dispatch:
 
 permissions:

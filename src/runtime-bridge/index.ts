@@ -6,6 +6,8 @@ export { createHttpWorkerRuntime, createMcpWorkerRuntime } from "./transports.js
 export type { McpToolCaller } from "./transports.js";
 export { createProcessWorkerRuntime } from "./process.js";
 export { createOpenCodeRuntime } from "./opencode.js";
+export { createChatGptPlanRuntime } from "./chatgpt-plan.js";
+export type { ChatGptPlanRuntime, ChatGptPlanConnection, ChatGptPlanModel, ChatGptPlanUsage } from "./chatgpt-plan.js";
 export { ContextBridge } from "../context-bridge.js";
 export type { ContextRecord, CapturedRecord, CaptureOptions } from "../context-bridge.js";
 export { ReviewQueue } from "../review-queue.js";

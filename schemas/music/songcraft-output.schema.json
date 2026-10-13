@@ -30,30 +30,80 @@
         "rights"
       ],
       "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "thesis": { "type": "string", "minLength": 1 },
-        "listener": { "type": "string", "minLength": 1 },
-        "social_action": { "type": "string", "minLength": 1 },
-        "scene": { "type": "string", "minLength": 1 },
-        "emotional_contradiction": { "type": "string", "minLength": 1 },
-        "metaphor_system": { "type": "string", "minLength": 1 },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "thesis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "listener": {
+          "type": "string",
+          "minLength": 1
+        },
+        "social_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scene": {
+          "type": "string",
+          "minLength": 1
+        },
+        "emotional_contradiction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metaphor_system": {
+          "type": "string",
+          "minLength": 1
+        },
         "hook": {
           "type": "object",
-          "required": ["function", "exact_title_hits", "title_variants", "returns"],
+          "required": [
+            "function",
+            "exact_title_hits",
+            "title_variants",
+            "returns"
+          ],
           "properties": {
-            "function": { "type": "string" },
-            "exact_title_hits": { "type": "integer", "minimum": 0 },
-            "title_variants": { "type": "integer", "minimum": 0 },
+            "function": {
+              "type": "string"
+            },
+            "exact_title_hits": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "title_variants": {
+              "type": "integer",
+              "minimum": 0
+            },
             "returns": {
               "type": "array",
               "minItems": 2,
               "items": {
                 "type": "object",
-                "required": ["section", "job", "mutation"],
+                "required": [
+                  "section",
+                  "job",
+                  "mutation"
+                ],
                 "properties": {
-                  "section": { "type": "string" },
-                  "job": { "enum": ["seed", "establish", "implicate", "fracture", "communal-payoff"] },
-                  "mutation": { "type": "string" }
+                  "section": {
+                    "type": "string"
+                  },
+                  "job": {
+                    "enum": [
+                      "seed",
+                      "establish",
+                      "implicate",
+                      "fracture",
+                      "communal-payoff"
+                    ]
+                  },
+                  "mutation": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -61,25 +111,70 @@
         },
         "music": {
           "type": "object",
-          "required": ["key_or_mode", "bpm", "meter", "harmonic_motion", "melodic_contour"],
+          "required": [
+            "key_or_mode",
+            "bpm",
+            "meter",
+            "harmonic_motion",
+            "melodic_contour"
+          ],
           "properties": {
-            "key_or_mode": { "type": "string" },
-            "bpm": { "type": "number", "exclusiveMinimum": 0 },
-            "meter": { "type": "string" },
-            "harmonic_motion": { "type": "string" },
-            "melodic_contour": { "type": "string" }
+            "key_or_mode": {
+              "type": "string"
+            },
+            "bpm": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "meter": {
+              "type": "string"
+            },
+            "harmonic_motion": {
+              "type": "string"
+            },
+            "melodic_contour": {
+              "type": "string"
+            }
           }
         },
-        "vocalist": { "type": "object", "minProperties": 3 },
-        "low_end": { "type": "object", "minProperties": 3 },
+        "vocalist": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "minProperties": 3
+        },
+        "low_end": {
+          "type": "object",
+          "minProperties": 3
+        },
         "rights": {
           "type": "object",
-          "required": ["lyrics_owner", "voice_consent", "samples", "ai_disclosure"],
+          "required": [
+            "lyrics_owner",
+            "voice_consent",
+            "samples",
+            "ai_disclosure"
+          ],
           "properties": {
-            "lyrics_owner": { "type": "string" },
-            "voice_consent": { "type": "string" },
-            "samples": { "type": "array", "items": { "type": "string" } },
-            "ai_disclosure": { "type": "string" }
+            "lyrics_owner": {
+              "type": "string"
+            },
+            "voice_consent": {
+              "type": "string"
+            },
+            "samples": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "ai_disclosure": {
+              "type": "string"
+            }
           }
         }
       }
@@ -88,32 +183,87 @@
       "type": "string",
       "minLength": 80,
       "maxLength": 1400,
-      "not": { "pattern": "([Ii]n the style of|[Ss]ounds exactly like|[Vv]oice clone)" }
+      "not": {
+        "pattern": "([Ii]n the style of|[Ss]ounds exactly like|[Vv]oice clone)"
+      }
     },
     "lyrics": {
       "type": "string",
-      "minLength": 80,
-      "allOf": [
-        { "pattern": "\\[Intro\\]" },
-        { "pattern": "\\[Verse 1\\]" },
-        { "pattern": "\\[Chorus\\]" },
-        { "pattern": "\\[End\\]" }
-      ]
+      "maxLength": 20000
     },
     "studio_2_plan": {
       "type": "object",
-      "required": ["take_criteria", "timeline", "stem_actions", "vocal_comp", "low_end", "automation", "translation_tests", "exports"]
+      "required": [
+        "take_criteria",
+        "timeline",
+        "stem_actions",
+        "vocal_comp",
+        "low_end",
+        "automation",
+        "translation_tests",
+        "exports"
+      ]
     },
     "quality_receipt": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["score", "hard_failures", "reference_distance_checked", "provenance_checked"],
+      "required": [
+        "score",
+        "hard_failures",
+        "reference_distance_checked",
+        "provenance_checked",
+        "evidence_kind",
+        "audio_evaluated"
+      ],
       "properties": {
-        "score": { "type": "integer", "minimum": 85, "maximum": 100 },
-        "hard_failures": { "type": "array", "maxItems": 0 },
-        "reference_distance_checked": { "const": true },
-        "provenance_checked": { "const": true }
+        "score": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Deprecated optional subjective text-review rating; null by default. Never an audio-quality score."
+        },
+        "hard_failures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reference_distance_checked": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Unknown remains null; true needs scoped review evidence."
+        },
+        "provenance_checked": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Unknown remains null; true needs scoped review evidence."
+        },
+        "evidence_kind": {
+          "const": "text_review"
+        },
+        "audio_evaluated": {
+          "const": false
+        },
+        "rationale": {
+          "type": "string"
+        }
       }
+    },
+    "work_format": {
+      "enum": [
+        "song",
+        "hook",
+        "instrumental",
+        "score"
+      ]
     }
-  }
+  },
+  "description": "Authoring packet only. Local canon is preserved; lyric form is task-specific. Listening, measurement and rights attestations use separate receipts."
 }

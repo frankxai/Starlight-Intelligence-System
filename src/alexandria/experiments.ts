@@ -1,0 +1,140 @@
+/**
+ * Starlight Alexandria — the Forge (experiment registry).
+ *
+ * The SDLC for this vertical is experiment-first: nothing becomes a product
+ * line, a provider, or a revenue claim without an experiment that names its
+ * metric, its falsifier, its budget and its close date. The registry is a
+ * JSON file; this module validates it and enforces the status machine.
+ *
+ *   proposed → running → proven | falsified | parked
+ *   parked   → running (re-opened with a new closesBy)
+ *
+ * `proven` and `falsified` both require at least one receipt id: a verdict
+ * without evidence is the corruption mode SOUL.md names.
+ *
+ * Built on SIP — operational tier (Domain Sub-Stack: Alexandria).
+ */
+
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { REPO_ROOT } from './catalog.js';
+import type { Experiment, ExperimentStatus } from './types.js';
+
+export const DEFAULT_EXPERIMENTS_PATH = join(REPO_ROOT, 'verticals', 'alexandria', 'experiments', 'registry.json');
+
+export const HOUSES = ['library', 'scribe', 'synthesis', 'exchange', 'forge', 'treasury'] as const;
+const STATUSES: readonly ExperimentStatus[] = ['proposed', 'running', 'proven', 'falsified', 'parked'];
+const TRANSITIONS: Record<ExperimentStatus, readonly ExperimentStatus[]> = {
+  proposed: ['running', 'parked'],
+  running: ['proven', 'falsified', 'parked'],
+  proven: [],
+  falsified: [],
+  parked: ['running'],
+};
+const ID_RE = /^exp-\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** A real calendar date, not only the shape: `2026-02-31` round-trips to `2026-03-03` and is refused. */
+export function isCalendarDate(value: unknown): value is string {
+  if (typeof value !== 'string' || !DATE_RE.test(value)) return false;
+  const t = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(t) && new Date(t).toISOString().slice(0, 10) === value;
+}
+/** Ledger receipt ids are `rcpt_` + a v4 UUID (src/alexandria/receipts.ts). */
+export const RECEIPT_ID_RE = /^rcpt_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+export interface ExperimentProblem { id: string; message: string }
+
+export function validateExperiment(e: Partial<Experiment>): ExperimentProblem[] {
+  const id = typeof e.id === 'string' ? e.id : '<no id>';
+  const problems: ExperimentProblem[] = [];
+  if (!ID_RE.test(id)) problems.push({ id, message: 'id must look like exp-YYYY-MM-DD-slug' });
+  if (!HOUSES.includes(e.house as (typeof HOUSES)[number])) problems.push({ id, message: `house must be one of ${HOUSES.join('|')}` });
+  for (const key of ['hypothesis', 'metric', 'falsifier', 'budget'] as const) {
+    if (typeof e[key] !== 'string' || e[key]!.trim().length < 8) problems.push({ id, message: `${key} must be a full sentence of at least 8 characters` });
+  }
+  if (typeof e.owner !== 'string' || !/^[a-z][a-z0-9-]*$/.test(e.owner)) problems.push({ id, message: 'owner must be a lower-case slug' });
+  if (!STATUSES.includes(e.status as ExperimentStatus)) problems.push({ id, message: `status must be one of ${STATUSES.join('|')}` });
+  if (!isCalendarDate(e.openedAt)) problems.push({ id, message: 'openedAt must be a real calendar date (YYYY-MM-DD)' });
+  if (!isCalendarDate(e.closesBy)) problems.push({ id, message: 'closesBy must be a real calendar date (YYYY-MM-DD)' });
+  else if (typeof e.openedAt === 'string' && e.closesBy < e.openedAt) problems.push({ id, message: 'closesBy must not precede openedAt' });
+  if (!Array.isArray(e.receipts)) problems.push({ id, message: 'receipts must be an array (may be empty while proposed/running)' });
+  else {
+    if (!e.receipts.every((r) => typeof r === 'string' && RECEIPT_ID_RE.test(r))) problems.push({ id, message: 'every receipt must be a ledger receipt id (rcpt_<uuid>)' });
+    if ((e.status === 'proven' || e.status === 'falsified') && e.receipts.length === 0) problems.push({ id, message: `${e.status} needs at least one receipt id` });
+  }
+  return problems;
+}
+
+export function validateRegistry(raw: unknown): ExperimentProblem[] {
+  if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { experiments?: unknown }).experiments)) {
+    return [{ id: '$', message: 'registry must be { experiments: [] }' }];
+  }
+  const list = (raw as { experiments: Partial<Experiment>[] }).experiments;
+  const problems = list.flatMap(validateExperiment);
+  const seen = new Set<string>();
+  for (const e of list) {
+    if (typeof e.id !== 'string') continue;
+    if (seen.has(e.id)) problems.push({ id: e.id, message: 'duplicate experiment id' });
+    seen.add(e.id);
+  }
+  return problems;
+}
+
+export function loadExperiments(path: string = DEFAULT_EXPERIMENTS_PATH): Experiment[] {
+  const raw: unknown = JSON.parse(readFileSync(path, 'utf8'));
+  const problems = validateRegistry(raw);
+  if (problems.length > 0) throw new Error(`Invalid experiment registry at ${path}: ${problems.map((p) => `${p.id}: ${p.message}`).join('; ')}`);
+  return (raw as { experiments: Experiment[] }).experiments;
+}
+
+export function canTransition(from: ExperimentStatus, to: ExperimentStatus): boolean {
+  return TRANSITIONS[from].includes(to);
+}
+
+/** What a verdict's evidence must be checked against: the ledger (or any lookup over it). */
+export interface ReceiptLookup {
+  /** A settled receipt by id, or undefined. `ReceiptLedger.read()` entries qualify. */
+  (id: string): { id: string; pending?: boolean; error?: unknown } | undefined;
+}
+
+/**
+ * Returns the updated experiment or throws; never mutates the input. A verdict (`proven`,
+ * `falsified`) is accepted only with receipts, and every receipt it cites must be looked up:
+ * it has to exist as a settled, successful receipt. A well-formed id alone is not evidence.
+ */
+export function transition(e: Experiment, to: ExperimentStatus, evidence: { receipts?: readonly string[]; closesBy?: string; notes?: string; today?: string; lookup?: ReceiptLookup } = {}): Experiment {
+  if (!canTransition(e.status, to)) throw new Error(`${e.id}: cannot move from ${e.status} to ${to}`);
+  if (e.status === 'parked' && to === 'running') {
+    // Reopening is a fresh commitment: it needs a new deadline later than the one it parked
+    // with and still ahead of today, or it would reopen straight into the overdue list.
+    const today = evidence.today ?? new Date().toISOString().slice(0, 10);
+    if (!isCalendarDate(evidence.closesBy)) throw new Error(`${e.id}: reopening a parked experiment needs a new closesBy (a real calendar date, YYYY-MM-DD)`);
+    if (evidence.closesBy <= e.closesBy) throw new Error(`${e.id}: the new closesBy must be later than ${e.closesBy}`);
+    if (evidence.closesBy <= today) throw new Error(`${e.id}: the new closesBy must be after today (${today})`);
+  }
+  const receipts = [...e.receipts, ...(evidence.receipts ?? [])];
+  if (to === 'proven' || to === 'falsified') {
+    if (receipts.length === 0) throw new Error(`${e.id}: ${to} needs a receipt`);
+    const malformed = receipts.find((id) => !RECEIPT_ID_RE.test(id));
+    if (malformed !== undefined) throw new Error(`${e.id}: every receipt must be a ledger receipt id (rcpt_<uuid>); got ${JSON.stringify(malformed)}`);
+    if (!evidence.lookup) throw new Error(`${e.id}: ${to} needs a receipt lookup against the ledger; an id alone is not evidence`);
+    for (const id of receipts) {
+      const found = evidence.lookup(id);
+      if (!found) throw new Error(`${e.id}: receipt ${id} is not in the ledger`);
+      if (found.pending) throw new Error(`${e.id}: receipt ${id} is a pending line and has no outcome yet`);
+      if (found.error) throw new Error(`${e.id}: receipt ${id} is a failed call and cannot evidence a verdict`);
+    }
+  }
+  const next: Experiment = { ...e, status: to, receipts };
+  if (evidence.closesBy) next.closesBy = evidence.closesBy;
+  if (evidence.notes) next.notes = evidence.notes;
+  const problems = validateExperiment(next);
+  if (problems.length > 0) throw new Error(problems.map((p) => p.message).join('; '));
+  return next;
+}
+
+/** Experiments past their close date that are still open. The weekly pulse lists these first. */
+export function overdue(list: readonly Experiment[], today: string): Experiment[] {
+  return list.filter((e) => (e.status === 'proposed' || e.status === 'running') && e.closesBy < today);
+}
