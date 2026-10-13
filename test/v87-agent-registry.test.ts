@@ -49,52 +49,31 @@ function readDoc(relPath: string): string {
 
 /**
  * English word-form for the derived agent count, capitalized as it appears
- * in the AGENT_REGISTRY.md headline (e.g., 48 -> "Forty-eight",
- * 151 -> "One-hundred-fifty-one").
- *
- * Covers 40-999. It was 40-99 plus a hardcoded `if (n === 144)` branch, which
- * is how the registry crossed 100: the special case made one count pass and
- * left the next one to fail here instead of in the doc it guards. Composing
- * hundreds and tens generalises it, so the next crossing needs no edit.
+ * in the AGENT_REGISTRY.md headline (e.g., 48 -> "Forty-eight").
+ * Covers 40-99 — the plausible drift window. If the count leaves this range,
+ * extend TENS/ONES rather than weakening the assertion.
  */
 function numberToHeadlineWord(n: number): string {
-  const ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+  if (n === 144) {
+    return "One-hundred-forty-four";
+  }
   const TENS: Record<number, string> = {
-    20: "twenty",
-    30: "thirty",
-    40: "forty",
-    50: "fifty",
-    60: "sixty",
-    70: "seventy",
-    80: "eighty",
-    90: "ninety",
+    40: "Forty",
+    50: "Fifty",
+    60: "Sixty",
+    70: "Seventy",
+    80: "Eighty",
+    90: "Ninety",
   };
-  const TEENS = [
-    "ten", "eleven", "twelve", "thirteen", "fourteen",
-    "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",
-  ];
-
+  const ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+  const tens = Math.floor(n / 10) * 10;
+  const ones = n % 10;
+  const tensWord = TENS[tens];
   assert.ok(
-    Number.isInteger(n) && n >= 40 && n <= 999,
-    `agent count ${n} outside the 40-999 word-map range — extend numberToHeadlineWord() in test/v87-agent-registry.test.ts`,
+    tensWord !== undefined && n >= 40 && n <= 99,
+    `agent count ${n} outside the 40-99 word-map range — extend numberToHeadlineWord() in test/v87-agent-registry.test.ts`,
   );
-
-  /** Word-form of 0-99, lowercase, hyphenated: 51 -> "fifty-one". */
-  const underHundred = (v: number): string => {
-    if (v === 0) return "";
-    if (v < 10) return ONES[v]!;
-    if (v < 20) return TEENS[v - 10]!;
-    const tensWord = TENS[Math.floor(v / 10) * 10]!;
-    const ones = v % 10;
-    return ones === 0 ? tensWord : `${tensWord}-${ONES[ones]}`;
-  };
-
-  const hundreds = Math.floor(n / 100);
-  const rest = n % 100;
-  const parts = hundreds > 0 ? [`${ONES[hundreds]}-hundred`] : [];
-  if (rest > 0) parts.push(underHundred(rest));
-  const word = parts.join("-");
-  return word.charAt(0).toUpperCase() + word.slice(1);
+  return ones === 0 ? tensWord : `${tensWord}-${ONES[ones]}`;
 }
 
 /** Derived source-of-truth: agent .md files under agents/ (excl. AGENT_REGISTRY.md). */

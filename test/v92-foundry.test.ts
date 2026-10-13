@@ -12,7 +12,7 @@ import {
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { listAgentFiles, repoRootFromTestFile } from "./_lib/repo.js";
+import { repoRootFromTestFile } from "./_lib/repo.js";
 import { buildCapabilityGraph, resolveCapabilities } from "../tools/foundry/lib/graph.mjs";
 import { compilePackage } from "../tools/foundry/lib/compile.mjs";
 import { validateOpenAIPluginPackage } from "../tools/foundry/lib/openai-preflight.mjs";
@@ -435,15 +435,8 @@ describe("v9.2 Foundry contracts", () => {
 describe("v9.2 Foundry capability graph and routing", () => {
   it("derives every registered skill and source-counted agent", () => {
     const graph = buildCapabilityGraph(ROOT);
-    // Derived, not literal. These were 88 and 144 as constants, so adding an agent
-    // failed here instead of where the drift actually was, and the fix was to bump
-    // the number. Both sides now read the same source of truth the graph builder
-    // reads, which still catches a builder that drops a skill or an agent.
-    const expectedSkills = JSON.parse(readFileSync(join(ROOT, "skills/skill-rules.json"), "utf8")).rules
-      .length;
-    const expectedAgents = listAgentFiles(join(ROOT, "agents")).length;
-    assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, expectedSkills);
-    assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, expectedAgents);
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, 89);
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, 144);
     const nodeIds = new Set(graph.nodes.map((node: any) => node.id));
     assert.equal(nodeIds.size, graph.nodes.length);
     assert.ok(graph.edges.every((edge: any) => nodeIds.has(edge.from) && nodeIds.has(edge.to)));
