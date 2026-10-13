@@ -15,7 +15,7 @@
   },
   "version": "0.3.0",
   "ledger_started": "2026-06-10",
-  "last_updated": "2026-10-12",
+  "last_updated": "2026-10-13",
   "metrics": {
     "registered_agents": {
       "value": 144,
