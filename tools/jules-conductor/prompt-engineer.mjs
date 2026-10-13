@@ -16,6 +16,7 @@ export function engineerJulesPrompt({
   taskType = 'feature',
   scopeFiles = [],
   antiPatterns = [],
+  trackToken = '',
 }) {
   const repoName = repo.includes('/') ? repo.split('/')[1] : repo;
   const targetBranch = repoProfile.targetBranch || 'main';
@@ -87,7 +88,11 @@ export function engineerJulesPrompt({
   }
 
   prompt += `\n## Completion Requirement\n`;
-  prompt += `When done, ensure the build passes cleanly with no warnings or type errors. Open a Pull Request or generate the clean patch ready for auto-merge.`;
+  prompt += `When done, ensure the build passes cleanly with no warnings or type errors.\n`;
+  prompt += `Open one pull request against \`${targetBranch}\`. Do not merge it. Do not mark a draft ready.\n`;
+  if (trackToken) {
+    prompt += `Include this exact token in the pull request title: \`${trackToken}\`.\n`;
+  }
 
   return prompt;
 }

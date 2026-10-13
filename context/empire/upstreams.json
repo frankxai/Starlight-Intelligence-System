@@ -185,6 +185,28 @@
       "owner": "starlight-agent-skills",
       "primitive": "versioned procedural-memory extraction, correction, and deprecation",
       "security_notes": "Never promote learned procedures without repeated success, tests, provenance, and review"
+    },
+    {
+      "id": "music-intelligence-os",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/frankxai/music-intelligence-os",
+      "track": "PR #4 October operated studio source",
+      "verified_at": "2026-10-10",
+      "adoption": "conformance",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "October operated studio core engine and studio workflow runtime",
+      "security_notes": "Retain label policies and Notion bindings in SIS; point studio execution to operated core without runtime duplication"
+    },
+    {
+      "id": "agentic-music-producer-os",
+      "class": "runtime_dependency",
+      "repository": "https://github.com/frankxai/agentic-music-producer-os",
+      "track": "October distribution core",
+      "verified_at": "2026-10-10",
+      "adoption": "candidate",
+      "owner": "Starlight-Intelligence-System",
+      "primitive": "portable execution and customer distribution runtime",
+      "security_notes": "Retain registries and canon in SIS; delegate portable distribution execution without runtime duplication"
     }
   ]
 }

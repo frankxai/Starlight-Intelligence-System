@@ -36,6 +36,13 @@ class MergeReviewTests(unittest.TestCase):
     def test_sensitive_requires_real_receipt(self):
         self.assertFalse(self.evaluate([]))
         self.assertTrue(self.evaluate([receipt()]))
+        self.assertTrue(self.evaluate([receipt(maker='jules')]))
+
+    def test_trusted_attestors_pass(self):
+        for user_login in ['frankxai', 'frankx-eth']:
+            comment = receipt()
+            comment['user']['login'] = user_login
+            self.assertTrue(self.evaluate([comment]))
 
     def test_windows_marker_preserves_report_digest(self):
         report = ('PASS: Independently inspected the complete supplied security source.\r\n'
@@ -69,7 +76,7 @@ class MergeReviewTests(unittest.TestCase):
     def test_stale_incomplete_tampered_or_blocked_receipts_deny(self):
         for change in [{'headSha': 'c' * 40}, {'reviewedFiles': []},
                        {'blockingFindings': ['unfixed']}, {'reviewSha256': 'd' * 64},
-                       {'provider': 'codex'}, {'verdict': 'FAIL'}, {'pr': 111},
+                       {'provider': 'codex'}, {'maker': 'untrusted_maker'}, {'verdict': 'FAIL'}, {'pr': 111},
                        {'repository': 'attacker/repo'}, {'packetSha256': 'invalid'},
                        {'resolution': ''}, {'review': ''}]:
             with self.subTest(change=change):
@@ -81,6 +88,11 @@ class MergeReviewTests(unittest.TestCase):
             comment['user']['login'] = actor
             comment['author_association'] = association
             self.assertFalse(self.evaluate([comment]))
+
+    def test_jules_maker_and_frankx_eth_attestor_pass(self):
+        comment = receipt(maker='jules', pr='110')
+        comment['user']['login'] = 'frankx-eth'
+        self.assertTrue(self.evaluate([comment]))
 
     def test_malformed_comment_and_empty_listing_deny(self):
         comment = receipt()

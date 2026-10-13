@@ -1,14 +1,42 @@
 # Modular npm implementation
 
-Status: implementation branch; publication and acceptance gates remain open.
+Status: accepted implementation; core/AI SDK 0.2.1 and MCP 0.2.2 release preparation.
 Tracking: [SIS issue 329](https://github.com/frankxai/Starlight-Intelligence-System/issues/329).
 
-Current review gate: [PR 342](https://github.com/frankxai/Starlight-Intelligence-System/pull/342).
-The packages remain 0.2.0 candidates. Final measurements belong to the hosted
-artifact manifest and consumer receipt for the exact accepted revision; sizes in
-the historical checkpoints below must not be reused as current release evidence.
-Codex and GitHub Copilot reviews exposed production defects despite passing CI.
-The fixes and remaining deployment/provider/account gaps are tracked in the PR.
+The 12 October accepted source is `c120706cdc56825044583550af7a03c7ee98bcf2`.
+Core recall [PR364](https://github.com/frankxai/Starlight-Intelligence-System/pull/364),
+MCP method bindings [PR366](https://github.com/frankxai/Starlight-Intelligence-System/pull/366)
+and archive measurements [PR367](https://github.com/frankxai/Starlight-Intelligence-System/pull/367)
+are merged. Gateway privacy namespace hardening
+[PR370](https://github.com/frankxai/Starlight-Intelligence-System/pull/370) and plugin
+dependency updates [PR369](https://github.com/frankxai/Starlight-Intelligence-System/pull/369)
+also merged normally. PR370 receiving archives and installed consumers are verified;
+PR369 receiving verification remains pending. These establish package-fixture
+acceptance, not live browser/edge/provider behavior or customer outcomes.
+
+Changesets 3.0.3 prepares core and AI SDK at 0.2.1 and MCP at 0.2.2. It consumes
+the adapter development update, core/MCP recall changeset and accepted gateway
+privacy patch. Runtime source matches the accepted main revision, including its
+privacy fix and plugin dependency graph. Workspace dependency resolutions, protocol
+schemas, root package and publication workflow are unchanged by release preparation.
+The recall release note was authored and consumed locally by Changesets before
+the initial release commit, so it has no tracked deletion in this PR. Its behavior
+is covered by accepted PR364 and PR366. The development update in commit `72dbb8f`
+changed root `@types/node` to `^24.19.1` and adapter `ai` to `7.0.133`; these were
+already accepted before release preparation.
+The 0.2.0 registry stages remain intact and reserve their version numbers. Fresh
+candidate source review, hosted tarball/installed-consumer evidence, normal protected
+merge and receiving verification are required before publication.
+
+Public registry reads on 12 October show only 0.0.0-stage placeholders for these three
+names. A successful native account read does not prove publisher authority.
+Supported trust inspection previously returned 403; stage metadata is separately
+readable. No token, 2FA, trust permission or registry content has been changed by
+this release preparation. Require exact publisher configuration and actual
+registry integrity/provenance before claiming public delivery.
+
+The following checkpoints retain their original revision and date boundaries.
+Their versions, measurements and acceptance states do not describe this candidate.
 
 10 October follow-up: adversarial fixtures reproduced acceptance of unterminated
 archives and ambiguous paths in the release/static-audit parser. The parser now
@@ -36,8 +64,10 @@ database, memory router, or vault filesystem.
 | `@starlight-intelligence/ai-sdk` | AI SDK model middleware for generation and streaming | Core; AI SDK 7 peer |
 | `@starlight-intelligence/mcp` | Official MCP SDK v2 server factory and read-only stdio gateway bridge | Core, official MCP server, Zod |
 
-All three candidates are now versioned at 0.2.0 using the initial minor Changeset.
-Changesets 3.0.3 generated their changelogs and consumed that completed Changeset.
+The initial minor-release checkpoint prepared all three packages at 0.2.0.
+Changesets 3.0.3 generated those changelogs and consumed that initial Changeset.
+The current 12 October preparation advances core/AI SDK to 0.2.1 and MCP to 0.2.2,
+as recorded above; the following 0.2.0 measurements retain their original scope.
 The accepted root is 8.5.1, with pnpm as its lockfile authority and a standalone
 legacy sanitizer that does not depend on unpublished core. The read-only publish-plan
 confirms only core, AI SDK and MCP, in dependency order, are unpublished candidates.

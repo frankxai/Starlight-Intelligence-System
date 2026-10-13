@@ -85,12 +85,11 @@ export function validateEntries(entries, expectedName) {
     if (!entries.has('package/' + file.replace(/^\.\//, ''))) throw new Error(`Missing entry point: ${file}`);
   }
   if (!entries.has('package/LICENSE') || !entries.has('package/README.md')) throw new Error('Missing license or usage documentation');
-  let runtimeBytes = 0;
+  const runtimeBytes = [...entries].reduce((sum, [path, bytes]) => sum + (path.endsWith('.js') ? bytes.length : 0), 0);
   if (expectedName === '@starlight-intelligence/core') {
     if (['dependencies', 'optionalDependencies', 'peerDependencies'].some(key => Object.keys(pkg[key] ?? {}).length)) throw new Error('Core must have zero dependencies');
     for (const [path, bytes] of entries) {
       if (!path.endsWith('.js')) continue;
-      runtimeBytes += bytes.length;
       if (/(?:\bfrom\s*|\bimport\s*(?:\(\s*)?|\brequire\s*\(\s*)['"](?:node:|[^.])/.test(bytes.toString())) throw new Error('Core imports a nonportable dependency');
     }
     if (runtimeBytes >= 20_000) throw new Error('Core exceeds the 20 kB runtime budget');

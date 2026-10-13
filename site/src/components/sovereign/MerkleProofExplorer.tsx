@@ -28,7 +28,7 @@ async function computeSha256(message: string): Promise<string> {
 }
 
 export function MerkleProofExplorer() {
-  const [atoms, setAtoms] = useState<Atom[]>(DEFAULT_ATOMS);
+  const [atoms] = useState<Atom[]>(DEFAULT_ATOMS);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [merkleRoot, setMerkleRoot] = useState<string>("");
   const [proof, setProof] = useState<ProofStep[]>([]);

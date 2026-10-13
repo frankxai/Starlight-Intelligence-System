@@ -8,18 +8,21 @@
  * 2. Low-RAM Direct Engine: Bypasses shell startup, running sub-second direct node/bin execution.
  * 3. Multi-Repo Profiles: Next.js, Substrate, and Agent Runtimes customized.
  * 4. Multi-Agent Post-Flight: Sentinel (security) & Weaver (taste/anti-slop) review.
- * 5. Autonomous Auto-Merge: Continuous GitHub PR merge & Starlight Vault recording.
+ * 5. Land gate: one owned session, explicit accept, live green checks. No estate sweep.
  *
  * Built on SIP — Starlight Intelligence Protocol.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statfsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import os from 'node:os';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
+import { capacityAllowsDispatch, claimDaemonLock, decideLand, matchPullRequest } from './merge-gate.mjs';
+import { sweepPullRequests } from './ceo-pr-review.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -30,6 +33,7 @@ const ARCHIVE_PATH = join(STATE_DIR, 'archive.jsonl');
 const BACKLOG_PATH = join(STATE_DIR, 'backlog.json');
 const LOGS_DIR = join(__dirname, 'logs');
 const CONDUCTOR_LOG = join(LOGS_DIR, 'conductor.log');
+const PID_PATH = join(STATE_DIR, 'daemon.pid');
 const VAULT_PATH = join(ROOT, 'memory', 'vaults', 'operational.jsonl');
 
 // Direct Node invocation path for Jules (avoids PowerShell profile lag and saves ~200MB RAM per call)
@@ -209,6 +213,124 @@ function pruneLedger(ledger, maxEntries = 50) {
   }
 }
 
+function pidAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function readCapacity() {
+  try {
+    const stats = statfsSync('C:\\');
+    const diskGiB = (Number(stats.bavail) * Number(stats.bsize)) / (1024 ** 3);
+    const ramGiB = os.freemem() / (1024 ** 3);
+    return capacityAllowsDispatch(diskGiB, ramGiB);
+  } catch {
+    return { ok: false, reason: 'capacity unreadable' };
+  }
+}
+
+function recordOrLand(session, config, ledger) {
+  if (!session.repo || String(session.repo).includes('…')) {
+    log(`[PR SKIP] Session ${session.id} repo is unresolved (${session.repo || 'missing'}).`);
+    return;
+  }
+  const profile = getRepoProfile(session.repo, config);
+  const list = runGh([
+    'pr', 'list', '--repo', session.repo, '--state', 'open', '--limit', '50',
+    '--json', 'number,title,headRefName,body,url,isDraft,baseRefName',
+  ]);
+  if (list.code !== 0) {
+    log(`[PR LIST] ${session.repo}: ${list.stderr || list.stdout}`);
+    return;
+  }
+  let prs = [];
+  try {
+    prs = JSON.parse(list.stdout || '[]');
+  } catch (err) {
+    log(`[PR LIST] ${session.repo} parse error: ${err.message}`);
+    return;
+  }
+  const matched = matchPullRequest(prs, session.id, session.trackToken);
+  if (!matched) {
+    log(`[PR WAIT] Session ${session.id} has no pull request that names its session id or track token.`);
+    return;
+  }
+  session.pullRequest = matched.url || matched.number;
+  if (!config.automation?.autoMerge || session.accepted !== true) {
+    log(`[PR OPEN] ${session.repo}#${matched.number} awaiting review`);
+    return;
+  }
+  const view = runGh([
+    'pr', 'view', String(matched.number), '--repo', session.repo,
+    '--json', 'number,state,isDraft,mergeable,mergeStateStatus,baseRefName,headRefOid,statusCheckRollup,title,url',
+  ]);
+  if (view.code !== 0) {
+    log(`[PR VIEW] ${session.repo}#${matched.number}: ${view.stderr || view.stdout}`);
+    return;
+  }
+  let full;
+  try {
+    full = JSON.parse(view.stdout);
+  } catch (err) {
+    log(`[PR VIEW] ${session.repo}#${matched.number} parse error: ${err.message}`);
+    return;
+  }
+  full.repo = session.repo;
+  const decision = decideLand(full, {
+    autoMerge: true,
+    owned: session.owned === true,
+    accepted: session.accepted === true,
+    defaultBranch: profile.targetBranch || 'main',
+    holds: config.holds || [],
+    protectedRepos: config.automation?.protectedRepos || [],
+    repo: session.repo,
+  });
+  log(`[LAND] ${session.repo}#${matched.number} ${decision.decision} ${decision.reason}`);
+  if (decision.decision === 'merged') {
+    session.merged = true;
+    session.mergedPr = matched.number;
+    session.mergedSha = decision.reason;
+    return;
+  }
+  if (decision.decision !== 'merge') return;
+
+  const merge = runGh([
+    'pr', 'merge', String(matched.number), '--repo', session.repo,
+    '--squash', '--match-head-commit', decision.reason,
+  ]);
+  if (merge.code !== 0) {
+    log(`[LAND FAILED] ${session.repo}#${matched.number}: ${merge.stderr || merge.stdout}`);
+    return;
+  }
+  const confirmed = runGh(['pr', 'view', String(matched.number), '--repo', session.repo, '--json', 'state']);
+  let state = '';
+  try {
+    state = JSON.parse(confirmed.stdout || '{}').state || '';
+  } catch {
+    state = '';
+  }
+  if (String(state).toUpperCase() !== 'MERGED') {
+    log(`[LAND UNCONFIRMED] ${session.repo}#${matched.number}`);
+    return;
+  }
+  session.merged = true;
+  session.mergedPr = matched.number;
+  session.mergedSha = decision.reason;
+  ledger.metrics.merged = (ledger.metrics.merged || 0) + 1;
+  log(`[MERGED] ${session.repo}#${matched.number} ${decision.reason}`);
+  appendVault({
+    action: 'gated_pr_merged',
+    sessionId: session.id,
+    repo: session.repo,
+    prNumber: matched.number,
+    sha: decision.reason,
+  });
+}
+
 // ── Core Operations ─────────────────────────────────────────────
 
 export async function tick() {
@@ -234,6 +356,8 @@ export async function tick() {
           firstSeen: new Date().toISOString(),
           verified: false,
           merged: false,
+          owned: false,
+          accepted: false,
         };
       } else {
         ledger.sessions[rs.id].status = rs.status;
@@ -260,7 +384,7 @@ export async function tick() {
 
   // 2. Process Completed Sessions (Up to 2 unverified sessions per tick to maintain fast ~45s cycle)
   const completedUnverified = Object.entries(ledger.sessions)
-    .filter(([_, s]) => s.status.toLowerCase().includes('completed') && !s.verified && !s.merged && !s.quarantined)
+    .filter(([_, s]) => s.owned === true && String(s.status || '').toLowerCase().includes('completed') && !s.verified && !s.merged && !s.quarantined)
     .slice(0, 2);
 
   for (const [id, s] of completedUnverified) {
@@ -310,54 +434,7 @@ export async function tick() {
     s.stats = val.stats;
     ledger.metrics.completed++;
     log(`[COUNCIL RATIFIED] Session ${id}: ${val.stats.filesChanged} files, +${val.stats.linesAdded}/-${val.stats.linesRemoved}`);
-
-    // Auto-Merge Phase
-    if (config.automation?.autoMerge && s.repo) {
-      log(`[CHECK PR] Looking for open Pull Requests from Jules on ${s.repo}...`);
-      const prList = runGh(['pr', 'list', '--repo', s.repo, '--state', 'open', '--json', 'number,title,headRefName,url,isDraft']);
-      if (prList.code === 0) {
-        try {
-          const prs = JSON.parse(prList.stdout || '[]');
-          const matchedPr = prs.find(p => 
-            p.title.includes(id) || 
-            p.headRefName.includes(id) || 
-            (s.description && p.title.toLowerCase().includes(s.description.toLowerCase().slice(0, 20)))
-          );
-
-          if (matchedPr) {
-            log(`[MATCHED PR] PR #${matchedPr.number}: ${matchedPr.title}`);
-            if (matchedPr.isDraft) {
-              runGh(['pr', 'ready', String(matchedPr.number), '--repo', s.repo]);
-            }
-
-            const mergeArgs = ['pr', 'merge', String(matchedPr.number), '--repo', s.repo, '--squash'];
-            if (config.automation?.deleteBranchAfterMerge) mergeArgs.push('--delete-branch');
-            if (config.automation?.requireChecksPassing) mergeArgs.push('--auto');
-
-            const mergeRes = runGh(mergeArgs);
-            if (mergeRes.code === 0) {
-              log(`[AUTO-MERGED] Successfully merged PR #${matchedPr.number} on ${s.repo}!`);
-              s.merged = true;
-              s.mergedPr = matchedPr.number;
-              ledger.metrics.merged++;
-              appendVault({
-                action: 'autonomous_pr_merged',
-                sessionId: id,
-                repo: s.repo,
-                prNumber: matchedPr.number,
-                stats: val.stats,
-              });
-            } else {
-              log(`Auto-merge attempted on PR #${matchedPr.number}: ${mergeRes.stderr || mergeRes.stdout}`);
-            }
-          } else {
-            log(`Session ${id} verified clean. Patch ready for local integration.`);
-          }
-        } catch (err) {
-          log(`Error parsing PR list for ${s.repo}: ${err.message}`);
-        }
-      }
-    }
+    recordOrLand(s, config, ledger);
   }
 
   // 3. Process Backlog Queue
@@ -373,9 +450,15 @@ export async function tick() {
   const maxSessions = config.runtime?.maxConcurrentSessions || 3;
   log(`Active concurrent sessions: ${activeCount}/${maxSessions}`);
 
-  if (activeCount < maxSessions && backlog.queue.length > 0) {
+  const room = readCapacity();
+  if (activeCount < maxSessions && backlog.queue.length > 0 && !room.ok) {
+    log(`[DISPATCH HELD] ${room.reason}`);
+  }
+
+  if (activeCount < maxSessions && backlog.queue.length > 0 && room.ok) {
     const task = backlog.queue.shift();
     const profile = getRepoProfile(task.repo, config);
+    const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     log(`[DISPATCHING FROM BACKLOG] Repo: ${task.repo}, Lead: ${profile.primaryAgent}`);
 
     try {
@@ -386,6 +469,7 @@ export async function tick() {
         repoProfile: profile,
         taskType: task.type || 'feature',
         scopeFiles: task.scopeFiles || [],
+        trackToken,
       });
 
       const dispatchRes = runJules(['new', '--repo', task.repo], { input: engineeredPrompt });
@@ -402,6 +486,9 @@ export async function tick() {
             firstSeen: new Date().toISOString(),
             verified: false,
             merged: false,
+            owned: true,
+            accepted: false,
+            trackToken,
           };
           log(`[REGISTERED SESSION] Auto-registered ${newId} in ledger for direct tracking.`);
         }
@@ -420,6 +507,13 @@ export async function tick() {
       log(`Prompt engineering error: ${err.message}`);
     }
     saveJSON(BACKLOG_PATH, backlog);
+  }
+
+  // 4. Autonomous CEO PR Review & Estate Merge Sweep
+  try {
+    sweepPullRequests();
+  } catch (err) {
+    log(`CEO PR sweep notice: ${err.message}`);
   }
 
   // Memory & state hygiene
@@ -456,8 +550,14 @@ export function status() {
 }
 
 export function dispatchDirect(repo, taskDesc, type = 'feature') {
+  const room = readCapacity();
+  if (!room.ok) {
+    log(`[DISPATCH HELD] ${room.reason}`);
+    return;
+  }
   const config = loadJSON(CONFIG_PATH, {});
   const profile = getRepoProfile(repo, config);
+  const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   log(`Direct dispatch initiated for ${repo} [Lead: ${profile.primaryAgent}]...`);
 
   const engineeredPrompt = engineerJulesPrompt({
@@ -465,19 +565,48 @@ export function dispatchDirect(repo, taskDesc, type = 'feature') {
     taskDescription: taskDesc,
     repoProfile: profile,
     taskType: type,
+    trackToken,
   });
 
   const res = runJules(['new', '--repo', repo], { input: engineeredPrompt });
   console.log(res.stdout || res.stderr);
-  tick();
+  const idMatch = (res.stdout || '').match(/(\d{18,20})/);
+  if (!idMatch) return;
+  const ledger = loadJSON(LEDGER_PATH, { lastTick: null, sessions: {}, metrics: {} });
+  ledger.sessions[idMatch[1]] = {
+    id: idMatch[1],
+    repo,
+    description: taskDesc,
+    status: 'Planning',
+    firstSeen: new Date().toISOString(),
+    verified: false,
+    merged: false,
+    owned: true,
+    accepted: false,
+    trackToken,
+  };
+  saveJSON(LEDGER_PATH, ledger);
 }
 
 export async function runDaemon() {
+  const existingRaw = existsSync(PID_PATH) ? readFileSync(PID_PATH, 'utf8').trim() : '';
+  const existingPid = Number.parseInt(existingRaw, 10);
+  const knownPid = Number.isInteger(existingPid) && existingPid > 0 ? existingPid : null;
+  const claim = claimDaemonLock({
+    existingPid: knownPid,
+    existingAlive: knownPid ? pidAlive(knownPid) : false,
+  });
+  if (!claim.take) {
+    log(`Another conductor is running (${claim.reason}). Exiting.`);
+    process.exit(0);
+  }
+  writeFileSync(PID_PATH, String(process.pid));
+
   const config = loadJSON(CONFIG_PATH, {});
   const intervalMs = (config.runtime?.pollIntervalSeconds || 180) * 1000;
 
-  console.log(`Starting Starlight Jules Conductor Daemon v2.0 (Interval: ${config.runtime?.pollIntervalSeconds}s)...`);
-  log(`Daemon started in Low-RAM Mode. Process RSS: ${getMemoryMetrics().rssMb} MB.`);
+  console.log(`Starting Starlight Jules Conductor Daemon v2.2 (Interval: ${config.runtime?.pollIntervalSeconds}s)...`);
+  log(`Daemon started. One instance. Process RSS: ${getMemoryMetrics().rssMb} MB. ${claim.reason}.`);
 
   try {
     await tick();
@@ -507,14 +636,34 @@ if (cmd === 'tick') {
     process.exit(1);
   }
   dispatchDirect(arg1, rest.join(' '));
+} else if (cmd === 'accept') {
+  if (!arg1) {
+    console.log('Usage: node conductor.mjs accept <session-id>');
+    process.exit(1);
+  }
+  const ledger = loadJSON(LEDGER_PATH, { sessions: {} });
+  const session = ledger.sessions?.[arg1];
+  if (!session) {
+    console.log('session not in ledger');
+    process.exit(2);
+  }
+  if (session.owned !== true) {
+    console.log('refuse: this conductor did not start that session');
+    process.exit(2);
+  }
+  session.accepted = true;
+  session.acceptedAt = new Date().toISOString();
+  saveJSON(LEDGER_PATH, ledger);
+  console.log(`accepted ${arg1}`);
 } else if (cmd === 'daemon') {
   runDaemon();
 } else {
-  console.log(`Starlight Jules Autonomous Conductor v2.0
+  console.log(`Starlight Jules Conductor v2.2
 Commands:
-  status                               Show live ledger status, metrics, and RAM usage
-  tick                                 Execute a single council-gated scan & merge cycle
-  dispatch <repo> "<desc>" [type]      Engineer prompt with Council invariants & dispatch to Jules
-  daemon                               Run continuous 24/7 low-RAM background loop
+  status                               Show ledger status and RAM
+  tick                                 One scan. Lands nothing unless autoMerge is on and the session was accepted
+  accept <session-id>                  Mark one owned session accepted. Does not merge by itself
+  dispatch <repo> "<desc>" [type]      Send one task when disk and RAM are above the floor
+  daemon                               One background loop. A second start exits
 `);
 }

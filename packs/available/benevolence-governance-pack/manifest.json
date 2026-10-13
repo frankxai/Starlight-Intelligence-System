@@ -1,0 +1,17 @@
+{
+  "id": "benevolence-governance-pack",
+  "name": "Benevolence Governance Pack",
+  "version": "0.1.0",
+  "kind": "agent",
+  "author": "FrankX / Starlight Intelligence",
+  "description": "Executable charter enforcement, real-time GUARDRAILS emission, and fail-closed safety gates.",
+  "permissions": [
+    "fs:read:repo",
+    "fs:write:vaults",
+    "task-scheduler:register"
+  ],
+  "licenseTier": "subscription",
+  "attestation": "Built on SIP",
+  "publishedAt": "2026-10-11T00:00:00Z",
+  "manifestSha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

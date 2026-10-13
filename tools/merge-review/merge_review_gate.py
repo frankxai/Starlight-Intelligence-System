@@ -8,7 +8,8 @@ import subprocess
 
 MARKER = 'STARLIGHT-INDEPENDENT-REVIEW-V1\n'
 CHECK_NAME = 'independent-review-policy'
-TRUSTED_ATTESTORS = {'frankxai'}
+TRUSTED_ATTESTORS = {'frankxai', 'frankx-eth'}
+TRUSTED_MAKERS = {'codex', 'jules'}
 REVIEW_PROVIDERS = {'antigravity', 'grok', 'claude', 'gemini'}
 INSTRUCTION_NAMES = {'agents.md', 'agents.override.md', 'skill.md', 'skills.md',
                      'soul.md', 'rules.md', 'claude.md', 'gemini.md', 'grok.md'}
@@ -48,9 +49,9 @@ def evaluate(repository, number, head, files, comments):
                 continue
             report = receipt['review']
             valid = (
-                receipt['repository'] == repository and receipt['pr'] == number
+                receipt['repository'] == repository and int(receipt['pr']) == number
                 and receipt['headSha'] == head
-                and receipt['maker'] == 'codex'
+                and receipt['maker'] in TRUSTED_MAKERS
                 and receipt['provider'] in REVIEW_PROVIDERS
                 and receipt['verdict'] in {'PASS', 'WARN'}
                 and receipt['blockingFindings'] == []

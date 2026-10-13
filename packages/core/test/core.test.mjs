@@ -7,6 +7,45 @@ import { projectRecall, recallContext, SanitizationGateway } from '../dist/index
 const memory = { recall: async () => [] };
 const options = { memory, tenantId: 'tenant-a', workspaceId: 'workspace-a' };
 
+test('Supabase secret keys are fully redacted while publishable keys remain usable', () => {
+  const veil = new SanitizationGateway({ scrubPII: false });
+  for (const suffix of ['fixture_' + 'a'.repeat(32), 'fixture-' + 'a'.repeat(32) + '-_']) {
+    const key = 'sb_secret_' + suffix;
+    assert.equal(veil.sanitize('before ' + key + ' after'), 'before [REDACTED] after');
+    assert.equal(new SanitizationGateway({ scrubPII: false, maskString: '$&' }).sanitize(key), '$&');
+    assert.equal(new SanitizationGateway({ scrubPII: false, scrubSecrets: false }).sanitize(key), key);
+  }
+  const publicKey = 'sb_publishable_fixture_' + 'a'.repeat(32);
+  assert.equal(veil.sanitize(publicKey), publicKey);
+});
+
+test('named Supabase server-key fields mask opaque values in nested contexts', () => {
+  const veil = new SanitizationGateway({ scrubPII: false });
+  const result = veil.sanitizeContext({ SUPABASE_SECRET_KEY: 'opaque-fixture', nested: {
+    supabase_secret_key: 'opaque-fixture', SUPABASE_SERVICE_ROLE_KEY: 'opaque-fixture',
+    supabase_service_role_key: 'opaque-fixture', NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'public-fixture',
+  } });
+  assert.equal(result.SUPABASE_SECRET_KEY, '[REDACTED]');
+  for (const name of ['supabase_secret_key', 'SUPABASE_SERVICE_ROLE_KEY', 'supabase_service_role_key']) {
+    assert.equal(result.nested[name], '[REDACTED]');
+  }
+  assert.equal(result.nested.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'public-fixture');
+});
+
+test('Supabase credentials cannot leave recall through the provider query or returned context', async () => {
+  const secret = 'sb_secret_' + 'fixture_' + 'a'.repeat(32);
+  const requests = [];
+  const recalled = await recallContext('Find ' + secret, { ...options, memory: {
+    recall: async request => {
+      requests.push(request);
+      return [hit(secret, { normalized_fact: 'Credential ' + secret })];
+    },
+  } });
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].query, 'Find [REDACTED]');
+  assert.deepEqual(recalled, [{ id: '[REDACTED]', content: 'Credential [REDACTED]', score: 0.9 }]);
+});
+
 test('every shipped core schema is available through a public package subpath', async () => {
   const directory = new URL('.', import.meta.resolve('@starlight-intelligence/core/schemas/work-packet'));
   const files = (await readdir(directory)).filter(file => file.endsWith('.schema.json'));
@@ -231,4 +270,122 @@ test('shared acyclic context branches are retained and repeated traversal stays 
  let dag={ note:'safe' };for(let i=0;i<20;i++)dag={left:dag,right:dag};
  const bounded=new SanitizationGateway().sanitizeContext(dag);
  assert.ok(JSON.stringify(bounded).includes('__truncated'));
+});
+
+// The host may reuse its configuration while a provider read is pending.
+async function pendingRecall(configure, mutate, results) {
+  let started, finish;
+  const entered = new Promise(resolve => { started = resolve; });
+  const response = new Promise(resolve => { finish = resolve; });
+  const provider = { recall(request) { started(request); return response; } };
+  const config = { memory: provider, tenantId: 'tenant-a', workspaceId: 'workspace-a', ...configure };
+  const pending = recallContext('reviewed release', config);
+  const request = await entered;
+  try { mutate(config); } finally { finish(results); }
+  return { request, context: await pending };
+}
+
+test('in-flight recall retains the admitted tenant when caller configuration changes', async () => {
+  const { request, context } = await pendingRecall({}, config => { config.tenantId = 'tenant-b'; },
+    [hit('admitted'), hit('other', { tenant_id: 'tenant-b' })]);
+  assert.equal(request.tenant_id, 'tenant-a');
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('in-flight recall retains the admitted workspace when caller configuration changes', async () => {
+  const { request, context } = await pendingRecall({}, config => { config.workspaceId = 'workspace-b'; },
+    [hit('admitted'), hit('other', { workspace_id: 'workspace-b' })]);
+  assert.equal(request.workspace_id, 'workspace-a');
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('in-flight recall never expands its admitted sharing grant', async () => {
+  const { context } = await pendingRecall({ allowShareable: false }, config => { config.allowShareable = true; },
+    [hit('shareable', { privacy_class: 'private-shareable' }), hit('public')]);
+  assert.deepEqual(context.map(item => item.id), ['public']);
+});
+
+test('in-flight recall retains the admitted result limit', async () => {
+  const { context } = await pendingRecall({ limit: 1 }, config => { config.limit = 2; }, [hit('first'), hit('second')]);
+  assert.deepEqual(context.map(item => item.id), ['first']);
+});
+
+test('in-flight recall retains the admitted character budget', async () => {
+  const { context } = await pendingRecall({ maxCharacters: 5 }, config => { config.maxCharacters = 100; }, [hit('first')]);
+  assert.equal(context[0].content, 'Use t');
+});
+
+test('in-flight recall retains default sanitization when the caller replaces its sanitizer', async () => {
+  const { context } = await pendingRecall({}, config => { config.sanitizer = { sanitize: text => text }; },
+    [hit('contact', { normalized_fact: 'fixture@example.org' })]);
+  assert.equal(context[0].content, '[REDACTED]');
+});
+
+test('recall selects its provider method before yielding and preserves its receiver', async () => {
+  let originalCalls = 0, replacementCalls = 0;
+  const provider = { marker: 'original', async recall() {
+    assert.equal(this.marker, 'original'); originalCalls++; return [hit('original')];
+  } };
+  const pending = recallContext('reviewed release', { ...options, memory: provider });
+  provider.recall = async () => { replacementCalls++; return [hit('replacement')]; };
+  assert.deepEqual((await pending).map(item => item.id), ['original']);
+  assert.equal(originalCalls, 1); assert.equal(replacementCalls, 0);
+});
+
+test('in-flight recall selects one sanitizer method and preserves its receiver', async () => {
+  const sanitizer = { marker: 'original', sanitize(text) {
+    assert.equal(this.marker, 'original'); return text.replace('fixture@example.org', '[REDACTED]');
+  } };
+  const { context } = await pendingRecall({ sanitizer }, () => { sanitizer.sanitize = text => text; },
+    [hit('contact', { normalized_fact: 'fixture@example.org' })]);
+  assert.equal(context[0].content, '[REDACTED]');
+});
+
+test('a query sanitizer cannot change the admitted scope before provider egress', async () => {
+  const config = { ...options, memory: { async recall(request) {
+    assert.equal(request.tenant_id, 'tenant-a'); return [hit('admitted')];
+  } } };
+  config.sanitizer = { sanitize(text) { config.tenantId = 'tenant-b'; return text; } };
+  assert.deepEqual((await recallContext('reviewed release', config)).map(item => item.id), ['admitted']);
+});
+
+test('query sanitizer diagnostics are withheld and provider work never starts', async () => {
+  let calls = 0;
+  await assert.rejects(recallContext('reviewed release', { ...options,
+    memory: { async recall() { calls++; return []; } },
+    sanitizer: { sanitize() { throw new Error('synthetic private host diagnostic'); } },
+  }), error => error.message === 'Memory recall unavailable or denied');
+  assert.equal(calls, 0);
+});
+
+test('standalone projection retains scope and sharing permission across sanitizer callbacks', () => {
+  const config = { ...options, allowShareable: false };
+  config.sanitizer = { sanitize(text) {
+    config.tenantId = 'tenant-b'; config.allowShareable = true; return text;
+  } };
+  const context = projectRecall([hit('admitted'), hit('foreign', { tenant_id: 'tenant-b' }),
+    hit('shareable', { tenant_id: 'tenant-b', privacy_class: 'private-shareable' })], config);
+  assert.deepEqual(context.map(item => item.id), ['admitted']);
+});
+
+test('standalone projection retains its sanitizer method across host callbacks', () => {
+  const sanitizer = { sanitize(text) {
+    this.sanitize = value => value;
+    return text.replace('fixture@example.org', '[REDACTED]');
+  } };
+  const context = projectRecall([hit('fixture@example.org', { normalized_fact: 'safe first fact' }),
+    hit('second', { normalized_fact: 'fixture@example.org' })], { ...options, sanitizer });
+  assert.equal(context[0].id, '[REDACTED]');
+  assert.equal(context[1].content, '[REDACTED]');
+});
+
+test('cancellation during query sanitization prevents provider work without an unhandled rejection', async () => {
+  const controller = new AbortController();
+  let calls = 0;
+  await assert.rejects(recallContext('reviewed release', { ...options,
+    memory: { async recall() { calls++; return []; } },
+    sanitizer: { sanitize(text) { controller.abort('synthetic private caller reason'); return text; } },
+  }, controller.signal), error => error.name === 'AbortError' && !error.message.includes('synthetic'));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls, 0);
 });
