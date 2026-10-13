@@ -1,60 +1,36 @@
-#!/usr/bin/env bash
-# Vercel ignoreCommand for the /site project.
-# Exit 0 skips; exit 1 builds. Uncertain states always build.
+#!/bin/sh
+# Vercel ignoreCommand for the /site project (prj_wDNGrb1R1rB5PJOG9cUEICSER887).
+# Exit 0 = skip the build, exit 1 = build. POSIX sh, no network calls.
+#
+# Policy (cost control; Build CPU is metered):
+#   1. Production builds only from main.
+#   2. Bot and agent preview branches are always skipped:
+#      dependabot/*, agent/*, claude/*, codex/*, ccr-*, and anything containing "jules".
+#   3. Every other preview is skipped too, except branches named cto/* or preview/*.
+#      Vercel exposes VERCEL_GIT_PULL_REQUEST_ID but not whether the PR is a draft,
+#      so we don't try to detect drafts. Instead, to get a preview, push to a
+#      cto/* or preview/* branch, or redeploy by hand from the Vercel dashboard.
 
-set +e
+ENV="${VERCEL_ENV:-}"
+REF="${VERCEL_GIT_COMMIT_REF:-}"
 
-if [ "${VERCEL_ENV:-}" = "production" ]; then
-  echo "[should-deploy] production — build"
-  exit 1
-fi
-
-if printf '%s' "${VERCEL_GIT_COMMIT_MESSAGE:-}" | grep -Fq "[agent-wip]"; then
-  echo "[should-deploy] explicit agent WIP checkpoint — skip"
+if [ "$ENV" = "production" ]; then
+  if [ "$REF" = "main" ]; then
+    echo "[should-deploy] production on main - build"
+    exit 1
+  fi
+  echo "[should-deploy] production env on non-main ref '$REF' - skip"
   exit 0
 fi
 
-if git log -1 --format=%B HEAD^ 2>/dev/null | grep -Fq "[agent-wip]"; then
-  echo "[should-deploy] coherent checkpoint follows agent WIP — build"
-  exit 1
-fi
-
-if [ -n "${VERCEL_GIT_PULL_REQUEST_ID:-}" ] &&
-   [ -n "${VERCEL_GIT_REPO_OWNER:-}" ] &&
-   [ -n "${VERCEL_GIT_REPO_SLUG:-}" ]; then
-  PR_JSON=$(curl -sf --max-time 5     "https://api.github.com/repos/${VERCEL_GIT_REPO_OWNER}/${VERCEL_GIT_REPO_SLUG}/pulls/${VERCEL_GIT_PULL_REQUEST_ID}" 2>/dev/null)
-  if [ -n "$PR_JSON" ] &&
-     printf '%s' "$PR_JSON" | grep -q '"draft"[[:space:]]*:[[:space:]]*true'; then
-    echo "[should-deploy] draft PR #${VERCEL_GIT_PULL_REQUEST_ID} — skip"
-    exit 0
-  fi
-fi
-
-CURRENT_SHA="${VERCEL_GIT_COMMIT_SHA:-$(git rev-parse HEAD 2>/dev/null)}"
-PREVIOUS_SHA="${VERCEL_GIT_PREVIOUS_SHA:-}"
-
-if [ -n "$PREVIOUS_SHA" ] && [ "$CURRENT_SHA" = "$PREVIOUS_SHA" ]; then
-  echo "[should-deploy] explicit redeploy of same SHA — build"
-  exit 1
-fi
-
-if [ -n "$PREVIOUS_SHA" ] && git cat-file -e "$PREVIOUS_SHA" 2>/dev/null; then
-  BASE_SHA="$PREVIOUS_SHA"
-elif git rev-parse HEAD^ >/dev/null 2>&1; then
-  BASE_SHA="HEAD^"
-else
-  echo "[should-deploy] no safe diff base — build"
-  exit 1
-fi
-
-# The site imports the root metrics ledger and validates these canonical sources.
-# Watching only /site can silently skip the very commit that repairs a failed build.
-git diff --quiet "$BASE_SHA" HEAD -- . ../metrics/current.json ../agents \
-  ../skills/skill-rules.json ../vault-registry.json ../public-vault/horizon.jsonl \
-  ../src/cli.ts ../README.md
-RC=$?
-case "$RC" in
-  0) echo "[should-deploy] no site build input changes — skip"; exit 0 ;;
-  1) echo "[should-deploy] site build input changes — build"; exit 1 ;;
-  *) echo "[should-deploy] diff error — build"; exit 1 ;;
+case "$REF" in
+  dependabot/*|agent/*|claude/*|codex/*|ccr-*|*jules*)
+    echo "[should-deploy] bot/agent preview '$REF' - skip"
+    exit 0 ;;
+  cto/*|preview/*)
+    echo "[should-deploy] opted-in preview '$REF' - build"
+    exit 1 ;;
 esac
+
+echo "[should-deploy] preview '$REF' not opted in (use cto/* or preview/*) - skip"
+exit 0
