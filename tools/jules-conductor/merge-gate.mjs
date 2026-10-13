@@ -1,8 +1,58 @@
 /**
- * Pure land decisions for the Jules conductor.
- * A pull request merges only when every gate below passes.
+ * Pure land decisions for the estate merge policy.
+ * A pull request merges only when every gate below passes:
+ *   1. A PASS from a different seat or model than the author, stamped with the
+ *      reviewer and the exact head SHA. A self-review never counts.
+ *   2. Auto-merge only for low-risk changes (docs, copy, patch-level dependency
+ *      bumps) after that PASS and green checks. Money, publish, secrets, auth,
+ *      licensing and the gate or policy files never auto-merge and need CTO.
+ *   3. Jules opens drafts only and never merges.
  * Drafts stay drafts. Sessions this conductor did not start stay untouched.
  */
+
+export const VALID_REVIEWERS = ['codex', 'claude-code', 'antigravity', 'cto'];
+
+const HIGH_RISK = [
+  /(^|\/)\.github\//, /(^|\/)tools\/merge-review\//, /(^|\/)tools\/jules-conductor\//,
+  /(^|\/)docs\/merge-review\.md$/, /(^|\/)(codeowners|license|licence|notice)(\.[a-z]+)?$/,
+  /licens/, /(pay|billing|stripe|checkout|price|pricing|invoice|money|wallet|marketplace)/,
+  /(publish|release|deploy|npm-|vercel)/, /(secret|credential|token|\.env|\.pem$|\.key$)/,
+  /(auth|login|session|oauth|permission|rbac|security)/,
+];
+const DOC_OR_COPY = /^(docs\/.*\.(md|mdx|txt)|content\/.*\.(md|mdx|txt)|[^/]+\.md)$/;
+const DEP_MANIFEST = /(^|\/)(package\.json|package-lock\.json|pnpm-lock\.yaml|yarn\.lock)$/;
+const INSTRUCTION = /(^|\/)(agents|agents\.override|skill|skills|soul|rules|claude|gemini|grok)\.md$/;
+
+export function normalizeSeat(value) {
+  return String(value || '').trim().toLowerCase().replace(/[\s_]+/g, '-');
+}
+
+/** 'low' only for docs/copy, or manifests in a patch-level dependency bump. Else 'high'. */
+export function classifyRisk(files, { depBump = '' } = {}) {
+  const paths = (files || []).map((f) => String(typeof f === 'string' ? f : f?.path || f?.filename || ''));
+  if (paths.length === 0 || paths.some((p) => !p)) return 'high';
+  for (const raw of paths) {
+    const p = raw.toLowerCase();
+    if (p.includes('..') || p.includes('\\')) return 'high';
+    if (DEP_MANIFEST.test(p)) {
+      if (depBump !== 'patch') return 'high';
+      continue;
+    }
+    if (HIGH_RISK.some((rx) => rx.test(p)) || INSTRUCTION.test(p)) return 'high';
+    if (!DOC_OR_COPY.test(p)) return 'high';
+  }
+  return 'low';
+}
+
+/** A PASS counts only from a different, valid seat at the exact head SHA. */
+export function reviewCounts(review, author, headSha) {
+  if (!review || String(review.verdict || '').toUpperCase() !== 'PASS') return { ok: false, reason: 'no PASS' };
+  const reviewer = normalizeSeat(review.reviewer);
+  if (!VALID_REVIEWERS.includes(reviewer)) return { ok: false, reason: `reviewer ${reviewer || 'missing'} not valid` };
+  if (!author || reviewer === normalizeSeat(author)) return { ok: false, reason: 'self-review never counts' };
+  if (!headSha || String(review.headSha || '') !== String(headSha)) return { ok: false, reason: 'PASS not at exact head' };
+  return { ok: true, reason: `PASS by ${reviewer} at ${headSha}` };
+}
 
 export function classifyChecks(rollup) {
   if (!Array.isArray(rollup) || rollup.length === 0) return 'none';
@@ -64,15 +114,28 @@ export function claimDaemonLock({ existingPid = null, existingAlive = false } = 
   return { take: true, reason: 'no lock' };
 }
 
+/** Jules output must stay a draft. Returns the corrective action for a matched PR. */
+export function julesDraftAction(pr) {
+  if (!pr || String(pr.state || 'OPEN').toUpperCase() !== 'OPEN') return 'none';
+  return pr.isDraft === true ? 'none' : 'convert-to-draft';
+}
+
 export function decideLand(pr, options = {}) {
   const repo = String(pr?.repo || options.repo || '');
   const number = Number(pr?.number || 0);
   const sha = String(pr?.headRefOid || '');
   const protectedRepos = options.protectedRepos || [];
 
+  const author = normalizeSeat(pr?.authorSeat || options.author);
+
+  if (author === 'jules') return { decision: 'skip', reason: `${sha}:jules opens drafts only` };
   if (options.autoMerge !== true) return { decision: 'skip', reason: 'auto-merge off' };
   if (options.owned !== true) return { decision: 'skip', reason: 'session not owned' };
-  if (options.accepted !== true) return { decision: 'skip', reason: `${sha}:awaiting review` };
+  const review = reviewCounts(options.review, author, sha);
+  if (!review.ok) return { decision: 'skip', reason: `${sha}:awaiting review (${review.reason})` };
+  if (classifyRisk(pr?.files, { depBump: options.depBump }) !== 'low') {
+    return { decision: 'skip', reason: `${sha}:high risk, never auto-merges, needs CTO PASS and a human land` };
+  }
   if (protectedRepos.some((name) => String(name).toLowerCase() === repo.toLowerCase())) {
     return { decision: 'skip', reason: `${sha}:protected repo` };
   }

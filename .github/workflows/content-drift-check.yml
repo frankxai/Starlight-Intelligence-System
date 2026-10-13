@@ -49,6 +49,7 @@ concurrency:
 jobs:
   drift-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     name: Verify site/content/explainer.md matches source
     steps:
       - name: Checkout
@@ -80,6 +81,7 @@ jobs:
   # Recompute it with protocol/conform.mjs and fail if anything but checkedAt differs.
   sis-receipt-drift:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     name: Verify site/src/lib/generated/sis-receipt.json matches protocol/profiles/sis.json
     steps:
       - name: Checkout
