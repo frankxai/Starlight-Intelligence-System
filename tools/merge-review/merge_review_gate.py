@@ -73,9 +73,36 @@ def posting_app(comment):
 
 def edited(comment):
     # GitHub keeps the original App attribution when a comment is edited, and the
-    # edit may come from a raw token. Only an unedited receipt is trusted.
+    # edit may come from a raw token. REST timestamps have one-second resolution,
+    # so main() also asks GraphQL for lastEditedAt and the edit count. Only a
+    # receipt that was checked and never edited is trusted; anything else fails closed.
     created, updated = comment.get('created_at'), comment.get('updated_at')
-    return not created or not updated or created != updated
+    return (not created or not updated or created != updated
+            or comment.get('edit_history_checked') is not True
+            or comment.get('last_edited_at') is not None
+            or comment.get('content_edit_count') != 0)
+
+
+EDIT_QUERY = ('query($id: ID!) { node(id: $id) { ... on IssueComment { '
+              'lastEditedAt userContentEdits(first: 1) { totalCount } } } }')
+
+
+def annotate_edit_history(comments):
+    """Record GraphQL edit provenance for comments that could be receipts."""
+    for comment in comments:
+        if not str(comment.get('body', '')).startswith('STARLIGHT-INDEPENDENT-REVIEW-V1'):
+            continue
+        node_id = comment.get('node_id')
+        if not node_id:
+            continue
+        run = subprocess.run(['gh', 'api', 'graphql', '-f', f'query={EDIT_QUERY}', '-f', f'id={node_id}'],
+                             capture_output=True, text=True, timeout=90, check=True)
+        node = (json.loads(run.stdout).get('data') or {}).get('node') or {}
+        edits = node.get('userContentEdits') or {}
+        if 'lastEditedAt' in node and isinstance(edits.get('totalCount'), int):
+            comment['last_edited_at'] = node['lastEditedAt']
+            comment['content_edit_count'] = edits['totalCount']
+            comment['edit_history_checked'] = True
 
 
 def evaluate(repository, number, head, files, comments, auto_merge=None):
@@ -177,6 +204,7 @@ def main():
                     if revision == wanted:
                         item['mode'] = modes.get(item['filename'])
         comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
+        annotate_edit_history(comments)
         ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'))
         if api(endpoint)['head']['sha'] != head:
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'

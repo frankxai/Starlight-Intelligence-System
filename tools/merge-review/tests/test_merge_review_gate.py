@@ -22,6 +22,7 @@ def receipt(**changes):
     return {'id': 123, 'user': {'login': 'frankxai'}, 'author_association': 'OWNER',
             'performed_via_github_app': {'slug': 'cursor'},
             'created_at': '2026-10-13T07:00:00Z', 'updated_at': '2026-10-13T07:00:00Z',
+            'edit_history_checked': True, 'last_edited_at': None, 'content_edit_count': 0,
             'body': gate.MARKER + json.dumps(body)}
 
 
@@ -210,6 +211,21 @@ class PostingAppTests(unittest.TestCase):
             with self.subTest(missing=key):
                 self.assertFalse(self.evaluate([comment]))
 
+
+    def test_same_second_edit_is_rejected_via_edit_history(self):
+        comment = receipt()
+        comment['last_edited_at'] = '2026-10-13T07:00:00Z'
+        self.assertFalse(self.evaluate([comment]))
+        comment = receipt()
+        comment['content_edit_count'] = 1
+        self.assertFalse(self.evaluate([comment]))
+
+    def test_unchecked_edit_history_fails_closed(self):
+        for key in ['edit_history_checked', 'content_edit_count']:
+            comment = receipt()
+            del comment[key]
+            with self.subTest(missing=key):
+                self.assertFalse(self.evaluate([comment]))
 
 if __name__ == '__main__':
     unittest.main()
