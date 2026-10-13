@@ -10,6 +10,9 @@ MARKER = 'STARLIGHT-INDEPENDENT-REVIEW-V1\n'
 CHECK_NAME = 'independent-review-policy'
 # Only the repository owner may post a receipt. frankx-eth and jules are not trusted.
 TRUSTED_ATTESTORS = {'frankxai'}
+# A receipt counts only if GitHub records it as posted through an allowlisted App.
+# A null performed_via_github_app means a raw token (PAT or gh CLI) and is rejected.
+TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
 # Seats or models that may author a change. The reviewer must be a different one.
 MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
 # Valid separate reviewers. Jules is never a reviewer.
@@ -63,6 +66,11 @@ def reviewer_allowed(maker, provider, risky):
     return provider in INDEPENDENT_OF_CTO if maker == 'cto' else provider == 'cto'
 
 
+def posting_app(comment):
+    app = comment.get('performed_via_github_app')
+    return app.get('slug') if isinstance(app, dict) else None
+
+
 def evaluate(repository, number, head, files, comments, auto_merge=None):
     if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
         return False, 'Missing or invalid source identity or changed files.'
@@ -74,7 +82,8 @@ def evaluate(repository, number, head, files, comments, auto_merge=None):
     expected_paths = {item['filename'] for item in files}
     for comment in reversed(comments):
         if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
-                or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}):
+                or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
+                or posting_app(comment) not in TRUSTED_APPS):
             continue
         body = comment.get('body', '')
         # Accept the Windows delimiter without rewriting the hashed report.

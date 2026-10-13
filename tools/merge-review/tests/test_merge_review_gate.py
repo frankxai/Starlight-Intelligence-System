@@ -20,6 +20,7 @@ def receipt(**changes):
             'packetSha256': 'b' * 64, 'resolution': 'No blocking findings; static review only.'}
     body.update(changes)
     return {'id': 123, 'user': {'login': 'frankxai'}, 'author_association': 'OWNER',
+            'performed_via_github_app': {'slug': 'cursor'},
             'body': gate.MARKER + json.dumps(body)}
 
 
@@ -165,3 +166,38 @@ class MergeReviewTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PostingAppTests(unittest.TestCase):
+    def evaluate(self, comments):
+        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, FILES, comments)[0]
+
+    def test_allowlisted_apps_attest(self):
+        for slug in ['cursor', 'chatgpt-codex-connector']:
+            comment = receipt()
+            comment['performed_via_github_app'] = {'slug': slug}
+            with self.subTest(slug=slug):
+                self.assertTrue(self.evaluate([comment]))
+
+    def test_raw_token_receipt_is_rejected(self):
+        for app in [None, {}, {'slug': None}, 'cursor']:
+            comment = receipt()
+            comment['performed_via_github_app'] = app
+            with self.subTest(app=app):
+                self.assertFalse(self.evaluate([comment]))
+        comment = receipt()
+        del comment['performed_via_github_app']
+        self.assertFalse(self.evaluate([comment]))
+
+    def test_other_apps_are_rejected(self):
+        for slug in ['claude', 'google-labs-jules', 'github-actions', 'dependabot', 'cursor-evil']:
+            comment = receipt()
+            comment['performed_via_github_app'] = {'slug': slug}
+            with self.subTest(slug=slug):
+                self.assertFalse(self.evaluate([comment]))
+
+    def test_raw_token_receipt_cannot_revoke_or_shadow(self):
+        forged = receipt(verdict='FAIL')
+        forged['id'] = 124
+        forged['performed_via_github_app'] = None
+        self.assertTrue(self.evaluate([receipt(), forged]))
