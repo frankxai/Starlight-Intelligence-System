@@ -110,8 +110,24 @@ export function walkFiles(root) {
   return results.sort();
 }
 
+const TEXT_EXTENSIONS = new Set([
+  ".json", ".mjs", ".js", ".ts", ".md", ".yaml", ".yml", ".svg", ".txt", ".lock",
+]);
+
 export function hashFile(path) {
   const bytes = readFileSync(path);
+  const dot = path.lastIndexOf(".");
+  const ext = dot !== -1 ? path.slice(dot).toLowerCase() : "";
+  if (TEXT_EXTENSIONS.has(ext)) {
+    const text = bytes.toString("utf8");
+    if (text.includes("\r\n")) {
+      const normalized = Buffer.from(text.replace(/\r\n/g, "\n"), "utf8");
+      return {
+        sha256: createHash("sha256").update(normalized).digest("hex"),
+        bytes: normalized.byteLength,
+      };
+    }
+  }
   return {
     sha256: createHash("sha256").update(bytes).digest("hex"),
     bytes: bytes.byteLength,

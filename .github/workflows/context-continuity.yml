@@ -1,0 +1,60 @@
+name: Context continuity
+
+on:
+  pull_request:
+    branches: [main, codex/consolidate]
+    paths:
+      - 'src/context-bridge.ts'
+      - 'src/review-queue.ts'
+      - 'src/gateway/**'
+      - 'src/runtime-bridge/**'
+      - 'src/sanitization.ts'
+      - 'src/memory.ts'
+      - 'src/jsonl-lock.ts'
+      - 'test/context*.test.ts'
+      - 'test/review-queue.test.ts'
+      - 'test/gateway-lock-safety.test.ts'
+      - 'test/memory-save-safety.test.ts'
+      - 'test/v89-session-store.test.ts'
+      - 'test/v90-gateway*.test.ts'
+      - 'test/runtime-bridge.test.ts'
+      - 'test/jev-router.test.ts'
+      - 'tools/poly-bridge.mjs'
+      - 'package*.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/context-continuity.yml'
+  push:
+    branches: [main, codex/consolidate]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: context-continuity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  continuity:
+    name: Context continuity / ${{ matrix.os }}
+    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Install pinned package manager
+        run: npm install --global pnpm@11.5.0
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Verify handoff, review, privacy and recovery
+        run: node --import tsx --test --test-concurrency=1 test/context-bridge.test.ts test/context-continuity.test.ts test/review-queue.test.ts test/gateway-lock-safety.test.ts test/memory-save-safety.test.ts test/v89-session-store.test.ts test/v90-gateway.test.ts test/v90-gateway-privacy.test.ts test/runtime-bridge.test.ts test/opencode-runtime.test.ts test/terminal-runtime.test.ts test/jev-router.test.ts test/live-cross-harness-acceptance.test.ts

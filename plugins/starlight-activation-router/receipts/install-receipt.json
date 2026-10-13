@@ -2,7 +2,7 @@
   "pluginId": "starlight-activation-router@starlight-local",
   "name": "starlight-activation-router",
   "marketplaceName": "starlight-local",
-  "version": "0.1.0+codex.20260623104602",
+  "version": "0.1.1+codex.20260924",
   "marketplaceRoot": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
   "marketplaceManifest": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\.agents\\plugins\\marketplace.json",
   "sourcePath": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System\\plugins\\starlight-activation-router",

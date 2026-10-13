@@ -63,7 +63,7 @@ This system works across six platforms: Claude Code, Cursor, Cline, Codex, Gemin
 **What you have access to:**
 
 - **151 Agents** — source-counted definitions across Core, Universal, and specialized Domain Vertical layers; verification lives in `metrics/current.json` (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **88 Skills** — Auto-activate via `skills/skill-rules.json` across 17 domains (intelligence, orchestration, memory, integration, **foundry**, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, bounded system packaging, and executable taste evaluation. Existing orchestration includes `/yolo`, `/si` + `/so`, SAGE, and Hermes Swarm.
+- **89 Skills** — Auto-activate via `skills/skill-rules.json` across 17 domains (intelligence, orchestration, memory, integration, **foundry**, business, vision, health, relational, **people-intelligence**, sound-intelligence, music-is, energy, machine, **crypto-intelligence**, **safety**, **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, bounded system packaging, and executable taste evaluation. Existing orchestration includes `/yolo`, `/si` + `/so`, SAGE, and Hermes Swarm.
 - **10 universal Intelligence Systems + Domain Sub-Stack Tier** — Universal IS (per `STACK.md`, locked v7.5): Self / Wealth / Family / Business / Creator / Second Brain / Code / Voice & Video / Brand + **Starlight Orchestrator** (master layer that routes the other nine). Health is cross-cutting (was layer 7, repositioned 2026-04-25); Spiritual remains optional/private. Domain sub-stacks: People Intelligence at `verticals/people-intelligence/` (first reference, symmetric with Sound Intelligence + Music IS + Energy IS); pattern generalizes via `/spawn-domain-stack` for any sovereign domain. CLAUDE.md taxonomy reconciled with STACK.md 2026-05-05.
 - **4 Transmission Channels** — Cross-system communication
 - **Commands** — substrate commands in-repo + additional commands available per-environment installation (varies by user); covers universal IS + 28 People sub-stack + `/spawn-domain-stack` (meta-command for any domain) + 7 ecosystem export targets (claude-project, chatgpt-project, gemini-gem, cursor, cowork, **microsoft-copilot**, **custom-gpt**)
@@ -171,7 +171,7 @@ See `memory/palace/MEMORY_PALACE.md` for what it is and how to maintain it.
 
 ## Skills
 
-88 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
+89 auto-activating skill rules fire based on context — keywords, active agent, detected intent.
 
 | Domain | Skills |
 |--------|--------|
@@ -180,8 +180,8 @@ See `memory/palace/MEMORY_PALACE.md` for what it is and how to maintain it.
 | **Foundry** | Skill, agent, swarm, vertical, plugin, taste, and evidence compilation |
 | **People / Sound / Music / Energy / Machine / Crypto / Marine** | Domain Sub-Stack skills, Music IS operations, energy intelligence, machine storage/heart, crypto on-chain proof pattern |
 
-Activation rules: `skills/skill-rules.json` (88 rules)
-Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (35 dir-based skills) or a flat `skills/{domain}/{skill-name}.md` (53 single-file skills). New skills use directory packages; legacy flat files remain compatibility inputs. 35 + 53 = 88.
+Activation rules: `skills/skill-rules.json` (89 rules)
+Skill definitions: mixed layout — `skills/{domain}/{skill-name}/SKILL.md` (35 dir-based skills) or a flat `skills/{domain}/{skill-name}.md` (54 single-file skills). New skills use directory packages; legacy flat files remain compatibility inputs. 35 + 54 = 89.
 
 ---
 
@@ -320,7 +320,7 @@ Full rule and ownership-verb definitions: `metrics/METRICS_TRUTH.md`. Living led
 
 ---
 
-*Starlight Intelligence System v8.3.0 — Horizons + Composition Layer + Crypto IS*
+*Starlight Intelligence System v8.5.2 — Horizons + Composition Layer + Crypto IS*
 
 ---
 
@@ -354,6 +354,32 @@ Brand: **Starlight Intelligence Systems** (`sis`)
 
 Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/50ae34c7ac06e6c083f277ca96c3bde8f0a39b43/brand-packs/sis/COPY.md
 <!-- STARLIGHT-EDITORIAL:END -->
+
+<!-- STARLIGHT-VOICE:START -->
+## Starlight voice
+
+Scope: Starlight-branded copy, interface language, agent dialogue, design direction, content, and narrative. Other brands retain their own voice.
+For this scoped communication, use this direction instead of older sober, enterprise, or architectural-vocabulary defaults. Preserve protocol terminology and authority.
+
+Voice: curious, confident, warm, playful.
+- Lead with what a person wants to explore or make. Use clear verbs and concrete consequences.
+- Show powerful intelligence through useful work, discoveries, and recognizable agent relationships.
+- Make teamwork easy to picture: who contributes, what changed, and what happens next.
+- Invite people to explore, build, inspect, remix, and carry their work with them.
+- Use warmth and occasional wit naturally. Do not force jokes, slogans, fragments, or crew metaphors into every sentence.
+- Use vivid imagination where it earns its place. Keep controls, costs, permissions, progress, errors, and recovery explicit.
+- Keep technical terms when they convey needed precision. Do not use enterprise abstractions as the default public voice.
+- Queen is attentive, candid, capable, and lightly mischievous. Her personality never changes her permissions.
+- Keep Starlight, GenCreator, Arcanea, and FrankX distinct. Starlight imagination does not import Arcanea canon.
+- Match every capability claim to evidence. Distinguish vision, proposed copy, preview, and live functionality. Open source requires a released license.
+
+Read .starlight/voice/context.md before this work. Carry its source commit and relevant rules into delegated tasks and handoffs.
+Technical, factual, permission, cost, and recovery language stays exact. Examples are proposals, not availability claims.
+
+Source: https://github.com/frankxai/starlight-design-intelligence/tree/3d6fc8fdd38b5db69a16db1078e30d454e891af1/brand-packs/sis
+Voice version: 1.0.0 · Source state: PROPOSAL_PREVIEW
+GitHub does not automatically inject this into unrelated chats; use .starlight/voice/CHAT_CONTEXT.md in their project or agent instructions.
+<!-- STARLIGHT-VOICE:END -->
 
 ## Estate guard — load-bearing
 

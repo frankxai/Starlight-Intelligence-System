@@ -364,14 +364,21 @@ export {
   createSwarmPlan,
   inspectSwarmProviders,
   inspectSwarmRepos,
+  plannedSwarmTasks,
+  runPlannedSwarm,
 } from "./swarm.js";
 export type {
   SwarmAutonomy,
   SwarmConfig,
+  SwarmExecutionMode,
+  SwarmExecutionTrace,
   SwarmExternalRisk,
   SwarmMutationRisk,
   SwarmPacket,
   SwarmPlan,
+  PlannedSwarmOptions,
+  PlannedSwarmResult,
+  PlannedSwarmTask,
   SwarmProviderConfig,
   SwarmProviderMode,
   SwarmProviderStatusReport,
@@ -409,6 +416,115 @@ export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
 export type { GoalTask, GoalLog, GoalState, AuditResult } from './goal.js';
+
+// v2.0 / v8.9 — Sovereign Kernel & Infinite Hyper-Vault Mesh
+export type {
+  CanonicalVaultType,
+  DynamicVaultNamespace,
+  EpistemicTier,
+  DecayPolicy,
+} from './types.js';
+
+// Telemetry, Observability & Experiments — Langfuse Cloud (EU)
+export {
+  StarlightTelemetry,
+  telemetry,
+  StarlightExperimentRunner,
+  runExperiments,
+  discoverLangfuseCredentials,
+} from './telemetry/index.js';
+export type {
+  LangfuseConfig,
+  DiscoveredCredentials,
+  TelemetryDiagnostic,
+  TraceAgentOptions,
+  TraceHarnessOptions,
+  TraceMcpToolCallOptions,
+  TraceMemoryQueryOptions,
+  TraceOrchestrationOptions,
+  TraceSwarmTaskOptions,
+  TraceCouncilDispatchOptions,
+  TraceGenerationOptions,
+  TraceScoreOptions,
+  EvalSummaryReceipt,
+  ArenaRunReceipt,
+  RetrievalBenchmarkResult,
+  ExperimentRunReport,
+} from './telemetry/index.js';
+
+// v9.0 — Sovereign Durability, Robot Fleet Continuity & Starlight Queen
+export { SovereignBlockchainAnchor } from './durability/blockchain-anchor.js';
+export type {
+  StorageDurabilityTier,
+  VaultSnapshotItem,
+  BlockchainAnchorReceipt,
+  MerkleProofStep,
+  ItemInclusionProof,
+} from './durability/blockchain-anchor.js';
+
+export { RobotContinuityKernel } from './robotics/continuity-kernel.js';
+export type {
+  RobotFleetNode,
+  RobotActuatorCommand,
+  SpatialLandmark,
+  SpatialCoordinates,
+  ActuatorMiddleware,
+  ActuatorStatus,
+  SafetyInvariantResult,
+  RobotTelemetryPacket,
+} from './robotics/continuity-kernel.js';
+
+export { StarlightQueen } from './orchestration/starlight-queen.js';
+export type {
+  QueenTaskAction,
+  QueenEscalationGate,
+  AutonomicCycleReport,
+  ActionRiskTier,
+  ThinTelemetryHook,
+} from './orchestration/starlight-queen.js';
+
+export { MarketplaceCatalog } from './marketplace/catalog.js';
+export type {
+  MarketplacePackItem,
+  MarketplaceLicenseTier,
+  MarketplaceValidationResult,
+} from './marketplace/catalog.js';
+
+export { PackManager } from './marketplace/pack-manager.js';
+export type {
+  PackAuditReport,
+  PackInstallReceipt,
+} from './marketplace/pack-manager.js';
+
+export { SovereignEnvelopeEncryption } from './durability/envelope.js';
+export type { EncryptedVaultEnvelope } from './durability/envelope.js';
+
+export {
+  SovereignStorageDispatcher,
+  IrysArweaveTransport,
+  PinataIpfsTransport,
+} from './durability/transports.js';
+export type {
+  UploadResult,
+  DecentralizedStorageProvider,
+  AnchoringOptions,
+  DispatchedAnchorResult,
+} from './durability/transports.js';
+
+export {
+  TrapezoidVelocityProfiler,
+  SpatialPointCloudSemanticExtractor,
+  ZenohRealtimeBridge,
+} from './robotics/zenoh-bridge.js';
+export type {
+  VelocityTwist,
+  VelocityProfileConfig,
+  DetectedObjectCluster,
+  ZenohBridgeConfig,
+} from './robotics/zenoh-bridge.js';
+
+export { StarlightDaemon } from './daemon/starlightd.js';
+export type { StarlightDaemonStatus } from './daemon/starlightd.js';
 
 // Community OS reference contracts and deterministic weekly loop.
 export { CommunityLedger, validateCommunityEvent, planCommunityAction, fixtureCommunityAdapter } from './community.js';
@@ -466,3 +582,40 @@ export type {
   Lifecycle,
   SourceKind,
 } from './instruction-compiler.js';
+
+// Run receipts — the unit of proof for agent work
+export {
+  RUN_RECEIPT_SCHEMA,
+  RUN_RECEIPT_PREDICATE_TYPE,
+  keyIdOf,
+  peekRunReceipt,
+  receiptProblems,
+  receiptStatement,
+  sha256Hex,
+  signRunReceipt,
+  totalsFromStages,
+  verdictFromStages,
+  verifyRunReceipt,
+} from './run-receipt.js';
+export {
+  compactShareParam,
+  MAX_INFLATED_BYTES,
+  MAX_SHARE_PARAM_BYTES,
+  parseShareParam,
+  QR_MAX_CHARS,
+  receiptShareUrl,
+  SHARE_ORIGIN,
+  shareParam,
+} from './receipt-share.js';
+export type {
+  DecisionBy,
+  DecisionOutcome,
+  DsseEnvelope,
+  RunReceipt,
+  RunReceiptDecision,
+  RunReceiptEvidence,
+  RunReceiptStage,
+  RunReceiptVerdict,
+  StageStatus,
+  VerifyResult,
+} from './run-receipt.js';

@@ -697,3 +697,11 @@ describe('Track B v0.1 — substrate invariants', () => {
     });
   });
 });
+
+// Run receipt coverage lives beside this harness and is imported here so that
+// `npm test` runs it. A new package.json script would change the file's sha256,
+// which foundry/validators/toolchain.lock.v1.json pins; refreshing that pin is a
+// separate, reviewed change.
+import './run-receipt.test.js';
+import './v01-receipt-tools.test.js';
+import './receipt-share.test.js';

@@ -250,10 +250,10 @@ export interface SystemStats {
   contextLayers: number;
 }
 
-// ── Starlight Vault Layer (v5.0) ────────────────────────────
+// ── Starlight Vault Layer (v6.0 Infinite Vault Mesh) ───────────
 
-/** The six semantic vault categories for Starlight Memory */
-export type VaultType =
+/** Canonical baseline vault categories */
+export type CanonicalVaultType =
   | 'strategic'    // Decisions, architecture, roadmaps
   | 'technical'    // Patterns, solutions, code insights
   | 'creative'     // Voice, style, narrative patterns
@@ -261,12 +261,37 @@ export type VaultType =
   | 'wisdom'       // Meta-patterns, cross-domain insights
   | 'horizon';     // Benevolent intentions (append-only)
 
-/** A vault-classified memory entry */
+/** Dynamic vault namespace (e.g. "core/strategic", "repo/frankx-prod", "lore/starbound", "agent/hermes") */
+export type DynamicVaultNamespace = `${string}/${string}` | (string & {});
+
+/** Semantic vault type — supports both canonical 6 vaults and dynamic infinite namespaces */
+export type VaultType = CanonicalVaultType | DynamicVaultNamespace;
+
+/** Epistemic verification and lifecycle tier */
+export type EpistemicTier =
+  | 'draft'
+  | 'hypothesis'
+  | 'verified'
+  | 'attested'
+  | 'deprecated';
+
+/** Mathematical confidence decay policy */
+export interface DecayPolicy {
+  /** Half-life in days (0.0 = permanent immutable canon) */
+  halfLifeDays: number;
+  /** Minimum retention floor before archival (0.0 to 1.0) */
+  retentionFloor: number;
+}
+
+/** A vault-classified memory entry in the Infinite Vault Mesh */
 export interface VaultEntry extends MemoryEntry {
   vault: VaultType;
   summary?: string;
   updatedAt: string;
   expiresAt?: string;
+  epistemicTier?: EpistemicTier;
+  decayPolicy?: DecayPolicy;
+  attestations?: number;
   metadata?: Record<string, unknown>;
 }
 
@@ -350,19 +375,6 @@ export interface VaultMemoryConfig {
   enableHorizon?: boolean;
   horizonAuthor?: string;
   defaultVault?: VaultType;
-  /**
-   * Run fenced code blocks found in remembered content through EmpiricalSandbox.
-   *
-   * DEFAULT FALSE, and it must stay false unless the operator has read what it means:
-   * the sandbox is a temp directory, nothing more — the executed code inherits this
-   * process's user, environment, network and filesystem. Enabling it turns
-   * `rememberInVault()` into "execute the code in this text", and rememberInVault is
-   * reachable from the MCP `remember` tool and the network gateway, so the content is
-   * frequently not the operator's own.
-   *
-   * Enable only when every caller of this VaultMemory instance is trusted, or when the
-   * whole process is inside an outer container.
-   */
   executeCodeBlocks?: boolean;
 }
 

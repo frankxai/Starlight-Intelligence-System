@@ -1,6 +1,6 @@
 ---
 name: music-is/suno-prompt
-description: Rights-safe, evidence-grounded songcraft and Suno v5.5/Studio 2.0 synthesis. Produces one track contract, generation prompt, authored lyric, and production plan; rejects named-artist imitation, generic-pretty language, adjective piles, and unsupported platform claims. Triggers on /music-suno-prompt, songwriting, Suno prompt, lyrics, hook, song DNA, arrange, produce, or Studio 2.0.
+description: Rights-safe, evidence-grounded songcraft and Suno v6/Studio 2.0 synthesis. Produces one track contract, generation prompt, authored lyric, and production plan; rejects named-artist imitation, generic-pretty language, adjective piles, and unsupported platform claims. Triggers on /music-suno-prompt, songwriting, Suno prompt, lyrics, hook, song DNA, arrange, produce, or Studio 2.0.
 ---
 
 # Suno Songcraft Synthesis
@@ -9,16 +9,16 @@ description: Rights-safe, evidence-grounded songcraft and Suno v5.5/Studio 2.0 s
 
 ## Current platform baseline
 
-Official Suno documentation is the authority for fast-moving product behavior. As verified 2026-09-02:
+Official Suno documentation is the authority for fast-moving product behavior. As verified 2026-10-01:
 
-- generation model: Suno v5.5;
+- generation model: Suno v6;
 - Voices and Custom Models are consent/ownership-bound identity surfaces;
 - Studio 2.0 is a separate production environment with take lanes, stems, MIDI, automation, native effects, and export;
 - Studio instructions do not belong in the compact generation prompt.
 
 Recheck these official pages before claiming current behavior:
 
-1. `https://help.suno.com/en/articles/11362305` — v5.5
+1. `https://help.suno.com/en/articles/13924801` — v6
 2. `https://help.suno.com/en/articles/11362369` — Voices
 3. `https://help.suno.com/en/articles/11362497` — Custom Models
 4. `https://help.suno.com/en/articles/13670529` — Studio 2.0
@@ -68,19 +68,19 @@ Specify tessitura/register journey, onset, vowel color, consonant attack, breath
 
 ### 7. Separate generation from production
 
-Compress the identity into one Suno v5.5 style brief. Then create an independent Studio 2.0 plan with take criteria, timeline, stems, edits, automation, effects, timing check, translation, and exports.
+Compress the identity into one Suno v6 style brief. Then create an independent Studio 2.0 plan with take criteria, timeline, stems, edits, automation, effects, timing check, translation, and exports.
 
 ### 8. Gate the result
 
-Use the 100-point rubric in `prompts/music/songcraft-system-v2.md`. Silently revise until score >=85 and no hard failure. Rights unknowns fail closed.
+Use contextual text review with explicit hard failures and rationale. Do not invent a composite score, audio verdict or verified rights. Keep unknown fields null. Rights unknowns hold release; original drafting can continue.
 
 ## Output contract
 
-Return one chosen direction, not a candidate spray. Use exactly four titled fenced blocks:
+Return one chosen direction, not a candidate spray. For a complete production packet, use four titled fenced blocks. For hook-only or prompt-only requests, return the requested compact form without forcing full-song sections:
 
 1. `TITLE — TRACK CONTRACT` — YAML, including quality and rights receipt.
 2. `TITLE — STYLE OF MUSIC` — compact plain text; musical identity, vocalist, groove, bass/sub, instrumentation, dynamics, space, exclusions; no named artists.
-3. `TITLE — LYRICS` — section-tagged lyric with at least `[Intro]`, `[Verse 1]`, `[Chorus]`, `[End]`.
+3. `TITLE — LYRICS` — section-tagged lyric using sections appropriate to the form; short hooks and instrumentals need not include Verse 1.
 4. `TITLE — STUDIO 2.0 PLAN` — YAML, edit-ready and separate from the generator prompt.
 
 ## Rights and evidence boundary
@@ -97,21 +97,21 @@ Return one chosen direction, not a candidate spray. Use exactly four titled fenc
 For every accepted or rejected Suno generation, log:
 
 ```yaml
-model: suno-v5.5
+model: observed-account-model-or-null
 prompt_version: songcraft-system-v2
 persona: ""
 seed_or_job_id: ""
 result_url_or_owned_asset: ""
 what_landed: []
 what_failed: []
-hook_first_arrival_seconds: 0
-exact_title_hits: 0
+hook_first_arrival_seconds: null
+exact_title_hits: null
 prosody_failures: []
 vocal_failures: []
 low_end_failures: []
 arrangement_failures: []
 next_single_change: ""
-rights_status: verified|blocked
+rights_status: unknown|attested|blocked
 curator: frank
 ```
 
@@ -119,4 +119,12 @@ Change one high-leverage variable per reroll. A pattern graduates only after thr
 
 ---
 
-**Built on SIP** — `skills/music-is/suno-prompt.md` · v0.2 · operational layer · verified 2026-09-02
+**Built on SIP** — `skills/music-is/suno-prompt.md` · v0.2 · operational layer · verified 2026-10-01
+
+## Current craft and production integration
+
+Checked 2026-10-01. Use the public [music fundamentals](https://github.com/frankxai/agentic-music-producer-os/blob/18dc9bee02001befb3a2a3bd7747b78f798dff13/docs/MUSIC-FUNDAMENTALS.md), [provider register](https://github.com/frankxai/agentic-music-producer-os/blob/18dc9bee02001befb3a2a3bd7747b78f798dff13/docs/PROVIDER-CAPABILITIES.md) and [factory contract](https://github.com/frankxai/agentic-music-producer-os/blob/18dc9bee02001befb3a2a3bd7747b78f798dff13/docs/MUSIC-FACTORY-CONTRACT.md). They cover harmony/voice leading, groove, motif, prosody, hooks, form, vocals, arrangement, low end, mixing, measured delivery, provenance and durable jobs. Load only the modules needed for this task.
+
+Keep local artist/persona canon, identity, preferences and account entitlements scoped to this project. Shared craft does not assign a singer or overwrite canon. Select the current account-visible Suno model (documented baseline v6); no official public Suno generation API was verified. Lyria, Eleven Music and fal MiniMax Music 3 have separate documented API routes and constraints. A skill or MCP tool is not a connected generation account.
+
+Preserve approved lyrics across adapters. Prepare, authorize/reserve, submit, reconcile, archive, listen, measure, attest rights and stage release separately. Bind receipts to exact contract/asset hashes. Never infer audio quality, measured BPM, playback, rights or publication from a text review or completed job. Unknown paid submissions remain held for reconciliation; no blind rerender.
