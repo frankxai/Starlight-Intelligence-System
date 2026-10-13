@@ -33,6 +33,18 @@ The attestor must be `frankxai` with GitHub association `OWNER`, `MEMBER` or
 `COLLABORATOR`. This is an identity-based attestation: the check cannot authenticate
 the model or judge the report's quality. The attestor must inspect the evidence.
 
+The receipt comment must also be recorded by GitHub as posted through an
+allowlisted GitHub App (`performed_via_github_app.slug` is `cursor` or
+`chatgpt-codex-connector`). A comment with no posting App was written with a raw
+token (a personal access token or the `gh` CLI) and never counts as a receipt;
+it can neither pass nor revoke. An edited receipt
+(`updated_at` differs from `created_at`) never counts either, and neither does one
+whose GraphQL edit history shows `lastEditedAt` or any content edit, because GitHub
+keeps the original App attribution after an edit and REST timestamps have
+one-second resolution. If edit history cannot be read, the check fails closed.
+Post a new receipt instead of editing one. The App only shows which integration posted the
+comment, not which seat or model is behind it.
+
 ## High-risk changes and auto-merge
 
 Changes touching money, publish, secrets, auth, licensing, agent instruction

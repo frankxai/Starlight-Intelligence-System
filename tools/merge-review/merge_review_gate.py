@@ -10,6 +10,9 @@ MARKER = 'STARLIGHT-INDEPENDENT-REVIEW-V1\n'
 CHECK_NAME = 'independent-review-policy'
 # Only the repository owner may post a receipt. frankx-eth and jules are not trusted.
 TRUSTED_ATTESTORS = {'frankxai'}
+# A receipt counts only if GitHub records it as posted through an allowlisted App.
+# A null performed_via_github_app means a raw token (PAT or gh CLI) and is rejected.
+TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
 # Seats or models that may author a change. The reviewer must be a different one.
 MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
 # Valid separate reviewers. Jules is never a reviewer.
@@ -63,6 +66,79 @@ def reviewer_allowed(maker, provider, risky):
     return provider in INDEPENDENT_OF_CTO if maker == 'cto' else provider == 'cto'
 
 
+def posting_app(comment):
+    app = comment.get('performed_via_github_app')
+    return app.get('slug') if isinstance(app, dict) else None
+
+
+def edited(comment):
+    # GitHub keeps the original App attribution when a comment is edited, and the
+    # edit may come from a raw token. REST timestamps have one-second resolution,
+    # so main() also asks GraphQL for lastEditedAt and the edit count. Only a
+    # receipt that was checked and never edited is trusted; anything else fails closed.
+    created, updated = comment.get('created_at'), comment.get('updated_at')
+    return (not created or not updated or created != updated
+            or comment.get('edit_history_checked') is not True
+            or comment.get('last_edited_at') is not None
+            or comment.get('content_edit_count') != 0)
+
+
+EDIT_QUERY = ('query($id: ID!) { node(id: $id) { ... on IssueComment { '
+              'lastEditedAt userContentEdits(first: 1) { totalCount } } } }')
+
+
+MAX_EDIT_LOOKUPS = 5
+
+
+def receipt_candidate(comment, head):
+    """REST-only pre-check: could this comment be the receipt evaluate() decides on?"""
+    if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
+            or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
+            or posting_app(comment) not in TRUSTED_APPS
+            or not comment.get('created_at') or comment.get('created_at') != comment.get('updated_at')):
+        return False
+    body = comment.get('body', '')
+    marker = MARKER if body.startswith(MARKER) else MARKER.replace('\n', '\r\n')
+    if not body.startswith(marker) or len(body) > 60000:
+        return False
+    try:
+        return json.loads(body[len(marker):]).get('headSha') == head
+    except (ValueError, AttributeError):
+        return False
+
+
+def annotate_edit_history(comments, head, lookup=None):
+    """Record GraphQL edit provenance, newest candidate first, for at most a few receipts.
+
+    Only trusted, App-posted, REST-unedited, current-head receipts are looked up, and
+    the scan stops at the first one with a clean history: that is the receipt
+    evaluate() decides on. Unchecked candidates stay unannotated and fail closed.
+    """
+    lookup = lookup or graphql_edit_history
+    lookups = 0
+    for comment in reversed(comments):
+        if not receipt_candidate(comment, head) or not comment.get('node_id'):
+            continue
+        if lookups >= MAX_EDIT_LOOKUPS:
+            return
+        lookups += 1
+        node = lookup(comment['node_id'])
+        edits = node.get('userContentEdits') or {}
+        if 'lastEditedAt' not in node or not isinstance(edits.get('totalCount'), int):
+            return
+        comment['last_edited_at'] = node['lastEditedAt']
+        comment['content_edit_count'] = edits['totalCount']
+        comment['edit_history_checked'] = True
+        if node['lastEditedAt'] is None and edits['totalCount'] == 0:
+            return
+
+
+def graphql_edit_history(node_id):
+    run = subprocess.run(['gh', 'api', 'graphql', '-f', f'query={EDIT_QUERY}', '-f', f'id={node_id}'],
+                         capture_output=True, text=True, timeout=90, check=True)
+    return (json.loads(run.stdout).get('data') or {}).get('node') or {}
+
+
 def evaluate(repository, number, head, files, comments, auto_merge=None):
     if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
         return False, 'Missing or invalid source identity or changed files.'
@@ -74,7 +150,9 @@ def evaluate(repository, number, head, files, comments, auto_merge=None):
     expected_paths = {item['filename'] for item in files}
     for comment in reversed(comments):
         if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
-                or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}):
+                or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
+                or posting_app(comment) not in TRUSTED_APPS
+                or edited(comment)):
             continue
         body = comment.get('body', '')
         # Accept the Windows delimiter without rewriting the hashed report.
@@ -160,6 +238,7 @@ def main():
                     if revision == wanted:
                         item['mode'] = modes.get(item['filename'])
         comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
+        annotate_edit_history(comments, head)
         ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'))
         if api(endpoint)['head']['sha'] != head:
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
