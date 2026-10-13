@@ -1,7 +1,9 @@
-# Starlight Jules Autonomous Conductor v2.0
+# Starlight Jules Conductor v2.2
 
-> 24/7 Autonomous Multi-Agent Engineering Swarm coordinating Google Jules, Starlight Specialist Council, and Zero-Touch GitHub Auto-Merge across the FrankX ecosystem.
-> Built on the Starlight Intelligence Protocol (SIP v1.1.1).
+> One Node process sends Jules sessions it owns and records the pull request Jules opens.
+> `autoMerge`, `autoDispatch`, and remote-session adoption are off.
+> A tick does not sweep the estate, undraft a pull request, or merge.
+> frankx.ai production stays protected. Built on SIP v1.1.1.
 
 ---
 
@@ -17,7 +19,7 @@ Google Jules executes inside Google's cloud sandboxes. To make Jules autonomous,
 3. **Post-Flight Sentinel Ratification (The Gate)**:
    - **Sentinel** audits the patch for secrets, malicious dependencies, and workflow tampering.
    - **Weaver** audits code taste, preventing AI slop and ensuring conventional commit conventions.
-   - **Auto-Merge Engine** verifies CI checks and merges with `gh pr merge --squash --delete-branch --auto`.
+   - **Land gate** records the owned pull request. Merge needs `autoMerge`, `accept`, one live green check, and `CLEAN`. Those switches are off.
 
 ```
                   ┌──────────────────────────────────────────────┐
@@ -47,10 +49,10 @@ Google Jules executes inside Google's cloud sandboxes. To make Jules autonomous,
                              Council Ratified (100% Green)
                                          ▼
                   ┌──────────────────────────────────────────────┐
-                  │         Autonomous Auto-Merge & Vault        │
-                  │   - gh pr merge --squash --delete-branch     │
-                  │   - Close GitHub Issue with Attestation      │
-                  │   - Append Receipt to Starlight Vault        │
+                  │              Review, then land               │
+                  │   - Record the pull request. Leave drafts    │
+                  │   - Merge only after accept and live checks  │
+                  │   - frankx.ai production stays protected     │
                   └──────────────────────────────────────────────┘
 ```
 
@@ -69,21 +71,21 @@ Running a 24/7 daemon on a developer workstation must never degrade gaming, prod
 
 ## 3. Four Core Operational Swarm Patterns
 
-### Pattern 1: Autonomous Bugfix & Dependabot Healer
-- **Trigger**: Sentry alerts, Dependabot PRs, or open GitHub bug issues.
-- **Flow**: Jules diagnoses, patches dependencies, and verifies tests. Conductor verifies diff boundaries and merges automatically.
+### Pattern 1: One bounded bugfix
+- **Trigger**: One named issue, enqueued on purpose.
+- **Flow**: Jules opens one pull request. The conductor records it. A person accepts it before any land.
 
-### Pattern 2: Multi-Step Spec Decomposition (Top-Down)
-- **Trigger**: New feature specs in `docs/specs/*.md` or Starlight Goal sessions (`starlight goal`).
-- **Flow**: Architect breaks the spec into atomic steps. Conductor feeds each step sequentially to Jules, verifying and merging each PR before initiating the next step.
+### Pattern 2: One step of a spec
+- **Trigger**: One atomic step, not the whole spec.
+- **Flow**: Finish and review that pull request before anyone enqueues the next step.
 
-### Pattern 3: Cross-Repo Consistency Swarm (Parallel)
-- **Trigger**: Ecosystem-wide updates (e.g. updating AGENTS.md conventions, brand assets, or shared MCP tool contracts).
-- **Flow**: Conductor fans out parallel sessions across all 8 monitored repos (`jules new --parallel`), tracks all sessions concurrently, and merges the fleet.
+### Pattern 3: One repo at a time
+- **Trigger**: A named repository and a file boundary.
+- **Flow**: The cap is 3 owned sessions. The conductor does not fan out across the estate.
 
-### Pattern 4: Overflow Testing & QA Engine
-- **Trigger**: New pull request opened by Frank or another local agent.
-- **Flow**: Jules writes exhaustive integration and edge-case unit tests against the branch. Conductor ratifies and commits tests directly to the PR branch.
+### Pattern 4: Review an existing pull request
+- **Trigger**: A pull request number.
+- **Flow**: Use the Hermes watcher role `reviewer`. It comments. It does not push or merge.
 
 ---
 
@@ -109,7 +111,7 @@ Each repo has its own tailored quality gates and lead agent:
 # Check live status, active memory footprint, and metrics
 npm run jules:status
 
-# Run a single council-gated autonomous verification & merge pass
+# One scan. Does not merge while autoMerge is false
 npm run jules:tick
 
 # Run 24/7 background loop in low-RAM mode

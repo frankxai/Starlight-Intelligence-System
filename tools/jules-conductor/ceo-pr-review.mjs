@@ -7,7 +7,7 @@
  * 2. Maker/Checker Verification (@humanizer, @impeccable, modern Next.js 16/React 19)
  * 3. Fatal CEO Guardrails (Frozen lockfile breaks, contract coupling without tags)
  * 4. Automatic Exact-Head Review Attestation (STARLIGHT-INDEPENDENT-REVIEW-V1)
- * 5. Branch Freshness Sync & Squash Auto-Merge
+ * 5. Report only. This file does not edit, undraft, or merge a pull request.
  * 
  * Built on SIP — Starlight Intelligence Protocol v1.1.1.
  */
@@ -100,99 +100,14 @@ export function evaluatePullRequest(repo, prNumber) {
     return { ok: false, fatal: check.ceoGuardrails.fatal };
   }
 
-  // 2. Handle Contract Guard Couplings
-  if (check.ceoGuardrails.issues.some(i => i.includes('Contract Guard Notice'))) {
-    if (!pr.title.includes('[contract-change]')) {
-      const newTitle = `[contract-change] ${pr.title}`;
-      console.log(`[*] Auto-updating PR title to include [contract-change] tag...`);
-      runCmd('gh', ['pr', 'edit', String(prNumber), '--repo', repo, '--title', newTitle]);
-    }
+  if (pr.autoMergeRequest) {
+    console.log(`[*] PR #${prNumber} still has GitHub auto-merge armed. This report does not change it.`);
   }
-
-  // 3. Check Branch Freshness with base
-  const checks = pr.statusCheckRollup || [];
-  const hasFailures = checks.some(c => (c.conclusion || c.state || '').toUpperCase() === 'FAILURE');
-  const behindError = pr.mergeable === 'CONFLICTING' || checks.some(c => (c.conclusion || c.state) === 'FAILURE' && (c.name || '').includes('branch'));
-
-  if (behindError) {
-    console.log(`[*] PR #${prNumber} branch is behind base or conflicting. Attempting update-branch...`);
-    const updateRes = runCmd('gh', ['pr', 'update-branch', String(prNumber), '--repo', repo]);
-    if (updateRes.code === 0) {
-      console.log(`[+] Branch updated successfully with base.`);
-    } else {
-      console.log(`[!] update-branch notice: ${updateRes.stderr || updateRes.stdout}`);
-    }
-  }
-
-  // 4. Handle Starlight Estate Independent Review Policy (if applicable)
-  const needsReviewReceipt = checks.some(c => c.name === 'independent-review-policy');
-  if (needsReviewReceipt && check.approved) {
-    const reviewStatus = checks.find(c => c.name === 'independent-review-policy');
-    if (reviewStatus?.conclusion !== 'SUCCESS') {
-      console.log(`[*] PR #${prNumber} requires exact-head independent review receipt. Attesting...`);
-      const attestScript = join(ROOT, 'tools', 'merge-review', 'attest_review.py');
-      if (existsSync(attestScript)) {
-        const attestRes = runCmd('python', [attestScript, String(prNumber), '--repo', repo]);
-        console.log(attestRes.stdout || attestRes.stderr);
-      }
-    }
-  }
-
-  // 5. Handle Draft Conversion (when approved by Maker/Checker and no failing checks)
   if (pr.isDraft) {
-    if (check.approved && !hasFailures && check.ceoGuardrails.fatal.length === 0) {
-      console.log(`[*] PR #${prNumber} is an approved draft with zero failures. Marking ready for review...`);
-      const readyRes = runCmd('gh', ['pr', 'ready', String(prNumber), '--repo', repo]);
-      if (readyRes.code === 0) {
-        console.log(`[+] PR #${prNumber} marked ready for review!`);
-        pr.isDraft = false;
-      }
-    } else {
-      console.log(`[-] PR #${prNumber} remains a draft (approved: ${check.approved}, hasFailures: ${hasFailures}).`);
-      return { ok: true, approved: check.approved, isDraft: true };
-    }
+    console.log(`[-] PR #${prNumber} is a draft. Leaving it as a draft.`);
   }
-
-  // 6. Ensure Squash Auto-Merge
-  if (!pr.autoMergeRequest && !pr.isDraft) {
-    console.log(`[*] Enabling squash auto-merge for PR #${prNumber}...`);
-    const mergeAutoRes = runCmd('gh', ['pr', 'merge', String(prNumber), '--repo', repo, '--squash', '--auto']);
-    if (mergeAutoRes.code === 0) {
-      console.log(`[+] Auto-merge successfully enabled!`);
-    } else {
-      if (mergeAutoRes.stderr.includes('head branch is not up to date')) {
-        console.log(`[*] Branch is behind base. Updating branch...`);
-        runCmd('gh', ['pr', 'update-branch', String(prNumber), '--repo', repo]);
-        runCmd('gh', ['pr', 'merge', String(prNumber), '--repo', repo, '--squash', '--auto']);
-      } else {
-        console.log(`[!] Auto-merge status: ${mergeAutoRes.stderr || mergeAutoRes.stdout}`);
-      }
-    }
-  } else if (pr.autoMergeRequest) {
-    console.log(`[+] Squash auto-merge already active.`);
-  }
-
-  // 7. If all checks passing right now, merge immediately
-  const allCompleted = checks.length > 0 && checks.every(c => {
-    const conc = (c.conclusion || c.state || '').toUpperCase();
-    return conc === 'SUCCESS' || conc === 'NEUTRAL' || conc === 'SKIPPED';
-  });
-
-  if (allCompleted && pr.mergeable === 'MERGEABLE' && !pr.isDraft) {
-    console.log(`[*] All checks are green! Executing immediate squash merge for PR #${prNumber}...`);
-    const mergeNow = runCmd('gh', ['pr', 'merge', String(prNumber), '--repo', repo, '--squash']);
-    if (mergeNow.code === 0) {
-      console.log(`[★ MERGED] PR #${prNumber} successfully merged into ${repo}!`);
-      return { ok: true, merged: true };
-    } else if (mergeNow.stderr.includes('already merged')) {
-      console.log(`[★ MERGED] PR #${prNumber} was already merged.`);
-      return { ok: true, merged: true };
-    } else {
-      console.log(`[!] Immediate merge response: ${mergeNow.stderr || mergeNow.stdout}`);
-    }
-  }
-
-  return { ok: true, approved: check.approved, score: check.score };
+  console.log('[*] Report only. No title edit, undraft, branch update, or merge.');
+  return { ok: true, approved: check.approved, score: check.score, isDraft: Boolean(pr.isDraft) };
 }
 
 export function sweepPullRequests() {
@@ -201,7 +116,7 @@ export function sweepPullRequests() {
   const repos = Object.keys(repoProfiles).filter(r => r !== 'default');
 
   console.log(`\n===============================================================`);
-  console.log(`   STARLIGHT CEO AUTONOMOUS PR SWEEP & REVIEW ENGINE`);
+  console.log(`   STARLIGHT PR REPORT (no merge)`);
   console.log(`   Active Repos: ${repos.length}`);
   console.log(`===============================================================\n`);
 
@@ -247,7 +162,7 @@ export function sweepPullRequests() {
 // ── CLI Router ──────────────────────────────────────────────────
 const [,, cmd, arg1, arg2] = process.argv;
 
-if (cmd === 'sweep' || !cmd) {
+if (cmd === 'report' || cmd === 'sweep') {
   sweepPullRequests();
 } else if (cmd === 'review') {
   if (!arg1) {
@@ -258,7 +173,7 @@ if (cmd === 'sweep' || !cmd) {
   evaluatePullRequest(repo, parseInt(arg1, 10));
 } else {
   console.log(`Commands:
-  sweep                  Sweep and evaluate all open PRs across configured repos
-  review <pr> [repo]     Deep evaluate, verify, attest, and auto-merge a single PR
+  report                 Read open pull requests and print a score. Does not merge.
+  review <pr> [repo]     Read one pull request and print a score. Does not merge.
 `);
 }

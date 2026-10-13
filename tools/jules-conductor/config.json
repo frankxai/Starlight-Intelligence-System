@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.2.0",
   "name": "Starlight Jules Autonomous Conductor",
   "attestation": "Built on SIP",
   "engine": "frontier-council",
@@ -8,13 +8,19 @@
     "maxConcurrentSessions": 3,
     "maxLedgerActiveEntries": 50,
     "lowRamMode": true,
-    "memoryCapMb": 100
+    "memoryCapMb": 100,
+    "adoptRemoteSessions": false
   },
   "automation": {
-    "autoMerge": true,
+    "autoMerge": false,
+    "autoDispatch": false,
     "mergeMethod": "squash",
-    "deleteBranchAfterMerge": true,
-    "requireChecksPassing": true
+    "deleteBranchAfterMerge": false,
+    "requireChecksPassing": true,
+    "estateSweep": false,
+    "protectedRepos": [
+      "frankxai/frankx.ai-vercel-website"
+    ]
   },
   "council": {
     "architectPreflight": true,

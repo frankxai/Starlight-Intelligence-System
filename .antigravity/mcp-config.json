@@ -46,6 +46,18 @@
         "ARCANEA_MCP_MODE": "swarm"
       },
       "_disabled_until": "arcanea-mcp v0.1+ ships"
+    },
+    "context7": {
+      "_role": "real-time-documentation — eliminates API hallucinations and outdated cutoffs",
+      "_purpose": "Pulls up-to-date, version-specific library documentation and live code examples directly from official sources (resolve-library-id, query-docs)",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
+      }
     }
   },
   "_task_scoped_mcps": {
