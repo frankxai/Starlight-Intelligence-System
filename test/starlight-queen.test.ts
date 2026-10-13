@@ -87,4 +87,25 @@ describe("Starlight Queen Single-Operator Autonomic Engine", () => {
     queen.recordOperatorHeartbeat("ack_frank_01");
     assert.equal(queen.isOperatorActive(60000), true);
   });
+  it("fails closed on production, destructive, irreversible or high-risk code edits", () => {
+    for (const flag of ["production", "destructive", "irreversible", "highRisk"]) {
+      const queen = new StarlightQueen();
+      const action: QueenTaskAction = {
+        id: `action_flag_${flag}`,
+        name: "Overwrite production database migration script",
+        category: "code_edit",
+        riskTier: "medium_review",
+        params: { [flag]: true },
+      };
+      assert.equal(queen.evaluateRisk(action), "high_irreversible_gate", flag);
+      const res = queen.handleAction(action);
+      assert.equal(res.executed, false, flag);
+      assert.equal(queen.getOpenGates().length, 1, flag);
+    }
+    const queen = new StarlightQueen();
+    assert.equal(queen.evaluateRisk({
+      id: "action_plain_edit", name: "Edit docs", category: "code_edit",
+      riskTier: "medium_review", params: { production: false },
+    }), "medium_review");
+  });
 });
