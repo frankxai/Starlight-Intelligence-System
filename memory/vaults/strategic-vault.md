@@ -440,3 +440,25 @@ Core framework components implemented:
 *Every estate compounds the substrate. The client owns what is theirs; the factory serves the next sovereign.*
 *Starlight Intelligence System — Estate Factory continuation · 2026-06-17*
 
+
+---
+
+### [2026-10-13] Strategic Architecture Lock: agy-clients, agy-community & Zero-Oracle Cloud Native Doctrine
+
+**Context:** Frank workstation coordination across enterprise B2B transformations, AI Architect Academy, and GenCreator ecosystems. RAM floor held by Queen (1.8–3.7 GiB free) under active harness density (16 Claude Code, 23 Codex, Grok, Antigravity).
+
+**Decisions Made:**
+1. **Dual-Engine Architecture Formalized**:
+   - `agy-clients` (`C:/Users/frank/starlight/repos/agy-clients`): Sovereign, air-gapped customer transformation workbench. Private contracts, margins, and customer data remain strictly localized.
+   - `agy-community` (`C:/Users/frank/starlight/repos/agy-community`): Open-source industry observatory powering the **AI Architect Academy** commercial flywheel.
+2. **Anchor Enterprise Pilot Locked**:
+   - Client: **RIAL Energy GmbH & PV-Lager** (Seesen, Lower Saxony; 1,500m² warehouse).
+   - 5-Layer Transformation Roadmap: Layer 1 (Physical Assets/Carports) → Layer 2 (ERP & Dynamic BOM) → Layer 3 (Jay Abraham Preeminence Funnel) → Layer 4 (Sovereign Edge AI Appliance) → Layer 5 (Autonomous Multi-Agent Mesh).
+3. **Zero-Oracle Sovereign Cloud Mandate**:
+   - Strict elimination of Oracle / OCI from all future client architectures and agent specs.
+   - Standardized on: **Google Cloud Platform** (Vertex AI / Gemini 1.5/2.0 for 2M token context), **Anthropic** (Claude 3.7 / Opus for deep code & verification), **Vercel** (Next.js 16 App Router + Vercel AI SDK), **Supabase / Neon** (Serverless Postgres with RLS and DB branching), and **Cloudflare R2** (Zero-egress object storage for CAD/video).
+4. **Workstation RAM Preservation Doctrine**:
+   - Next.js dev servers consume 600 MB–1.5 GB each. Running 3–4 concurrently exhausts workstation RAM and triggers Queen task holds.
+   - Decoupled into **Sovereign Brain (Local)** + **Cloud Delivery (Vercel Native)**. Local dev servers remain strictly transient under `sds`. Local orchestration uses 0 MB idle RAM HTML5 dashboards (`cockpit.html`).
+
+**Attestation:** Built on SIP · Starlight Intelligence Protocol v1.1.1

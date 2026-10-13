@@ -40,6 +40,10 @@ const EXPECTED_TOOLS = [
   "sis_invalidate",
   "sis_knowledge_discover",
   "sis_knowledge_query",
+  "sis_queen_agent_inspect",
+  "sis_queen_agent_resume",
+  "sis_queen_agent_save",
+  "sis_queen_agent_stop",
   "sis_queen_santa_convergence",
   "sis_queen_synthesize_swarm",
   "sis_queen_telemetry",
@@ -117,7 +121,7 @@ function driveServer(
 }
 
 describe("operational MCP server (dist/mcp-server.js) — end-to-end", () => {
-  it("responds to initialize and lists the nineteen sis_* tools", async () => {
+  it("responds to initialize and lists the twenty-three sis_* tools", async () => {
     const responses = await driveServer(
       [
         { jsonrpc: "2.0", id: 1, method: "initialize", params: {} },

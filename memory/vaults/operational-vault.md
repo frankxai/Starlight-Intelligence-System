@@ -877,3 +877,25 @@ Added a declarative inventory for local, desktop, and cloud execution surfaces. 
 The control plane observes and recommends. It does not launch an agent, spend a credit, deploy, or claim that an external task ran. Provider outcomes can feed the existing Queen and arena evidence loops in a later measured iteration.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+## 2026-10-13 - Dual-mode agy-gc launcher & Zero-RAM Cockpit Pattern
+
+**Category:** agent-tooling-and-surfaces  
+**Confidence:** 0.99  
+**Source:** Antigravity session (3a3adfc9-ede3-4cdd-bd8d-620dbc4700ec)  
+**Related:** `agy-gencreator`, `agy-gc`, `agy-clients`, `agy-community`, `ai-architectures-observatory`  
+
+### Pattern Confirmed:
+1. **Workstation RAM Constraint**: With ~40+ agent harness sessions active (Claude Code, Codex, Antigravity, Grok), workstation RAM drops below 4 GiB, triggering the Starlight Queen queue floor.
+2. **Dual-Mode Launcher**:
+   - `agy-gc` / `agy-gencreator` mapped in `AppData/Local/agy/bin/` and `.local/bin/`.
+   - Naked execution (`agy-gc`) drops straight into `agy.exe` inside `C:/Users/frank/starlight/repos/agy-gencreator`.
+   - UI execution (`agy-gc --ui` / `agy-gc --cockpit`) opens `cockpit.html` (pure static HTML5 + Tailwind CSS), consuming **0 MB background Node RAM**.
+   - Dev surface execution (`agy-gc app` / `studio` / `os`) strictly delegates to the `sds` supervisor with a 90-minute TTL to prevent lingering orphan servers.
+3. **Cloud SOTA Delivery Over Localhost**:
+   - Web portals (e.g. `ai-architectures-observatory`, client transformation portals) are built for **100% Vercel Native** deployment rather than running permanent local dev servers.
+   - Heavy video and CAD files route to **Cloudflare R2** via S3 pre-signed URLs to eliminate Vercel bandwidth overage fees ($0.15/GB).
+
+**Built on SIP — Starlight Intelligence Protocol**

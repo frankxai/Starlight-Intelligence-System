@@ -56,6 +56,7 @@ import {
 } from "./skills/index.js";
 import {
   QueenAdaptiveScheduler,
+  AgentLifecycleManager,
 } from "./queen/index.js";
 import {
   D1SyncManager,
@@ -200,6 +201,10 @@ Commands:
   queen santa <task>              Execute Santa adversarial convergence loop
   queen drain                     Drain held Queen tasks via adaptive micro-lane auto-repair (--dry-run)
   queen lane                      Show current Queen adaptive dispatch lane and memory telemetry
+  queen agent inspect             Inspect all terminal agent sessions, processes, and capability matrix (--harness, --json)
+  queen agent save <session-id>   Capture prompts/outputs, git context, and generate durable secret-redacted handover (--out)
+  queen agent stop <session-id>   Safely stop a targeted agent session tree (--dry-run, --force, --timeout)
+  queen agent resume <session-id> Generate resume instructions and Claude continuation prompt for a session
   harness sync                    Sync Starlight skills into local harness configuration files (--all, --dry-run, --harness, --out)
   harness discover                Discover installed AI harnesses and toolplane directories
   skill publish <path>            Publish a skill with dual Stripe + Polar monetization and SIP attestation (--monetization, --tier)
@@ -1634,7 +1639,24 @@ function cmdKnowledge(action: string, args: string[], options: { domain?: string
   }
 }
 
-async function cmdQueen(action: string, args: string[], options: { topology?: string; task?: string; domain?: string; dryRun?: boolean }): Promise<void> {
+async function cmdQueen(
+  action: string,
+  args: string[],
+  options: {
+    topology?: string;
+    task?: string;
+    domain?: string;
+    dryRun?: boolean;
+    force?: boolean;
+    harness?: string;
+    out?: string;
+    session?: string;
+    timeout?: string;
+    json?: boolean;
+    syncIssue?: string | number;
+    [key: string]: unknown;
+  }
+): Promise<void> {
   const tree = new UniversalKnowledgeTree();
   const queen = new StarlightQueen(tree);
   switch (action) {
@@ -1739,9 +1761,146 @@ async function cmdQueen(action: string, args: string[], options: { topology?: st
       console.log(`══════════════════════════════════════════════════════════════════\n`);
       break;
     }
+    case "agent": {
+      const subAction = args[0];
+      const targetSession = args[1] || options.session;
+      const mgr = new AgentLifecycleManager();
+
+      if (!subAction || subAction === "inspect" || subAction === "list") {
+        const inventory = await mgr.inspect({
+          harness: options.harness as any,
+          json: options.json,
+        });
+
+        if (options.json) {
+          console.log(JSON.stringify(inventory, null, 2));
+          return;
+        }
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT QUEEN — TERMINAL AGENT LIFECYCLE INVENTORY`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Sampled At:         ${inventory.sampledAt}`);
+        console.log(`Total Sessions:     ${inventory.totalSessions} (${inventory.activeSessions} active, ${inventory.idleSessions} idle)`);
+        console.log(`Protected PIDs:     ${inventory.protectedPids.length} (Tool plane & MCP daemons shielded)\n`);
+
+        console.log(`DISCOVERED SESSIONS:`);
+        for (const s of inventory.sessions.slice(0, 30)) {
+          const mark = s.status === "active" ? "● ACTIVE " : "○ IDLE   ";
+          const pidStr = s.pid ? `PID ${s.pid}`.padEnd(10) : "NO PID    ";
+          const titleStr = (s.title || "Untitled").slice(0, 36).padEnd(36);
+          const repoStr = s.repoRoot ? ` [${s.repoRoot.split(/[/\\]/).slice(-2).join('/')}]` : "";
+          console.log(`  ${mark} | ${s.provider.toUpperCase().padEnd(9)} | ${s.id.slice(0, 18).padEnd(18)} | ${pidStr} | ${titleStr}${repoStr}`);
+        }
+
+        console.log(`\nPROVIDER CAPABILITIES:`);
+        for (const [pId, caps] of Object.entries(inventory.providerCapabilities)) {
+          const vis = caps.visible ? "✓" : "✗";
+          const tr = caps.transcriptReadable ? "✓" : "✗";
+          const gs = caps.gracefulStopSupported ? "✓" : "✗";
+          const ft = caps.forceTerminationSupported ? "✓" : "✗";
+          console.log(`  ${pId.toUpperCase().padEnd(12)} visible:${vis} transcript:${tr} gracefulStop:${gs} forceKill:${ft}`);
+        }
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+        break;
+      }
+
+      if (subAction === "save") {
+        if (!targetSession) {
+          console.error("[starlight] Error: queen agent save requires a session ID or prefix.");
+          process.exitCode = 1;
+          return;
+        }
+        const rawIssue = options.syncIssue || options["sync-issue"];
+        const syncIssue = rawIssue ? String(rawIssue) : undefined;
+        console.log(`[starlight] Capturing prompts and generating handover for session: "${targetSession}"...`);
+        const doc = await mgr.save(targetSession, { out: options.out, syncIssue });
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT QUEEN — AGENT HANDOVER SAVED`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Session ID:      ${doc.sessionId}`);
+        console.log(`Provider:        ${doc.provider.toUpperCase()}`);
+        console.log(`Quality:         ${doc.capture.provenance.transcriptionQuality} (${doc.capture.captureStatus})`);
+        console.log(`User Prompts:    ${doc.capture.userPrompts.length} captured`);
+        console.log(`Assistant Turns: ${doc.capture.assistantResponses.length} captured`);
+        console.log(`Changed Files:   ${doc.capture.changedFiles.length}`);
+        if (syncIssue) {
+          console.log(`GitHub Issue:    Synced to Issue #${syncIssue}`);
+        }
+        console.log(`JSON Record:     ${doc.jsonPath}`);
+        console.log(`Markdown File:   ${doc.markdownPath}`);
+        console.log(`\nCLAUDE CONTINUATION PROMPT:`);
+        console.log(`──────────────────────────────────────────────────────────────────`);
+        console.log(doc.claudeContinuationPrompt);
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+        break;
+      }
+
+      if (subAction === "stop") {
+        if (!targetSession) {
+          console.error("[starlight] Error: queen agent stop requires an explicit session ID or prefix.");
+          process.exitCode = 1;
+          return;
+        }
+        const dryRun = options.dryRun !== false && !options.force;
+        console.log(`[starlight] Evaluating stop safety for session "${targetSession}" (dryRun=${dryRun})...`);
+        const { plan, result } = await mgr.stop(targetSession, {
+          dryRun,
+          force: options.force === true,
+          timeoutMs: options.timeout ? parseInt(options.timeout, 10) : 3000,
+        });
+
+        console.log(`\n══════════════════════════════════════════════════════════════════`);
+        console.log(`  STARLIGHT QUEEN — AGENT STOP SAFETY AUDIT`);
+        console.log(`══════════════════════════════════════════════════════════════════`);
+        console.log(`Target Session:       ${plan.targetSessionId} (${plan.provider})`);
+        console.log(`Dry Run Mode:         ${plan.isDryRun ? "YES (NO SIGNALS SENT)" : "NO (EXECUTION AUTHORIZED)"}`);
+        console.log(`Targeted PIDs:        ${plan.targetPids.length > 0 ? plan.targetPids.join(", ") : "None (Session not running)"}`);
+        console.log(`Shielded Tool-Plane:  ${plan.protectedPidsShielded.length} PIDs protected`);
+        console.log(`Preserved Ancestors:  ${plan.ancestorPidsPreserved.length} PIDs preserved (Terminal / Shell / Host)`);
+        console.log(`Rationale:            ${plan.rationale}`);
+
+        if (plan.commandLines.length > 0) {
+          console.log(`\nProcess Command Lines To Be Stopped:`);
+          for (const cmd of plan.commandLines) {
+            console.log(`  • ${cmd}`);
+          }
+        }
+
+        if (result) {
+          console.log(`\nExecution Result:`);
+          console.log(`  Success:            ${result.success ? "YES" : "NO"}`);
+          console.log(`  Method Used:        ${result.methodUsed}`);
+          console.log(`  Stopped PIDs:       ${result.stoppedPids.join(", ") || "None"}`);
+          console.log(`  Remaining PIDs:     ${result.remainingPids.join(", ") || "None"}`);
+          console.log(`  Duration:           ${result.durationMs}ms`);
+        } else if (dryRun) {
+          console.log(`\n[DRY RUN SAFE] To execute this stop, specify --force.`);
+        }
+        console.log(`══════════════════════════════════════════════════════════════════\n`);
+        break;
+      }
+
+      if (subAction === "resume") {
+        if (!targetSession) {
+          console.error("[starlight] Error: queen agent resume requires a session ID or prefix.");
+          process.exitCode = 1;
+          return;
+        }
+        const { session, instructions, claudeContinuationPrompt } = await mgr.resume(targetSession);
+        console.log(`\n### Resuming Session: ${session.id} (${session.provider})\n`);
+        console.log(instructions);
+        console.log(`\n### Claude Continuation Prompt:\n\`\`\`markdown\n${claudeContinuationPrompt}\`\`\`\n`);
+        break;
+      }
+
+      console.error(`[starlight] Unknown queen agent action: "${subAction}". Available: inspect, save, stop, resume.`);
+      process.exitCode = 1;
+      break;
+    }
     default:
       console.error(`[starlight] Unknown queen action: "${action}"`);
-      console.error("  Available actions: status, briefing, synthesize, santa, drain, lane");
+      console.error("  Available actions: status, briefing, synthesize, santa, drain, lane, agent");
       process.exitCode = 1;
   }
 }
@@ -2707,7 +2866,7 @@ async function main(): Promise<void> {
     case "queen": {
       const action = positionals[1];
       if (!action) {
-        console.error("[starlight] Error: queen requires an action (status, briefing, synthesize, santa, drain, lane).");
+        console.error("[starlight] Error: queen requires an action (status, briefing, synthesize, santa, drain, lane, agent).");
         process.exitCode = 1;
         return;
       }
@@ -2716,6 +2875,13 @@ async function main(): Promise<void> {
         domain: asString(values.domain),
         task: asString(values.task),
         dryRun: values["dry-run"] === true,
+        force: values.force === true,
+        harness: asString(values.harness),
+        out: asString(values.out),
+        session: asString(values.session),
+        timeout: asString(values.timeout),
+        json: values.json === true,
+        syncIssue: asString(values["sync-issue"]) || asString(values.syncIssue),
       });
       break;
     }

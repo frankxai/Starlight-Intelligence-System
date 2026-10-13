@@ -20,6 +20,7 @@ import { GoalOrchestrator } from './goal.js';
 import {
   UniversalKnowledgeTree,
   StarlightQueen,
+  AgentLifecycleManager,
   type KnowledgeDomainId,
   type SwarmTopologyType,
   type EpistemicTruthState,
@@ -127,12 +128,14 @@ export class StarlightMcpServer {
   private vaultDir: string;
   private knowledgeTree: UniversalKnowledgeTree;
   private queen: StarlightQueen;
+  private lifecycleManager: AgentLifecycleManager;
 
   constructor(vaultDir: string) {
     this.vaultDir = vaultDir;
     ensureDir(this.vaultDir);
     this.knowledgeTree = new UniversalKnowledgeTree();
     this.queen = new StarlightQueen(this.knowledgeTree);
+    this.lifecycleManager = new AgentLifecycleManager();
     this.registerTools();
   }
 
@@ -439,6 +442,79 @@ export class StarlightMcpServer {
       name: 'sis_founder_briefing', description: 'Generate an executive high-status Founder Cockpit Briefing',
       inputSchema: { type: 'object', properties: {} },
     }, () => ({ briefing: this.queen.generateFounderBriefing() }));
+
+    // 20. sis_queen_agent_inspect
+    this.reg({
+      name: 'sis_queen_agent_inspect',
+      description: 'Inspect discoverable terminal agent sessions (Codex, Claude Code, OpenCode, Antigravity, etc.) across the host machine, including process trees, active worktrees, branches, status, and last-seen timestamps',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          harness: { type: 'string', enum: ['codex', 'claude', 'opencode', 'generic'] },
+        },
+      },
+    }, async (p) => {
+      const harness = p.harness as any;
+      return await this.lifecycleManager.inspect({ harness });
+    });
+
+    // 21. sis_queen_agent_save
+    this.reg({
+      name: 'sis_queen_agent_save',
+      description: 'Capture prompts and assistant responses for a targeted session, apply secret redaction, write a durable handover document in ~/.starlight/handoffs/, and optionally sync to a GitHub issue',
+      inputSchema: {
+        type: 'object',
+        required: ['sessionId'],
+        properties: {
+          sessionId: { type: 'string', description: 'Session ID or unique prefix to save' },
+          out: { type: 'string', description: 'Optional custom output path or directory' },
+          syncIssue: { type: 'number', description: 'Optional GitHub issue number to comment with the handover summary' },
+        },
+      },
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      const out = p.out ? String(p.out) : undefined;
+      const syncIssue = p.syncIssue ? Number(p.syncIssue) : undefined;
+      return await this.lifecycleManager.save(sessionId, { out, syncIssue });
+    });
+
+    // 22. sis_queen_agent_stop
+    this.reg({
+      name: 'sis_queen_agent_stop',
+      description: 'Safely stop a targeted terminal agent process tree. Dry-run by default unless dryRun: false. Verifies process termination and shields tool-plane services (e.g. port 7317) and ancestor shells.',
+      inputSchema: {
+        type: 'object',
+        required: ['sessionId'],
+        properties: {
+          sessionId: { type: 'string', description: 'Session ID or unique prefix to stop' },
+          dryRun: { type: 'boolean', description: 'Set to false to actually terminate processes. Defaults to true for safety.' },
+          force: { type: 'boolean', description: 'Force kill if graceful stop fails. Defaults to false.' },
+          timeoutMs: { type: 'number', description: 'Grace period timeout in milliseconds. Defaults to 3000.' },
+        },
+      },
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      const dryRun = p.dryRun !== false;
+      const force = Boolean(p.force);
+      const timeoutMs = p.timeoutMs ? Number(p.timeoutMs) : 3000;
+      return await this.lifecycleManager.stop(sessionId, { dryRun, force, timeoutMs });
+    });
+
+    // 23. sis_queen_agent_resume
+    this.reg({
+      name: 'sis_queen_agent_resume',
+      description: 'Generate resumption instructions and a standalone Claude/Codex continuation prompt for a targeted session',
+      inputSchema: {
+        type: 'object',
+        required: ['sessionId'],
+        properties: {
+          sessionId: { type: 'string', description: 'Session ID or unique prefix to resume' },
+        },
+      },
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      return await this.lifecycleManager.resume(sessionId);
+    });
   }
 
   // ── JSON-RPC Dispatch ───────────────────────────────────────
