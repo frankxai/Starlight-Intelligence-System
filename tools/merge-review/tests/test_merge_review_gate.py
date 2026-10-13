@@ -20,6 +20,9 @@ def receipt(**changes):
             'packetSha256': 'b' * 64, 'resolution': 'No blocking findings; static review only.'}
     body.update(changes)
     return {'id': 123, 'user': {'login': 'frankxai'}, 'author_association': 'OWNER',
+            'performed_via_github_app': {'slug': 'cursor'},
+            'created_at': '2026-10-13T07:00:00Z', 'updated_at': '2026-10-13T07:00:00Z',
+            'edit_history_checked': True, 'last_edited_at': None, 'content_edit_count': 0,
             'body': gate.MARKER + json.dumps(body)}
 
 
@@ -162,6 +165,108 @@ class MergeReviewTests(unittest.TestCase):
         self.assertFalse(self.evaluate([receipt(), receipt(verdict='FAIL')]))
         self.assertFalse(self.evaluate([receipt(), receipt(blockingFindings=['unfixed'])]))
 
+
+
+class PostingAppTests(unittest.TestCase):
+    def evaluate(self, comments):
+        return gate.evaluate('frankxai/starlight-agent-config', 110, HEAD, FILES, comments)[0]
+
+    def test_allowlisted_apps_attest(self):
+        for slug in ['cursor', 'chatgpt-codex-connector']:
+            comment = receipt()
+            comment['performed_via_github_app'] = {'slug': slug}
+            with self.subTest(slug=slug):
+                self.assertTrue(self.evaluate([comment]))
+
+    def test_raw_token_receipt_is_rejected(self):
+        for app in [None, {}, {'slug': None}, 'cursor']:
+            comment = receipt()
+            comment['performed_via_github_app'] = app
+            with self.subTest(app=app):
+                self.assertFalse(self.evaluate([comment]))
+        comment = receipt()
+        del comment['performed_via_github_app']
+        self.assertFalse(self.evaluate([comment]))
+
+    def test_other_apps_are_rejected(self):
+        for slug in ['claude', 'google-labs-jules', 'github-actions', 'dependabot', 'cursor-evil']:
+            comment = receipt()
+            comment['performed_via_github_app'] = {'slug': slug}
+            with self.subTest(slug=slug):
+                self.assertFalse(self.evaluate([comment]))
+
+    def test_raw_token_receipt_cannot_revoke_or_shadow(self):
+        forged = receipt(verdict='FAIL')
+        forged['id'] = 124
+        forged['performed_via_github_app'] = None
+        self.assertTrue(self.evaluate([receipt(), forged]))
+
+    def test_edited_receipt_is_rejected(self):
+        comment = receipt()
+        comment['updated_at'] = '2026-10-13T07:05:00Z'
+        self.assertFalse(self.evaluate([comment]))
+        for key in ['created_at', 'updated_at']:
+            comment = receipt()
+            del comment[key]
+            with self.subTest(missing=key):
+                self.assertFalse(self.evaluate([comment]))
+
+
+    def test_same_second_edit_is_rejected_via_edit_history(self):
+        comment = receipt()
+        comment['last_edited_at'] = '2026-10-13T07:00:00Z'
+        self.assertFalse(self.evaluate([comment]))
+        comment = receipt()
+        comment['content_edit_count'] = 1
+        self.assertFalse(self.evaluate([comment]))
+
+    def test_unchecked_edit_history_fails_closed(self):
+        for key in ['edit_history_checked', 'content_edit_count']:
+            comment = receipt()
+            del comment[key]
+            with self.subTest(missing=key):
+                self.assertFalse(self.evaluate([comment]))
+
+    def test_edit_history_lookups_only_for_current_head_candidates(self):
+        calls = []
+        def lookup(node_id):
+            calls.append(node_id)
+            return {'lastEditedAt': None, 'userContentEdits': {'totalCount': 0}}
+        noise = []
+        for i in range(50):
+            c = receipt()
+            c['node_id'] = f'noise{i}'
+            c['user'] = {'login': 'someone-else'}
+            noise.append(c)
+        stale = receipt(headSha='c' * 40)
+        stale['node_id'] = 'stale'
+        rawtoken = receipt()
+        rawtoken['node_id'] = 'raw'
+        rawtoken['performed_via_github_app'] = None
+        good = receipt()
+        good['node_id'] = 'good'
+        for key in ['edit_history_checked', 'last_edited_at', 'content_edit_count']:
+            good.pop(key)
+        comments = [good, stale, rawtoken] + noise
+        gate.annotate_edit_history(comments, HEAD, lookup)
+        self.assertEqual(calls, ['good'])
+        self.assertTrue(self.evaluate(comments))
+
+    def test_edit_history_lookups_are_capped(self):
+        calls = []
+        def lookup(node_id):
+            calls.append(node_id)
+            return {'lastEditedAt': '2026-10-13T07:00:00Z', 'userContentEdits': {'totalCount': 2}}
+        comments = []
+        for i in range(20):
+            c = receipt()
+            c['node_id'] = f'r{i}'
+            for key in ['edit_history_checked', 'last_edited_at', 'content_edit_count']:
+                c.pop(key)
+            comments.append(c)
+        gate.annotate_edit_history(comments, HEAD, lookup)
+        self.assertEqual(len(calls), gate.MAX_EDIT_LOOKUPS)
+        self.assertFalse(self.evaluate(comments))
 
 if __name__ == '__main__':
     unittest.main()
