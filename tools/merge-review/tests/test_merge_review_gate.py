@@ -227,5 +227,46 @@ class PostingAppTests(unittest.TestCase):
             with self.subTest(missing=key):
                 self.assertFalse(self.evaluate([comment]))
 
+    def test_edit_history_lookups_only_for_current_head_candidates(self):
+        calls = []
+        def lookup(node_id):
+            calls.append(node_id)
+            return {'lastEditedAt': None, 'userContentEdits': {'totalCount': 0}}
+        noise = []
+        for i in range(50):
+            c = receipt()
+            c['node_id'] = f'noise{i}'
+            c['user'] = {'login': 'someone-else'}
+            noise.append(c)
+        stale = receipt(headSha='c' * 40)
+        stale['node_id'] = 'stale'
+        rawtoken = receipt()
+        rawtoken['node_id'] = 'raw'
+        rawtoken['performed_via_github_app'] = None
+        good = receipt()
+        good['node_id'] = 'good'
+        for key in ['edit_history_checked', 'last_edited_at', 'content_edit_count']:
+            good.pop(key)
+        comments = [good, stale, rawtoken] + noise
+        gate.annotate_edit_history(comments, HEAD, lookup)
+        self.assertEqual(calls, ['good'])
+        self.assertTrue(self.evaluate(comments))
+
+    def test_edit_history_lookups_are_capped(self):
+        calls = []
+        def lookup(node_id):
+            calls.append(node_id)
+            return {'lastEditedAt': '2026-10-13T07:00:00Z', 'userContentEdits': {'totalCount': 2}}
+        comments = []
+        for i in range(20):
+            c = receipt()
+            c['node_id'] = f'r{i}'
+            for key in ['edit_history_checked', 'last_edited_at', 'content_edit_count']:
+                c.pop(key)
+            comments.append(c)
+        gate.annotate_edit_history(comments, HEAD, lookup)
+        self.assertEqual(len(calls), gate.MAX_EDIT_LOOKUPS)
+        self.assertFalse(self.evaluate(comments))
+
 if __name__ == '__main__':
     unittest.main()

@@ -87,22 +87,56 @@ EDIT_QUERY = ('query($id: ID!) { node(id: $id) { ... on IssueComment { '
               'lastEditedAt userContentEdits(first: 1) { totalCount } } } }')
 
 
-def annotate_edit_history(comments):
-    """Record GraphQL edit provenance for comments that could be receipts."""
-    for comment in comments:
-        if not str(comment.get('body', '')).startswith('STARLIGHT-INDEPENDENT-REVIEW-V1'):
+MAX_EDIT_LOOKUPS = 5
+
+
+def receipt_candidate(comment, head):
+    """REST-only pre-check: could this comment be the receipt evaluate() decides on?"""
+    if (comment.get('user', {}).get('login') not in TRUSTED_ATTESTORS
+            or comment.get('author_association') not in {'OWNER', 'MEMBER', 'COLLABORATOR'}
+            or posting_app(comment) not in TRUSTED_APPS
+            or not comment.get('created_at') or comment.get('created_at') != comment.get('updated_at')):
+        return False
+    body = comment.get('body', '')
+    marker = MARKER if body.startswith(MARKER) else MARKER.replace('\n', '\r\n')
+    if not body.startswith(marker) or len(body) > 60000:
+        return False
+    try:
+        return json.loads(body[len(marker):]).get('headSha') == head
+    except (ValueError, AttributeError):
+        return False
+
+
+def annotate_edit_history(comments, head, lookup=None):
+    """Record GraphQL edit provenance, newest candidate first, for at most a few receipts.
+
+    Only trusted, App-posted, REST-unedited, current-head receipts are looked up, and
+    the scan stops at the first one with a clean history: that is the receipt
+    evaluate() decides on. Unchecked candidates stay unannotated and fail closed.
+    """
+    lookup = lookup or graphql_edit_history
+    lookups = 0
+    for comment in reversed(comments):
+        if not receipt_candidate(comment, head) or not comment.get('node_id'):
             continue
-        node_id = comment.get('node_id')
-        if not node_id:
-            continue
-        run = subprocess.run(['gh', 'api', 'graphql', '-f', f'query={EDIT_QUERY}', '-f', f'id={node_id}'],
-                             capture_output=True, text=True, timeout=90, check=True)
-        node = (json.loads(run.stdout).get('data') or {}).get('node') or {}
+        if lookups >= MAX_EDIT_LOOKUPS:
+            return
+        lookups += 1
+        node = lookup(comment['node_id'])
         edits = node.get('userContentEdits') or {}
-        if 'lastEditedAt' in node and isinstance(edits.get('totalCount'), int):
-            comment['last_edited_at'] = node['lastEditedAt']
-            comment['content_edit_count'] = edits['totalCount']
-            comment['edit_history_checked'] = True
+        if 'lastEditedAt' not in node or not isinstance(edits.get('totalCount'), int):
+            return
+        comment['last_edited_at'] = node['lastEditedAt']
+        comment['content_edit_count'] = edits['totalCount']
+        comment['edit_history_checked'] = True
+        if node['lastEditedAt'] is None and edits['totalCount'] == 0:
+            return
+
+
+def graphql_edit_history(node_id):
+    run = subprocess.run(['gh', 'api', 'graphql', '-f', f'query={EDIT_QUERY}', '-f', f'id={node_id}'],
+                         capture_output=True, text=True, timeout=90, check=True)
+    return (json.loads(run.stdout).get('data') or {}).get('node') or {}
 
 
 def evaluate(repository, number, head, files, comments, auto_merge=None):
@@ -204,7 +238,7 @@ def main():
                     if revision == wanted:
                         item['mode'] = modes.get(item['filename'])
         comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
-        annotate_edit_history(comments)
+        annotate_edit_history(comments, head)
         ok, summary = evaluate(repository, number, head, files, comments, pr.get('auto_merge'))
         if api(endpoint)['head']['sha'] != head:
             ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
