@@ -70,8 +70,14 @@ export class StarlightQueen {
     if (
       action.category === "money_movement" ||
       action.category === "credential_access" ||
-      action.category === "deployment"
+      action.category === "deployment" ||
+      action.params?.irreversible === true ||
+      action.params?.highRisk === true ||
+      action.params?.production === true ||
+      action.params?.destructive === true
     ) {
+      // Fail closed: any action flagged irreversible, high-risk, production or
+      // destructive needs a human gate, whatever its category.
       return "high_irreversible_gate";
     }
     if (action.category === "code_edit") {
