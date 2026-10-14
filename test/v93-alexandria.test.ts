@@ -1096,7 +1096,7 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       const path = join(dir, "receipts.jsonl");
       const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
       writeFileSync(path, Array.from({ length: 40 }, (_, i) => JSON.stringify({ ...base, capability: `f${i}` }) + "\n").join(""));
-      await new Promise((r) => setTimeout(r, 2100));
+      await new Promise((r) => setTimeout(r, 2100)); // settled on fine and coarse timestamps alike
       const ledger = new ReceiptLedger(path);
       const scan = () => (ledger as unknown as { overrunScan: { stamp?: string; scansSinceVerify: number } }).overrunScan;
       ledger.suspendedCapabilities();

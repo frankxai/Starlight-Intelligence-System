@@ -165,7 +165,10 @@ export class ReceiptLedger {
   private appendOwn(text: string): void {
     const current = this.overrunScan.stamp !== undefined && existsSync(this.path) && stampOf(statSync(this.path, { bigint: true })) === this.overrunScan.stamp;
     appendFileSync(this.path, text, { encoding: 'utf8', mode: FILE_MODE });
-    this.overrunScan.stamp = current ? stampOf(statSync(this.path, { bigint: true })) : undefined;
+    // Forwarded only where timestamps are fine-grained: on a coarse-timestamp filesystem a foreign
+    // same-size rewrite in the same tick would keep this fresh stamp, so the next scan rehashes.
+    const after = statSync(this.path, { bigint: true });
+    this.overrunScan.stamp = current && fineGrained(after) ? stampOf(after) : undefined;
   }
 
   /**
@@ -387,9 +390,9 @@ export class ReceiptLedger {
         }
       }
       // A stamp is recorded only once it is settled (on a filesystem with coarse timestamps a rewrite
-      // in the same tick could keep it, so one younger than RACY_MS is not trusted), or when the file
-      // is exactly as the trusted stamp described. A foreign append therefore costs one full rehash.
-      this.overrunScan.stamp = settled(big) || viaStamp ? stampOf(big) : undefined;
+      // in the same tick could keep it, so one younger than the racy window (50 ms fine, 2 s coarse) is not trusted), or when the file
+      // is exactly as the trusted stamp described (fine-grained timestamps only). A foreign append therefore costs one full rehash.
+      this.overrunScan.stamp = settled(big) || (viaStamp && fineGrained(big)) ? stampOf(big) : undefined;
     } finally { closeSync(fd); }
     const out = new Set<string>();
     for (const o of [...this.overrunScan.overruns, ...tailOverruns]) {
@@ -471,18 +474,27 @@ function emptyScan(): OverrunScan {
 }
 
 /** Even with a matching stamp, the whole prefix is rehashed this often. */
-const FULL_VERIFY_EVERY = 256;
-const FULL_VERIFY_MS = 60_000;
-/** A stamp younger than this may hide a same-tick rewrite on a coarse-timestamp filesystem. */
-const RACY_MS = 2000n;
+const FULL_VERIFY_EVERY = 32;
+const FULL_VERIFY_MS = 5_000;
+/**
+ * A stamp younger than this may hide a same-tick rewrite. Whole-second timestamps (FAT, some
+ * network filesystems) need 2 s; nanosecond timestamps advance with the kernel clock tick.
+ */
+const RACY_COARSE_NS = 2_000_000_000n;
+const RACY_FINE_NS = 50_000_000n;
 
 function stampOf(st: BigIntStats): string {
   return `${st.dev}:${st.ino}:${st.size}:${st.mtimeNs}:${st.ctimeNs}`;
 }
 
+/** True when the filesystem records sub-second timestamps (seen on this file's last change). */
+function fineGrained(st: BigIntStats): boolean {
+  return st.mtimeNs % 1_000_000_000n !== 0n || st.ctimeNs % 1_000_000_000n !== 0n;
+}
+
 function settled(st: BigIntStats): boolean {
   const newest = st.mtimeNs > st.ctimeNs ? st.mtimeNs : st.ctimeNs;
-  return BigInt(Date.now()) * 1_000_000n - newest >= RACY_MS * 1_000_000n;
+  return BigInt(Date.now()) * 1_000_000n - newest >= (fineGrained(st) ? RACY_FINE_NS : RACY_COARSE_NS);
 }
 
 /** The bytes after the last newline of a file, or null if it is empty or ends in a newline. Reads only the tail. */
