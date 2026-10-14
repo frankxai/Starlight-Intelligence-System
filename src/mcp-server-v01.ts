@@ -1216,7 +1216,28 @@ export class SisMcpServerV01 {
             subject: { type: 'object' },
             stages: { type: 'array' },
             issuer_name: { type: 'string' },
-            decisions: { type: 'array' },
+            decisions: {
+              type: 'array',
+              description:
+                'Gate decisions crossed during the run. For decidedBy=human, actor-bound proof is required (signature, mandateId, approvalRef, evidenceRef, or proof).',
+              items: {
+                type: 'object',
+                required: ['gate', 'decidedBy', 'actorId', 'outcome', 'at'],
+                properties: {
+                  gate: { type: 'string' },
+                  decidedBy: { type: 'string', enum: ['human', 'agent', 'policy'] },
+                  actorId: { type: 'string' },
+                  outcome: { type: 'string', enum: ['approved', 'rejected', 'deferred'] },
+                  at: { type: 'string' },
+                  note: { type: 'string' },
+                  signature: { type: 'string' },
+                  mandateId: { type: 'string' },
+                  approvalRef: { type: 'string' },
+                  evidenceRef: { type: 'string' },
+                  proof: { type: 'string' },
+                },
+              },
+            },
             evidence: {
               type: 'array',
               description:

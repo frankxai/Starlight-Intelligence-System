@@ -100,3 +100,32 @@ test("receiptProblems refuses evidence entry with malformed sha256", () => {
   const problems = receiptProblems(bad);
   assert.ok(problems.includes("evidence https://example.org.sha256 is not a sha256"), problems.join("; "));
 });
+
+test("receiptProblems refuses human decision without proof", () => {
+  const bad = {
+    ...receipt(),
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  const problems = receiptProblems(bad);
+  assert.ok(
+    problems.includes("decision spend decidedBy human has no proof (signature, mandateId, approvalRef, evidenceRef, or proof)"),
+    problems.join("; "),
+  );
+});
+
+test("receiptProblems accepts human decision with proof", () => {
+  const ok = {
+    ...receipt(),
+    decisions: [
+      {
+        gate: "spend",
+        decidedBy: "human",
+        actorId: "frank",
+        outcome: "approved",
+        approvalRef: "mandate:frank:spend",
+        at: "2026-09-21T09:59:00.000Z",
+      },
+    ],
+  };
+  assert.deepEqual(receiptProblems(ok), []);
+});

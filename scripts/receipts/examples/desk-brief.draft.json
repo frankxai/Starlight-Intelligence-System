@@ -9,7 +9,7 @@
     { "name": "judge", "status": "ok", "provider": "nebius", "model": "openai/gpt-oss-120b", "inputTokens": 6000, "outputTokens": 500, "costEur": 0.0005, "latencyMs": 1200, "note": "grounding 0.92" }
   ],
   "decisions": [
-    { "gate": "publish", "decidedBy": "human", "actorId": "frank", "outcome": "approved" }
+    { "gate": "publish", "decidedBy": "human", "actorId": "frank", "outcome": "approved", "approvalRef": "mandate:frank:desk-publish" }
   ],
   "evidence": [
     { "kind": "source", "ref": "scripts/receipts/examples/desk-brief.source.md", "sha256": "a00bf49379f18f3abdb82cd18b7cf2976369eea6e7faab4f94458fe61d09ee8c" }

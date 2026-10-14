@@ -53,6 +53,15 @@ export interface RunReceiptDecision {
   outcome: DecisionOutcome;
   at: string;
   note?: string;
+  /**
+   * Actor-bound evidence proving a human decision (required when decidedBy is "human").
+   * At least one of signature, mandateId, approvalRef, evidenceRef, or proof must be provided.
+   */
+  signature?: string;
+  mandateId?: string;
+  approvalRef?: string;
+  evidenceRef?: string;
+  proof?: string;
 }
 
 export interface RunReceiptEvidence {
@@ -125,7 +134,7 @@ const KEYS = {
   stage: ["name", "status", "model", "provider", "inputTokens", "outputTokens", "costEur", "latencyMs", "note"],
   totals: ["costEur", "latencyMs", "tokens"],
   tokens: ["input", "output"],
-  decision: ["gate", "decidedBy", "actorId", "outcome", "at", "note"],
+  decision: ["gate", "decidedBy", "actorId", "outcome", "at", "note", "signature", "mandateId", "approvalRef", "evidenceRef", "proof"],
   evidence: ["kind", "ref", "sha256"],
 } as const;
 
@@ -301,6 +310,19 @@ export function receiptProblems(receipt: unknown): string[] {
       if (!OUTCOMES.includes(d.outcome as DecisionOutcome)) problems.push(`decision ${d.gate ?? i}.outcome is ${JSON.stringify(d.outcome)}`);
       if (!isDate(d.at)) problems.push(`decision ${d.gate ?? i}.at is not a date-time`);
       else if (isDate(r.issuedAt) && Date.parse(d.at) > Date.parse(r.issuedAt)) problems.push(`decision ${d.gate ?? i}.at is after issuedAt`);
+      for (const k of ["signature", "mandateId", "approvalRef", "evidenceRef", "proof"] as const) {
+        if (d[k] !== undefined && (typeof d[k] !== "string" || !(d[k] as string).trim())) {
+          problems.push(`decision ${d.gate ?? i}.${k} is not a non-empty string`);
+        }
+      }
+      if (d.decidedBy === "human") {
+        const hasProof = (["signature", "mandateId", "approvalRef", "evidenceRef", "proof"] as const).some(
+          (k) => typeof d[k] === "string" && (d[k] as string).trim().length > 0,
+        );
+        if (!hasProof) {
+          problems.push(`decision ${d.gate ?? i} decidedBy human has no proof (signature, mandateId, approvalRef, evidenceRef, or proof)`);
+        }
+      }
     });
   }
 

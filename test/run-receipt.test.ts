@@ -57,7 +57,7 @@ function receipt(overrides: Partial<RunReceipt> = {}): RunReceipt {
     subject: { name: 'brief.md', digest: { sha256: sha256Hex('hello') } },
     stages: STAGES,
     totals: totalsFromStages(STAGES),
-    decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-21T09:59:30.000Z' }],
+    decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', approvalRef: 'mandate:frank:desk-publish', at: '2026-09-21T09:59:30.000Z' }],
     evidence: [{ kind: 'ledger', ref: 'memory/_audit/agent-events/2026-09-21.jsonl', sha256: sha256Hex('log') }],
     verdict: verdictFromStages(STAGES),
     ...overrides,
@@ -227,9 +227,63 @@ describe('run receipt — receiptProblems', () => {
     const base = receipt();
     const problems = receiptProblems({
       ...base,
-      decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-21T11:00:00.000Z' }],
+      decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', approvalRef: 'mandate:frank:desk-publish', at: '2026-09-21T11:00:00.000Z' }],
     });
     assert.ok(problems.includes('decision publish.at is after issuedAt'), problems.join('; '));
+  });
+
+  it('refuses a human decision without proof', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-21T09:59:30.000Z' }],
+      }),
+    );
+    assert.ok(
+      problems.includes('decision publish decidedBy human has no proof (signature, mandateId, approvalRef, evidenceRef, or proof)'),
+      problems.join('; '),
+    );
+  });
+
+  it('refuses a human decision with an empty proof string', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', approvalRef: '   ', at: '2026-09-21T09:59:30.000Z' }],
+      }),
+    );
+    assert.ok(problems.includes('decision publish.approvalRef is not a non-empty string'), problems.join('; '));
+    assert.ok(
+      problems.includes('decision publish decidedBy human has no proof (signature, mandateId, approvalRef, evidenceRef, or proof)'),
+      problems.join('; '),
+    );
+  });
+
+  it('accepts human decisions with any supported proof field', () => {
+    for (const [key, val] of [
+      ['signature', 'sig_1234567890abcdef'],
+      ['mandateId', 'man_2026_q4'],
+      ['approvalRef', 'https://github.com/frankxai/Starlight-Intelligence-System/pull/421#issuecomment-1'],
+      ['evidenceRef', 'ref_gate_approval_01'],
+      ['proof', 'proof_token_human_verified'],
+    ] as const) {
+      const problems = receiptProblems(
+        receipt({
+          decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', [key]: val, at: '2026-09-21T09:59:30.000Z' }],
+        }),
+      );
+      assert.deepEqual(problems, [], `Expected proof key ${key} to be accepted without problems`);
+    }
+  });
+
+  it('accepts policy and agent decisions without proof', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [
+          { gate: 'policy-check', decidedBy: 'policy', actorId: 'cost-policy', outcome: 'approved', at: '2026-09-21T09:59:30.000Z' },
+          { gate: 'agent-eval', decidedBy: 'agent', actorId: 'sentinel', outcome: 'approved', at: '2026-09-21T09:59:30.000Z' },
+        ],
+      }),
+    );
+    assert.deepEqual(problems, []);
   });
 
   it('refuses a PASS verdict when a stage failed', () => {
@@ -370,6 +424,11 @@ describe('run receipt hardening', () => {
     const stageExtra = baseReceipt();
     (stageExtra.stages[0] as unknown as Record<string, unknown>).tool = 'x';
     assert.match(receiptProblems(stageExtra).join(' '), /unknown property stages\[0\]\.tool/);
+    const decisionExtra = {
+      ...baseReceipt(),
+      decisions: [{ gate: 'g', decidedBy: 'agent', actorId: 'a', outcome: 'approved', at: '2026-09-21T21:59:00Z', rogue: 1 } as any],
+    };
+    assert.match(receiptProblems(decisionExtra).join(' '), /unknown property decisions\[0\]\.rogue/);
     const looseDate = { ...baseReceipt(), issuedAt: '2026' };
     assert.match(receiptProblems(looseDate).join(' '), /issuedAt is not a date-time/);
     const badKey = { ...baseReceipt(), issuer: { name: 't', keyid: 'abc' } };
