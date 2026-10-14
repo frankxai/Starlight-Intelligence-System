@@ -17,8 +17,9 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, realpathSync, renameSync, rmSync, statSync, truncateSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join } from 'node:path';
+import { appendFileSync, closeSync, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, readlinkSync, readSync, realpathSync, renameSync, rmSync, statSync, truncateSync, writeFileSync } from 'node:fs';
+import type { BigIntStats } from 'node:fs';
+import { basename, dirname, join, resolve } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
 export const SIP_VERSION = '1.1.1';
@@ -152,8 +153,19 @@ export class ReceiptLedger {
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     this.locked(() => {
       this.finishTail();
-      appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
+      this.appendOwn(JSON.stringify(receipt) + '\n');
     });
+  }
+
+  /**
+   * Caller holds the write lock. Appends a line and, if the scan cache was current just before
+   * (its stamp still matched the file), moves the stamp past the append: the bytes the cache was
+   * built from were unchanged and only this append followed, so the next scan need not rehash them.
+   */
+  private appendOwn(text: string): void {
+    const current = this.overrunScan.stamp !== undefined && existsSync(this.path) && stampOf(statSync(this.path, { bigint: true })) === this.overrunScan.stamp;
+    appendFileSync(this.path, text, { encoding: 'utf8', mode: FILE_MODE });
+    this.overrunScan.stamp = current ? stampOf(statSync(this.path, { bigint: true })) : undefined;
   }
 
   /**
@@ -164,10 +176,10 @@ export class ReceiptLedger {
    */
   private finishTail(): void {
     if (!existsSync(this.path)) return;
-    const content = readFileSync(this.path, 'utf8');
-    if (content.length === 0 || content.endsWith('\n')) return;
-    if (completeReceipt(content.slice(content.lastIndexOf('\n') + 1))) {
-      appendFileSync(this.path, '\n', { encoding: 'utf8', mode: FILE_MODE });
+    const fragment = trailingFragment(this.path);
+    if (fragment === null) return;
+    if (completeReceipt(fragment)) {
+      this.appendOwn('\n');
       return;
     }
     throw new TornTailError(`Receipt ledger ${this.path} ends in a cut-off line that does not parse as a complete receipt and may hold suspension evidence. Nothing was written; an operator must inspect it and move it out with ReceiptLedger.quarantinePartialTail()`);
@@ -292,7 +304,7 @@ export class ReceiptLedger {
       const suspended = existsSync(this.path) ? this.suspendedUnlocked(catalogueReconciledAt) : new Set<string>();
       if (suspended.has(capabilityId)) return { appended: false, suspended };
       this.finishTail();
-      appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
+      this.appendOwn(JSON.stringify(receipt) + '\n');
       return { appended: true, suspended };
     });
   }
@@ -311,16 +323,27 @@ export class ReceiptLedger {
     let tailOverruns: { key: string; at?: string }[] = [];
     try {
       const stat = fstatSync(fd);
+      const big = fstatSync(fd, { bigint: true });
       const size = stat.size;
       const cached = this.overrunScan;
-      // The cache is trusted only if every byte it was built from is unchanged: same file identity,
-      // not shorter, and a sha256 over bytes 0..offset that still matches. The running hash then
-      // extends over the newly consumed lines, so the full prefix is hashed once per scan.
+      // The cache is trusted only if every byte it was built from is unchanged. Cheap path: the
+      // file's stamp (device, inode, size, mtime and ctime in ns) equals the one recorded when the
+      // cache was last verified or moved past this ledger's own append, and a full verify is not due.
+      // Otherwise the sha256 over bytes 0..offset is recomputed and must match. The running hash is
+      // kept, so new lines extend it without rereading the prefix.
       let hash = createHash('sha256');
       let sameFile = cached.offset === 0;
-      if (!sameFile && cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset) {
+      let viaStamp = false;
+      const due = cached.scansSinceVerify >= FULL_VERIFY_EVERY || Date.now() - cached.verifiedAt >= FULL_VERIFY_MS;
+      if (!sameFile && !due && cached.stamp !== undefined && cached.hash && stampOf(big) === cached.stamp) {
+        sameFile = true;
+        viaStamp = true;
+        hash = cached.hash.copy();
+        cached.scansSinceVerify += 1;
+      } else if (!sameFile && cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset) {
         hashRange(fd, hash, 0, cached.offset);
         sameFile = hash.copy().digest('hex') === cached.prefixHash;
+        if (sameFile) { cached.scansSinceVerify = 0; cached.verifiedAt = Date.now(); }
       }
       if (!sameFile) { this.overrunScan = emptyScan(); hash = createHash('sha256'); }
       const start = this.overrunScan.offset;
@@ -351,7 +374,7 @@ export class ReceiptLedger {
           }
           const offset = start + end + 1;
           hash.update(buf.subarray(0, end + 1));
-          this.overrunScan = { offset, overruns: [...this.overrunScan.overruns, ...found], dev: stat.dev, ino: stat.ino, prefixHash: hash.digest('hex') };
+          this.overrunScan = { ...this.overrunScan, offset, overruns: [...this.overrunScan.overruns, ...found], dev: stat.dev, ino: stat.ino, prefixHash: hash.copy().digest('hex'), hash };
         }
         const tail = buf.subarray(end + 1, read).toString('utf8');
         if (tail.trim().length > 0) {
@@ -363,6 +386,10 @@ export class ReceiptLedger {
           if (complete.overrun) tailOverruns = [{ key: `${complete.provider}/${complete.capability}`, at: complete.catalogueReconciledAt }];
         }
       }
+      // A stamp is recorded only once it is settled (on a filesystem with coarse timestamps a rewrite
+      // in the same tick could keep it, so one younger than RACY_MS is not trusted), or when the file
+      // is exactly as the trusted stamp described. A foreign append therefore costs one full rehash.
+      this.overrunScan.stamp = settled(big) || viaStamp ? stampOf(big) : undefined;
     } finally { closeSync(fd); }
     const out = new Set<string>();
     for (const o of [...this.overrunScan.overruns, ...tailOverruns]) {
@@ -431,10 +458,58 @@ interface OverrunScan {
   ino?: number;
   /** sha256 of bytes 0..offset. */
   prefixHash: string;
+  /** The running hash over bytes 0..offset, extended as new lines are consumed. */
+  hash?: ReturnType<typeof createHash>;
+  /** File stamp when the cache was last known current; undefined forces a hash check. */
+  stamp?: string;
+  scansSinceVerify: number;
+  verifiedAt: number;
 }
 
 function emptyScan(): OverrunScan {
-  return { offset: 0, overruns: [], prefixHash: '' };
+  return { offset: 0, overruns: [], prefixHash: '', scansSinceVerify: 0, verifiedAt: Date.now() };
+}
+
+/** Even with a matching stamp, the whole prefix is rehashed this often. */
+const FULL_VERIFY_EVERY = 256;
+const FULL_VERIFY_MS = 60_000;
+/** A stamp younger than this may hide a same-tick rewrite on a coarse-timestamp filesystem. */
+const RACY_MS = 2000n;
+
+function stampOf(st: BigIntStats): string {
+  return `${st.dev}:${st.ino}:${st.size}:${st.mtimeNs}:${st.ctimeNs}`;
+}
+
+function settled(st: BigIntStats): boolean {
+  const newest = st.mtimeNs > st.ctimeNs ? st.mtimeNs : st.ctimeNs;
+  return BigInt(Date.now()) * 1_000_000n - newest >= RACY_MS * 1_000_000n;
+}
+
+/** The bytes after the last newline of a file, or null if it is empty or ends in a newline. Reads only the tail. */
+function trailingFragment(path: string): string | null {
+  const fd = openSync(path, 'r');
+  try {
+    const size = fstatSync(fd).size;
+    if (size === 0) return null;
+    const chunks: Buffer[] = [];
+    let pos = size;
+    while (pos > 0) {
+      const len = Math.min(64 * 1024, pos);
+      const buf = Buffer.alloc(len);
+      let read = 0;
+      while (read < len) {
+        const n = readSync(fd, buf, read, len - read, pos - len + read);
+        if (n === 0) break;
+        read += n;
+      }
+      pos -= len;
+      if (pos + len === size && buf[len - 1] === 0x0a) return null;
+      const nl = buf.lastIndexOf(0x0a);
+      if (nl >= 0) { chunks.unshift(buf.subarray(nl + 1)); break; }
+      chunks.unshift(buf);
+    }
+    return Buffer.concat(chunks).toString('utf8');
+  } finally { closeSync(fd); }
 }
 
 /** Feeds bytes [from, to) of an open file into a hash, in chunks. */
@@ -458,10 +533,32 @@ const capabilityTurns = new Map<string, Promise<void>>();
  * path when it already exists.
  */
 export function ledgerIdentity(ledgerPath: string): { key: string; lockBase: string } {
-  mkdirSync(dirname(ledgerPath), { recursive: true, mode: DIR_MODE });
-  const real = existsSync(ledgerPath) ? realpathSync(ledgerPath) : join(realpathSync(dirname(ledgerPath)), basename(ledgerPath));
+  const target = followLinks(ledgerPath);
+  mkdirSync(dirname(target), { recursive: true, mode: DIR_MODE });
+  const real = existsSync(target) ? realpathSync(target) : join(realpathSync(dirname(target)), basename(target));
   const dir = statSync(dirname(real));
   return { key: `${dir.dev}:${dir.ino}/${basename(real)}`, lockBase: real };
+}
+
+/**
+ * Follows symlinks at the final path component, including a dangling one whose target does not
+ * exist yet, so a ledger named through a link and through its target gets one identity before
+ * the file is created. Parent directories are resolved by realpath in ledgerIdentity.
+ */
+function followLinks(path: string): string {
+  let current = resolve(path);
+  for (let hops = 0; hops < 40; hops += 1) {
+    let isLink = false;
+    try { isLink = lstatSync(current).isSymbolicLink(); } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') return current;
+      throw err;
+    }
+    if (!isLink) return current;
+    // A link's parent may itself be a link: resolve it first, so a relative target is read from the right place.
+    const parent = existsSync(dirname(current)) ? realpathSync(dirname(current)) : dirname(current);
+    current = resolve(parent, readlinkSync(current));
+  }
+  throw new Error(`Receipt ledger path ${path} has too many symbolic links`);
 }
 
 /**
