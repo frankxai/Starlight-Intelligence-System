@@ -13,3 +13,12 @@
 /docs/runbooks/openai-plugin-submission.md @frankxai
 /docs/specs/2026-08-31-starlight-capability-foundry.md @frankxai
 /docs/handovers/2026-08-31-starlight-capability-foundry-codex.md @frankxai
+
+# Merge review trust roots. checker-trust.json decides who can attest; a change to it is
+# high risk. Code-owner review binds only once the ruleset in docs/merge-review-runner.md
+# is applied and an owner independent of the agents' shared login is listed here.
+/tools/merge-review/checker-trust.json @frankxai
+/tools/merge-review/ @frankxai
+/.github/workflows/merge-review.yml @frankxai
+/.github/workflows/independent-review-runner.yml @frankxai
+/.github/CODEOWNERS @frankxai

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "STARLIGHT-INDEPENDENT-REVIEW-V1 receipt",
+  "description": "Canonical JSON (sorted keys, no spaces) recorded by the checker App twice: as the text of an independent-review-receipt check run, the ledger the gate trusts, and after the marker line of a mirror comment. merge_review_gate.py enforces it; checker_runner.py produces it. An unknown cost is null with cost_source unknown, never 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["repository", "pr", "headSha", "maker", "makerVendors", "provider", "verdict",
+               "blockingFindings", "reviewedFiles", "manifestSha256", "review", "reviewSha256",
+               "packetSha256", "resolution", "cost_usd", "cost_source"],
+  "properties": {
+    "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "pr": {"type": "integer", "minimum": 1},
+    "headSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "maker": {"enum": ["codex", "claude-code", "antigravity", "cto", "jules", "grok", "gemini"]},
+    "makerVendors": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "provider": {"enum": ["codex", "claude-code", "antigravity", "cto", "grok", "gemini"]},
+    "verdict": {"enum": ["PASS", "REVISE", "FAIL"]},
+    "blockingFindings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "reviewedFiles": {"type": "array", "items": {"type": "string"}},
+    "manifestSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "review": {"type": "string", "minLength": 80},
+    "reviewSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "packetSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolution": {"type": "string", "minLength": 1},
+    "cost_usd": {"type": ["number", "null"], "minimum": 0},
+    "cost_source": {"enum": ["billed", "estimated", "unknown"]}
+  },
+  "allOf": [
+    {"if": {"properties": {"cost_source": {"const": "unknown"}}},
+     "then": {"properties": {"cost_usd": {"type": "null"}}},
+     "else": {"properties": {"cost_usd": {"type": "number"}}}}
+  ]
+}

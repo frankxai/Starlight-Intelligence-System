@@ -1,0 +1,215 @@
+name: Independent review runner
+
+# A reviewer from a vendor outside every maker vendor reads a PR's exact content
+# (compare API at explicit SHAs) as data. The starlight-checker App then records the
+# verdict as an independent-review-receipt check run (the ledger) and a mirror comment.
+# Default: GitHub-hosted, API-key reviewer. Optional and OFF: the C940 self-hosted job,
+# which never receives the App key and only uploads a signed review that a hosted job
+# verifies and records. This repository is public: no job checks out, builds or executes
+# PR source, and no job runs for fork PRs. See docs/merge-review-runner.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to review
+        required: true
+        type: string
+      runner:
+        description: hosted (API-key reviewer) or c940 (signed-in CLI, disabled unless C940_CHECKER_ENABLED)
+        required: true
+        default: hosted
+        type: choice
+        options: [hosted, c940]
+  pull_request_target:
+    types: [labeled]
+
+# The workflow token only reads this trusted workflow revision. The App token writes.
+permissions:
+  contents: read
+
+concurrency:
+  group: independent-review-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  review-hosted:
+    # Trusted default-branch code only. Label runs need the maintainer label, a
+    # same-repository head and the repository owner as the labeller.
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      ((github.event_name == 'workflow_dispatch' && inputs.runner == 'hosted') ||
+       (github.event.label.name == 'checker:review' &&
+        github.event.sender.login == github.repository_owner &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: ubuntu-latest
+    # Holds the App key and the reviewer API keys; deployment branches: default only.
+    environment: starlight-checker
+    timeout-minutes: 15
+    steps:
+      - name: Validate PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        run: |
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]{0,6}$ ]] || { echo 'Invalid PR number'; exit 1; }
+          echo "CHECKER_PR=$PR_NUMBER" >> "$GITHUB_ENV"
+
+      # The exact trusted workflow revision, never PR source or a floating branch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tools/merge-review
+
+      - name: Verify trusted checkout
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_WORKFLOW_SHA"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Mint checker App token
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.CHECKER_APP_ID }}
+          private-key: ${{ secrets.CHECKER_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: read
+          permission-issues: write
+          permission-checks: write
+          # Omitting owner and repositories scopes the token to this repository.
+          # The post-step revokes it when the job ends.
+
+      # The runner also refuses unless CHECKER_APP_ID equals the numeric App id pinned
+      # in checker-trust.json, and checks the id on everything it records.
+      - name: Review exact content as data and record the verdict
+        env:
+          CHECKER_MODE: hosted
+          CHECKER_TOKEN: ${{ steps.app.outputs.token }}
+          CHECKER_APP_ID: ${{ secrets.CHECKER_APP_ID }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHECKER_GROK_MODEL: ${{ vars.CHECKER_GROK_MODEL }}
+          CHECKER_GEMINI_MODEL: ${{ vars.CHECKER_GEMINI_MODEL }}
+          CHECKER_CODEX_MODEL: ${{ vars.CHECKER_CODEX_MODEL }}
+          CHECKER_GROK_PRICE: ${{ vars.CHECKER_GROK_PRICE }}
+          CHECKER_GEMINI_PRICE: ${{ vars.CHECKER_GEMINI_PRICE }}
+          CHECKER_CODEX_PRICE: ${{ vars.CHECKER_CODEX_PRICE }}
+        run: python -I tools/merge-review/checker_runner.py
+
+  # DISABLED BY DEFAULT. Do not set C940_CHECKER_ENABLED until runner administration has
+  # an owner independent of the agents' shared login, and the C940 signer is pinned in
+  # checker-trust.json. This job gets no environment, no App key and no API keys; a
+  # rogue runner registered under this label can steal nothing but a read-only token.
+  review-c940:
+    if: >-
+      vars.C940_CHECKER_ENABLED == 'true' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      ((github.event_name == 'workflow_dispatch' && inputs.runner == 'c940') ||
+       (github.event.label.name == 'checker:review-c940' &&
+        github.event.sender.login == github.repository_owner &&
+        github.event.pull_request.head.repo.full_name == github.repository))
+    runs-on: [self-hosted, starlight-checker]
+    permissions:
+      contents: read
+      pull-requests: read
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Validate PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        run: |
+          if ($env:PR_NUMBER -notmatch '^[1-9][0-9]{0,6}$') { throw 'Invalid PR number' }
+          "CHECKER_PR=$env:PR_NUMBER" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tools/merge-review
+
+      - name: Verify trusted checkout
+        run: |
+          if ((git rev-parse HEAD) -ne $env:GITHUB_WORKFLOW_SHA) { throw 'Checkout is not the workflow revision' }
+
+      # Uses the CLIs already signed in on the C940 and the read-only job token.
+      - name: Review exact content as data and write a draft
+        env:
+          CHECKER_MODE: cli-draft
+          CHECKER_TOKEN: ${{ github.token }}
+          CHECKER_DRAFT: ${{ runner.temp }}/checker-draft.json
+        run: python -I tools/merge-review/checker_runner.py
+
+      # The signing key lives on the C940 (see c940-runner-setup.ps1); its public half
+      # is pinned in checker-trust.json, so a draft from any other machine fails to verify.
+      - name: Sign the draft
+        env:
+          CHECKER_DRAFT: ${{ runner.temp }}/checker-draft.json
+        run: |
+          ssh-keygen -Y sign -f C:\starlight-checker\signing\c940-checker -n starlight-checker-c940 $env:CHECKER_DRAFT
+          if ($LASTEXITCODE -ne 0) { throw 'Signing failed' }
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: checker-draft
+          path: |
+            ${{ runner.temp }}/checker-draft.json
+            ${{ runner.temp }}/checker-draft.json.sig
+          retention-days: 1
+          if-no-files-found: error
+
+  record-c940:
+    needs: review-c940
+    runs-on: ubuntu-latest
+    environment: starlight-checker
+    timeout-minutes: 10
+    steps:
+      - name: Validate PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+        run: |
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]{0,6}$ ]] || { echo 'Invalid PR number'; exit 1; }
+          echo "CHECKER_PR=$PR_NUMBER" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tools/merge-review
+
+      - name: Verify trusted checkout
+        run: test "$(git rev-parse HEAD)" = "$GITHUB_WORKFLOW_SHA"
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: checker-draft
+          path: ${{ runner.temp }}/c940
+
+      - name: Mint checker App token
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.CHECKER_APP_ID }}
+          private-key: ${{ secrets.CHECKER_APP_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: read
+          permission-issues: write
+          permission-checks: write
+
+      # Verifies the signature, then re-derives head, manifest and maker vendors itself.
+      - name: Verify the signed draft and record the verdict
+        env:
+          CHECKER_MODE: post-signed
+          CHECKER_TOKEN: ${{ steps.app.outputs.token }}
+          CHECKER_APP_ID: ${{ secrets.CHECKER_APP_ID }}
+          CHECKER_DRAFT: ${{ runner.temp }}/c940/checker-draft.json
+        run: python -I tools/merge-review/checker_runner.py

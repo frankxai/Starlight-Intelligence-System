@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Starlight independent checker output",
+  "description": "What the reviewer returns: exactly one JSON object, no other text. checker_runner.py re-validates it, refuses extra keys or trailing text, requires reviewedFiles to equal the sorted manifest paths, and computes reviewSha256 and packetSha256 itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "blockingFindings", "reviewedFiles", "review", "resolution"],
+  "properties": {
+    "verdict": {"type": "string", "enum": ["PASS", "REVISE", "FAIL"]},
+    "blockingFindings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "reviewedFiles": {"type": "array", "items": {"type": "string"}},
+    "review": {"type": "string", "minLength": 80, "maxLength": 20000},
+    "resolution": {"type": "string", "minLength": 1}
+  }
+}
