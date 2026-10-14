@@ -49,14 +49,17 @@ comment, not which seat or model is behind it.
 
 ## High-risk changes and auto-merge
 
-Changes touching money (including `src/finance/` and finance, revenue, payout,
-ledger and P&L paths), publish, secrets, auth, licensing, agent instruction
+Changes touching money (including `src/finance/`, finance, revenue, payout and
+P&L paths, and ledger paths only where the path is financial, such as a cost,
+credit, spend, budget, billing or accounting ledger; decision, task and source
+ledgers are not), cost controls (`src/infra/cost-snapshot.ts`,
+`src/infra/cost-sources/`, `cost-plane-config.template.json`), publish, secrets, auth, licensing, agent instruction
 files (`AGENTS.md`, `CLAUDE.md`, `SKILL.md` and similar), dependency manifests
 and lockfiles (Node: `package.json`, `package-lock.json`, `npm-shrinkwrap.json`,
 `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `yarn.lock`, `bun.lock`, `bun.lockb`,
 `.npmrc`; Rust: `Cargo.toml`, `Cargo.lock`; Python: `pyproject.toml`,
 `poetry.lock`, `uv.lock`, `Pipfile`, `Pipfile.lock`, `setup.py`, `setup.cfg`,
-`requirements*.txt`/`.in`, `constraints*.txt`; Go: `go.mod`, `go.sum`; Ruby:
+`requirements*.txt`/`.in`, any `.txt` or `.in` under a `requirements/` directory such as `requirements/base.txt`, `constraints*.txt`; Go: `go.mod`, `go.sum`; Ruby:
 `Gemfile`, `Gemfile.lock`; the gate cannot verify a patch-only bump), or the gate and policy files
 themselves (`tools/merge-review/`, `tools/jules-conductor/`, `.github/`, this
 document) need a CTO PASS. When CTO is the maker, a PASS from another admitted

@@ -320,9 +320,25 @@ export function receiptProblems(receipt: unknown): string[] {
   }
 
   if (!VERDICTS.includes(r.verdict as RunReceiptVerdict)) problems.push(`verdict is ${JSON.stringify(r.verdict)}`);
-  if (r.verdict === "PASS" && Array.isArray(r.stages)) {
-    for (const stage of r.stages) {
-      if (isRecord(stage) && stage.status === "failed") problems.push(`verdict is PASS but stage ${stage.name ?? "?"} failed`);
+  if (r.verdict === "PASS") {
+    if (Array.isArray(r.evidence) && r.evidence.length === 0) {
+      problems.push("verdict is PASS but evidence is empty");
+    }
+    if (Array.isArray(r.stages)) {
+      let okCount = 0;
+      let hasFailed = false;
+      for (const stage of r.stages) {
+        if (isRecord(stage)) {
+          if (stage.status === "failed") {
+            hasFailed = true;
+            problems.push(`verdict is PASS but stage ${stage.name ?? "?"} failed`);
+          }
+          if (stage.status === "ok") okCount += 1;
+        }
+      }
+      if (r.stages.length > 0 && okCount === 0 && !hasFailed) {
+        problems.push("verdict is PASS but every stage was skipped");
+      }
     }
   }
 
