@@ -13,8 +13,10 @@ TRUSTED_ATTESTORS = {'frankxai'}
 # A receipt counts only if GitHub records it as posted through an allowlisted App.
 # A null performed_via_github_app means a raw token (PAT or gh CLI) and is rejected.
 TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
-# Seats or models that may author a change. The reviewer must be a different one.
-MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
+# Seats, models or bots that may author a change. The reviewer must be a different one.
+# dependabot and github-actions are bot makers: they are never reviewers, so their
+# high-risk changes (manifests, lockfiles, workflows) still need a CTO PASS.
+MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules', 'dependabot', 'github-actions'}
 # Valid separate reviewers. Jules is never a reviewer.
 REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto'}
 # Paths that touch money, publish, secrets, auth, licensing or the gate itself.

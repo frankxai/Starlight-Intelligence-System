@@ -63,6 +63,17 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
 
+    def test_bot_makers_are_attributable_but_never_review(self):
+        path = 'site/pnpm-lock.yaml'
+        files = [{'filename': path, 'status': 'modified'}]
+        for bot in ['dependabot', 'github-actions']:
+            with self.subTest(bot=bot):
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker=bot, provider='cto')], files))
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker=bot, provider='codex')], files))
+                self.assertFalse(self.evaluate([receipt(maker=bot, provider=bot)]))
+                self.assertFalse(self.evaluate([receipt(provider=bot)]))
+        self.assertFalse(self.evaluate([receipt(maker='dependabot[bot]', provider='cto')]))
+
     def test_cto_authored_high_risk_needs_another_admitted_seat(self):
         path = 'tools/merge-review/merge_review_gate.py'
         files = [{'filename': path, 'status': 'modified'}]
