@@ -1,17 +1,9 @@
-<<<<<<< HEAD
 # Starlight Jules Conductor v2.2
 
 > One Node process sends Jules sessions it owns and records the pull request Jules opens.
 > `autoMerge`, `autoDispatch`, and remote-session adoption are off.
 > A tick does not sweep the estate, undraft a pull request, or merge.
 > frankx.ai production stays protected. Built on SIP v1.1.1.
-=======
-# Starlight Jules Conductor
-
-Dispatches council-framed tasks to Google Jules across `frankxai/*` repos and
-records the draft pull requests Jules opens. **It never merges, never enables
-auto-merge and never marks a PR ready.**
->>>>>>> origin/main
 
 Built on the Starlight Intelligence Protocol (SIP v1.1.1).
 

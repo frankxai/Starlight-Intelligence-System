@@ -21,12 +21,8 @@ import os from 'node:os';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
-<<<<<<< HEAD
-import { capacityAllowsDispatch, claimDaemonLock, decideLand, matchPullRequest } from './merge-gate.mjs';
-import { armAction, formatBoard, takeReady } from './work-board.mjs';
-=======
 import { capacityAllowsDispatch, claimDaemonLock, julesDraftAction, matchPullRequest } from './merge-gate.mjs';
->>>>>>> origin/main
+import { armAction, formatBoard, takeReady } from './work-board.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');

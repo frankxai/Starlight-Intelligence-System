@@ -17,7 +17,7 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, truncateSync, writeFileSync } from 'node:fs';
+import { appendFileSync, closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, renameSync, rmSync, truncateSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
@@ -249,11 +249,70 @@ export class ReceiptLedger {
    * catalogue date never clears by date.
    */
   suspendedCapabilities(catalogueReconciledAt?: string): Set<string> {
+    if (!existsSync(this.path)) { this.overrunScan = { offset: 0, overruns: [] }; return new Set(); }
+    return this.locked(() => this.suspendedUnlocked(catalogueReconciledAt));
+  }
+
+  /**
+   * Appends a pending receipt only if its capability is not suspended, in one locked section:
+   * the suspension check and the write that precedes dispatch cannot be split by another
+   * process recording an overrun in between. Returns the suspensions seen; when the
+   * capability is among them nothing was written and the call must not be sent.
+   */
+  appendUnlessSuspended(receipt: Receipt, capabilityId: string, catalogueReconciledAt?: string): { appended: boolean; suspended: Set<string> } {
+    mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
+    return this.locked(() => {
+      this.quarantinePartialTail();
+      const suspended = existsSync(this.path) ? this.suspendedUnlocked(catalogueReconciledAt) : new Set<string>();
+      if (suspended.has(capabilityId)) return { appended: false, suspended };
+      appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
+      return { appended: true, suspended };
+    });
+  }
+
+  /** Overruns seen so far and the byte offset scanned up to; only bytes appended since are read. */
+  private overrunScan: { offset: number; overruns: { key: string; at?: string }[] } = { offset: 0, overruns: [] };
+
+  /** Caller holds the write lock. Scans only complete lines appended since the last scan. */
+  private suspendedUnlocked(catalogueReconciledAt?: string): Set<string> {
+    const fd = openSync(this.path, 'r');
+    try {
+      const size = fstatSync(fd).size;
+      // A ledger that shrank was replaced or rewritten: start over rather than trust the cache.
+      if (size < this.overrunScan.offset) this.overrunScan = { offset: 0, overruns: [] };
+      const start = this.overrunScan.offset;
+      if (size > start) {
+        const buf = Buffer.alloc(size - start);
+        let read = 0;
+        while (read < buf.length) {
+          const n = readSync(fd, buf, read, buf.length - read, start + read);
+          if (n === 0) break;
+          read += n;
+        }
+        const end = buf.lastIndexOf(0x0a, read - 1);
+        if (end >= 0) {
+          // Only complete lines are consumed; a cut-off tail is re-read once it is finished.
+          const lines = buf.subarray(0, end + 1).toString('utf8').split('\n');
+          const found: { key: string; at?: string }[] = [];
+          for (const line of lines) {
+            if (line.trim().length === 0) continue;
+            let parsed: unknown;
+            try { parsed = JSON.parse(line); } catch (err) {
+              throw new Error(`Receipt ledger ${this.path} is corrupt after byte ${start}: ${err instanceof Error ? err.message : String(err)}`);
+            }
+            const problem = receiptProblem(parsed);
+            if (problem) throw new Error(`Receipt ledger ${this.path} is corrupt after byte ${start}: ${problem}`);
+            const r = parsed as Receipt;
+            if (r.overrun) found.push({ key: `${r.provider}/${r.capability}`, at: r.catalogueReconciledAt });
+          }
+          this.overrunScan = { offset: start + end + 1, overruns: [...this.overrunScan.overruns, ...found] };
+        }
+      }
+    } finally { closeSync(fd); }
     const out = new Set<string>();
-    for (const r of this.read()) {
-      if (!r.overrun) continue;
-      const cleared = catalogueReconciledAt !== undefined && r.catalogueReconciledAt !== undefined && catalogueReconciledAt > r.catalogueReconciledAt;
-      if (!cleared) out.add(`${r.provider}/${r.capability}`);
+    for (const o of this.overrunScan.overruns) {
+      const cleared = catalogueReconciledAt !== undefined && o.at !== undefined && catalogueReconciledAt > o.at;
+      if (!cleared) out.add(o.key);
     }
     return out;
   }

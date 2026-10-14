@@ -120,6 +120,39 @@ describe('run receipt — sign and verify', () => {
     assert.ok(result.reasons.some((r) => r.includes('names issuer keyid')), result.reasons.join('; '));
   });
 
+  // Re-sign a statement with the given issuer block, by each listed key, in order.
+  function resigned(issuer: RunReceipt['issuer'], signers: Array<{ privatePem: string; keyid: string }>) {
+    const base = signRunReceipt(receipt(), signers[0].privatePem);
+    const statement = JSON.parse(Buffer.from(base.payload, 'base64').toString('utf8'));
+    statement.predicate.issuer = issuer;
+    const payload = Buffer.from(JSON.stringify(statement), 'utf8');
+    const signatures = signers.map((k) => ({ keyid: k.keyid, sig: sign(null, pae(PAYLOAD_TYPE, payload), createPrivateKey(k.privatePem)).toString('base64') }));
+    return { payloadType: PAYLOAD_TYPE, payload: payload.toString('base64'), signatures };
+  }
+
+  it('a receipt that does not name its issuer keyid is refused (issuer is never self-asserted)', () => {
+    const k = keyPair();
+    const result = verifyRunReceipt(resigned({ name: 'claimed-issuer' }, [k]), [k.publicPem]);
+    assert.equal(result.ok, false);
+    assert.ok(result.reasons.some((r) => r.includes('does not name its issuer keyid')), result.reasons.join('; '));
+  });
+
+  it('a multi-signature envelope verifies when the named issuer signed it, whatever the order', () => {
+    const a = keyPair();
+    const b = keyPair();
+    const result = verifyRunReceipt(resigned({ name: 'issuer-a', keyid: a.keyid }, [b, a]), [a.publicPem, b.publicPem]);
+    assert.equal(result.ok, true, result.reasons.join('; '));
+    assert.equal(result.keyid, a.keyid);
+  });
+
+  it('a trusted co-signer cannot stand in for a named issuer that did not sign', () => {
+    const a = keyPair();
+    const b = keyPair();
+    const result = verifyRunReceipt(resigned({ name: 'issuer-a', keyid: a.keyid }, [b]), [a.publicPem, b.publicPem]);
+    assert.equal(result.ok, false);
+    assert.ok(result.reasons.some((r) => r.includes('no verifying signature is from that key')), result.reasons.join('; '));
+  });
+
   it('peekRunReceipt returns the receipt without a key', () => {
     const k = keyPair();
     const envelope = signRunReceipt(receipt(), k.privatePem);

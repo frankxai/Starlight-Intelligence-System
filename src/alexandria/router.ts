@@ -47,7 +47,8 @@ export type AlexandriaErrorCode =
   | 'invalid_request_id'
   | 'capability_suspended'
   | 'uncertain_outcome'
-  | 'receipt_persist_failed';
+  | 'receipt_persist_failed'
+  | 'session_closed';
 
 export class AlexandriaError extends Error {
   constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string, readonly requestId?: string) {
@@ -111,12 +112,17 @@ export class Alexandria {
   private readonly held = new Map<string, { amount: number; fingerprint: string }>();
   /** Capabilities whose provider once charged more than was reserved. Refused until the catalogue is reconciled. */
   private readonly suspended = new Set<string>();
+  /** Set by close(). A closed instance no longer holds the session lock, so it must not spend. */
+  private closed = false;
 
   constructor(opts: AlexandriaOptions) {
     if (typeof opts.maxCredits !== 'number' || !Number.isFinite(opts.maxCredits) || opts.maxCredits < 0) {
       throw new Error(`maxCredits must be a finite, non-negative number; got ${String(opts.maxCredits)}`);
     }
     this.library = opts.library;
+    if (opts.sessionId !== undefined && (typeof opts.sessionId !== 'string' || opts.sessionId.trim() === '')) {
+      throw new Error('sessionId must be a non-empty string when given; omit it to start a new session');
+    }
     const sessionId = opts.sessionId ?? randomUUID();
     if (opts.ledger && (opts.lock ?? true)) {
       this.lock = new SessionLock(opts.ledger.path, sessionId);
@@ -147,6 +153,7 @@ export class Alexandria {
 
   /** Releases the session lock. Call when the process is done with the session. */
   close(): void {
+    this.closed = true;
     this.lock?.release();
   }
 
@@ -192,6 +199,17 @@ export class Alexandria {
     if (hit.provider.kind === 'connector') {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
+    // Another process on the same ledger may have recorded an overrun since this instance was
+    // built, so the ledger-backed suspensions are re-read before every admission.
+    if (this.ledger) {
+      // An unreadable ledger fails closed: the call is not sent.
+      try {
+        for (const id of this.ledger.suspendedCapabilities(this.library.catalog.reconciledAt)) this.suspended.add(id);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the ledger could not be read to check suspensions, so the call was not sent (${message})`, `Fix the ledger path (${this.ledger.path}) and call again; nothing was charged.`);
+      }
+    }
     if (this.suspended.has(hit.capability.id)) {
       throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: its provider once charged more than was reserved (see the overrun receipt in the ledger)`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json and bump the catalogue reconciledAt past the overrun date; the overrun receipt is the evidence and the reconciliation is the audit record that clears it.');
     }
@@ -235,6 +253,9 @@ export class Alexandria {
   }
 
   async execute(req: ExecuteRequest): Promise<ExecuteResponse> {
+    if (this.closed) {
+      throw new AlexandriaError('session_closed', `Budget session ${this.budget.sessionId} was closed and its lock released`, 'Construct a new Alexandria to resume the session; it re-acquires the lock and reloads the ledger. Nothing was charged.');
+    }
     // A blank id would be dropped from the receipt and its hold could never be restored, so it
     // is refused rather than silently replaced.
     if (req.requestId !== undefined && (typeof req.requestId !== 'string' || req.requestId.trim() === '')) {
@@ -271,8 +292,17 @@ export class Alexandria {
     // If it cannot be written the call does not run; nothing has reached the provider yet.
     if (reserved > 0 && this.ledger) {
       try {
-        this.ledger.append(receiptFor(blank, { pending: true }));
+        // The suspension check and the pending line share one ledger lock, so an overrun another
+        // process records after admit() cannot slip in between the check and the dispatch.
+        const { appended, suspended } = this.ledger.appendUnlessSuspended(receiptFor(blank, { pending: true }), hit.capability.id, this.library.catalog.reconciledAt);
+        for (const id of suspended) this.suspended.add(id);
+        if (!appended) {
+          this.budget.spent -= reserved - alreadyHeld;
+          if (hold) this.held.set(requestId, hold);
+          throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: another session recorded an overrun before this call was sent`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json and bump the catalogue reconciledAt past the overrun date; nothing was charged.', req.requestId);
+        }
       } catch (err) {
+        if (err instanceof AlexandriaError) throw err;
         this.budget.spent -= reserved - alreadyHeld;
         if (hold) this.held.set(requestId, hold);
         const message = err instanceof Error ? err.message : String(err);
@@ -283,6 +313,18 @@ export class Alexandria {
     let result: CallResult;
     try {
       [result] = await transport.execute([call]);
+      // Every outcome carries the router's request id, so the outcome receipt settles the
+      // pending hold. A transport that reports a different id, provider or capability is treated as
+      // an uncertain outcome.
+      if (!result) throw new Error('transport returned no result');
+      if (result.requestId !== undefined && result.requestId !== requestId) {
+        result = { ...blank, error: { code: 'uncertain_outcome', message: `transport reported requestId ${String(result.requestId)} for call ${requestId}` } };
+      } else if (result.provider !== hit.provider.id || result.capability !== hit.capability.capability) {
+        // An outcome for a different call must not be stamped with this call's id and settle its hold.
+        result = { ...blank, error: { code: 'uncertain_outcome', message: `transport reported ${String(result.provider)}/${String(result.capability)} for call ${requestId} to ${hit.provider.id}/${hit.capability.capability}` } };
+      } else {
+        result = { ...result, requestId };
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       result = { ...blank, error: { code: 'uncertain_outcome', message: `transport failed after the request may have reached the provider: ${message}` } };

@@ -391,7 +391,9 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
   const payload = Buffer.from(envelope.payload, "base64");
   const message = pae(envelope.payloadType, payload);
 
-  let signedBy: string | null = null;
+  // Every trusted key whose signature verifies. The issuer named inside the receipt must be one
+  // of them; the first verifying signature alone does not decide who issued it.
+  const verifiedBy = new Set<string>();
   const verifies = (key: KeyObject, sig: unknown) => {
     try {
       return cryptoVerify(null, message, key, Buffer.from(String(sig), "base64"));
@@ -413,12 +415,12 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
     const candidates: Array<[string, KeyObject]> = keyid ? [[keyid, trusted.get(keyid) as KeyObject]] : [...trusted.entries()];
     const match = candidates.find(([, key]) => verifies(key, s.sig));
     if (match) {
-      signedBy = match[0];
-      break;
+      verifiedBy.add(match[0]);
+      continue;
     }
     reasons.push(`signature${keyid ? ` by ${keyid.slice(0, 16)}…` : " without keyid"} does not verify`);
   }
-  if (!signedBy) return fail("no signature verifies against a trusted key");
+  if (verifiedBy.size === 0) return fail("no signature verifies against a trusted key");
 
   let statement: unknown;
   try {
@@ -440,9 +442,13 @@ export function verifyRunReceipt(envelope: unknown, trustedPublicKeys: string[])
   const digest = isRecord(subject.digest) ? subject.digest.sha256 : undefined;
   if (digest !== receipt.subject.digest.sha256) return fail("statement subject digest does not match the receipt's subject digest");
   if (subject.name !== receipt.subject.name) return fail("statement subject name does not match the receipt's subject name");
-  if (receipt.issuer.keyid && receipt.issuer.keyid !== signedBy) {
-    return fail(`receipt names issuer keyid ${receipt.issuer.keyid.slice(0, 16)}… but was signed by ${signedBy.slice(0, 16)}…`);
+  // The issuer is never self-asserted: the receipt must name the key that signed it, and that
+  // key must have produced a verifying signature on this envelope.
+  if (!receipt.issuer.keyid) return fail("receipt does not name its issuer keyid, so the issuer cannot be bound to a signature");
+  if (!verifiedBy.has(receipt.issuer.keyid)) {
+    return fail(`receipt names issuer keyid ${receipt.issuer.keyid.slice(0, 16)}… but no verifying signature is from that key`);
   }
+  const signedBy = receipt.issuer.keyid;
 
   return { ok: true, reasons, keyid: signedBy, receipt };
 }
