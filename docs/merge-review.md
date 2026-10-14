@@ -50,10 +50,13 @@ comment, not which seat or model is behind it.
 ## High-risk changes and auto-merge
 
 Changes touching money (including `src/finance/`, finance, revenue, payout and
-P&L paths, and ledger paths only where the path is financial, such as a cost,
-credit, spend, budget, billing or accounting ledger; decision, task and source
-ledgers are not), cost controls (`src/infra/cost-snapshot.ts`,
-`src/infra/cost-sources/`, `cost-plane-config.template.json`), publish, secrets, auth, licensing, agent instruction
+P&L paths, and every ledger path except the known non-financial ledgers:
+`tools/queen/ledger.jsonl`, research source ledgers under `docs/research/`,
+`src/ledgers.ts`, `test/v01-ledgers.test.ts` and loop ledgers under
+`docs/graph-engineering/loops/`), the Alexandria paid-call router (`src/alexandria/`),
+cost controls (`src/infra/cost-snapshot.ts`,
+`src/infra/cost-sources/`, `cost-plane-config.template.json`, `scripts/cron/daily-cost-snapshot.ps1`,
+`scripts/cron/posix/daily-cost-snapshot.sh`), publish, secrets, auth, licensing, agent instruction
 files (`AGENTS.md`, `CLAUDE.md`, `SKILL.md` and similar), dependency manifests
 and lockfiles (Node: `package.json`, `package-lock.json`, `npm-shrinkwrap.json`,
 `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `yarn.lock`, `bun.lock`, `bun.lockb`,

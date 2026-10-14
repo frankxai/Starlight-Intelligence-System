@@ -127,9 +127,12 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
 
-    def test_ledger_is_high_risk_only_on_financial_paths(self):
+    def test_ledger_is_high_risk_unless_allowlisted(self):
+        # Financial ledgers with no money word in the path stay high risk by default.
         for path in ['data/credit-ledger.jsonl', 'src/infra/cost-ledger.ts', 'finance/ledger.csv',
-                     'src/budget/ledger.ts', 'tools/spend-ledger.json']:
+                     'src/budget/ledger.ts', 'tools/spend-ledger.json', 'data/ledger.jsonl',
+                     'src/accounts/ledger.ts', 'tools/queen/ledger-archive.jsonl', 'src/ledgers/entries.ts',
+                     'docs/research/source-ledger-tool.ts']:
             with self.subTest(path=path):
                 self.assertTrue(gate.high_risk(path))
         for path in ['tools/queen/ledger.jsonl', 'docs/research/music-intelligence/source-ledger-2026-09.md',
@@ -137,6 +140,15 @@ class MergeReviewTests(unittest.TestCase):
                      'docs/graph-engineering/loops/si-admit-verify-ship/ledger.md']:
             with self.subTest(path=path):
                 self.assertFalse(gate.high_risk(path))
+
+    def test_cost_cron_and_alexandria_paths_need_cto_pass(self):
+        for path in ['scripts/cron/daily-cost-snapshot.ps1', 'scripts/cron/posix/daily-cost-snapshot.sh',
+                     'src/alexandria/router.ts', 'src/alexandria/receipts.ts']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
 
     def test_rename_out_of_high_risk_path_keeps_protection(self):
         path = 'src/neutral/thing.ts'
