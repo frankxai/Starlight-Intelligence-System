@@ -773,3 +773,61 @@ describe("v93 — MCP server", () => {
     }
   });
 });
+
+describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
+  const library = Library.fromFile();
+  const cap = "gmgn-ai/crypto/wallet_profile";
+
+  it("refuses a blank sessionId before taking a lock or writing a receipt", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      assert.throws(() => new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "" }), /sessionId must be a non-empty string/);
+      assert.throws(() => new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "   " }), /sessionId must be a non-empty string/);
+      assert.equal(existsSync(join(dir, "receipts.jsonl")), false);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("refuses execution after close() released the session lock", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const transport = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "closed-session" });
+      alexandria.close();
+      await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
+      assert.equal(transport.calls.length, 0);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("sees an overrun recorded by another live instance before admitting the next call", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "session-a" });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "session-b" });
+      try {
+        const res = await a.execute({ capabilityId: cap, options: { address: "x" } });
+        assert.equal(res.overrun, true);
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0);
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("stamps the router request id on outcomes from a transport that omits it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const bare = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string }[]) => calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z" })) };
+      const alexandria = new Alexandria({ library, transports: [bare as never], maxCredits: 100, ledger, sessionId: "bare-transport" });
+      try {
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-bare-1" });
+        assert.equal(res.result.requestId, "req-bare-1");
+        assert.equal(ledger.spent("bare-transport"), 5, "the outcome settles the pending hold instead of adding to it");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+});
