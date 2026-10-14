@@ -1,22 +1,31 @@
-#Requires -Version 7.0
+#Requires -Version 7.2
 <#
 .SYNOPSIS
   Sets up the ephemeral `starlight-checker` self-hosted runner on the C940 (Windows, no WSL).
 
 .DESCRIPTION
+  OFF by default. The workflow job only runs when the repository variable
+  C940_CHECKER_ENABLED is 'true'. Do not set it until runner administration has an owner
+  independent of the agents' shared login (docs/merge-review-runner.md). The job never
+  receives the checker App key: it signs its review with a key on this machine and a
+  GitHub-hosted job verifies the signature before anything is recorded.
+
   Two accounts keep the registration credential away from job code:
-    * SYSTEM runs the registrar loop (scheduled task StarlightCheckerRegistrar). It reads
-      the DPAPI-protected registration PAT, registers one --ephemeral runner, starts the
-      job task and waits for it to finish, then registers again.
+    * SYSTEM runs the registrar loop (scheduled task StarlightCheckerRegistrar). Before
+      every registration it re-verifies the runner archive against the release SHA-256
+      and every extracted file against the manifest taken at install, then registers one
+      --ephemeral runner, starts the job task and waits for it to finish.
     * A low-privilege local user (default starlight-runner, never an administrator)
-      runs run.cmd through the on-demand task StarlightCheckerJob. That user cannot read
-      the PAT file, so a prompt-injected reviewer CLI cannot reach it.
+      runs the job task StarlightCheckerJob, which cleans its own work folder and
+      starts run.cmd. That user can read and execute the runner bundle but cannot change
+      it, and cannot read the PAT, so SYSTEM never executes code the job could write.
   Registration refuses to proceed while free disk on the work drive is below -MinFreeGB.
 
   Modes:
     Install    (elevated, interactive) user, folders, ACLs, runner download with SHA-256
-               check, PAT storage, batch-logon right, both scheduled tasks.
-    Registrar  (SYSTEM, from the scheduled task) the register/run/repeat loop.
+               check, bundle manifest, signing key, PAT storage, batch-logon right, tasks.
+    Registrar  (SYSTEM, from the scheduled task) the verify/register/run/repeat loop.
+    Job        (runner user, from the job task) clean work folders, then run.cmd.
     Status     read-only health report.
     Uninstall  (elevated) removes both tasks; leaves the user and folders for review.
 
@@ -28,7 +37,7 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Install', 'Registrar', 'Status', 'Uninstall')]
+    [ValidateSet('Install', 'Registrar', 'Job', 'Status', 'Uninstall')]
     [string]$Mode = 'Status',
     [ValidatePattern('^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$')]
     [string]$Repository = 'frankxai/Starlight-Intelligence-System',
@@ -54,19 +63,26 @@ $ErrorActionPreference = 'Stop'
 $RegistrarTask = 'StarlightCheckerRegistrar'
 $JobTask = 'StarlightCheckerJob'
 $Paths = @{
-    Runner = Join-Path $Root 'runner'
-    Work   = Join-Path $Root 'work'
-    Logs   = Join-Path $Root 'logs'
-    Secret = Join-Path $Root 'secret'
-    Bin    = Join-Path $Root 'bin'
+    Runner  = Join-Path $Root 'runner'
+    Work    = Join-Path $Root 'work'
+    Logs    = Join-Path $Root 'logs'
+    Secret  = Join-Path $Root 'secret'
+    Bin     = Join-Path $Root 'bin'
+    Signing = Join-Path $Root 'signing'
 }
+$Diag = Join-Path $Paths.Runner '_diag'
 $PatFile = Join-Path $Paths.Secret 'registration-pat.bin'
+$ReleaseFile = Join-Path $Paths.Secret 'runner-release.json'
+$ManifestFile = Join-Path $Paths.Secret 'runner-bundle-manifest.json'
+$ArchiveFile = Join-Path $Paths.Secret 'runner.zip'
+# Files config.cmd writes per registration; everything else in the bundle is pinned.
+$StateFiles = @('.runner', '.credentials', '.credentials_rsaparams', '.env', '.path', '.service')
 $Entropy = [Text.Encoding]::UTF8.GetBytes("starlight-checker:$Repository")
 
 function Write-Log([string]$Message) {
     $line = '{0:u} {1}' -f (Get-Date), $Message
     if (Test-Path $Paths.Logs) {
-        $log = Join-Path $Paths.Logs 'registrar.log'
+        $log = Join-Path $Paths.Logs "$($Mode.ToLowerInvariant()).log"
         if ((Test-Path $log) -and (Get-Item $log).Length -gt 5MB) { Move-Item $log "$log.1" -Force }
         Add-Content -Path $log -Value $line
     }
@@ -104,6 +120,8 @@ function Set-StrictAcl([string]$Path, [hashtable]$Grants) {
     }
     Set-Acl -Path $Path -AclObject $acl
 }
+
+function Get-OwnerGrants { @{ 'BUILTIN\Administrators' = 'FullControl'; 'NT AUTHORITY\SYSTEM' = 'FullControl' } }
 
 function Grant-BatchLogon([string]$User) {
     $sid = (New-Object Security.Principal.NTAccount($User)).Translate([Security.Principal.SecurityIdentifier]).Value
@@ -150,6 +168,51 @@ function Get-RegistrationToken {
     return $response.token
 }
 
+function Get-BundleManifest {
+    $prefix = $Paths.Runner.TrimEnd('\') + '\'
+    $manifest = [ordered]@{}
+    Get-BundleItems -File | Where-Object { $_.Name -notin $StateFiles } |
+        Sort-Object FullName | ForEach-Object {
+            $manifest[$_.FullName.Substring($prefix.Length)] = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+        }
+    return $manifest
+}
+
+function Get-BundleItems([switch]$File) {
+    # Everything under the runner folder except the job-writable _diag folders, which
+    # SYSTEM only ever renames.
+    Get-ChildItem $Paths.Runner -Force | Where-Object { $_.Name -notlike '_diag*' } | ForEach-Object {
+        if ($File -and -not $_.PSIsContainer) { $_ }
+        if (-not $File) { $_ }
+        if ($_.PSIsContainer) { Get-ChildItem $_.FullName -Recurse -Force -File:$File -ErrorAction Stop }
+    }
+}
+
+function Assert-NoReparsePoints {
+    $links = @(Get-Item $Paths.Runner -Force) + @(Get-BundleItems) |
+        Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }
+    if ($links) { throw "Reparse point in the runner bundle; refusing to act on it as SYSTEM." }
+}
+
+function Assert-RunnerBundle {
+    # 1. The kept archive still matches the release checksum recorded at install.
+    $release = Get-Content $ReleaseFile -Raw | ConvertFrom-Json
+    $hash = (Get-FileHash $ArchiveFile -Algorithm SHA256).Hash
+    if ($hash -ne $release.sha256) { throw "Runner archive no longer matches release SHA-256 $($release.sha256)." }
+    # 2. Every extracted file still matches the manifest taken from that archive.
+    $expected = Get-Content $ManifestFile -Raw | ConvertFrom-Json -AsHashtable
+    $actual = Get-BundleManifest
+    $changed = @($expected.Keys | Where-Object { $actual[$_] -ne $expected[$_] }) +
+               @($actual.Keys | Where-Object { -not $expected.ContainsKey($_) })
+    if ($changed) { throw "Runner bundle changed since install: $($changed | Select-Object -First 5)." }
+    # 3. The job user still cannot write the bundle.
+    $rules = (Get-Acl $Paths.Runner).Access | Where-Object {
+        $_.IdentityReference -match "\\$RunnerUser$" -and
+        ($_.FileSystemRights -band [Security.AccessControl.FileSystemRights]::Write) }
+    if ($rules) { throw "$RunnerUser has write access to the runner bundle." }
+    Assert-NoReparsePoints
+}
+
 function Install-Checker {
     Assert-Admin
     if (-not $RunnerVersion -or -not $RunnerSha256) {
@@ -173,21 +236,31 @@ function Install-Checker {
     if ($admins) { throw "$RunnerUser is an administrator; remove it from Administrators first." }
 
     foreach ($path in $Paths.Values) { New-Item -ItemType Directory -Force -Path $path | Out-Null }
-    $owner = @{ 'BUILTIN\Administrators' = 'FullControl'; 'NT AUTHORITY\SYSTEM' = 'FullControl' }
+    $owner = Get-OwnerGrants
     Set-StrictAcl $Paths.Secret $owner
-    Set-StrictAcl $Paths.Bin ($owner + @{ $RunnerUser = 'ReadAndExecute' })
-    foreach ($key in 'Runner', 'Work', 'Logs') { Set-StrictAcl $Paths[$key] ($owner + @{ $RunnerUser = 'Modify' }) }
+    # Read and execute only: the job user can never change code that SYSTEM later runs.
+    foreach ($key in 'Bin', 'Runner', 'Signing') { Set-StrictAcl $Paths[$key] ($owner + @{ $RunnerUser = 'ReadAndExecute' }) }
+    foreach ($key in 'Work', 'Logs') { Set-StrictAcl $Paths[$key] ($owner + @{ $RunnerUser = 'Modify' }) }
 
-    $zip = Join-Path $env:TEMP "actions-runner-$RunnerVersion.zip"
     $url = "https://github.com/actions/runner/releases/download/v$RunnerVersion/actions-runner-win-x64-$RunnerVersion.zip"
-    Invoke-WebRequest -Uri $url -OutFile $zip
-    $hash = (Get-FileHash $zip -Algorithm SHA256).Hash
+    Invoke-WebRequest -Uri $url -OutFile $ArchiveFile
+    $hash = (Get-FileHash $ArchiveFile -Algorithm SHA256).Hash
     if ($hash -ne $RunnerSha256.ToUpperInvariant()) {
-        Remove-Item $zip -Force
+        Remove-Item $ArchiveFile -Force
         throw "Runner archive SHA-256 mismatch ($hash)."
     }
-    Expand-Archive -Path $zip -DestinationPath $Paths.Runner -Force
-    Remove-Item $zip -Force
+    Get-ChildItem $Paths.Runner -Force | Remove-Item -Recurse -Force
+    Expand-Archive -Path $ArchiveFile -DestinationPath $Paths.Runner -Force
+    @{ version = $RunnerVersion; sha256 = $hash } | ConvertTo-Json | Set-Content $ReleaseFile
+    Get-BundleManifest | ConvertTo-Json | Set-Content $ManifestFile
+
+    if (-not (Test-Path (Join-Path $Paths.Signing 'c940-checker'))) {
+        ssh-keygen -q -t ed25519 -N '' -C c940-checker -f (Join-Path $Paths.Signing 'c940-checker')
+        if ($LASTEXITCODE -ne 0) { throw 'ssh-keygen failed to create the signing key.' }
+    }
+    $public = (Get-Content (Join-Path $Paths.Signing 'c940-checker.pub') -Raw).Trim()
+    Write-Host 'Pin this line as c940.allowedSigners in tools/merge-review/checker-trust.json (reviewed PR):'
+    Write-Host "c940-checker namespaces=`"starlight-checker-c940`" $public"
 
     Write-Host 'Paste a fine-grained PAT limited to this one repository with only'
     Write-Host '"Administration: Read and write" (needed to mint runner registration tokens).'
@@ -204,23 +277,32 @@ function Register-Tasks {
         -AllowStartIfOnBatteries -MultipleInstances IgnoreNew -RestartCount 999 `
         -RestartInterval (New-TimeSpan -Minutes 1) -ExecutionTimeLimit ([TimeSpan]::Zero)
     $script = Join-Path $Paths.Bin 'c940-runner-setup.ps1'
-    $registrarArgs = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File `"$script`" -Mode Registrar " +
+    $pwsh = (Get-Command pwsh).Source
+    $common = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File `"$script`" " +
         "-Repository $Repository -RunnerUser $RunnerUser -Root `"$Root`" -MinFreeGB $MinFreeGB " +
         "-Label $Label -RunnerName $RunnerName"
-    if ($RunnerGroup) { $registrarArgs += " -RunnerGroup `"$RunnerGroup`"" }
+    if ($RunnerGroup) { $common += " -RunnerGroup `"$RunnerGroup`"" }
     Register-ScheduledTask -TaskName $RegistrarTask -Force -Settings $settings `
         -Trigger (New-ScheduledTaskTrigger -AtStartup) `
-        -Action (New-ScheduledTaskAction -Execute (Get-Command pwsh).Source -Argument $registrarArgs) `
+        -Action (New-ScheduledTaskAction -Execute $pwsh -Argument "$common -Mode Registrar") `
         -Principal (New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest) | Out-Null
 
     $jobSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
         -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 12)
     $plain = [Net.NetworkCredential]::new('', $script:RunnerPassword).Password
     Register-ScheduledTask -TaskName $JobTask -Force -Settings $jobSettings `
-        -Action (New-ScheduledTaskAction -Execute (Join-Path $Paths.Runner 'run.cmd') -WorkingDirectory $Paths.Runner) `
+        -Action (New-ScheduledTaskAction -Execute $pwsh -Argument "$common -Mode Job" -WorkingDirectory $Paths.Work) `
         -User "$env:COMPUTERNAME\$RunnerUser" -Password $plain -RunLevel Limited | Out-Null
     $plain = $null
     Start-ScheduledTask -TaskName $RegistrarTask
+}
+
+function Reset-Diag {
+    # The job user may have planted links in the old _diag. Rename it (moves a link, never
+    # follows it) for the job user to delete, and give config.cmd a fresh SYSTEM-only one.
+    if (Test-Path $Diag) { Rename-Item $Diag ('_diag-old-{0:yyyyMMddHHmmss}' -f (Get-Date)) }
+    New-Item -ItemType Directory -Path $Diag | Out-Null
+    Set-StrictAcl $Diag (Get-OwnerGrants)
 }
 
 function Invoke-Registrar {
@@ -229,21 +311,23 @@ function Invoke-Registrar {
     while ($true) {
         if (-not (Test-DiskFloor)) { Start-Sleep -Seconds 600; continue }
         try {
-            Get-ChildItem $Paths.Work -Force | Remove-Item -Recurse -Force
-            foreach ($stale in '.runner', '.credentials', '.credentials_rsaparams') {
+            foreach ($stale in $StateFiles) {
                 Remove-Item (Join-Path $Paths.Runner $stale) -Force -ErrorAction SilentlyContinue
             }
+            Reset-Diag
+            Assert-RunnerBundle
             $token = Get-RegistrationToken
             $name = '{0}-{1:yyyyMMddHHmmss}' -f $RunnerName, (Get-Date)
             $configArgs = @('--unattended', '--url', "https://github.com/$Repository", '--token', $token,
-                            '--name', $name, '--labels', $Label, '--work', $Paths.Work, '--ephemeral', '--replace')
+                            '--name', $name, '--labels', $Label, '--work', $Paths.Work, '--ephemeral',
+                            '--replace', '--disableupdate')
             if ($RunnerGroup) { $configArgs += @('--runnergroup', $RunnerGroup) }
+            # config.cmd is a verified, job-read-only bundle file; nothing it loads is job-writable.
             & (Join-Path $Paths.Runner 'config.cmd') @configArgs | Out-Null
             $token = $null
             if ($LASTEXITCODE -ne 0) { throw "config.cmd exited $LASTEXITCODE" }
-            # config ran as SYSTEM; hand the per-runner files to the job user.
-            Set-StrictAcl $Paths.Runner @{ 'BUILTIN\Administrators' = 'FullControl';
-                'NT AUTHORITY\SYSTEM' = 'FullControl'; $RunnerUser = 'Modify' }
+            # The listener running as the job user writes its own logs to the fresh _diag.
+            Set-StrictAcl $Diag ((Get-OwnerGrants) + @{ $RunnerUser = 'Modify' })
             Write-Log "Registered ephemeral runner $name; starting job task."
             Start-ScheduledTask -TaskName $JobTask
             Start-Sleep -Seconds 15
@@ -256,6 +340,20 @@ function Invoke-Registrar {
     }
 }
 
+function Invoke-Job {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = [Security.Principal.WindowsPrincipal]$identity
+    if ($identity.IsSystem -or $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        throw 'Job mode runs only as the low-privilege runner user.'
+    }
+    # Cleanup runs as the job user, so a link planted by a job can only reach what that
+    # user could already delete.
+    Get-ChildItem $Paths.Work -Force | Remove-Item -Recurse -Force
+    Get-ChildItem $Paths.Runner -Directory -Filter '_diag-old-*' -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    & (Join-Path $Paths.Runner 'run.cmd')
+    exit $LASTEXITCODE
+}
+
 function Show-Status {
     $free = Get-FreeGB
     [pscustomobject]@{
@@ -265,6 +363,8 @@ function Show-Status {
         RegistrarTask   = (Get-ScheduledTask -TaskName $RegistrarTask -ErrorAction SilentlyContinue)?.State
         JobTask         = (Get-ScheduledTask -TaskName $JobTask -ErrorAction SilentlyContinue)?.State
         PatStored       = Test-Path $PatFile
+        BundlePinned    = (Test-Path $ManifestFile) -and (Test-Path $ArchiveFile)
+        SigningKey      = Test-Path (Join-Path $Paths.Signing 'c940-checker.pub')
         RunnerInstalled = Test-Path (Join-Path $Paths.Runner 'run.cmd')
         Registered      = Test-Path (Join-Path $Paths.Runner '.runner')
     } | Format-List
@@ -277,12 +377,14 @@ function Uninstall-Checker {
         Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction SilentlyContinue
     }
     Write-Host "Tasks removed. Remove the runner in repo Settings > Actions > Runners if it is still listed;"
-    Write-Host "delete $Root, $PatFile and user $RunnerUser by hand after review, and revoke the PAT."
+    Write-Host "delete $Root, $PatFile and user $RunnerUser by hand after review, revoke the PAT and"
+    Write-Host "remove c940.allowedSigners from checker-trust.json."
 }
 
 switch ($Mode) {
     'Install' { Install-Checker }
     'Registrar' { Invoke-Registrar }
+    'Job' { Invoke-Job }
     'Status' { Show-Status }
     'Uninstall' { Uninstall-Checker }
 }

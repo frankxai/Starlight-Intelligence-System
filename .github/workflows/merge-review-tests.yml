@@ -8,6 +8,7 @@ on:
       - .github/workflows/merge-review.yml
       - .github/workflows/merge-review-tests.yml
       - .github/workflows/independent-review-runner.yml
+      - .github/workflows/review-event-relay.yml
       - tools/merge-review/**
       - tools/jules-conductor/merge-gate.mjs
       - tools/jules-conductor/tests/merge-gate.test.mjs
@@ -17,6 +18,7 @@ on:
       - .github/workflows/merge-review.yml
       - .github/workflows/merge-review-tests.yml
       - .github/workflows/independent-review-runner.yml
+      - .github/workflows/review-event-relay.yml
       - tools/merge-review/**
       - tools/jules-conductor/merge-gate.mjs
       - tools/jules-conductor/tests/merge-gate.test.mjs

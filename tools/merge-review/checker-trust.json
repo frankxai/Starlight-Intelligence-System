@@ -1,0 +1,60 @@
+{
+  "_comment": "Trust roots for the merge review gate and the checker runner. CODEOWNED and high risk: a change here changes who can attest. Both tools read it from the trusted default-branch checkout, never from a PR. Null or empty values keep that path OFF and fail closed. See docs/merge-review.md.",
+  "checkerApp": {
+    "_comment": "Numeric App id and the App's bot user id, read from the App settings page and GET /users/<slug>[bot] after the App exists. Until both are set no App receipt counts.",
+    "slug": "starlight-checker",
+    "appId": null,
+    "botUserId": null
+  },
+  "independentReviewers": {
+    "_comment": "Numeric user ids of humans who are independent of every agent harness. Empty means no human approval counts. Never add the owner account: every harness shares its gh login.",
+    "users": []
+  },
+  "nonIndependent": {
+    "_comment": "Identities that never count as an independent reviewer: the shared owner login and harness or automation accounts.",
+    "userIds": [132689939, 19864447, 41898282, 161369871, 199175422, 206951365, 198982749, 209825114, 176961590],
+    "logins": ["frankxai", "web-flow", "github-actions[bot]", "google-labs-jules[bot]",
+               "chatgpt-codex-connector[bot]", "cursor[bot]", "copilot-swe-agent[bot]", "claude[bot]",
+               "gemini-code-assist[bot]"]
+  },
+  "deniedApps": {
+    "_comment": "Apps that may never be the checker, whatever checkerApp says.",
+    "ids": [15368],
+    "slugs": ["github-actions", "dependabot", "copilot-swe-agent", "google-labs-jules",
+              "chatgpt-codex-connector", "cursor"]
+  },
+  "seatVendors": {
+    "_comment": "Seat -> model vendor. Shared by runner and gate. null means the vendor is not verifiable, so that seat can never be shown independent of a maker.",
+    "codex": "openai",
+    "claude-code": "anthropic",
+    "antigravity": "google",
+    "jules": "google",
+    "gemini": "google",
+    "grok": "xai",
+    "cto": null
+  },
+  "branchHarnesses": {
+    "_comment": "Head-branch harness name (agent/<harness>/...) -> maker seat. The branch is a claim; commit trailers and authors add vendors to it.",
+    "codex": "codex",
+    "claude": "claude-code",
+    "claude-code": "claude-code",
+    "antigravity": "antigravity",
+    "jules": "jules",
+    "grok": "grok",
+    "gemini": "gemini"
+  },
+  "vendorPatterns": {
+    "_comment": "Case-insensitive regexes matched against commit trailers and commit author and committer name, email and login.",
+    "anthropic": "claude|anthropic",
+    "openai": "codex|openai|chatgpt|\\bgpt-",
+    "xai": "grok|\\bx\\.ai\\b|\\bxai\\b",
+    "google": "gemini|google|jules|antigravity"
+  },
+  "unknownAgentPattern": "cursor|copilot|devin|aider|windsurf|cline|opencode|kilo|hermes",
+  "c940": {
+    "_comment": "The self-hosted job never holds the App key; it uploads a review signed with this SSH key, which a hosted job verifies before posting. null keeps the C940 path OFF.",
+    "signerIdentity": "c940-checker",
+    "namespace": "starlight-checker-c940",
+    "allowedSigners": null
+  }
+}
