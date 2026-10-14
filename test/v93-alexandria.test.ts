@@ -19,7 +19,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -641,6 +641,11 @@ describe("v93 — router, budget and receipts", () => {
       first.close();
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-a" });
       assert.equal(resumed.budget.spent, 10, "the same session resumes its spend");
+      const callsBefore = transport.calls.length;
+      await assert.rejects(resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message), "a torn tail that is not a complete receipt may be suspension evidence: paid calls fail closed");
+      assert.equal(transport.calls.length, callsBefore, "nothing reached the provider");
+      assert.equal(resumed.budget.spent, 10, "and nothing stays reserved");
+      assert.equal(ledger.quarantinePartialTail(), true, "an operator moves the fragment out explicitly");
       const third = await resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       assert.equal(third.receipt.observedAt, third.result.observedAt, "the receipt keeps the provider observation time");
       const after = ledger.readDetailed();
@@ -884,7 +889,7 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       assert.equal(ledger.suspendedCapabilities().size, 0);
       const overrun = line({ capability: "x", overrun: true, catalogueReconciledAt: "2026-10-01" });
       appendFileSync(path, overrun.slice(0, 20));
-      assert.equal(ledger.suspendedCapabilities().size, 0, "a cut-off tail is not consumed");
+      assert.throws(() => ledger.suspendedCapabilities(), /cut-off line/, "a torn tail that is not a complete receipt fails closed");
       appendFileSync(path, overrun.slice(20));
       assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"], "the finished line is picked up on the next scan");
       assert.equal(ledger.suspendedCapabilities("2026-10-02").size, 0, "a later reconciliation still clears it from the cache");
@@ -892,6 +897,82 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       assert.throws(() => ledger.suspendedCapabilities(), /corrupt/, "new corrupt lines still fail closed");
       writeFileSync(path, line({ capability: "y", overrun: true }));
       assert.deepEqual([...ledger.suspendedCapabilities()], ["p/y"], "a shrunk ledger resets the cache instead of trusting it");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("counts a torn final line that is a complete receipt and never truncates it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "torn-a" });
+      try { assert.equal((await a.execute({ capabilityId: cap, options: { address: "x" } })).overrun, true); } finally { a.close(); }
+      // The overrun receipt lost its newline, as a crash between the write and the newline would leave it.
+      const raw = readFileSync(path, "utf8");
+      writeFileSync(path, raw.slice(0, -1));
+      const ledger = new ReceiptLedger(path);
+      assert.equal(ledger.readDetailed().truncatedTail, false, "a complete receipt is not a cut-off write");
+      assert.ok(ledger.read().some((r) => r.overrun), "the torn overrun receipt is counted");
+      assert.deepEqual([...ledger.suspendedCapabilities()], [cap], "and it suspends the capability");
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 }, "gmgn-ai/crypto/wallet_rank": { records: [{ a: 1 }], creditsCost: 5 } });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger, sessionId: "torn-b" });
+      try {
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        await b.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
+        assert.equal(fine.calls.length, 1, "only the unsuspended capability was dispatched");
+      } finally { b.close(); }
+      assert.ok(readFileSync(path, "utf8").startsWith(raw), "the torn line was finished with a newline, never truncated");
+      assert.ok(!existsSync(ledger.quarantinePath), "nothing was moved to quarantine");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("holds the capability turn through the provider call, so a second call waits for the first outcome", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      const slowOver = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 50, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const a = new Alexandria({ library, transports: [slowOver as never], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-a" });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-b" });
+      try {
+        const first = a.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 20));
+        // B is admitted (A's overrun is not known yet) but must not be dispatched while A is in flight.
+        const second = b.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 50));
+        assert.equal(fine.calls.length, 0, "the second call waits for the first call's outcome");
+        releaseFirst();
+        assert.equal((await first).overrun, true);
+        await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0, "and is refused once the overrun lands");
+        assert.equal(b.budget.spent, 0, "with nothing reserved");
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rescans in full when the ledger file is replaced, even by a longer one", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      writeFileSync(path, line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      // Rewritten in place (same inode) with a longer, different history: the prefix no longer matches.
+      writeFileSync(path, line({ capability: "y", sessionId: "other" }) + line({ capability: "z" }));
+      assert.equal(ledger.suspendedCapabilities().size, 0, "a rewritten ledger is rescanned, not appended to the old cache");
+      // Replaced by rename (new inode) with a file whose first 4 KB match the cached prefix but whose
+      // later history differs: only the file identity tells the cache it is stale.
+      const filler = Array.from({ length: 60 }, (_, i) => line({ capability: `f${i}` })).join("");
+      writeFileSync(path, filler + line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      const replacement = join(dir, "replacement.jsonl");
+      writeFileSync(replacement, filler + line({ capability: "v" }) + line({ capability: "w", overrun: true }));
+      renameSync(replacement, path);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/w"]);
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });

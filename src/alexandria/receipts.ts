@@ -173,6 +173,12 @@ export class ReceiptLedger {
     if (content.length === 0 || content.endsWith('\n')) return false;
     const cut = content.lastIndexOf('\n') + 1;
     const fragment = content.slice(cut);
+    // A final segment that is a complete receipt lost only its newline: it is finished in place,
+    // never moved out, so an overrun recorded in it keeps suspending its capability.
+    if (completeReceipt(fragment)) {
+      appendFileSync(this.path, '\n', { encoding: 'utf8', mode: FILE_MODE });
+      return false;
+    }
     appendFileSync(this.quarantinePath, `${new Date().toISOString()}\t${fragment}\n`, { encoding: 'utf8', mode: FILE_MODE });
     // Truncate in place rather than rewriting the prefix: the intact lines are never re-written.
     truncateSync(this.path, Buffer.byteLength(content.slice(0, cut), 'utf8'));
@@ -198,6 +204,8 @@ export class ReceiptLedger {
       try {
         parsed = JSON.parse(line);
       } catch (err) {
+        // A torn last line that does not parse is reported, not counted. One that parses as a
+        // complete receipt lost only its newline and is a record like any other.
         if (i === lines.length - 1 && unterminated) { truncatedTail = true; return; }
         throw new Error(`Receipt ledger ${this.path} is corrupt at line ${i + 1}: ${err instanceof Error ? err.message : String(err)}`);
       }
@@ -249,7 +257,7 @@ export class ReceiptLedger {
    * catalogue date never clears by date.
    */
   suspendedCapabilities(catalogueReconciledAt?: string): Set<string> {
-    if (!existsSync(this.path)) { this.overrunScan = { offset: 0, overruns: [] }; return new Set(); }
+    if (!existsSync(this.path)) { this.overrunScan = emptyScan(); return new Set(); }
     return this.locked(() => this.suspendedUnlocked(catalogueReconciledAt));
   }
 
@@ -262,24 +270,34 @@ export class ReceiptLedger {
   appendUnlessSuspended(receipt: Receipt, capabilityId: string, catalogueReconciledAt?: string): { appended: boolean; suspended: Set<string> } {
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     return this.locked(() => {
-      this.quarantinePartialTail();
+      // Scanned before any repair: a torn tail that is not a complete receipt may be the overrun
+      // that suspends this capability, so the scan fails closed instead of quarantining it.
       const suspended = existsSync(this.path) ? this.suspendedUnlocked(catalogueReconciledAt) : new Set<string>();
       if (suspended.has(capabilityId)) return { appended: false, suspended };
+      this.quarantinePartialTail();
       appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
       return { appended: true, suspended };
     });
   }
 
   /** Overruns seen so far and the byte offset scanned up to; only bytes appended since are read. */
-  private overrunScan: { offset: number; overruns: { key: string; at?: string }[] } = { offset: 0, overruns: [] };
+  private overrunScan: OverrunScan = emptyScan();
 
-  /** Caller holds the write lock. Scans only complete lines appended since the last scan. */
+  /**
+   * Caller holds the write lock. Scans only complete lines appended since the last scan. The cache
+   * is trusted only for the same file: a different device/inode, a shorter file, or a changed
+   * prefix (a file rewritten in place) means the ledger was replaced, and it is rescanned in full.
+   * A torn final segment is never skipped: a complete receipt is counted, anything else fails closed.
+   */
   private suspendedUnlocked(catalogueReconciledAt?: string): Set<string> {
     const fd = openSync(this.path, 'r');
+    let tailOverruns: { key: string; at?: string }[] = [];
     try {
-      const size = fstatSync(fd).size;
-      // A ledger that shrank was replaced or rewritten: start over rather than trust the cache.
-      if (size < this.overrunScan.offset) this.overrunScan = { offset: 0, overruns: [] };
+      const stat = fstatSync(fd);
+      const size = stat.size;
+      const cached = this.overrunScan;
+      const sameFile = cached.offset === 0 || (cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset && prefixHash(fd, cached.prefixLength) === cached.prefixHash);
+      if (!sameFile) this.overrunScan = emptyScan();
       const start = this.overrunScan.offset;
       if (size > start) {
         const buf = Buffer.alloc(size - start);
@@ -290,27 +308,39 @@ export class ReceiptLedger {
           read += n;
         }
         const end = buf.lastIndexOf(0x0a, read - 1);
+        const parseLine = (line: string, where: string) => {
+          let parsed: unknown;
+          try { parsed = JSON.parse(line); } catch (err) {
+            throw new Error(`Receipt ledger ${this.path} is corrupt ${where}: ${err instanceof Error ? err.message : String(err)}`);
+          }
+          const problem = receiptProblem(parsed);
+          if (problem) throw new Error(`Receipt ledger ${this.path} is corrupt ${where}: ${problem}`);
+          return parsed as Receipt;
+        };
         if (end >= 0) {
-          // Only complete lines are consumed; a cut-off tail is re-read once it is finished.
-          const lines = buf.subarray(0, end + 1).toString('utf8').split('\n');
           const found: { key: string; at?: string }[] = [];
-          for (const line of lines) {
+          for (const line of buf.subarray(0, end + 1).toString('utf8').split('\n')) {
             if (line.trim().length === 0) continue;
-            let parsed: unknown;
-            try { parsed = JSON.parse(line); } catch (err) {
-              throw new Error(`Receipt ledger ${this.path} is corrupt after byte ${start}: ${err instanceof Error ? err.message : String(err)}`);
-            }
-            const problem = receiptProblem(parsed);
-            if (problem) throw new Error(`Receipt ledger ${this.path} is corrupt after byte ${start}: ${problem}`);
-            const r = parsed as Receipt;
+            const r = parseLine(line, `after byte ${start}`);
             if (r.overrun) found.push({ key: `${r.provider}/${r.capability}`, at: r.catalogueReconciledAt });
           }
-          this.overrunScan = { offset: start + end + 1, overruns: [...this.overrunScan.overruns, ...found] };
+          const offset = start + end + 1;
+          const prefixLength = Math.min(offset, PREFIX_BYTES);
+          this.overrunScan = { offset, overruns: [...this.overrunScan.overruns, ...found], dev: stat.dev, ino: stat.ino, prefixLength, prefixHash: prefixHash(fd, prefixLength) };
+        }
+        const tail = buf.subarray(end + 1, read).toString('utf8');
+        if (tail.trim().length > 0) {
+          const complete = completeReceipt(tail);
+          if (!complete) {
+            throw new TornTailError(`Receipt ledger ${this.path} ends in a cut-off line that is not a complete receipt; it may be suspension evidence, so no paid call is admitted until it is inspected and moved out with ReceiptLedger.quarantinePartialTail()`);
+          }
+          // Counted for this answer but not cached: the line is finished with a newline later.
+          if (complete.overrun) tailOverruns = [{ key: `${complete.provider}/${complete.capability}`, at: complete.catalogueReconciledAt }];
         }
       }
     } finally { closeSync(fd); }
     const out = new Set<string>();
-    for (const o of this.overrunScan.overruns) {
+    for (const o of [...this.overrunScan.overruns, ...tailOverruns]) {
       const cleared = catalogueReconciledAt !== undefined && o.at !== undefined && catalogueReconciledAt > o.at;
       if (!cleared) out.add(o.key);
     }
@@ -355,6 +385,69 @@ export function receiptProblem(value: unknown): string | null {
   if (r.requestId !== undefined && typeof r.requestId !== 'string') return 'requestId is not a string';
   if (typeof r.callFingerprint !== 'string') return 'callFingerprint missing';
   return null;
+}
+
+/** Thrown when the ledger ends in a torn line that is not a complete receipt. */
+export class TornTailError extends Error {
+  override readonly name = 'TornTailError';
+}
+
+/** A torn final segment that still parses as a complete, tallyable receipt, or null. */
+function completeReceipt(fragment: string): Receipt | null {
+  let parsed: unknown;
+  try { parsed = JSON.parse(fragment); } catch { return null; }
+  return receiptProblem(parsed) === null ? parsed as Receipt : null;
+}
+
+const PREFIX_BYTES = 4096;
+
+interface OverrunScan {
+  offset: number;
+  overruns: { key: string; at?: string }[];
+  dev?: number;
+  ino?: number;
+  prefixLength: number;
+  prefixHash: string;
+}
+
+function emptyScan(): OverrunScan {
+  return { offset: 0, overruns: [], prefixLength: 0, prefixHash: '' };
+}
+
+/** sha256 of the first `length` bytes of an open file. */
+function prefixHash(fd: number, length: number): string {
+  const buf = Buffer.alloc(length);
+  let read = 0;
+  while (read < length) {
+    const n = readSync(fd, buf, read, length - read, read);
+    if (n === 0) break;
+    read += n;
+  }
+  return createHash('sha256').update(buf.subarray(0, read)).digest('hex');
+}
+
+/** Per-capability turns in this process, chained so one paid call at a time holds the capability lock. */
+const capabilityTurns = new Map<string, Promise<void>>();
+
+/**
+ * Takes the dispatch turn for one capability on one ledger: first in this process (calls queue in
+ * order), then across processes through a pid lock beside the ledger. It is held from the
+ * suspension check through the provider call to the outcome receipt, so no other call on the
+ * capability is dispatched while an overrun may still be on its way. Returns the release function.
+ */
+export async function capabilityTurn(ledgerPath: string, capabilityId: string, waitMs = 5000): Promise<() => void> {
+  const key = `${ledgerPath}\u0000${capabilityId}`;
+  const previous = capabilityTurns.get(key) ?? Promise.resolve();
+  let finish!: () => void;
+  const mine = new Promise<void>((resolve) => { finish = resolve; });
+  const chained = previous.then(() => mine);
+  capabilityTurns.set(key, chained);
+  const done = () => { finish(); if (capabilityTurns.get(key) === chained) capabilityTurns.delete(key); };
+  await previous;
+  const lock = new FileLock(`${ledgerPath}.cap-${createHash('sha256').update(capabilityId).digest('hex').slice(0, 16)}.lock`);
+  try { lock.acquire({ waitMs }); } catch (err) { done(); throw err; }
+  let released = false;
+  return () => { if (released) return; released = true; lock.release(); done(); };
 }
 
 /** Lock paths this process holds, so a second instance in the same process cannot share a lock. */
