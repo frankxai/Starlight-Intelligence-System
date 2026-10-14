@@ -242,6 +242,29 @@ describe('run receipt — receiptProblems', () => {
     assert.deepEqual(receiptProblems(receipt({ stages, totals: totalsFromStages(stages), verdict: 'PARTIAL' })), []);
   });
 
+  it('refuses a PASS verdict when evidence is empty', () => {
+    const problems = receiptProblems(receipt({ evidence: [] }));
+    assert.ok(problems.includes('verdict is PASS but evidence is empty'), problems.join('; '));
+    // A FAIL or PARTIAL verdict is allowed without evidence.
+    const failed: RunReceiptStage[] = [{ name: 'retrieve', status: 'failed', latencyMs: 10 }];
+    assert.deepEqual(receiptProblems(receipt({ stages: failed, totals: totalsFromStages(failed), evidence: [], verdict: 'FAIL' })), []);
+    assert.deepEqual(receiptProblems(receipt({ stages: failed, totals: totalsFromStages(failed), evidence: [], verdict: 'PARTIAL' })), []);
+  });
+
+  it('refuses a PASS verdict when every stage was skipped', () => {
+    const skipped: RunReceiptStage[] = [{ name: 'retrieve', status: 'skipped', latencyMs: 0 }];
+    const problems = receiptProblems(receipt({ stages: skipped, totals: totalsFromStages(skipped), verdict: 'PASS' }));
+    assert.ok(problems.includes('verdict is PASS but every stage was skipped'), problems.join('; '));
+  });
+
+  it('accepts a PASS verdict when at least one stage succeeded and evidence is present', () => {
+    const mixed: RunReceiptStage[] = [
+      { name: 'retrieve', status: 'ok', latencyMs: 10 },
+      { name: 'optional-step', status: 'skipped', latencyMs: 0 },
+    ];
+    assert.deepEqual(receiptProblems(receipt({ stages: mixed, totals: totalsFromStages(mixed), verdict: 'PASS' })), []);
+  });
+
   it('catches totals below the stage sums', () => {
     const problems = receiptProblems(receipt({ totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } } }));
     assert.ok(problems.some((p) => p.includes('totals.costEur') && p.includes('below the stage sum')), problems.join('; '));
@@ -293,7 +316,7 @@ describe('run receipt hardening', () => {
       stages,
       totals: totalsFromStages(stages),
       decisions: [],
-      evidence: [],
+      evidence: [{ kind: 'test', ref: 'https://example.org/test' }],
       verdict: 'PASS',
     };
   }

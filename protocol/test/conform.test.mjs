@@ -481,3 +481,65 @@ test("jsonschema assertStrict loads the run receipt v1 schema, and token counts 
   assert.deepEqual(validateAgainstSchema(issuer, { name: "sis" }), []);
   assert.ok(validateAgainstSchema(issuer, { name: "sis", keyid: "abc" }).length > 0);
 });
+
+test("jsonschema validator supports if, then, and else keywords", () => {
+  const schema = {
+    type: "object",
+    properties: {
+      kind: { type: "string" },
+      val: { type: "number" },
+    },
+    if: {
+      properties: { kind: { const: "num" } },
+    },
+    then: {
+      properties: { val: { minimum: 10 } },
+    },
+    else: {
+      properties: { val: { maximum: 5 } },
+    },
+  };
+
+  assert.doesNotThrow(() => assertStrict(schema));
+  assert.deepEqual(validateAgainstSchema(schema, { kind: "num", val: 12 }), []);
+  assert.deepEqual(validateAgainstSchema(schema, { kind: "num", val: 8 }), [
+    "$.val: 8 is less than minimum 10",
+  ]);
+  assert.deepEqual(validateAgainstSchema(schema, { kind: "other", val: 3 }), []);
+  assert.deepEqual(validateAgainstSchema(schema, { kind: "other", val: 7 }), [
+    "$.val: 7 is greater than maximum 5",
+  ]);
+});
+
+test("run receipt schema conditionally requires evidence for PASS verdict", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  const sample = {
+    schema: "starlight.run-receipt.v1",
+    receiptId: "rcpt_test",
+    issuedAt: "2026-09-21T10:00:00.000Z",
+    issuer: { name: "sis" },
+    run: { id: "r1", kind: "test", host: "local", startedAt: "2026-09-21T09:58:00.000Z", endedAt: "2026-09-21T09:59:00.000Z" },
+    subject: { name: "test.txt", digest: { sha256: "0".repeat(64) } },
+    stages: [{ name: "s1", status: "ok" }],
+    totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } },
+    decisions: [],
+  };
+
+  // PASS with empty evidence fails schema conditional
+  const passEmpty = { ...sample, evidence: [], verdict: "PASS" };
+  const passErrors = validateAgainstSchema(schema, passEmpty);
+  assert.ok(passErrors.length > 0);
+  assert.ok(passErrors.some((e) => e.includes("evidence") && e.includes("at least 1 items")));
+
+  // PASS with evidence succeeds
+  const passWithEvidence = { ...sample, evidence: [{ kind: "source", ref: "https://example.org" }], verdict: "PASS" };
+  assert.deepEqual(validateAgainstSchema(schema, passWithEvidence), []);
+
+  // FAIL with empty evidence succeeds
+  const failEmpty = { ...sample, evidence: [], verdict: "FAIL" };
+  assert.deepEqual(validateAgainstSchema(schema, failEmpty), []);
+
+  // PARTIAL with empty evidence succeeds
+  const partialEmpty = { ...sample, evidence: [], verdict: "PARTIAL" };
+  assert.deepEqual(validateAgainstSchema(schema, partialEmpty), []);
+});
