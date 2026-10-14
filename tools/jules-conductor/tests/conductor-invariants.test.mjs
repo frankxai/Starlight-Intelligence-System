@@ -8,20 +8,36 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const conductor = readFileSync(join(root, 'conductor.mjs'), 'utf8');
 const reviewPath = join(root, 'ceo-pr-review.mjs');
 const review = existsSync(reviewPath) ? readFileSync(reviewPath, 'utf8') : null;
+// Executable code only: block comments, line comments (not URLs) and import lines are removed.
+const code = conductor
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/(^|[^:'"`])\/\/.*$/gm, '$1')
+  .replace(/^\s*import\b.*$/gm, '');
 const config = JSON.parse(readFileSync(join(root, 'config.json'), 'utf8'));
 
 test('the conductor does not sweep or undraft', () => {
   assert.equal(conductor.includes('sweepPullRequests'), false);
   // The conductor never undrafts. The only allowed `pr ready` call is the redraft (`--undo`), and
   // every one is checked on its own: one redraft must not cover an undraft elsewhere in the file.
-  const readyCalls = [...conductor.matchAll(/\[\s*['"`]pr['"`]\s*,\s*['"`]ready['"`][^\]]*\]/g)].map((m) => m[0]);
-  assert.ok(readyCalls.length > 0, 'the redraft call is still present');
+  // Comments are stripped first, so a commented-out call neither counts as present nor hides one.
+  const readyCalls = [...code.matchAll(/\[\s*['"`]pr['"`]\s*,\s*['"`]ready['"`][^\]]*\]/g)].map((m) => m[0]);
+  assert.ok(readyCalls.length > 0, 'the executable redraft call is still present');
   for (const call of readyCalls) assert.ok(/['"`]--undo['"`]/.test(call), `undraft call without --undo: ${call}`);
-  // Any other spelling of an undraft (a 'ready' literal outside those calls, or a shell `pr ready`) fails.
-  const readyLiterals = conductor.match(/['"`]ready['"`]/g) ?? [];
+  // Any other spelling of an undraft fails: a 'ready' literal outside those calls, a shell
+  // `pr ready` command without its own --undo, or the GraphQL ready-for-review mutation.
+  const readyLiterals = code.match(/['"`]ready['"`]/g) ?? [];
   assert.equal(readyLiterals.length, readyCalls.length, "a 'ready' literal outside a checked pr-ready call");
-  assert.equal(/pr\s+ready(?!\s+[^\n]*--undo)/.test(conductor), false, 'shell-form pr ready without --undo');
-  assert.equal(/['"`]merge['"`]/.test(conductor) || /pr\s+merge/.test(conductor), false, 'the conductor never merges');
+  for (const command of code.split(/&&|\|\||[;|\n]/)) {
+    if (/\bpr\s+ready\b/.test(command)) assert.ok(/--undo\b/.test(command), `shell-form pr ready without --undo: ${command.trim()}`);
+  }
+  assert.equal(/markPullRequestReadyForReview/i.test(code), false, 'GraphQL undraft');
+  // The conductor never merges, by any route: the gh subcommand, the REST merge endpoint, the
+  // GraphQL merge or auto-merge mutations, or gh's --auto flag.
+  assert.equal(/['"`]merge['"`]/.test(code), false, "a 'merge' argument");
+  assert.equal(/\bpr\s+merge\b/.test(code), false, 'shell-form pr merge');
+  assert.equal(/pulls\/[^'"`\s]*\/merge\b/i.test(code), false, 'REST merge endpoint');
+  assert.equal(/(mergePullRequest|enablePullRequestAutoMerge|mergeBranch)/i.test(code), false, 'GraphQL merge');
+  assert.equal(/['"`]--auto['"`]/.test(code), false, 'auto-merge flag');
   assert.equal(conductor.includes('slice(0, 20)'), false);
   assert.equal(conductor.includes('adoptRemoteSessions === true'), true);
   assert.equal(conductor.includes('autoDispatch === true'), true);
