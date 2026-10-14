@@ -256,6 +256,27 @@ export class ReceiptLedger {
     return this.tally(sessionId).held;
   }
 
+  /**
+   * Settled request IDs (completed calls with a success or definite failure outcome).
+   * Without a session id: the whole ledger.
+   */
+  settledIds(sessionId?: string): Set<string> {
+    return new Set(this.tally(sessionId).settledRequests.keys());
+  }
+
+  /** Alias for settledIds(). */
+  settledRequestIds(sessionId?: string): Set<string> {
+    return this.settledIds(sessionId);
+  }
+
+  /**
+   * Settled requests keyed by request id, carrying the call fingerprint, receipt id and cost.
+   * Without a session id: the whole ledger.
+   */
+  settledReceipts(sessionId?: string): Map<string, SettledReservation> {
+    return this.tally(sessionId).settledRequests;
+  }
+
   /** The lowest ceiling ever recorded for a session, or undefined when it has no receipts. A resume may not exceed it. */
   sessionCeiling(sessionId: string): number | undefined {
     let ceiling: number | undefined;
@@ -372,20 +393,34 @@ export class ReceiptLedger {
     return out;
   }
 
-  private tally(sessionId?: string): { settled: number; held: Map<string, HeldReservation> } {
+  private tally(sessionId?: string): { settled: number; held: Map<string, HeldReservation>; settledRequests: Map<string, SettledReservation> } {
     let settled = 0;
     const held = new Map<string, HeldReservation>();
+    const settledRequests = new Map<string, SettledReservation>();
     for (const r of this.read()) {
       if (sessionId !== undefined && r.sessionId !== sessionId) continue;
       if (r.pending || r.error?.code === 'uncertain_outcome') {
-        if (r.requestId) held.set(r.requestId, { amount: r.creditsCost, fingerprint: r.callFingerprint });
+        if (r.requestId) {
+          held.set(r.requestId, { amount: r.creditsCost, fingerprint: r.callFingerprint });
+          settledRequests.delete(r.requestId);
+        }
         continue;
       }
-      if (r.requestId) held.delete(r.requestId);
+      if (r.requestId) {
+        held.delete(r.requestId);
+        settledRequests.set(r.requestId, { fingerprint: r.callFingerprint, creditsCost: r.creditsCost, receiptId: r.id });
+      }
       if (!r.error) settled += r.creditsCost;
     }
-    return { settled, held };
+    return { settled, held, settledRequests };
   }
+}
+
+export interface SettledReservation {
+  /** The call that settled; a replay must match it to be identified as the same call. */
+  fingerprint: string;
+  creditsCost: number;
+  receiptId: string;
 }
 
 export interface HeldReservation {

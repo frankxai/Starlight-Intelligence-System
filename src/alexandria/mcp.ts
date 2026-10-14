@@ -121,8 +121,8 @@ export class AlexandriaMcpServer {
         const sessionId = this.alexandria.budget.sessionId;
         const allSessions = args.allSessions === true;
         // A pending line that its outcome receipt has settled is bookkeeping; only unsettled holds are shown.
-        const settled = new Set(receipts.filter((r) => !r.pending && r.requestId).map((r) => r.requestId));
-        const visible = receipts.filter((r) => (allSessions || r.sessionId === sessionId) && !(r.pending && settled.has(r.requestId)));
+        const settled = this.ledger.settledRequestIds();
+        const visible = receipts.filter((r) => (allSessions || r.sessionId === sessionId) && !(r.pending && r.requestId && settled.has(r.requestId)));
         return { sessionId, allSessions, spentThisSession: this.ledger.spent(sessionId), spentAllSessions: this.ledger.spent(), truncatedTail, receipts: visible.reverse().slice(0, Math.max(1, limit)) };
       }
       case 'alexandria_experiments': {

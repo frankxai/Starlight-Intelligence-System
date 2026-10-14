@@ -532,7 +532,7 @@ test("run receipt schema conditionally requires evidence for PASS verdict", () =
   assert.ok(passErrors.some((e) => e.includes("evidence") && e.includes("at least 1 items")));
 
   // PASS with evidence succeeds
-  const passWithEvidence = { ...sample, evidence: [{ kind: "source", ref: "https://example.org" }], verdict: "PASS" };
+  const passWithEvidence = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "0".repeat(64) }], verdict: "PASS" };
   assert.deepEqual(validateAgainstSchema(schema, passWithEvidence), []);
 
   // FAIL with empty evidence succeeds
@@ -542,4 +542,99 @@ test("run receipt schema conditionally requires evidence for PASS verdict", () =
   // PARTIAL with empty evidence succeeds
   const partialEmpty = { ...sample, evidence: [], verdict: "PARTIAL" };
   assert.deepEqual(validateAgainstSchema(schema, partialEmpty), []);
+});
+
+test("run receipt schema requires sha256 on evidence entries", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  const sample = {
+    schema: "starlight.run-receipt.v1",
+    receiptId: "rcpt_test",
+    issuedAt: "2026-09-21T10:00:00.000Z",
+    issuer: { name: "sis" },
+    run: { id: "r1", kind: "test", host: "local", startedAt: "2026-09-21T09:58:00.000Z", endedAt: "2026-09-21T09:59:00.000Z" },
+    subject: { name: "test.txt", digest: { sha256: "0".repeat(64) } },
+    stages: [{ name: "s1", status: "ok" }],
+    totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } },
+    decisions: [],
+    verdict: "PASS",
+  };
+
+  // Missing sha256 fails required check
+  const missingSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org" }] };
+  const missingErrors = validateAgainstSchema(schema, missingSha);
+  assert.ok(missingErrors.some((e) => e.includes("sha256") && e.includes("missing required")));
+
+  // Malformed sha256 fails pattern check
+  const badSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "bad" }] };
+  const badErrors = validateAgainstSchema(schema, badSha);
+  assert.ok(badErrors.some((e) => e.includes("sha256") && e.includes("does not match")));
+
+  // Valid 64-char lowercase hex sha256 succeeds
+  const validSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "a".repeat(64) }] };
+  assert.deepEqual(validateAgainstSchema(schema, validSha), []);
+});
+
+test("run receipt schema requires proof for human gate decisions", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  assert.doesNotThrow(() => assertStrict(schema));
+
+  const sample = {
+    schema: "starlight.run-receipt.v1",
+    receiptId: "rcpt_test",
+    issuedAt: "2026-09-21T10:00:00.000Z",
+    issuer: { name: "sis" },
+    run: { id: "r1", kind: "test", host: "local", startedAt: "2026-09-21T09:58:00.000Z", endedAt: "2026-09-21T09:59:00.000Z" },
+    subject: { name: "test.txt", digest: { sha256: "0".repeat(64) } },
+    stages: [{ name: "s1", status: "ok" }],
+    totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } },
+    evidence: [{ kind: "source", ref: "https://example.org", sha256: "a".repeat(64) }],
+    verdict: "PASS",
+  };
+
+  // Human decision without proof fails validation
+  const humanNoProof = {
+    ...sample,
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  const errors = validateAgainstSchema(schema, humanNoProof);
+  assert.ok(errors.length > 0, "Human decision without proof must fail schema validation");
+  assert.ok(errors.some((e) => e.includes("matches no anyOf branch")));
+
+  // Human decision with each supported proof field succeeds
+  for (const [key, val] of [
+    ["signature", "sig_1234567890abcdef1234567890abcdef"],
+    ["mandateId", "man_infra_spend"],
+    ["approvalRef", "https://github.com/frankxai/Starlight-Intelligence-System/pull/421"],
+    ["evidenceRef", "ref_audit_log_42"],
+    ["proof", "token_verified"],
+  ]) {
+    const humanWithProof = {
+      ...sample,
+      decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", [key]: val, at: "2026-09-21T09:59:00.000Z" }],
+    };
+    assert.deepEqual(validateAgainstSchema(schema, humanWithProof), [], `Expected proof ${key} to validate cleanly`);
+  }
+
+  // Negative tests for invalid proof formats
+  const shortSig = {
+    ...sample,
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", signature: "short", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(validateAgainstSchema(schema, shortSig).some((e) => e.includes("signature") && e.includes("shorter than minimum 32")));
+
+  const badRef = {
+    ...sample,
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", approvalRef: "unresolvable", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(validateAgainstSchema(schema, badRef).some((e) => e.includes("approvalRef") && e.includes("does not match")));
+
+  // Agent and policy decisions without proof succeed
+  const nonHuman = {
+    ...sample,
+    decisions: [
+      { gate: "check", decidedBy: "policy", actorId: "policy_1", outcome: "approved", at: "2026-09-21T09:59:00.000Z" },
+      { gate: "review", decidedBy: "agent", actorId: "agent_sentinel", outcome: "approved", at: "2026-09-21T09:59:00.000Z" },
+    ],
+  };
+  assert.deepEqual(validateAgainstSchema(schema, nonHuman), []);
 });
