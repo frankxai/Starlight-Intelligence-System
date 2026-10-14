@@ -22,7 +22,9 @@ UTF-8 bytes for SHA-256 verification. See the [evaluator](../tools/merge-review/
 and its [regression tests](../tools/merge-review/tests/test_merge_review_gate.py).
 
 The receipt contains `repository`, numeric `pr`, full `headSha`, `maker` (the author seat:
-`codex`, `claude-code`, `antigravity`, `cto` or `jules`),
+`codex`, `claude-code`, `antigravity`, `cto`, `jules` or `grok` (Grok Bot seats other
+than CTO, such as WebDev and Surfaces), or the bot makers
+`dependabot` and `github-actions`, none of which (`jules`, `grok`, bots) are reviewers),
 `provider`, `verdict`, `blockingFindings`, all `reviewedFiles`, the complete
 `review`, its `reviewSha256`, the review packet's `packetSha256` and a nonempty
 `resolution`. Only `PASS` counts. Use it only after resolving every blocking finding;
@@ -47,14 +49,23 @@ comment, not which seat or model is behind it.
 
 ## High-risk changes and auto-merge
 
-Changes touching money, publish, secrets, auth, licensing, agent instruction
+Changes touching money (including `src/finance/`, finance, revenue, payout and
+P&L paths, and ledger paths only where the path is financial, such as a cost,
+credit, spend, budget, billing or accounting ledger; decision, task and source
+ledgers are not), cost controls (`src/infra/cost-snapshot.ts`,
+`src/infra/cost-sources/`, `cost-plane-config.template.json`), publish, secrets, auth, licensing, agent instruction
 files (`AGENTS.md`, `CLAUDE.md`, `SKILL.md` and similar), dependency manifests
-and lockfiles (`package.json`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`;
-the gate cannot verify a patch-only bump), or the gate and policy files
+and lockfiles (Node: `package.json`, `package-lock.json`, `npm-shrinkwrap.json`,
+`pnpm-lock.yaml`, `pnpm-workspace.yaml`, `yarn.lock`, `bun.lock`, `bun.lockb`,
+`.npmrc`; Rust: `Cargo.toml`, `Cargo.lock`; Python: `pyproject.toml`,
+`poetry.lock`, `uv.lock`, `Pipfile`, `Pipfile.lock`, `setup.py`, `setup.cfg`,
+`requirements*.txt`/`.in`, any `.txt` or `.in` under a `requirements/` directory such as `requirements/base.txt`, `constraints*.txt`; Go: `go.mod`, `go.sum`; Ruby:
+`Gemfile`, `Gemfile.lock`; the gate cannot verify a patch-only bump), or the gate and policy files
 themselves (`tools/merge-review/`, `tools/jules-conductor/`, `.github/`, this
 document) need a CTO PASS. When CTO is the maker, a PASS from another admitted
 seat (Codex, Claude Code or Antigravity) is required instead. High-risk paths
-under `docs/notes/` or `docs/handovers/` lose the routine exemption. The check
+under `docs/notes/` or `docs/handovers/` lose the routine exemption. A renamed or
+copied file is classified by both its new and its previous path. The check
 fails while GitHub auto-merge is armed on a high-risk PR, and re-runs when
 auto-merge is enabled or disabled; high-risk PRs never auto-merge. Auto-merge is allowed only
 for low-risk changes (docs, copy, patch-level dependency bumps) after a separate

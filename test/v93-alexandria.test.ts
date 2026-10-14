@@ -19,12 +19,13 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
 import { repoRootFromTestFile } from "./_lib/repo.js";
+import { pathToFileURL } from "node:url";
 import {
   Alexandria,
   AlexandriaError,
@@ -46,6 +47,7 @@ import {
   validateRegistry,
 } from "../src/alexandria/index.js";
 import type { Experiment } from "../src/alexandria/index.js";
+import { capabilityTurn } from "../src/alexandria/receipts.js";
 
 const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 const VERTICAL = join(REPO_ROOT, "verticals", "alexandria");
@@ -440,7 +442,8 @@ describe("v93 — router, budget and receipts", () => {
       assert.equal(transport.calls.length, 0, "nothing reached the provider");
       assert.equal(alexandria.budget.spent, 0, "nothing was reserved");
       // The outcome receipt fails after the charge: the pending line keeps the hold durable.
-      class Flaky extends ReceiptLedger { writes = 0; override append(r: Parameters<ReceiptLedger["append"]>[0]) { if (++this.writes === 2) throw new Error("disk full"); super.append(r); } }
+      // The pending line goes through appendUnlessSuspended, so the first plain append is the outcome receipt.
+      class Flaky extends ReceiptLedger { writes = 0; override append(r: Parameters<ReceiptLedger["append"]>[0]) { if (++this.writes === 1) throw new Error("disk full"); super.append(r); } }
       const flaky = new Flaky(join(dir, "flaky", "receipts.jsonl"));
       const second = new Alexandria({ library, transports: [transport], maxCredits: 10, ledger: flaky, lock: false, sessionId: "session-flaky" });
       let caught: unknown;
@@ -528,7 +531,8 @@ describe("v93 — router, budget and receipts", () => {
     try {
       const ledgerPath = join(dir, "receipts.jsonl");
       plantLock(`${ledgerPath}.race.lock`, "999999"); // a pid that is not alive
-      const script = `import { SessionLock } from ${JSON.stringify(join(REPO_ROOT, "src", "alexandria", "receipts.ts"))}; const l = new SessionLock(${JSON.stringify(ledgerPath)}, "race"); try { l.acquire(); console.log("acquired"); setTimeout(() => l.release(), 400); } catch (e) { console.log("refused: " + e.message); }`;
+      const receiptsUrl = pathToFileURL(join(REPO_ROOT, "src", "alexandria", "receipts.ts")).href;
+      const script = `import { SessionLock } from ${JSON.stringify(receiptsUrl)}; const l = new SessionLock(${JSON.stringify(ledgerPath)}, "race"); try { l.acquire(); console.log("acquired"); setTimeout(() => l.release(), 400); } catch (e) { console.log("refused: " + e.message); }`;
       const results = [0, 1].map(() => spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script], { cwd: REPO_ROOT, encoding: "utf8" }));
       const outputs = results.map((r) => r.stdout.trim());
       assert.ok(outputs.every((o) => o === "acquired" || o.startsWith("refused: Budget session race is held by process")), `unexpected: ${JSON.stringify(outputs)} ${results.map((r) => r.stderr).join("")}`);
@@ -580,6 +584,8 @@ describe("v93 — router, budget and receipts", () => {
       const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-mode" });
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       appendFileSync(path, '{"id":"rcpt_partial"', "utf8");
+      // A torn tail that is not a complete receipt fails paid calls closed until it is moved out.
+      assert.equal(ledger.quarantinePartialTail(), true);
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       for (const f of [path, ledger.quarantinePath, `${path}.session-mode.lock`]) assert.equal(statSync(f).mode & 0o077, 0, `${f} is readable by its owner only`);
       assert.equal(statSync(join(dir, "private")).mode & 0o077, 0, "the ledger directory is owner-only");
@@ -638,6 +644,11 @@ describe("v93 — router, budget and receipts", () => {
       first.close();
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-a" });
       assert.equal(resumed.budget.spent, 10, "the same session resumes its spend");
+      const callsBefore = transport.calls.length;
+      await assert.rejects(resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message), "a torn tail that is not a complete receipt may be suspension evidence: paid calls fail closed");
+      assert.equal(transport.calls.length, callsBefore, "nothing reached the provider");
+      assert.equal(resumed.budget.spent, 10, "and nothing stays reserved");
+      assert.equal(ledger.quarantinePartialTail(), true, "an operator moves the fragment out explicitly");
       const third = await resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       assert.equal(third.receipt.observedAt, third.result.observedAt, "the receipt keeps the provider observation time");
       const after = ledger.readDetailed();
@@ -769,5 +780,295 @@ describe("v93 — MCP server", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
+  const library = Library.fromFile();
+  const cap = "gmgn-ai/crypto/wallet_profile";
+
+  it("refuses a blank sessionId before taking a lock or writing a receipt", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      assert.throws(() => new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "" }), /sessionId must be a non-empty string/);
+      assert.throws(() => new Alexandria({ library, transports: [], maxCredits: 10, ledger, sessionId: "   " }), /sessionId must be a non-empty string/);
+      assert.equal(existsSync(join(dir, "receipts.jsonl")), false);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("refuses execution after close() released the session lock", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const transport = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "closed-session" });
+      alexandria.close();
+      await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
+      assert.equal(transport.calls.length, 0);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("sees an overrun recorded by another live instance before admitting the next call", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "session-a" });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "session-b" });
+      try {
+        const res = await a.execute({ capabilityId: cap, options: { address: "x" } });
+        assert.equal(res.overrun, true);
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0);
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("stamps the router request id on outcomes from a transport that omits it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      const bare = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string }[]) => calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z" })) };
+      const alexandria = new Alexandria({ library, transports: [bare as never], maxCredits: 100, ledger, sessionId: "bare-transport" });
+      try {
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-bare-1" });
+        assert.equal(res.result.requestId, "req-bare-1");
+        assert.equal(ledger.spent("bare-transport"), 5, "the outcome settles the pending hold instead of adding to it");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+  it("treats an outcome for a different provider or capability as uncertain and keeps the hold", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      for (const wrong of [{ provider: "other-provider" }, { capability: "crypto/wallet_rank" }]) {
+        const t = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId, ...wrong })) };
+        const sessionId = `mismatch-${Object.keys(wrong)[0]}`;
+        const alexandria = new Alexandria({ library, transports: [t as never], maxCredits: 100, ledger, sessionId });
+        try {
+          let id: string | undefined;
+          await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => { id = (err as AlexandriaError).requestId; return err instanceof AlexandriaError && err.code === "uncertain_outcome"; });
+          assert.ok(id, "the caller gets the request id back to retry");
+          assert.equal(ledger.heldReservations(sessionId).size, 1, "a mismatched outcome never settles the pending hold");
+          assert.ok(!ledger.read().some((r) => r.sessionId === sessionId && !r.pending && !r.error), "no settled receipt is written for a mismatched outcome");
+        } finally { alexandria.close(); }
+      }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("checks suspension and writes the pending line under one ledger lock, so a stale admission is not dispatched", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      // B's unlocked suspension read is stale (it ran before A's overrun landed); only the
+      // locked check-and-append that precedes dispatch can still stop the call.
+      class StaleLedger extends ReceiptLedger { override suspendedCapabilities(): Set<string> { return new Set(); } }
+      const staleLedger = new StaleLedger(path);
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: staleLedger, sessionId: "race-b" });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "race-a" });
+      try {
+        assert.equal((await a.execute({ capabilityId: cap, options: { address: "x" } })).overrun, true);
+        const before = readFileSync(path, "utf8");
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0, "the suspended capability was never dispatched");
+        assert.equal(readFileSync(path, "utf8"), before, "no pending line was written for the refused call");
+        assert.equal(staleLedger.spent("race-b"), 0);
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("scans the ledger for overruns incrementally: new lines, finished tails, and a shrunk file", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      writeFileSync(path, line({}));
+      assert.equal(ledger.suspendedCapabilities().size, 0);
+      const overrun = line({ capability: "x", overrun: true, catalogueReconciledAt: "2026-10-01" });
+      appendFileSync(path, overrun.slice(0, 20));
+      assert.throws(() => ledger.suspendedCapabilities(), /cut-off line/, "a torn tail that is not a complete receipt fails closed");
+      appendFileSync(path, overrun.slice(20));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"], "the finished line is picked up on the next scan");
+      assert.equal(ledger.suspendedCapabilities("2026-10-02").size, 0, "a later reconciliation still clears it from the cache");
+      appendFileSync(path, "{not json\n");
+      assert.throws(() => ledger.suspendedCapabilities(), /corrupt/, "new corrupt lines still fail closed");
+      writeFileSync(path, line({ capability: "y", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/y"], "a shrunk ledger resets the cache instead of trusting it");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("counts a torn final line that is a complete receipt and never truncates it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "torn-a" });
+      try { assert.equal((await a.execute({ capabilityId: cap, options: { address: "x" } })).overrun, true); } finally { a.close(); }
+      // The overrun receipt lost its newline, as a crash between the write and the newline would leave it.
+      const raw = readFileSync(path, "utf8");
+      writeFileSync(path, raw.slice(0, -1));
+      const ledger = new ReceiptLedger(path);
+      assert.equal(ledger.readDetailed().truncatedTail, false, "a complete receipt is not a cut-off write");
+      assert.ok(ledger.read().some((r) => r.overrun), "the torn overrun receipt is counted");
+      assert.deepEqual([...ledger.suspendedCapabilities()], [cap], "and it suspends the capability");
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 }, "gmgn-ai/crypto/wallet_rank": { records: [{ a: 1 }], creditsCost: 5 } });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger, sessionId: "torn-b" });
+      try {
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        await b.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
+        assert.equal(fine.calls.length, 1, "only the unsuspended capability was dispatched");
+      } finally { b.close(); }
+      assert.ok(readFileSync(path, "utf8").startsWith(raw), "the torn line was finished with a newline, never truncated");
+      assert.ok(!existsSync(ledger.quarantinePath), "nothing was moved to quarantine");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("holds the capability turn through the provider call, so a second call waits for the first outcome", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      const slowOver = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 50, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const a = new Alexandria({ library, transports: [slowOver as never], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-a" });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-b" });
+      try {
+        const first = a.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 20));
+        // B is admitted (A's overrun is not known yet) but must not be dispatched while A is in flight.
+        const second = b.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 50));
+        assert.equal(fine.calls.length, 0, "the second call waits for the first call's outcome");
+        releaseFirst();
+        assert.equal((await first).overrun, true);
+        await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0, "and is refused once the overrun lands");
+        assert.equal(b.budget.spent, 0, "with nothing reserved");
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rescans in full when the ledger file is replaced, even by a longer one", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      writeFileSync(path, line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      // Rewritten in place (same inode) with a longer, different history: the prefix no longer matches.
+      writeFileSync(path, line({ capability: "y", sessionId: "other" }) + line({ capability: "z" }));
+      assert.equal(ledger.suspendedCapabilities().size, 0, "a rewritten ledger is rescanned, not appended to the old cache");
+      // Replaced by rename (new inode) with a file whose first 4 KB match the cached prefix but whose
+      // later history differs: only the file identity tells the cache it is stale.
+      const filler = Array.from({ length: 60 }, (_, i) => line({ capability: `f${i}` })).join("");
+      writeFileSync(path, filler + line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      const replacement = join(dir, "replacement.jsonl");
+      writeFileSync(replacement, filler + line({ capability: "v" }) + line({ capability: "w", overrun: true }));
+      renameSync(replacement, path);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/w"]);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("outcome writes refuse a torn tail that is not a receipt, leave it in place and keep admits closed", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      // Another process crashes mid-write while this call is at the provider.
+      const tearing = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { appendFileSync(path, '{"id":"rcpt_torn","overrun":tr'); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [tearing as never], maxCredits: 100, ledger, sessionId: "torn-outcome" });
+      try {
+        await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message));
+        assert.ok(readFileSync(path, "utf8").endsWith('{"id":"rcpt_torn","overrun":tr'), "the torn tail stays where it is");
+        assert.ok(!existsSync(ledger.quarantinePath), "writes never quarantine on their own");
+        assert.equal(alexandria.budget.spent, 5, "the reservation stays held by the pending line");
+        await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed", "admits stay closed until an operator acts");
+        assert.equal(ledger.quarantinePartialTail(), true, "the operator path still works");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rehashes the whole cached prefix, so a rewrite past the first 4 KB is caught", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      const head = Array.from({ length: 40 }, (_, i) => line({ capability: `f${i}` })).join("");
+      assert.ok(head.length > 4096);
+      const before = line({ capability: "aa", overrun: false });
+      const after = line({ capability: "xxx", overrun: true });
+      assert.equal(before.length, after.length);
+      writeFileSync(path, head + before);
+      assert.equal(ledger.suspendedCapabilities().size, 0);
+      // Same inode, same first 4 KB, same length: only a record past 4 KB changed, now an overrun.
+      writeFileSync(path, head + after);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/xxx"], "the changed record past 4 KB is seen");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("keys the capability turn on the ledger's real identity and times out the in-process wait", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      mkdirSync(join(dir, "sub"));
+      const path = join(dir, "receipts.jsonl");
+      const alias = `${dir}/sub/../receipts.jsonl`;
+      const release = await capabilityTurn(path, cap);
+      const started = Date.now();
+      await assert.rejects(capabilityTurn(alias, cap, 100), /held the .* turn/, "an alias of the same ledger shares the turn");
+      assert.ok(Date.now() - started < 2000, "the in-process wait is bounded");
+      release();
+      const again = await capabilityTurn(alias, cap, 100);
+      again();
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("snapshots validated options before waiting for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const seen: unknown[] = [];
+      const t = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; options?: Record<string, unknown>; requestId?: string }[]) => { seen.push(...calls.map((c) => c.options)); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [t as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "snapshot" });
+      try {
+        const opts: Record<string, unknown> = { address: "x" };
+        const pending = alexandria.execute({ capabilityId: cap, options: opts });
+        opts.address = "changed-after-validation";
+        const res = await pending;
+        assert.deepEqual(seen, [{ address: "x" }], "the provider gets the options that were validated and priced");
+        assert.equal((res.receipt as unknown as { options?: Record<string, unknown> }).options?.address ?? "x", "x");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("refunds and rejects a queued call whose session closed while it waited for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      let dispatched = 0;
+      const slow = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { dispatched += 1; await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [slow as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "queued-close" });
+      const first = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      const second = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      alexandria.close();
+      releaseFirst();
+      await first;
+      await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
+      assert.equal(dispatched, 1, "the queued call was never sent");
+      assert.equal(alexandria.budget.spent, 5, "its reservation was refunded");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });

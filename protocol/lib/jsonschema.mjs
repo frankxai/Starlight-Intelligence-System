@@ -36,12 +36,15 @@ const KNOWN_KEYWORDS = new Set([
   "allOf",
   "anyOf",
   "oneOf",
+  "if",
+  "then",
+  "else",
 ]);
 
 // Keywords whose value is a map of name -> schema.
 const SCHEMA_MAPS = new Set(["properties", "$defs"]);
 // Keywords whose value is a single schema.
-const SCHEMA_VALUES = new Set(["items", "additionalProperties"]);
+const SCHEMA_VALUES = new Set(["items", "additionalProperties", "if", "then", "else"]);
 // Keywords whose value is a list of schemas.
 const SCHEMA_LISTS = new Set(["allOf", "anyOf", "oneOf"]);
 
@@ -216,6 +219,17 @@ export function validate(schema, data, opts = {}) {
     const passing = schema.oneOf.filter((sub) => validate(sub, data, { root, path }).length === 0);
     if (passing.length !== 1) {
       errors.push(`${path}: matches ${passing.length} oneOf branches, expected exactly 1`);
+    }
+  }
+
+  if (schema.if !== undefined) {
+    const ifErrors = validate(schema.if, data, { root, path });
+    if (ifErrors.length === 0) {
+      if (schema.then !== undefined) {
+        errors.push(...validate(schema.then, data, { root, path }));
+      }
+    } else if (schema.else !== undefined) {
+      errors.push(...validate(schema.else, data, { root, path }));
     }
   }
 

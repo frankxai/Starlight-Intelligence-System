@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "id": "free-ram-then-one-task",
+      "runner": "you",
+      "lane": "capacity",
+      "repo": "this PC",
+      "title": "Free RAM before any Jules session",
+      "why": "A session starts only at 4 GiB free RAM and 50 GiB free on C:. Below that, the conductor holds.",
+      "where": ["close extra agent windows", "leave the Hermes watcher as the only clerk"],
+      "how": "After RAM is above 4 GiB, arm one id below, then run node tools/jules-conductor/conductor.mjs run-ready from the Starlight repo.",
+      "land": "you"
+    },
+    {
+      "id": "gencreator-minor-bumps",
+      "runner": "jules",
+      "lane": "reliability",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Ship Dependabot minors without the types major",
+      "why": "Security and patch updates keep shipping. A types major stays out of the product and the MCP package.",
+      "where": ["package.json", "pnpm-lock.yaml", ".github/dependabot.yml"],
+      "land": "clerk",
+      "how": "node tools/jules-conductor/conductor.mjs arm gencreator-minor-bumps",
+      "prompt": "From origin/main on frankxai/gencreator.ai. Dependabot pull request 153 mixes minor bumps with a semver-major. Ship only minor and patch dependency updates from that pull request. Omit every semver-major, including @types/node. Do not change @types/node in the root package.json or in packages/creator-mcp/package.json. Touch only package.json, pnpm-lock.yaml, and .github/dependabot.yml. In dependabot.yml, restrict the minor-and-patch group to update-types minor and patch, and change nothing else in that file. Regenerate the lockfile with the pnpm version pinned in package.json packageManager. Do not hand-edit the lockfile. Open one draft pull request. Do not merge. Do not edit payments, vercel.json, or secrets."
+    },
+    {
+      "id": "arcanea-three-heals",
+      "runner": "jules",
+      "lane": "trust",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Three product heals on nav, create, and imagine",
+      "why": "The mobile menu, the create heading, and a handled 401 are the scoped fixes a visitor hits. Draft 537 stays untouched.",
+      "where": [
+        "apps/web/components/navigation/navbar.tsx",
+        "apps/web/components/auth/user-nav.tsx",
+        "apps/web/components/auth/auth-modal.tsx",
+        "apps/web/app/create/create-hub.tsx",
+        "apps/web/components/motion/split-text.tsx",
+        "apps/web/app/imagine/page.tsx"
+      ],
+      "land": "clerk",
+      "how": "node tools/jules-conductor/conductor.mjs arm arcanea-three-heals",
+      "prompt": "From origin/main, implement only these three heals. Do not copy draft pull request 537 wholesale and do not take a CRLF-only diff. 1. Mobile nav must close before the auth dialog opens, and the dialog must paint above the menu at 375 and 900. Touch only apps/web/components/navigation/navbar.tsx, apps/web/components/auth/user-nav.tsx, and the z-index in apps/web/components/auth/auth-modal.tsx. 2. The /create heading must paint when split-text cannot run. Touch only apps/web/app/create/create-hub.tsx and apps/web/components/motion/split-text.tsx. No copy change. 3. /imagine must show a handled error on HTTP 401. Touch only apps/web/app/imagine/page.tsx. Do not change billing, credits, catalog, or auth. Add a regression test beside each existing test. Open one pull request. Do not merge. Do not edit pull request 537."
+    }
+  ]
+}

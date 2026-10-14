@@ -69,7 +69,7 @@ jobs:
           node-version: ${{ matrix.node }}
       # site/pnpm-lock.yaml is the site's only lockfile; install it the way
       # site-dependency-proof.yml does.
-      - run: npm install --global pnpm@10.28.0
+      - run: npm install --global pnpm@10.33.0
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test:desk
       - run: pnpm run test:vault-fetch

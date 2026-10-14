@@ -63,6 +63,26 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
 
+    def test_bot_makers_are_attributable_but_never_review(self):
+        path = 'site/pnpm-lock.yaml'
+        files = [{'filename': path, 'status': 'modified'}]
+        for bot in ['dependabot', 'github-actions']:
+            with self.subTest(bot=bot):
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker=bot, provider='cto')], files))
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker=bot, provider='codex')], files))
+                self.assertFalse(self.evaluate([receipt(maker=bot, provider=bot)]))
+                self.assertFalse(self.evaluate([receipt(provider=bot)]))
+        self.assertFalse(self.evaluate([receipt(maker='dependabot[bot]', provider='cto')]))
+
+    def test_grok_seats_are_makers_but_never_review(self):
+        self.assertTrue(self.evaluate([receipt(maker='grok', provider='codex')]))
+        self.assertFalse(self.evaluate([receipt(maker='grok', provider='grok')]))
+        self.assertFalse(self.evaluate([receipt(provider='grok')]))
+        path = 'tools/merge-review/merge_review_gate.py'
+        files = [{'filename': path, 'status': 'modified'}]
+        self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='grok', provider='cto')], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='grok', provider='codex')], files))
+
     def test_cto_authored_high_risk_needs_another_admitted_seat(self):
         path = 'tools/merge-review/merge_review_gate.py'
         files = [{'filename': path, 'status': 'modified'}]
@@ -70,6 +90,63 @@ class MergeReviewTests(unittest.TestCase):
             with self.subTest(provider=provider):
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider=provider)], files))
         self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider='cto')], files))
+
+    def test_finance_paths_need_cto_pass(self):
+        for path in ['src/finance/pnl.ts', 'src/finance/entity-registry.ts',
+                     'src/finance/revenue-sources/_shared.ts', 'lib/revenue/report.ts']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_non_node_manifests_need_cto_pass(self):
+        for path in ['crates/starlight-invariants/Cargo.toml', 'crates/starlight-invariants/Cargo.lock',
+                     'templates/local-voice-companion-starter/pyproject.toml', 'uv.lock', 'poetry.lock',
+                     'requirements.txt', 'requirements-dev.txt', 'go.mod', 'Gemfile.lock']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_requirements_directory_needs_cto_pass(self):
+        for path in ['requirements/base.txt', 'requirements/dev.in', 'services/api/requirements/prod.txt']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+        self.assertFalse(gate.high_risk('docs/requirements/overview.md'))
+
+    def test_cost_control_paths_need_cto_pass(self):
+        for path in ['src/infra/cost-snapshot.ts', 'src/infra/cost-sources/openai.ts',
+                     'src/infra/cost-sources/_shared.ts', 'cost-plane-config.template.json']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_ledger_is_high_risk_only_on_financial_paths(self):
+        for path in ['data/credit-ledger.jsonl', 'src/infra/cost-ledger.ts', 'finance/ledger.csv',
+                     'src/budget/ledger.ts', 'tools/spend-ledger.json']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+        for path in ['tools/queen/ledger.jsonl', 'docs/research/music-intelligence/source-ledger-2026-09.md',
+                     'src/ledgers.ts', 'test/v01-ledgers.test.ts',
+                     'docs/graph-engineering/loops/si-admit-verify-ship/ledger.md']:
+            with self.subTest(path=path):
+                self.assertFalse(gate.high_risk(path))
+
+    def test_rename_out_of_high_risk_path_keeps_protection(self):
+        path = 'src/neutral/thing.ts'
+        files = [{'filename': path, 'previous_filename': 'src/payments/checkout.ts', 'status': 'renamed'}]
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+        self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files,
+                                       auto_merge={'merge_method': 'merge'}))
+        copied = [{'filename': 'docs/notes/x.md', 'previous_filename': 'src/finance/pnl.ts', 'status': 'copied'}]
+        self.assertFalse(self.evaluate([], copied))
 
     def test_armed_auto_merge_fails_high_risk(self):
         path = 'src/payments/checkout.ts'

@@ -109,6 +109,8 @@ tools/arena/workdir/
 .agents/
 .system_generated/
 .next-backup/
+.gstack/
+.worktrees/
 temp-*.json
 link-checker-report.json
 link-checker-report.txt
@@ -128,3 +130,7 @@ tools/arena/out/
 # estate-guard pack — per-machine files, never tracked
 .claude/settings.local.json
 .claude/ci/estate-guard/last-scan.json
+
+# Local harness worktrees and gstack artifacts
+.gstack/
+.worktrees/

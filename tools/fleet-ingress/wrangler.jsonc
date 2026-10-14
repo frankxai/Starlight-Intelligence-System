@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "starlight-fleet-ingress",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "GCP_REGION": "europe-west4",
+    "CLOUD_RUN_JOB": "starlight-runner-job",
+    "GCP_PROJECT_ID": "starlight-intelligence-estate"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
