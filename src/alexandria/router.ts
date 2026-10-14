@@ -49,7 +49,8 @@ export type AlexandriaErrorCode =
   | 'uncertain_outcome'
   | 'receipt_persist_failed'
   | 'capability_busy'
-  | 'session_closed';
+  | 'session_closed'
+  | 'replay_completed';
 
 export class AlexandriaError extends Error {
   constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string, readonly requestId?: string) {
@@ -111,6 +112,8 @@ export class Alexandria {
   private readonly now?: () => string;
   /** Reservations held by pending or uncertain calls, keyed by request id. Part of `budget.spent` until settled. */
   private readonly held = new Map<string, { amount: number; fingerprint: string }>();
+  /** Requests executed and settled in this session, keyed by request id. Replays are rejected without reserving or billing. */
+  private readonly settled = new Map<string, { fingerprint: string }>();
   /** Capabilities whose provider once charged more than was reserved. Refused until the catalogue is reconciled. */
   private readonly suspended = new Set<string>();
   /** Set by close(). A closed instance no longer holds the session lock, so it must not spend. */
@@ -141,6 +144,7 @@ export class Alexandria {
       this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
       if (opts.ledger) {
         for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
+        for (const [id, s] of opts.ledger.settledReceipts(sessionId)) this.settled.set(id, { fingerprint: s.fingerprint });
         // A torn ledger tail does not stop the session opening; admission re-reads and fails closed.
         try {
           for (const id of opts.ledger.suspendedCapabilities(opts.library.catalog.reconciledAt)) this.suspended.add(id);
@@ -199,9 +203,47 @@ export class Alexandria {
    * nothing. `alreadyHeld` is the reservation an uncertain earlier call with the same request id
    * still holds; only the difference has to fit in the budget.
    */
-  private admit(req: ExecuteRequest, alreadyHeld = 0): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
+  /**
+   * Normalizes request options, bounds per-record limits, validates against the catalogue contract,
+   * and computes the call fingerprint. Throws an AlexandriaError without checking budget or transport.
+   */
+  private normalize(req: ExecuteRequest): { hit: FindHit; options: Record<string, unknown>; fingerprint: string; records: number } {
     const hit = this.resolve(req);
     let options = req.options ?? {};
+    let records = 1;
+    if (hit.capability.perRecord) {
+      if (!Number.isInteger(req.expectedRecords) || (req.expectedRecords as number) < 1) {
+        throw new AlexandriaError('unbounded_records', `${hit.capability.id} bills per record; declare expectedRecords so the maximum charge can be reserved`, 'Pass expectedRecords (a positive integer); the router sends it to the provider as the record limit.');
+      }
+      records = req.expectedRecords as number;
+      // The ceiling is only a ceiling if the provider is told it. The catalogue names the option
+      // that bounds the result; without one, a per-record capability cannot run.
+      const limitOption = hit.capability.recordLimitOption;
+      if (!limitOption) {
+        throw new AlexandriaError('unbounded_records', `${hit.capability.id} bills per record but its contract declares no record-limit option, so the reservation could not be enforced at the provider`, 'Add recordLimitOption to the capability in verticals/alexandria/catalog/providers.json once the provider contract offers a bound.');
+      }
+      const supplied = options[limitOption];
+      if (supplied !== undefined && supplied !== null && supplied !== '' && !(typeof supplied === 'number' && supplied <= records)) {
+        throw new AlexandriaError('unbounded_records', `${hit.capability.id}: ${limitOption}=${String(supplied)} exceeds expectedRecords=${records}`, `Lower ${limitOption}, or raise expectedRecords so the reservation covers it.`);
+      }
+      options = { ...options, [limitOption]: typeof supplied === 'number' ? supplied : records };
+    }
+    const problems = this.library.validateOptions(hit.capability.id, options);
+    if (problems.length > 0) {
+      const code = problems[0].startsWith('needs one of') ? 'unmet_requirement' : 'invalid_option';
+      throw new AlexandriaError(code, `${hit.capability.id}: ${problems.join('; ')}`, 'Fix the options per the capability contract and call again; nothing was charged.');
+    }
+    const fingerprint = callFingerprint(hit.capability.id, options);
+    return { hit, options, fingerprint, records };
+  }
+
+  /**
+   * Everything that must hold before a credit is reserved. Throws an AlexandriaError; charges
+   * nothing. `alreadyHeld` is the reservation an uncertain earlier call with the same request id
+   * still holds; only the difference has to fit in the budget.
+   */
+  private admit(req: ExecuteRequest, alreadyHeld = 0): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
+    const { hit, options, records } = this.normalize(req);
     if (hit.provider.kind === 'connector') {
       throw new AlexandriaError('connector_not_executable', `${hit.capability.id} is a connector and cannot be executed as a data capability`, 'Connectors are called by the swarm runtime. See verticals/alexandria/catalog/connectors.json.');
     }
@@ -226,29 +268,6 @@ export class Alexandria {
     if (badLayer !== undefined) {
       throw new AlexandriaError('invalid_sip_layer', `sipLayers must be lower-case slugs such as file-contract or attestation; got ${JSON.stringify(badLayer)}`, 'Name the SIP layers the record composes, per SIP.md, or omit sipLayers; nothing was charged.');
     }
-    let records = 1;
-    if (hit.capability.perRecord) {
-      if (!Number.isInteger(req.expectedRecords) || (req.expectedRecords as number) < 1) {
-        throw new AlexandriaError('unbounded_records', `${hit.capability.id} bills per record; declare expectedRecords so the maximum charge can be reserved`, 'Pass expectedRecords (a positive integer); the router sends it to the provider as the record limit.');
-      }
-      records = req.expectedRecords as number;
-      // The ceiling is only a ceiling if the provider is told it. The catalogue names the option
-      // that bounds the result; without one, a per-record capability cannot run.
-      const limitOption = hit.capability.recordLimitOption;
-      if (!limitOption) {
-        throw new AlexandriaError('unbounded_records', `${hit.capability.id} bills per record but its contract declares no record-limit option, so the reservation could not be enforced at the provider`, 'Add recordLimitOption to the capability in verticals/alexandria/catalog/providers.json once the provider contract offers a bound.');
-      }
-      const supplied = options[limitOption];
-      if (supplied !== undefined && supplied !== null && supplied !== '' && !(typeof supplied === 'number' && supplied <= records)) {
-        throw new AlexandriaError('unbounded_records', `${hit.capability.id}: ${limitOption}=${String(supplied)} exceeds expectedRecords=${records}`, `Lower ${limitOption}, or raise expectedRecords so the reservation covers it.`);
-      }
-      options = { ...options, [limitOption]: typeof supplied === 'number' ? supplied : records };
-    }
-    const problems = this.library.validateOptions(hit.capability.id, options);
-    if (problems.length > 0) {
-      const code = problems[0].startsWith('needs one of') ? 'unmet_requirement' : 'invalid_option';
-      throw new AlexandriaError(code, `${hit.capability.id}: ${problems.join('; ')}`, 'Fix the options per the capability contract and call again; nothing was charged.');
-    }
     const price = this.library.estimate(hit.capability.id, records);
     if (this.budget.spent + price - alreadyHeld > this.budget.maxCredits) {
       throw new AlexandriaError('over_budget', `Call would cost ${price} credits; ${this.budget.maxCredits - this.budget.spent} remain of ${this.budget.maxCredits}`, 'Raise maxCredits for this session or pick a cheaper capability from alexandria_plan.');
@@ -266,6 +285,22 @@ export class Alexandria {
     // is refused rather than silently replaced.
     if (req.requestId !== undefined && (typeof req.requestId !== 'string' || req.requestId.trim() === '')) {
       throw new AlexandriaError('invalid_request_id', 'requestId must be a non-empty string when given', 'Omit requestId for a new call, or pass the exact id returned by the uncertain call you are retrying; nothing was charged.');
+    }
+    let settled = req.requestId ? this.settled.get(req.requestId) : undefined;
+    if (req.requestId && !settled && this.ledger) {
+      try {
+        settled = this.ledger.settledReceipts(this.budget.sessionId).get(req.requestId);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new AlexandriaError('receipt_persist_failed', `the ledger could not be read to check replays (${message})`, `Fix the ledger path (${this.ledger.path}) and call again; nothing was charged.`, req.requestId);
+      }
+    }
+    if (settled) {
+      const { fingerprint } = this.normalize(req);
+      if (settled.fingerprint !== fingerprint) {
+        throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call (capability or options differ)`, 'Retry with exactly the capability and options of the original call, or mint a new request for a different call.', req.requestId);
+      }
+      throw new AlexandriaError('replay_completed', `requestId ${req.requestId} was already executed and settled in session ${this.budget.sessionId}`, 'This request was already settled; nothing was reserved or charged. Mint a new request for a different call.', req.requestId);
     }
     // A retry of a held call reuses its reservation instead of taking a second one, and only
     // for the same call: the hold is bound to the capability and options it was taken for.
@@ -395,6 +430,7 @@ export class Alexandria {
         const message = err instanceof Error ? err.message : String(err);
         throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `The reservation of ${reserved} credits is held again, in this process and by the pending line in the ledger. Fix the ledger path (${this.ledger?.path ?? 'none'}), then retry with requestId ${requestId} and the same options to settle it.`, requestId);
       }
+      this.settled.set(requestId, { fingerprint });
       const response: ExecuteResponse = { hit, result, receipt, budget: { ...this.budget } };
       if (overrun) response.overrun = true;
       return response;

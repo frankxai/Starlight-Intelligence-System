@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://starlightintelligence.ai/schemas/starlight.run_receipt.v1.json",
   "title": "Starlight run receipt v1",
-  "description": "The unit of proof for agent work: what a run did, what it cost, how long it took, who decided at each gate, and which evidence remains. Signed as a DSSE v1 envelope around an in-toto Statement v1 with Ed25519; predicateType https://starlightintelligence.ai/protocol/run-receipt/v1. The reference implementation is src/run-receipt.ts in the Starlight Intelligence System (signRunReceipt, verifyRunReceipt), exposed as the sis.receipt.issue and sis.receipt.verify MCP tools. protocol/sign.mjs and protocol/verify.mjs handle the SIP conformance receipt only, and no public verifier reads this predicate yet. Rules the schema cannot express and the verifier enforces: run.endedAt is not before run.startedAt; issuedAt is not before run.endedAt; issuer.keyid may be absent on an unsigned draft (sis.receipt.issue without a signing key), but a signed envelope must name it and a trusted signature by exactly that key must verify (every co-signer is checked, so order does not matter); cost and token totals are never below the stage sums, with costs compared allowing only for rounding (0.00005 EUR per priced stage plus 0.00005 EUR for the total); no decision.at is after issuedAt; totals.latencyMs is never below the longest stage; verdict PASS is refused when any stage failed, when every stage was skipped (at least one stage must succeed), or when evidence is empty; a DSSE envelope carries at most 8 signatures; the in-toto statement names exactly one subject whose name and sha256 equal the receipt's subject.",
+  "description": "The unit of proof for agent work: what a run did, what it cost, how long it took, who decided at each gate, and which evidence remains. Signed as a DSSE v1 envelope around an in-toto Statement v1 with Ed25519; predicateType https://starlightintelligence.ai/protocol/run-receipt/v1. The reference implementation is src/run-receipt.ts in the Starlight Intelligence System (signRunReceipt, verifyRunReceipt), exposed as the sis.receipt.issue and sis.receipt.verify MCP tools. protocol/sign.mjs and protocol/verify.mjs handle the SIP conformance receipt only, and no public verifier reads this predicate yet. Rules the schema cannot express and the verifier enforces: run.endedAt is not before run.startedAt; issuedAt is not before run.endedAt; issuer.keyid may be absent on an unsigned draft (sis.receipt.issue without a signing key), but a signed envelope must name it and a trusted signature by exactly that key must verify (every co-signer is checked, so order does not matter); cost and token totals are never below the stage sums, with costs compared allowing only for rounding (0.00005 EUR per priced stage plus 0.00005 EUR for the total); no decision.at is after issuedAt; every decision with decidedBy=human requires actor-bound proof (signature, mandateId, approvalRef, evidenceRef, or proof); totals.latencyMs is never below the longest stage; verdict PASS is refused when any stage failed, when every stage was skipped (at least one stage must succeed), or when evidence is empty; every evidence entry requires sha256 binding the referenced content; a DSSE envelope carries at most 8 signatures; the in-toto statement names exactly one subject whose name and sha256 equal the receipt's subject.",
   "type": "object",
   "required": [
     "schema",
@@ -245,7 +245,50 @@
           },
           "note": {
             "type": "string"
+          },
+          "signature": {
+            "type": "string",
+            "minLength": 32,
+            "description": "Cryptographic signature or signature locator from the deciding human actor (at least 32 characters)."
+          },
+          "mandateId": {
+            "type": "string",
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
+            "description": "Identifier of the human mandate or authorization scope."
+          },
+          "approvalRef": {
+            "type": "string",
+            "minLength": 3,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9+.-]*:.*$",
+            "description": "URI (e.g. https://, urn:, mandate:, pr:) of the human approval record."
+          },
+          "evidenceRef": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Reference matching an entry in the evidence array that proves the human decision."
+          },
+          "proof": {
+            "type": "string",
+            "minLength": 8,
+            "description": "Direct actor-bound proof token or reference for the human decision (at least 8 characters)."
           }
+        },
+        "if": {
+          "properties": {
+            "decidedBy": {
+              "const": "human"
+            }
+          }
+        },
+        "then": {
+          "anyOf": [
+            { "required": ["signature"] },
+            { "required": ["mandateId"] },
+            { "required": ["approvalRef"] },
+            { "required": ["evidenceRef"] },
+            { "required": ["proof"] }
+          ]
         }
       }
     },
@@ -255,7 +298,8 @@
         "type": "object",
         "required": [
           "kind",
-          "ref"
+          "ref",
+          "sha256"
         ],
         "additionalProperties": false,
         "properties": {
