@@ -15,8 +15,8 @@ The format is a DSSE v1 envelope around an in-toto Statement v1, signed with Ed2
 | `subject` | The artifact the run produced: `name` and `digest.sha256`. The digest is what the signature names. |
 | `stages` | Ordered list of `{ name, status, model?, provider?, inputTokens?, outputTokens?, costEur?, latencyMs?, note? }`. At least one. |
 | `totals` | `costEur`, `latencyMs`, `tokens.input`, `tokens.output`. Cost and tokens may exceed the stage sums (overhead), never fall below them; cost is compared allowing only for rounding, 0.00005 EUR per priced stage plus one for the total. `latencyMs` is wall time: stages can overlap, so it is never below the longest stage. Token counts are whole numbers. |
-| `decisions` | Gates crossed: `{ gate, decidedBy: human\|agent\|policy, actorId, outcome: approved\|rejected\|deferred, at }`. `at` is not after `issuedAt`. Empty list allowed. |
-| `evidence` | `{ kind, ref, sha256? }` a verifier can go and look at. Empty list allowed. |
+| `decisions` | Gates crossed: `{ gate, decidedBy: human\|agent\|policy, actorId, outcome: approved\|rejected\|deferred, at }`. `decidedBy: human` requires actor-bound proof (`signature`, `mandateId`, `approvalRef`, `evidenceRef`, or `proof`). `at` is not after `issuedAt`. Empty list allowed. |
+| `evidence` | `{ kind, ref, sha256 }` a verifier can go and look at. `sha256` binds the referenced content. Empty list allowed. |
 | `verdict` | `PASS`, `FAIL`, or `PARTIAL`. `PASS` is refused when any stage failed. A `FAIL` receipt is signable; a signed record of a failed run is still proof. |
 
 `receiptProblems()` in `src/run-receipt.ts` checks all of this on both sides. A receipt with any problem is neither signed nor shown as verified.
@@ -59,8 +59,8 @@ The link is the compact form, `https://starlightintelligence.ai/verify?r=z:…`:
         "provider": "nebius", "inputTokens": 4100, "outputTokens": 900, "costEur": 0.004, "latencyMs": 6200 }
     ],
     "decisions": [{ "gate": "publish", "decidedBy": "human", "actorId": "frank",
-                    "outcome": "approved", "at": "2026-09-21T09:59:05Z" }],
-    "evidence": [{ "kind": "ledger", "ref": "memory/_audit/agent-events/2026-09-21.jsonl" }]
+                    "outcome": "approved", "approvalRef": "mandate:frank:publish", "at": "2026-09-21T09:59:05Z" }],
+    "evidence": [{ "kind": "ledger", "ref": "memory/_audit/agent-events/2026-09-21.jsonl", "sha256": "4a7112001e4a30e8cb55ec3fc6522c061596700c50ca6f63459e87517c2be585" }]
   }
 }
 ```

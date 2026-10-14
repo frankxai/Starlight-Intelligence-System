@@ -1216,8 +1216,56 @@ export class SisMcpServerV01 {
             subject: { type: 'object' },
             stages: { type: 'array' },
             issuer_name: { type: 'string' },
-            decisions: { type: 'array' },
-            evidence: { type: 'array' },
+            decisions: {
+              type: 'array',
+              description:
+                'Gate decisions crossed during the run. For decidedBy=human, actor-bound proof is required (signature, mandateId, approvalRef, evidenceRef, or proof).',
+              items: {
+                type: 'object',
+                required: ['gate', 'decidedBy', 'actorId', 'outcome', 'at'],
+                properties: {
+                  gate: { type: 'string' },
+                  decidedBy: { type: 'string', enum: ['human', 'agent', 'policy'] },
+                  actorId: { type: 'string' },
+                  outcome: { type: 'string', enum: ['approved', 'rejected', 'deferred'] },
+                  at: { type: 'string' },
+                  note: { type: 'string' },
+                  signature: { type: 'string' },
+                  mandateId: { type: 'string' },
+                  approvalRef: { type: 'string' },
+                  evidenceRef: { type: 'string' },
+                  proof: { type: 'string' },
+                },
+                if: {
+                  properties: {
+                    decidedBy: { const: 'human' },
+                  },
+                },
+                then: {
+                  anyOf: [
+                    { required: ['signature'] },
+                    { required: ['mandateId'] },
+                    { required: ['approvalRef'] },
+                    { required: ['evidenceRef'] },
+                    { required: ['proof'] },
+                  ],
+                },
+              },
+            },
+            evidence: {
+              type: 'array',
+              description:
+                'Evidence records supporting the run. Each item must provide kind, ref, and sha256 (64-character lowercase hex digest of the referenced content).',
+              items: {
+                type: 'object',
+                required: ['kind', 'ref', 'sha256'],
+                properties: {
+                  kind: { type: 'string' },
+                  ref: { type: 'string' },
+                  sha256: { type: 'string' },
+                },
+              },
+            },
             verdict: { type: 'string', enum: RECEIPT_VERDICTS },
             totals: { type: 'object' },
             signing_key_pem: { type: 'string' },
