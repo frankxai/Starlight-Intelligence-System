@@ -53,6 +53,15 @@ export interface RunReceiptDecision {
   outcome: DecisionOutcome;
   at: string;
   note?: string;
+  /**
+   * Actor-bound evidence proving a human decision (required when decidedBy is "human").
+   * At least one of signature, mandateId, approvalRef, evidenceRef, or proof must be provided.
+   */
+  signature?: string;
+  mandateId?: string;
+  approvalRef?: string;
+  evidenceRef?: string;
+  proof?: string;
 }
 
 export interface RunReceiptEvidence {
@@ -60,7 +69,7 @@ export interface RunReceiptEvidence {
   kind: string;
   /** URL, path, or ledger id the verifier can go and look at. */
   ref: string;
-  sha256?: string;
+  sha256: string;
 }
 
 export interface RunReceipt {
@@ -125,7 +134,7 @@ const KEYS = {
   stage: ["name", "status", "model", "provider", "inputTokens", "outputTokens", "costEur", "latencyMs", "note"],
   totals: ["costEur", "latencyMs", "tokens"],
   tokens: ["input", "output"],
-  decision: ["gate", "decidedBy", "actorId", "outcome", "at", "note"],
+  decision: ["gate", "decidedBy", "actorId", "outcome", "at", "note", "signature", "mandateId", "approvalRef", "evidenceRef", "proof"],
   evidence: ["kind", "ref", "sha256"],
 } as const;
 
@@ -301,6 +310,49 @@ export function receiptProblems(receipt: unknown): string[] {
       if (!OUTCOMES.includes(d.outcome as DecisionOutcome)) problems.push(`decision ${d.gate ?? i}.outcome is ${JSON.stringify(d.outcome)}`);
       if (!isDate(d.at)) problems.push(`decision ${d.gate ?? i}.at is not a date-time`);
       else if (isDate(r.issuedAt) && Date.parse(d.at) > Date.parse(r.issuedAt)) problems.push(`decision ${d.gate ?? i}.at is after issuedAt`);
+      if (d.signature !== undefined) {
+        if (typeof d.signature !== "string" || !d.signature.trim()) {
+          problems.push(`decision ${d.gate ?? i}.signature is not a non-empty string`);
+        } else if (d.signature.trim().length < 32) {
+          problems.push(`decision ${d.gate ?? i}.signature is not a valid signature (must be at least 32 characters)`);
+        }
+      }
+      if (d.mandateId !== undefined) {
+        if (typeof d.mandateId !== "string" || !d.mandateId.trim()) {
+          problems.push(`decision ${d.gate ?? i}.mandateId is not a non-empty string`);
+        } else if (d.mandateId.trim().length < 3) {
+          problems.push(`decision ${d.gate ?? i}.mandateId is not a valid mandate identifier`);
+        }
+      }
+      if (d.approvalRef !== undefined) {
+        if (typeof d.approvalRef !== "string" || !d.approvalRef.trim()) {
+          problems.push(`decision ${d.gate ?? i}.approvalRef is not a non-empty string`);
+        } else if (d.approvalRef.trim().length < 3 || !/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(d.approvalRef)) {
+          problems.push(`decision ${d.gate ?? i}.approvalRef is not a valid URI reference`);
+        }
+      }
+      if (d.evidenceRef !== undefined) {
+        if (typeof d.evidenceRef !== "string" || !d.evidenceRef.trim()) {
+          problems.push(`decision ${d.gate ?? i}.evidenceRef is not a non-empty string`);
+        } else if (Array.isArray(r.evidence) && !r.evidence.some((e) => isRecord(e) && e.ref === d.evidenceRef)) {
+          problems.push(`decision ${d.gate ?? i}.evidenceRef "${d.evidenceRef}" does not match any evidence.ref`);
+        }
+      }
+      if (d.proof !== undefined) {
+        if (typeof d.proof !== "string" || !d.proof.trim()) {
+          problems.push(`decision ${d.gate ?? i}.proof is not a non-empty string`);
+        } else if (d.proof.trim().length < 8) {
+          problems.push(`decision ${d.gate ?? i}.proof is not a valid proof token (must be at least 8 characters)`);
+        }
+      }
+      if (d.decidedBy === "human") {
+        const hasProof = (["signature", "mandateId", "approvalRef", "evidenceRef", "proof"] as const).some(
+          (k) => typeof d[k] === "string" && (d[k] as string).trim().length > 0,
+        );
+        if (!hasProof) {
+          problems.push(`decision ${d.gate ?? i} decidedBy human has no proof (signature, mandateId, approvalRef, evidenceRef, or proof)`);
+        }
+      }
     });
   }
 
@@ -315,14 +367,31 @@ export function receiptProblems(receipt: unknown): string[] {
       for (const k of unknownKeys(e, KEYS.evidence)) problems.push(`unknown property evidence[${i}].${k}`);
       if (typeof e.kind !== "string" || !e.kind.trim()) problems.push(`evidence ${i} has no kind`);
       if (typeof e.ref !== "string" || !e.ref.trim()) problems.push(`evidence ${i} has no ref`);
-      if (e.sha256 !== undefined && !SHA256.test(String(e.sha256))) problems.push(`evidence ${e.ref ?? i}.sha256 is not a sha256`);
+      if (typeof e.sha256 !== "string" || !e.sha256.trim()) problems.push(`evidence ${e.ref ?? i} has no sha256`);
+      else if (!SHA256.test(e.sha256)) problems.push(`evidence ${e.ref ?? i}.sha256 is not a sha256`);
     });
   }
 
   if (!VERDICTS.includes(r.verdict as RunReceiptVerdict)) problems.push(`verdict is ${JSON.stringify(r.verdict)}`);
-  if (r.verdict === "PASS" && Array.isArray(r.stages)) {
-    for (const stage of r.stages) {
-      if (isRecord(stage) && stage.status === "failed") problems.push(`verdict is PASS but stage ${stage.name ?? "?"} failed`);
+  if (r.verdict === "PASS") {
+    if (Array.isArray(r.evidence) && r.evidence.length === 0) {
+      problems.push("verdict is PASS but evidence is empty");
+    }
+    if (Array.isArray(r.stages)) {
+      let okCount = 0;
+      let hasFailed = false;
+      for (const stage of r.stages) {
+        if (isRecord(stage)) {
+          if (stage.status === "failed") {
+            hasFailed = true;
+            problems.push(`verdict is PASS but stage ${stage.name ?? "?"} failed`);
+          }
+          if (stage.status === "ok") okCount += 1;
+        }
+      }
+      if (r.stages.length > 0 && okCount === 0 && !hasFailed) {
+        problems.push("verdict is PASS but every stage was skipped");
+      }
     }
   }
 
