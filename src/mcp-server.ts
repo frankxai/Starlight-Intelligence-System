@@ -24,6 +24,7 @@ import { SovereignBlockchainAnchor, type VaultSnapshotItem } from './durability/
 import { RobotContinuityKernel, type RobotActuatorCommand } from './robotics/continuity-kernel.js';
 import { StarlightQueen } from './orchestration/starlight-queen.js';
 import { MarketplaceCatalog } from './marketplace/catalog.js';
+import { AgentLifecycleManager } from './queen/index.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpToolAnnotations {
@@ -278,6 +279,7 @@ function readContinuityPolicy(): unknown {
 }
 const READ: McpToolAnnotations = { readOnlyHint: true, openWorldHint: false };
 const APPEND: McpToolAnnotations = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
+const TERMINATE: McpToolAnnotations = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
 
 /** Enforces the subset of JSON Schema the tools declare, so the advertised bounds are real. */
 export function validateArgs(schema: JsonSchema, args: unknown): string | null {
@@ -334,19 +336,21 @@ function checkValue(schema: JsonSchema, value: unknown): string | null {
 export class StarlightMcpServer {
   private tools = new Map<string, {
     definition: McpTool;
-    handler: (p: Record<string, unknown>) => Record<string, unknown>;
+    handler: (p: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
     /** Key whose value is the text block, so pre-structured-output callers keep the bare array they parsed. */
     legacyText?: string;
   }>();
   private vaultDir: string;
+  private lifecycleManager: AgentLifecycleManager;
 
   constructor(vaultDir: string) {
     this.vaultDir = vaultDir;
     ensureDir(this.vaultDir);
+    this.lifecycleManager = new AgentLifecycleManager();
     this.registerTools();
   }
 
-  private reg(def: McpTool, handler: (p: Record<string, unknown>) => Record<string, unknown>, legacyText?: string): void {
+  private reg(def: McpTool, handler: (p: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>, legacyText?: string): void {
     this.tools.set(def.name, { definition: def, handler, legacyText });
   }
 
@@ -800,10 +804,95 @@ export class StarlightMcpServer {
       const items = catalog.listItems(p.licenseTier as any);
       return { items } as Record<string, unknown>;
     });
+
+    // 18. sis_queen_agent_inspect
+    this.reg({
+      name: 'sis_queen_agent_inspect',
+      title: 'Inspect terminal agent sessions',
+      description: 'Inspect discoverable terminal agent sessions across the host machine, including process trees, active worktrees, branches, status, and last-seen timestamps.',
+      inputSchema: input({
+        harness: { type: 'string', enum: ['codex', 'claude', 'opencode', 'generic'], description: 'Optional harness filter: codex, claude, opencode, or generic.' },
+      }),
+      outputSchema: output({
+        inventory: { type: 'object', description: 'Discovered agent sessions and provider capabilities.' },
+      }),
+      annotations: READ,
+    }, async (p) => {
+      const harness = p.harness as any;
+      const inventory = await this.lifecycleManager.inspect({ harness });
+      return { inventory } as unknown as Record<string, unknown>;
+    });
+
+    // 19. sis_queen_agent_save
+    this.reg({
+      name: 'sis_queen_agent_save',
+      title: 'Capture and save agent handover',
+      description: 'Capture prompts and assistant responses for a targeted session, apply secret redaction, write a durable handover document in ~/.starlight/handoffs/, and optionally sync to a GitHub issue.',
+      inputSchema: input({
+        sessionId: { type: 'string', minLength: 1, maxLength: 200, description: 'Session ID or unique prefix to save.' },
+        out: { type: 'string', minLength: 1, maxLength: 500, description: 'Optional custom output path or directory.' },
+        syncIssue: { type: 'integer', minimum: 1, maximum: 1000000, description: 'Optional GitHub issue number to comment with the handover summary.' },
+      }, ['sessionId']),
+      outputSchema: output({
+        handover: { type: 'object', description: 'Generated durable handover record and paths.' },
+      }),
+      annotations: APPEND,
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      const out = p.out ? String(p.out) : undefined;
+      const syncIssue = p.syncIssue ? Number(p.syncIssue) : undefined;
+      const handover = await this.lifecycleManager.save(sessionId, { out, syncIssue });
+      return { handover } as unknown as Record<string, unknown>;
+    });
+
+    // 20. sis_queen_agent_stop
+    this.reg({
+      name: 'sis_queen_agent_stop',
+      title: 'Safely stop agent process tree',
+      description: 'Safely stop a targeted terminal agent process tree. Dry-run by default unless dryRun: false. Verifies process termination and shields tool-plane services (e.g. port 7317) and ancestor shells.',
+      inputSchema: input({
+        sessionId: { type: 'string', minLength: 1, maxLength: 200, description: 'Session ID or unique prefix to stop.' },
+        dryRun: { type: 'boolean', description: 'Set to false to actually terminate processes. Defaults to true for safety.' },
+        force: { type: 'boolean', description: 'Force kill if graceful stop fails. Defaults to false.' },
+        timeoutMs: { type: 'integer', minimum: 100, maximum: 60000, description: 'Grace period timeout in milliseconds. Defaults to 3000.' },
+      }, ['sessionId']),
+      outputSchema: output({
+        plan: { type: 'object', description: 'Stop safety plan and shielded process rationale.' },
+        result: { type: 'object', description: 'Process termination execution result if not a dry-run.' },
+      }),
+      annotations: TERMINATE,
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      const dryRun = p.dryRun !== false;
+      const force = Boolean(p.force);
+      const timeoutMs = p.timeoutMs ? Number(p.timeoutMs) : 3000;
+      const { plan, result } = await this.lifecycleManager.stop(sessionId, { dryRun, force, timeoutMs });
+      return { plan, result: (result ?? {}) as unknown as object } as unknown as Record<string, unknown>;
+    });
+
+    // 21. sis_queen_agent_resume
+    this.reg({
+      name: 'sis_queen_agent_resume',
+      title: 'Generate agent resumption packet',
+      description: 'Generate resumption instructions and a standalone Claude or Codex continuation prompt for a targeted session.',
+      inputSchema: input({
+        sessionId: { type: 'string', minLength: 1, maxLength: 200, description: 'Session ID or unique prefix to resume.' },
+      }, ['sessionId']),
+      outputSchema: output({
+        session: { type: 'object', description: 'Target session metadata.' },
+        instructions: { type: 'string', description: 'Resumption and context reconstruction instructions.' },
+        claudeContinuationPrompt: { type: 'string', description: 'Continuation prompt formatted for Claude or Codex.' },
+      }),
+      annotations: READ,
+    }, async (p) => {
+      const sessionId = String(p.sessionId);
+      const res = await this.lifecycleManager.resume(sessionId);
+      return res as unknown as Record<string, unknown>;
+    });
   }
 
   // ── JSON-RPC Dispatch ───────────────────────────────────────
-  handleRequest(request: JsonRpcRequest): JsonRpcResponse | null {
+  handleRequest(request: JsonRpcRequest): JsonRpcResponse | Promise<JsonRpcResponse | null> | null {
     const { method, params, id } = request;
     if (method?.startsWith('notifications/')) return null;
     const rpcId = id ?? null;
@@ -833,7 +922,33 @@ export class StarlightMcpServer {
       if (invalid) return { jsonrpc: '2.0', id: rpcId, result: toolError(invalid, 'Fix the argument and call again; nothing was changed.') };
       const start = Date.now();
       try {
-        const result = tool.handler(args);
+        const rawResult = tool.handler(args);
+        if (rawResult instanceof Promise) {
+          return rawResult.then((result): JsonRpcResponse => {
+            telemetry.traceMcpToolCall({
+              toolName: name,
+              args,
+              result,
+              durationMs: Date.now() - start,
+              success: true,
+              serverName: 'starlight-sis',
+            });
+            const text = tool.legacyText ? result[tool.legacyText] : result;
+            return { jsonrpc: '2.0' as const, id: rpcId, result: { content: [{ type: 'text', text: JSON.stringify(text, null, 2) }], structuredContent: result } };
+          }).catch((err): JsonRpcResponse => {
+            telemetry.traceMcpToolCall({
+              toolName: name,
+              args,
+              error: err instanceof Error ? err.message : String(err),
+              durationMs: Date.now() - start,
+              success: false,
+              serverName: 'starlight-sis',
+            });
+            const hint = err instanceof ToolError ? err.hint : 'Unexpected failure; check the server log.';
+            return { jsonrpc: '2.0' as const, id: rpcId, result: toolError(err instanceof Error ? err.message : String(err), hint) };
+          });
+        }
+        const result = rawResult;
         telemetry.traceMcpToolCall({
           toolName: name,
           args,
@@ -875,13 +990,21 @@ export class StarlightMcpServer {
         process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, error: { code: -32600, message: 'Invalid Request: expected a JSON-RPC object with a string method' } }) + '\n');
         return;
       }
-      let response: JsonRpcResponse | null;
+      let response: JsonRpcResponse | Promise<JsonRpcResponse | null> | null;
       try {
         response = this.handleRequest(request);
       } catch (err) {
         response = { jsonrpc: '2.0', id: request.id ?? null, error: { code: -32603, message: err instanceof Error ? err.message : String(err) } };
       }
-      if (response) process.stdout.write(JSON.stringify(response) + '\n');
+      if (response instanceof Promise) {
+        response.then((res) => {
+          if (res) process.stdout.write(JSON.stringify(res) + '\n');
+        }).catch((err) => {
+          process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id: request.id ?? null, error: { code: -32603, message: err instanceof Error ? err.message : String(err) } }) + '\n');
+        });
+      } else if (response) {
+        process.stdout.write(JSON.stringify(response) + '\n');
+      }
     });
     process.stderr.write(`[starlight-sis] MCP server started, vault: ${this.vaultDir}\n`);
   }

@@ -311,7 +311,7 @@ export class GoalOrchestrator {
 
       // Stage and commit all modifications
       git(["add", "."]);
-      git(["commit", "-m", "SAGE Auto-checkpoint: Local state backup", "--no-verify"]);
+      git(["commit", "-m", "SAGE Auto-checkpoint: Local state backup", "--no-verify", "--no-gpg-sign"]);
 
       // Return to original branch
       git(["checkout", originalBranch]);
@@ -354,7 +354,7 @@ export class GoalOrchestrator {
   commitCheckpoint(message: string): void {
     try {
       git(["add", "."]);
-      git(["commit", "-m", message, "--no-verify"]);
+      git(["commit", "-m", message, "--no-verify", "--no-gpg-sign"]);
       this.addLog("git", `Committed changes: "${message}"`);
     } catch (err: any) {
       this.addLog("warning", `Commit skipped (likely no changes or git issue): ${err.message}`);

@@ -94,11 +94,12 @@ describe("SAGE Goal Engine", () => {
       execSync("git init -b main", { cwd: dir, stdio: "ignore" });
       execSync('git config user.name "SAGE Test"', { cwd: dir, stdio: "ignore" });
       execSync('git config user.email "sage@test.com"', { cwd: dir, stdio: "ignore" });
+      execSync('git config commit.gpgsign false', { cwd: dir, stdio: "ignore" });
 
       const initialFile = join(dir, "initial.txt");
       writeFileSync(initialFile, "Initial content", "utf8");
       execSync("git add .", { cwd: dir, stdio: "ignore" });
-      execSync('git commit -m "Initial commit"', { cwd: dir, stdio: "ignore" });
+      execSync('git commit -m "Initial commit" --no-verify', { cwd: dir, stdio: "ignore" });
 
       const orchestrator = new GoalOrchestrator({ starlightDir: join(dir, ".starlight") });
       orchestrator.createChecklist("Git Test", ["Task 1"]);
