@@ -57,6 +57,7 @@ function issueParams(overrides: Record<string, unknown> = {}): Record<string, un
       { name: 'retrieve', status: 'ok', costEur: 0.001, latencyMs: 100, inputTokens: 10, outputTokens: 5 },
       { name: 'synthesize', status: 'ok', costEur: 0.02, latencyMs: 800, inputTokens: 300, outputTokens: 120 },
     ],
+    evidence: [{ kind: 'source', ref: 'https://example.org/brief' }],
     ...overrides,
   };
 }
@@ -152,6 +153,24 @@ describe('Track B v0.1 — sis.receipt.* tools', () => {
       const r = srv.call('sis.receipt.issue', issueParams({ stages: [] })) as OkEnvelope;
       assert.equal(r.ok, false);
       assert.ok(String(r.error).includes('no stages'), r.error);
+      assert.equal(countLines(join(root, 'memory', '_audit', 'receipts.jsonl')), 0);
+    });
+  });
+
+  it('issue with verdict PASS and evidence: [] is refused and persists nothing', () => {
+    withServer((srv, root) => {
+      const r = srv.call('sis.receipt.issue', issueParams({ evidence: [], verdict: 'PASS' })) as OkEnvelope;
+      assert.equal(r.ok, false);
+      assert.ok(String(r.error).includes('evidence is empty'), r.error);
+      assert.equal(countLines(join(root, 'memory', '_audit', 'receipts.jsonl')), 0);
+    });
+  });
+
+  it('issue with verdict PASS and only skipped stages is refused and persists nothing', () => {
+    withServer((srv, root) => {
+      const r = srv.call('sis.receipt.issue', issueParams({ stages: [{ name: 's1', status: 'skipped' }], verdict: 'PASS' })) as OkEnvelope;
+      assert.equal(r.ok, false);
+      assert.ok(String(r.error).includes('every stage was skipped'), r.error);
       assert.equal(countLines(join(root, 'memory', '_audit', 'receipts.jsonl')), 0);
     });
   });
