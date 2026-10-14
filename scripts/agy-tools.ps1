@@ -1011,7 +1011,7 @@ function starlight-cockpit {
 
     switch ($Action) {
         { $_ -in @('app', 'desktop', 'start', 'launch') } {
-            Write-Host "🚀 Launching Starlight Command Center Desktop Shell..." -ForegroundColor Cyan
+            Write-Host "[*] Launching Starlight Command Center Desktop Shell..." -ForegroundColor Cyan
             if (Test-Path $cockpitDir) {
                 Start-Process -FilePath "pnpm" -ArgumentList "start" -WorkingDirectory $cockpitDir -WindowStyle Hidden
                 Write-Host "Starlight Cockpit launched in background. Use Ctrl+Alt+C to toggle." -ForegroundColor Green
@@ -1020,7 +1020,7 @@ function starlight-cockpit {
             }
         }
         { $_ -in @('web', 'browser') } {
-            Write-Host "🌐 Opening Starlight Observatory in browser..." -ForegroundColor Cyan
+            Write-Host "[*] Opening Starlight Observatory in browser..." -ForegroundColor Cyan
             Start-Process "http://localhost:4321"
         }
         { $_ -in @('status', 'list') } {
@@ -1045,7 +1045,7 @@ function starlight-cockpit {
             }
         }
         { $_ -in @('help', '-h', '--help') } {
-            Write-Host "`n🌟 Starlight Cockpit CLI Commands:" -ForegroundColor Cyan
+            Write-Host "`n[*] Starlight Cockpit CLI Commands:" -ForegroundColor Cyan
             Write-Host "  cockpit               Display live agent sessions overview" -ForegroundColor White
             Write-Host "  cockpit app           Launch always-on desktop tray app (Ctrl+Alt+C)" -ForegroundColor White
             Write-Host "  cockpit web           Open Observatory web console (http://localhost:4321)" -ForegroundColor White
@@ -1055,7 +1055,7 @@ function starlight-cockpit {
             Write-Host "  cockpit doctor        Run system and environment diagnostic checks" -ForegroundColor White
         }
         default {
-            Write-Host "`n🌟 Starlight Cockpit — Central Command Plane" -ForegroundColor Cyan
+            Write-Host "`n[*] Starlight Cockpit -- Central Command Plane" -ForegroundColor Cyan
             Write-Host "------------------------------------------------------------" -ForegroundColor DarkGray
             if (Get-Command Invoke-CockpitStatus -ErrorAction SilentlyContinue) {
                 Invoke-CockpitStatus
