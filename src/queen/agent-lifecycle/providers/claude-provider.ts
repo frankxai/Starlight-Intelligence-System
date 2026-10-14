@@ -204,7 +204,7 @@ export class ClaudeProvider implements AgentProvider {
       }
     }
 
-    // 2. Fallback / supplement with history.jsonl
+    // 2. Fallback or supplement with history.jsonl
     if (userPrompts.length === 0) {
       const historyFile = join(this.claudeHome, 'history.jsonl');
       if (existsSync(historyFile)) {

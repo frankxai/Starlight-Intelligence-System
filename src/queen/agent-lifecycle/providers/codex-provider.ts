@@ -131,12 +131,12 @@ export class CodexProvider implements AgentProvider {
             try {
               const record = JSON.parse(line);
 
-              // Extract session title / metadata
+              // Extract session title and metadata
               if (record.type === 'session_meta') {
                 if (record.payload?.title) title = record.payload.title;
               }
 
-              // Extract context / cwd
+              // Extract context and cwd
               if (record.type === 'turn_context' || record.type === 'world_state') {
                 if (record.payload?.cwd && !repoRoot) repoRoot = record.payload.cwd;
               }

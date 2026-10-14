@@ -269,8 +269,14 @@ Config:
   });
 
   describe('Concrete Acceptance Incident: 2026-10-12 Codex Handover Replay', () => {
-    it('successfully extracts complete prompts, assistant turns, and tools for incident session 01a13098-24f1-7ec0-bd51-c0a8bf43ccd0', async () => {
+    it('successfully extracts complete prompts, assistant turns, and tools for incident session 01a13098-24f1-7ec0-bd51-c0a8bf43ccd0', async (t) => {
       const mgr = new AgentLifecycleManager();
+      const inventory = await mgr.inspect();
+      const match = inventory.sessions.find((s) => s.id.startsWith('01a13098-24f1-7ec0'));
+      if (!match) {
+        t.skip('Incident session 01a13098-24f1-7ec0 not present in local ~/.codex/sessions environment');
+        return;
+      }
       const testOut = join(tmpdir(), `incident-01a13098-${Date.now()}`);
 
       const doc = await mgr.save('01a13098-24f1-7ec0', { out: testOut });
@@ -303,8 +309,14 @@ Config:
       rmSync(`${testOut}.md`, { force: true });
     });
 
-    it('successfully extracts prompts and turns for incident session 01a12fe8-ed64-73a2-a83c-1a9539bda915', async () => {
+    it('successfully extracts prompts and turns for incident session 01a12fe8-ed64-73a2-a83c-1a9539bda915', async (t) => {
       const mgr = new AgentLifecycleManager();
+      const inventory = await mgr.inspect();
+      const match = inventory.sessions.find((s) => s.id.startsWith('01a12fe8-ed64-73a2'));
+      if (!match) {
+        t.skip('Incident session 01a12fe8-ed64-73a2 not present in local ~/.codex/sessions environment');
+        return;
+      }
       const testOut = join(tmpdir(), `incident-01a12fe8-${Date.now()}`);
 
       const doc = await mgr.save('01a12fe8-ed64-73a2', { out: testOut });

@@ -1567,13 +1567,13 @@ async function cmdQueen(
         }
 
         console.log(`\n══════════════════════════════════════════════════════════════════`);
-        console.log(`  STARLIGHT QUEEN — TERMINAL AGENT LIFECYCLE INVENTORY`);
+        console.log(`  Starlight Queen — Terminal agent lifecycle inventory`);
         console.log(`══════════════════════════════════════════════════════════════════`);
         console.log(`Sampled At:         ${inventory.sampledAt}`);
         console.log(`Total Sessions:     ${inventory.totalSessions} (${inventory.activeSessions} active, ${inventory.idleSessions} idle)`);
-        console.log(`Protected PIDs:     ${inventory.protectedPids.length} (Tool plane & MCP daemons shielded)\n`);
+        console.log(`Protected PIDs:     ${inventory.protectedPids.length} (Tool plane and MCP daemons shielded)\n`);
 
-        console.log(`DISCOVERED SESSIONS:`);
+        console.log(`Discovered sessions:`);
         for (const s of inventory.sessions.slice(0, 30)) {
           const mark = s.status === "active" ? "● ACTIVE " : "○ IDLE   ";
           const pidStr = s.pid ? `PID ${s.pid}`.padEnd(10) : "NO PID    ";
@@ -1640,13 +1640,13 @@ async function cmdQueen(
         });
 
         console.log(`\n══════════════════════════════════════════════════════════════════`);
-        console.log(`  STARLIGHT QUEEN — AGENT STOP SAFETY AUDIT`);
+        console.log(`  Starlight Queen — Agent stop safety audit`);
         console.log(`══════════════════════════════════════════════════════════════════`);
         console.log(`Target Session:       ${plan.targetSessionId} (${plan.provider})`);
-        console.log(`Dry Run Mode:         ${plan.isDryRun ? "YES (NO SIGNALS SENT)" : "NO (EXECUTION AUTHORIZED)"}`);
+        console.log(`Dry run mode:         ${plan.isDryRun ? "yes (no signals sent)" : "no (execution authorized)"}`);
         console.log(`Targeted PIDs:        ${plan.targetPids.length > 0 ? plan.targetPids.join(", ") : "None (Session not running)"}`);
         console.log(`Shielded Tool-Plane:  ${plan.protectedPidsShielded.length} PIDs protected`);
-        console.log(`Preserved Ancestors:  ${plan.ancestorPidsPreserved.length} PIDs preserved (Terminal / Shell / Host)`);
+        console.log(`Preserved Ancestors:  ${plan.ancestorPidsPreserved.length} PIDs preserved (terminal, shell, host)`);
         console.log(`Rationale:            ${plan.rationale}`);
 
         if (plan.commandLines.length > 0) {

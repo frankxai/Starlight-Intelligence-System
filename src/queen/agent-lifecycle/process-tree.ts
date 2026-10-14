@@ -280,7 +280,7 @@ export class ProcessTreeManager {
       }
     }
 
-    // Find ancestors (parent terminal / shell) to explicitly preserve
+    // Find ancestors (parent terminal or shell) to explicitly preserve
     const ancestorPidsPreserved: number[] = [];
     let curPpid = targetNode.ppid;
     while (curPpid && processes.has(curPpid)) {

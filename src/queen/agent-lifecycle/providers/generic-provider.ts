@@ -1,5 +1,5 @@
 /**
- * Starlight Queen — Generic / Emerging Agent Provider Adapter
+ * Starlight Queen — Generic or emerging agent provider adapter
  *
  * Provides lifecycle discovery, process tracking, and safe termination
  * for Grok, Hermes, Antigravity, and generic terminal CLI harnesses.

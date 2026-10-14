@@ -21,7 +21,7 @@ export interface ProviderCapabilities {
   visible: boolean;
   /** Full transcript or turn history can be parsed from disk/database */
   transcriptReadable: boolean;
-  /** Graceful termination (SIGINT / console ctrl event / polite exit) is supported */
+  /** Graceful termination (SIGINT, console ctrl event, polite exit) is supported */
   gracefulStopSupported: boolean;
   /** Force termination via targeted process tree kill is supported */
   forceTerminationSupported: boolean;
