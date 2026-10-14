@@ -19,7 +19,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -47,6 +47,7 @@ import {
   validateRegistry,
 } from "../src/alexandria/index.js";
 import type { Experiment } from "../src/alexandria/index.js";
+import { capabilityTurn } from "../src/alexandria/receipts.js";
 
 const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 const VERTICAL = join(REPO_ROOT, "verticals", "alexandria");
@@ -470,7 +471,7 @@ describe("v93 — router, budget and receipts", () => {
     assert.deepEqual(profile.records, [{ profile: 1 }], "a reordered response is matched by capability, never by position");
     assert.deepEqual(rank.records, [{ rank: 1 }]);
     const sentAt = Date.now();
-    const slow = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => { await new Promise((r) => setTimeout(r, 30)); return { ok: true, status: 200, json: async () => ({ data: { alexandria: [
+    const slow = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => { await new Promise((r) => setTimeout(r, 60)); return { ok: true, status: 200, json: async () => ({ data: { alexandria: [
       { provider: "gmgn-ai", capability: "crypto/wallet_rank", records: [{ a: 1 }], creditsCost: 5 },
       { provider: "gmgn-ai", capability: "crypto/wallet_profile", records: [{ b: 1 }], creditsCost: 5, observedAt: "2026-10-01T00:00:00Z" },
     ] } }) }; } });
@@ -583,6 +584,8 @@ describe("v93 — router, budget and receipts", () => {
       const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-mode" });
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       appendFileSync(path, '{"id":"rcpt_partial"', "utf8");
+      // A torn tail that is not a complete receipt fails paid calls closed until it is moved out.
+      assert.equal(ledger.quarantinePartialTail(), true);
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       for (const f of [path, ledger.quarantinePath, `${path}.session-mode.lock`]) assert.equal(statSync(f).mode & 0o077, 0, `${f} is readable by its owner only`);
       assert.equal(statSync(join(dir, "private")).mode & 0o077, 0, "the ledger directory is owner-only");
@@ -641,6 +644,11 @@ describe("v93 — router, budget and receipts", () => {
       first.close();
       const resumed = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-a" });
       assert.equal(resumed.budget.spent, 10, "the same session resumes its spend");
+      const callsBefore = transport.calls.length;
+      await assert.rejects(resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message), "a torn tail that is not a complete receipt may be suspension evidence: paid calls fail closed");
+      assert.equal(transport.calls.length, callsBefore, "nothing reached the provider");
+      assert.equal(resumed.budget.spent, 10, "and nothing stays reserved");
+      assert.equal(ledger.quarantinePartialTail(), true, "an operator moves the fragment out explicitly");
       const third = await resumed.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       assert.equal(third.receipt.observedAt, third.result.observedAt, "the receipt keeps the provider observation time");
       const after = ledger.readDetailed();
@@ -884,7 +892,7 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       assert.equal(ledger.suspendedCapabilities().size, 0);
       const overrun = line({ capability: "x", overrun: true, catalogueReconciledAt: "2026-10-01" });
       appendFileSync(path, overrun.slice(0, 20));
-      assert.equal(ledger.suspendedCapabilities().size, 0, "a cut-off tail is not consumed");
+      assert.throws(() => ledger.suspendedCapabilities(), /cut-off line/, "a torn tail that is not a complete receipt fails closed");
       appendFileSync(path, overrun.slice(20));
       assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"], "the finished line is picked up on the next scan");
       assert.equal(ledger.suspendedCapabilities("2026-10-02").size, 0, "a later reconciliation still clears it from the cache");
@@ -892,6 +900,573 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       assert.throws(() => ledger.suspendedCapabilities(), /corrupt/, "new corrupt lines still fail closed");
       writeFileSync(path, line({ capability: "y", overrun: true }));
       assert.deepEqual([...ledger.suspendedCapabilities()], ["p/y"], "a shrunk ledger resets the cache instead of trusting it");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("counts a torn final line that is a complete receipt and never truncates it", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "torn-a" });
+      try { assert.equal((await a.execute({ capabilityId: cap, options: { address: "x" } })).overrun, true); } finally { a.close(); }
+      // The overrun receipt lost its newline, as a crash between the write and the newline would leave it.
+      const raw = readFileSync(path, "utf8");
+      writeFileSync(path, raw.slice(0, -1));
+      const ledger = new ReceiptLedger(path);
+      assert.equal(ledger.readDetailed().truncatedTail, false, "a complete receipt is not a cut-off write");
+      assert.ok(ledger.read().some((r) => r.overrun), "the torn overrun receipt is counted");
+      assert.deepEqual([...ledger.suspendedCapabilities()], [cap], "and it suspends the capability");
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 }, "gmgn-ai/crypto/wallet_rank": { records: [{ a: 1 }], creditsCost: 5 } });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger, sessionId: "torn-b" });
+      try {
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        await b.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
+        assert.equal(fine.calls.length, 1, "only the unsuspended capability was dispatched");
+      } finally { b.close(); }
+      assert.ok(readFileSync(path, "utf8").startsWith(raw), "the torn line was finished with a newline, never truncated");
+      assert.ok(!existsSync(ledger.quarantinePath), "nothing was moved to quarantine");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("holds the capability turn through the provider call, so a second call waits for the first outcome", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      const slowOver = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 50, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const a = new Alexandria({ library, transports: [slowOver as never], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-a" });
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "turn-b" });
+      try {
+        const first = a.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 20));
+        // B is admitted (A's overrun is not known yet) but must not be dispatched while A is in flight.
+        const second = b.execute({ capabilityId: cap, options: { address: "x" } });
+        await new Promise((r) => setTimeout(r, 50));
+        assert.equal(fine.calls.length, 0, "the second call waits for the first call's outcome");
+        releaseFirst();
+        assert.equal((await first).overrun, true);
+        await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0, "and is refused once the overrun lands");
+        assert.equal(b.budget.spent, 0, "with nothing reserved");
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rescans in full when the ledger file is replaced, even by a longer one", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      writeFileSync(path, line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      // Rewritten in place (same inode) with a longer, different history: the prefix no longer matches.
+      writeFileSync(path, line({ capability: "y", sessionId: "other" }) + line({ capability: "z" }));
+      assert.equal(ledger.suspendedCapabilities().size, 0, "a rewritten ledger is rescanned, not appended to the old cache");
+      // Replaced by rename (new inode) with a file whose first 4 KB match the cached prefix but whose
+      // later history differs: only the file identity tells the cache it is stale.
+      const filler = Array.from({ length: 60 }, (_, i) => line({ capability: `f${i}` })).join("");
+      writeFileSync(path, filler + line({ capability: "x", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"]);
+      const replacement = join(dir, "replacement.jsonl");
+      writeFileSync(replacement, filler + line({ capability: "v" }) + line({ capability: "w", overrun: true }));
+      renameSync(replacement, path);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/w"]);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("outcome writes refuse a torn tail that is not a receipt, leave it in place and keep admits closed", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      // Another process crashes mid-write while this call is at the provider.
+      const tearing = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { appendFileSync(path, '{"id":"rcpt_torn","overrun":tr'); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [tearing as never], maxCredits: 100, ledger, sessionId: "torn-outcome" });
+      try {
+        await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message));
+        assert.ok(readFileSync(path, "utf8").endsWith('{"id":"rcpt_torn","overrun":tr'), "the torn tail stays where it is");
+        assert.ok(!existsSync(ledger.quarantinePath), "writes never quarantine on their own");
+        assert.equal(alexandria.budget.spent, 5, "the reservation stays held by the pending line");
+        await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed", "admits stay closed until an operator acts");
+        assert.equal(ledger.quarantinePartialTail(), true, "the operator path still works");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rehashes the whole cached prefix, so a rewrite past the first 4 KB is caught", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      const head = Array.from({ length: 40 }, (_, i) => line({ capability: `f${i}` })).join("");
+      assert.ok(head.length > 4096);
+      const before = line({ capability: "aa", overrun: false });
+      const after = line({ capability: "xxx", overrun: true });
+      assert.equal(before.length, after.length);
+      writeFileSync(path, head + before);
+      assert.equal(ledger.suspendedCapabilities().size, 0);
+      // Same inode, same first 4 KB, same length: only a record past 4 KB changed, now an overrun.
+      writeFileSync(path, head + after);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/xxx"], "the changed record past 4 KB is seen");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("keys the capability turn on the ledger's real identity and times out the in-process wait", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      mkdirSync(join(dir, "sub"));
+      const path = join(dir, "receipts.jsonl");
+      const alias = `${dir}/sub/../receipts.jsonl`;
+      const release = await capabilityTurn(path, cap);
+      const started = Date.now();
+      await assert.rejects(capabilityTurn(alias, cap, 100), /held the .* turn/, "an alias of the same ledger shares the turn");
+      assert.ok(Date.now() - started < 2000, "the in-process wait is bounded");
+      release();
+      const again = await capabilityTurn(alias, cap, 100);
+      again();
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("snapshots validated options before waiting for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const seen: unknown[] = [];
+      const t = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; options?: Record<string, unknown>; requestId?: string }[]) => { seen.push(...calls.map((c) => c.options)); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [t as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "snapshot" });
+      try {
+        const opts: Record<string, unknown> = { address: "x" };
+        const pending = alexandria.execute({ capabilityId: cap, options: opts });
+        opts.address = "changed-after-validation";
+        const res = await pending;
+        assert.deepEqual(seen, [{ address: "x" }], "the provider gets the options that were validated and priced");
+        assert.equal((res.receipt as unknown as { options?: Record<string, unknown> }).options?.address ?? "x", "x");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("refunds and rejects a queued call whose session closed while it waited for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      let dispatched = 0;
+      const slow = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { dispatched += 1; await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [slow as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "queued-close" });
+      const first = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      const second = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      alexandria.close();
+      releaseFirst();
+      await first;
+      await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
+      assert.equal(dispatched, 1, "the queued call was never sent");
+      assert.equal(alexandria.budget.spent, 5, "its reservation was refunded");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+});
+
+describe("v93 — replay deduplication and settled receipts (#424)", () => {
+  const library = Library.fromFile();
+  const cap = "gmgn-ai/crypto/wallet_profile";
+
+  it("ReceiptLedger tracks settledIds, settledRequestIds, and settledReceipts per session and estate-wide", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "fp1", provider: "gmgn-ai", capability: "crypto/wallet_profile", recordCount: 0, contentHash: "h", redistribution: "cleared", source: "s", reserved: 5, maxCredits: 20, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+
+      // Session 1:
+      // req-1: pending, then settled successfully
+      // req-2: pending, then failed definitely
+      // req-3: pending, then uncertain outcome (remains held)
+      // req-4: pending only (crashed mid-call)
+      // Session 2:
+      // req-5: settled directly (creditsCost 2)
+      writeFileSync(path,
+        line({ id: "rcpt_1a", sessionId: "session-1", requestId: "req-1", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_1b", sessionId: "session-1", requestId: "req-1", pending: false, creditsCost: 5 }) +
+        line({ id: "rcpt_2a", sessionId: "session-1", requestId: "req-2", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_2b", sessionId: "session-1", requestId: "req-2", pending: false, creditsCost: 0, error: { code: "not_found", message: "not found" } }) +
+        line({ id: "rcpt_3a", sessionId: "session-1", requestId: "req-3", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_3b", sessionId: "session-1", requestId: "req-3", pending: false, creditsCost: 5, error: { code: "uncertain_outcome", message: "timeout" } }) +
+        line({ id: "rcpt_4a", sessionId: "session-1", requestId: "req-4", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_5a", sessionId: "session-2", requestId: "req-5", pending: false, creditsCost: 2, callFingerprint: "fp5" })
+      );
+
+      // Session 1 settled
+      const s1Settled = ledger.settledIds("session-1");
+      assert.deepEqual([...s1Settled].sort(), ["req-1", "req-2"]);
+      assert.deepEqual([...ledger.settledRequestIds("session-1")].sort(), ["req-1", "req-2"]);
+
+      // Session 1 held
+      const s1Held = ledger.heldReservations("session-1");
+      assert.deepEqual([...s1Held.keys()].sort(), ["req-3", "req-4"]);
+
+      // Session 2 settled
+      assert.deepEqual([...ledger.settledIds("session-2")], ["req-5"]);
+
+      // Estate-wide settled
+      assert.deepEqual([...ledger.settledIds()].sort(), ["req-1", "req-2", "req-5"]);
+      assert.deepEqual([...ledger.settledRequestIds()].sort(), ["req-1", "req-2", "req-5"]);
+
+      // settledReceipts details
+      const receipts1 = ledger.settledReceipts("session-1");
+      assert.equal(receipts1.get("req-1")?.receiptId, "rcpt_1b");
+      assert.equal(receipts1.get("req-1")?.creditsCost, 5);
+      assert.equal(receipts1.get("req-1")?.fingerprint, "fp1");
+      assert.equal(receipts1.get("req-2")?.receiptId, "rcpt_2b");
+      assert.equal(receipts1.get("req-2")?.creditsCost, 0);
+
+      // Retrying req-3 settles it
+      appendFileSync(path,
+        line({ id: "rcpt_3c", sessionId: "session-1", requestId: "req-3", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_3d", sessionId: "session-1", requestId: "req-3", pending: false, creditsCost: 5 })
+      );
+      assert.deepEqual([...ledger.settledIds("session-1")].sort(), ["req-1", "req-2", "req-3"]);
+      assert.deepEqual([...ledger.heldReservations("session-1").keys()], ["req-4"]);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a successful call without re-reserving or re-dispatching", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatchCount = 0;
+      const transport = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatchCount += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xabc", balance: 100 }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [transport as never], maxCredits: 20, ledger, sessionId: "replay-success-sess" });
+      try {
+        const res1 = await alexandria.execute({ capabilityId: cap, options: { address: "0xabc" }, requestId: "req-succ-1" });
+        assert.equal(res1.result.records.length, 1);
+        assert.equal(alexandria.budget.spent, 5);
+        assert.equal(dispatchCount, 1);
+        const linesBefore = ledger.read().length;
+        assert.equal(linesBefore, 2, "pending + outcome receipt");
+
+        // Replay under the same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xabc" }, requestId: "req-succ-1" }),
+          (err: unknown) =>
+            err instanceof AlexandriaError &&
+            err.code === "replay_completed" &&
+            err.requestId === "req-succ-1" &&
+            /was already executed and settled/.test(err.message)
+        );
+
+        assert.equal(dispatchCount, 1, "transport was not called a second time");
+        assert.equal(alexandria.budget.spent, 5, "spent was not double-counted");
+        assert.equal(ledger.read().length, linesBefore, "no duplicate receipts appended");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a call that exhausted the session ceiling without failing over_budget", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const transport = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      // Exactly 5 maxCredits: first call spends all credits
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 5, ledger, sessionId: "replay-exhaust-sess" });
+      try {
+        await alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-exhaust-1" });
+        assert.equal(alexandria.budget.spent, 5);
+
+        // Replay must reject with replay_completed, NOT over_budget
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-exhaust-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-exhaust-1"
+        );
+        assert.equal(alexandria.budget.spent, 5);
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a definite failure without charging or re-dispatching", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatchCount = 0;
+      const failing = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatchCount += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [],
+            creditsCost: 0,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+            error: { code: "wallet_not_found", message: "no such wallet address" },
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [failing as never], maxCredits: 20, ledger, sessionId: "replay-fail-sess" });
+      try {
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "0xmissing" }, requestId: "req-fail-1" });
+        assert.equal(res.result.error?.code, "wallet_not_found");
+        assert.equal(alexandria.budget.spent, 0, "failed call is not billed");
+        assert.equal(dispatchCount, 1);
+        const linesBefore = ledger.read().length;
+
+        // Replay under the same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xmissing" }, requestId: "req-fail-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-fail-1"
+        );
+        assert.equal(dispatchCount, 1, "failed call replay does not re-dispatch");
+        assert.equal(alexandria.budget.spent, 0, "budget spent remains 0");
+        assert.equal(ledger.read().length, linesBefore, "no duplicate receipts appended");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay across a process restart", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatch1 = 0;
+      const transport1 = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatch1 += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xrestart" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+
+      // Process 1 runs call
+      const alexandria1 = new Alexandria({ library, transports: [transport1 as never], maxCredits: 20, ledger, sessionId: "restart-session" });
+      await alexandria1.execute({ capabilityId: cap, options: { address: "0xrestart" }, requestId: "req-restart-1" });
+      assert.equal(alexandria1.budget.spent, 5);
+      assert.equal(dispatch1, 1);
+      alexandria1.close();
+
+      // Process 2 resumes same session
+      let dispatch2 = 0;
+      const transport2 = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatch2 += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xrestart" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria2 = new Alexandria({ library, transports: [transport2 as never], maxCredits: 20, ledger, sessionId: "restart-session" });
+      try {
+        assert.equal(alexandria2.budget.spent, 5, "restored spent from ledger");
+        await assert.rejects(
+          alexandria2.execute({ capabilityId: cap, options: { address: "0xrestart" }, requestId: "req-restart-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-restart-1"
+        );
+        assert.equal(dispatch2, 0, "resumed process did not call transport");
+        assert.equal(alexandria2.budget.spent, 5, "spent did not increase");
+      } finally { alexandria2.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router throws retry_mismatch if replay changes capability or options of a settled call", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const transport = new MemoryTransport("firecrawl-alexandria", {
+        [cap]: { records: [{ address: "0x111" }], creditsCost: 5 },
+        "gmgn-ai/crypto/wallet_rank": { records: [{ rank: 1 }], creditsCost: 5 },
+      });
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 20, ledger, sessionId: "mismatch-session" });
+      try {
+        await alexandria.execute({ capabilityId: cap, options: { address: "0x111" }, requestId: "req-mismatch-1" });
+        assert.equal(alexandria.budget.spent, 5);
+
+        // Different options with same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0x222" }, requestId: "req-mismatch-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch" && err.requestId === "req-mismatch-1"
+        );
+
+        // Different capability with same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", options: { period: "7d" }, requestId: "req-mismatch-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch" && err.requestId === "req-mismatch-1"
+        );
+
+        assert.equal(alexandria.budget.spent, 5, "mismatched replays reserve nothing");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router permits retry of an uncertain outcome and then rejects replay once settled", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let attempt = 0;
+      const flaky = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          attempt += 1;
+          if (attempt === 1) throw new Error("timeout connecting to provider");
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xflaky" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [flaky as never], maxCredits: 20, ledger, sessionId: "flaky-sess" });
+      try {
+        // Attempt 1 fails uncertainly
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "uncertain_outcome"
+        );
+        assert.equal(alexandria.budget.spent, 5, "reservation is held");
+
+        // Attempt 2 retries and succeeds
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" });
+        assert.equal(res.result.records.length, 1);
+        assert.equal(alexandria.budget.spent, 5, "held reservation settled without doubling");
+
+        // Attempt 3 replays: now settled, should reject with replay_completed
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-flaky-1"
+        );
+        assert.equal(attempt, 2, "flaky transport was not called on 3rd replay attempt");
+        assert.equal(alexandria.budget.spent, 5, "spent remains 5");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay as replay_completed even if capability was suspended by an overrun", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      // Transport returns overrun (charges 10 against 5 reserved)
+      const overrunTransport = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xoverrun" }],
+            creditsCost: 10,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [overrunTransport as never], maxCredits: 50, ledger, sessionId: "overrun-sess" });
+      try {
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "0xoverrun" }, requestId: "req-overrun-1" });
+        assert.equal(res.overrun, true);
+        assert.equal(alexandria.budget.spent, 10);
+
+        // A new call to the now-suspended capability fails with capability_suspended
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xnew" }, requestId: "req-new" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended"
+        );
+
+        // But replaying the completed call returns replay_completed, not capability_suspended!
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xoverrun" }, requestId: "req-overrun-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-overrun-1"
+        );
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay across restart without needing provider transport registered", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const transport = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      const alexandria1 = new Alexandria({ library, transports: [transport], maxCredits: 20, ledger, sessionId: "no-transport-replay" });
+      await alexandria1.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-fc-1" });
+      alexandria1.close();
+
+      // Process 2 resumes session with empty transports array (no firecrawl-alexandria transport)
+      const alexandria2 = new Alexandria({ library, transports: [], maxCredits: 20, ledger, sessionId: "no-transport-replay" });
+      try {
+        // Replaying settled call does not need transport and returns replay_completed, not no_transport
+        await assert.rejects(
+          alexandria2.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-fc-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-fc-1"
+        );
+
+        // A fresh call fails with no_transport
+        await assert.rejects(
+          alexandria2.execute({ capabilityId: cap, options: { address: "y" }, requestId: "req-fresh" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "no_transport"
+        );
+      } finally { alexandria2.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("translates ledger read error during settled lookup to receipt_persist_failed", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const alexandria = new Alexandria({ library, transports: [], maxCredits: 20, ledger, sessionId: "corrupt-lookup-sess" });
+      try {
+        // Write corrupt JSON to ledger after Alexandria was constructed
+        writeFileSync(path, "corrupt\nnot-valid-json\n", "utf8");
+
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-corrupt" }),
+          (err: unknown) =>
+            err instanceof AlexandriaError &&
+            err.code === "receipt_persist_failed" &&
+            err.requestId === "req-corrupt" &&
+            /the ledger could not be read to check replays/.test(err.message)
+        );
+      } finally { alexandria.close(); }
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
