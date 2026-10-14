@@ -12,8 +12,16 @@ const config = JSON.parse(readFileSync(join(root, 'config.json'), 'utf8'));
 
 test('the conductor does not sweep or undraft', () => {
   assert.equal(conductor.includes('sweepPullRequests'), false);
-  // Conductor never undrafts (never calls 'pr', 'ready' without '--undo')
-  assert.equal(conductor.includes("pr', 'ready'") && !conductor.includes("'--undo'"), false);
+  // The conductor never undrafts. The only allowed `pr ready` call is the redraft (`--undo`), and
+  // every one is checked on its own: one redraft must not cover an undraft elsewhere in the file.
+  const readyCalls = [...conductor.matchAll(/\[\s*['"`]pr['"`]\s*,\s*['"`]ready['"`][^\]]*\]/g)].map((m) => m[0]);
+  assert.ok(readyCalls.length > 0, 'the redraft call is still present');
+  for (const call of readyCalls) assert.ok(/['"`]--undo['"`]/.test(call), `undraft call without --undo: ${call}`);
+  // Any other spelling of an undraft (a 'ready' literal outside those calls, or a shell `pr ready`) fails.
+  const readyLiterals = conductor.match(/['"`]ready['"`]/g) ?? [];
+  assert.equal(readyLiterals.length, readyCalls.length, "a 'ready' literal outside a checked pr-ready call");
+  assert.equal(/pr\s+ready(?!\s+[^\n]*--undo)/.test(conductor), false, 'shell-form pr ready without --undo');
+  assert.equal(/['"`]merge['"`]/.test(conductor) || /pr\s+merge/.test(conductor), false, 'the conductor never merges');
   assert.equal(conductor.includes('slice(0, 20)'), false);
   assert.equal(conductor.includes('adoptRemoteSessions === true'), true);
   assert.equal(conductor.includes('autoDispatch === true'), true);
