@@ -17,6 +17,7 @@ export function engineerJulesPrompt({
   scopeFiles = [],
   antiPatterns = [],
   trackToken = '',
+  liveDocs = [],
 }) {
   const repoName = repo.includes('/') ? repo.split('/')[1] : repo;
   const targetBranch = repoProfile.targetBranch || 'main';
@@ -87,6 +88,15 @@ export function engineerJulesPrompt({
     }
   }
 
+  if (liveDocs && liveDocs.length > 0) {
+    prompt += `## Verified Current Library Documentation (Context7 Live Grounding)\n`;
+    prompt += `> Verified live against official documentation to eliminate training cutoff hallucinations.\n\n`;
+    for (const doc of liveDocs) {
+      prompt += `### ${doc.title || doc.libraryId}\n`;
+      prompt += `${doc.content}\n\n`;
+    }
+  }
+
   prompt += `\n## Completion Requirement\n`;
   prompt += `When done, ensure the build passes cleanly with no warnings or type errors.\n`;
   prompt += `Open one pull request against \`${targetBranch}\`. Do not merge it. Do not mark a draft ready.\n`;
@@ -96,3 +106,75 @@ export function engineerJulesPrompt({
 
   return prompt;
 }
+
+/**
+ * Dynamically resolves real-time library documentation via Upstash Context7 MCP/client.
+ * Cross-platform: supports local npm resolution, Windows AppData global, and Linux container /usr/local/lib.
+ */
+export async function resolveContext7Documentation({ query, libraryHint = null, language = 'TypeScript' }) {
+  try {
+    let context7Module = null;
+    const isWindows = process.platform === 'win32';
+
+    // 1. Try standard dynamic import (installed package or symlink)
+    try {
+      context7Module = await import('@upstash/context7-mcp/dist/lib/api.js');
+    } catch {
+      // 2. Fall back to platform global paths
+      const fallbackPaths = isWindows
+        ? [
+            'file:///C:/Users/frank/AppData/Roaming/npm/node_modules/@upstash/context7-mcp/dist/lib/api.js',
+            'file:///C:/Users/frank/.gemini/antigravity-cli/mcp/context7/dist/lib/api.js'
+          ]
+        : [
+            'file:///usr/local/lib/node_modules/@upstash/context7-mcp/dist/lib/api.js',
+            'file:///usr/lib/node_modules/@upstash/context7-mcp/dist/lib/api.js',
+            '/home/starlight/.local/share/pnpm/global/5/node_modules/@upstash/context7-mcp/dist/lib/api.js'
+          ];
+
+      for (const p of fallbackPaths) {
+        try {
+          context7Module = await import(p);
+          if (context7Module) break;
+        } catch {
+          // continue to next candidate
+        }
+      }
+    }
+
+    if (!context7Module || !context7Module.searchLibraries || !context7Module.fetchLibraryContext) {
+      return null;
+    }
+
+    const { searchLibraries, fetchLibraryContext } = context7Module;
+    const searchTarget = libraryHint || query;
+
+    // Timeout-guarded resolution (max 4.5s) to prevent blocking swarm loops
+    const searchPromise = searchLibraries(query, searchTarget, { transport: 'stdio' });
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Context7 timeout')), 4500));
+    const search = await Promise.race([searchPromise, timeoutPromise]);
+
+    const topLib = search.results?.[0];
+    if (!topLib) return null;
+
+    const docs = await fetchLibraryContext({
+      query,
+      libraryId: topLib.id,
+      language
+    }, { transport: 'stdio' });
+
+    if (docs && docs.data) {
+      return {
+        libraryId: topLib.id,
+        title: topLib.title || topLib.id,
+        content: docs.data.slice(0, 3000),
+      };
+    }
+  } catch (err) {
+    // Graceful degradation when offline, rate-limited, or unavailable
+    return null;
+  }
+  return null;
+}
+
+

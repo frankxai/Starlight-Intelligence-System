@@ -432,6 +432,7 @@ export {
   StarlightExperimentRunner,
   runExperiments,
   discoverLangfuseCredentials,
+  resolveSovereignSecret,
 } from './telemetry/index.js';
 export type {
   LangfuseConfig,

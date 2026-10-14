@@ -306,15 +306,38 @@ function tryLoadEnvFiles(): { loadedPath?: string; vars: Record<string, string> 
  */
 function tryInfisicalSecret(key: string): string | undefined {
   try {
-    const projectId = process.env.INFISICAL_PROJECT_ID;
+    let projectId = process.env.INFISICAL_PROJECT_ID;
     const env = process.env.INFISICAL_ENV || 'prod';
+
+    // Auto-detect project id from local or global .infisical.json if present
+    if (!projectId) {
+      const candidates = [
+        path.resolve(process.cwd(), '.infisical.json'),
+        path.resolve(process.cwd(), '..', '.infisical.json'),
+        path.join(os.homedir(), '.starlight', '.infisical.json'),
+      ];
+      for (const c of candidates) {
+        if (fs.existsSync(c)) {
+          try {
+            const raw = JSON.parse(fs.readFileSync(c, 'utf8'));
+            if (raw.workspaceId) {
+              projectId = raw.workspaceId;
+              break;
+            }
+          } catch {
+            // Ignore malformed file
+          }
+        }
+      }
+    }
+
     const args = ['secrets', 'get', key, '--silent'];
     if (projectId) {
       args.push('--projectId', projectId, '--env', env);
     }
     const result = spawnSync('infisical', args, {
       encoding: 'utf8',
-      timeout: 1200,
+      timeout: 1500,
       windowsHide: true,
       stdio: ['ignore', 'pipe', 'ignore'],
     });
@@ -333,6 +356,23 @@ function tryInfisicalSecret(key: string): string | undefined {
     // Ignore CLI execution errors
   }
   return undefined;
+}
+
+/**
+ * Resolves any environment secret across the 4 sovereign tiers:
+ * 1. process.env
+ * 2. Local & global .env files (.env, .env.local, ~/.starlight/.env)
+ * 3. Infisical CLI secret store
+ * 4. Optional fallback
+ */
+export function resolveSovereignSecret(key: string, fallback?: string): string | undefined {
+  if (process.env[key]) return process.env[key];
+  const { vars } = tryLoadEnvFiles();
+  if (vars[key]) return vars[key];
+  if (process.env[key]) return process.env[key];
+  const infisicalVal = tryInfisicalSecret(key);
+  if (infisicalVal) return infisicalVal;
+  return fallback;
 }
 
 /**
