@@ -130,3 +130,7 @@ tools/arena/out/
 # estate-guard pack — per-machine files, never tracked
 .claude/settings.local.json
 .claude/ci/estate-guard/last-scan.json
+
+# Local harness worktrees and gstack artifacts
+.gstack/
+.worktrees/
