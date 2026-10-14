@@ -109,6 +109,35 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
 
+    def test_requirements_directory_needs_cto_pass(self):
+        for path in ['requirements/base.txt', 'requirements/dev.in', 'services/api/requirements/prod.txt']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+        self.assertFalse(gate.high_risk('docs/requirements/overview.md'))
+
+    def test_cost_control_paths_need_cto_pass(self):
+        for path in ['src/infra/cost-snapshot.ts', 'src/infra/cost-sources/openai.ts',
+                     'src/infra/cost-sources/_shared.ts', 'cost-plane-config.template.json']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_ledger_is_high_risk_only_on_financial_paths(self):
+        for path in ['data/credit-ledger.jsonl', 'src/infra/cost-ledger.ts', 'finance/ledger.csv',
+                     'src/budget/ledger.ts', 'tools/spend-ledger.json']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+        for path in ['tools/queen/ledger.jsonl', 'docs/research/music-intelligence/source-ledger-2026-09.md',
+                     'src/ledgers.ts', 'test/v01-ledgers.test.ts',
+                     'docs/graph-engineering/loops/si-admit-verify-ship/ledger.md']:
+            with self.subTest(path=path):
+                self.assertFalse(gate.high_risk(path))
+
     def test_rename_out_of_high_risk_path_keeps_protection(self):
         path = 'src/neutral/thing.ts'
         files = [{'filename': path, 'previous_filename': 'src/payments/checkout.ts', 'status': 'renamed'}]

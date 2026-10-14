@@ -30,8 +30,14 @@ HIGH_RISK_PATTERNS = [
     r'(publish|release|deploy|npm-|vercel)', r'(secret|credential|token|\.env|\.pem$|\.key$)',
     r'(auth|login|session|oauth|permission|rbac|security)',
     # Money surfaces that do not use a payment word, e.g. src/finance/pnl.ts.
-    r'(^|/)src/finance/', r'(finance|revenue|payout|ledger|pnl)',
+    r'(^|/)src/finance/', r'(finance|revenue|payout|pnl)',
+    # Cost controls: the cost snapshot, its sources and the cost-plane config template.
+    r'(^|/)src/infra/cost-snapshot\.ts$', r'(^|/)src/infra/cost-sources/', r'(^|/)cost-plane-config\.template\.json$',
 ]
+# "ledger" alone also names decision, task and source ledgers; it is high risk only on a
+# financial path (a ledger of costs, credits, spend, budgets or accounts).
+LEDGER_PATTERN = r'ledger'
+FINANCIAL_CONTEXT = r'(financ|accounting|treasury|cost|credit|spend|budget|billing|payment|invoice|revenue|payout|pnl)'
 INSTRUCTION_NAMES = {'agents.md', 'agents.override.md', 'skill.md', 'skills.md',
                      'soul.md', 'rules.md', 'claude.md', 'gemini.md', 'grok.md'}
 
@@ -58,6 +64,8 @@ MANIFEST_NAMES = {'package.json', 'package-lock.json', 'npm-shrinkwrap.json', 'p
                   'pipfile', 'pipfile.lock', 'setup.py', 'setup.cfg', 'go.mod', 'go.sum',
                   'gemfile', 'gemfile.lock'}
 MANIFEST_PATTERNS = [r'^requirements([-_.][a-z0-9_.-]*)?\.(txt|in)$', r'^constraints([-_.][a-z0-9_.-]*)?\.txt$']
+# Python requirement sets kept in a requirements/ directory (base.txt, dev.in, ...).
+MANIFEST_DIR_PATTERNS = [r'(^|/)requirements/([^/]+/)*[^/]+\.(txt|in)$']
 INDEPENDENT_OF_CTO = {'codex', 'claude-code', 'antigravity'}
 
 
@@ -66,7 +74,10 @@ def high_risk(path):
     name = PurePosixPath(lowered).name
     return (name in INSTRUCTION_NAMES or name in MANIFEST_NAMES
             or any(re.search(pattern, name) for pattern in MANIFEST_PATTERNS)
-            or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS))
+            or any(re.search(pattern, lowered) for pattern in MANIFEST_DIR_PATTERNS)
+            or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS)
+            or (re.search(LEDGER_PATTERN, lowered) is not None
+                and re.search(FINANCIAL_CONTEXT, lowered) is not None))
 
 
 def item_paths(item):
