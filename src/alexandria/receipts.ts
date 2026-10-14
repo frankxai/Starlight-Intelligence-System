@@ -383,8 +383,8 @@ export class ReceiptLedger {
           if (complete.overrun) tailOverruns = [{ key: `${complete.provider}/${complete.capability}`, at: complete.catalogueReconciledAt }];
         }
       }
-      // A stamp is recorded only once it is settled: younger than the racy window (50 ms on
-      // sub-second timestamps, 2 s on whole-second ones) a same-tick rewrite could keep it.
+      // A stamp is recorded only once it is settled: younger than the 2 s racy window a same-tick
+      // rewrite could keep it, whatever the filesystem's timestamp granularity.
       this.overrunScan.stamp = settled(big) ? stampOf(big) : undefined;
     } finally { closeSync(fd); }
     const out = new Set<string>();
@@ -470,24 +470,18 @@ function emptyScan(): OverrunScan {
 const FULL_VERIFY_EVERY = 32;
 const FULL_VERIFY_MS = 5_000;
 /**
- * A stamp younger than this may hide a same-tick rewrite. Whole-second timestamps (FAT, some
- * network filesystems) need 2 s; nanosecond timestamps advance with the kernel clock tick.
+ * A stamp younger than this may hide a same-tick rewrite. 2 s covers every timestamp granularity
+ * up to whole-second-and-a-bit (FAT's 2 s), without guessing the filesystem's tick.
  */
-const RACY_COARSE_NS = 2_000_000_000n;
-const RACY_FINE_NS = 50_000_000n;
+const RACY_NS = 2_000_000_000n;
 
 function stampOf(st: BigIntStats): string {
   return `${st.dev}:${st.ino}:${st.size}:${st.mtimeNs}:${st.ctimeNs}`;
 }
 
-/** True when the filesystem records sub-second timestamps (seen on this file's last change). */
-function fineGrained(st: BigIntStats): boolean {
-  return st.mtimeNs % 1_000_000_000n !== 0n || st.ctimeNs % 1_000_000_000n !== 0n;
-}
-
 function settled(st: BigIntStats): boolean {
   const newest = st.mtimeNs > st.ctimeNs ? st.mtimeNs : st.ctimeNs;
-  return BigInt(Date.now()) * 1_000_000n - newest >= (fineGrained(st) ? RACY_FINE_NS : RACY_COARSE_NS);
+  return BigInt(Date.now()) * 1_000_000n - newest >= RACY_NS;
 }
 
 /** The bytes after the last newline of a file, or null if it is empty or ends in a newline. Reads only the tail. */
