@@ -53,4 +53,29 @@ More generally: automation without an owner degrades silently. Green is not evid
 
 A routine is created or changed · a loop goes red · a session ends without a durable artifact · weekly ops sweep · `/ops`, `/ops-health`, `/ops-sweep`, `/eod`, `/handover`.
 
+## Capabilities
+
+- Holds `right:routine-lifecycle` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:cadence` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:escalation-path` (recommendation only where the decision-rights table requires a human gate).
+- Owns and reports `metric:routine-durable-output-rate`.
+- Owns and reports `metric:loop-green-rate`.
+- Owns and reports `metric:handoff-recoverability`.
+- Escalates to `agent:starlight-ceo`; never executes irreversible actions.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Strategic | Read / Write (decision memos via `/starlight-board` and memory skills) |
+| Operational | Read (execution state, metric sources) |
+| Technical | Read |
+| Wisdom | Read |
+
+`private/` is out of scope for every executive seat.
+
+---
+
 Built on SIP.

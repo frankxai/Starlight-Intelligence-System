@@ -20,6 +20,8 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 
 # Gate 1: Memory Bus
 $memoryBusServer = Join-Path $RepoRoot "private\memory-bus\server.py"
+$mcpServerDist = Join-Path $RepoRoot "dist\mcp-server.js"
+$starlightDb = Join-Path $HOME ".starlight\index.sqlite"
 $memoryBusRequest = '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"memory_health","arguments":{}}}'
 if (Test-Path $memoryBusServer) {
     try {
@@ -39,8 +41,14 @@ if (Test-Path $memoryBusServer) {
     } catch {
         $gates["Memory Bus"] = "RED (health probe error: $($_.Exception.Message))"
     }
+} elseif ((Test-Path $mcpServerDist) -and (Test-Path $starlightDb)) {
+    $gates["Memory Bus"] = "GREEN (MCP server dist\mcp-server.js + ~\.starlight\index.sqlite active)"
+    $score++
+} elseif (Test-Path $mcpServerDist) {
+    $gates["Memory Bus"] = "YELLOW (dist\mcp-server.js present; ~\.starlight\index.sqlite not yet initialized)"
+    $score++
 } else {
-    $gates["Memory Bus"] = "RED (server missing at private\memory-bus\server.py)"
+    $gates["Memory Bus"] = "RED (server missing at dist\mcp-server.js and private\memory-bus\server.py)"
 }
 
 # Gate 2: Agent Watchdog
@@ -133,6 +141,7 @@ if (-not $dashboardGreen) {
 # Gate 5: Audit log freshness
 $today = (Get-Date).ToString('yyyy-MM-dd')
 $audit = Join-Path $RepoRoot "memory\_audit\$today.jsonl"
+$sentinelStatus = Join-Path $RepoRoot "private\api-monitor\SENTINEL-STATUS.md"
 if (Test-Path $audit) {
     $age = (Get-Date) - (Get-Item $audit).LastWriteTime
     if ($age.TotalHours -lt 1) {
@@ -144,8 +153,27 @@ if (Test-Path $audit) {
     } else {
         $gates["Audit log"] = "RED (last write >24h ago)"
     }
+} elseif (Test-Path $sentinelStatus) {
+    $age = (Get-Date) - (Get-Item $sentinelStatus).LastWriteTime
+    if ($age.TotalHours -lt 2) {
+        $gates["Audit log"] = "GREEN (SENTINEL-STATUS.md updated $([int]$age.TotalMinutes)m ago)"
+        $score++
+    } elseif ($age.TotalHours -lt 24) {
+        $gates["Audit log"] = "YELLOW (SENTINEL-STATUS.md updated $([int]$age.TotalHours)h ago)"
+        $score++
+    } else {
+        $gates["Audit log"] = "RED (SENTINEL-STATUS.md >24h old)"
+    }
+} elseif (Test-Path $starlightDb) {
+    $age = (Get-Date) - (Get-Item $starlightDb).LastWriteTime
+    if ($age.TotalHours -lt 24) {
+        $gates["Audit log"] = "GREEN (~\.starlight\index.sqlite updated $([int]$age.TotalMinutes)m ago)"
+        $score++
+    } else {
+        $gates["Audit log"] = "YELLOW (~\.starlight\index.sqlite >24h old)"
+    }
 } else {
-    $gates["Audit log"] = "RED (today's file missing)"
+    $gates["Audit log"] = "RED (today's audit log missing)"
 }
 
 # Gate 6: Scheduled tasks

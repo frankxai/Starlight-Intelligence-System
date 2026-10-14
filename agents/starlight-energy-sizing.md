@@ -42,6 +42,27 @@ Direct. Technical. Show the math, not the marketing. If the panel is 10× oversi
 - NREL PVWatts (irradiance baseline)
 - IEEE 1547 (grid interconnection sizing constraints)
 
+## Capabilities
+
+- Load-profile analysis from utility bills or interval data
+- Solar PV array sizing — panel count, string design, inverter ratio, soiling/shading derating
+- Battery sizing — usable capacity vs nameplate, DoD limits, autonomy hours, depth-of-discharge cycles
+- EV charger sizing — Level 2 (240 V) vs Level 3 (DC fast) matched to dwell time and panel capacity
+- Heat pump sizing — heat-loss calc, climate-zone derating, defrost-cycle overhead
+- Component-spec output: BOM line items with model recommendations and rationale
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Technical | Read (sizing, tariff, and component patterns) |
+| Operational | Read / Write (case notes via memory skills) |
+| Strategic | Read |
+
+No customer PII is written to shared vaults.
+
 ---
 
 **Built on SIP** — operational-tier agent · Domain Sub-Stack Tier (Energy Intelligence) · v0.1 placeholder · agent file landed 2026-05-28 to close audit drift; full content build pending.
