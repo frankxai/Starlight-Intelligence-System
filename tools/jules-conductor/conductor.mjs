@@ -21,8 +21,12 @@ import os from 'node:os';
 import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
+<<<<<<< HEAD
 import { capacityAllowsDispatch, claimDaemonLock, decideLand, matchPullRequest } from './merge-gate.mjs';
 import { armAction, formatBoard, takeReady } from './work-board.mjs';
+=======
+import { capacityAllowsDispatch, claimDaemonLock, julesDraftAction, matchPullRequest } from './merge-gate.mjs';
+>>>>>>> origin/main
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -309,75 +313,20 @@ function recordOrLand(session, config, ledger) {
     return;
   }
   session.pullRequest = matched.url || matched.number;
-  if (!config.automation?.autoMerge || session.accepted !== true) {
-    log(`[PR OPEN] ${session.repo}#${matched.number} awaiting review`);
-    return;
+  // Jules opens drafts only. The conductor never merges and never enables
+  // auto-merge. A separate reviewer (Codex, Claude Code, Antigravity or CTO)
+  // stamps a PASS at the exact head, and CTO lands it outside this tool.
+  log(`[PR OPEN] ${session.repo}#${matched.number} draft=${matched.isDraft === true} awaiting separate-reviewer PASS`);
+  if (julesDraftAction(matched) === 'convert-to-draft') {
+    const undo = runGh(['pr', 'ready', String(matched.number), '--repo', session.repo, '--undo']);
+    if (undo.code === 0) {
+      log(`[PR REDRAFTED] ${session.repo}#${matched.number} Jules output converted back to draft`);
+      appendVault({ action: 'jules_pr_redrafted', sessionId: session.id, repo: session.repo, prNumber: matched.number });
+    } else {
+      session.quarantined = true;
+      log(`[PR REDRAFT FAILED] ${session.repo}#${matched.number} quarantined: ${undo.stderr || undo.stdout}`);
+    }
   }
-  const view = runGh([
-    'pr', 'view', String(matched.number), '--repo', session.repo,
-    '--json', 'number,state,isDraft,mergeable,mergeStateStatus,baseRefName,headRefOid,statusCheckRollup,title,url',
-  ]);
-  if (view.code !== 0) {
-    log(`[PR VIEW] ${session.repo}#${matched.number}: ${view.stderr || view.stdout}`);
-    return;
-  }
-  let full;
-  try {
-    full = JSON.parse(view.stdout);
-  } catch (err) {
-    log(`[PR VIEW] ${session.repo}#${matched.number} parse error: ${err.message}`);
-    return;
-  }
-  full.repo = session.repo;
-  const decision = decideLand(full, {
-    autoMerge: true,
-    owned: session.owned === true,
-    accepted: session.accepted === true,
-    defaultBranch: profile.targetBranch || 'main',
-    holds: config.holds || [],
-    protectedRepos: config.automation?.protectedRepos || [],
-    repo: session.repo,
-  });
-  log(`[LAND] ${session.repo}#${matched.number} ${decision.decision} ${decision.reason}`);
-  if (decision.decision === 'merged') {
-    session.merged = true;
-    session.mergedPr = matched.number;
-    session.mergedSha = decision.reason;
-    return;
-  }
-  if (decision.decision !== 'merge') return;
-
-  const merge = runGh([
-    'pr', 'merge', String(matched.number), '--repo', session.repo,
-    '--squash', '--match-head-commit', decision.reason,
-  ]);
-  if (merge.code !== 0) {
-    log(`[LAND FAILED] ${session.repo}#${matched.number}: ${merge.stderr || merge.stdout}`);
-    return;
-  }
-  const confirmed = runGh(['pr', 'view', String(matched.number), '--repo', session.repo, '--json', 'state']);
-  let state = '';
-  try {
-    state = JSON.parse(confirmed.stdout || '{}').state || '';
-  } catch {
-    state = '';
-  }
-  if (String(state).toUpperCase() !== 'MERGED') {
-    log(`[LAND UNCONFIRMED] ${session.repo}#${matched.number}`);
-    return;
-  }
-  session.merged = true;
-  session.mergedPr = matched.number;
-  session.mergedSha = decision.reason;
-  ledger.metrics.merged = (ledger.metrics.merged || 0) + 1;
-  log(`[MERGED] ${session.repo}#${matched.number} ${decision.reason}`);
-  appendVault({
-    action: 'gated_pr_merged',
-    sessionId: session.id,
-    repo: session.repo,
-    prNumber: matched.number,
-    sha: decision.reason,
-  });
 }
 
 function sendOwnedTask(task, ledger, config) {
@@ -773,10 +722,10 @@ Commands:
   next                                 What to do, where, and the command
   arm <id>                             Queue one bounded task. Does not call Jules
   run-ready                            Send the armed task when disk and RAM are above the floor
-  status                               Ledger, RAM, and whether a task is armed
-  tick                                 One scan. Does not send harvested issues
-  accept <session-id>                  Mark one owned session accepted. Does not merge by itself
-  dispatch <repo> "<desc>" [type]      Escape hatch. Still waits for disk and RAM
+  status                               Show ledger status, RAM, and whether a task is armed
+  tick                                 One scan. Records Jules draft PRs. Never merges
+  accept <session-id>                  Mark one owned session accepted. Never merges by itself
+  dispatch <repo> "<desc>" [type]      Escape hatch. Send one task when disk and RAM are above the floor
   daemon                               One background loop. A second start exits
 `);
 }

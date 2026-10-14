@@ -20,6 +20,27 @@
     "estateSweep": false,
     "protectedRepos": [
       "frankxai/frankx.ai-vercel-website"
+    ],
+    "julesDraftsOnly": true,
+    "requireSeparateReviewer": true,
+    "validReviewers": [
+      "codex",
+      "claude-code",
+      "antigravity",
+      "cto"
+    ],
+    "autoMergeLowRiskOnly": [
+      "docs",
+      "copy",
+      "patch-dependency-bump"
+    ],
+    "ctoPassRequiredFor": [
+      "money",
+      "publish",
+      "secrets",
+      "auth",
+      "licensing",
+      "gate-and-policy-files"
     ]
   },
   "council": {
@@ -34,63 +55,102 @@
       "primaryAgent": "starlight-architect",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "tools/**", "test/**", "memory/**", "docs/**"]
+      "allowedScopes": [
+        "src/**",
+        "tools/**",
+        "test/**",
+        "memory/**",
+        "docs/**"
+      ]
     },
     "frankxai/arcanea-ai-app": {
       "type": "fullstack-nextjs",
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint && npm run build",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
+      "allowedScopes": [
+        "src/**",
+        "app/**",
+        "components/**",
+        "lib/**"
+      ]
     },
     "frankxai/gencreator.ai": {
       "type": "fullstack-nextjs",
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "app/**", "components/**", "lib/**"]
+      "allowedScopes": [
+        "src/**",
+        "app/**",
+        "components/**",
+        "lib/**"
+      ]
     },
     "frankxai/frankx.ai-vercel-website": {
       "type": "fullstack-nextjs",
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm run lint",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "app/**", "components/**", "content/**"]
+      "allowedScopes": [
+        "src/**",
+        "app/**",
+        "components/**",
+        "content/**"
+      ]
     },
     "frankxai/vibeclubs": {
       "type": "community-platform",
       "primaryAgent": "starlight-weaver",
       "qualityGate": "npm test",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "components/**", "lib/**"]
+      "allowedScopes": [
+        "src/**",
+        "components/**",
+        "lib/**"
+      ]
     },
     "frankxai/agentic-ops": {
       "type": "agent-runtime",
       "primaryAgent": "starlight-architect",
       "qualityGate": "npm test",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "workers/**", "scripts/**"]
+      "allowedScopes": [
+        "src/**",
+        "workers/**",
+        "scripts/**"
+      ]
     },
     "frankxai/agentic-creator-os": {
       "type": "creator-os",
       "primaryAgent": "starlight-navigator",
       "qualityGate": "npm test",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "modules/**", "templates/**"]
+      "allowedScopes": [
+        "src/**",
+        "modules/**",
+        "templates/**"
+      ]
     },
     "frankxai/agenticincome": {
       "type": "commercial-rails",
       "primaryAgent": "starlight-business",
       "qualityGate": "npm test",
       "targetBranch": "main",
-      "allowedScopes": ["src/**", "app/**", "lib/**"]
+      "allowedScopes": [
+        "src/**",
+        "app/**",
+        "lib/**"
+      ]
     },
     "default": {
       "type": "generic",
       "primaryAgent": "starlight-architect",
       "qualityGate": "npm test",
       "targetBranch": "main",
-      "allowedScopes": ["*"]
+      "allowedScopes": [
+        "*"
+      ]
     }
   },
   "safetyRules": {

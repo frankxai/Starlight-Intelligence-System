@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "starlight.voice_projection.v1",
+  "brandId": "sis",
+  "version": "1.0.0",
+  "sourceRepository": "frankxai/starlight-design-intelligence",
+  "sourceCommit": "3d6fc8fdd38b5db69a16db1078e30d454e891af1",
+  "sourceState": "PROPOSAL_PREVIEW",
+  "sourceSha256": {
+    "VOICE.json": "179c1c4bc5bb9fc7fb1325b299ba2fa55e5fac369cddd5dc91cf82c7f3cef990",
+    "COPY.md": "a7753ca19a319198c7a8dab182a94a89a0139859d145b2378230546dd0c7bd5c",
+    "CHAT_CONTEXT.md": "f0ce1709ce1150e79ccf014757f94da689c2ce6956f0662cee0bc8856a6da0d5"
+  },
+  "contextSha256": "0bd2ba8b3c93a032c65b5dcedd4df2b6729a5dad2646705de3861b69cad760c3",
+  "chatContextSha256": "3612441a4b2bbea892ce3f332a97a0977ad8f79a0c0775bdc7cd61b5526a0a48"
+}

@@ -8,12 +8,16 @@ on:
       - .github/workflows/merge-review.yml
       - .github/workflows/merge-review-tests.yml
       - tools/merge-review/**
+      - tools/jules-conductor/merge-gate.mjs
+      - tools/jules-conductor/tests/merge-gate.test.mjs
   push:
     branches: [main]
     paths:
       - .github/workflows/merge-review.yml
       - .github/workflows/merge-review-tests.yml
       - tools/merge-review/**
+      - tools/jules-conductor/merge-gate.mjs
+      - tools/jules-conductor/tests/merge-gate.test.mjs
   workflow_dispatch:
 
 permissions:
@@ -36,3 +40,5 @@ jobs:
           python-version: '3.12'
       - name: Verify receipt acceptance and denial
         run: python -m unittest discover -s tools/merge-review/tests -p 'test_*.py' -v
+      - name: Verify separate-reviewer land policy
+        run: node --test tools/jules-conductor/tests/merge-gate.test.mjs
