@@ -29,7 +29,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { Library } from './catalog.js';
-import { buildReceipt, callFingerprint, capabilityTurn, ReceiptLedger, SessionLock, TornTailError } from './receipts.js';
+import { buildReceipt, callFingerprint, capabilityTurn, FileLock, ReceiptLedger, SessionLock, TornTailError } from './receipts.js';
 import type { AlexandriaCall, Budget, CallResult, FindHit, ProviderKind, Receipt, Transport } from './types.js';
 
 export type AlexandriaErrorCode =
@@ -270,7 +270,10 @@ export class Alexandria {
     // A retry of a held call reuses its reservation instead of taking a second one, and only
     // for the same call: the hold is bound to the capability and options it was taken for.
     const hold = req.requestId ? this.held.get(req.requestId) : undefined;
-    const { hit, options, price, transport } = this.admit(req, hold?.amount ?? 0);
+    const { hit, options: admitted, price, transport } = this.admit(req, hold?.amount ?? 0);
+    // Snapshot the validated options before the first await: the caller still holds the object
+    // and could change it while this call waits for its turn, after it was validated and priced.
+    const options = structuredClone(admitted);
     const fingerprint = callFingerprint(hit.capability.id, options);
     if (hold && hold.fingerprint !== fingerprint) {
       throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call (capability or options differ); its ${hold.amount} reserved credits stay held`, 'Retry with exactly the capability and options of the original call, or mint a new request for a different call.', req.requestId);
@@ -304,7 +307,15 @@ export class Alexandria {
         this.budget.spent -= reserved - alreadyHeld;
         if (hold) this.held.set(requestId, hold);
         const message = err instanceof Error ? err.message : String(err);
-        throw new AlexandriaError('capability_busy', `${hit.capability.id}: another process is dispatching this capability, so the call was not sent (${message})`, 'Call again shortly; nothing was charged.', req.requestId);
+        throw new AlexandriaError('capability_busy', `${hit.capability.id}: another call is dispatching this capability, so the call was not sent (${message})`, 'Call again shortly; nothing was charged. A lock left by a process that has exited is reclaimed automatically; if the error names a lock held by a live, unrelated pid, remove that .cap-*.lock directory once no Alexandria process is dispatching.', req.requestId);
+      }
+      // The wait may have outlived the session: a closed instance, or a session lock that is no
+      // longer ours, means another process may have resumed this session without this reservation.
+      if (this.closed || (this.lock && FileLock.owner(this.lock.path) !== process.pid)) {
+        releaseTurn();
+        this.budget.spent -= reserved - alreadyHeld;
+        if (hold) this.held.set(requestId, hold);
+        throw new AlexandriaError('session_closed', `${hit.capability.id}: budget session ${this.budget.sessionId} was closed or lost its lock while this call waited for its turn, so it was not sent`, 'Construct a new Alexandria to resume the session; nothing was charged.', req.requestId);
       }
     }
     try {

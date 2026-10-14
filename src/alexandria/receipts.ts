@@ -17,8 +17,8 @@
  */
 
 import { createHash, randomUUID } from 'node:crypto';
-import { appendFileSync, closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, renameSync, rmSync, truncateSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { appendFileSync, closeSync, existsSync, fstatSync, mkdirSync, openSync, readFileSync, readSync, realpathSync, renameSync, rmSync, statSync, truncateSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join } from 'node:path';
 import type { CallResult, Provider, Receipt } from './types.js';
 
 export const SIP_VERSION = '1.1.1';
@@ -151,18 +151,35 @@ export class ReceiptLedger {
   append(receipt: Receipt): void {
     mkdirSync(dirname(this.path), { recursive: true, mode: DIR_MODE });
     this.locked(() => {
-      this.quarantinePartialTail();
+      this.finishTail();
       appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
     });
   }
 
-  /** Where a cut-off final line is moved before the next append. */
+  /**
+   * Caller holds the write lock. A torn final segment that is a complete receipt is finished with
+   * a newline. Any other torn segment is left exactly where it is and the write is refused: it may
+   * be another process's overrun receipt, so only an operator moves it out (quarantinePartialTail).
+   * Writes never quarantine on their own.
+   */
+  private finishTail(): void {
+    if (!existsSync(this.path)) return;
+    const content = readFileSync(this.path, 'utf8');
+    if (content.length === 0 || content.endsWith('\n')) return;
+    if (completeReceipt(content.slice(content.lastIndexOf('\n') + 1))) {
+      appendFileSync(this.path, '\n', { encoding: 'utf8', mode: FILE_MODE });
+      return;
+    }
+    throw new TornTailError(`Receipt ledger ${this.path} ends in a cut-off line that does not parse as a complete receipt and may hold suspension evidence. Nothing was written; an operator must inspect it and move it out with ReceiptLedger.quarantinePartialTail()`);
+  }
+
+  /** Where an operator moves a cut-off final line (quarantinePartialTail). */
   get quarantinePath(): string {
     return `${this.path}.quarantine`;
   }
 
   /**
-   * A write that was cut off leaves bytes after the last newline. Appending to them would
+   * Operator recovery only; writes never call it. A write that was cut off leaves bytes after the last newline. Appending to them would
    * glue a valid receipt onto the fragment and, one append later, turn the fragment into
    * mid-file corruption. The fragment is moved to the quarantine file (never deleted) and
    * the ledger is truncated back to its last complete line.
@@ -274,7 +291,7 @@ export class ReceiptLedger {
       // that suspends this capability, so the scan fails closed instead of quarantining it.
       const suspended = existsSync(this.path) ? this.suspendedUnlocked(catalogueReconciledAt) : new Set<string>();
       if (suspended.has(capabilityId)) return { appended: false, suspended };
-      this.quarantinePartialTail();
+      this.finishTail();
       appendFileSync(this.path, JSON.stringify(receipt) + '\n', { encoding: 'utf8', mode: FILE_MODE });
       return { appended: true, suspended };
     });
@@ -285,8 +302,8 @@ export class ReceiptLedger {
 
   /**
    * Caller holds the write lock. Scans only complete lines appended since the last scan. The cache
-   * is trusted only for the same file: a different device/inode, a shorter file, or a changed
-   * prefix (a file rewritten in place) means the ledger was replaced, and it is rescanned in full.
+   * is trusted only for the same file: a different device/inode, a shorter file, or any changed
+   * byte before the cached offset means the ledger was replaced, and it is rescanned in full.
    * A torn final segment is never skipped: a complete receipt is counted, anything else fails closed.
    */
   private suspendedUnlocked(catalogueReconciledAt?: string): Set<string> {
@@ -296,8 +313,16 @@ export class ReceiptLedger {
       const stat = fstatSync(fd);
       const size = stat.size;
       const cached = this.overrunScan;
-      const sameFile = cached.offset === 0 || (cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset && prefixHash(fd, cached.prefixLength) === cached.prefixHash);
-      if (!sameFile) this.overrunScan = emptyScan();
+      // The cache is trusted only if every byte it was built from is unchanged: same file identity,
+      // not shorter, and a sha256 over bytes 0..offset that still matches. The running hash then
+      // extends over the newly consumed lines, so the full prefix is hashed once per scan.
+      let hash = createHash('sha256');
+      let sameFile = cached.offset === 0;
+      if (!sameFile && cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset) {
+        hashRange(fd, hash, 0, cached.offset);
+        sameFile = hash.copy().digest('hex') === cached.prefixHash;
+      }
+      if (!sameFile) { this.overrunScan = emptyScan(); hash = createHash('sha256'); }
       const start = this.overrunScan.offset;
       if (size > start) {
         const buf = Buffer.alloc(size - start);
@@ -325,14 +350,14 @@ export class ReceiptLedger {
             if (r.overrun) found.push({ key: `${r.provider}/${r.capability}`, at: r.catalogueReconciledAt });
           }
           const offset = start + end + 1;
-          const prefixLength = Math.min(offset, PREFIX_BYTES);
-          this.overrunScan = { offset, overruns: [...this.overrunScan.overruns, ...found], dev: stat.dev, ino: stat.ino, prefixLength, prefixHash: prefixHash(fd, prefixLength) };
+          hash.update(buf.subarray(0, end + 1));
+          this.overrunScan = { offset, overruns: [...this.overrunScan.overruns, ...found], dev: stat.dev, ino: stat.ino, prefixHash: hash.digest('hex') };
         }
         const tail = buf.subarray(end + 1, read).toString('utf8');
         if (tail.trim().length > 0) {
           const complete = completeReceipt(tail);
           if (!complete) {
-            throw new TornTailError(`Receipt ledger ${this.path} ends in a cut-off line that is not a complete receipt; it may be suspension evidence, so no paid call is admitted until it is inspected and moved out with ReceiptLedger.quarantinePartialTail()`);
+            throw new TornTailError(`Receipt ledger ${this.path} ends in a cut-off line that does not parse as a complete receipt and may hold suspension evidence. No paid call is admitted until an operator inspects it and moves it out with ReceiptLedger.quarantinePartialTail()`);
           }
           // Counted for this answer but not cached: the line is finished with a newline later.
           if (complete.overrun) tailOverruns = [{ key: `${complete.provider}/${complete.capability}`, at: complete.catalogueReconciledAt }];
@@ -399,52 +424,79 @@ function completeReceipt(fragment: string): Receipt | null {
   return receiptProblem(parsed) === null ? parsed as Receipt : null;
 }
 
-const PREFIX_BYTES = 4096;
-
 interface OverrunScan {
   offset: number;
   overruns: { key: string; at?: string }[];
   dev?: number;
   ino?: number;
-  prefixLength: number;
+  /** sha256 of bytes 0..offset. */
   prefixHash: string;
 }
 
 function emptyScan(): OverrunScan {
-  return { offset: 0, overruns: [], prefixLength: 0, prefixHash: '' };
+  return { offset: 0, overruns: [], prefixHash: '' };
 }
 
-/** sha256 of the first `length` bytes of an open file. */
-function prefixHash(fd: number, length: number): string {
-  const buf = Buffer.alloc(length);
-  let read = 0;
-  while (read < length) {
-    const n = readSync(fd, buf, read, length - read, read);
+/** Feeds bytes [from, to) of an open file into a hash, in chunks. */
+function hashRange(fd: number, hash: ReturnType<typeof createHash>, from: number, to: number): void {
+  const chunk = Buffer.alloc(64 * 1024);
+  let pos = from;
+  while (pos < to) {
+    const n = readSync(fd, chunk, 0, Math.min(chunk.length, to - pos), pos);
     if (n === 0) break;
-    read += n;
+    hash.update(chunk.subarray(0, n));
+    pos += n;
   }
-  return createHash('sha256').update(buf.subarray(0, read)).digest('hex');
 }
 
 /** Per-capability turns in this process, chained so one paid call at a time holds the capability lock. */
 const capabilityTurns = new Map<string, Promise<void>>();
 
 /**
+ * One identity for a ledger file however it is named: the real path of its directory (symlinks and
+ * relative segments resolved) plus that directory's device and inode, and the file's own real
+ * path when it already exists.
+ */
+export function ledgerIdentity(ledgerPath: string): { key: string; lockBase: string } {
+  mkdirSync(dirname(ledgerPath), { recursive: true, mode: DIR_MODE });
+  const real = existsSync(ledgerPath) ? realpathSync(ledgerPath) : join(realpathSync(dirname(ledgerPath)), basename(ledgerPath));
+  const dir = statSync(dirname(real));
+  return { key: `${dir.dev}:${dir.ino}/${basename(real)}`, lockBase: real };
+}
+
+/**
  * Takes the dispatch turn for one capability on one ledger: first in this process (calls queue in
- * order), then across processes through a pid lock beside the ledger. It is held from the
- * suspension check through the provider call to the outcome receipt, so no other call on the
- * capability is dispatched while an overrun may still be on its way. Returns the release function.
+ * order), then across processes through a pid lock beside the ledger. Both are keyed on the
+ * ledger's canonical identity (ledgerIdentity), so aliases of one file share one turn. The turn is
+ * held from the suspension check through the provider call to the outcome receipt. Waiting is
+ * bounded by `waitMs` in-process and across processes; a timeout throws and nothing is held.
+ *
+ * Stale locks: the cross-process lock records its owner pid. A lock whose pid is no longer alive
+ * is reclaimed automatically by atomic rename (FileLock). If the pid was reused by an unrelated
+ * live process, calls fail closed with capability_busy; after confirming no Alexandria process is
+ * dispatching, the operator removes the `.cap-*.lock` directory named in the error.
  */
 export async function capabilityTurn(ledgerPath: string, capabilityId: string, waitMs = 5000): Promise<() => void> {
-  const key = `${ledgerPath}\u0000${capabilityId}`;
+  const { key: ledgerKey, lockBase } = ledgerIdentity(ledgerPath);
+  const key = `${ledgerKey}\u0000${capabilityId}`;
   const previous = capabilityTurns.get(key) ?? Promise.resolve();
   let finish!: () => void;
   const mine = new Promise<void>((resolve) => { finish = resolve; });
   const chained = previous.then(() => mine);
   capabilityTurns.set(key, chained);
+  // Releasing our place lets later calls through once `previous` settles; they still queue behind it.
   const done = () => { finish(); if (capabilityTurns.get(key) === chained) capabilityTurns.delete(key); };
-  await previous;
-  const lock = new FileLock(`${ledgerPath}.cap-${createHash('sha256').update(capabilityId).digest('hex').slice(0, 16)}.lock`);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timedOut = await Promise.race([
+    previous.then(() => false),
+    new Promise<boolean>((resolve) => { timer = setTimeout(() => resolve(true), waitMs); }),
+  ]);
+  clearTimeout(timer);
+  if (timedOut) {
+    done();
+    throw new Error(`another call in this process has held the ${capabilityId} turn for over ${waitMs} ms`);
+  }
+  const lock = new FileLock(`${lockBase}.cap-${createHash('sha256').update(capabilityId).digest('hex').slice(0, 16)}.lock`);
   try { lock.acquire({ waitMs }); } catch (err) { done(); throw err; }
   let released = false;
   return () => { if (released) return; released = true; lock.release(); done(); };

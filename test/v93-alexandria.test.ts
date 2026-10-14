@@ -47,6 +47,7 @@ import {
   validateRegistry,
 } from "../src/alexandria/index.js";
 import type { Experiment } from "../src/alexandria/index.js";
+import { capabilityTurn } from "../src/alexandria/receipts.js";
 
 const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 const VERTICAL = join(REPO_ROOT, "verticals", "alexandria");
@@ -583,6 +584,8 @@ describe("v93 — router, budget and receipts", () => {
       const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 100, ledger, sessionId: "session-mode" });
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       appendFileSync(path, '{"id":"rcpt_partial"', "utf8");
+      // A torn tail that is not a complete receipt fails paid calls closed until it is moved out.
+      assert.equal(ledger.quarantinePartialTail(), true);
       await alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" });
       for (const f of [path, ledger.quarantinePath, `${path}.session-mode.lock`]) assert.equal(statSync(f).mode & 0o077, 0, `${f} is readable by its owner only`);
       assert.equal(statSync(join(dir, "private")).mode & 0o077, 0, "the ledger directory is owner-only");
@@ -973,6 +976,99 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       writeFileSync(replacement, filler + line({ capability: "v" }) + line({ capability: "w", overrun: true }));
       renameSync(replacement, path);
       assert.deepEqual([...ledger.suspendedCapabilities()], ["p/w"]);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("outcome writes refuse a torn tail that is not a receipt, leave it in place and keep admits closed", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      // Another process crashes mid-write while this call is at the provider.
+      const tearing = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { appendFileSync(path, '{"id":"rcpt_torn","overrun":tr'); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [tearing as never], maxCredits: 100, ledger, sessionId: "torn-outcome" });
+      try {
+        await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed" && /cut-off line/.test(err.message));
+        assert.ok(readFileSync(path, "utf8").endsWith('{"id":"rcpt_torn","overrun":tr'), "the torn tail stays where it is");
+        assert.ok(!existsSync(ledger.quarantinePath), "writes never quarantine on their own");
+        assert.equal(alexandria.budget.spent, 5, "the reservation stays held by the pending line");
+        await assert.rejects(alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank" }), (err: unknown) => err instanceof AlexandriaError && err.code === "receipt_persist_failed", "admits stay closed until an operator acts");
+        assert.equal(ledger.quarantinePartialTail(), true, "the operator path still works");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("rehashes the whole cached prefix, so a rewrite past the first 4 KB is caught", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      const head = Array.from({ length: 40 }, (_, i) => line({ capability: `f${i}` })).join("");
+      assert.ok(head.length > 4096);
+      const before = line({ capability: "aa", overrun: false });
+      const after = line({ capability: "xxx", overrun: true });
+      assert.equal(before.length, after.length);
+      writeFileSync(path, head + before);
+      assert.equal(ledger.suspendedCapabilities().size, 0);
+      // Same inode, same first 4 KB, same length: only a record past 4 KB changed, now an overrun.
+      writeFileSync(path, head + after);
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/xxx"], "the changed record past 4 KB is seen");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("keys the capability turn on the ledger's real identity and times out the in-process wait", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      mkdirSync(join(dir, "sub"));
+      const path = join(dir, "receipts.jsonl");
+      const alias = `${dir}/sub/../receipts.jsonl`;
+      const release = await capabilityTurn(path, cap);
+      const started = Date.now();
+      await assert.rejects(capabilityTurn(alias, cap, 100), /held the .* turn/, "an alias of the same ledger shares the turn");
+      assert.ok(Date.now() - started < 2000, "the in-process wait is bounded");
+      release();
+      const again = await capabilityTurn(alias, cap, 100);
+      again();
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("snapshots validated options before waiting for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const seen: unknown[] = [];
+      const t = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; options?: Record<string, unknown>; requestId?: string }[]) => { seen.push(...calls.map((c) => c.options)); return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [t as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "snapshot" });
+      try {
+        const opts: Record<string, unknown> = { address: "x" };
+        const pending = alexandria.execute({ capabilityId: cap, options: opts });
+        opts.address = "changed-after-validation";
+        const res = await pending;
+        assert.deepEqual(seen, [{ address: "x" }], "the provider gets the options that were validated and priced");
+        assert.equal((res.receipt as unknown as { options?: Record<string, unknown> }).options?.address ?? "x", "x");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("refunds and rejects a queued call whose session closed while it waited for the turn", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      let releaseFirst!: () => void;
+      const gate = new Promise<void>((resolve) => { releaseFirst = resolve; });
+      let dispatched = 0;
+      const slow = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => { dispatched += 1; await gate; return calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId })); } };
+      const alexandria = new Alexandria({ library, transports: [slow as never], maxCredits: 100, ledger: new ReceiptLedger(join(dir, "receipts.jsonl")), sessionId: "queued-close" });
+      const first = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      const second = alexandria.execute({ capabilityId: cap, options: { address: "x" } });
+      await new Promise((r) => setTimeout(r, 20));
+      alexandria.close();
+      releaseFirst();
+      await first;
+      await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
+      assert.equal(dispatched, 1, "the queued call was never sent");
+      assert.equal(alexandria.budget.spent, 5, "its reservation was refunded");
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
