@@ -1217,7 +1217,20 @@ export class SisMcpServerV01 {
             stages: { type: 'array' },
             issuer_name: { type: 'string' },
             decisions: { type: 'array' },
-            evidence: { type: 'array' },
+            evidence: {
+              type: 'array',
+              description:
+                'Evidence records supporting the run. Each item must provide kind, ref, and sha256 (64-character lowercase hex digest of the referenced content).',
+              items: {
+                type: 'object',
+                required: ['kind', 'ref', 'sha256'],
+                properties: {
+                  kind: { type: 'string' },
+                  ref: { type: 'string' },
+                  sha256: { type: 'string' },
+                },
+              },
+            },
             verdict: { type: 'string', enum: RECEIPT_VERDICTS },
             totals: { type: 'object' },
             signing_key_pem: { type: 'string' },
