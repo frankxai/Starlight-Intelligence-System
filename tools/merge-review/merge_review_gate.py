@@ -16,7 +16,9 @@ TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
 # Seats, models or bots that may author a change. The reviewer must be a different one.
 # dependabot and github-actions are bot makers: they are never reviewers, so their
 # high-risk changes (manifests, lockfiles, workflows) still need a CTO PASS.
-MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules', 'dependabot', 'github-actions'}
+# grok covers Grok Bot seats other than CTO (e.g. WebDev, Surfaces). It is a maker
+# only, never a reviewer.
+MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules', 'grok', 'dependabot', 'github-actions'}
 # Valid separate reviewers. Jules is never a reviewer.
 REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto'}
 # Paths that touch money, publish, secrets, auth, licensing or the gate itself.

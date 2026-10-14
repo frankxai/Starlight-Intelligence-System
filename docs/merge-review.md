@@ -22,8 +22,9 @@ UTF-8 bytes for SHA-256 verification. See the [evaluator](../tools/merge-review/
 and its [regression tests](../tools/merge-review/tests/test_merge_review_gate.py).
 
 The receipt contains `repository`, numeric `pr`, full `headSha`, `maker` (the author seat:
-`codex`, `claude-code`, `antigravity`, `cto` or `jules`, or the bot makers
-`dependabot` and `github-actions`, which are never reviewers),
+`codex`, `claude-code`, `antigravity`, `cto`, `jules` or `grok` (Grok Bot seats other
+than CTO, such as WebDev and Surfaces), or the bot makers
+`dependabot` and `github-actions`, none of which (`jules`, `grok`, bots) are reviewers),
 `provider`, `verdict`, `blockingFindings`, all `reviewedFiles`, the complete
 `review`, its `reviewSha256`, the review packet's `packetSha256` and a nonempty
 `resolution`. Only `PASS` counts. Use it only after resolving every blocking finding;

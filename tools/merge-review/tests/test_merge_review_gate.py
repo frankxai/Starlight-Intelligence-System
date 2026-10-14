@@ -74,6 +74,15 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertFalse(self.evaluate([receipt(provider=bot)]))
         self.assertFalse(self.evaluate([receipt(maker='dependabot[bot]', provider='cto')]))
 
+    def test_grok_seats_are_makers_but_never_review(self):
+        self.assertTrue(self.evaluate([receipt(maker='grok', provider='codex')]))
+        self.assertFalse(self.evaluate([receipt(maker='grok', provider='grok')]))
+        self.assertFalse(self.evaluate([receipt(provider='grok')]))
+        path = 'tools/merge-review/merge_review_gate.py'
+        files = [{'filename': path, 'status': 'modified'}]
+        self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='grok', provider='cto')], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='grok', provider='codex')], files))
+
     def test_cto_authored_high_risk_needs_another_admitted_seat(self):
         path = 'tools/merge-review/merge_review_gate.py'
         files = [{'filename': path, 'status': 'modified'}]
