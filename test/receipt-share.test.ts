@@ -41,7 +41,7 @@ function receipt(): RunReceipt {
     stages,
     totals: { costEur: 0.0033, latencyMs: 8400, tokens: { input: 20000, output: 2800 } },
     decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-22T00:00:09Z' }],
-    evidence: [{ kind: 'source', ref: 'https://example.org/a' }],
+    evidence: [{ kind: 'source', ref: 'https://example.org/a', sha256: 'a'.repeat(64) }],
     verdict: 'PASS',
   };
 }

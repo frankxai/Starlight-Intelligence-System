@@ -12,6 +12,6 @@
     { "gate": "publish", "decidedBy": "human", "actorId": "frank", "outcome": "approved" }
   ],
   "evidence": [
-    { "kind": "source", "ref": "https://example.org/replace-with-a-real-source" }
+    { "kind": "source", "ref": "https://example.org/replace-with-a-real-source", "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
   ]
 }

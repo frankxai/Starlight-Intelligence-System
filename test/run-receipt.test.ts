@@ -58,7 +58,7 @@ function receipt(overrides: Partial<RunReceipt> = {}): RunReceipt {
     stages: STAGES,
     totals: totalsFromStages(STAGES),
     decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', at: '2026-09-21T09:59:30.000Z' }],
-    evidence: [{ kind: 'ledger', ref: 'memory/_audit/agent-events/2026-09-21.jsonl' }],
+    evidence: [{ kind: 'ledger', ref: 'memory/_audit/agent-events/2026-09-21.jsonl', sha256: sha256Hex('log') }],
     verdict: verdictFromStages(STAGES),
     ...overrides,
   };
@@ -265,6 +265,16 @@ describe('run receipt — receiptProblems', () => {
     assert.deepEqual(receiptProblems(receipt({ stages: mixed, totals: totalsFromStages(mixed), verdict: 'PASS' })), []);
   });
 
+  it('refuses an evidence entry missing sha256', () => {
+    const problems = receiptProblems(receipt({ evidence: [{ kind: 'source', ref: 'https://example.org' } as any] }));
+    assert.ok(problems.includes('evidence https://example.org has no sha256'), problems.join('; '));
+  });
+
+  it('refuses an evidence entry with a malformed sha256', () => {
+    const problems = receiptProblems(receipt({ evidence: [{ kind: 'source', ref: 'https://example.org', sha256: 'not-hex' }] }));
+    assert.ok(problems.includes('evidence https://example.org.sha256 is not a sha256'), problems.join('; '));
+  });
+
   it('catches totals below the stage sums', () => {
     const problems = receiptProblems(receipt({ totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } } }));
     assert.ok(problems.some((p) => p.includes('totals.costEur') && p.includes('below the stage sum')), problems.join('; '));
@@ -316,7 +326,7 @@ describe('run receipt hardening', () => {
       stages,
       totals: totalsFromStages(stages),
       decisions: [],
-      evidence: [{ kind: 'test', ref: 'https://example.org/test' }],
+      evidence: [{ kind: 'test', ref: 'https://example.org/test', sha256: sha256Hex('test') }],
       verdict: 'PASS',
     };
   }

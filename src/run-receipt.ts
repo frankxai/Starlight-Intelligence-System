@@ -60,7 +60,7 @@ export interface RunReceiptEvidence {
   kind: string;
   /** URL, path, or ledger id the verifier can go and look at. */
   ref: string;
-  sha256?: string;
+  sha256: string;
 }
 
 export interface RunReceipt {
@@ -315,7 +315,8 @@ export function receiptProblems(receipt: unknown): string[] {
       for (const k of unknownKeys(e, KEYS.evidence)) problems.push(`unknown property evidence[${i}].${k}`);
       if (typeof e.kind !== "string" || !e.kind.trim()) problems.push(`evidence ${i} has no kind`);
       if (typeof e.ref !== "string" || !e.ref.trim()) problems.push(`evidence ${i} has no ref`);
-      if (e.sha256 !== undefined && !SHA256.test(String(e.sha256))) problems.push(`evidence ${e.ref ?? i}.sha256 is not a sha256`);
+      if (typeof e.sha256 !== "string" || !e.sha256.trim()) problems.push(`evidence ${e.ref ?? i} has no sha256`);
+      else if (!SHA256.test(e.sha256)) problems.push(`evidence ${e.ref ?? i}.sha256 is not a sha256`);
     });
   }
 

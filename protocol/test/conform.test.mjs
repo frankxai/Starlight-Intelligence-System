@@ -532,7 +532,7 @@ test("run receipt schema conditionally requires evidence for PASS verdict", () =
   assert.ok(passErrors.some((e) => e.includes("evidence") && e.includes("at least 1 items")));
 
   // PASS with evidence succeeds
-  const passWithEvidence = { ...sample, evidence: [{ kind: "source", ref: "https://example.org" }], verdict: "PASS" };
+  const passWithEvidence = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "0".repeat(64) }], verdict: "PASS" };
   assert.deepEqual(validateAgainstSchema(schema, passWithEvidence), []);
 
   // FAIL with empty evidence succeeds
@@ -542,4 +542,34 @@ test("run receipt schema conditionally requires evidence for PASS verdict", () =
   // PARTIAL with empty evidence succeeds
   const partialEmpty = { ...sample, evidence: [], verdict: "PARTIAL" };
   assert.deepEqual(validateAgainstSchema(schema, partialEmpty), []);
+});
+
+test("run receipt schema requires sha256 on evidence entries", () => {
+  const schema = JSON.parse(readFileSync(join(repoRoot, "protocol", "run-receipt.v1.schema.json"), "utf8"));
+  const sample = {
+    schema: "starlight.run-receipt.v1",
+    receiptId: "rcpt_test",
+    issuedAt: "2026-09-21T10:00:00.000Z",
+    issuer: { name: "sis" },
+    run: { id: "r1", kind: "test", host: "local", startedAt: "2026-09-21T09:58:00.000Z", endedAt: "2026-09-21T09:59:00.000Z" },
+    subject: { name: "test.txt", digest: { sha256: "0".repeat(64) } },
+    stages: [{ name: "s1", status: "ok" }],
+    totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } },
+    decisions: [],
+    verdict: "PASS",
+  };
+
+  // Missing sha256 fails required check
+  const missingSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org" }] };
+  const missingErrors = validateAgainstSchema(schema, missingSha);
+  assert.ok(missingErrors.some((e) => e.includes("sha256") && e.includes("missing required")));
+
+  // Malformed sha256 fails pattern check
+  const badSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "bad" }] };
+  const badErrors = validateAgainstSchema(schema, badSha);
+  assert.ok(badErrors.some((e) => e.includes("sha256") && e.includes("does not match")));
+
+  // Valid 64-char lowercase hex sha256 succeeds
+  const validSha = { ...sample, evidence: [{ kind: "source", ref: "https://example.org", sha256: "a".repeat(64) }] };
+  assert.deepEqual(validateAgainstSchema(schema, validSha), []);
 });

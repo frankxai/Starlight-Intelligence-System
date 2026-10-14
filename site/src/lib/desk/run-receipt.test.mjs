@@ -26,7 +26,7 @@ const receipt = () => ({
   stages: STAGES,
   totals: totalsFromStages(STAGES),
   decisions: [],
-  evidence: [{ kind: "ledger", ref: "memory/_audit/x.jsonl" }],
+  evidence: [{ kind: "ledger", ref: "memory/_audit/x.jsonl", sha256: sha256Hex("log") }],
   verdict: verdictFromStages(STAGES),
 });
 
@@ -87,4 +87,16 @@ test("receiptProblems refuses PASS when all stages are skipped", () => {
   const skipped = { ...receipt(), stages: [{ name: "s", status: "skipped" }], totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } }, verdict: "PASS" };
   const problems = receiptProblems(skipped);
   assert.ok(problems.includes("verdict is PASS but every stage was skipped"), problems.join("; "));
+});
+
+test("receiptProblems refuses evidence entry missing sha256", () => {
+  const bad = { ...receipt(), evidence: [{ kind: "source", ref: "https://example.org" }] };
+  const problems = receiptProblems(bad);
+  assert.ok(problems.includes("evidence https://example.org has no sha256"), problems.join("; "));
+});
+
+test("receiptProblems refuses evidence entry with malformed sha256", () => {
+  const bad = { ...receipt(), evidence: [{ kind: "source", ref: "https://example.org", sha256: "not-a-sha256" }] };
+  const problems = receiptProblems(bad);
+  assert.ok(problems.includes("evidence https://example.org.sha256 is not a sha256"), problems.join("; "));
 });

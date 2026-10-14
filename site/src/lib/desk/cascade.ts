@@ -551,12 +551,16 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
           ]
         : [],
     evidence: [
-      ...sources.map((source) => ({ kind: "source", ref: source.url })),
-      ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref }] : []),
-      ...gapReasons.map((reason) => ({
-        kind: "cost-incomplete",
-        ref: `${reason}: ${unaccounted.filter((name) => gapOf(name) === reason).join(", ")}`,
-      })),
+      ...sources.map((source) => ({ kind: "source", ref: source.url, sha256: sha256Hex(source.content) })),
+      ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref, sha256: sha256Hex(vault.ref) }] : []),
+      ...gapReasons.map((reason) => {
+        const ref = `${reason}: ${unaccounted.filter((name) => gapOf(name) === reason).join(", ")}`;
+        return {
+          kind: "cost-incomplete",
+          ref,
+          sha256: sha256Hex(ref),
+        };
+      }),
     ],
     verdict: verdictFromStages(stages),
   };
