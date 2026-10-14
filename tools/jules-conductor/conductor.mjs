@@ -13,7 +13,7 @@
  * Built on SIP — Starlight Intelligence Protocol.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statfsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statfsSync, openSync, closeSync, unlinkSync, writeSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -22,6 +22,7 @@ import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
 import { capacityAllowsDispatch, claimDaemonLock, julesDraftAction, matchPullRequest } from './merge-gate.mjs';
+import { armAction, formatBoard, takeReady } from './work-board.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -30,6 +31,7 @@ const STATE_DIR = join(__dirname, 'state');
 const LEDGER_PATH = join(STATE_DIR, 'ledger.json');
 const ARCHIVE_PATH = join(STATE_DIR, 'archive.jsonl');
 const BACKLOG_PATH = join(STATE_DIR, 'backlog.json');
+const NEXT_PATH = join(__dirname, 'next-actions.json');
 const LOGS_DIR = join(__dirname, 'logs');
 const CONDUCTOR_LOG = join(LOGS_DIR, 'conductor.log');
 const PID_PATH = join(STATE_DIR, 'daemon.pid');
@@ -212,12 +214,60 @@ function pruneLedger(ledger, maxEntries = 50) {
   }
 }
 
+const STALE_INFLIGHT_MS = 6 * 60 * 60 * 1000;
+
 function pidAlive(pid) {
   try {
     process.kill(pid, 0);
     return true;
   } catch {
     return false;
+  }
+}
+
+function isInflight(session, nowMs) {
+  if (!session || session.merged || session.quarantined) return false;
+  const status = String(session.status || '').toLowerCase();
+  const active = ['planning', 'in progress', 'queued', 'running'].some((name) => status.includes(name));
+  if (!active) return false;
+  const seen = Date.parse(session.lastSeen || session.firstSeen || '');
+  if (Number.isFinite(seen) && nowMs - seen > STALE_INFLIGHT_MS) return false;
+  return true;
+}
+
+function acquirePidFile() {
+  const writePid = () => {
+    const fd = openSync(PID_PATH, 'wx');
+    try {
+      writeSync(fd, String(process.pid));
+    } finally {
+      closeSync(fd);
+    }
+  };
+  try {
+    writePid();
+    return { take: true, reason: 'no lock' };
+  } catch (err) {
+    if (err.code !== 'EEXIST') throw err;
+    const existingRaw = existsSync(PID_PATH) ? readFileSync(PID_PATH, 'utf8').trim() : '';
+    const existingPid = Number.parseInt(existingRaw, 10);
+    const knownPid = Number.isInteger(existingPid) && existingPid > 0 ? existingPid : null;
+    const claim = claimDaemonLock({
+      existingPid: knownPid,
+      existingAlive: knownPid ? pidAlive(knownPid) : false,
+    });
+    if (!claim.take) return claim;
+    try {
+      unlinkSync(PID_PATH);
+    } catch {
+      return { take: false, reason: 'stale lock could not be cleared' };
+    }
+    try {
+      writePid();
+      return { take: true, reason: 'stale pid replaced' };
+    } catch {
+      return { take: false, reason: 'lock race lost' };
+    }
   }
 }
 
@@ -275,6 +325,52 @@ function recordOrLand(session, config, ledger) {
   }
 }
 
+function sendOwnedTask(task, ledger, config) {
+  const profile = getRepoProfile(task.repo, config);
+  const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  try {
+    const engineeredPrompt = engineerJulesPrompt({
+      repo: task.repo,
+      taskDescription: task.description,
+      issueNumber: task.issueNumber,
+      repoProfile: profile,
+      taskType: task.type || 'feature',
+      scopeFiles: task.scopeFiles || [],
+      trackToken,
+    });
+    const dispatchRes = runJules(['new', '--repo', task.repo], { input: engineeredPrompt });
+    if (dispatchRes.code !== 0) {
+      return { sent: false, detail: dispatchRes.stderr || dispatchRes.stdout || 'dispatch failed' };
+    }
+    const idMatch = (dispatchRes.stdout || '').match(/(\d{18,20})/);
+    if (idMatch) {
+      ledger.sessions[idMatch[1]] = {
+        id: idMatch[1],
+        repo: task.repo,
+        description: task.description,
+        status: 'Planning',
+        firstSeen: new Date().toISOString(),
+        verified: false,
+        merged: false,
+        owned: true,
+        accepted: false,
+        trackToken,
+      };
+    }
+    ledger.metrics = ledger.metrics || {};
+    ledger.metrics.dispatched = (ledger.metrics.dispatched || 0) + 1;
+    appendVault({
+      action: 'jules_session_dispatched',
+      repo: task.repo,
+      leadAgent: profile.primaryAgent,
+      task: task.title || task.id,
+    });
+    return { sent: true, detail: idMatch ? idMatch[1] : 'sent without a session id' };
+  } catch (err) {
+    return { sent: false, detail: err.message };
+  }
+}
+
 // ── Core Operations ─────────────────────────────────────────────
 
 export async function tick() {
@@ -285,7 +381,8 @@ export async function tick() {
   const monitored = Object.keys(config.repoProfiles || {});
   const now = Date.now();
   const lastScan = ledger.lastRemoteScan ? new Date(ledger.lastRemoteScan).getTime() : 0;
-  const shouldScanRemote = (now - lastScan > 60 * 60 * 1000) || (Object.keys(ledger.sessions || {}).length === 0);
+  const adoptRemote = config.runtime?.adoptRemoteSessions === true;
+  const shouldScanRemote = adoptRemote && ((now - lastScan > 60 * 60 * 1000) || (Object.keys(ledger.sessions || {}).length === 0));
 
   if (shouldScanRemote) {
     log(`[REMOTE SCAN] Refreshing full remote session inventory across ${monitored.length} repos...`);
@@ -311,9 +408,7 @@ export async function tick() {
     ledger.lastRemoteScan = new Date().toISOString();
   } else {
     // Fast path: Only check active in-flight cloud sessions directly (~3s instead of 100s)
-    const activeSessions = Object.values(ledger.sessions).filter(s => 
-      !s.merged && !s.quarantined && ['planning', 'in progress', 'running', 'queued'].some(st => (s.status || '').toLowerCase().includes(st))
-    );
+    const activeSessions = Object.values(ledger.sessions).filter((session) => session.owned === true && isInflight(session, now)).slice(0, 3);
     if (activeSessions.length > 0) {
       log(`[FAST PATH] Checking ${activeSessions.length} active sessions directly...`);
       for (const s of activeSessions) {
@@ -382,75 +477,33 @@ export async function tick() {
   }
 
   // 3. Process Backlog Queue
-  const activeCount = Object.values(ledger.sessions).filter(s => {
-    if (s.merged || s.quarantined) return false;
-    const st = (s.status || '').toLowerCase();
-    if (st.includes('completed') || st.includes('failed') || st.includes('unknown') || st.includes('awaiting')) {
-      return false;
-    }
-    return st.includes('planning') || st.includes('in progress') || st.includes('queued') || st.includes('running');
-  }).length;
+  const activeCount = Object.values(ledger.sessions).filter((session) => session.owned === true && isInflight(session, now)).length;
 
   const maxSessions = config.runtime?.maxConcurrentSessions || 3;
-  log(`Active concurrent sessions: ${activeCount}/${maxSessions}`);
+  log(`Active owned sessions: ${activeCount}/${maxSessions}`);
 
   const room = readCapacity();
-  if (activeCount < maxSessions && backlog.queue.length > 0 && !room.ok) {
+  const autoDispatch = config.automation?.autoDispatch === true;
+  if (activeCount < maxSessions && backlog.queue.length > 0 && !autoDispatch) {
+    log('[DISPATCH HELD] autoDispatch is off');
+  } else if (activeCount < maxSessions && backlog.queue.length > 0 && !room.ok) {
     log(`[DISPATCH HELD] ${room.reason}`);
   }
 
-  if (activeCount < maxSessions && backlog.queue.length > 0 && room.ok) {
-    const task = backlog.queue.shift();
-    const profile = getRepoProfile(task.repo, config);
-    const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-    log(`[DISPATCHING FROM BACKLOG] Repo: ${task.repo}, Lead: ${profile.primaryAgent}`);
-
-    try {
-      const engineeredPrompt = engineerJulesPrompt({
-        repo: task.repo,
-        taskDescription: task.description,
-        issueNumber: task.issueNumber,
-        repoProfile: profile,
-        taskType: task.type || 'feature',
-        scopeFiles: task.scopeFiles || [],
-        trackToken,
-      });
-
-      const dispatchRes = runJules(['new', '--repo', task.repo], { input: engineeredPrompt });
-      if (dispatchRes.code === 0) {
-        log(`[DISPATCH SUCCESS] Task queued with Jules on ${task.repo}`);
-        const idMatch = (dispatchRes.stdout || '').match(/(\d{18,20})/);
-        if (idMatch) {
-          const newId = idMatch[1];
-          ledger.sessions[newId] = {
-            id: newId,
-            repo: task.repo,
-            description: task.description,
-            status: 'Planning',
-            firstSeen: new Date().toISOString(),
-            verified: false,
-            merged: false,
-            owned: true,
-            accepted: false,
-            trackToken,
-          };
-          log(`[REGISTERED SESSION] Auto-registered ${newId} in ledger for direct tracking.`);
-        }
-        ledger.metrics.dispatched++;
-        appendVault({
-          action: 'jules_session_dispatched',
-          repo: task.repo,
-          leadAgent: profile.primaryAgent,
-          task: task.description,
-        });
+  if (activeCount < maxSessions && autoDispatch && room.ok) {
+    const picked = takeReady(backlog.queue);
+    if (!picked.task) {
+      log('[DISPATCH HELD] no bounded ready task');
+    } else {
+      const result = sendOwnedTask(picked.task, ledger, config);
+      if (result.sent) {
+        backlog.queue = picked.queue;
+        log(`[DISPATCH SUCCESS] ${picked.task.id} on ${picked.task.repo}`);
       } else {
-        log(`Failed to dispatch task: ${dispatchRes.stderr || dispatchRes.stdout}`);
-        backlog.queue.unshift(task);
+        log(`[DISPATCH HELD] ${result.detail}`);
       }
-    } catch (err) {
-      log(`Prompt engineering error: ${err.message}`);
+      saveJSON(BACKLOG_PATH, backlog);
     }
-    saveJSON(BACKLOG_PATH, backlog);
   }
 
   // Memory & state hygiene
@@ -480,10 +533,72 @@ export function status() {
     for (const s of list.slice(-15)) {
       const verifiedIcon = s.verified ? '✓ Ratified' : (s.quarantined ? '✗ Quarantined' : '○ Pending');
       const mergedIcon = s.merged ? '★ MERGED' : '';
-      console.log(`[${s.id}] ${s.repo.padEnd(35)} | ${s.status.padEnd(16)} | ${verifiedIcon} ${mergedIcon}`);
+      console.log(`[${s.id}] ${String(s.repo || '').padEnd(35)} | ${String(s.status || '').padEnd(16)} | ${verifiedIcon} ${mergedIcon}`);
     }
   }
+  console.log('---------------------------------------------------------------');
+  const ready = (loadJSON(BACKLOG_PATH, { queue: [] }).queue || []).filter((item) => item.ready === true).length;
+  console.log(`Ready tasks:  ${ready}. Run "next" for what to arm.`);
   console.log('===============================================================\n');
+}
+
+export function printNext() {
+  const board = loadJSON(NEXT_PATH, { actions: [] });
+  console.log(formatBoard(board.actions, readCapacity()));
+  console.log('');
+  console.log('Arm one Jules id, then run-ready. run-ready sends that one task when the machine has room.');
+}
+
+export function armOne(id) {
+  const board = loadJSON(NEXT_PATH, { actions: [] });
+  const action = (board.actions || []).find((item) => item.id === id);
+  if (!action) {
+    console.log('Unknown id. Run next.');
+    process.exitCode = 2;
+    return;
+  }
+  if (action.runner !== 'jules') {
+    console.log(action.how);
+    return;
+  }
+  const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
+  const result = armAction(backlog.queue, action);
+  if (!result.armed) {
+    console.log(result.reason);
+    process.exitCode = 2;
+    return;
+  }
+  backlog.queue = result.queue;
+  saveJSON(BACKLOG_PATH, backlog);
+  const room = readCapacity();
+  console.log(`Armed ${id} on ${action.repo}.`);
+  console.log(room.ok ? 'Run run-ready to send it.' : `Held: ${room.reason}. Run run-ready after the machine has room.`);
+}
+
+export function runReady() {
+  const room = readCapacity();
+  if (!room.ok) {
+    console.log(`Held: ${room.reason}.`);
+    console.log('Free RAM to 4 GiB and keep 50 GiB free on C: before a Jules session.');
+    return;
+  }
+  const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
+  const picked = takeReady(backlog.queue);
+  if (!picked.task) {
+    console.log('No armed task. Run next, then arm one id.');
+    return;
+  }
+  const config = loadJSON(CONFIG_PATH, {});
+  const ledger = loadJSON(LEDGER_PATH, { lastTick: null, sessions: {}, metrics: {} });
+  const result = sendOwnedTask(picked.task, ledger, config);
+  if (!result.sent) {
+    console.log(`Not sent: ${result.detail}`);
+    return;
+  }
+  backlog.queue = picked.queue;
+  saveJSON(BACKLOG_PATH, backlog);
+  saveJSON(LEDGER_PATH, ledger);
+  console.log(`Sent ${picked.task.id}. ${result.detail}`);
 }
 
 export function dispatchDirect(repo, taskDesc, type = 'feature') {
@@ -526,18 +641,11 @@ export function dispatchDirect(repo, taskDesc, type = 'feature') {
 }
 
 export async function runDaemon() {
-  const existingRaw = existsSync(PID_PATH) ? readFileSync(PID_PATH, 'utf8').trim() : '';
-  const existingPid = Number.parseInt(existingRaw, 10);
-  const knownPid = Number.isInteger(existingPid) && existingPid > 0 ? existingPid : null;
-  const claim = claimDaemonLock({
-    existingPid: knownPid,
-    existingAlive: knownPid ? pidAlive(knownPid) : false,
-  });
+  const claim = acquirePidFile();
   if (!claim.take) {
     log(`Another conductor is running (${claim.reason}). Exiting.`);
     process.exit(0);
   }
-  writeFileSync(PID_PATH, String(process.pid));
 
   const config = loadJSON(CONFIG_PATH, {});
   const intervalMs = (config.runtime?.pollIntervalSeconds || 180) * 1000;
@@ -567,6 +675,16 @@ if (cmd === 'tick') {
   tick();
 } else if (cmd === 'status') {
   status();
+} else if (cmd === 'next') {
+  printNext();
+} else if (cmd === 'arm') {
+  if (!arg1) {
+    console.log('Usage: node conductor.mjs arm <id>');
+    process.exit(1);
+  }
+  armOne(arg1);
+} else if (cmd === 'run-ready') {
+  runReady();
 } else if (cmd === 'dispatch') {
   if (!arg1 || rest.length === 0) {
     console.log('Usage: node conductor.mjs dispatch <owner/repo> "<task description>" [type]');
@@ -597,10 +715,13 @@ if (cmd === 'tick') {
 } else {
   console.log(`Starlight Jules Conductor v2.2
 Commands:
-  status                               Show ledger status and RAM
+  next                                 What to do, where, and the command
+  arm <id>                             Queue one bounded task. Does not call Jules
+  run-ready                            Send the armed task when disk and RAM are above the floor
+  status                               Show ledger status, RAM, and whether a task is armed
   tick                                 One scan. Records Jules draft PRs. Never merges
-  accept <session-id>                  Mark one owned session accepted. Never merges
-  dispatch <repo> "<desc>" [type]      Send one task when disk and RAM are above the floor
+  accept <session-id>                  Mark one owned session accepted. Never merges by itself
+  dispatch <repo> "<desc>" [type]      Escape hatch. Send one task when disk and RAM are above the floor
   daemon                               One background loop. A second start exits
 `);
 }

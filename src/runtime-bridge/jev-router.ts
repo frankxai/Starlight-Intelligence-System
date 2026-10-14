@@ -103,3 +103,21 @@ export function inspectJevRouterResponse(value: unknown, approvedModels: readonl
     ...(typeof data.advisor_model === "string" ? { advisorModel: data.advisor_model } : {}),
     authority: "untrusted-provider-report" };
 }
+
+/**
+ * Verified concrete model slugs recommended for sovereign Jev Router pools across tiers.
+ * Explicit IDs only; dynamic wildcards or unverified aliases are rejected by prepareJevRouterRequest.
+ */
+export const RECOMMENDED_SOVEREIGN_MODELS = [
+  "anthropic/claude-3.7-sonnet",
+  "anthropic/claude-opus-4-8",
+  "openai/gpt-4o",
+  "openai/o3-mini",
+  "google/gemini-2.5-flash",
+  "google/gemini-2.5-pro",
+  "deepseek/deepseek-r1",
+  "deepseek/deepseek-chat",
+  "qwen/qwen-2.5-coder-32b-instruct",
+  "meta-llama/llama-3.3-70b-instruct",
+  "x-ai/grok-3",
+] as const;

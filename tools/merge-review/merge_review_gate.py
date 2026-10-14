@@ -13,8 +13,12 @@ TRUSTED_ATTESTORS = {'frankxai'}
 # A receipt counts only if GitHub records it as posted through an allowlisted App.
 # A null performed_via_github_app means a raw token (PAT or gh CLI) and is rejected.
 TRUSTED_APPS = {'cursor', 'chatgpt-codex-connector'}
-# Seats or models that may author a change. The reviewer must be a different one.
-MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules'}
+# Seats, models or bots that may author a change. The reviewer must be a different one.
+# dependabot and github-actions are bot makers: they are never reviewers, so their
+# high-risk changes (manifests, lockfiles, workflows) still need a CTO PASS.
+# grok covers Grok Bot seats other than CTO (e.g. WebDev, Surfaces). It is a maker
+# only, never a reviewer.
+MAKERS = {'codex', 'claude-code', 'antigravity', 'cto', 'jules', 'grok', 'dependabot', 'github-actions'}
 # Valid separate reviewers. Jules is never a reviewer.
 REVIEW_PROVIDERS = {'codex', 'claude-code', 'antigravity', 'cto'}
 # Paths that touch money, publish, secrets, auth, licensing or the gate itself.
@@ -25,7 +29,15 @@ HIGH_RISK_PATTERNS = [
     r'licens', r'(pay|billing|stripe|checkout|price|pricing|invoice|money|wallet|marketplace)',
     r'(publish|release|deploy|npm-|vercel)', r'(secret|credential|token|\.env|\.pem$|\.key$)',
     r'(auth|login|session|oauth|permission|rbac|security)',
+    # Money surfaces that do not use a payment word, e.g. src/finance/pnl.ts.
+    r'(^|/)src/finance/', r'(finance|revenue|payout|pnl)',
+    # Cost controls: the cost snapshot, its sources and the cost-plane config template.
+    r'(^|/)src/infra/cost-snapshot\.ts$', r'(^|/)src/infra/cost-sources/', r'(^|/)cost-plane-config\.template\.json$',
 ]
+# "ledger" alone also names decision, task and source ledgers; it is high risk only on a
+# financial path (a ledger of costs, credits, spend, budgets or accounts).
+LEDGER_PATTERN = r'ledger'
+FINANCIAL_CONTEXT = r'(financ|accounting|treasury|cost|credit|spend|budget|billing|payment|invoice|revenue|payout|pnl)'
 INSTRUCTION_NAMES = {'agents.md', 'agents.override.md', 'skill.md', 'skills.md',
                      'soul.md', 'rules.md', 'claude.md', 'gemini.md', 'grok.md'}
 
@@ -46,7 +58,14 @@ def routine_file(item):
 # Dependency manifests and lockfiles can carry major bumps, scripts or publishConfig.
 # The gate cannot verify a patch-only bump, so they are always high risk.
 MANIFEST_NAMES = {'package.json', 'package-lock.json', 'npm-shrinkwrap.json', 'pnpm-lock.yaml',
-                  'pnpm-workspace.yaml', 'yarn.lock', 'bun.lockb', 'bun.lock', '.npmrc'}
+                  'pnpm-workspace.yaml', 'yarn.lock', 'bun.lockb', 'bun.lock', '.npmrc',
+                  # Rust, Python, Go and Ruby manifests carry the same risk.
+                  'cargo.toml', 'cargo.lock', 'pyproject.toml', 'poetry.lock', 'uv.lock',
+                  'pipfile', 'pipfile.lock', 'setup.py', 'setup.cfg', 'go.mod', 'go.sum',
+                  'gemfile', 'gemfile.lock'}
+MANIFEST_PATTERNS = [r'^requirements([-_.][a-z0-9_.-]*)?\.(txt|in)$', r'^constraints([-_.][a-z0-9_.-]*)?\.txt$']
+# Python requirement sets kept in a requirements/ directory (base.txt, dev.in, ...).
+MANIFEST_DIR_PATTERNS = [r'(^|/)requirements/([^/]+/)*[^/]+\.(txt|in)$']
 INDEPENDENT_OF_CTO = {'codex', 'claude-code', 'antigravity'}
 
 
@@ -54,7 +73,24 @@ def high_risk(path):
     lowered = str(path).lower()
     name = PurePosixPath(lowered).name
     return (name in INSTRUCTION_NAMES or name in MANIFEST_NAMES
-            or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS))
+            or any(re.search(pattern, name) for pattern in MANIFEST_PATTERNS)
+            or any(re.search(pattern, lowered) for pattern in MANIFEST_DIR_PATTERNS)
+            or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS)
+            or (re.search(LEDGER_PATTERN, lowered) is not None
+                and re.search(FINANCIAL_CONTEXT, lowered) is not None))
+
+
+def item_paths(item):
+    """Every path a changed-file entry touches. A rename or copy also names its source."""
+    paths = [item.get('filename', '')]
+    if item.get('previous_filename'):
+        paths.append(item['previous_filename'])
+    return paths
+
+
+def item_high_risk(item):
+    # Renaming a money or gate file to a neutral path must not drop its protection.
+    return any(high_risk(path) for path in item_paths(item))
 
 
 def reviewer_allowed(maker, provider, risky):
@@ -142,7 +178,7 @@ def graphql_edit_history(node_id):
 def evaluate(repository, number, head, files, comments, auto_merge=None):
     if not re.fullmatch(r'[0-9a-f]{40}', head) or not files:
         return False, 'Missing or invalid source identity or changed files.'
-    risky = any(high_risk(item.get('filename', '')) for item in files)
+    risky = any(item_high_risk(item) for item in files)
     if risky and auto_merge:
         return False, 'High-risk change has auto-merge armed; disable it. High-risk PRs never auto-merge.'
     if not risky and all(routine_file(item) for item in files):

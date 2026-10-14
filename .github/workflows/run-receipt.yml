@@ -1,0 +1,56 @@
+name: run-receipt
+
+# The run-receipt issuer and verifier tests. Root package.json sits in the foundry
+# toolchain lock's digest closure, so these run here rather than in npm test.
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/run-receipt.yml"
+      - "src/run-receipt.ts"
+      - "src/receipt-share.ts"
+      - "test/run-receipt.test.ts"
+      - "test/receipt-share.test.ts"
+      - "protocol/run-receipt.v1.schema.json"
+      - "protocol/test/conform.test.mjs"
+      - "package.json"
+      - "pnpm-lock.yaml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/run-receipt.yml"
+      - "src/run-receipt.ts"
+      - "src/receipt-share.ts"
+      - "test/run-receipt.test.ts"
+      - "test/receipt-share.test.ts"
+      - "protocol/run-receipt.v1.schema.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: run-receipt-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-receipt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+
+      - name: Run receipt issuer and verifier
+        run: node --import tsx --test test/run-receipt.test.ts test/receipt-share.test.ts
+
+      - name: Protocol conformance (schema)
+        run: node --test protocol/test/conform.test.mjs
