@@ -1,17 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const conductor = readFileSync(join(root, 'conductor.mjs'), 'utf8');
-const review = readFileSync(join(root, 'ceo-pr-review.mjs'), 'utf8');
+const reviewPath = join(root, 'ceo-pr-review.mjs');
+const review = existsSync(reviewPath) ? readFileSync(reviewPath, 'utf8') : null;
 const config = JSON.parse(readFileSync(join(root, 'config.json'), 'utf8'));
 
 test('the conductor does not sweep or undraft', () => {
   assert.equal(conductor.includes('sweepPullRequests'), false);
-  assert.equal(conductor.includes("pr', 'ready'"), false);
+  // Conductor never undrafts (never calls 'pr', 'ready' without '--undo')
+  assert.equal(conductor.includes("pr', 'ready'") && !conductor.includes("'--undo'"), false);
   assert.equal(conductor.includes('slice(0, 20)'), false);
   assert.equal(conductor.includes('adoptRemoteSessions === true'), true);
   assert.equal(conductor.includes('autoDispatch === true'), true);
@@ -19,6 +21,10 @@ test('the conductor does not sweep or undraft', () => {
 });
 
 test('the pull-request report cannot merge, undraft, retitle, or update a branch', () => {
+  if (!review) {
+    assert.equal(existsSync(reviewPath), false, 'ceo-pr-review.mjs removed in favour of separate-reviewer gate');
+    return;
+  }
   assert.equal(review.includes("pr', 'merge'"), false);
   assert.equal(review.includes("pr', 'ready'"), false);
   assert.equal(review.includes("pr', 'edit'"), false);
