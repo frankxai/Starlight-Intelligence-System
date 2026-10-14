@@ -471,7 +471,7 @@ describe("v93 — router, budget and receipts", () => {
     assert.deepEqual(profile.records, [{ profile: 1 }], "a reordered response is matched by capability, never by position");
     assert.deepEqual(rank.records, [{ rank: 1 }]);
     const sentAt = Date.now();
-    const slow = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => { await new Promise((r) => setTimeout(r, 30)); return { ok: true, status: 200, json: async () => ({ data: { alexandria: [
+    const slow = new FirecrawlTransport({ apiKey: "k", fetchImpl: async () => { await new Promise((r) => setTimeout(r, 60)); return { ok: true, status: 200, json: async () => ({ data: { alexandria: [
       { provider: "gmgn-ai", capability: "crypto/wallet_rank", records: [{ a: 1 }], creditsCost: 5 },
       { provider: "gmgn-ai", capability: "crypto/wallet_profile", records: [{ b: 1 }], creditsCost: 5, observedAt: "2026-10-01T00:00:00Z" },
     ] } }) }; } });
