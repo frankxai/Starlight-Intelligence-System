@@ -81,8 +81,11 @@ $Entropy = [Text.Encoding]::UTF8.GetBytes("starlight-checker:$Repository")
 
 function Write-Log([string]$Message) {
     $line = '{0:u} {1}' -f (Get-Date), $Message
-    if (Test-Path $Paths.Logs) {
-        $log = Join-Path $Paths.Logs "$($Mode.ToLowerInvariant()).log"
+    # SYSTEM logs go to the SYSTEM-only folder: registrar errors may quote API responses,
+    # and SYSTEM never writes into a folder the job user can change.
+    $folder = if ($Mode -eq 'Registrar') { $Paths.Secret } else { $Paths.Logs }
+    if (Test-Path $folder) {
+        $log = Join-Path $folder "$($Mode.ToLowerInvariant()).log"
         if ((Test-Path $log) -and (Get-Item $log).Length -gt 5MB) { Move-Item $log "$log.1" -Force }
         Add-Content -Path $log -Value $line
     }
@@ -305,6 +308,29 @@ function Reset-Diag {
     Set-StrictAcl $Diag (Get-OwnerGrants)
 }
 
+function Stop-JobUserProcesses {
+    # A job could leave a process behind to watch for the next registration. Nothing the
+    # job user runs may outlive its job, so stop it before SYSTEM handles any credential.
+    $leftovers = Get-Process -IncludeUserName -ErrorAction SilentlyContinue |
+        Where-Object { $_.UserName -match "\$RunnerUser$" }
+    foreach ($process in $leftovers) { Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue }
+    if (Get-Process -IncludeUserName -ErrorAction SilentlyContinue | Where-Object { $_.UserName -match "\$RunnerUser$" }) {
+        throw "Processes of $RunnerUser are still running; not registering."
+    }
+}
+
+function Protect-ConfigDiag {
+    # config.cmd logged as SYSTEM into the fresh _diag. Move those logs to the SYSTEM-only
+    # folder before the job user gets a writable _diag, so no registration output, masked
+    # or not, is ever readable by job code.
+    $archive = Join-Path $Paths.Secret ('config-diag-{0:yyyyMMddHHmmss}' -f (Get-Date))
+    Move-Item $Diag $archive
+    Get-ChildItem $Paths.Secret -Directory -Filter 'config-diag-*' | Sort-Object Name -Descending |
+        Select-Object -Skip 5 | Remove-Item -Recurse -Force
+    New-Item -ItemType Directory -Path $Diag | Out-Null
+    Set-StrictAcl $Diag ((Get-OwnerGrants) + @{ $RunnerUser = 'Modify' })
+}
+
 function Invoke-Registrar {
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     if (-not $identity.IsSystem) { throw 'Registrar mode runs only as SYSTEM from its scheduled task.' }
@@ -314,6 +340,7 @@ function Invoke-Registrar {
             foreach ($stale in $StateFiles) {
                 Remove-Item (Join-Path $Paths.Runner $stale) -Force -ErrorAction SilentlyContinue
             }
+            Stop-JobUserProcesses
             Reset-Diag
             Assert-RunnerBundle
             $token = Get-RegistrationToken
@@ -323,11 +350,14 @@ function Invoke-Registrar {
                             '--replace', '--disableupdate')
             if ($RunnerGroup) { $configArgs += @('--runnergroup', $RunnerGroup) }
             # config.cmd is a verified, job-read-only bundle file; nothing it loads is job-writable.
+            # The one-hour registration token reaches config.cmd as an argument of a SYSTEM
+            # process. A standard user cannot read another account's process memory or
+            # command line, and no job-user process is running at this point.
             & (Join-Path $Paths.Runner 'config.cmd') @configArgs | Out-Null
             $token = $null
             if ($LASTEXITCODE -ne 0) { throw "config.cmd exited $LASTEXITCODE" }
-            # The listener running as the job user writes its own logs to the fresh _diag.
-            Set-StrictAcl $Diag ((Get-OwnerGrants) + @{ $RunnerUser = 'Modify' })
+            # The listener running as the job user writes its own logs to a fresh _diag.
+            Protect-ConfigDiag
             Write-Log "Registered ephemeral runner $name; starting job task."
             Start-ScheduledTask -TaskName $JobTask
             Start-Sleep -Seconds 15

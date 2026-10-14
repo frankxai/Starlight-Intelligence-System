@@ -150,6 +150,12 @@ When an independent runner owner exists:
    - the registrar renames the old `_diag` (a rename moves a planted link rather than
      following it) and gives `config.cmd` a fresh SYSTEM-only `_diag`;
    - work-folder cleanup runs as `starlight-runner` in the job task, never as SYSTEM;
+   - credentials: no App private key or API key ever reaches the C940. The PAT is
+     decrypted only inside the SYSTEM registrar and sent as an HTTP header. The one-hour
+     registration token is an argument of the SYSTEM `config.cmd` process, after every
+     leftover `starlight-runner` process is stopped. `config.cmd` logs are moved to the
+     SYSTEM-only folder before the job user gets a writable `_diag`, and registrar logs
+     are written there too. The job environment holds only the read-only job token;
    - the runner is registered `--ephemeral --disableupdate`. Update it by re-running
      Install with the new version and SHA-256; GitHub stops queueing jobs to runners
      more than 30 days behind a release.

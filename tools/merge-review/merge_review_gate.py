@@ -5,6 +5,7 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import sys
+import urllib.parse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import review_policy as policy  # noqa: E402  (trusted sibling module, loaded by path)
@@ -289,6 +290,52 @@ def evaluate(ctx):
                    'App ledger, or an exact-head approval by a reviewer listed in checker-trust.json.')
 
 
+SAFE_REPOSITORY = re.compile(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+')
+SAFE_SHA = re.compile(r'[0-9a-f]{40}')
+# Git allows more in a branch name; anything outside this set fails closed for the
+# push-actor lookup rather than being spliced into a query string.
+SAFE_REF = re.compile(r'[A-Za-z0-9][A-Za-z0-9._/-]{0,199}')
+
+
+class UnsafeValue(ValueError):
+    """A value from GitHub or the event cannot be placed in an API path or query."""
+
+
+def safe_sha(value):
+    if not isinstance(value, str) or not SAFE_SHA.fullmatch(value):
+        raise UnsafeValue('Expected a 40-hex commit SHA.')
+    return value
+
+
+def safe_number(value):
+    """A PR number from an event or API payload: a plain positive integer, nothing else."""
+    if isinstance(value, bool):
+        raise UnsafeValue('Expected a positive PR number.')
+    if isinstance(value, int):
+        number = value
+    elif isinstance(value, str) and re.fullmatch(r'[1-9][0-9]{0,6}', value):
+        number = int(value)
+    else:
+        raise UnsafeValue('Expected a positive PR number.')
+    if not 1 <= number <= 9_999_999:
+        raise UnsafeValue('Expected a positive PR number.')
+    return number
+
+
+def safe_ref_query(ref):
+    """The URL-encoded value for ?ref=refs/heads/<branch>, or UnsafeValue."""
+    if (not isinstance(ref, str) or not SAFE_REF.fullmatch(ref) or '..' in ref
+            or ref.endswith(('/', '.lock')) or '//' in ref):
+        raise UnsafeValue('Head branch name is outside the safe set.')
+    return urllib.parse.quote(f'refs/heads/{ref}', safe='')
+
+
+def safe_repository(value):
+    if not isinstance(value, str) or not SAFE_REPOSITORY.fullmatch(value) or '..' in value:
+        raise UnsafeValue('Invalid repository.')
+    return value
+
+
 def api(endpoint, payload=None, paginate=False):
     args = ['gh', 'api', endpoint]
     if paginate:
@@ -305,7 +352,7 @@ def routine_modes(repository, pr, files, head):
     """Only the narrow routine class needs mode inspection. No source is executed."""
     if not all(item['filename'].startswith(('docs/notes/', 'docs/handovers/')) for item in files):
         return
-    for revision in {head, pr['base']['sha']}:
+    for revision in {safe_sha(head), safe_sha(pr['base']['sha'])}:
         tree = api(f'repos/{repository}/git/trees/{revision}?recursive=1')
         if tree.get('truncated'):
             raise ValueError('Incomplete Git tree listing')
@@ -320,13 +367,16 @@ def push_identities(repository, pr, trust):
     """Commit authors and committers plus authenticated push actors on the head branch."""
     if not trust['independentReviewers']['users']:
         return [], False  # Human path is off; skip the extra calls.
-    ref = pr['head']['ref']
-    activity = api(f'repos/{repository}/activity?ref=refs/heads/{ref}&per_page=100', paginate=True)
+    try:
+        ref = safe_ref_query(pr['head']['ref'])
+    except UnsafeValue:
+        return [], False  # Unknown pushers: no human approval counts.
+    activity = api(f'repos/{repository}/activity?ref={ref}&per_page=100', paginate=True)
     return [{'id': (a.get('actor') or {}).get('id')} for a in activity], True
 
 
 def collect_context(repository, number, pr, trust):
-    head = pr['head']['sha']
+    head, base = safe_sha(pr['head']['sha']), safe_sha(pr['base']['sha'])
     endpoint = f'repos/{repository}/pulls/{number}'
     files = api(endpoint + '/files?per_page=100', paginate=True)
     if len(files) != pr['changed_files']:
@@ -340,14 +390,14 @@ def collect_context(repository, number, pr, trust):
            'manifest_paths': [], 'maker_vendors': [], 'identities': [], 'identities_complete': False}
     if all(routine_file(item) for item in files):
         return ctx
-    compare = api(f'repos/{repository}/compare/{pr["base"]["sha"]}...{head}')
+    compare = api(f'repos/{repository}/compare/{base}...{head}')
     _, commits = policy.comparison_complete(compare, pr['changed_files'])
     identities = [{'id': (c.get(role) or {}).get('id')} for c in commits for role in ('author', 'committer')]
     pushed, complete = push_identities(repository, pr, trust)
     ctx.update(identities=identities + pushed,
                identities_complete=complete and all(type(i['id']) is int for i in identities + pushed))
     if policy.app_configured(trust):
-        app_id = trust['checkerApp']['appId']
+        app_id = safe_number(trust['checkerApp']['appId'])
         ledger = api(f'repos/{repository}/commits/{head}/check-runs?check_name={policy.RECEIPT_CHECK}'
                      f'&app_id={app_id}&filter=all&per_page=100')
         if ledger['total_count'] != len(ledger['check_runs']):
@@ -368,11 +418,12 @@ def collect_context(repository, number, pr, trust):
 
 
 def evaluate_pr(repository, number, trust):
+    repository, number = safe_repository(repository), safe_number(number)
     endpoint = f'repos/{repository}/pulls/{number}'
     pr = api(endpoint)
     if pr['state'] != 'open':
         return None
-    head = pr['head']['sha']
+    head = safe_sha(pr['head']['sha'])
     check = api(f'repos/{repository}/check-runs', {
         'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
         'external_id': f'merge-review:{number}:{head}'})
@@ -385,7 +436,10 @@ def evaluate_pr(repository, number, trust):
     except Exception as error:
         summary = f'Review evaluation failed closed ({type(error).__name__}).'
     # PATCH this run, never create a competing successful run after a failed run.
-    args = ['gh', 'api', f'repos/{repository}/check-runs/{check["id"]}',
+    check_id = check['id']
+    if type(check_id) is not int or check_id < 1:
+        raise UnsafeValue('Unexpected check run id.')
+    args = ['gh', 'api', f'repos/{repository}/check-runs/{check_id}',
             '--method', 'PATCH', '--input', '-']
     subprocess.run(args, input=json.dumps({
         'status': 'completed', 'conclusion': 'success' if ok else 'failure',
@@ -400,20 +454,18 @@ def pr_numbers(repository, event):
              or (event.get('issue', {}).get('number') if event.get('issue', {}).get('pull_request') else None)
              or event.get('inputs', {}).get('pr'))
     if value is not None:
-        return [int(value)]
+        return [safe_number(value)]
     relay = event.get('workflow_run', {}).get('pull_requests') or []
     if relay:
-        return sorted({int(item['number']) for item in relay})[:MAX_SWEEP_PRS]
+        return sorted({safe_number(item.get('number')) for item in relay})[:MAX_SWEEP_PRS]
     if 'schedule' in event or 'workflow_run' in event:
         open_prs = api(f'repos/{repository}/pulls?state=open&sort=updated&direction=desc&per_page={MAX_SWEEP_PRS}')
-        return [int(item['number']) for item in open_prs]
+        return [safe_number(item.get('number')) for item in open_prs]
     return []  # Ordinary issue comments are not PR review events.
 
 
 def main():
-    repository = os.environ['GITHUB_REPOSITORY']
-    if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repository):
-        raise ValueError('Invalid repository')
+    repository = safe_repository(os.environ['GITHUB_REPOSITORY'])
     with open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8') as event_file:
         event = json.load(event_file)
     trust = policy.load_trust()

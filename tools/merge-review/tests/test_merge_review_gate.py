@@ -404,6 +404,52 @@ class EditHistoryTests(unittest.TestCase):
         self.assertEqual(len(calls), gate.MAX_EDIT_LOOKUPS)
 
 
+HOSTILE = ['../x', 'x&per_page=1', 'x?ref=main', 'x\nInjected: 1', 'x#frag', 'x y', '%2e%2e/x',
+           'аgent/claude/x', 'x‮', '', '/x', 'x/', 'x..y', 'refs//x', 'x.lock']
+
+
+class UnsafeValueTests(unittest.TestCase):
+    def test_hostile_refs_never_reach_a_query(self):
+        for ref in HOSTILE:
+            with self.subTest(ref=ref), self.assertRaises(gate.UnsafeValue):
+                gate.safe_ref_query(ref)
+        self.assertEqual(gate.safe_ref_query('agent/claude/x-1.2'), 'refs%2Fheads%2Fagent%2Fclaude%2Fx-1.2')
+
+    def test_hostile_numbers_shas_and_repositories_refuse(self):
+        for value in ['110&x=1', '110/../1', '-1', '0', '1e3', ' 110', '110\n', '١١٠',
+                      True, 1.5, None, 10_000_000]:
+            with self.subTest(number=value), self.assertRaises(gate.UnsafeValue):
+                gate.safe_number(value)
+        self.assertEqual(gate.safe_number('110'), 110)
+        for value in ['A' * 40, 'a' * 39, 'a' * 40 + '\n', 'a' * 39 + '&', '../' + 'a' * 37, None]:
+            with self.subTest(sha=value), self.assertRaises(gate.UnsafeValue):
+                gate.safe_sha(value)
+        for value in ['a/b/c', '../x', 'a/..', 'a b/c', 'a/b?x', 'a/b\n']:
+            with self.subTest(repository=value), self.assertRaises(gate.UnsafeValue):
+                gate.safe_repository(value)
+
+    def test_hostile_event_numbers_fail_before_any_api_call(self):
+        for event in [{'inputs': {'pr': '110&state=closed'}}, {'inputs': {'pr': '../1'}},
+                      {'workflow_run': {'pull_requests': [{'number': '1?x'}]}}]:
+            with self.subTest(event=event), patch.object(gate, 'api') as api, \
+                    self.assertRaises(gate.UnsafeValue):
+                gate.pr_numbers(REPO, event)
+            api.assert_not_called()
+
+    def test_hostile_branch_turns_human_path_off_without_a_call(self):
+        for ref in HOSTILE:
+            pr = {'head': {'ref': ref}}
+            with self.subTest(ref=ref), patch.object(gate, 'api') as api:
+                self.assertEqual(gate.push_identities(REPO, pr, TRUST), ([], False))
+                api.assert_not_called()
+
+    def test_hostile_head_sha_from_api_fails_closed(self):
+        pr = {'head': {'sha': 'a' * 39 + '&', 'ref': 'agent/claude/x'}, 'base': {'sha': 'c' * 40},
+              'changed_files': 1}
+        with patch.object(gate, 'api', return_value=[]), self.assertRaises(gate.UnsafeValue):
+            gate.collect_context(REPO, 110, pr, TRUST)
+
+
 class MainWiringTests(unittest.TestCase):
     def transport(self, comments, ledger, reviews=(), commits=(CLAUDE_COMMIT,)):
         pr = {'number': 110, 'state': 'open', 'head': {'sha': HEAD, 'ref': 'agent/claude/x'},
