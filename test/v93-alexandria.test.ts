@@ -1090,7 +1090,7 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
-  it("does not rehash the prefix after its own appends, but does after a foreign one", async () => {
+  it("skips the prefix rehash only for a settled, unchanged ledger", async () => {
     const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
     try {
       const path = join(dir, "receipts.jsonl");
@@ -1101,12 +1101,14 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       const scan = () => (ledger as unknown as { overrunScan: { stamp?: string; scansSinceVerify: number } }).overrunScan;
       ledger.suspendedCapabilities();
       assert.ok(scan().stamp, "a settled ledger records its stamp");
-      ledger.append({ ...base, capability: "own" } as never);
       ledger.suspendedCapabilities();
-      assert.equal(scan().scansSinceVerify, 1, "after its own append the prefix was trusted by stamp");
+      assert.equal(scan().scansSinceVerify, 1, "an unchanged settled ledger is trusted by stamp");
+      ledger.append({ ...base, capability: "own" } as never);
+      assert.equal(scan().stamp, undefined, "a post-append stamp is never trusted");
+      ledger.suspendedCapabilities();
+      assert.equal(scan().scansSinceVerify, 0, "so the next scan rehashes");
       appendFileSync(path, JSON.stringify({ ...base, capability: "foreign", overrun: true }) + "\n");
-      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/foreign"], "a foreign append is still seen");
-      assert.equal(scan().scansSinceVerify, 0, "and forces a full rehash");
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/foreign"], "a foreign append is seen");
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });

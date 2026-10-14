@@ -158,17 +158,13 @@ export class ReceiptLedger {
   }
 
   /**
-   * Caller holds the write lock. Appends a line and, if the scan cache was current just before
-   * (its stamp still matched the file), moves the stamp past the append: the bytes the cache was
-   * built from were unchanged and only this append followed, so the next scan need not rehash them.
+   * Caller holds the write lock. Appends a line and drops the scan stamp: a stamp taken after an
+   * append is never trusted, because a lock-bypassing rewrite just before the append would be
+   * hidden by it. The next scan rehashes the prefix; a stamp is trusted again once it has settled.
    */
   private appendOwn(text: string): void {
-    const current = this.overrunScan.stamp !== undefined && existsSync(this.path) && stampOf(statSync(this.path, { bigint: true })) === this.overrunScan.stamp;
     appendFileSync(this.path, text, { encoding: 'utf8', mode: FILE_MODE });
-    // Forwarded only where timestamps are fine-grained: on a coarse-timestamp filesystem a foreign
-    // same-size rewrite in the same tick would keep this fresh stamp, so the next scan rehashes.
-    const after = statSync(this.path, { bigint: true });
-    this.overrunScan.stamp = current && fineGrained(after) ? stampOf(after) : undefined;
+    this.overrunScan.stamp = undefined;
   }
 
   /**
@@ -331,16 +327,14 @@ export class ReceiptLedger {
       const cached = this.overrunScan;
       // The cache is trusted only if every byte it was built from is unchanged. Cheap path: the
       // file's stamp (device, inode, size, mtime and ctime in ns) equals the one recorded when the
-      // cache was last verified or moved past this ledger's own append, and a full verify is not due.
+      // cache was last verified (never one taken right after an append), and a full verify is not due.
       // Otherwise the sha256 over bytes 0..offset is recomputed and must match. The running hash is
       // kept, so new lines extend it without rereading the prefix.
       let hash = createHash('sha256');
       let sameFile = cached.offset === 0;
-      let viaStamp = false;
       const due = cached.scansSinceVerify >= FULL_VERIFY_EVERY || Date.now() - cached.verifiedAt >= FULL_VERIFY_MS;
       if (!sameFile && !due && cached.stamp !== undefined && cached.hash && stampOf(big) === cached.stamp) {
         sameFile = true;
-        viaStamp = true;
         hash = cached.hash.copy();
         cached.scansSinceVerify += 1;
       } else if (!sameFile && cached.dev === stat.dev && cached.ino === stat.ino && size >= cached.offset) {
@@ -389,10 +383,9 @@ export class ReceiptLedger {
           if (complete.overrun) tailOverruns = [{ key: `${complete.provider}/${complete.capability}`, at: complete.catalogueReconciledAt }];
         }
       }
-      // A stamp is recorded only once it is settled (on a filesystem with coarse timestamps a rewrite
-      // in the same tick could keep it, so one younger than the racy window (50 ms fine, 2 s coarse) is not trusted), or when the file
-      // is exactly as the trusted stamp described (fine-grained timestamps only). A foreign append therefore costs one full rehash.
-      this.overrunScan.stamp = settled(big) || (viaStamp && fineGrained(big)) ? stampOf(big) : undefined;
+      // A stamp is recorded only once it is settled: younger than the racy window (50 ms on
+      // sub-second timestamps, 2 s on whole-second ones) a same-tick rewrite could keep it.
+      this.overrunScan.stamp = settled(big) ? stampOf(big) : undefined;
     } finally { closeSync(fd); }
     const out = new Set<string>();
     for (const o of [...this.overrunScan.overruns, ...tailOverruns]) {
