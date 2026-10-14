@@ -485,7 +485,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
   const nonce = (options.idNonce ?? randomNonce)();
   const runId = `run_${idAt.toString(36)}_${nonce}`;
   const receiptId = `rcpt_${idAt}_${nonce}`;
-  let writtenVaultAtoms: unknown[] = [];
+  let writtenVaultPayload = "";
   if (signal.aborted) {
     stages.push({ name: "remember", status: "skipped", provider: "vault", note: DEADLINE_REACHED });
   } else if (vault && claims.length > 0) {
@@ -493,7 +493,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
     try {
       const atoms = claims.map((claim) => atomFrom(claim, question, receiptId, clock()));
       remembered = await vault.append(atoms, signal);
-      writtenVaultAtoms = atoms;
+      writtenVaultPayload = atoms.map((a) => JSON.stringify(a)).join("\n") + "\n";
       stages.push({
         name: "remember",
         status: remembered > 0 ? "ok" : "failed",
@@ -552,7 +552,7 @@ export async function runDesk(options: CascadeOptions): Promise<DeskRun> {
         : [],
     evidence: [
       ...sources.map((source) => ({ kind: "source", ref: source.url, sha256: sha256Hex(source.content) })),
-      ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref, sha256: sha256Hex(JSON.stringify(writtenVaultAtoms)) }] : []),
+      ...(remembered > 0 && vault ? [{ kind: "vault", ref: vault.ref, sha256: sha256Hex(writtenVaultPayload) }] : []),
       ...gapReasons.map((reason) => {
         const ref = `${reason}: ${unaccounted.filter((name) => gapOf(name) === reason).join(", ")}`;
         return {
