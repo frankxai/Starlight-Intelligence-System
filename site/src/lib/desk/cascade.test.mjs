@@ -41,7 +41,7 @@ import {
   sectionsPresent,
   MODELS,
 } from "./cascade.ts";
-import { receiptProblems } from "./run-receipt.ts";
+import { receiptProblems, sha256Hex } from "./run-receipt.ts";
 import { PRICING } from "./pricing.ts";
 import { COST_INCOMPLETE_UNSIGNED, signingPlan } from "./signing.ts";
 import { METER_TIMEOUT_MS } from "./run-limit.ts";
@@ -150,7 +150,11 @@ test("a full run cites its claims, scores itself, and issues a complete receipt"
   assert.equal(run.receipt.totals.costEur, 0);
   assert.equal(run.costComplete, false);
   assert.deepEqual(run.unpricedStages, ["retrieve", "extract", "synthesize", "judge"]);
-  assert.deepEqual(run.receipt.evidence.at(-1), { kind: "cost-incomplete", ref: "unpriced: retrieve, extract, synthesize, judge" });
+  assert.deepEqual(run.receipt.evidence.at(-1), {
+    kind: "cost-incomplete",
+    ref: "unpriced: retrieve, extract, synthesize, judge",
+    sha256: sha256Hex("unpriced: retrieve, extract, synthesize, judge"),
+  });
   assert.equal(run.receipt.stages[1].note, "2 sources · unpriced");
 
   const models = fetchImpl.calls.slice(1).map((call) => call.body.model);
@@ -901,7 +905,7 @@ test("priced models with unpriced retrieval are still cost-incomplete: Tavily is
   assert.match(retrieve.note, /unpriced$/);
   assert.equal(typeof run.receipt.stages.find((stage) => stage.name === "extract").costEur, "number");
   assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
-    { kind: "cost-incomplete", ref: "unpriced: retrieve" },
+    { kind: "cost-incomplete", ref: "unpriced: retrieve", sha256: sha256Hex("unpriced: retrieve") },
   ]);
   assert.deepEqual(receiptProblems(run.receipt), [], "the draft stays a valid v1 receipt");
 });
@@ -922,7 +926,7 @@ test("a priced stage whose usage the provider did not report carries no euro fig
   assert.equal(run.costComplete, false);
   assert.deepEqual(run.unpricedStages, ["synthesize"]);
   assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
-    { kind: "cost-incomplete", ref: "usage unreported: synthesize" },
+    { kind: "cost-incomplete", ref: "usage unreported: synthesize", sha256: sha256Hex("usage unreported: synthesize") },
   ]);
   assert.equal(run.receipt.decisions.length, 1);
   const [decision] = run.receipt.decisions;
@@ -988,7 +992,7 @@ test("a failed retrieval has an unknown billable call count: unaccounted, not me
   assert.match(retrieve.note, /call count unknown$/);
   assert.equal(run.costComplete, false);
   assert.deepEqual(run.receipt.evidence.filter((item) => item.kind === "cost-incomplete"), [
-    { kind: "cost-incomplete", ref: "call count unknown: retrieve" },
+    { kind: "cost-incomplete", ref: "call count unknown: retrieve", sha256: sha256Hex("call count unknown: retrieve") },
   ]);
   assert.equal(run.receipt.decisions[0]?.outcome, "rejected");
   assert.deepEqual(receiptProblems(run.receipt), []);
