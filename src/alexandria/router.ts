@@ -292,8 +292,17 @@ export class Alexandria {
     // If it cannot be written the call does not run; nothing has reached the provider yet.
     if (reserved > 0 && this.ledger) {
       try {
-        this.ledger.append(receiptFor(blank, { pending: true }));
+        // The suspension check and the pending line share one ledger lock, so an overrun another
+        // process records after admit() cannot slip in between the check and the dispatch.
+        const { appended, suspended } = this.ledger.appendUnlessSuspended(receiptFor(blank, { pending: true }), hit.capability.id, this.library.catalog.reconciledAt);
+        for (const id of suspended) this.suspended.add(id);
+        if (!appended) {
+          this.budget.spent -= reserved - alreadyHeld;
+          if (hold) this.held.set(requestId, hold);
+          throw new AlexandriaError('capability_suspended', `${hit.capability.id} is suspended: another session recorded an overrun before this call was sent`, 'Reconcile the capability price and record-limit contract in verticals/alexandria/catalog/providers.json and bump the catalogue reconciledAt past the overrun date; nothing was charged.', req.requestId);
+        }
       } catch (err) {
+        if (err instanceof AlexandriaError) throw err;
         this.budget.spent -= reserved - alreadyHeld;
         if (hold) this.held.set(requestId, hold);
         const message = err instanceof Error ? err.message : String(err);
@@ -305,10 +314,14 @@ export class Alexandria {
     try {
       [result] = await transport.execute([call]);
       // Every outcome carries the router's request id, so the outcome receipt settles the
-      // pending hold. A transport that reports a different id is treated as an uncertain outcome.
+      // pending hold. A transport that reports a different id, provider or capability is treated as
+      // an uncertain outcome.
       if (!result) throw new Error('transport returned no result');
       if (result.requestId !== undefined && result.requestId !== requestId) {
         result = { ...blank, error: { code: 'uncertain_outcome', message: `transport reported requestId ${String(result.requestId)} for call ${requestId}` } };
+      } else if (result.provider !== hit.provider.id || result.capability !== hit.capability.capability) {
+        // An outcome for a different call must not be stamped with this call's id and settle its hold.
+        result = { ...blank, error: { code: 'uncertain_outcome', message: `transport reported ${String(result.provider)}/${String(result.capability)} for call ${requestId} to ${hit.provider.id}/${hit.capability.capability}` } };
       } else {
         result = { ...result, requestId };
       }

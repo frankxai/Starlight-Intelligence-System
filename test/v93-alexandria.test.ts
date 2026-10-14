@@ -441,7 +441,8 @@ describe("v93 — router, budget and receipts", () => {
       assert.equal(transport.calls.length, 0, "nothing reached the provider");
       assert.equal(alexandria.budget.spent, 0, "nothing was reserved");
       // The outcome receipt fails after the charge: the pending line keeps the hold durable.
-      class Flaky extends ReceiptLedger { writes = 0; override append(r: Parameters<ReceiptLedger["append"]>[0]) { if (++this.writes === 2) throw new Error("disk full"); super.append(r); } }
+      // The pending line goes through appendUnlessSuspended, so the first plain append is the outcome receipt.
+      class Flaky extends ReceiptLedger { writes = 0; override append(r: Parameters<ReceiptLedger["append"]>[0]) { if (++this.writes === 1) throw new Error("disk full"); super.append(r); } }
       const flaky = new Flaky(join(dir, "flaky", "receipts.jsonl"));
       const second = new Alexandria({ library, transports: [transport], maxCredits: 10, ledger: flaky, lock: false, sessionId: "session-flaky" });
       let caught: unknown;
@@ -828,6 +829,69 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
         assert.equal(res.result.requestId, "req-bare-1");
         assert.equal(ledger.spent("bare-transport"), 5, "the outcome settles the pending hold instead of adding to it");
       } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+  it("treats an outcome for a different provider or capability as uncertain and keeps the hold", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      for (const wrong of [{ provider: "other-provider" }, { capability: "crypto/wallet_rank" }]) {
+        const t = { kind: "firecrawl-alexandria" as const, execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => calls.map((c) => ({ provider: c.provider, capability: c.capability, records: [{ address: "x" }], creditsCost: 5, observedAt: "2026-10-08T12:00:00.000Z", requestId: c.requestId, ...wrong })) };
+        const sessionId = `mismatch-${Object.keys(wrong)[0]}`;
+        const alexandria = new Alexandria({ library, transports: [t as never], maxCredits: 100, ledger, sessionId });
+        try {
+          let id: string | undefined;
+          await assert.rejects(alexandria.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => { id = (err as AlexandriaError).requestId; return err instanceof AlexandriaError && err.code === "uncertain_outcome"; });
+          assert.ok(id, "the caller gets the request id back to retry");
+          assert.equal(ledger.heldReservations(sessionId).size, 1, "a mismatched outcome never settles the pending hold");
+          assert.ok(!ledger.read().some((r) => r.sessionId === sessionId && !r.pending && !r.error), "no settled receipt is written for a mismatched outcome");
+        } finally { alexandria.close(); }
+      }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("checks suspension and writes the pending line under one ledger lock, so a stale admission is not dispatched", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const over = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 50 } });
+      const fine = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      // B's unlocked suspension read is stale (it ran before A's overrun landed); only the
+      // locked check-and-append that precedes dispatch can still stop the call.
+      class StaleLedger extends ReceiptLedger { override suspendedCapabilities(): Set<string> { return new Set(); } }
+      const staleLedger = new StaleLedger(path);
+      const b = new Alexandria({ library, transports: [fine], maxCredits: 100, ledger: staleLedger, sessionId: "race-b" });
+      const a = new Alexandria({ library, transports: [over], maxCredits: 100, ledger: new ReceiptLedger(path), sessionId: "race-a" });
+      try {
+        assert.equal((await a.execute({ capabilityId: cap, options: { address: "x" } })).overrun, true);
+        const before = readFileSync(path, "utf8");
+        await assert.rejects(b.execute({ capabilityId: cap, options: { address: "x" } }), (err: unknown) => err instanceof AlexandriaError && err.code === "capability_suspended");
+        assert.equal(fine.calls.length, 0, "the suspended capability was never dispatched");
+        assert.equal(readFileSync(path, "utf8"), before, "no pending line was written for the refused call");
+        assert.equal(staleLedger.spent("race-b"), 0);
+      } finally { a.close(); b.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("scans the ledger for overruns incrementally: new lines, finished tails, and a shrunk file", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+      writeFileSync(path, line({}));
+      assert.equal(ledger.suspendedCapabilities().size, 0);
+      const overrun = line({ capability: "x", overrun: true, catalogueReconciledAt: "2026-10-01" });
+      appendFileSync(path, overrun.slice(0, 20));
+      assert.equal(ledger.suspendedCapabilities().size, 0, "a cut-off tail is not consumed");
+      appendFileSync(path, overrun.slice(20));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/x"], "the finished line is picked up on the next scan");
+      assert.equal(ledger.suspendedCapabilities("2026-10-02").size, 0, "a later reconciliation still clears it from the cache");
+      appendFileSync(path, "{not json\n");
+      assert.throws(() => ledger.suspendedCapabilities(), /corrupt/, "new corrupt lines still fail closed");
+      writeFileSync(path, line({ capability: "y", overrun: true }));
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/y"], "a shrunk ledger resets the cache instead of trusting it");
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
