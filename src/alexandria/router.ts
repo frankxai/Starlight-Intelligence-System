@@ -49,7 +49,8 @@ export type AlexandriaErrorCode =
   | 'uncertain_outcome'
   | 'receipt_persist_failed'
   | 'capability_busy'
-  | 'session_closed';
+  | 'session_closed'
+  | 'replay_completed';
 
 export class AlexandriaError extends Error {
   constructor(readonly code: AlexandriaErrorCode, message: string, readonly hint: string, readonly requestId?: string) {
@@ -111,6 +112,8 @@ export class Alexandria {
   private readonly now?: () => string;
   /** Reservations held by pending or uncertain calls, keyed by request id. Part of `budget.spent` until settled. */
   private readonly held = new Map<string, { amount: number; fingerprint: string }>();
+  /** Requests executed and settled in this session, keyed by request id. Replays are rejected without reserving or billing. */
+  private readonly settled = new Map<string, { fingerprint: string }>();
   /** Capabilities whose provider once charged more than was reserved. Refused until the catalogue is reconciled. */
   private readonly suspended = new Set<string>();
   /** Set by close(). A closed instance no longer holds the session lock, so it must not spend. */
@@ -141,6 +144,7 @@ export class Alexandria {
       this.budget = { sessionId, maxCredits: opts.maxCredits, spent: opts.ledger ? opts.ledger.spent(sessionId) : 0 };
       if (opts.ledger) {
         for (const [id, hold] of opts.ledger.heldReservations(sessionId)) this.held.set(id, hold);
+        for (const [id, s] of opts.ledger.settledReceipts(sessionId)) this.settled.set(id, { fingerprint: s.fingerprint });
         // A torn ledger tail does not stop the session opening; admission re-reads and fails closed.
         try {
           for (const id of opts.ledger.suspendedCapabilities(opts.library.catalog.reconciledAt)) this.suspended.add(id);
@@ -199,7 +203,7 @@ export class Alexandria {
    * nothing. `alreadyHeld` is the reservation an uncertain earlier call with the same request id
    * still holds; only the difference has to fit in the budget.
    */
-  private admit(req: ExecuteRequest, alreadyHeld = 0): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
+  private admit(req: ExecuteRequest, alreadyHeld = 0, isSettled = false): { hit: FindHit; options: Record<string, unknown>; price: number; transport: Transport } {
     const hit = this.resolve(req);
     let options = req.options ?? {};
     if (hit.provider.kind === 'connector') {
@@ -250,7 +254,7 @@ export class Alexandria {
       throw new AlexandriaError(code, `${hit.capability.id}: ${problems.join('; ')}`, 'Fix the options per the capability contract and call again; nothing was charged.');
     }
     const price = this.library.estimate(hit.capability.id, records);
-    if (this.budget.spent + price - alreadyHeld > this.budget.maxCredits) {
+    if (!isSettled && this.budget.spent + price - alreadyHeld > this.budget.maxCredits) {
       throw new AlexandriaError('over_budget', `Call would cost ${price} credits; ${this.budget.maxCredits - this.budget.spent} remain of ${this.budget.maxCredits}`, 'Raise maxCredits for this session or pick a cheaper capability from alexandria_plan.');
     }
     const transport = this.transports.get(hit.provider.kind);
@@ -270,13 +274,20 @@ export class Alexandria {
     // A retry of a held call reuses its reservation instead of taking a second one, and only
     // for the same call: the hold is bound to the capability and options it was taken for.
     const hold = req.requestId ? this.held.get(req.requestId) : undefined;
-    const { hit, options: admitted, price, transport } = this.admit(req, hold?.amount ?? 0);
+    const settled = req.requestId ? (this.settled.get(req.requestId) ?? (this.ledger ? this.ledger.settledReceipts(this.budget.sessionId).get(req.requestId) : undefined)) : undefined;
+    const { hit, options: admitted, price, transport } = this.admit(req, hold?.amount ?? 0, Boolean(settled));
     // Snapshot the validated options before the first await: the caller still holds the object
     // and could change it while this call waits for its turn, after it was validated and priced.
     const options = structuredClone(admitted);
     const fingerprint = callFingerprint(hit.capability.id, options);
     if (hold && hold.fingerprint !== fingerprint) {
       throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call (capability or options differ); its ${hold.amount} reserved credits stay held`, 'Retry with exactly the capability and options of the original call, or mint a new request for a different call.', req.requestId);
+    }
+    if (settled) {
+      if (settled.fingerprint !== fingerprint) {
+        throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call (capability or options differ)`, 'Retry with exactly the capability and options of the original call, or mint a new request for a different call.', req.requestId);
+      }
+      throw new AlexandriaError('replay_completed', `requestId ${req.requestId} was already executed and settled in session ${this.budget.sessionId}`, 'This request was already settled; nothing was reserved or charged. Mint a new request for a different call.', req.requestId);
     }
     const alreadyHeld = hold?.amount ?? 0;
     // The reservation never shrinks on a retry: the original request may already have been
@@ -395,6 +406,7 @@ export class Alexandria {
         const message = err instanceof Error ? err.message : String(err);
         throw new AlexandriaError('receipt_persist_failed', `${hit.capability.id}: the call completed (${actual} credits) but the receipt could not be appended to the ledger (${message})`, `The reservation of ${reserved} credits is held again, in this process and by the pending line in the ledger. Fix the ledger path (${this.ledger?.path ?? 'none'}), then retry with requestId ${requestId} and the same options to settle it.`, requestId);
       }
+      this.settled.set(requestId, { fingerprint });
       const response: ExecuteResponse = { hit, result, receipt, budget: { ...this.budget } };
       if (overrun) response.overrun = true;
       return response;

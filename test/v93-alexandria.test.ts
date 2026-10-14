@@ -1072,3 +1072,311 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
+
+describe("v93 — replay deduplication and settled receipts (#424)", () => {
+  const library = Library.fromFile();
+  const cap = "gmgn-ai/crypto/wallet_profile";
+
+  it("ReceiptLedger tracks settledIds, settledRequestIds, and settledReceipts per session and estate-wide", () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const base = { id: "rcpt_test", callFingerprint: "fp1", provider: "gmgn-ai", capability: "crypto/wallet_profile", recordCount: 0, contentHash: "h", redistribution: "cleared", source: "s", reserved: 5, maxCredits: 20, observedAt: "2026-10-08T12:00:00.000Z" };
+      const line = (extra: Record<string, unknown>) => JSON.stringify({ ...base, ...extra }) + "\n";
+
+      // Session 1:
+      // req-1: pending, then settled successfully
+      // req-2: pending, then failed definitely
+      // req-3: pending, then uncertain outcome (remains held)
+      // req-4: pending only (crashed mid-call)
+      // Session 2:
+      // req-5: settled directly (creditsCost 2)
+      writeFileSync(path,
+        line({ id: "rcpt_1a", sessionId: "session-1", requestId: "req-1", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_1b", sessionId: "session-1", requestId: "req-1", pending: false, creditsCost: 5 }) +
+        line({ id: "rcpt_2a", sessionId: "session-1", requestId: "req-2", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_2b", sessionId: "session-1", requestId: "req-2", pending: false, creditsCost: 0, error: { code: "not_found", message: "not found" } }) +
+        line({ id: "rcpt_3a", sessionId: "session-1", requestId: "req-3", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_3b", sessionId: "session-1", requestId: "req-3", pending: false, creditsCost: 5, error: { code: "uncertain_outcome", message: "timeout" } }) +
+        line({ id: "rcpt_4a", sessionId: "session-1", requestId: "req-4", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_5a", sessionId: "session-2", requestId: "req-5", pending: false, creditsCost: 2, callFingerprint: "fp5" })
+      );
+
+      // Session 1 settled
+      const s1Settled = ledger.settledIds("session-1");
+      assert.deepEqual([...s1Settled].sort(), ["req-1", "req-2"]);
+      assert.deepEqual([...ledger.settledRequestIds("session-1")].sort(), ["req-1", "req-2"]);
+
+      // Session 1 held
+      const s1Held = ledger.heldReservations("session-1");
+      assert.deepEqual([...s1Held.keys()].sort(), ["req-3", "req-4"]);
+
+      // Session 2 settled
+      assert.deepEqual([...ledger.settledIds("session-2")], ["req-5"]);
+
+      // Estate-wide settled
+      assert.deepEqual([...ledger.settledIds()].sort(), ["req-1", "req-2", "req-5"]);
+      assert.deepEqual([...ledger.settledRequestIds()].sort(), ["req-1", "req-2", "req-5"]);
+
+      // settledReceipts details
+      const receipts1 = ledger.settledReceipts("session-1");
+      assert.equal(receipts1.get("req-1")?.receiptId, "rcpt_1b");
+      assert.equal(receipts1.get("req-1")?.creditsCost, 5);
+      assert.equal(receipts1.get("req-1")?.fingerprint, "fp1");
+      assert.equal(receipts1.get("req-2")?.receiptId, "rcpt_2b");
+      assert.equal(receipts1.get("req-2")?.creditsCost, 0);
+
+      // Retrying req-3 settles it
+      appendFileSync(path,
+        line({ id: "rcpt_3c", sessionId: "session-1", requestId: "req-3", pending: true, creditsCost: 5 }) +
+        line({ id: "rcpt_3d", sessionId: "session-1", requestId: "req-3", pending: false, creditsCost: 5 })
+      );
+      assert.deepEqual([...ledger.settledIds("session-1")].sort(), ["req-1", "req-2", "req-3"]);
+      assert.deepEqual([...ledger.heldReservations("session-1").keys()], ["req-4"]);
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a successful call without re-reserving or re-dispatching", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatchCount = 0;
+      const transport = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatchCount += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xabc", balance: 100 }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [transport as never], maxCredits: 20, ledger, sessionId: "replay-success-sess" });
+      try {
+        const res1 = await alexandria.execute({ capabilityId: cap, options: { address: "0xabc" }, requestId: "req-succ-1" });
+        assert.equal(res1.result.records.length, 1);
+        assert.equal(alexandria.budget.spent, 5);
+        assert.equal(dispatchCount, 1);
+        const linesBefore = ledger.read().length;
+        assert.equal(linesBefore, 2, "pending + outcome receipt");
+
+        // Replay under the same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xabc" }, requestId: "req-succ-1" }),
+          (err: unknown) =>
+            err instanceof AlexandriaError &&
+            err.code === "replay_completed" &&
+            err.requestId === "req-succ-1" &&
+            /was already executed and settled/.test(err.message)
+        );
+
+        assert.equal(dispatchCount, 1, "transport was not called a second time");
+        assert.equal(alexandria.budget.spent, 5, "spent was not double-counted");
+        assert.equal(ledger.read().length, linesBefore, "no duplicate receipts appended");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a call that exhausted the session ceiling without failing over_budget", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const transport = new MemoryTransport("firecrawl-alexandria", { [cap]: { records: [{ address: "x" }], creditsCost: 5 } });
+      // Exactly 5 maxCredits: first call spends all credits
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 5, ledger, sessionId: "replay-exhaust-sess" });
+      try {
+        await alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-exhaust-1" });
+        assert.equal(alexandria.budget.spent, 5);
+
+        // Replay must reject with replay_completed, NOT over_budget
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-exhaust-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-exhaust-1"
+        );
+        assert.equal(alexandria.budget.spent, 5);
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay after a definite failure without charging or re-dispatching", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatchCount = 0;
+      const failing = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatchCount += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [],
+            creditsCost: 0,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+            error: { code: "wallet_not_found", message: "no such wallet address" },
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [failing as never], maxCredits: 20, ledger, sessionId: "replay-fail-sess" });
+      try {
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "0xmissing" }, requestId: "req-fail-1" });
+        assert.equal(res.result.error?.code, "wallet_not_found");
+        assert.equal(alexandria.budget.spent, 0, "failed call is not billed");
+        assert.equal(dispatchCount, 1);
+        const linesBefore = ledger.read().length;
+
+        // Replay under the same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xmissing" }, requestId: "req-fail-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-fail-1"
+        );
+        assert.equal(dispatchCount, 1, "failed call replay does not re-dispatch");
+        assert.equal(alexandria.budget.spent, 0, "budget spent remains 0");
+        assert.equal(ledger.read().length, linesBefore, "no duplicate receipts appended");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router rejects replay across a process restart", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let dispatch1 = 0;
+      const transport1 = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatch1 += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xrestart" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+
+      // Process 1 runs call
+      const alexandria1 = new Alexandria({ library, transports: [transport1 as never], maxCredits: 20, ledger, sessionId: "restart-session" });
+      await alexandria1.execute({ capabilityId: cap, options: { address: "0xrestart" }, requestId: "req-restart-1" });
+      assert.equal(alexandria1.budget.spent, 5);
+      assert.equal(dispatch1, 1);
+      alexandria1.close();
+
+      // Process 2 resumes same session
+      let dispatch2 = 0;
+      const transport2 = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatch2 += 1;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xrestart" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria2 = new Alexandria({ library, transports: [transport2 as never], maxCredits: 20, ledger, sessionId: "restart-session" });
+      try {
+        assert.equal(alexandria2.budget.spent, 5, "restored spent from ledger");
+        await assert.rejects(
+          alexandria2.execute({ capabilityId: cap, options: { address: "0xrestart" }, requestId: "req-restart-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-restart-1"
+        );
+        assert.equal(dispatch2, 0, "resumed process did not call transport");
+        assert.equal(alexandria2.budget.spent, 5, "spent did not increase");
+      } finally { alexandria2.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router throws retry_mismatch if replay changes capability or options of a settled call", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      const transport = new MemoryTransport("firecrawl-alexandria", {
+        [cap]: { records: [{ address: "0x111" }], creditsCost: 5 },
+        "gmgn-ai/crypto/wallet_rank": { records: [{ rank: 1 }], creditsCost: 5 },
+      });
+      const alexandria = new Alexandria({ library, transports: [transport], maxCredits: 20, ledger, sessionId: "mismatch-session" });
+      try {
+        await alexandria.execute({ capabilityId: cap, options: { address: "0x111" }, requestId: "req-mismatch-1" });
+        assert.equal(alexandria.budget.spent, 5);
+
+        // Different options with same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0x222" }, requestId: "req-mismatch-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch" && err.requestId === "req-mismatch-1"
+        );
+
+        // Different capability with same requestId
+        await assert.rejects(
+          alexandria.execute({ capabilityId: "gmgn-ai/crypto/wallet_rank", options: { period: "7d" }, requestId: "req-mismatch-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch" && err.requestId === "req-mismatch-1"
+        );
+
+        assert.equal(alexandria.budget.spent, 5, "mismatched replays reserve nothing");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("router permits retry of an uncertain outcome and then rejects replay once settled", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let attempt = 0;
+      const flaky = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          attempt += 1;
+          if (attempt === 1) throw new Error("timeout connecting to provider");
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xflaky" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [flaky as never], maxCredits: 20, ledger, sessionId: "flaky-sess" });
+      try {
+        // Attempt 1 fails uncertainly
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "uncertain_outcome"
+        );
+        assert.equal(alexandria.budget.spent, 5, "reservation is held");
+
+        // Attempt 2 retries and succeeds
+        const res = await alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" });
+        assert.equal(res.result.records.length, 1);
+        assert.equal(alexandria.budget.spent, 5, "held reservation settled without doubling");
+
+        // Attempt 3 replays: now settled, should reject with replay_completed
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xflaky" }, requestId: "req-flaky-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed" && err.requestId === "req-flaky-1"
+        );
+        assert.equal(attempt, 2, "flaky transport was not called on 3rd replay attempt");
+        assert.equal(alexandria.budget.spent, 5, "spent remains 5");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+});
