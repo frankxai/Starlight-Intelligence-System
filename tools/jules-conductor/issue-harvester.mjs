@@ -109,6 +109,7 @@ export function harvestIssues() {
             title: issue.title,
             description: `Issue #${issue.number}: ${issue.title}\n\n${(issue.body || '').slice(0, 500)}`,
             type: issue.title.toLowerCase().includes('security') ? 'security' : 'bugfix',
+            ready: false,
             harvestedAt: new Date().toISOString()
           };
 

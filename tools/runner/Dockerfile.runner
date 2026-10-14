@@ -1,0 +1,70 @@
+# ==============================================================================
+# Starlight Autonomous Scale-to-Zero Cloud Run Linux Runner
+# Target: Google Cloud Run Jobs (Scale-to-Zero, $0.00 Idle)
+# Architecture: Ubuntu 24.04 LTS x86_64 / arm64
+# Built on SIP v1.1.1 — Sovereign Substrate
+# ==============================================================================
+
+FROM ubuntu:24.04
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+# Install base toolchain, compilers, git, curl, jq, and security prerequisites
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    jq \
+    build-essential \
+    python3 \
+    python3-pip \
+    python3-venv \
+    openssh-client \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 24 LTS and Corepack / pnpm
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y --no-install-recommends nodejs \
+    && corepack enable \
+    && corepack prepare pnpm@latest --activate \
+    && npm install -g @google/gemini-cli @upstash/context7-mcp \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install GitHub CLI (gh)
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update && apt-get install -y --no-install-recommends gh \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure isolated non-root runner workspace and persistent cache mount directory
+RUN useradd -m -s /bin/bash starlight \
+    && mkdir -p /home/starlight/workspace /home/starlight/.gemini /home/starlight/.local/share/pnpm /cache/pnpm \
+    && chown -R starlight:starlight /home/starlight /cache
+
+# Setup environment variables
+ENV NODE_ENV=production
+ENV CI=true
+ENV STARLIGHT_SUBSTRATE=true
+ENV PNPM_HOME="/home/starlight/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+USER starlight
+WORKDIR /home/starlight/workspace
+
+# Pre-warm common tier-1 dependencies in pnpm store to eliminate cold-start network downloads
+RUN pnpm config set store-dir /home/starlight/.local/share/pnpm/store/v3 \
+    && pnpm add -g typescript vitest @types/node zod || true
+
+# Copy execution entrypoint script
+COPY --chown=starlight:starlight runner-entrypoint.sh /home/starlight/runner-entrypoint.sh
+RUN chmod +x /home/starlight/runner-entrypoint.sh
+
+ENTRYPOINT ["/home/starlight/runner-entrypoint.sh"]
+
