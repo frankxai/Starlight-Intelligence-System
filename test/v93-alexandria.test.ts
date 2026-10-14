@@ -25,6 +25,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn } from "node:child_process";
 import { repoRootFromTestFile } from "./_lib/repo.js";
+import { pathToFileURL } from "node:url";
 import {
   Alexandria,
   AlexandriaError,
@@ -528,7 +529,8 @@ describe("v93 — router, budget and receipts", () => {
     try {
       const ledgerPath = join(dir, "receipts.jsonl");
       plantLock(`${ledgerPath}.race.lock`, "999999"); // a pid that is not alive
-      const script = `import { SessionLock } from ${JSON.stringify(join(REPO_ROOT, "src", "alexandria", "receipts.ts"))}; const l = new SessionLock(${JSON.stringify(ledgerPath)}, "race"); try { l.acquire(); console.log("acquired"); setTimeout(() => l.release(), 400); } catch (e) { console.log("refused: " + e.message); }`;
+      const receiptsUrl = pathToFileURL(join(REPO_ROOT, "src", "alexandria", "receipts.ts")).href;
+      const script = `import { SessionLock } from ${JSON.stringify(receiptsUrl)}; const l = new SessionLock(${JSON.stringify(ledgerPath)}, "race"); try { l.acquire(); console.log("acquired"); setTimeout(() => l.release(), 400); } catch (e) { console.log("refused: " + e.message); }`;
       const results = [0, 1].map(() => spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script], { cwd: REPO_ROOT, encoding: "utf8" }));
       const outputs = results.map((r) => r.stdout.trim());
       assert.ok(outputs.every((o) => o === "acquired" || o.startsWith("refused: Budget session race is held by process")), `unexpected: ${JSON.stringify(outputs)} ${results.map((r) => r.stderr).join("")}`);

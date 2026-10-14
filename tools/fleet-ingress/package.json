@@ -1,0 +1,18 @@
+{
+  "name": "@starlight/fleet-ingress",
+  "version": "1.0.0",
+  "description": "Sovereign Cloudflare Edge Ingress Router for GitHub Webhooks and Scale-to-Zero Google Cloud Run Runners",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "node --test tests/ingress.test.mjs"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "github-webhooks",
+    "cloud-run",
+    "starlight-intelligence-protocol"
+  ],
+  "author": "Frank Riemer (frankx.ai)",
+  "license": "MIT"
+}
