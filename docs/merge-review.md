@@ -47,14 +47,20 @@ comment, not which seat or model is behind it.
 
 ## High-risk changes and auto-merge
 
-Changes touching money, publish, secrets, auth, licensing, agent instruction
+Changes touching money (including `src/finance/` and finance, revenue, payout,
+ledger and P&L paths), publish, secrets, auth, licensing, agent instruction
 files (`AGENTS.md`, `CLAUDE.md`, `SKILL.md` and similar), dependency manifests
-and lockfiles (`package.json`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`;
-the gate cannot verify a patch-only bump), or the gate and policy files
+and lockfiles (Node: `package.json`, `package-lock.json`, `npm-shrinkwrap.json`,
+`pnpm-lock.yaml`, `pnpm-workspace.yaml`, `yarn.lock`, `bun.lock`, `bun.lockb`,
+`.npmrc`; Rust: `Cargo.toml`, `Cargo.lock`; Python: `pyproject.toml`,
+`poetry.lock`, `uv.lock`, `Pipfile`, `Pipfile.lock`, `setup.py`, `setup.cfg`,
+`requirements*.txt`/`.in`, `constraints*.txt`; Go: `go.mod`, `go.sum`; Ruby:
+`Gemfile`, `Gemfile.lock`; the gate cannot verify a patch-only bump), or the gate and policy files
 themselves (`tools/merge-review/`, `tools/jules-conductor/`, `.github/`, this
 document) need a CTO PASS. When CTO is the maker, a PASS from another admitted
 seat (Codex, Claude Code or Antigravity) is required instead. High-risk paths
-under `docs/notes/` or `docs/handovers/` lose the routine exemption. The check
+under `docs/notes/` or `docs/handovers/` lose the routine exemption. A renamed or
+copied file is classified by both its new and its previous path. The check
 fails while GitHub auto-merge is armed on a high-risk PR, and re-runs when
 auto-merge is enabled or disabled; high-risk PRs never auto-merge. Auto-merge is allowed only
 for low-risk changes (docs, copy, patch-level dependency bumps) after a separate
