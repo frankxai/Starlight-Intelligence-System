@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createPrivateKey, generateKeyPairSync, sign } from "node:crypto";
 import test from "node:test";
 
-import { PAYLOAD_TYPE, RUN_RECEIPT_SCHEMA, keyIdOf, pae, sha256Hex, signRunReceipt, totalsFromStages, verdictFromStages, verifyRunReceipt } from "./run-receipt.ts";
+import { PAYLOAD_TYPE, RUN_RECEIPT_SCHEMA, keyIdOf, pae, receiptProblems, sha256Hex, signRunReceipt, totalsFromStages, verdictFromStages, verifyRunReceipt } from "./run-receipt.ts";
 
 function keyPair() {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
@@ -67,4 +67,24 @@ test("a trusted co-signer cannot stand in for a named issuer that did not sign",
   const result = verifyRunReceipt(resigned({ name: "a", keyid: a.keyid }, [b]), [a.publicPem, b.publicPem]);
   assert.equal(result.ok, false);
   assert.ok(result.reasons.some((r) => r.includes("no verifying signature is from that key")), result.reasons.join("; "));
+});
+
+test("an unsigned draft without issuer.keyid is still a valid v1 receipt", () => {
+  const draft = receipt();
+  assert.equal(draft.issuer.keyid, undefined);
+  assert.deepEqual(receiptProblems(draft), []);
+});
+
+test("receiptProblems refuses PASS when evidence is empty", () => {
+  const emptyEvidence = { ...receipt(), evidence: [] };
+  const problems = receiptProblems(emptyEvidence);
+  assert.ok(problems.includes("verdict is PASS but evidence is empty"), problems.join("; "));
+  // Allowed for FAIL
+  assert.deepEqual(receiptProblems({ ...emptyEvidence, verdict: "FAIL" }), []);
+});
+
+test("receiptProblems refuses PASS when all stages are skipped", () => {
+  const skipped = { ...receipt(), stages: [{ name: "s", status: "skipped" }], totals: { costEur: 0, latencyMs: 0, tokens: { input: 0, output: 0 } }, verdict: "PASS" };
+  const problems = receiptProblems(skipped);
+  assert.ok(problems.includes("verdict is PASS but every stage was skipped"), problems.join("; "));
 });
