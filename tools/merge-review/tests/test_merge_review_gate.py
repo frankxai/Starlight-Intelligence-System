@@ -71,6 +71,34 @@ class MergeReviewTests(unittest.TestCase):
                 self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider=provider)], files))
         self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], maker='cto', provider='cto')], files))
 
+    def test_finance_paths_need_cto_pass(self):
+        for path in ['src/finance/pnl.ts', 'src/finance/entity-registry.ts',
+                     'src/finance/revenue-sources/_shared.ts', 'lib/revenue/report.ts']:
+            with self.subTest(path=path):
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_non_node_manifests_need_cto_pass(self):
+        for path in ['crates/starlight-invariants/Cargo.toml', 'crates/starlight-invariants/Cargo.lock',
+                     'templates/local-voice-companion-starter/pyproject.toml', 'uv.lock', 'poetry.lock',
+                     'requirements.txt', 'requirements-dev.txt', 'go.mod', 'Gemfile.lock']:
+            with self.subTest(path=path):
+                self.assertTrue(gate.high_risk(path))
+                files = [{'filename': path, 'status': 'modified'}]
+                self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+                self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+
+    def test_rename_out_of_high_risk_path_keeps_protection(self):
+        path = 'src/neutral/thing.ts'
+        files = [{'filename': path, 'previous_filename': 'src/payments/checkout.ts', 'status': 'renamed'}]
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path])], files))
+        self.assertTrue(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files))
+        self.assertFalse(self.evaluate([receipt(reviewedFiles=[path], provider='cto')], files,
+                                       auto_merge={'merge_method': 'merge'}))
+        copied = [{'filename': 'docs/notes/x.md', 'previous_filename': 'src/finance/pnl.ts', 'status': 'copied'}]
+        self.assertFalse(self.evaluate([], copied))
+
     def test_armed_auto_merge_fails_high_risk(self):
         path = 'src/payments/checkout.ts'
         files = [{'filename': path, 'status': 'modified'}]
