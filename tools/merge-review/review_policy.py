@@ -80,12 +80,16 @@ def maker_vendors(ref, commits, trust):
     """Every vendor the change claims or shows: branch seat plus commit trailers and authors.
 
     The branch name is only a claim, so a Grok-made commit on agent/claude/x yields
-    {anthropic, xai}. An agent marker with no known vendor makes independence unprovable.
+    {anthropic, xai}. Provenance must be positive: every commit has to name a vendor in a
+    trailer or identity, and the branch seat's vendor must be among them. Otherwise the
+    maker is unknown and no checker can be shown independent. An agent marker with no
+    known vendor also makes independence unprovable.
     """
     seat = maker_from_branch(ref, trust)
     if seat is None or vendor_of(seat, trust) is None:
         raise PolicyError('Head branch is not agent/<harness>/<scope> for a harness with a known vendor.')
-    vendors = {vendor_of(seat, trust)}
+    branch_vendor = vendor_of(seat, trust)
+    vendors = set()
     patterns = {vendor: re.compile(rx, re.I) for vendor, rx in trust['vendorPatterns'].items()}
     unknown = re.compile(trust['unknownAgentPattern'], re.I)
     for item in commits:
@@ -93,12 +97,31 @@ def maker_vendors(ref, commits, trust):
         texts = [value for _, value in TRAILER.findall(commit.get('message') or '')]
         texts.append(identity_text(item.get('author'), commit.get('author')))
         texts.append(identity_text(item.get('committer'), commit.get('committer')))
+        shown = set()
         for text in texts:
             hits = {vendor for vendor, rx in patterns.items() if rx.search(text)}
             if not hits and unknown.search(text):
                 raise PolicyError('A commit names an agent whose model vendor is unknown; use a human review.')
-            vendors |= hits
+            shown |= hits
+        if not shown:
+            raise PolicyError(f"Commit {str(item.get('sha'))[:12]} names no model vendor, so the maker is "
+                              'unknown. Add a Co-authored-by trailer naming the model, or use a human review.')
+        vendors |= shown
+    if not commits or branch_vendor not in vendors:
+        raise PolicyError('Commit trailers and authors do not corroborate the branch harness; maker is unknown.')
     return sorted(vendors)
+
+
+def _no_duplicate_keys(pairs):
+    keys = [key for key, _ in pairs]
+    if len(keys) != len(set(keys)):
+        raise ValueError('Duplicate JSON key.')
+    return dict(pairs)
+
+
+def loads_strict(text):
+    """json.loads that refuses duplicate keys at any nesting level."""
+    return json.loads(text, object_pairs_hook=_no_duplicate_keys)
 
 
 def canonical(value):

@@ -75,12 +75,24 @@ The gate recomputes, from the compare API at the PR's base and the receipt's hea
   path, status, blob SHA and patch SHA-256. `manifestSha256` must match, and
   `reviewedFiles` must equal the manifest paths exactly. A review of other content
   recorded under this head (a force-push race) fails;
-- the **maker vendors**: the vendor of the branch seat (`agent/<harness>/...`) plus
-  every vendor named in commit trailers (`Co-authored-by`, `Signed-off-by` and
-  similar) or commit author and committer identities. The branch name is a claim; a
-  Grok-made commit on `agent/claude/x` yields `anthropic` and `xai`. An agent marker
-  with no known vendor (Cursor, Copilot and similar) makes independence unprovable,
-  so no checker PASS qualifies.
+- the **maker vendors**: every vendor named in commit trailers (`Co-authored-by`,
+  `Signed-off-by` and similar) or commit author and committer identities. Provenance
+  must be positive: every commit must name a vendor, and the branch seat's vendor
+  (`agent/<harness>/...`) must be among them. A commit with no vendor signal, or a
+  branch the commits do not corroborate, makes the maker **unknown**; the runner then
+  refuses and no checker PASS qualifies. A Grok-made commit on `agent/claude/x` with a
+  Grok trailer yields `anthropic` and `xai`. An agent marker with no known vendor
+  (Cursor, Copilot and similar) also makes independence unprovable.
+  Residual: trailers are self-declared. A harness that writes a false trailer can still
+  misstate its vendor; only signed provenance from a second identity closes that.
+
+Ledger entries are judged only when the receipt names this repository and PR, so a
+FAIL recorded for another PR that shares the head SHA does not poison this one. Check
+runs and comments are read across every page; a listing above the cap (1,000 check
+runs, 3,000 comments) or one whose count does not add up fails closed rather than
+being truncated. PR content, including the routine-path check, is classified only from
+the compare API at explicit base and head SHAs, never from the moving `/files`
+listing, and the head is re-read after classification.
 
 A PASS *qualifies* when the provider is a different seat from the maker, its vendor
 is known and outside every maker vendor, and, for a high-risk change, the provider
@@ -95,8 +107,9 @@ An `APPROVED` pull request review on the exact head counts only when the reviewe
 - is a `User` with association `OWNER`, `MEMBER` or `COLLABORATOR`;
 - has a numeric user id listed in `independentReviewers` and not in `nonIndependent`;
 - differs from the PR author, from every commit author and committer in the PR, and
-  from every actor who pushed the head branch (repository activity API). If any of
-  these identities cannot be read or linked to an account, no approval counts.
+  from every actor who pushed the head branch (activity API of the head repository,
+  so a fork's pushes are read from the fork). If any of these identities cannot be read
+  or linked to an account, or the activity listing is empty or fails, no approval counts.
 
 A `CHANGES_REQUESTED` review at the head by any human blocks, and a later `DISMISSED`
 review withdraws that reviewer's approval. A blocking checker ledger entry is not
@@ -107,27 +120,52 @@ evidence and that it covers this exact content, not that the review was good.
 
 ### Re-evaluation
 
-The check re-runs on PR source changes, auto-merge changes, base or title edits, and
-any PR comment. Review events cannot trigger it directly, because a
-`pull_request_review` workflow runs the PR's own copy. Instead:
+Only default-branch triggers run the policy: `pull_request_target` (source, base,
+title and auto-merge changes), `issue_comment` from collaborators or Apps, a schedule,
+and dispatch from the default branch. No `pull_request` or `pull_request_review`
+trigger exists for this check, because those run the PR's own workflow copy. Comment
+runs queue per PR instead of cancelling, so a stream of comments cannot keep an
+evaluation from finishing, and comments from non-collaborators are ignored before the
+job starts.
 
-- `review-event-relay.yml` (no permissions, does nothing) fires on review submit,
-  edit and dismiss, and the default-branch policy workflow re-evaluates through
-  `workflow_run`. Expected latency is a minute or two;
-- a schedule every 30 minutes re-evaluates the 25 most recently updated open PRs.
-  GitHub may delay scheduled runs, so allow up to an hour;
+- The schedule every 30 minutes lists **all** open PRs across every page and
+  evaluates the 25 least recently evaluated (never-evaluated first). New activity on
+  other PRs cannot starve an old one. GitHub may delay scheduled runs;
 - dispatch `merge-review.yml` with a PR number to re-evaluate at once.
 
+Any API error, rate limit or trust-file problem during an evaluation publishes a
+failing check for that head instead of leaving an earlier green one. If the PR itself
+cannot be read, a `pull_request_target` run still fails the head named by the event.
+
 **Residual latency:** after an approval is dismissed, a green check can stay green
-until the relay or sweep runs. Do not merge within that window on the strength of a
-human approval you did not just see. A PR edit can also break its own relay copy;
-the sweep and dispatch still cover it.
+until the PR's turn in the sweep (with N open PRs, about N/25 sweeps) or a dispatch.
+Do not merge on the strength of a human approval you did not just see.
 
 ## Residual risk that code cannot close
 
-Anyone holding the owner's login is a repository administrator. Until a second,
-independent identity exists, that login can still: push to `main` (no ruleset is
-applied), edit `checker-trust.json` through such a push, edit the
+**Forged policy check.** The required `independent-review-policy` context is trusted by
+app id 15368 (GitHub Actions), which every workflow shares. A same-repository PR can add
+its own `pull_request` workflow with `checks: write` that posts a green check under that
+name. Each run this gate writes names its workflow run in `external_id`; the gate fails
+any evaluation that finds another check of that name at the head not written by the
+default-branch `merge-review.yml` (`pull_request_target`, `issue_comment`, `schedule`,
+or a default-branch dispatch). It cannot stop a forged check written *after* its own,
+and branch protection reads the newest. Closing this needs the check produced under an
+identity no PR workflow holds (a dedicated App's check, bound by `integration_id`) and
+a second identity to own that App. Check runs written before this change carry no run
+id and count as foreign, so existing open PRs need a new push or a fresh evaluation.
+
+**Trust root.** Anyone holding the owner's login is a repository administrator. The live
+ruleset "Independent source review and CI" (id 24873080) has
+`bypass_actors: [{RepositoryRole 5 (admin), bypass_mode: always}]`,
+`pull_request.required_approving_review_count: 0`, `require_code_owner_review: false`,
+`require_last_push_approval: false`, and classic protection on `main` has
+`enforce_admins: false`. After a second identity exists, change exactly: remove the
+admin bypass actor; set `required_approving_review_count` to 1,
+`require_code_owner_review` and `require_last_push_approval` to true; set
+`enforce_admins` to true; and make the independent owner the code owner of
+`checker-trust.json` and `.github/CODEOWNERS`. Until then that login can still: bypass the
+ruleset to change `main`, edit `checker-trust.json` and CODEOWNERS that way, edit the
 `starlight-checker` environment, delete the App's mirror comments (which only blocks),
 and register runners. Each of these is an admin action that appears in the audit
 log, where posting a comment was not. The weak paths are therefore off by default:

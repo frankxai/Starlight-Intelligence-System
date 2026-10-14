@@ -94,9 +94,10 @@ def packet_sha(system, user):
 
 
 def parse_strict(text):
-    """Exactly one JSON object and nothing else; a trailing object or prose is refused."""
+    """Exactly one JSON object and nothing else; a trailing object, prose or a duplicated
+    key at any depth (a FAIL followed by a second "verdict": "PASS") is refused."""
     try:
-        value = json.loads(text.strip())
+        value = policy.loads_strict(text.strip())
     except (ValueError, AttributeError):
         raise Refusal('Reviewer output is not exactly one JSON object.') from None
     if not isinstance(value, dict):
@@ -410,7 +411,7 @@ def accept_signed_draft(gh, number, data, signature, trust, commands, verify=ssh
     """Re-derive everything the C940 claims; only its review text and verdict are taken as given."""
     verify(data, signature, trust)
     try:
-        draft = json.loads(data.decode('utf8'))
+        draft = policy.loads_strict(data.decode('utf8'))
     except ValueError:
         raise Refusal('Signed C940 draft is not JSON.') from None
     state = collect(gh, number, trust)

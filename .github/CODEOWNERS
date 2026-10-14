@@ -20,6 +20,5 @@
 /tools/merge-review/checker-trust.json @frankxai
 /tools/merge-review/ @frankxai
 /.github/workflows/merge-review.yml @frankxai
-/.github/workflows/review-event-relay.yml @frankxai
 /.github/workflows/independent-review-runner.yml @frankxai
 /.github/CODEOWNERS @frankxai

@@ -2,6 +2,7 @@ import copy
 import importlib.util
 import json
 import os
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -215,6 +216,26 @@ class LedgerTests(unittest.TestCase):
             with self.subTest(change=change):
                 self.assertFalse(evaluate(ledger=ledger, comments=comments))
 
+    def test_fail_recorded_for_another_pr_at_same_sha_does_not_poison(self):
+        other = body(pr=111, verdict='FAIL', blockingFindings=['bug'])
+        ledger, comments = recorded(body())
+        ledger.insert(0, ledger_entry(other, 0))
+        self.assertTrue(evaluate(ledger=ledger, comments=comments))
+        ledger[0] = ledger_entry(body(repository='attacker/repo', verdict='FAIL', blockingFindings=['x']), 0)
+        self.assertTrue(evaluate(ledger=ledger, comments=comments))
+        # A FAIL for this PR still blocks.
+        ledger[0] = ledger_entry(body(verdict='FAIL', blockingFindings=['bug']), 0)
+        self.assertFalse(evaluate(ledger=ledger, comments=comments))
+
+    def test_duplicate_keys_in_ledger_text_block(self):
+        receipt = body()
+        text = policy.canonical(receipt)[:-1] + ',"verdict":"PASS"}'
+        run = ledger_entry(receipt)
+        run['output'] = {'summary': f'receiptSha256: {policy.sha256(text)}', 'text': text}
+        comment = app_comment(receipt)
+        comment['body'] = gate.MARKER + text
+        self.assertFalse(evaluate(ledger=[run], comments=[comment]))
+
     def test_newest_pass_decides_after_crashed_older_pass(self):
         ledger, comments = recorded(body(), body(packetSha256='f' * 64))
         self.assertTrue(evaluate(ledger=ledger, comments=comments[1:]))
@@ -279,7 +300,7 @@ class VendorTests(unittest.TestCase):
                                 vendors=['google']))
 
     def test_grok_commit_on_claude_branch_cannot_get_grok_review(self):
-        vendors = policy.maker_vendors('agent/claude/x', [{
+        vendors = policy.maker_vendors('agent/claude/x', [CLAUDE_COMMIT, {
             'commit': {'message': 'feat\n\nCo-authored-by: Grok <grok@x.ai>', 'author': {}, 'committer': {}}}], TRUST)
         self.assertEqual(vendors, ['anthropic', 'xai'])
         self.assertFalse(passes(body(makerVendors=vendors), vendors=vendors))
@@ -295,8 +316,22 @@ class VendorTests(unittest.TestCase):
         self.assertFalse(passes(body(provider='cto')))
 
     def test_commit_authors_add_vendors(self):
-        commit = {'author': {'login': 'google-labs-jules[bot]'}, 'commit': {'message': 'x', 'author': {}, 'committer': {}}}
+        commit = {'author': {'login': 'google-labs-jules[bot]'},
+                  'commit': {'message': 'x\n\nCo-authored-by: Codex <codex@openai.com>', 'author': {}, 'committer': {}}}
         self.assertEqual(policy.maker_vendors('agent/codex/x', [commit], TRUST), ['google', 'openai'])
+
+    def test_self_declared_branch_without_corroboration_is_unknown_maker(self):
+        # A Grok-made change pushed to agent/claude/x with no trailer: the branch is only a claim.
+        bare = {'sha': 'f' * 40, 'author': dict(OWNER), 'committer': dict(OWNER),
+                'commit': {'message': 'feat: change', 'author': {'name': 'frankxai'}, 'committer': {'name': 'frankxai'}}}
+        for commits in [[bare], [CLAUDE_COMMIT, bare], []]:
+            with self.subTest(n=len(commits)), self.assertRaises(policy.PolicyError):
+                policy.maker_vendors('agent/claude/x', commits, TRUST)
+        grok_only = {'commit': {'message': 'x\n\nCo-authored-by: Grok <grok@x.ai>', 'author': {}, 'committer': {}}}
+        with self.assertRaises(policy.PolicyError):  # vendor shown, but not the branch's
+            policy.maker_vendors('agent/claude/x', [grok_only], TRUST)
+        # With the maker unknown the gate has no vendors, so no checker PASS qualifies.
+        self.assertFalse(passes(vendors=[]))
 
 
 class RiskTests(unittest.TestCase):
@@ -430,7 +465,7 @@ class UnsafeValueTests(unittest.TestCase):
 
     def test_hostile_event_numbers_fail_before_any_api_call(self):
         for event in [{'inputs': {'pr': '110&state=closed'}}, {'inputs': {'pr': '../1'}},
-                      {'workflow_run': {'pull_requests': [{'number': '1?x'}]}}]:
+                      {'pull_request': {'number': '1?x'}}]:
             with self.subTest(event=event), patch.object(gate, 'api') as api, \
                     self.assertRaises(gate.UnsafeValue):
                 gate.pr_numbers(REPO, event)
@@ -450,72 +485,188 @@ class UnsafeValueTests(unittest.TestCase):
             gate.collect_context(REPO, 110, pr, TRUST)
 
 
+class FakeGateApi:
+    """A GitHub stand-in for main(): records every endpoint and can change heads or fail."""
+
+    def __init__(self, comments=(), ledger=(), reviews=(), commits=(CLAUDE_COMMIT,), heads=(HEAD,),
+                 errors=(), policy_runs=(), workflow_runs=None, activity=None, page=100, head_repo=REPO):
+        self.comments, self.ledger, self.reviews = list(comments), list(ledger), list(reviews)
+        self.commits, self.heads, self.errors = list(commits), list(heads), list(errors)
+        self.policy_runs, self.workflow_runs = list(policy_runs), workflow_runs or {}
+        self.activity = [{'actor': dict(OWNER)}] if activity is None else activity
+        self.page, self.head_repo, self.calls, self.pr_reads = page, head_repo, [], 0
+
+    def pages(self, items):
+        return [items[i:i + self.page] for i in range(0, len(items), self.page)] or [[]]
+
+    def check_pages(self, runs, total=None):
+        return [{'total_count': len(runs) if total is None else total, 'check_runs': chunk}
+                for chunk in self.pages(runs)]
+
+    def __call__(self, endpoint, payload=None, paginate=False):
+        self.calls.append(endpoint)
+        for marker, error in self.errors:
+            if marker in endpoint:
+                raise error
+        if payload is not None:
+            return {'id': 456}
+        if '/files' in endpoint:
+            raise AssertionError('classification must never read the moving /files listing')
+        if endpoint.endswith('/pulls/110'):
+            head = self.heads[min(self.pr_reads, len(self.heads) - 1)]
+            self.pr_reads += 1
+            return {'number': 110, 'state': 'open', 'changed_files': len(FILES), 'user': dict(OWNER),
+                    'auto_merge': None, 'base': {'sha': 'c' * 40, 'repo': {'default_branch': 'main'}},
+                    'head': {'sha': head, 'ref': 'agent/claude/x', 'repo': {'full_name': self.head_repo}}}
+        if '/compare/' in endpoint:
+            return {'files': copy.deepcopy(FILES), 'merge_base_commit': {'sha': 'c' * 40},
+                    'commits': copy.deepcopy(self.commits), 'total_commits': len(self.commits)}
+        if '/comments?' in endpoint:
+            return self.pages(copy.deepcopy(self.comments))
+        if '/reviews?' in endpoint:
+            return self.pages(list(self.reviews))
+        if f'check_name={policy.RECEIPT_CHECK}' in endpoint:
+            return self.check_pages(copy.deepcopy(self.ledger))
+        if f'check_name={gate.CHECK_NAME}' in endpoint:
+            return self.check_pages(copy.deepcopy(self.policy_runs))
+        if '/actions/runs/' in endpoint:
+            return self.workflow_runs[endpoint.rsplit('/', 1)[1]]
+        if '/activity?' in endpoint:
+            return [self.activity]
+        raise AssertionError(f'unexpected endpoint {endpoint}')
+
+
+def rate_limited():
+    return subprocess.CalledProcessError(1, ['gh'], stderr='API rate limit exceeded')
+
+
 class MainWiringTests(unittest.TestCase):
-    def transport(self, comments, ledger, reviews=(), commits=(CLAUDE_COMMIT,)):
-        pr = {'number': 110, 'state': 'open', 'head': {'sha': HEAD, 'ref': 'agent/claude/x'},
-              'base': {'sha': 'c' * 40}, 'changed_files': len(FILES), 'user': dict(OWNER), 'auto_merge': None}
-
-        def api(endpoint, payload=None, paginate=False):
-            if endpoint.endswith('/check-runs'):
-                return {'id': 456}
-            if '/files?' in endpoint:
-                return [dict(item) for item in FILES]
-            if '/comments?' in endpoint:
-                return copy.deepcopy(comments)
-            if '/reviews?' in endpoint:
-                return list(reviews)
-            if '/compare/' in endpoint:
-                return {'files': [dict(f) for f in FILES], 'merge_base_commit': {'sha': 'c' * 40},
-                        'commits': list(commits), 'total_commits': len(commits)}
-            if '/check-runs?' in endpoint:
-                return {'total_count': len(ledger), 'check_runs': copy.deepcopy(ledger)}
-            if '/activity?' in endpoint:
-                return [{'actor': dict(OWNER)}]
-            if '/pulls?' in endpoint:
-                return [{'number': 110}]
-            return copy.deepcopy(pr)
-        return api
-
-    def run_main(self, comments=(), ledger=(), reviews=(), event=None, trust=TRUST, **kw):
-        event = event or {'pull_request': {'number': 110}}
+    def run_main(self, fake=None, event=None, trust=TRUST, trust_error=None, **kw):
+        fake = fake or FakeGateApi(**kw)
+        event = event or {'pull_request': {'number': 110, 'head': {'sha': HEAD}}}
+        loader = {'side_effect': trust_error} if trust_error else {'return_value': copy.deepcopy(trust)}
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / 'event.json'
             path.write_text(json.dumps(event), encoding='utf-8')
-            env = {'GITHUB_REPOSITORY': REPO, 'GITHUB_EVENT_PATH': str(path)}
-            with patch.dict(os.environ, env, clear=True), \
-                    patch.object(gate, 'api', side_effect=self.transport(comments, ledger, reviews, **kw)), \
-                    patch.object(policy, 'load_trust', return_value=copy.deepcopy(trust)), \
+            env = {'GITHUB_REPOSITORY': REPO, 'GITHUB_EVENT_PATH': str(path), 'GITHUB_RUN_ID': '777'}
+            with patch.dict(os.environ, env, clear=True), patch.object(gate, 'api', side_effect=fake), \
+                    patch.object(policy, 'load_trust', **loader), \
                     patch.object(gate, 'graphql_edit_history',
                                  return_value={'lastEditedAt': None, 'userContentEdits': {'totalCount': 0}}), \
                     patch.object(gate.subprocess, 'run') as publish, patch('builtins.print'):
-                gate.main()
+                try:
+                    gate.main()
+                except SystemExit:
+                    pass
+        self.fake = fake
         return [json.loads(call.kwargs['input'])['conclusion'] for call in publish.call_args_list]
 
-    def unchecked(self, receipt):
-        comment = app_comment(receipt)
-        comment['node_id'] = 'n1'
+    def unchecked(self, receipt, node='n1', comment_id=100):
+        comment = app_comment(receipt, comment_id)
+        comment['node_id'] = node
         for key in ['edit_history_checked', 'last_edited_at', 'content_edit_count']:
             comment.pop(key)
         return comment
 
     def test_main_accepts_app_ledger_and_ignores_owner_receipt(self):
-        self.assertEqual(self.run_main([owner_comment(body())]), ['failure'])
-        self.assertEqual(self.run_main([self.unchecked(body())], [ledger_entry(body())]), ['success'])
+        self.assertEqual(self.run_main(comments=[owner_comment(body())]), ['failure'])
+        self.assertEqual(self.run_main(comments=[self.unchecked(body())], ledger=[ledger_entry(body())]), ['success'])
         self.assertEqual(self.run_main(reviews=[review()]), ['success'])
+        self.assertFalse(any('/files' in call for call in self.fake.calls))
 
     def test_main_recomputes_manifest_and_vendors(self):
         grok_commit = copy.deepcopy(CLAUDE_COMMIT)
         grok_commit['commit']['message'] += '\nCo-authored-by: Grok <grok@x.ai>'
-        receipt = body()
-        self.assertEqual(self.run_main([self.unchecked(receipt)], [ledger_entry(receipt)],
+        self.assertEqual(self.run_main(comments=[self.unchecked(body())], ledger=[ledger_entry(body())],
                                        commits=(grok_commit,)), ['failure'])
 
-    def test_sweep_and_relay_events_evaluate_open_prs(self):
-        for event in [{'schedule': '*/30 * * * *'}, {'workflow_run': {'pull_requests': [{'number': 110}]}},
-                      {'workflow_run': {'pull_requests': []}}]:
-            with self.subTest(event=list(event)):
-                self.assertEqual(self.run_main(reviews=[review()], event=event), ['success'])
+    def test_force_push_h_s_h_fails_closed(self):
+        benign = 'b' * 40
+        # First read H, then the branch moved to S while evaluating: fail closed.
+        self.assertEqual(self.run_main(reviews=[review()], heads=(HEAD, benign, HEAD)), ['failure'])
+        self.assertTrue(all(HEAD in call for call in self.fake.calls if '/compare/' in call))
+
+    def test_ledger_and_comments_paginate_without_truncation(self):
+        receipts = [body(packetSha256=f'{i:064x}') for i in range(130)]
+        ledger = [ledger_entry(r, i + 1) for i, r in enumerate(receipts)]
+        comments = [self.unchecked(receipts[-1], 'n-last', 999)] + [owner_comment(body()) for _ in range(140)]
+        self.assertEqual(self.run_main(comments=comments, ledger=ledger, page=50), ['success'])
+        # A short listing (total_count above what the pages hold) fails closed.
+        fake = FakeGateApi(comments=comments, ledger=ledger)
+        fake.check_pages = lambda runs, total=None: [{'total_count': len(runs) + 1, 'check_runs': runs}]
+        self.assertEqual(self.run_main(fake), ['failure'])
+
+    def test_over_cap_listing_fails_loudly(self):
+        with patch.object(gate, 'api', return_value=[[{}] * 10]):
+            with self.assertRaises(ValueError):
+                gate.api_list('repos/x/y/issues/1/comments?per_page=100', cap=5)
+
+    def test_api_errors_and_rate_limits_publish_failure(self):
+        for marker in ['/compare/', '/comments?', '/reviews?', 'check_name=independent-review-receipt', '/activity?']:
+            with self.subTest(marker=marker):
+                self.assertEqual(self.run_main(comments=[self.unchecked(body())], ledger=[ledger_entry(body())],
+                                               reviews=[review()], errors=[(marker, rate_limited())]),
+                                 ['failure'] if marker != '/activity?' else ['success'])
+        # Activity failure only switches the human path off; the App PASS above still stands.
+        self.assertEqual(self.run_main(reviews=[review()], errors=[('/activity?', rate_limited())]), ['failure'])
+
+    def test_unreadable_pr_fails_the_event_head(self):
+        fake = FakeGateApi(reviews=[review()], errors=[('/pulls/110', rate_limited())])
+        self.assertEqual(self.run_main(fake), ['failure'])
+
+    def test_trust_load_error_publishes_failure(self):
+        self.assertEqual(self.run_main(reviews=[review()], trust_error=policy.PolicyError('bad trust')), ['failure'])
+
+    def test_foreign_policy_check_at_head_fails(self):
+        mine = {'id': 900, 'external_id': f'merge-review:110:{HEAD}:555'}
+        good_run = {'path': gate.WORKFLOW_PATH, 'event': 'pull_request_target', 'head_branch': 'agent/claude/x',
+                    'repository': {'full_name': REPO}}
+        self.assertEqual(self.run_main(reviews=[review()], policy_runs=[mine],
+                                       workflow_runs={'555': good_run}), ['success'])
+        for run, workflow in [({'id': 901, 'external_id': 'forged'}, None),
+                              (dict(mine, id=902), dict(good_run, event='pull_request')),
+                              (dict(mine, id=903), dict(good_run, path='.github/workflows/evil.yml')),
+                              (dict(mine, id=904), dict(good_run, event='workflow_dispatch'))]:
+            with self.subTest(run=run['id']):
+                self.assertEqual(self.run_main(reviews=[review()], policy_runs=[run],
+                                               workflow_runs={'555': workflow} if workflow else {}), ['failure'])
+
+    def test_comment_and_dispatch_events(self):
+        self.assertEqual(self.run_main(reviews=[review()], event={'issue': {'number': 110, 'pull_request': {'url': 'u'}}}),
+                         ['success'])
         self.assertEqual(self.run_main(event={'issue': {'number': 3}}), [])
+        self.assertEqual(self.run_main(event={'workflow_run': {'pull_requests': [{'number': 110}]}}), [])
+
+
+class SweepAndIdentityTests(unittest.TestCase):
+    def test_sweep_covers_all_open_prs_least_recently_evaluated_first(self):
+        open_prs = [{'number': n, 'head': {'sha': f'{n:040x}'}} for n in range(1, 131)]
+        evaluated = {f'{n:040x}': f'2026-10-14T{n % 24:02d}:00:00Z' for n in range(2, 131)}
+
+        def api(endpoint, payload=None, paginate=False):
+            if '/pulls?' in endpoint:
+                self.assertTrue(paginate)
+                return [open_prs[:100], open_prs[100:]]
+            sha = endpoint.split('/commits/')[1].split('/')[0]
+            stamp = evaluated.get(sha)
+            return {'check_runs': [{'completed_at': stamp}] if stamp else []}
+        with patch.object(gate, 'api', side_effect=api):
+            chosen = gate.sweep_numbers(REPO)
+        self.assertEqual(len(chosen), gate.MAX_SWEEP_PRS)
+        self.assertEqual(chosen[0], 1)  # never evaluated, and oldest number
+        # PR 24 (evaluated at 00:00) beats 25 newer PRs to a slot.
+        self.assertIn(24, chosen)
+
+    def test_activity_uses_head_repository_and_empty_is_incomplete(self):
+        calls = []
+
+        def api(endpoint, payload=None, paginate=False):
+            calls.append(endpoint)
+            return [[]]
+        pr = {'head': {'ref': 'agent/claude/x', 'repo': {'full_name': 'contrib/fork'}}}
+        with patch.object(gate, 'api', side_effect=api):
+            self.assertEqual(gate.push_identities(REPO, pr, TRUST), ([], False))
+        self.assertTrue(calls[0].startswith('repos/contrib/fork/activity?'))
 
 
 if __name__ == '__main__':

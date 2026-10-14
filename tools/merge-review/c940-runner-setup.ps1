@@ -208,11 +208,14 @@ function Assert-RunnerBundle {
     $changed = @($expected.Keys | Where-Object { $actual[$_] -ne $expected[$_] }) +
                @($actual.Keys | Where-Object { -not $expected.ContainsKey($_) })
     if ($changed) { throw "Runner bundle changed since install: $($changed | Select-Object -First 5)." }
-    # 3. The job user still cannot write the bundle.
+    # 3. Nobody but Administrators and SYSTEM can write the bundle (allowlist by SID, so a
+    #    renamed or SID-only identity cannot slip past a name pattern).
+    $writeMask = [Security.AccessControl.FileSystemRights]'Write, Delete, ChangePermissions, TakeOwnership'
+    $owners = 'S-1-5-32-544', 'S-1-5-18'
     $rules = (Get-Acl $Paths.Runner).Access | Where-Object {
-        $_.IdentityReference -match "\\$RunnerUser$" -and
-        ($_.FileSystemRights -band [Security.AccessControl.FileSystemRights]::Write) }
-    if ($rules) { throw "$RunnerUser has write access to the runner bundle." }
+        $_.AccessControlType -eq 'Allow' -and ($_.FileSystemRights -band $writeMask) -and
+        $_.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value -notin $owners }
+    if ($rules) { throw 'An account other than Administrators or SYSTEM can write the runner bundle.' }
     Assert-NoReparsePoints
 }
 
@@ -221,6 +224,7 @@ function Install-Checker {
     if (-not $RunnerVersion -or -not $RunnerSha256) {
         throw 'Install needs -RunnerVersion and -RunnerSha256 from the actions/runner release page.'
     }
+    Assert-SignerSeparated
     Test-DiskFloor -Throw | Out-Null
 
     if (-not (Get-LocalUser -Name $RunnerUser -ErrorAction SilentlyContinue)) {
@@ -235,7 +239,8 @@ function Install-Checker {
     } else {
         $script:RunnerPassword = Read-Host "Password for existing local user $RunnerUser" -AsSecureString
     }
-    $admins = Get-LocalGroupMember -SID 'S-1-5-32-544' | Where-Object { $_.Name -match "\\$RunnerUser$" }
+    $runnerSid = Get-RunnerSid
+    $admins = Get-LocalGroupMember -SID 'S-1-5-32-544' | Where-Object { $_.SID.Value -eq $runnerSid }
     if ($admins) { throw "$RunnerUser is an administrator; remove it from Administrators first." }
 
     foreach ($path in $Paths.Values) { New-Item -ItemType Directory -Force -Path $path | Out-Null }
@@ -308,16 +313,58 @@ function Reset-Diag {
     Set-StrictAcl $Diag (Get-OwnerGrants)
 }
 
-function Stop-JobUserProcesses {
-    # A job could leave a process behind to watch for the next registration. Nothing the
-    # job user runs may outlive its job, so stop it before SYSTEM handles any credential.
-    $leftovers = Get-Process -IncludeUserName -ErrorAction SilentlyContinue |
-        Where-Object { $_.UserName -match "\$RunnerUser$" }
-    foreach ($process in $leftovers) { Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue }
-    if (Get-Process -IncludeUserName -ErrorAction SilentlyContinue | Where-Object { $_.UserName -match "\$RunnerUser$" }) {
-        throw "Processes of $RunnerUser are still running; not registering."
+function Assert-SignerSeparated {
+    # DEFERRED, FAIL CLOSED. The workflow signs drafts as the job user, so the job account
+    # can read the unencrypted SSH signing key, and a compromised reviewer CLI could sign
+    # anything. This path may not run until signing moves into a separate SYSTEM-owned
+    # signing process the job account cannot read or drive. No such signer exists yet, so
+    # Install and Registrar refuse unconditionally.
+    throw ('The C940 path is not enableable: the signing key would be readable by the job ' +
+           'account. A separate SYSTEM-owned signing service is required first (docs/merge-review-runner.md).')
+}
+
+function Get-RunnerSid {
+    (Get-LocalUser -Name $RunnerUser -ErrorAction Stop).SID.Value
+}
+
+function Get-JobUserProcesses {
+    # Match the owner by exact SID (Win32_Process GetOwnerSid) or by the exact, escaped,
+    # anchored DOMAIN\user from Get-Process; never by a loose name pattern. SYSTEM can read
+    # the owner of every process a standard user can start (it cannot start protected
+    # processes), so an owner neither lookup can read is not the job user's.
+    $sid = Get-RunnerSid
+    $exact = '^{0}$' -f [regex]::Escape(('{0}\{1}' -f $env:COMPUTERNAME, $RunnerUser))
+    $byName = @{}
+    foreach ($p in Get-Process -IncludeUserName -ErrorAction Stop) { $byName[$p.Id] = $p.UserName }
+    foreach ($process in Get-CimInstance Win32_Process -ErrorAction Stop) {
+        $owner = Invoke-CimMethod -InputObject $process -MethodName GetOwnerSid -ErrorAction SilentlyContinue
+        $sidMatch = $owner -and $owner.ReturnValue -eq 0 -and $owner.Sid -eq $sid
+        $nameMatch = [string]$byName[[int]$process.ProcessId] -match $exact
+        if ($sidMatch -or $nameMatch) { $process }
     }
 }
+
+function Lock-JobUser {
+    # Disabling the account is the lock: a disabled account cannot start a process or a
+    # scheduled task of its own, so nothing new can appear between the check and the
+    # credential use. Existing processes are stopped, then the check is repeated.
+    Disable-LocalUser -Name $RunnerUser
+    foreach ($process in @(Get-JobUserProcesses)) {
+        Stop-Process -Id $process.ProcessId -Force -ErrorAction SilentlyContinue
+    }
+    Start-Sleep -Seconds 2
+    Assert-JobUserIdle
+}
+
+function Assert-JobUserIdle {
+    if ((Get-LocalUser -Name $RunnerUser).Enabled) { throw "$RunnerUser is not locked; not handling credentials." }
+    $left = @(Get-JobUserProcesses)
+    if ($left.Count -gt 0) {
+        throw "$($left.Count) process(es) of $RunnerUser still running; not registering."
+    }
+}
+
+function Unlock-JobUser { Enable-LocalUser -Name $RunnerUser }
 
 function Protect-ConfigDiag {
     # config.cmd logged as SYSTEM into the fresh _diag. Move those logs to the SYSTEM-only
@@ -340,9 +387,12 @@ function Invoke-Registrar {
             foreach ($stale in $StateFiles) {
                 Remove-Item (Join-Path $Paths.Runner $stale) -Force -ErrorAction SilentlyContinue
             }
-            Stop-JobUserProcesses
+            Assert-SignerSeparated
+            Lock-JobUser
             Reset-Diag
             Assert-RunnerBundle
+            # Re-verify immediately before reading credentials (the account is still locked).
+            Assert-JobUserIdle
             $token = Get-RegistrationToken
             $name = '{0}-{1:yyyyMMddHHmmss}' -f $RunnerName, (Get-Date)
             $configArgs = @('--unattended', '--url', "https://github.com/$Repository", '--token', $token,
@@ -358,6 +408,8 @@ function Invoke-Registrar {
             if ($LASTEXITCODE -ne 0) { throw "config.cmd exited $LASTEXITCODE" }
             # The listener running as the job user writes its own logs to a fresh _diag.
             Protect-ConfigDiag
+            Assert-JobUserIdle
+            Unlock-JobUser
             Write-Log "Registered ephemeral runner $name; starting job task."
             Start-ScheduledTask -TaskName $JobTask
             Start-Sleep -Seconds 15

@@ -152,8 +152,12 @@ When an independent runner owner exists:
    - work-folder cleanup runs as `starlight-runner` in the job task, never as SYSTEM;
    - credentials: no App private key or API key ever reaches the C940. The PAT is
      decrypted only inside the SYSTEM registrar and sent as an HTTP header. The one-hour
-     registration token is an argument of the SYSTEM `config.cmd` process, after every
-     leftover `starlight-runner` process is stopped. `config.cmd` logs are moved to the
+     registration token is an argument of the SYSTEM `config.cmd` process. Before any
+     credential is read, the registrar disables the `starlight-runner` account (the lock:
+     a disabled account cannot start a process or task), stops its processes matched by
+     exact owner SID or exact `COMPUTER\user`, and re-checks immediately before reading
+     the PAT and again before re-enabling the account. Any remaining process aborts the
+     registration and leaves the account disabled. `config.cmd` logs are moved to the
      SYSTEM-only folder before the job user gets a writable `_diag`, and registrar logs
      are written there too. The job environment holds only the read-only job token;
    - the runner is registered `--ephemeral --disableupdate`. Update it by re-running
@@ -166,10 +170,13 @@ When an independent runner owner exists:
    isolation above exists). Then set `C940_CHECKER_ENABLED=true`.
 5. Dispatch the workflow with `runner: c940`, or add the `checker:review-c940` label.
 
-Known residual: the signing key is readable by `starlight-runner`, so a reviewer CLI
-that escaped its sandbox could sign a draft. It still cannot change the content the
-hosted job re-derives, only the verdict text, which a compromised reviewer controls
-anyway.
+**Deferred, fail closed: the signer.** As designed, the workflow step signs drafts as
+`starlight-runner`, so the job account can read the unencrypted SSH signing key and a
+reviewer CLI that escaped its sandbox could sign anything. Until signing moves into a
+separate SYSTEM-owned signing process the job account can neither read nor drive,
+`c940-runner-setup.ps1` refuses unconditionally: `Install` and `Registrar` both stop at
+`Assert-SignerSeparated`. Keep `C940_CHECKER_ENABLED` unset. The steps above describe the
+target state, not something that can be run today.
 
 To retire it: `-Mode Uninstall`, remove the runner in Settings > Actions > Runners,
 revoke the PAT, clear `c940.allowedSigners` and unset `C940_CHECKER_ENABLED`.
@@ -188,7 +195,9 @@ Observe these on hosted runs before requiring the check:
 - a missing API key or model ID refuses without recording;
 - the summary shows `unknown` cost, not `$0`, when no price is set;
 - a high-risk PR fails until a listed independent human approves, and dismissing that
-  approval turns the check red within the relay or sweep window.
+  approval turns the check red at that PR's next sweep or a dispatch;
+- a PR that adds its own workflow posting `independent-review-policy` makes the next
+  default-branch evaluation fail.
 
 ## 6. Proposed ruleset
 

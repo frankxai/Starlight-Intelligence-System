@@ -111,7 +111,7 @@ def receipt_text(comment):
 
 def receipt_head(text):
     try:
-        value = json.loads(text)
+        value = policy.loads_strict(text)
     except ValueError:
         return None
     return value.get('headSha') if isinstance(value, dict) else None
@@ -179,7 +179,7 @@ def ledger_receipt(run):
     if (run.get('status') != 'completed' or output.get('summary') != f'receiptSha256: {policy.sha256(text)}'):
         return None, text
     try:
-        receipt = json.loads(text)
+        receipt = policy.loads_strict(text)
     except ValueError:
         return None, text
     if not isinstance(receipt, dict):
@@ -204,6 +204,11 @@ def evaluate_ledger(ctx):
     newest = None
     for run in runs:
         receipt, text = ledger_receipt(run)
+        # A check run is keyed by SHA, and two PRs can share a head. A verdict recorded for
+        # another PR or repository neither passes nor poisons this one.
+        if receipt is not None and (receipt.get('repository') != ctx['repository']
+                                    or receipt.get('pr') != ctx['number'] or type(receipt.get('pr')) is not int):
+            continue
         texts.add(text)
         if receipt is None or receipt.get('verdict') != 'PASS':
             return 'block', f'Checker ledger records a non-PASS or unreadable entry at this head (check run {run["id"]}).'
@@ -336,6 +341,12 @@ def safe_repository(value):
     return value
 
 
+MAX_LIST_ITEMS = 3000
+MAX_LEDGER_RUNS = 1000
+WORKFLOW_PATH = '.github/workflows/merge-review.yml'
+DEFAULT_BRANCH_EVENTS = {'pull_request_target', 'issue_comment', 'schedule'}
+
+
 def api(endpoint, payload=None, paginate=False):
     args = ['gh', 'api', endpoint]
     if paginate:
@@ -344,72 +355,91 @@ def api(endpoint, payload=None, paginate=False):
         args += ['--method', 'POST', '--input', '-']
     run = subprocess.run(args, input=None if payload is None else json.dumps(payload),
                          capture_output=True, text=True, timeout=90, check=True)
-    data = json.loads(run.stdout)
-    return [item for page in data for item in page] if paginate else data
+    return json.loads(run.stdout)
 
 
-def routine_modes(repository, pr, files, head):
+def api_list(endpoint, cap=MAX_LIST_ITEMS):
+    """Every item of a paginated list endpoint, or a loud failure above the cap."""
+    items = [item for page in api(endpoint, paginate=True) for item in page]
+    if len(items) > cap:
+        raise ValueError(f'More than {cap} items at {endpoint.split("?")[0]}; refusing to truncate.')
+    return items
+
+
+def api_check_runs(endpoint, cap=MAX_LEDGER_RUNS):
+    """Every check run across pages of a check-runs listing; a short count fails closed."""
+    pages = api(endpoint, paginate=True)
+    runs = [run for page in pages for run in page.get('check_runs', [])]
+    total = pages[0].get('total_count') if pages else 0
+    if total != len(runs) or len(runs) > cap:
+        raise ValueError('Incomplete or oversized check-run listing.')
+    return runs
+
+
+def routine_modes(repository, base, head, files):
     """Only the narrow routine class needs mode inspection. No source is executed."""
     if not all(item['filename'].startswith(('docs/notes/', 'docs/handovers/')) for item in files):
         return
-    for revision in {safe_sha(head), safe_sha(pr['base']['sha'])}:
+    for revision in {head, base}:
         tree = api(f'repos/{repository}/git/trees/{revision}?recursive=1')
         if tree.get('truncated'):
             raise ValueError('Incomplete Git tree listing')
         modes = {entry['path']: entry['mode'] for entry in tree['tree']}
         for item in files:
-            wanted = pr['base']['sha'] if item['status'] == 'removed' else head
+            wanted = base if item['status'] == 'removed' else head
             if revision == wanted:
                 item['mode'] = modes.get(item['filename'])
 
 
 def push_identities(repository, pr, trust):
-    """Commit authors and committers plus authenticated push actors on the head branch."""
+    """Authenticated push actors on the head branch, from the head repository's activity.
+
+    Returns (identities, complete). Anything short of a non-empty, readable listing is
+    incomplete, so no human approval counts.
+    """
     if not trust['independentReviewers']['users']:
         return [], False  # Human path is off; skip the extra calls.
     try:
         ref = safe_ref_query(pr['head']['ref'])
-    except UnsafeValue:
-        return [], False  # Unknown pushers: no human approval counts.
-    activity = api(f'repos/{repository}/activity?ref={ref}&per_page=100', paginate=True)
+        head_repo = safe_repository(((pr['head'].get('repo') or {}).get('full_name')))
+        activity = api_list(f'repos/{head_repo}/activity?ref={ref}&per_page=100')
+    except (UnsafeValue, ValueError, subprocess.SubprocessError, OSError):
+        return [], False
+    if not activity:
+        return [], False
     return [{'id': (a.get('actor') or {}).get('id')} for a in activity], True
 
 
 def collect_context(repository, number, pr, trust):
+    """Classify and bind everything from the compare API at explicit base and head SHAs.
+
+    /pulls/N/files follows the moving branch, so it is never used for classification.
+    """
     head, base = safe_sha(pr['head']['sha']), safe_sha(pr['base']['sha'])
-    endpoint = f'repos/{repository}/pulls/{number}'
-    files = api(endpoint + '/files?per_page=100', paginate=True)
-    if len(files) != pr['changed_files']:
-        raise ValueError('Incomplete changed-file listing')
-    routine_modes(repository, pr, files, head)
-    comments = api(f'repos/{repository}/issues/{number}/comments?per_page=100', paginate=True)
-    reviews = api(endpoint + '/reviews?per_page=100', paginate=True)
+    compare = api(f'repos/{repository}/compare/{base}...{head}')
+    files, commits = policy.comparison_complete(compare, pr['changed_files'])
+    files = [dict(item) for item in files]
+    routine_modes(repository, base, head, files)
+    manifest = policy.build_manifest(compare, head)  # Raises for a binary or missing patch.
+    comments = api_list(f'repos/{repository}/issues/{number}/comments?per_page=100')
+    reviews = api_list(f'repos/{repository}/pulls/{number}/reviews?per_page=100')
     ctx = {'repository': repository, 'number': number, 'head': head, 'files': files,
            'comments': comments, 'reviews': reviews, 'auto_merge': pr.get('auto_merge'),
-           'pr_author': pr['user'], 'trust': trust, 'ledger': [], 'manifest_sha': '',
-           'manifest_paths': [], 'maker_vendors': [], 'identities': [], 'identities_complete': False}
+           'pr_author': pr['user'], 'trust': trust, 'ledger': [],
+           'manifest_sha': policy.sha256(policy.canonical(manifest)),
+           'manifest_paths': policy.manifest_paths(manifest), 'maker_vendors': [],
+           'identities': [], 'identities_complete': False}
     if all(routine_file(item) for item in files):
         return ctx
-    compare = api(f'repos/{repository}/compare/{base}...{head}')
-    _, commits = policy.comparison_complete(compare, pr['changed_files'])
     identities = [{'id': (c.get(role) or {}).get('id')} for c in commits for role in ('author', 'committer')]
     pushed, complete = push_identities(repository, pr, trust)
     ctx.update(identities=identities + pushed,
                identities_complete=complete and all(type(i['id']) is int for i in identities + pushed))
     if policy.app_configured(trust):
         app_id = safe_number(trust['checkerApp']['appId'])
-        ledger = api(f'repos/{repository}/commits/{head}/check-runs?check_name={policy.RECEIPT_CHECK}'
-                     f'&app_id={app_id}&filter=all&per_page=100')
-        if ledger['total_count'] != len(ledger['check_runs']):
-            raise ValueError('Incomplete checker ledger listing')
-        ctx['ledger'] = ledger['check_runs']
+        ctx['ledger'] = api_check_runs(f'repos/{repository}/commits/{head}/check-runs?check_name='
+                                       f'{policy.RECEIPT_CHECK}&app_id={app_id}&filter=all&per_page=100')
         annotate_edit_history(comments, head, trust)
-        try:
-            manifest = policy.build_manifest(compare, head)
-            ctx.update(manifest_sha=policy.sha256(policy.canonical(manifest)),
-                       manifest_paths=policy.manifest_paths(manifest))
-        except policy.PolicyError:
-            pass  # No manifest: any App receipt fails integrity, so the ledger blocks.
         try:
             ctx['maker_vendors'] = policy.maker_vendors(pr['head']['ref'], commits, trust)
         except policy.PolicyError:
@@ -417,50 +447,122 @@ def collect_context(repository, number, pr, trust):
     return ctx
 
 
-def evaluate_pr(repository, number, trust):
-    repository, number = safe_repository(repository), safe_number(number)
-    endpoint = f'repos/{repository}/pulls/{number}'
-    pr = api(endpoint)
-    if pr['state'] != 'open':
-        return None
-    head = safe_sha(pr['head']['sha'])
-    check = api(f'repos/{repository}/check-runs', {
-        'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
-        'external_id': f'merge-review:{number}:{head}'})
-    ok = False
-    summary = 'Review evaluation failed closed.'
-    try:
-        ok, summary = evaluate(collect_context(repository, number, pr, trust))
-        if api(endpoint)['head']['sha'] != head:
-            ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
-    except Exception as error:
-        summary = f'Review evaluation failed closed ({type(error).__name__}).'
-    # PATCH this run, never create a competing successful run after a failed run.
-    check_id = check['id']
+def own_run_id():
+    value = os.environ.get('GITHUB_RUN_ID', '')
+    return int(value) if re.fullmatch(r'[1-9][0-9]{0,19}', value) else None
+
+
+def foreign_policy_checks(repository, head, own_check_id, default_branch):
+    """Ids of other independent-review-policy check runs at this head not made by this workflow.
+
+    Any workflow file in a same-repository PR runs as GitHub Actions (app 15368), the same
+    app that writes this check, so a PR can add a job that posts its own success. Each run
+    this gate writes names its workflow run in external_id; a run that does not resolve to
+    the default-branch merge-review.yml is reported as foreign and fails this evaluation.
+    It cannot stop a forged run written after this one; see docs/merge-review.md.
+    """
+    runs = api_check_runs(f'repos/{repository}/commits/{head}/check-runs?check_name={CHECK_NAME}'
+                          '&filter=all&per_page=100')
+    foreign, verified = [], {}
+    for run in runs:
+        if run.get('id') == own_check_id:
+            continue
+        match = re.fullmatch(r'merge-review:[0-9]+:[0-9a-f]{40}:([1-9][0-9]{0,19})', run.get('external_id') or '')
+        if not match:
+            foreign.append(run.get('id'))
+            continue
+        run_id = match.group(1)
+        if run_id not in verified:
+            workflow_run = api(f'repos/{repository}/actions/runs/{run_id}')
+            # These events always run the default-branch file; a dispatch runs the file on
+            # the ref it names. pull_request and review events run the PR's copy.
+            event = workflow_run.get('event')
+            trusted_event = (event in DEFAULT_BRANCH_EVENTS
+                             or (event == 'workflow_dispatch' and workflow_run.get('head_branch') == default_branch))
+            verified[run_id] = (workflow_run.get('path') == WORKFLOW_PATH and trusted_event
+                                and (workflow_run.get('repository') or {}).get('full_name') == repository)
+        if not verified[run_id]:
+            foreign.append(run.get('id'))
+    return foreign
+
+
+def publish(repository, check_id, ok, summary):
     if type(check_id) is not int or check_id < 1:
         raise UnsafeValue('Unexpected check run id.')
-    args = ['gh', 'api', f'repos/{repository}/check-runs/{check_id}',
-            '--method', 'PATCH', '--input', '-']
-    subprocess.run(args, input=json.dumps({
-        'status': 'completed', 'conclusion': 'success' if ok else 'failure',
-        'output': {'title': CHECK_NAME, 'summary': summary}}),
-        capture_output=True, text=True, timeout=90, check=True)
+    subprocess.run(['gh', 'api', f'repos/{repository}/check-runs/{check_id}', '--method', 'PATCH',
+                    '--input', '-'], input=json.dumps({
+                        'status': 'completed', 'conclusion': 'success' if ok else 'failure',
+                        'output': {'title': CHECK_NAME, 'summary': summary}}),
+                   capture_output=True, text=True, timeout=90, check=True)
+
+
+def evaluate_pr(repository, number, trust_loader=None, event_head=None):
+    """Evaluate one PR. Every failure after a head is known is published as a failing check.
+
+    If the PR itself cannot be read, the head named by the triggering event (when there is
+    one) still gets a failing check, so an earlier green result does not stand.
+    """
+    repository, number = safe_repository(repository), safe_number(number)
+    trust_loader = trust_loader or policy.load_trust
+    endpoint = f'repos/{repository}/pulls/{number}'
+    try:
+        pr = api(endpoint)
+        if pr['state'] != 'open':
+            return None
+        head = safe_sha(pr['head']['sha'])
+    except Exception as error:
+        if not event_head:
+            raise
+        pr, head = None, safe_sha(event_head)
+        reason = f'Could not read the PR ({type(error).__name__}); failing closed for this head.'
+    run_id = own_run_id()
+    check = api(f'repos/{repository}/check-runs', {
+        'name': CHECK_NAME, 'head_sha': head, 'status': 'in_progress',
+        'external_id': f'merge-review:{number}:{head}:{run_id or 0}'})
+    ok, summary = False, 'Review evaluation failed closed.'
+    try:
+        if pr is None:
+            summary = reason
+        else:
+            trust = trust_loader()
+            ok, summary = evaluate(collect_context(repository, number, pr, trust))
+            default_branch = (pr['base'].get('repo') or {}).get('default_branch') or 'main'
+            foreign = foreign_policy_checks(repository, head, check.get('id'), default_branch)
+            if foreign:
+                ok, summary = False, (f'Foreign {CHECK_NAME} check runs at this head {foreign[:5]} were not '
+                                      'written by the default-branch merge-review.yml; failing closed.')
+            if safe_sha(api(endpoint)['head']['sha']) != head:
+                ok, summary = False, 'PR head changed during evaluation; rerun for the new head.'
+    except Exception as error:
+        ok, summary = False, f'Review evaluation failed closed ({type(error).__name__}).'
+    publish(repository, check.get('id'), ok, summary)
     return {'pr': number, 'head': head, 'passed': ok, 'summary': summary}
 
 
+def last_evaluated(repository, item):
+    """When the policy check last completed on this PR's head; '' if never."""
+    head = safe_sha((item.get('head') or {}).get('sha'))
+    listing = api(f'repos/{repository}/commits/{head}/check-runs?check_name={CHECK_NAME}&per_page=1')
+    runs = listing.get('check_runs') or []
+    return (runs[0].get('completed_at') or '') if runs else ''
+
+
+def sweep_numbers(repository, budget=MAX_SWEEP_PRS):
+    """All open PRs, least recently evaluated first. Recent activity cannot starve old PRs."""
+    open_prs = api_list(f'repos/{repository}/pulls?state=open&per_page=100')
+    ranked = sorted(open_prs, key=lambda item: (last_evaluated(repository, item), item.get('number', 0)))
+    return [safe_number(item.get('number')) for item in ranked[:budget]]
+
+
 def pr_numbers(repository, event):
-    """PRs to evaluate for this event. Schedule and relay runs re-check recent open PRs."""
+    """PRs to evaluate for this event. Only default-branch triggers reach this code."""
     value = (event.get('pull_request', {}).get('number')
              or (event.get('issue', {}).get('number') if event.get('issue', {}).get('pull_request') else None)
              or event.get('inputs', {}).get('pr'))
     if value is not None:
         return [safe_number(value)]
-    relay = event.get('workflow_run', {}).get('pull_requests') or []
-    if relay:
-        return sorted({safe_number(item.get('number')) for item in relay})[:MAX_SWEEP_PRS]
-    if 'schedule' in event or 'workflow_run' in event:
-        open_prs = api(f'repos/{repository}/pulls?state=open&sort=updated&direction=desc&per_page={MAX_SWEEP_PRS}')
-        return [safe_number(item.get('number')) for item in open_prs]
+    if 'schedule' in event:
+        return sweep_numbers(repository)
     return []  # Ordinary issue comments are not PR review events.
 
 
@@ -468,11 +570,16 @@ def main():
     repository = safe_repository(os.environ['GITHUB_REPOSITORY'])
     with open(os.environ['GITHUB_EVENT_PATH'], encoding='utf8') as event_file:
         event = json.load(event_file)
-    trust = policy.load_trust()
+    event_head = (event.get('pull_request') or {}).get('head', {}).get('sha')
+    failures = 0
     for number in pr_numbers(repository, event):
-        if number < 1:
-            raise ValueError('Invalid PR number')
-        print(json.dumps(evaluate_pr(repository, number, trust)))
+        try:
+            print(json.dumps(evaluate_pr(repository, number, policy.load_trust, event_head)))
+        except Exception as error:  # One PR's failure must not stop the sweep.
+            failures += 1
+            print(json.dumps({'pr': number, 'error': type(error).__name__}))
+    if failures:
+        sys.exit(1)
 
 
 if __name__ == '__main__':

@@ -1,16 +1,16 @@
 name: Merge review policy
 
+# Every trigger here runs the DEFAULT-BRANCH copy of this file: pull_request_target,
+# issue_comment and schedule always do, and dispatch is honoured only from the default
+# branch. No pull_request or pull_request_review trigger exists anywhere for this check,
+# because those run the PR's own workflow copy. Review dismissals are picked up by the
+# sweep or a dispatch (see docs/merge-review.md for the latency).
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review, auto_merge_enabled, auto_merge_disabled, edited]
   issue_comment:
     types: [created, edited, deleted]
-  # Review submit or dismiss events reach this default-branch workflow through the
-  # no-permission relay; a pull_request_review trigger here would run the PR's copy.
-  workflow_run:
-    workflows: [Review event relay]
-    types: [completed]
-  # Fallback re-evaluation of the most recently updated open PRs (see docs/merge-review.md).
+  # Re-evaluates open PRs least recently evaluated first (see docs/merge-review.md).
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
@@ -25,16 +25,25 @@ permissions:
   pull-requests: read
   issues: read
   checks: write
+  actions: read
 
+# One evaluation per PR at a time. Comment events queue instead of cancelling, so a
+# stream of public comments cannot keep an evaluation from finishing.
 concurrency:
   group: merge-review-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
 
 jobs:
   evaluate:
-    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
+    # Comments only matter from collaborators or Apps (the checker App's mirror comment).
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      (github.event_name != 'issue_comment' ||
+       (github.event.issue.pull_request &&
+        (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) ||
+         github.event.comment.user.type == 'Bot')))
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       # This is trusted default-branch code. Never check out or execute PR code.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
