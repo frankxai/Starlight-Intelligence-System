@@ -1236,6 +1236,20 @@ export class SisMcpServerV01 {
                   evidenceRef: { type: 'string' },
                   proof: { type: 'string' },
                 },
+                if: {
+                  properties: {
+                    decidedBy: { const: 'human' },
+                  },
+                },
+                then: {
+                  anyOf: [
+                    { required: ['signature'] },
+                    { required: ['mandateId'] },
+                    { required: ['approvalRef'] },
+                    { required: ['evidenceRef'] },
+                    { required: ['proof'] },
+                  ],
+                },
               },
             },
             evidence: {

@@ -602,7 +602,7 @@ test("run receipt schema requires proof for human gate decisions", () => {
 
   // Human decision with each supported proof field succeeds
   for (const [key, val] of [
-    ["signature", "sig_ed25519_test"],
+    ["signature", "sig_1234567890abcdef1234567890abcdef"],
     ["mandateId", "man_infra_spend"],
     ["approvalRef", "https://github.com/frankxai/Starlight-Intelligence-System/pull/421"],
     ["evidenceRef", "ref_audit_log_42"],
@@ -614,6 +614,19 @@ test("run receipt schema requires proof for human gate decisions", () => {
     };
     assert.deepEqual(validateAgainstSchema(schema, humanWithProof), [], `Expected proof ${key} to validate cleanly`);
   }
+
+  // Negative tests for invalid proof formats
+  const shortSig = {
+    ...sample,
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", signature: "short", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(validateAgainstSchema(schema, shortSig).some((e) => e.includes("signature") && e.includes("shorter than minimum 32")));
+
+  const badRef = {
+    ...sample,
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", approvalRef: "unresolvable", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(validateAgainstSchema(schema, badRef).some((e) => e.includes("approvalRef") && e.includes("does not match")));
 
   // Agent and policy decisions without proof succeed
   const nonHuman = {

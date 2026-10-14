@@ -128,4 +128,41 @@ test("receiptProblems accepts human decision with proof", () => {
     ],
   };
   assert.deepEqual(receiptProblems(ok), []);
+
+  // Accepts evidenceRef when matched in evidence array
+  const okEvidenceRef = {
+    ...receipt(),
+    decisions: [
+      {
+        gate: "spend",
+        decidedBy: "human",
+        actorId: "frank",
+        outcome: "approved",
+        evidenceRef: "memory/_audit/x.jsonl",
+        at: "2026-09-21T09:59:00.000Z",
+      },
+    ],
+  };
+  assert.deepEqual(receiptProblems(okEvidenceRef), []);
 });
+
+test("receiptProblems refuses human decision with invalid structured proof", () => {
+  const shortSig = {
+    ...receipt(),
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", signature: "short", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(receiptProblems(shortSig).some((p) => p.includes("must be at least 32 characters")));
+
+  const badRef = {
+    ...receipt(),
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", approvalRef: "unresolvable", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(receiptProblems(badRef).some((p) => p.includes("not a valid URI reference")));
+
+  const missingEvRef = {
+    ...receipt(),
+    decisions: [{ gate: "spend", decidedBy: "human", actorId: "frank", outcome: "approved", evidenceRef: "does_not_exist", at: "2026-09-21T09:59:00.000Z" }],
+  };
+  assert.ok(receiptProblems(missingEvRef).some((p) => p.includes("does not match any evidence.ref")));
+});
+

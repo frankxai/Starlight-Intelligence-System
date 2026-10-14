@@ -248,28 +248,30 @@
           },
           "signature": {
             "type": "string",
-            "minLength": 1,
-            "description": "Cryptographic signature or signature locator from the deciding human actor."
+            "minLength": 32,
+            "description": "Cryptographic signature or signature locator from the deciding human actor (at least 32 characters)."
           },
           "mandateId": {
             "type": "string",
-            "minLength": 1,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_.:-]+$",
             "description": "Identifier of the human mandate or authorization scope."
           },
           "approvalRef": {
             "type": "string",
-            "minLength": 1,
-            "description": "URL, PR review, or ledger id of the human approval record."
+            "minLength": 3,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9+.-]*:.*$",
+            "description": "URI (e.g. https://, urn:, mandate:, pr:) of the human approval record."
           },
           "evidenceRef": {
             "type": "string",
             "minLength": 1,
-            "description": "Reference to an evidence record or artifact proving the human decision."
+            "description": "Reference matching an entry in the evidence array that proves the human decision."
           },
           "proof": {
             "type": "string",
-            "minLength": 1,
-            "description": "Direct actor-bound proof token or reference for the human decision."
+            "minLength": 8,
+            "description": "Direct actor-bound proof token or reference for the human decision (at least 8 characters)."
           }
         },
         "if": {

@@ -259,10 +259,10 @@ describe('run receipt — receiptProblems', () => {
 
   it('accepts human decisions with any supported proof field', () => {
     for (const [key, val] of [
-      ['signature', 'sig_1234567890abcdef'],
+      ['signature', 'sig_1234567890abcdef1234567890abcdef'],
       ['mandateId', 'man_2026_q4'],
       ['approvalRef', 'https://github.com/frankxai/Starlight-Intelligence-System/pull/421#issuecomment-1'],
-      ['evidenceRef', 'ref_gate_approval_01'],
+      ['evidenceRef', 'memory/_audit/agent-events/2026-09-21.jsonl'],
       ['proof', 'proof_token_human_verified'],
     ] as const) {
       const problems = receiptProblems(
@@ -272,6 +272,33 @@ describe('run receipt — receiptProblems', () => {
       );
       assert.deepEqual(problems, [], `Expected proof key ${key} to be accepted without problems`);
     }
+  });
+
+  it('refuses a human decision with a short or invalid signature', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', signature: 'x', at: '2026-09-21T09:59:30.000Z' }],
+      }),
+    );
+    assert.ok(problems.includes('decision publish.signature is not a valid signature (must be at least 32 characters)'), problems.join('; '));
+  });
+
+  it('refuses an approvalRef without a URI scheme', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', approvalRef: 'unresolvable', at: '2026-09-21T09:59:30.000Z' }],
+      }),
+    );
+    assert.ok(problems.includes('decision publish.approvalRef is not a valid URI reference'), problems.join('; '));
+  });
+
+  it('refuses an evidenceRef that does not match any evidence.ref', () => {
+    const problems = receiptProblems(
+      receipt({
+        decisions: [{ gate: 'publish', decidedBy: 'human', actorId: 'frank', outcome: 'approved', evidenceRef: 'missing_evidence_ref', at: '2026-09-21T09:59:30.000Z' }],
+      }),
+    );
+    assert.ok(problems.includes('decision publish.evidenceRef "missing_evidence_ref" does not match any evidence.ref'), problems.join('; '));
   });
 
   it('accepts policy and agent decisions without proof', () => {
