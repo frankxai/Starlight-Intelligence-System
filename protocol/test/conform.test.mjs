@@ -475,4 +475,9 @@ test("jsonschema assertStrict loads the run receipt v1 schema, and token counts 
   assert.ok(validateAgainstSchema(stage, { name: "synthesize", status: "ok", inputTokens: 0.5 }).length > 0);
   const tokens = schema.properties.totals.properties.tokens;
   assert.ok(validateAgainstSchema(tokens, { input: 1.5, output: 2 }).length > 0);
+  // v1 keeps accepting unsigned drafts: keyid is optional in the schema and enforced by the verifier on signed envelopes.
+  const issuer = schema.properties.issuer;
+  assert.deepEqual(issuer.required, ["name"]);
+  assert.deepEqual(validateAgainstSchema(issuer, { name: "sis" }), []);
+  assert.ok(validateAgainstSchema(issuer, { name: "sis", keyid: "abc" }).length > 0);
 });
