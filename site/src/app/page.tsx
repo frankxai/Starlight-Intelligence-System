@@ -290,7 +290,7 @@ export default async function HomePage() {
             </div>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
               First step: clone the repo and build it. The quickstart walks
-              through it in four commands. Stuck or have an idea?{" "}
+              through it in four steps. Stuck or have an idea?{" "}
               <a
                 href="https://github.com/frankxai/Starlight-Intelligence-System/issues/new/choose"
                 className="inline-flex min-h-11 items-center font-medium text-white underline underline-offset-4 hover:text-slate-200"
