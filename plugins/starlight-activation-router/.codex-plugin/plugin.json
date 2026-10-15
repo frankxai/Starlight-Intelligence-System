@@ -25,7 +25,6 @@
     "prompts"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Starlight Activation Router",
     "shortDescription": "Slash-style /si, /so, and /acos routing for Codex.",
