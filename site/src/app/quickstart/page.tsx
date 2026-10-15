@@ -144,12 +144,18 @@ export default function QuickstartPage() {
             Build the current source, point one MCP client at its server, and
             confirm the 13 tools before writing your first memory.
           </p>
+          <a
+            href="#step-1"
+            className="mt-6 inline-flex min-h-11 items-center rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 transition-std hover:bg-slate-200"
+          >
+            Your first step: build the source &darr;
+          </a>
         </div>
       </section>
       <div className="mx-auto max-w-3xl px-6 py-16">
 
       {/* Step 1 — Install */}
-      <section className="mt-16">
+      <section id="step-1" className="mt-16 scroll-mt-24">
         <StepLabel n={1} label="Build the current source" />
         <p className="mt-3 text-[14px] leading-relaxed text-slate-400">
           The repository is the current distribution path. Clone it,
@@ -306,6 +312,16 @@ node dist/cli.js init --vaults`}
             Explore live vaults &rarr;
           </Link>
         </div>
+        <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
+          Stuck on a step, or found something wrong?{" "}
+          <a
+            href="https://github.com/frankxai/Starlight-Intelligence-System/issues/new/choose"
+            className="font-medium text-white underline underline-offset-4 hover:text-slate-200"
+          >
+            Open a GitHub issue
+          </a>
+          . Issues are the community channel for now.
+        </p>
       </section>
       </div>
     </div>
