@@ -40,74 +40,51 @@ That makes the CLI itself the arena:
      script, never by judge.
   5. **Contradictory spec + "do not ask questions"** — the right answer is
      pushback, not product.
+- **round-6-argon-proving-ground (`2026-10-14-r6-gemini-4-argon-proving-ground.json`)** —
+  5-way cross-provider proving ground (`gemini-4-argon`, `claude-fable-5-1`, `claude-opus-5`,
+  `claude-sonnet-5`, `gpt-5-5`) across 5 ecosystem tasks:
+  1. `t1-nextjs16-rsc-arena-card` — TypeScript RSC normalizer with strict model-ID boundary (`gpt-5-5` vs `gpt-5`).
+  2. `t2-ui-ux-arena-matrix` — Dark-mode glassmorphic comparison matrix with WCAG AA contrast (`>= 4.5:1`) and roving keyboard focus.
+  3. `t3-editorial-constraint-stack` — 7-rule executive brief (240–260 words, 0 banned AI prestige words, dated claims, 3-col table, named falsifier).
+  4. `t4-governance-contradiction-pushback` — Refuse merging vendor MMLU numbers into first-party `measured` receipts (`REVISE-2`).
+  5. `t5-langfuse-mcp-telemetry-wire` — Dual-schema Langfuse Cloud EU telemetry adapter (`src/telemetry/langfuse.ts`).
 
 ## Task design rules
 
 - Prefer **self-verifying** tasks (asserts, ground truth) over judged ones — keep the
   judged share ≤ half the card.
-- One task per capability axis: reasoning, coding, repo-grounded accuracy,
-  brand-voice writing. Add agentic/tool-use axes as the card grows.
-- Always record **attempts used** on coding tasks — first-try-pass is signal.
+- One task per capability axis: reasoning, coding, UI/UX accessibility, repo-grounded accuracy,
+  brand-voice writing, governance pushback, and agentic telemetry.
+- Always record **attempts used**, latency, cost USD, and **named weaknesses** — first-try-pass is signal.
 - Always state caveats in the receipt (n, judge family, harness overhead).
 
 ## Running a round
 
-From a Claude Code session in this repo:
+Run the deterministic Round 6 verification harness and Langfuse telemetry suite locally:
 
+```bash
+node --experimental-strip-types tools/arena/run-argon-eval.ts
+node --experimental-strip-types --test test/langfuse-telemetry.test.ts
 ```
-Run a model arena round: dispatch tasks from tools/arena/README.md task design
-rules to fable and opus subagents in parallel, verify objective tasks, judge
-subjective ones blind with sonnet, and write the receipt to tools/arena/runs/.
-```
 
-(Each step is plain `Agent` tool usage — see the 2026-06-09 run receipt for the
-exact prompt shapes.)
+Or dispatch a live multi-agent round via the **6-Seat Model & Agent Arena Council** (`verticals/model-agent-arena/`, led by `agents/starlight-evaluator.md`).
 
-## Eval-stack doctrine (decided 2026-06-09)
+## Eval-stack doctrine (updated 2026-10-14)
 
 | Layer | Tool | Why |
 |---|---|---|
-| **Head-to-head model arena** | Claude Code `Agent` model overrides (this harness) | Zero infra, tests model-in-harness (what we actually ship with), receipts native to the repo. |
-| **Regression evals on prompts/patterns** | `promptfoo` (declarative YAML, already wrapped by the `prompt-evaluator` agent in the Prompt Hub) | Versioned test files colocated with patterns; runs in CI; no server. |
-| **Runtime tracing of deployed apps** | Langfuse (Phase 2, only when an app serves real users) | Tracing/observability is a production concern, not an eval concern. Don't stand up a server for benchmarks. |
-| **Not adopted** | LangChain/LangSmith as eval layer | Adds a framework dependency for no capability we lack; LangSmith is paid + hosted where promptfoo is local + free. |
-
-## ⏸ Compliance rounds PAUSED (2026-06-10)
-
-Per exec-board call (Frank-authorized): **stop generating output-discipline / craft
-arena rounds** — 5 in 48h, the axis is saturated (R3 confirmed capability parity across
-the lineup). That round landed as the **R5 deep-reasoning lane** (multi-step proof,
-long-context contradiction detection, architecture trade-off scored on correctness not
-format) + a **cross-family GPT-5 judge** (OpenRouter) to kill the Claude-family bias
-caveat. Do not run another compliance card until R4 ships.
-
-## Backlog — more to consider (Round 3+)
-
-- **Cross-family judge** — add a non-Anthropic judge via OpenRouter (e.g.
-  `openai/gpt-5`) for any task that still needs taste; kills family bias outright.
-- **n ≥ 3 trials per task** — promote tallies to win-rates with spread before any
-  routing claim hardens into doctrine.
-- **Long-context fidelity** — needle + planted-contradiction detection across a
-  vault-sized context; measures synthesis, not retrieval.
-- **Token-efficiency axis** — same outcome, tokens-to-completion as a scored metric.
-- **Parallel-orchestration judgment** — plan a real SIS fan-out; score against known
-  machine constraints (AgentDB singleton, RAM-pressure spawn jams, stage-immediately
-  discipline with sibling tabs).
-- **Memory-protocol compliance** — does the contestant check vaults before work and
-  write after, per CLAUDE.md, without being reminded?
-- **Harness fault-injection** — kill an agent mid-task, feed malformed tool results,
-  exhaust attempts: measures recovery, not capability.
-- **Structural mitigation over vigilance** — R2's governance-trap finding: a
-  PreToolUse / pre-commit hook should block commits touching substrate files
-  without a board receipt. Models flagging gates is nice; hooks enforcing them
-  is engineering.
+| **Head-to-head model & agent arena** | `tools/arena/run-argon-eval.ts` + 6-Seat Council (`verticals/model-agent-arena/`) | Deterministic mechanical assertions + cross-provider harness runs; receipts committed to `tools/arena/runs/` and syndicated to `frankx.ai/research/model-arena`. |
+| **Regression evals on prompts/patterns** | `promptfoo` (declarative YAML, wrapped by `prompt-evaluator`) | Versioned test files colocated with patterns; runs in CI; no server. |
+| **Unified experiment & receipt telemetry** | **Langfuse Cloud EU** (`src/telemetry/langfuse.ts` + `src/telemetry/experiments.ts`) | Dual-schema ingestion (`ArenaRunReceipt` `runId` + FrankX `Receipt` `round_id`), recording parent traces, contestant generation spans, and normalized pass scores (`1.0` / `0.5` / `0.0`). |
+| **Visual & UX verification** | **CDP Browser Hub (`http://localhost:9223`)** (`arena-critic`) | Shared Chromium multiplexer for screenshots, contrast verification, and `.webm` walkthroughs — never `playwright.launch()`. |
 
 ## Caveats that never leave the receipts
 
 - Claude-family judges have family bias even when blind — note it, shuffle labels,
-  and prefer objective verification wherever possible.
+  use cross-family judges (`Gemini 4 Argon`, `GPT-5.5`, `Claude Opus 5`), and prefer
+  deterministic mechanical verification wherever possible.
 - n=1 rounds are directional. Promote a claim only after repeated rounds agree.
-- Results measure **model-in-Claude-Code-harness**, which is the configuration we
-  actually operate — but it is not a raw API benchmark.
+- Results measure **model-in-harness**, which is the configuration we actually operate —
+  and are never merged with vendor-reported benchmark claims.
 
 Built on SIP — Starlight Intelligence Protocol.

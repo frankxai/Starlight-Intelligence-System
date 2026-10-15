@@ -174,10 +174,18 @@ export interface EvalSummaryReceipt {
 }
 
 export interface ArenaRunReceipt {
-  runId: string;
+  runId?: string;
+  round_id?: string;
   date: string;
-  harness: string;
-  contestants: Record<string, string>;
+  title?: string;
+  methodology?: string;
+  harness?: string;
+  contestants: Record<string, string> | string[];
+  visual_evidence?: {
+    screenshots?: string[];
+    recording?: string;
+    cdp_endpoint?: string;
+  };
   judge?: {
     model: string;
     blind?: boolean;
@@ -185,18 +193,23 @@ export interface ArenaRunReceipt {
   };
   tasks: Array<{
     id: string;
-    category: string;
-    verification: string;
+    category?: string;
+    prompt?: string;
+    verification?: string;
     results: Record<string, {
       correct?: boolean | string;
       judgeScore?: number;
       durationMs?: number;
+      latency_ms?: number;
+      cost_usd?: number;
       tokens?: number;
       status?: string;
       attempts?: number;
       wordCount?: number;
       constraintCompliant?: boolean;
       notes?: string;
+      screenshot_url?: string;
+      recording_url?: string;
     }>;
     winner?: string;
   }>;
@@ -213,7 +226,12 @@ export interface ArenaRunReceipt {
 function resolveBaseUrl(rawUrl?: string, region?: string): string {
   if (rawUrl && rawUrl.trim().length > 0) {
     const trimmed = rawUrl.trim();
-    if (trimmed === 'eu' || trimmed === 'eu-cloud' || trimmed === 'europe') {
+    if (
+      trimmed === 'eu' ||
+      trimmed === 'eu-cloud' ||
+      trimmed === 'europe' ||
+      trimmed.includes('langfuse-web-production-840d.up.railway.app')
+    ) {
       return 'https://cloud.langfuse.com';
     }
     if (trimmed === 'us' || trimmed === 'us-cloud') {
@@ -890,27 +908,42 @@ export class StarlightTelemetry {
 
   /**
    * Record a Model Arena run receipt into Langfuse EU Cloud.
+   * Supports both SIS receipts (`runId`, `contestants: Record`) and FrankX receipts (`round_id`, `contestants: string[]`).
    */
   public async recordArenaRun(receipt: ArenaRunReceipt): Promise<{ traceId: string } | null> {
     if (!this.client) return null;
 
     try {
+      const canonicalRunId = receipt.runId || receipt.round_id || `arena-${receipt.date}`;
+      const contestantTags = Array.isArray(receipt.contestants)
+        ? receipt.contestants
+        : Object.keys(receipt.contestants ?? {});
+
       const trace = this.client.trace({
-        name: `arena:${receipt.runId}`,
+        name: `arena:${canonicalRunId}`,
         metadata: {
+          runId: canonicalRunId,
+          round_id: receipt.round_id ?? canonicalRunId,
+          title: receipt.title,
+          methodology: receipt.methodology,
           date: receipt.date,
-          harness: receipt.harness,
+          harness: receipt.harness ?? 'starlight-proving-ground',
           contestants: receipt.contestants,
+          visual_evidence: receipt.visual_evidence,
           judge: receipt.judge,
           headline: receipt.summary?.headline,
         },
-        tags: ['starlight', 'arena', 'experiment', ...Object.keys(receipt.contestants)],
+        tags: ['starlight', 'arena', 'experiment', ...contestantTags],
       });
 
       for (const task of receipt.tasks) {
         const span = trace.span({
           name: `task:${task.id}`,
-          input: { category: task.category, verification: task.verification },
+          input: {
+            category: task.category ?? 'proving-ground',
+            prompt: task.prompt,
+            verification: task.verification ?? receipt.methodology,
+          },
           output: { results: task.results, winner: task.winner },
         });
 
@@ -924,10 +957,13 @@ export class StarlightTelemetry {
             });
           }
           if (res.status != null) {
+            const upper = String(res.status).toUpperCase();
+            const scoreValue =
+              upper === 'PASS' ? 1.0 : upper === 'PARTIAL' ? 0.5 : 0.0;
             trace.score({
               name: `arena_${model}_correctness`,
-              value: res.status === 'PASS' ? 1.0 : 0.0,
-              comment: `Task ${task.id}: ${res.status}`,
+              value: scoreValue,
+              comment: `Task ${task.id}: ${res.status}${res.notes ? ` — ${res.notes}` : ''}`,
             });
           }
         }
