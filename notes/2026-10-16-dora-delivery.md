@@ -14,3 +14,9 @@ Private account inventories and deployment snapshots stay in the operator audit;
 the public contribution contains reusable code, synthetic input and methodology.
 Production event ingestion, exact-SHA deployment gate verification and rollout
 remain separate work. Existing release paths and substrate rules are unchanged.
+
+Follow-up: added an operational playbook, linked from the Orchestration Engine,
+and a read-only next-action advisor over the existing work-graph projection.
+It routes missing proof to a functional role and highlights saturated review
+capacity. It cannot admit, schedule, merge or release work. The new integration
+test uses the existing projector and example ledger; no second task bus is added.

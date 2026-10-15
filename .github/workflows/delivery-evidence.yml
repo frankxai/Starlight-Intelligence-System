@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - 'tools/delivery-evidence/**'
+      - 'src/work-graph.ts'
+      - 'examples/work-graph/product-delivery.jsonl'
       - '.github/workflows/delivery-evidence.yml'
   push:
     branches: [main]
     paths:
       - 'tools/delivery-evidence/**'
+      - 'src/work-graph.ts'
+      - 'examples/work-graph/product-delivery.jsonl'
       - '.github/workflows/delivery-evidence.yml'
   workflow_dispatch:
 
@@ -32,6 +36,6 @@ jobs:
         with:
           node-version: '24'
       - name: Verify measurement boundaries
-        run: node --test tools/delivery-evidence/report.test.mjs
+        run: node --test tools/delivery-evidence/report.test.mjs tools/delivery-evidence/agent-next-action.test.mjs
       - name: Validate the synthetic example
         run: node tools/delivery-evidence/report.mjs tools/delivery-evidence/example.json

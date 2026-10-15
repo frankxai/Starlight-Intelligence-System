@@ -10,6 +10,16 @@ node --test tools/delivery-evidence/report.test.mjs
 node tools/delivery-evidence/report.mjs tools/delivery-evidence/example.json
 ```
 
+For practical agent routing, read the
+[agent delivery playbook](../../docs/operations/agent-delivery-playbook.md).
+`agent-next-action.mjs` consumes the existing work-graph projection and returns
+one missing-proof action without writing state or launching agents. Its tests
+include the real work-graph projector and existing example events on Node 24:
+
+```sh
+node --test tools/delivery-evidence/agent-next-action.test.mjs
+```
+
 The example is synthetic. Account-specific inventories and build snapshots are
 kept in the separate operator audit. A build snapshot alone cannot populate
 production-exposure or incident metrics.
