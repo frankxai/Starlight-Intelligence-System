@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 const SUPPORT_INDIVIDUAL_URL = "https://github.com/sponsors/frankxai"; // TODO: Stripe Payment Link ($29 one-time)
 const SUPPORT_TEAM_URL = "https://github.com/sponsors/frankxai"; // TODO: Stripe Payment Link ($129/yr)
 const PRO_WAITLIST_URL =
-  "https://github.com/frankxai/Starlight-Intelligence-System/issues/new/choose"; // Discussions is disabled on the repo; issues are the live channel. TODO: waitlist form
+  "https://github.com/frankxai/Starlight-Intelligence-System/discussions"; // TODO: waitlist form
 const ESTATE_CONTACT_URL = "mailto:hello@starlightintelligence.org?subject=Estate%20Factory%20commission";
 
 function Check() {

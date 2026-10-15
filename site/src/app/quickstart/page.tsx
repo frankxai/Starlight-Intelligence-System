@@ -320,8 +320,7 @@ node dist/cli.js init --vaults`}
           >
             Open a GitHub issue
           </a>
-          . Issues are the community channel for now; there is no Discord or
-          forum.
+          . Issues are the community channel for now.
         </p>
       </section>
       </div>
