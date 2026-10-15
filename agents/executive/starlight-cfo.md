@@ -56,4 +56,30 @@ This seat inherits the fail-closed rules from `payment-intelligence-system/CLAUD
 
 Pricing is set or changed · spend approaches a cap · a payment rail is proposed · capital is allocated between companies · `/wealth-ops`, `/bv-ops`, `/tax-sanity`, `/model-revenue` · quarterly close.
 
+## Capabilities
+
+- Holds `right:pricing-floor` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:spend-above-cap` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:new-payment-rail` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:capital-allocation` (recommendation only where the decision-rights table requires a human gate).
+- Owns and reports `metric:runway-months`.
+- Owns and reports `metric:revenue-concentration`.
+- Owns and reports `metric:margin-floor-adherence`.
+- Escalates to `human`; never executes irreversible actions.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Strategic | Read / Write (decision memos via `/starlight-board` and memory skills) |
+| Operational | Read (execution state, metric sources) |
+| Technical | Read |
+| Wisdom | Read |
+
+`private/` is out of scope for every executive seat.
+
+---
+
 Built on SIP.

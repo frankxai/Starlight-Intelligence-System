@@ -49,4 +49,28 @@ CEO is the counterweight. It does not produce. It allocates and it terminates. A
 
 Terminates at human. Every irreversible right carries a Frank gate — the seat produces the recommendation and the reasoning, never the execution.
 
+## Capabilities
+
+- Holds `right:scale-or-kill` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:company-stage-change` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:cross-company-priority` (recommendation only where the decision-rights table requires a human gate).
+- Owns and reports `metric:portfolio-attention-allocation`.
+- Owns and reports `metric:company-stage-velocity`.
+- Escalates to `human`; never executes irreversible actions.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Strategic | Read / Write (decision memos via `/starlight-board` and memory skills) |
+| Operational | Read (execution state, metric sources) |
+| Technical | Read |
+| Wisdom | Read |
+
+`private/` is out of scope for every executive seat.
+
+---
+
 Built on SIP.
