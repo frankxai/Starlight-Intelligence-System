@@ -5,7 +5,10 @@
  * Usage:
  *   node --import tsx tools/queen/immune-sweeper.mjs --sweep
  *   node --import tsx tools/queen/immune-sweeper.mjs --route --title "Fix navbar" --files "src/app/nav.tsx"
- *   node --import tsx tools/queen/immune-sweeper.mjs --receipt --repo "frankxai/Starlight-Intelligence-System" --pr 430 --head <sha> --maker codex --provider antigravity --files "a.ts,b.ts"
+ *   node --import tsx tools/queen/immune-sweeper.mjs --receipt --repo "frankxai/Starlight-Intelligence-System" --pr 430 --head <sha> --maker codex --provider cto --files "a.ts,b.ts" --review-file review.md --resolution "<what the reviewer verified>"
+ *
+ * Receipts have no defaults. Only the reviewing seat runs --receipt, with its own written
+ * report. Posting stays with the trusted GitHub Apps that merge_review_gate.py admits.
  *
  * Built on SIP (Starlight Intelligence Protocol) v1.1.1
  */
@@ -51,29 +54,32 @@ export function main(argv = process.argv.slice(2)) {
       : [];
 
   if (args.receipt) {
-    const repository = String(args.repo || 'frankxai/Starlight-Intelligence-System');
-    const pr = Number(args.pr || 1);
-    const headSha = String(args.head || '');
-    const maker = String(args.maker || 'jules');
-    const provider = String(args.provider || 'antigravity');
-    const review =
-      typeof args.review === 'string'
-        ? args.review
-        : `Independent maker-checker audit completed by ${provider} for PR #${pr} at head ${headSha}. Verified file scope (${fileList.join(', ')}), architectural invariants, and test coverage with zero blocking findings.`;
-    const resolution =
-      typeof args.resolution === 'string'
-        ? args.resolution
-        : 'All reviewed files pass verification gates and satisfy repository invariants.';
+    // No defaults: a receipt attests that a named reviewer read this exact head.
+    // The tool must never invent the review, the seats, or the resolution.
+    const required = ['repo', 'pr', 'head', 'maker', 'provider', 'review-file', 'resolution', 'files'];
+    const missing = required.filter((key) => typeof args[key] !== 'string' || !args[key].trim());
+    if (missing.length > 0) {
+      process.stderr.write(
+        `Refusing to build a receipt. Missing: ${missing.map((k) => `--${k}`).join(', ')}.\n` +
+          'The reviewer must supply their own written report (--review-file) and resolution.\n',
+      );
+      return 2;
+    }
+    const reviewPath = String(args['review-file']);
+    if (!existsSync(reviewPath)) {
+      process.stderr.write(`Review file not found: ${reviewPath}\n`);
+      return 2;
+    }
 
     const { body } = createReviewReceipt({
-      repository,
-      pr,
-      headSha,
-      maker,
-      provider,
+      repository: String(args.repo),
+      pr: Number(args.pr),
+      headSha: String(args.head),
+      maker: String(args.maker),
+      provider: String(args.provider),
       reviewedFiles: fileList,
-      review,
-      resolution,
+      review: readFileSync(reviewPath, 'utf8'),
+      resolution: String(args.resolution),
     });
     process.stdout.write(`${body}\n`);
     return 0;

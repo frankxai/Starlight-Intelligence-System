@@ -13,6 +13,19 @@ import {
   selectComputePlane,
   validateReviewReceiptBody,
 } from '../src/queen/index.js';
+// @ts-expect-error plain ESM CLI without type declarations
+import { main as immuneCli } from '../tools/queen/immune-sweeper.mjs';
+
+describe('Starlight Queen — receipt CLI never fabricates a review', () => {
+  it('refuses to emit a receipt without the reviewer report file and resolution', () => {
+    const code = immuneCli([
+      '--receipt', '--repo', 'frankxai/Starlight-Intelligence-System', '--pr', '436',
+      '--head', '1cfdf64b789a568ca4d5d22fc5d923a81e7ae455', '--maker', 'antigravity',
+      '--provider', 'codex', '--files', 'src/queen/index.ts',
+    ]);
+    assert.equal(code, 2);
+  });
+});
 
 const SAMPLE_SHA = '4a51f37e9c0123456789abcdef0123456789abcd';
 const SAMPLE_REVIEW =
