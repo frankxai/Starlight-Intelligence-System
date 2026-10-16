@@ -1,0 +1,758 @@
+{
+  "schemaVersion": "1.0.0",
+  "observedOn": "2026-10-16",
+  "disk": "C: had about 70 GiB free when this registry was written. That is TIGHT. No new worktree and no install fanout.",
+  "externalPatterns": [
+    {
+      "name": "Port agentic SDLC",
+      "seen": "2026-10-16",
+      "url": "https://www.port.io/blog/agentic-sdlc-platform-foundation",
+      "take": "One registry, and tools scoped to the job.",
+      "leave": "Do not buy a portal to stand in for the file contract."
+    },
+    {
+      "name": "Harness Cosmos",
+      "seen": "2026-10-09",
+      "url": "https://vmblog.com/news/harness-acquires-augment-code-advancing-the-autonomous-sdlc-from-idea-to-production/",
+      "take": "One task, one isolated change, a human merges, and a budget is part of the run.",
+      "leave": "Do not hand production merge to the maker."
+    },
+    {
+      "name": "Ramp Inspect, via the 2026 factory survey",
+      "seen": "2026-10-09",
+      "url": "https://hashnode.com/blog/ai-software-factory-tools",
+      "take": "Untrusted site builds belong in a sandbox that dies with the task.",
+      "leave": "This machine cannot host a local sandbox fleet while disk is TIGHT."
+    },
+    {
+      "name": "Warp factories as code",
+      "seen": "2026-10-16",
+      "url": "https://www.warp.dev/",
+      "take": "The factory is a versioned file a fleet can execute.",
+      "leave": "Do not install a remote bootstrap with a piped shell script."
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "org-explorer",
+      "host": "starlightintelligence.org",
+      "graphProductId": "visual-creation-loop",
+      "customerJob": "A builder opens the public protocol, sees what is proven, and can run the Starlight Explorer without secrets. The visual pack on the same host stays a waitlist.",
+      "buyer": "Operators who need repeatable on-brand visual output from agents, plus readers of the public protocol.",
+      "mustBeat": [
+        "raw Midjourney or NB2 access with no brand lock",
+        "a docs site that claims capabilities the repo cannot prove"
+      ],
+      "narrative": "The public site is the proof room. Pages name a file, a test, or a date. The visual offer stays closed until the recorded P0s are actually closed.",
+      "repo": {
+        "origin": "https://github.com/frankxai/Starlight-Intelligence-System",
+        "root": "site",
+        "observedBranch": "agent/grok/website-software-factory",
+        "observedOn": "2026-10-16",
+        "writableNow": true,
+        "reason": "This branch was cut from origin/main. Antigravity's arena branch stays on origin. Edit site/ here only."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "Visual Creation Loop FAIL 2026-08-05, not sellable. Public Explorer has a deploy contract and still ships only through a reviewed PR.",
+        "checkout": "waitlist-only",
+        "shipPath": "Draft PR against main. Vercel project starlight-explorer, root directory site, zero required env vars. Maker does not merge."
+      },
+      "architecture": {
+        "web": "Next.js 16.4.1 in site/, App Router, deploy contract in site/src/lib/deployment-contract.json.",
+        "ai": "Public pages do not call a frontier model. Agent work happens in the harness, then lands as a PR.",
+        "data": "Public vault index and metrics/current.json. Private vaults stay off this host.",
+        "design": "Existing Explorer. No new brand. Taste and motion rules apply before any visual change."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Read the page as a builder who has ten minutes. Name the job, the incumbent, and the sentence that would be false."
+        },
+        {
+          "role": "design",
+          "harness": "grok",
+          "writes": true,
+          "brief": "Keep the Explorer's type, color, and motion. Check a narrow and a wide viewport before a visual PR."
+        },
+        {
+          "role": "platform",
+          "harness": "grok",
+          "writes": true,
+          "brief": "Run the site deploy, layout, and metrics contracts. Do not add an env var to the public Explorer."
+        },
+        {
+          "role": "sentinel",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Refuse secrets, private vault text, force-push, and any change to hooks or MCP that skips estate-guard."
+        },
+        {
+          "role": "maker",
+          "harness": "grok",
+          "writes": true,
+          "brief": "One slice on this branch. Tests for the contract you touch. No drive-by refactors."
+        },
+        {
+          "role": "reviewer",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Review the diff as a second harness. You can reject. You cannot merge."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "A written job and two incumbents, tied to the graph row or the deploy contract."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The route, the contract script, and the failure you will not paper over."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A commit on agent/grok/* with the site contract test green."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A review from a harness that did not write the patch."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Draft PR only. Production moves when a different person merges."
+        }
+      ],
+      "spendCapUsd": 15,
+      "prompts": {
+        "local": "Work in repos/Starlight-Intelligence-System on branch agent/grok/website-software-factory. Customer job: a builder can see proven protocol pages and the public Explorer still deploys with no secrets. The visual pack stays waitlist. Touch site/ only if a contract test fails. Spend cap: $15. Do not deploy, merge, or take payment.",
+        "cloud": "Open a draft PR for the Starlight Explorer only. Root directory is site. Project name starlight-explorer. Run site contract checks, not a full install fanout. Spend cap: $15. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "ai-platform",
+      "host": "starlightintelligence.ai",
+      "graphProductId": "starlight-knowledge-tree",
+      "customerJob": "Someone already running agents brings one recurring workflow and leaves with memory, an approval point, and a receipt they can export. Knowledge Tree stays waitlist.",
+      "buyer": "AI architects and technical founders who want a production intelligence graph, and operators who need Memory Studio recovery.",
+      "mustBeat": [
+        "unstructured Notion prompt dumps",
+        "a chat window that forgets the workflow when the tab closes"
+      ],
+      "narrative": "This host is the applied product. Memory Studio keeps the brief when a run fails. Identity and the database stay off until their config is present. No second site may also claim this domain.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlight-intelligence-web",
+        "root": ".",
+        "observedBranch": "agent/codex/platform-truth-recovery-integration-20261005",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Codex holds this checkout. Its upstream was reported gone. Do not switch the branch."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "Knowledge Tree G1 PASS 2026-09-09 with waitlist still on. Human Roster is UNGATED. Payments are pending in the platform README.",
+        "checkout": "waitlist-only",
+        "shipPath": "Production is main on Vercel, team Starlight Intelligence, only after a reviewed PR from a free checkout."
+      },
+      "architecture": {
+        "web": "Next.js 16 App Router, Tailwind v4, GSAP only on the named set-pieces.",
+        "ai": "One bounded generation through Vercel AI Gateway. Curator stays fail-closed until STARLIGHT_CURATOR_ENABLED and membership config exist.",
+        "data": "Clerk for identity. Supabase for membership. Browser memory exports stay portable JSON. Server receipts do not store the brief.",
+        "design": "Keep the exploded-view fallback for reduced motion and narrow screens. Do not restyle the platform in this factory pass."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Walk one real workflow: draft, interrupt, recover, export. If a step needs an account that is not configured, say so."
+        },
+        {
+          "role": "design",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Judge the studio against the existing page, at two widths, with reduced motion. No new visual system."
+        },
+        {
+          "role": "platform",
+          "harness": "codex",
+          "writes": true,
+          "brief": "Own Clerk, Supabase, the gateway call, and the recovery path. Fail closed when config is missing."
+        },
+        {
+          "role": "sentinel",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Block scraping, secret exports, and any checkout button. Person-level scraping is already out of scope."
+        },
+        {
+          "role": "maker",
+          "harness": "codex",
+          "writes": true,
+          "brief": "When the checkout is free, one recovery or receipt slice with its test. Until then, do not edit."
+        },
+        {
+          "role": "reviewer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Read the platform diff against docs/platform/README.md. Reject a claim the test did not run."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "One interrupted Memory Studio run, with the export that still contains the brief."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The fail-closed config flags and the receipt fields that must not store memory text."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A patch on a free agent branch, after Codex releases the current checkout."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A Grok or Claude review of a Codex patch, or the reverse. Maker is not the reviewer."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Draft PR. Waitlist stays. No payment and no domain fight with the preview repo."
+        }
+      ],
+      "spendCapUsd": 25,
+      "prompts": {
+        "local": "Read repos/starlight-intelligence-web docs/platform/README.md. Do not edit while branch agent/codex/platform-truth-recovery-integration-20261005 is checked out. Customer job: one workflow survives an interrupted run and exports. Spend cap: $25. Do not deploy, merge, or take payment.",
+        "cloud": "When that checkout is free, open a draft PR that proves Memory Studio recovery and leaves payments off. Spend cap: $25. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "ai-front-door",
+      "host": "starlightintelligence.ai",
+      "graphProductId": null,
+      "customerJob": "A buyer of the applied product sees one front door: bring a workflow, leave with a system brief. The domain stays unassigned until preview review passes.",
+      "buyer": "An operator choosing the paid Starlight product rather than the public protocol site.",
+      "mustBeat": [
+        "a second abstract AI landing page beside starlightintelligence.org",
+        "assigning the apex domain before desktop and mobile QA"
+      ],
+      "narrative": "This repo is the front door in waiting. Gallery, dossiers, and the visual bible can be reviewed. The apex host already has a production claimant.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlightintelligence.ai",
+        "root": ".",
+        "observedBranch": "agent/hermes/launch-quad-domains",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Hermes holds launch-quad-domains. Do not assign the domain from this factory."
+      },
+      "production": {
+        "claimsHost": false,
+        "deployNow": false,
+        "gate": "Preview, typecheck, and launch review are still open in the repo README.",
+        "checkout": "none",
+        "shipPath": "Preview URL first. Domain cutover only after Frank accepts the preview. This record must not claim the host."
+      },
+      "architecture": {
+        "web": "Next.js scaffold plus a Tier A prototype and a Vercel Blob gallery.",
+        "ai": "Batch visual production. No live model call required to read the brief.",
+        "data": "Blob-backed gallery and review state. No customer memory on this preview.",
+        "design": "Follow the visual production bible already in the repo. Do not start a parallel art direction."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Read the homepage as someone who already saw starlightintelligence.org. Say whether this door is a different job."
+        },
+        {
+          "role": "design",
+          "harness": "hermes",
+          "writes": true,
+          "brief": "Finish the open desktop and mobile QA against the existing scene brief. Keep the corrective iterations."
+        },
+        {
+          "role": "platform",
+          "harness": "hermes",
+          "writes": true,
+          "brief": "Own the preview build and the Blob path. Domain DNS stays a separate human step."
+        },
+        {
+          "role": "sentinel",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Stop any change that points the apex domain here while ai-platform claims it."
+        },
+        {
+          "role": "maker",
+          "harness": "hermes",
+          "writes": true,
+          "brief": "When the checkout is free, close one QA gap. Do not widen into the platform repo."
+        },
+        {
+          "role": "reviewer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Reject the patch if it assigns starlightintelligence.ai or adds a checkout."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "A note that this door is the applied brief, and .org remains the protocol."
+        },
+        {
+          "id": "specify",
+          "owner": "design",
+          "proof": "The open QA items from the repo README, unchanged in scope."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A preview build log after the Hermes checkout is free."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A second harness confirms the apex host is still unclaimed by this repo."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Preview only. Domain cutover remains a human decision."
+        }
+      ],
+      "spendCapUsd": 10,
+      "prompts": {
+        "local": "Read repos/starlightintelligence.ai/docs/PRODUCT_BRIEF.md. Do not edit on agent/hermes/launch-quad-domains. List the QA items still open and leave the domain alone. Spend cap: $10. Do not deploy, merge, or take payment.",
+        "cloud": "Produce a preview build checklist for the front door. Do not change DNS. Spend cap: $10. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "academy-lab",
+      "host": "starlightintelligence.academy",
+      "graphProductId": "starlight-academy-operator-lab",
+      "customerJob": "An operator who already runs agents finishes a mission packet and gets a human review of the artifact, not a certificate.",
+      "buyer": "Operators who need reviewed proof of judgment.",
+      "mustBeat": [
+        "Coursera and DeepLearning.AI agent certificates with no artifact review",
+        "YouTube agent tutorials"
+      ],
+      "narrative": "The academy is a bench. Four packets, one rubric, a reviewer who did not write the packet. The cohort stays small and unpaid until a gate exists.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlight-intelligence-academy",
+        "root": ".",
+        "observedBranch": "agent/codex/circle-academy-20261002",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Codex holds circle-academy. Packets already live under lib/capability-graph/."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "UNGATED. No checkout exists on .academy.",
+        "checkout": "waitlist-only",
+        "shipPath": "Public packet JSON can ship through a reviewed PR. A paid cohort waits for a release gate."
+      },
+      "architecture": {
+        "web": "Academy site in starlight-intelligence-academy. Public gift path is lib/capability-graph/.",
+        "ai": "One packet projects to Codex, Claude, OpenCode, and Hermes. The projection is not the review.",
+        "data": "Packets and rubrics in git. No learner PII in the public repo.",
+        "design": "A reading bench, not a course marketplace. Sentence case, one column on a phone."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Attempt one packet as an operator. Stop where the rubric does not tell you what good looks like."
+        },
+        {
+          "role": "design",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Read the packet page at phone width. The next action has to be obvious without a dashboard."
+        },
+        {
+          "role": "platform",
+          "harness": "codex",
+          "writes": true,
+          "brief": "Keep the four projections generated from one packet. Do not fork a fifth copy of the rubric."
+        },
+        {
+          "role": "sentinel",
+          "harness": "claude",
+          "writes": false,
+          "brief": "No checkout, no certificate badge, no private learner work in git."
+        },
+        {
+          "role": "maker",
+          "harness": "codex",
+          "writes": true,
+          "brief": "When the branch is free, fix one rubric gap the customer pass named."
+        },
+        {
+          "role": "reviewer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Score the packet as a reviewer who will not get paid to be kind. Maker cannot be the reviewer."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "One completed packet attempt with the missing rubric line quoted."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The single source packet and the four projections that must stay in sync."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A rubric edit on a free academy branch, with the projection still generating."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A written fail or pass against the rubric, from another harness."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Waitlist remains. No price and no checkout."
+        }
+      ],
+      "spendCapUsd": 10,
+      "prompts": {
+        "local": "Read repos/starlight-intelligence-academy/lib/capability-graph without editing agent/codex/circle-academy-20261002. Try one packet and quote the rubric gap. Spend cap: $10. Do not deploy, merge, or take payment.",
+        "cloud": "Draft a PR plan for that one rubric gap once the Codex checkout is free. Spend cap: $10. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "domains-audit",
+      "host": "starlight.domains",
+      "graphProductId": "portfolio-architecture-audit",
+      "customerJob": "An operator with too many domains gets one keep, merge, redirect, or cut ruling per asset, as a file they can run, not a call.",
+      "buyer": "An operator holding more domains and repos than they can staff.",
+      "mustBeat": [
+        "a spreadsheet the operator already half-maintains",
+        "Efty or Dan.com, which are built for selling rather than deciding"
+      ],
+      "narrative": "The page is the audit. Two surfaces that claim the same job show up as a collision. This factory is the estate running that audit on itself.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlight-domains",
+        "root": ".",
+        "observedBranch": "main",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Checked out on main. Do not commit product work on main."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "UNGATED. Waitlist only.",
+        "checkout": "waitlist-only",
+        "shipPath": "Branch agent/grok/* from origin/main when this checkout is not on main. Polar stays off until a release gate passes."
+      },
+      "architecture": {
+        "web": "Next.js 16 and React 19 on Vercel. The gate page is the admission, not a form to nowhere.",
+        "ai": "Classification runs locally over the manifest. No model call is required to label one domain.",
+        "data": "portfolio-manifest.v1.json. Private ops stay in frankx-domain-command and domain-venture-foundry.",
+        "design": "A decision canvas. One asset, one ruling, one kill criterion."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Bring two real domains that might be the same job. The audit fails if it will not pick a winner."
+        },
+        {
+          "role": "design",
+          "harness": "claude",
+          "writes": false,
+          "brief": "The ruling has to be readable on a phone without a table that scrolls sideways."
+        },
+        {
+          "role": "platform",
+          "harness": "grok",
+          "writes": true,
+          "brief": "Keep the manifest schema and the gate questions. Do not add a second portfolio format."
+        },
+        {
+          "role": "sentinel",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Public output stays sanitized. Private domain ops never land in this repo."
+        },
+        {
+          "role": "maker",
+          "harness": "grok",
+          "writes": true,
+          "brief": "On a fresh branch, encode the host-collision rule this factory already enforces for .ai."
+        },
+        {
+          "role": "reviewer",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Try to mark two sites as primary for one host. The check must fail."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "Two domains and the job each claims, written before the ruling."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The manifest fields for ruling, collision, and kill criterion."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A branch off origin/main, never a commit on the checked-out main."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A failed validation when two primaries share a host."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Waitlist only. No Polar checkout."
+        }
+      ],
+      "spendCapUsd": 10,
+      "prompts": {
+        "local": "Read repos/starlight-domains/docs/VENTURE_PLATFORM_STRATEGY.md. Do not commit on main. Write the collision ruling for starlightintelligence.ai, where two repos exist and only starlight-intelligence-web may claim the host. Spend cap: $10. Do not deploy, merge, or take payment.",
+        "cloud": "Prepare a draft PR for that collision check on a new branch from origin/main. Spend cap: $10. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "you-charter",
+      "host": "starlight.you",
+      "graphProductId": "starlight-you-personal-os-kit",
+      "customerJob": "One person exports a reality.md charter and a twin packet from the browser, with no account and no hosted memory.",
+      "buyer": "One person running several AI harnesses who wants a written authority contract their agents actually read.",
+      "mustBeat": [
+        "ChatGPT custom instructions that cannot be audited or carried out",
+        "a hosted memory service that keeps the data"
+      ],
+      "narrative": "The kit is a file the person owns. The browser validates it and lets them leave with it. An account would undo the product.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlight-you",
+        "root": ".",
+        "observedBranch": "agent/claude/operator-twin-charter",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Claude holds operator-twin-charter. Do not write into that checkout."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "UNGATED. No PRODUCT-RELEASE-GATE run. Waitlist only.",
+        "checkout": "waitlist-only",
+        "shipPath": "Client-side export can improve on a free branch. No account system and no checkout."
+      },
+      "architecture": {
+        "web": "A browser kit. The gift is reality.md plus twin-packet.json produced on device.",
+        "ai": "Agents read the charter later. The site does not need a model to validate the file.",
+        "data": "Nothing is stored for the visitor. No account, no hosted memory.",
+        "design": "A form that ends in a download. Errors name the failing field."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Fill a charter, break one required field, and confirm the download does not happen."
+        },
+        {
+          "role": "design",
+          "harness": "claude",
+          "writes": false,
+          "brief": "The error state and the success download both have to work from a phone keyboard."
+        },
+        {
+          "role": "platform",
+          "harness": "claude",
+          "writes": true,
+          "brief": "Validation stays in the browser against the reality.md standard. Do not add a backend to save the charter."
+        },
+        {
+          "role": "sentinel",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Reject any analytics that copies charter text, and any login wall."
+        },
+        {
+          "role": "maker",
+          "harness": "claude",
+          "writes": true,
+          "brief": "When the branch is free, one validation failure with a test. Leave the account idea out."
+        },
+        {
+          "role": "reviewer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Confirm the export contains no network call and the broken field still blocks download."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "A bad charter that is refused, and a valid one that downloads."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The standard version the validator checks, named in the test."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A client-side change on a free branch with the refusal test."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "A second harness confirms no charter text leaves the browser."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Waitlist remains. No account and no hosted memory."
+        }
+      ],
+      "spendCapUsd": 10,
+      "prompts": {
+        "local": "Inspect repos/starlight-you on agent/claude/operator-twin-charter without editing. Prove a charter can be validated in the browser and that a bad field blocks download. Spend cap: $10. Do not deploy, merge, or take payment.",
+        "cloud": "Write the test plan for that refusal. Do not add auth. Spend cap: $10. Do not deploy, merge, or take payment."
+      }
+    },
+    {
+      "id": "technology-sheets",
+      "host": "starlight.technology",
+      "graphProductId": "starlight-technology-build-sheets",
+      "customerJob": "A small team about to spend real money on an AI studio gets one sourced, dated build sheet instead of forty review tabs.",
+      "buyer": "A creator or small team about to spend four figures on an AI-native studio.",
+      "mustBeat": [
+        "PCPartPicker, which has no evidence grade and no wrong-purchase condition",
+        "undated YouTube build guides"
+      ],
+      "narrative": "Every line on the sheet has a source and a date, or it does not ship. Affiliate relationships are stated. The page does not take payment yet.",
+      "repo": {
+        "origin": "https://github.com/frankxai/starlight-technology",
+        "root": ".",
+        "observedBranch": "agent/hermes/launch-quad-domains",
+        "observedOn": "2026-10-16",
+        "writableNow": false,
+        "reason": "Hermes holds launch-quad-domains here too. Do not edit that checkout."
+      },
+      "production": {
+        "claimsHost": true,
+        "deployNow": false,
+        "gate": "UNGATED. No checkout exists.",
+        "checkout": "waitlist-only",
+        "shipPath": "A sourced sheet can merge through review. The price stays a hypothesis until the waitlist answers it."
+      },
+      "architecture": {
+        "web": "The technology site in starlight-technology. One sheet is the page.",
+        "ai": "A model may draft a row. A source the reader can open is what makes the row real.",
+        "data": "Dated sources beside the claim. No invented benchmarks.",
+        "design": "A sheet you can scan. Price, source, and the condition that makes the buy wrong."
+      },
+      "fleet": [
+        {
+          "role": "customer",
+          "harness": "grok",
+          "writes": false,
+          "brief": "Pick one studio purchase. Say what would make it the wrong buy. If the sheet cannot answer, it is not done."
+        },
+        {
+          "role": "design",
+          "harness": "claude",
+          "writes": false,
+          "brief": "A row has to show the source without a tooltip maze. Phone width still reads the kill condition."
+        },
+        {
+          "role": "platform",
+          "harness": "hermes",
+          "writes": true,
+          "brief": "Store the source URL and the date on the row. A row with neither fails the build."
+        },
+        {
+          "role": "sentinel",
+          "harness": "grok",
+          "writes": false,
+          "brief": "No checkout. Affiliate links are labeled. Unsourced superlatives come out."
+        },
+        {
+          "role": "maker",
+          "harness": "hermes",
+          "writes": true,
+          "brief": "When the branch is free, make one sheet row fail closed without a source."
+        },
+        {
+          "role": "reviewer",
+          "harness": "claude",
+          "writes": false,
+          "brief": "Open the cited page. If it does not support the sentence, reject the row."
+        }
+      ],
+      "sdlc": [
+        {
+          "id": "customer-job",
+          "owner": "customer",
+          "proof": "One purchase decision and the condition that makes it wrong."
+        },
+        {
+          "id": "specify",
+          "owner": "platform",
+          "proof": "The row schema: claim, source URL, seen date, wrong-buy condition."
+        },
+        {
+          "id": "make",
+          "owner": "maker",
+          "proof": "A test that rejects a row with an empty source, on a free branch."
+        },
+        {
+          "id": "independent-review",
+          "owner": "reviewer",
+          "proof": "The cited page was opened and supports the claim."
+        },
+        {
+          "id": "ship-hold",
+          "owner": "sentinel",
+          "proof": "Waitlist remains. The price band is still a hypothesis."
+        }
+      ],
+      "spendCapUsd": 10,
+      "prompts": {
+        "local": "Read the build-sheet product in repos/starlight-technology without editing agent/hermes/launch-quad-domains. Specify one row with a source URL, a seen date, and a wrong-buy condition. Spend cap: $10. Do not deploy, merge, or take payment.",
+        "cloud": "Turn that row rule into a draft PR plan with a failing test for a sourceless row. Spend cap: $10. Do not deploy, merge, or take payment."
+      }
+    }
+  ]
+}
