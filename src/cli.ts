@@ -48,7 +48,11 @@ import {
   formatAgyToolCalls,
 } from "./swarm.js";
 import { PackManager } from "./marketplace/pack-manager.js";
-import { AgentLifecycleManager } from "./queen/index.js";
+import {
+  AgentLifecycleManager,
+  QueenSovereignEngine,
+  startQueenSovereignServer,
+} from "./queen/index.js";
 import type { RiskLevel, WorkPacketStatus } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────
@@ -1687,8 +1691,128 @@ async function cmdQueen(
       process.exitCode = 1;
       break;
     }
+
+    case "status": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const state = engine.getFullStateSnapshot();
+      if (options.json) {
+        console.log(JSON.stringify(state, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  ${state.codename} (${state.version})`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`Branch:             ${state.branch}`);
+      console.log(`Harnesses Online:   ${state.harnesses.onlineCount}/${state.harnesses.total} (${state.harnesses.totalConcurrencyCapacity} concurrent worker capacity)`);
+      console.log(`Harness Readiness:  ${state.harnesses.avgReadinessScore}%`);
+      console.log(`8-Brand × 8-Moat:   ${state.brands.averageReadinessPct}% across ${state.brands.totalMoatCells} moat cells`);
+      console.log(`Context Savings:    ${state.rustKernelSample.combinedContextSavingsPct}% (vMCP -${state.rustKernelSample.vmcpTokenReductionPct}%, Headroom -${state.rustKernelSample.headroomCompressionPct}%, RTK -${state.rustKernelSample.rtkCliSavingsPct}%)`);
+      console.log(`12-Layer Eval:      Antigravity v1.0 = ${state.benchmarkSummary.overallScores.antigravityQueenV1}/100 | Grok v0.2 = ${state.benchmarkSummary.overallScores.grokQueenV02}/100 | YC Oct 2026 = ${state.benchmarkSummary.overallScores.ycOct2026IncumbentAvg}/100`);
+      console.log(`══════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "route": {
+      const prompt = args.join(" ") || "Synthesize multi-agent sovereign architecture";
+      const engine = new QueenSovereignEngine(process.cwd());
+      const decision = engine.routeAndRecord({ prompt });
+      if (options.json) {
+        console.log(JSON.stringify(decision, null, 2));
+        return;
+      }
+      console.log(`\n[Starlight Queen Router] Decision ${decision.decisionId}`);
+      console.log(`  Brand:          ${decision.detectedBrand.name} (${decision.detectedBrand.domain})`);
+      console.log(`  Domain / Risk:  ${decision.detectedDomain} / ${decision.riskTier}`);
+      console.log(`  Maker:          ${decision.maker.harnessId} (${decision.maker.model}) via ${decision.maker.authRail} [score=${decision.maker.compositeScore}]`);
+      console.log(`  Checker:        ${decision.checker.harnessId} (${decision.checker.model}) [crossFamily=${decision.checker.crossFamilyVerified}]`);
+      console.log(`  Cloud Burst:    ${decision.cloudSwarmBurst.parallelWorkersAssigned} workers via ${decision.cloudSwarmBurst.asyncWorkerHarnessId} (${decision.cloudSwarmBurst.estimatedSpeedupFactor}x speedup)`);
+      console.log(`  Context Bloat:  -${decision.contextOptimization.combinedContextSavingsPct}% (Rust AST=${decision.contextOptimization.astAllowed ? "ALLOW" : "BLOCK"})`);
+      console.log(`  vs Grok v0.2:   Grok picked '${decision.grokV02Comparison.grokWouldSelect}'\n`);
+      break;
+    }
+
+    case "upgrade-harnesses": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const actions = engine.upgradeHarnessesAndRecord(args.length > 0 ? args : undefined);
+      if (options.json) {
+        console.log(JSON.stringify(actions, null, 2));
+        return;
+      }
+      console.log(`\n[Starlight Queen] Upgraded ${actions.length} harnesses with Starlight Sovereign Envelopes:`);
+      for (const a of actions) {
+        console.log(`  ✓ ${a.harnessId.padEnd(28)} ${a.previousScore}% -> ${a.newScore}%  (${a.envelopePath})`);
+      }
+      console.log("");
+      break;
+    }
+
+    case "brands": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const brands = engine.brandSwitchboard.listBrands();
+      if (options.json) {
+        console.log(JSON.stringify(brands, null, 2));
+        return;
+      }
+      console.log(`\n[Starlight Queen] 8-Brand × 8-Engineering Moat Switchboard:`);
+      for (const b of brands) {
+        const avg = (b.moatLayers.reduce((s, m) => s + m.readinessPct, 0) / b.moatLayers.length).toFixed(1);
+        console.log(`  ◆ ${b.name.padEnd(28)} (${b.domain.padEnd(26)}) Readiness: ${avg}% | Maker≠Checker: ${b.preferredMakerHarness} -> ${b.preferredCheckerHarness}`);
+      }
+      console.log("");
+      break;
+    }
+
+    case "rust-gate": {
+      const cmdToCheck = args.join(" ") || "starlight queen status";
+      const engine = new QueenSovereignEngine(process.cwd());
+      const res = engine.evaluateRustGateAndRecord({
+        commandToVerify: cmdToCheck,
+        intentKeywords: ["vault", "queen", "verify"],
+      });
+      if (options.json) {
+        console.log(JSON.stringify(res, null, 2));
+        return;
+      }
+      console.log(`\n[Starlight Layer-0 Rust Kernel Gate] (${res.engine})`);
+      console.log(`  Command:        ${cmdToCheck}`);
+      console.log(`  AST Verdict:    ${res.astAllowed ? "ALLOWED" : "FAIL-CLOSED BLOCKED"} (${res.astReason})`);
+      console.log(`  WFG Deadlock:   ${res.wfgDeadlockDetected ? "CYCLE DETECTED" : "ACYCLIC"} (${res.executionLatencyUs}µs)`);
+      console.log(`  Context Bloat:  -${res.combinedContextSavingsPct}% combined reduction\n`);
+      break;
+    }
+
+    case "eval":
+    case "compare-grok": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const { comparison } = engine.runBenchmarksAndRecord();
+      if (options.json) {
+        console.log(JSON.stringify(comparison, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════`);
+      console.log(`  12-Layer Frontier Benchmark: Antigravity v1.0 vs Grok v0.2 vs YC`);
+      console.log(`══════════════════════════════════════════════════════════════════`);
+      console.log(`  Antigravity Sovereign Queen v1.0:  ${comparison.overallScores.antigravityQueenV1}/100`);
+      console.log(`  Grok Queen v0.2 (driver.mjs):      ${comparison.overallScores.grokQueenV02}/100`);
+      console.log(`  YC Oct 2026 Top-Quartile Avg:      ${comparison.overallScores.ycOct2026IncumbentAvg}/100\n`);
+      for (const l of comparison.layers) {
+        console.log(`  ${l.title.padEnd(46)} AG:${l.antigravityScore} | Grok:${l.grokV02Score} (+${l.deltaVsGrok}) | YC:${l.ycOct2026TopQuartileScore} (+${l.deltaVsYc})`);
+      }
+      console.log(`\n  Verdict: ${comparison.summaryVerdict}\n`);
+      break;
+    }
+
+    case "serve": {
+      const portArg = args[0] ? parseInt(args[0], 10) : 4329;
+      const handle = await startQueenSovereignServer({ port: portArg });
+      console.log(`[Starlight Queen v1.0] Live Sovereign Command Cockpit running at ${handle.url}`);
+      break;
+    }
+
     default:
-      console.error(`[starlight] Unknown queen action: "${action}". Available: agent`);
+      console.error(
+        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, serve, agent`
+      );
       process.exitCode = 1;
   }
 }
@@ -1949,12 +2073,7 @@ async function main(): Promise<void> {
     }
 
     case "queen": {
-      const queenAction = positionals[1];
-      if (!queenAction) {
-        console.error("[starlight] Error: queen requires an action (agent).");
-        process.exitCode = 1;
-        return;
-      }
+      const queenAction = positionals[1] || "status";
       await cmdQueen(queenAction, positionals.slice(2), {
         force: values.force === true,
         dryRun: values["dry-run"] === true,

@@ -371,13 +371,45 @@ function main() {
   if (sub === 'ratify') return cmdRatify(args.find(a => a.startsWith('--class='))?.split('=')[1]);
   if (sub === 'ledger') return cmdLedger(args.includes('--append'));
   if (sub === 'tick' || sub === 'queen-tick' || sub === 'full-tick') return cmdTick(args.includes('--full') || sub === 'full-tick', args);
-  if (sub === 'help' || sub === '--help') {
-    console.log('Queen driver subs: status | route-envelope <task-envelope.json> [--graph=<json>] [--out=<json>] [--record] | route <desc> (legacy) | measure [--lane=] | learn | ratify [--class=] | ledger [--append] | tick [--full] [--visual=<existing-path>] | queen-tick');
-    console.log('v0.2: tick runs a local planning/ledger loop and never treats emitted recipes as execution evidence.');
-    console.log('A capable harness may execute the printed MEASURE/LEARN recipes and return real receipts for separate proof.');
+  if (
+    sub === 'sovereign-status' ||
+    sub === 'pareto-route' ||
+    sub === 'upgrade-harnesses' ||
+    sub === 'compare-grok' ||
+    sub === 'eval-12' ||
+    sub === 'serve'
+  ) {
+    const mapped =
+      sub === 'sovereign-status'
+        ? 'status'
+        : sub === 'pareto-route'
+          ? 'route'
+          : sub === 'eval-12'
+            ? 'eval'
+            : sub;
+    import('../../src/queen/index.ts').then(async ({ QueenSovereignEngine, startQueenSovereignServer }) => {
+      const engine = new QueenSovereignEngine(ROOT);
+      if (mapped === 'status') {
+        console.log(JSON.stringify(engine.getFullStateSnapshot(), null, 2));
+      } else if (mapped === 'route') {
+        console.log(JSON.stringify(engine.routeAndRecord({ prompt: argStr || 'Synthesize sovereign multi-agent architecture' }), null, 2));
+      } else if (mapped === 'upgrade-harnesses') {
+        console.log(JSON.stringify(engine.upgradeHarnessesAndRecord(), null, 2));
+      } else if (mapped === 'eval' || mapped === 'compare-grok') {
+        console.log(JSON.stringify(engine.runBenchmarksAndRecord().comparison, null, 2));
+      } else if (mapped === 'serve') {
+        const handle = await startQueenSovereignServer({ workspaceRoot: ROOT });
+        console.log(`[Starlight Queen v1.0] Live Sovereign Cockpit at ${handle.url}`);
+      }
+    });
     return;
   }
-  console.log('Unknown sub. Try: status, route-envelope <task-envelope.json>, route "build..." (legacy), measure, learn, ratify, ledger --append, tick [--full]');
+  if (sub === 'help' || sub === '--help') {
+    console.log('Queen driver subs: status | route-envelope <task-envelope.json> [--graph=<json>] [--out=<json>] [--record] | route <desc> (legacy) | measure [--lane=] | learn | ratify [--class=] | ledger [--append] | tick [--full] [--visual=<existing-path>] | queen-tick | sovereign-status | pareto-route <prompt> | upgrade-harnesses | compare-grok | eval-12 | serve');
+    console.log('v0.2 + v1.0 Sovereign Engine: tick runs a local planning/ledger loop; sovereign-* commands invoke the Pareto/Thompson + Rust Layer-0 Kernel engine.');
+    return;
+  }
+  console.log('Unknown sub. Try: status, route-envelope <task-envelope.json>, route "build..." (legacy), measure, learn, ratify, ledger --append, tick [--full], sovereign-status, pareto-route, upgrade-harnesses, compare-grok, serve');
 }
 
 main();
