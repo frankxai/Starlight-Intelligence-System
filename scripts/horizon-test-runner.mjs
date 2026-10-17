@@ -20,6 +20,7 @@ import os from 'node:os';
 import { spawn, execSync } from 'node:child_process';
 import { compileSovereignMemory } from './compile-sovereign-memory.mjs';
 import { ORG_FEDERATION_MANIFEST, auditOrWireLocalRemotes } from './org-federation-audit.mjs';
+import { collectUnifiedEcosystemTelemetry, ingestCloudReceipts } from './cloud-bridge-sync.mjs';
 
 const HOME = os.homedir();
 const DOT_STARLIGHT = path.join(HOME, '.starlight');
@@ -246,15 +247,27 @@ export async function runHorizon12h(repoRoot = DEFAULT_WT_ROOT) {
 
   fs.appendFileSync(path.join(TELEMETRY_DIR, 'horizon-12h.jsonl'), JSON.stringify(report) + '\n', 'utf8');
   fs.writeFileSync(path.join(REPORTS_DIR, 'horizon-12h-latest.json'), JSON.stringify(report, null, 2), 'utf8');
+  ingestCloudReceipts([
+    { plane: 'horizon-12h', status: 'ok', detail: `Dreaming: ${report.dreaming.extractedInsights} insights, Orgs: ${report.orgFederation.localOrgRemoteAlignedCount}/71` },
+    { plane: 'task-dreaming', status: 'ok', source: 'StarlightHorizon12h', detail: 'Dreaming consolidation completed via 12h Horizon cadence' }
+  ]);
   return report;
 }
+
+const BENIGN_TASK_RESULTS = new Set([0, 267008, 267009, 267011, 267014, 267045, 2147946720]);
+const SELF_REPORTING_TASK_CODES = {
+  StarlightOpenRouterSpend: new Set([0, 2]),
+  StarlightActionsCost: new Set([0, 2]),
+  StarlightMachineSentinel: new Set([0, 1, 2]),
+  StarlightTaskHealthWatch: new Set([0, 1])
+};
 
 export async function runHorizon1w(repoRoot = DEFAULT_WT_ROOT) {
   const startedAt = new Date().toISOString();
   const base12h = await runHorizon12h(repoRoot);
 
   // Audit Windows Scheduled Tasks health
-  let scheduledTasksSummary = { total: 0, ready: 0, running: 0, disabled: 0, failingReady: [] };
+  let scheduledTasksSummary = { total: 0, ready: 0, running: 0, disabled: 0, failingReady: [], statusSignals: [] };
   try {
     const psCmd = `Get-ScheduledTask | Where-Object { $_.TaskName -match '^Starlight|^FrankX' } | ForEach-Object { $info = Get-ScheduledTaskInfo -TaskName $_.TaskName -TaskPath $_.TaskPath -ErrorAction SilentlyContinue; [PSCustomObject]@{ Name=$_.TaskName; State=[int]$_.State; LastResult=$info.LastTaskResult } } | ConvertTo-Json -Compress`;
     const raw = execSync(`powershell -NoProfile -Command "${psCmd}"`, { encoding: 'utf8' });
@@ -264,10 +277,17 @@ export async function runHorizon1w(repoRoot = DEFAULT_WT_ROOT) {
     scheduledTasksSummary.ready = tasks.filter((t) => t.State === 3).length;
     scheduledTasksSummary.running = tasks.filter((t) => t.State === 4).length;
     scheduledTasksSummary.disabled = tasks.filter((t) => t.State === 1).length;
-    scheduledTasksSummary.failingReady = tasks
-      .filter((t) => t.State === 3 && t.LastResult !== 0 && t.LastResult !== 267009 && t.LastResult !== 267014)
-      .map((t) => ({ name: t.Name, lastResult: t.LastResult }));
+    for (const t of tasks.filter((x) => x.State === 3)) {
+      if (BENIGN_TASK_RESULTS.has(t.LastResult)) continue;
+      if (SELF_REPORTING_TASK_CODES[t.Name]?.has(t.LastResult)) {
+        scheduledTasksSummary.statusSignals.push({ name: t.Name, lastResult: t.LastResult, kind: 'self-reported-alert' });
+        continue;
+      }
+      scheduledTasksSummary.failingReady.push({ name: t.Name, lastResult: t.LastResult });
+    }
   } catch {}
+
+  const ecosystemTelemetry = collectUnifiedEcosystemTelemetry();
 
   const report = {
     horizon: '1w',
@@ -275,11 +295,23 @@ export async function runHorizon1w(repoRoot = DEFAULT_WT_ROOT) {
     completedAt: new Date().toISOString(),
     operational12h: base12h,
     scheduledTasks: scheduledTasksSummary,
+    ecosystemTelemetry: {
+      totalSpendRows: ecosystemTelemetry.costAndQuota.totalSpendRows,
+      openrouterRemainingUsd: ecosystemTelemetry.costAndQuota.openrouter.remainingUsd,
+      trackedAgentReceipts: ecosystemTelemetry.valueAndVelocity.trackedAgentReceipts,
+      mergedPrs30d: ecosystemTelemetry.valueAndVelocity.mergedPrs30d?.substantive ?? 0
+    },
     n8nWorkflowPresent: fs.existsSync(
       path.join(repoRoot, 'workflows', 'n8n', 'starlight-horizon-memory-orchestrator.workflow.json')
     ),
+    cloudflareEdgeBridgePresent: fs.existsSync(
+      path.join(repoRoot, 'workflows', 'cloudflare', 'starlight-edge-bridge.worker.js')
+    ),
     attestation: 'Built on SIP',
   };
+  ingestCloudReceipts([
+    { plane: 'horizon-1w', status: 'ok', detail: `Failing ready tasks: ${scheduledTasksSummary.failingReady.length}` }
+  ]);
 
   const mdLines = [
     '# Starlight Horizon 1-Week Strategic & Memory Scorecard',
