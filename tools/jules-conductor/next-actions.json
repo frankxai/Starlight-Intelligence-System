@@ -99,7 +99,7 @@
       "lane": "quality",
       "repo": "frankxai/Starlight-Intelligence-System",
       "title": "Correct the GenCreator repo pointer in VERTICALS.md",
-      "why": "Issue 163. Session 609243126188726697 accepted only the two GenCreator lines. Pull request 449 holds that hunk and is unmerged. origin/main still has the old lines.",
+      "why": "Issue 163. Session 609243126188726697 accepted only the two GenCreator lines. Pull request 449 holds that hunk at 8003a386. At 2026-10-17T14:38:57Z it was OPEN, not a draft, and mergeStateStatus was BLOCKED. independent-review-policy failed: VERTICALS.md needs a trusted exact-head receipt. evaluate was cancelled. Eleven checks succeeded. Not merged.",
       "where": [
         "VERTICALS.md"
       ],
@@ -107,7 +107,7 @@
       "ready": false,
       "outcome": "accepted-unlanded",
       "pr": "https://github.com/frankxai/Starlight-Intelligence-System/pull/449",
-      "how": "Accepted and not landed. Do not start another Jules session for this hunk.",
+      "how": "Do not merge and do not arm. A gh comment is not a trusted receipt. Codex, Claude Code, Antigravity, or CTO must post STARLIGHT-INDEPENDENT-REVIEW-V1 for head 8003a386 through the Cursor or Codex GitHub App.",
       "prompt": "Do not send. Session 609243126188726697 already replaced frankxai/gencreator (to be created) with frankxai/gencreator.ai and gencreator.community (to be registered) with gencreator.ai in VERTICALS.md. Do not create a repository and do not edit a second file."
     },
     {

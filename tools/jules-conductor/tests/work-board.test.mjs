@@ -82,6 +82,8 @@ test('an accepted verticals hunk is open only when the file or a pull request ha
   const fileText = readFileSync(join(root, '..', '..', 'VERTICALS.md'), 'utf8');
   assert.equal(action.runner, 'you');
   assert.equal(action.outcome, 'accepted-unlanded');
+  assert.equal(action.pr, 'https://github.com/frankxai/Starlight-Intelligence-System/pull/449');
+  assert.match(action.how, /Do not merge/);
   assert.deepEqual(action.where, ['VERTICALS.md']);
   assert.equal(armAction([], action).armed, null);
   assert.equal(classifyObservation({ verdict: 'accept', prUrl: action.pr || null, merged: false }), 'accepted-unlanded');
