@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starlight Agentic OS — Unified Local + Cloud Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090e;
+    --bg-elevated: #0d111a;
+    --bg-card: rgba(16, 21, 33, 0.86);
+    --bg-card-hover: rgba(22, 29, 46, 0.95);
+    --bg-subtle: rgba(255, 255, 255, 0.035);
+    --ink: #f1f5f9;
+    --ink-secondary: #94a3b8;
+    --ink-muted: #64748b;
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(230, 201, 138, 0.35);
+    --champagne: #e6c98a;
+    --champagne-bg: rgba(230, 201, 138, 0.12);
+    --emerald: #10b981;
+    --emerald-bg: rgba(16, 185, 129, 0.13);
+    --cyan: #06b6d4;
+    --cyan-bg: rgba(6, 182, 212, 0.13);
+    --violet: #a78bfa;
+    --violet-bg: rgba(167, 139, 250, 0.13);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245, 158, 11, 0.14);
+    --rose: #f43f5e;
+    --rose-bg: rgba(244, 63, 94, 0.14);
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  [data-theme="light"] {
+    --bg: #f6f5f0;
+    --bg-elevated: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f9f8f4;
+    --bg-subtle: #efeee8;
+    --ink: #181b20;
+    --ink-secondary: #4a5058;
+    --ink-muted: #767d86;
+    --border: #dcdad2;
+    --border-strong: #8c6d2e;
+    --champagne: #8a6421;
+    --champagne-bg: #f5ecd8;
+    --emerald: #18794e;
+    --emerald-bg: #e2f3ea;
+    --cyan: #0b6bcb;
+    --cyan-bg: #e3effb;
+    --violet: #6941c6;
+    --violet-bg: #f0ebff;
+    --amber: #b45309;
+    --amber-bg: #fef3c7;
+    --rose: #be123c;
+    --rose-bg: #ffe4e6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(16, 185, 129, 0.08) 0%, transparent 38%),
+      radial-gradient(circle at 88% 12%, rgba(230, 201, 138, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.06) 0%, transparent 45%);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    line-height: 1.55;
+    min-height: 100vh;
+    font-feature-settings: "tnum";
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Focus ring for keyboard accessibility */
+  button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+    outline: 2px solid var(--champagne);
+    outline-offset: 2px;
+  }
+
+  .app-shell {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 24px 28px 72px;
+  }
+
+  /* Top Header */
+  .top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .brand-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--champagne);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 10px var(--emerald);
+    display: inline-block;
+  }
+  .top-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .top-header .subtitle {
+    color: var(--ink-secondary);
+    font-size: 14px;
+    margin-top: 6px;
+    max-width: 820px;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .badge-live {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--emerald-bg);
+    color: var(--emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-action {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 7px 13px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-action:hover {
+    border-color: var(--champagne);
+    background: var(--bg-card-hover);
+  }
+
+  /* KPI Strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 12px;
+    margin: 20px 0 24px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--emerald);
+  }
+  .kpi-card.gold::before { background: var(--champagne); }
+  .kpi-card.cyan::before { background: var(--cyan); }
+  .kpi-card.violet::before { background: var(--violet); }
+  .kpi-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+  }
+  .kpi-value {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 600;
+    margin: 4px 0 2px;
+    color: var(--ink);
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--ink-secondary);
+  }
+
+  /* Navigation Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 9px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
+    color: var(--ink-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-btn:hover {
+    color: var(--ink);
+    background: var(--bg-card-hover);
+  }
+  .tab-btn[aria-selected="true"] {
+    background: var(--champagne-bg);
+    color: var(--champagne);
+    border-color: var(--border-strong);
+    font-weight: 600;
+  }
+  .tab-count {
+    font-size: 10.5px;
+    padding: 1px 6px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* Section Headers */
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 28px 0 14px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .section-head:first-child { margin-top: 0; }
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 600;
+  }
+  .section-head p {
+    color: var(--ink-secondary);
+    font-size: 13.5px;
+  }
+
+  /* Grid & Cards */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .app-shell { padding: 16px 14px 56px; }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card:hover { border-color: rgba(255, 255, 255, 0.18); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .card-meta {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-muted);
+  }
+
+  /* Pills */
+  .pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 999px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .pill.emerald { background: var(--emerald-bg); color: var(--emerald); }
+  .pill.gold { background: var(--champagne-bg); color: var(--champagne); }
+  .pill.cyan { background: var(--cyan-bg); color: var(--cyan); }
+  .pill.violet { background: var(--violet-bg); color: var(--violet); }
+  .pill.amber { background: var(--amber-bg); color: var(--amber); }
+  .pill.rose { background: var(--rose-bg); color: var(--rose); }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-subtle);
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg-subtle); }
+  .mono { font-family: var(--font-mono); font-size: 12.5px; }
+
+  /* Filter Bar */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input, .select-input {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+  }
+  .search-input { min-width: 260px; flex: 1; }
+
+  /* Key-Value list inside Org Cards */
+  .kv-list {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 6px 12px;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .kv-key {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-muted);
+  }
+  .kv-val { color: var(--ink-secondary); }
+  .repo-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .repo-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .repo-chip .vis-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .vis-public { background: var(--emerald); }
+  .vis-private { background: var(--amber); }
+
+  /* Copy Prompt Box */
+  .prompt-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    margin-top: 6px;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--emerald);
+    color: #04130d;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+  }
+  #toast.show { opacity: 1; }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-muted);
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="top-header">
+    <div>
+      <div class="brand-eyebrow">
+        <span class="pulse-dot"></span>
+        <span>STARLIGHT INTELLIGENCE SYSTEM · SOVEREIGN AGENTIC OS · BUILT ON SIP</span>
+      </div>
+      <h1>Unified Local + Cloud Agentic Command Center</h1>
+      <p class="subtitle">
+        Live telemetry across 7 local harnesses, 9 cloud runtimes, 10 federated GitHub Organizations (71 flagship repos), 6 semantic memory vaults (1106 atoms), and 2h / 12h / 1w autonomous Horizon loops.
+      </p>
+    </div>
+    <div class="header-actions">
+      <span class="badge-live" title="SisGatewayDaemon listening on 127.0.0.1:5200">
+        ● Gateway :5200 OK (PID 34852)
+      </span>
+      <button class="btn-action" id="themeToggle" type="button" aria-label="Toggle color theme">◐ Theme</button>
+    </div>
+  </header>
+
+  <!-- Live KPI Strip -->
+  <section class="kpi-strip" aria-label="Key system metrics">
+    <div class="kpi-card">
+      <div class="kpi-label">Eval-50 Recall &amp; Hit@10</div>
+      <div class="kpi-value">100.0%</div>
+      <div class="kpi-sub">Recall@5: 100% · MRR: 1.00 · p50: 219ms</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Sovereign Memory Substrate</div>
+      <div class="kpi-value">1106 atoms</div>
+      <div class="kpi-sub">6/6 Vaults Fresh (0 stale) · 400 KG rows</div>
+    </div>
+    <div class="kpi-card cyan">
+      <div class="kpi-label">10-Org GitHub Federation</div>
+      <div class="kpi-value">71 / 71</div>
+      <div class="kpi-sub">10 Orgs · 53 public + 18 private · 0 leaks</div>
+    </div>
+    <div class="kpi-card violet">
+      <div class="kpi-label">Dreaming &amp; 90d Decay</div>
+      <div class="kpi-value">119 insights</div>
+      <div class="kpi-sub">4 promotions · 0 contradictions</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">2h / 12h / 1w Horizon Loops</div>
+      <div class="kpi-value">3 / 3 GREEN</div>
+      <div class="kpi-sub">Last 2h run: 19:00:15 UTC · Exit 0</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Local + Cloud Harnesses</div>
+      <div class="kpi-value">7 Local · 9 Cloud</div>
+      <div class="kpi-sub">161 tracked leases · 23 ready tasks</div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" role="tablist" aria-label="Command Center Views">
+    <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-vision" id="tab-vision" data-tab="vision">
+      1. Executive Pulse: Have vs. Hope For <span class="tab-count">6 Pillars</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-harnesses" id="tab-harnesses" data-tab="harnesses">
+      2. Local + Cloud Harnesses &amp; Cost Matrix <span class="tab-count">16 Runtimes</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-orgs" id="tab-orgs" data-tab="orgs">
+      3. 10 GitHub Orgs, Brand Teams &amp; IP Governance <span class="tab-count">10 Orgs · 71 Repos</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-evals" id="tab-evals" data-tab="evals">
+      4. Experiments, Traces, Evals &amp; Horizon Telemetry <span class="tab-count">Eval-50 · 2h/12h/1w</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-playbook" id="tab-playbook" data-tab="playbook">
+      5. Slash Commands, Daemons &amp; Next Prompts <span class="tab-count">5 Ready Prompts</span>
+    </button>
+  </nav>
+
+  <!-- PANEL 1: EXECUTIVE PULSE (WHAT WE HAVE VS WHAT WE HOPE FOR) -->
+  <section class="tab-panel active" id="panel-vision" role="tabpanel" aria-labelledby="tab-vision">
+    <div class="section-head">
+      <div>
+        <h2>Where We Stand Today vs. The Next Horizon Architecture</h2>
+        <p>Every capability below distinguishes verified live production state on this machine from the next engineering waves.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Substrate Pillar</th>
+            <th>Verified Live Today (2026-10-17)</th>
+            <th>What We Hope For (Next Horizon Target)</th>
+            <th>Responsible Lead</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Sovereign Memory &amp; Eval-50</strong><div class="card-meta">6 Vaults + SQLite FTS5 + Vector Store</div></td>
+            <td><strong>1,106 sovereign atoms</strong> compiled from all 6 vaults + KG. <code>Eval-50 Hit@10 = 100%</code>, <code>Recall@5 = 100%</code>, <code>MRR@10 = 1.000</code>, <code>0d</code> vault staleness. <code>SisGatewayDaemon</code> live on <code>:5200</code>.</td>
+            <td>Real-time cross-harness session ingestion into <code>:5200/v1/sessions</code> + Headroom context compression (55% token savings) + semantic drift alerts.</td>
+            <td class="mono">Sage + Antigravity</td>
+            <td><span class="pill emerald">LIVE · 100% HIT@10</span></td>
+          </tr>
+          <tr>
+            <td><strong>2. 10-Org GitHub Federation</strong><div class="card-meta">Dual Remote (origin + org) &amp; Governance</div></td>
+            <td><strong>10 GitHub Organizations</strong> standardized, <code>9/9</code> active <code>&lt;Org&gt;/.github</code> governance repos deployed, <strong>71/71 local repos</strong> wired with dual remotes, <code>0</code> visibility violations.</td>
+            <td>Automated CI/Eval-gated cross-org release syndication + branch protection convergence across all 71 flagship repos.</td>
+            <td class="mono">Architect + Sentinel</td>
+            <td><span class="pill emerald">LIVE · 71/71 ALIGNED</span></td>
+          </tr>
+          <tr>
+            <td><strong>3. 2h / 12h / 1w Horizon Loops</strong><div class="card-meta">Windows Tasks + n8n + CLI Runner</div></td>
+            <td><code>StarlightHorizon2h</code>, <code>StarlightHorizon12h</code>, <code>StarlightHorizon1w</code>, and <code>StarlightOpsGuardAudit</code> registered &amp; verified with <code>LastTaskResult = 0</code>.</td>
+            <td>Retire 9 legacy duplicate failing Windows tasks into the unified Horizon runner and wire n8n heartbeat receipts.</td>
+            <td class="mono">Queen + Healer</td>
+            <td><span class="pill emerald">LIVE · AUTONOMOUS</span></td>
+          </tr>
+          <tr>
+            <td><strong>4. Local &lt;-&gt; Cloud Task Bridge</strong><div class="card-meta">Laptop Harnesses &lt;-&gt; Cloud Workers</div></td>
+            <td>7 local harnesses coordinate via <code>ops-guard</code> git worktree leases (161 lease files) and local <code>queen/inbox</code>. Cloud planes run independently.</td>
+            <td><strong>Cloudflare Edge Bridge</strong> (Worker + Durable Object) so Railway, n8n, Claude Cloud, and Codex Cloud can enqueue signed receipts into the local estate.</td>
+            <td class="mono">Architect + Codex</td>
+            <td><span class="pill gold">WAVE 2 PRIORITY</span></td>
+          </tr>
+          <tr>
+            <td><strong>5. Unified Cost &amp; Quota Router</strong><div class="card-meta">Subscriptions vs. Direct API Spend</div></td>
+            <td>Subscription-first routing (Claude Max, ChatGPT Pro, Gemini Pro) + OpenRouter / BYOK guardrails in <code>providers.graph.json</code>.</td>
+            <td>Unified <code>cost-ledger.jsonl</code> + Prompt Caching (90% read discount) + Batch API (50% discount) + Railway container prune ($123/mo -&gt; &lt;$45/mo).</td>
+            <td class="mono">Navigator + Hakari</td>
+            <td><span class="pill cyan">WAVE 1-3 PRIORITY</span></td>
+          </tr>
+          <tr>
+            <td><strong>6. Cross-Harness Traces &amp; Evals</strong><div class="card-meta">Langfuse OTEL + Santa Loop</div></td>
+            <td>Horizon JSONL telemetry (<code>.starlight/telemetry/horizon-*.jsonl</code>), per-harness transcripts, and Santa Method Fire/Crown convergence loops.</td>
+            <td>Unified OpenTelemetry / Langfuse trace ingestion joining prompt version, model latency, token cost, and Eval-50 score per PR.</td>
+            <td class="mono">Prime + Sentinel</td>
+            <td><span class="pill violet">WAVE 3 PRIORITY</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>The Overarching Goal: Why We Built This &amp; How It Compounds</h2>
+        <p>Frank's Sovereign Agentic OS turns 7 local harnesses, 9 cloud platforms, and 10 brand organizations into one disciplined organism.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">1. Zero-Collision Multi-Harness Velocity</div>
+          <span class="pill emerald">Git Worktrees + Leases</span>
+        </div>
+        <p class="kv-val">
+          Claude Code, Antigravity, Codex, Hermes, OpenCode, Gemini CLI, and Grok never step on the same checkout. Every slice runs on <code>agent/&lt;harness&gt;/&lt;scope&gt;</code> in an isolated worktree under <code>C:/Users/frank/starlight/worktrees/</code>, guarded by <code>ops-guard</code> leases and dual-remote federation.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">2. Observable Compounding Memory</div>
+          <span class="pill gold">1,106 Atoms · 100% Hit@10</span>
+        </div>
+        <p class="kv-val">
+          Instead of ephemeral chat history, every architectural ruling, creative canon lock, and operational lesson compiles into 6 semantic vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon) served over loopback HTTP (<code>127.0.0.1:5200</code>) and verified every 2 hours against <code>Eval-50</code>.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">3. Subscription-Maxed, Cloud-Extended</div>
+          <span class="pill cyan">Smart Cost Routing</span>
+        </div>
+        <p class="kv-val">
+          Interactive reasoning and deep code synthesis max out flat-rate local subscriptions first (respecting the 4 GiB RAM floor), while asynchronous 24/7 webhooks, batch evals, and container sandboxes burst to Codex Cloud, Claude Cloud, Cloudflare Workers, Railway, and Vercel.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL 2: LOCAL + CLOUD HARNESSES & COST MATRIX -->
+  <section class="tab-panel" id="panel-harnesses" role="tabpanel" aria-labelledby="tab-harnesses">
+    <div class="section-head">
+      <div>
+        <h2>Interactive Workload Router: When to Use Which Harness &amp; Cloud Runtime</h2>
+        <p>Select a task type to filter the recommended local harness, cloud offload target, cost tier, and kickoff command.</p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="search" id="harnessSearch" class="search-input" placeholder="Search harness, model, capability, or cloud platform..." aria-label="Search harnesses and cloud platforms">
+      <select id="workloadFilter" class="select-input" aria-label="Filter by workload type">
+        <option value="all">All Runtimes (7 Local + 9 Cloud)</option>
+        <option value="local">Local Harnesses Only (7)</option>
+        <option value="cloud">Cloud Platforms Only (9)</option>
+        <option value="zero-marginal">Flat-Rate Subscription ($0 Marginal)</option>
+        <option value="bridge">Needs Cloud-to-Local Bridge</option>
+      </select>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>7 Local Agent Harnesses (Workstation Fleet)</h2>
+        <p>Coordinated via <code>AGENTS.md</code> Band-A contract, <code>SisGatewayDaemon (:5200)</code>, and Memory Guardian RAM caps.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom: 28px;">
+      <table id="localHarnessTable">
+        <thead>
+          <tr>
+            <th>Local Harness</th>
+            <th>Models &amp; Cost Model</th>
+            <th>Local Worker Cap</th>
+            <th>Who Contributes What &amp; When to Use</th>
+            <th>Evals, Traces &amp; Cloud Kickoff</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr class="runtime-row" data-kind="local" data-cost="zero-marginal">
+            <td>
+              <strong>Claude Code CLI &amp; Desktop</strong>
+              <div class="card-meta">claude-code</div>
+            </td>
+            <td>
+              <span class="pill emerald">Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</span>
+              <div class="card-meta" style="margin-top:4px;">Max Subscription ($0 marginal) + API Fallback (BYOK)</div>
+            </td>
+            <td class="mono">2 Opus / Fable sessions max (Memory Guardian 4 GiB floor)</td>
+            <td>
+              <div><strong>Use when:</strong> Default daily driver for deep engineering, multi-repo orchestration, and high-taste writing</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Primary estate conductor, PR creation, complex refactors, book/editorial prose, Santa Loop Crown Gate</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: Transcript JSONL + agent-quality 9-check audit + Eval-50 gate + verification-loop</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: claude --remote &quot;&lt;task&gt;&quot; or trigger claude.ai cloud routines / GitHub Actions @claude</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="zero-marginal">
+            <td>
+              <strong>Google Antigravity</strong>
+              <div class="card-meta">antigravity</div>
+            </td>
+            <td>
+              <span class="pill emerald">Gemini 3.1 Pro / Flash + Native Image/Veo</span>
+              <div class="card-meta" style="margin-top:4px;">Workspace / Pro Subscription ($0 marginal)</div>
+            </td>
+            <td class="mono">1 Lead + 3 Subagents (research, self, image-generator)</td>
+            <td>
+              <div><strong>Use when:</strong> Massive cross-repo migrations, long-context estate sweeps, visual UI/HTML5 cockpits, scheduled horizon loops</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> 10-Org GitHub federation, sovereign memory compilation, 2h/12h/1w Horizon automation, visual cockpits</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: brain/&lt;conv-id&gt;/.system_generated/logs/transcript.jsonl + Horizon JSONL telemetry</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: Invoke-StarlightHorizonCadence.ps1 / n8n webhook / gcloud run jobs execute</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="metered">
+            <td>
+              <strong>OpenAI Codex CLI &amp; App</strong>
+              <div class="card-meta">codex</div>
+            </td>
+            <td>
+              <span class="pill emerald">GPT-5.4 / Codex-Max / o3</span>
+              <div class="card-meta" style="margin-top:4px;">ChatGPT Pro Subscription + OpenAI API (Batch 50% off)</div>
+            </td>
+            <td class="mono">2 local worktrees + parallel Cloud Sandboxes</td>
+            <td>
+              <div><strong>Use when:</strong> Second-opinion adversarial engineering review (/gstack-codex), heavy test generation, isolated cloud tasks</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Independent exact-revision code review, test coverage expansion, parallel bug-fix worktrees</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: .codex/automations + gstack-benchmark-models + git diff verification</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: codex cloud exec &quot;&lt;spec&gt;&quot; (runs in OpenAI cloud container against GitHub repo branch)</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="metered">
+            <td>
+              <strong>Hermes Agent OS</strong>
+              <div class="card-meta">hermes</div>
+            </td>
+            <td>
+              <span class="pill emerald">Multi-Model Router (Claude / Gemini / OpenRouter)</span>
+              <div class="card-meta" style="margin-top:4px;">Subscription OAuth + OpenRouter metered API</div>
+            </td>
+            <td class="mono">1 Desktop daemon + 6 CoE Guardian profiles</td>
+            <td>
+              <div><strong>Use when:</strong> Standing background crons, isolated persona research, workspace bootstrap checks</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Morning founder review, workspace bootstrap verification, continuous background provenance scans</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: AppData/Local/hermes/cron/jobs.json + logs/heartbeats/heartbeat-*.json</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: Hermes MCP bridge -&gt; Railway / n8n webhook trigger</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="metered">
+            <td>
+              <strong>OpenCode / oh-my-openagent (OmO)</strong>
+              <div class="card-meta">opencode-omo</div>
+            </td>
+            <td>
+              <span class="pill emerald">Heterogeneous (Kimi K2.6, GPT-5.4, Claude, DeepSeek)</span>
+              <div class="card-meta" style="margin-top:4px;">Direct API / OpenRouter (Pay-per-token)</div>
+            </td>
+            <td class="mono">Team Mode (up to 11 specialized role workers)</td>
+            <td>
+              <div><strong>Use when:</strong> Heterogeneous model experiments, cost-optimized bulk code transforms</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Cross-model benchmarking, bulk mechanical migrations, fallback harness when primary quotas cap</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: .omo/boulder.json + OpenRouter spend telemetry</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: OpenRouter API batch / background worker dispatch</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="metered">
+            <td>
+              <strong>Gemini CLI</strong>
+              <div class="card-meta">gemini-cli</div>
+            </td>
+            <td>
+              <span class="pill emerald">Gemini 3.1 Pro / Flash-Lite</span>
+              <div class="card-meta" style="margin-top:4px;">Google AI Pro / Free Tier + Vertex API</div>
+            </td>
+            <td class="mono">2 fast CLI workers</td>
+            <td>
+              <div><strong>Use when:</strong> Summarizing huge transcripts, scanning 50+ files before editing, lightweight terminal queries</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Fast codebase indexing, large log/transcript summarization, second-source fact checking</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: GEMINI.md contract + local session logs</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: Vertex AI Batch Prediction / Cloud Run trigger</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="local" data-cost="metered">
+            <td>
+              <strong>Grok Build (xAI)</strong>
+              <div class="card-meta">grok-build</div>
+            </td>
+            <td>
+              <span class="pill emerald">Grok 4 / Grok-Code</span>
+              <div class="card-meta" style="margin-top:4px;">X Premium+ / xAI API</div>
+            </td>
+            <td class="mono">1 worktree worker via grok-harness-adapter</td>
+            <td>
+              <div><strong>Use when:</strong> Social/cultural trend analysis, real-time X intelligence, rapid experimental prototypes</div>
+              <div style="color:var(--ink-secondary);font-size:12.5px;margin-top:4px;"><strong>Contributes:</strong> Social vibe tracking, real-time AI lab release radar, rapid creative prototypes</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--champagne);">Eval: grok-harness-adapter logs + branch diff gates</div>
+              <div class="mono" style="font-size:11.5px;color:var(--cyan);margin-top:4px;">Cloud: xAI API async completion</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>9 Cloud Runtimes, Infrastructure Planes &amp; Beta Capabilities</h2>
+        <p>How local agents kick off cloud tasks, how each plane is billed, and the exact substrate gap we are closing next.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="cloudPlatformTable">
+        <thead>
+          <tr>
+            <th>Cloud Platform</th>
+            <th>Category &amp; Cost Tier</th>
+            <th>Measured Estate State</th>
+            <th>Role &amp; Beta Capabilities to Exploit</th>
+            <th>How to Kick Off &amp; Next Gap to Solve</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr class="runtime-row" data-kind="cloud" data-cost="zero-marginal" data-bridge="bridge">
+            <td>
+              <strong>Claude Cloud Routines &amp; Anthropic API</strong>
+              <div class="card-meta">claude-cloud</div>
+            </td>
+            <td>
+              <span class="pill cyan">Frontier Cloud Agent &amp; LLM</span>
+              <div class="card-meta" style="margin-top:4px;">Included in Max + API (Prompt Caching 90% read discount, Batch 50% discount)</div>
+            </td>
+            <td>13 logical cloud routines mapped; 2 noisy self-rearming reminder chains stopped</td>
+            <td>Scheduled cloud routines (survives laptop closed), Prompt-Cached system prompts, Extended Thinking &amp; Computer Use beta</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: claude.ai/routines schedule OR Anthropic Messages/Batch API with anthropic-beta: prompt-caching</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Connect Claude Cloud routines to an HTTPS Cloudflare Worker inbox so cloud runs write back to the estate ledger</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="zero-marginal" data-bridge="">
+            <td>
+              <strong>OpenAI Codex Cloud &amp; Responses/Batch API</strong>
+              <div class="card-meta">codex-cloud</div>
+            </td>
+            <td>
+              <span class="pill cyan">Cloud Sandboxed SWE Fleet</span>
+              <div class="card-meta" style="margin-top:4px;">Included in Pro + API Batch (50% discount for async 24h evals)</div>
+            </td>
+            <td>Active for isolated repo PR tasks</td>
+            <td>Zero-local-RAM parallel SWE containers that clone GitHub org repos, run tests, and open draft PRs autonomously</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: codex cloud run --repo &lt;Org&gt;/&lt;Repo&gt; &quot;&lt;prompt&gt;&quot;</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Pre-warm environment setup scripts in all 10 GitHub Orgs so Codex Cloud containers boot in &lt;15s</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="">
+            <td>
+              <strong>Google Cloud / Vertex AI / Veo / NanoBanana</strong>
+              <div class="card-meta">google-cloud-vertex</div>
+            </td>
+            <td>
+              <span class="pill cyan">Multimodal &amp; Long-Context Cloud</span>
+              <div class="card-meta" style="margin-top:4px;">Workspace / Cloud Credits + Pay-per-second media</div>
+            </td>
+            <td>Active via Antigravity + NanoBanana MCP</td>
+            <td>1M-2M context caching, magazine-grade visual generation (NanoBanana), Veo video generation, Gemini Flash bulk evals</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: Native generate_image / nb-image skill / Vertex Context Caching API</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Route bulk Dreaming &amp; vault classification jobs to Gemini Flash-Lite with Context Caching</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="bridge">
+            <td>
+              <strong>Cloudflare (Workers, Durable Objects, R2, DNS)</strong>
+              <div class="card-meta">cloudflare</div>
+            </td>
+            <td>
+              <span class="pill cyan">Edge Compute &amp; Sovereign Bridge</span>
+              <div class="card-meta" style="margin-top:4px;">$5-$20/mo (Workers Paid + R2 zero-egress storage)</div>
+            </td>
+            <td>DNS &amp; edge routing active; Hermes Cloudflare MCP needs re-auth</td>
+            <td>The missing Local &lt;-&gt; Cloud Bridge! Hosts the HTTPS signed inbox queue, R2 artifact vault, and edge MCP gateways</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: wrangler deploy / HTTPS webhook to edge worker</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Deploy starlight-edge-bridge Worker + Durable Object so Railway, n8n, and Claude Cloud can enqueue receipts safely</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="">
+            <td>
+              <strong>Vercel Production &amp; Preview Fleet</strong>
+              <div class="card-meta">vercel</div>
+            </td>
+            <td>
+              <span class="pill cyan">Web &amp; App Hosting Plane</span>
+              <div class="card-meta" style="margin-top:4px;">Pro Subscription ($20/mo base + bandwidth/cron)</div>
+            </td>
+            <td>50+ projects mapped across registered properties; waitlist KV active</td>
+            <td>Hosts frankx.ai, arcanea.ai, starlightintelligence.org, gencreator.ai, and preview deployments on every PR</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: git push origin agent/&lt;harness&gt;/&lt;scope&gt; -&gt; Draft PR Preview; merge to main -&gt; Prod</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Consolidate 5 duplicate unlinked Vercel projects after dropping the legacy required check</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="bridge">
+            <td>
+              <strong>Railway Service Mesh</strong>
+              <div class="card-meta">railway</div>
+            </td>
+            <td>
+              <span class="pill cyan">24/7 Container &amp; Daemon Cloud</span>
+              <div class="card-meta" style="margin-top:4px;">Usage-based (~$123.45/mo measured across projects — target &lt;$45/mo after pruning)</div>
+            </td>
+            <td>Hosts n8n, Postiz, and background services; several empty projects flagged [OPEN] for prune</td>
+            <td>Always-on Docker services, n8n workflow engine, Postiz social distributor, remote MCP servers</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: railway up / webhook triggers</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Enumerate all environments live, prune idle services, and wire Railway n8n to the Cloudflare Edge Bridge</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="zero-marginal" data-bridge="">
+            <td>
+              <strong>n8n Workflow Orchestrator</strong>
+              <div class="card-meta">n8n-cloud</div>
+            </td>
+            <td>
+              <span class="pill cyan">Event &amp; Webhook Automation</span>
+              <div class="card-meta" style="margin-top:4px;">Self-hosted on Railway ($0 license)</div>
+            </td>
+            <td>starlight-horizon-memory-orchestrator.workflow.json versioned in SIS repo</td>
+            <td>Scheduled 2h/12h/1w webhook orchestration, Slack/Telegram alerts, GitHub org issue triage, Resend newsletter pipelines</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: Import workflows/n8n/starlight-horizon-memory-orchestrator.workflow.json or POST /webhook/starlight-horizon-run</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Add heartbeat writer so n8n executions appear in logs/heartbeats/heartbeat-n8n.json (two-signal liveness rule)</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="">
+            <td>
+              <strong>OpenRouter Unified Model Gateway</strong>
+              <div class="card-meta">openrouter</div>
+            </td>
+            <td>
+              <span class="pill cyan">Multi-Provider API &amp; Spend Cap</span>
+              <div class="card-meta" style="margin-top:4px;">Prepaid credit balance with hard per-key spend limits</div>
+            </td>
+            <td>Used by Hermes, OmO, and fallback model routing</td>
+            <td>Single API key for 200+ models (DeepSeek R1, Kimi K2.6, Qwen, Llama 3.3, Claude, GPT) with automatic fallback &amp; cost tracking</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: OPENROUTER_API_KEY via model-routing skill or Starlight Cost Collector</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Fix StarlightOpenRouterSpend scheduled task exit code 2 by pointing it to the unified cost ledger</div>
+            </td>
+          </tr>
+          <tr class="runtime-row" data-kind="cloud" data-cost="metered" data-bridge="">
+            <td>
+              <strong>Langfuse + Headroom Context Layer</strong>
+              <div class="card-meta">langfuse-otel</div>
+            </td>
+            <td>
+              <span class="pill cyan">Traces, Evals, Prompt Registry &amp; Token Compression</span>
+              <div class="card-meta" style="margin-top:4px;">Self-hosted / Free Cloud Tier</div>
+            </td>
+            <td>Skills installed (langfuse, headroom); ready for unified daemon hookup</td>
+            <td>Captures OpenTelemetry traces across all harnesses, compresses long tool outputs via Headroom (40-70% token savings), tracks Eval-50 over time</td>
+            <td>
+              <div class="mono" style="font-size:11.5px;color:var(--emerald);">Trigger: /headroom wrap + Langfuse OTEL env vars in .starlight/env</div>
+              <div style="font-size:12px;color:var(--amber);margin-top:4px;"><strong>Next Gap:</strong> Wire SisGatewayDaemon (:5200) to emit trace spans for every memory search/add and horizon eval run</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PANEL 3: 10 GITHUB ORGS, BRAND TEAMS & IP GOVERNANCE -->
+  <section class="tab-panel" id="panel-orgs" role="tabpanel" aria-labelledby="tab-orgs">
+    <div class="section-head">
+      <div>
+        <h2>10 GitHub Organizations, Responsible Brand Teams &amp; IP/Connector Matrix</h2>
+        <p>All 71 mapped repositories have verified local checkouts, dual remotes (<code>origin</code> + <code>org</code>), and strict public/private visibility parity.</p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="search" id="orgSearch" class="search-input" placeholder="Filter by organization, repo name, agent team, skill, or MCP connector..." aria-label="Filter organizations and repositories">
+      <select id="orgModeFilter" class="select-input" aria-label="Filter by governance mode">
+        <option value="all">All 10 Organizations (71 Repos)</option>
+        <option value="active">Active Governance Orgs (9)</option>
+        <option value="reshape-frozen">Reshape-Frozen / Read-Only (1)</option>
+      </select>
+    </div>
+
+    <div class="grid-2" id="orgGrid">
+      
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Starlight Intelligence <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@Starlight-Intelligence)</span></div>
+            <div class="card-meta"><a href="https://starlightintelligence.ai" target="_blank" rel="noopener">https://starlightintelligence.ai</a> · Brand ID: <code>sis</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 10 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Core AI operating system, Command Center Observatory, memory engine, voice pack, design intelligence, and evals.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Queen + Prime + Architect</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">starlight-architect · starlight-sentinel · starlight-weaver · starlight-hermes · starlight-sage</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Layer 1-2: Sovereign Cockpit, Voice &amp; Design System, Eval Harness</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Strategic ◆ · Technical ⬡ · Operational ▸</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">starlight-intelligence, starlight-queen, visual-qa-gate, brand-voice, agent-quality</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">starlight-sis (:5200) · starlight-v0 · Linear MCP · GitHub MCP</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">Starlight Brand Pack v1.0, Command Center Electron/Next.js Observatory, Eval-50 Corpus, Android Kit</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">starlightintelligence.ai · Operator Release Notes · Design System Showcases</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">Branch protection + /starlight-board + SIP Attestation</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in Starlight-Intelligence (5 public, 5 private)">
+          
+            <span class="repo-chip" title="private repo · primary: Starlight-Intelligence/starlight-command-center · federated: Starlight-Intelligence/starlight-command-center">
+              <i class="vis-dot vis-private"></i>
+              starlight-command-center
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlight-agent-config · federated: Starlight-Intelligence/starlight-agent-config">
+              <i class="vis-dot vis-private"></i>
+              starlight-agent-config
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlight-memory · federated: Starlight-Intelligence/starlight-memory">
+              <i class="vis-dot vis-private"></i>
+              starlight-memory
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-voice · federated: Starlight-Intelligence/starlight-voice">
+              <i class="vis-dot vis-public"></i>
+              starlight-voice
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-technology · federated: Starlight-Intelligence/starlight-technology">
+              <i class="vis-dot vis-public"></i>
+              starlight-technology
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-design-intelligence · federated: Starlight-Intelligence/starlight-design-intelligence">
+              <i class="vis-dot vis-public"></i>
+              starlight-design-intelligence
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-agent-skills · federated: Starlight-Intelligence/starlight-agent-skills">
+              <i class="vis-dot vis-public"></i>
+              starlight-agent-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-evals · federated: Starlight-Intelligence/starlight-evals">
+              <i class="vis-dot vis-public"></i>
+              starlight-evals
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlight-android · federated: Starlight-Intelligence/starlight-android">
+              <i class="vis-dot vis-private"></i>
+              starlight-android
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlightintelligence.ai · federated: Starlight-Intelligence/starlightintelligence.ai">
+              <i class="vis-dot vis-private"></i>
+              starlightintelligence.ai
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Starlight Intelligence Systems <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@Starlight-Intelligence-Systems)</span></div>
+            <div class="card-meta"><a href="https://starlightintelligence.org" target="_blank" rel="noopener">https://starlightintelligence.org</a> · Brand ID: <code>sis</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 6 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Open sovereign substrate (SIP), multi-agent cognitive architecture, 6 semantic memory vaults, and public research.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Architect + Sage + Prime</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">starlight-sage · starlight-navigator · starlight-hermes · starlight-sentinel</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Layer 0: Starlight Intelligence Protocol (SIP) + Event-Sourced SQLite/Vector Substrate</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">sis-memory-orchestrator, sip-attest, memory-vault-management, yolo-conductor, santa-method</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">mcp-server.js (sis_vault_search, sis_append_entry) · SisGatewayDaemon (:5200) · Syncthing P2P</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">SIP Specification, 151 Agent Profiles, 89 Skill Rules, 1,106 Sovereign Memory Atoms, Research Papers</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">starlightintelligence.org/research/ · Open Protocol Releases · Alliance Federation</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">Pre-commit substrate symmetry hooks (v75-v79) + /starlight-board</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in Starlight-Intelligence-Systems (5 public, 1 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/Starlight-Intelligence-System · federated: Starlight-Intelligence-Systems/Starlight-Intelligence-System">
+              <i class="vis-dot vis-public"></i>
+              Starlight-Intelligence-System
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-research-hub · federated: Starlight-Intelligence-Systems/starlight-research-hub">
+              <i class="vis-dot vis-public"></i>
+              starlight-research-hub
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-knowledge-tree · federated: Starlight-Intelligence-Systems/starlight-knowledge-tree">
+              <i class="vis-dot vis-public"></i>
+              starlight-knowledge-tree
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-cosmos-engine · federated: Starlight-Intelligence-Systems/starlight-cosmos-engine">
+              <i class="vis-dot vis-public"></i>
+              starlight-cosmos-engine
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-swarm · federated: Starlight-Intelligence-Systems/starlight-swarm">
+              <i class="vis-dot vis-public"></i>
+              starlight-swarm
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlight-memory-vault · federated: Starlight-Intelligence-Systems/starlight-memory-vault">
+              <i class="vis-dot vis-private"></i>
+              starlight-memory-vault
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Arcanea Labs <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@Arcanea-Labs)</span></div>
+            <div class="card-meta"><a href="https://arcanea.ai" target="_blank" rel="noopener">https://arcanea.ai</a> · Brand ID: <code>arcanea</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 8 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Creative multiverse, Ten Gates progression system, Luminor AI companions, AnimeLegends studio, and onchain lore.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Lumina (Queen) + Weaver + Arcanean Art Director</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">arcanea-story · arcanea-coder · arcanea-reviewer · canon-guardian · anime-storyboarder</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Creative Worlds &amp; Multimodal Media Pipeline (Ten Gates Framework)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Creative ✦ · Wisdom ◎ · Horizon ↗</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">arcanea, canon-check, character-forge, world-forge, anime-character-sheets, suno-ai-mastery</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">NanoBanana (nb-image) · Veo Video Pipeline · ElevenLabs Voice · Suno Music Engine</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">CANON_LOCKED.md, Ten Gates Lore, AnimeLegends Trinity (Akashi, Kage, Mira), NFT &amp; Onchain Contracts</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">arcanea.ai · Starbound Crews · Academy Halls · Lore Scrolls &amp; Interactive Fiction</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">/canon-check + Santa Loop (Fire Gate -&gt; Crown Gate convergence) + CANON_LOCKED read-only rule</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in Arcanea-Labs (6 public, 2 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/Arcanea · federated: Arcanea-Labs/Arcanea">
+              <i class="vis-dot vis-public"></i>
+              Arcanea
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/arcanea-ai-app · federated: Arcanea-Labs/arcanea-ai-app">
+              <i class="vis-dot vis-public"></i>
+              arcanea-ai-app
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/arcanea-studio · federated: Arcanea-Labs/arcanea-studio">
+              <i class="vis-dot vis-public"></i>
+              arcanea-studio
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/arcanea-ecosystem · federated: Arcanea-Labs/arcanea-ecosystem">
+              <i class="vis-dot vis-public"></i>
+              arcanea-ecosystem
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/arcanea-agent-skills · federated: Arcanea-Labs/arcanea-agent-skills">
+              <i class="vis-dot vis-private"></i>
+              arcanea-agent-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/arcanea-onchain · federated: Arcanea-Labs/arcanea-onchain">
+              <i class="vis-dot vis-public"></i>
+              arcanea-onchain
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/arcanea-orchestrator · federated: Arcanea-Labs/arcanea-orchestrator">
+              <i class="vis-dot vis-public"></i>
+              arcanea-orchestrator
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/AnimeLegends · federated: Arcanea-Labs/AnimeLegends">
+              <i class="vis-dot vis-private"></i>
+              AnimeLegends
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">GenCreator <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@GenCreator-ai)</span></div>
+            <div class="card-meta"><a href="https://gencreator.ai" target="_blank" rel="noopener">https://gencreator.ai</a> · Brand ID: <code>gencreator</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 8 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Agentic Creator OS (ACOS), multi-model studio, music/video/prose production pipelines, and creator monetization.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Envoy + Orchestrator + Creation Engine</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">content-director · music-video-producer · audio-producer · social-strategist · social-visual-director</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Creator OS &amp; Multi-Channel Production Engine (6-Pillar GenCreator CoE)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Creative ✦ · Operational ▸ · Strategic ◆</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">acos, studio, factory, create-music, video-produce, article-creator, music-triage</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">suno-mcp-server · starlight-creator-mcp · Postiz (Railway) · Resend · Vercel Blob</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">845+ Suno Track Catalog, ACOS Plugin Registry, Creator Launch OS Templates, Multi-Platform Workflows</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">gencreator.ai · Creator Blueprints · Open Skills &amp; Studio Packs</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">Waitlist-first gate + BYOK model routing + Zero-Orphan Provenance</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in GenCreator-ai (6 public, 2 private)">
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/gencreator.ai · federated: GenCreator-ai/gencreator.ai">
+              <i class="vis-dot vis-private"></i>
+              gencreator.ai
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/GenCreator-OS · federated: GenCreator-ai/GenCreator-OS">
+              <i class="vis-dot vis-private"></i>
+              GenCreator-OS
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/GenCreator-Studio · federated: GenCreator-ai/GenCreator-Studio">
+              <i class="vis-dot vis-public"></i>
+              GenCreator-Studio
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/agentic-creator-os · federated: GenCreator-ai/agentic-creator-os">
+              <i class="vis-dot vis-public"></i>
+              agentic-creator-os
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/creator-skills · federated: GenCreator-ai/creator-skills">
+              <i class="vis-dot vis-public"></i>
+              creator-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/creator-launch-os · federated: GenCreator-ai/creator-launch-os">
+              <i class="vis-dot vis-public"></i>
+              creator-launch-os
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/suno-mcp-server · federated: GenCreator-ai/suno-mcp-server">
+              <i class="vis-dot vis-public"></i>
+              suno-mcp-server
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/starlight-creator-mcp · federated: GenCreator-ai/starlight-creator-mcp">
+              <i class="vis-dot vis-public"></i>
+              starlight-creator-mcp
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">FrankX <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@FrankX-AI)</span></div>
+            <div class="card-meta"><a href="https://frankx.ai" target="_blank" rel="noopener">https://frankx.ai</a> · Brand ID: <code>frankx</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 9 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Personal headquarters of Frank Riemer — AI Architect essays, books, prompt library, and production engineering.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Prime + Frank Brand Editor + Adversarial Reviewer</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">author-team · frank-brand-editor · seo-specialist · visual-intelligence · canary</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Editorial Publishing House, Book Engine &amp; Flagship Web Surface</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Strategic ◆ · Creative ✦ · Wisdom ◎</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">frankx-brand, excellence-book-writing, article-excellence, vis-audit, seo-check, product-deploy</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">Vercel MCP · Plausible Analytics · Resend Newsletter · Next-Devtools MCP · MCP Doctor</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">Multi-Book Manuscripts, Prompt Library, Claude Skills Library, Visual Registry (VIS), Metrics Truth Ledger</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">frankx.ai · AI Architect Newsletter · Published Books &amp; Technical Deep-Dives</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">Metrics Truth Rule (metrics/current.json) + Editorial Anti-Slop Gate + Two-Repo Production Deploy</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in FrankX-AI (7 public, 2 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/frankx.ai-vercel-website · federated: FrankX-AI/frankx.ai-vercel-website">
+              <i class="vis-dot vis-public"></i>
+              frankx.ai-vercel-website
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/FrankX · federated: FrankX-AI/FrankX">
+              <i class="vis-dot vis-private"></i>
+              FrankX
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/author-os · federated: FrankX-AI/author-os">
+              <i class="vis-dot vis-public"></i>
+              author-os
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/publishing-house · federated: FrankX-AI/publishing-house">
+              <i class="vis-dot vis-private"></i>
+              publishing-house
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/prompt-library · federated: FrankX-AI/prompt-library">
+              <i class="vis-dot vis-public"></i>
+              prompt-library
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/claude-skills-library · federated: FrankX-AI/claude-skills-library">
+              <i class="vis-dot vis-public"></i>
+              claude-skills-library
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/mcp-doctor · federated: FrankX-AI/mcp-doctor">
+              <i class="vis-dot vis-public"></i>
+              mcp-doctor
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/claude-code-hooks · federated: FrankX-AI/claude-code-hooks">
+              <i class="vis-dot vis-public"></i>
+              claude-code-hooks
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/visual-intelligence · federated: FrankX-AI/visual-intelligence">
+              <i class="vis-dot vis-public"></i>
+              visual-intelligence
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">AI Architect Studio <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@AI-Architect-Studio)</span></div>
+            <div class="card-meta"><a href="https://frankx.ai/ai-architect" target="_blank" rel="noopener">https://frankx.ai/ai-architect</a> · Brand ID: <code>ai-architect</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 7 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Enterprise-grade AI Center of Excellence (CoE) blueprints, Agentic OS standards, and operational control plane.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Architect + Sentinel + Navigator</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">starlight-architect · security-auditor · ops-steward · healer</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Enterprise Architecture Blueprints &amp; Estate Control Plane (agentic-ops)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Technical ⬡ · Operational ▸ · Strategic ◆</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">starlight-architect, ai-architecture, ops-health, healer, harnesses, security-auditor</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">starlight-department-lab MCP · ops-guard Lease CLI · GitHub Multi-Repo Orchestrator</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">Agentic OS Standard, AI CoE Field Guide, 10-Org Federation Manifest, Ops-Guard Lease Engine</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">frankx.ai/ai-architect · Awesome AI CoE · Awesome Agent Operating Systems</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">ops-guard worktree lease check + 4-fact git bootstrap contract</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in AI-Architect-Studio (6 public, 1 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/ai-architect · federated: AI-Architect-Studio/ai-architect">
+              <i class="vis-dot vis-public"></i>
+              ai-architect
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/ai-coe · federated: AI-Architect-Studio/ai-coe">
+              <i class="vis-dot vis-public"></i>
+              ai-coe
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/agentic-architecture-field-guide · federated: AI-Architect-Studio/agentic-architecture-field-guide">
+              <i class="vis-dot vis-public"></i>
+              agentic-architecture-field-guide
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/awesome-ai-coe · federated: AI-Architect-Studio/awesome-ai-coe">
+              <i class="vis-dot vis-public"></i>
+              awesome-ai-coe
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/awesome-agent-operating-systems · federated: AI-Architect-Studio/awesome-agent-operating-systems">
+              <i class="vis-dot vis-public"></i>
+              awesome-agent-operating-systems
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/agentic-operating-system-standard · federated: AI-Architect-Studio/agentic-operating-system-standard">
+              <i class="vis-dot vis-public"></i>
+              agentic-operating-system-standard
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/agentic-ops · federated: AI-Architect-Studio/agentic-ops">
+              <i class="vis-dot vis-private"></i>
+              agentic-ops
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">AI Architect Academy <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@AI-Architect-Academy)</span></div>
+            <div class="card-meta"><a href="https://frankx.ai/academy" target="_blank" rel="noopener">https://frankx.ai/academy</a> · Brand ID: <code>ai-architect</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 2 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Cohort-based and self-paced mastery programs teaching builders to architect sovereign AI systems.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Sage + Genius + Concierge</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">learning-architect · workshop-facilitator · practice-evaluator</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Academy Curriculum, Evaluation Labs &amp; Builder Certification</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Wisdom ◎ · Technical ⬡ · Strategic ◆</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">workshop-new, workshop-prep, practice-agent-evaluation, feinman-thinking</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">starlight-department-lab (get_evaluation_cases, check_evaluation_answers) · Vercel KV Waitlist</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">30-Day Pillar Syllabus, Cohort Labs, Department Evaluation Cases, Builder Rubrics</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">frankx.ai/academy · aiarchitectacademy.com · Student Builder Cohorts</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">Waitlist-first commercial gate + Oracle separation compliance</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in AI-Architect-Academy (1 public, 1 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/ai-architect-academy · federated: AI-Architect-Academy/ai-architect-academy">
+              <i class="vis-dot vis-public"></i>
+              ai-architect-academy
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/starlight-intelligence-academy · federated: AI-Architect-Academy/starlight-intelligence-academy">
+              <i class="vis-dot vis-private"></i>
+              starlight-intelligence-academy
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Agentic Income <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@Agentic-Income)</span></div>
+            <div class="card-meta"><a href="https://agenticincome.ai" target="_blank" rel="noopener">https://agenticincome.ai</a> · Brand ID: <code>agentic-income</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 9 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Autonomous wealth research, digital product wedges, affiliate intelligence, and capital allocation frameworks.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Navigator + Business IS + Impact Diligence Analyst</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">investor-research · affiliate-auditor · revenue-modeler · thesis-debater</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Wealth &amp; Business Intelligence Sub-Stack (Research-Only &amp; Waitlist Wedges)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Strategic ◆ · Horizon ↗ · Operational ▸</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">wealth-ops, investor-research, affiliate-audit, template-monetization, weekly-strategy</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">Portfolio Snapshot CLI · Vercel KV · Resend</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">IIS Strategy Theses, Affiliate Catalog, Wealth Agent Skills, Investor Research Graph</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">agenticincome.ai · Awesome Agentic Income · Open Wealth Agent Skills</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">NON-WAIVABLE: Money fails closed. Research-only; zero autonomous money movement.</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in Agentic-Income (7 public, 2 private)">
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/agenticincome · federated: Agentic-Income/agenticincome">
+              <i class="vis-dot vis-private"></i>
+              agenticincome
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/agenticpassiveincome · federated: Agentic-Income/agenticpassiveincome">
+              <i class="vis-dot vis-private"></i>
+              agenticpassiveincome
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/awesome-agentic-income · federated: Agentic-Income/awesome-agentic-income">
+              <i class="vis-dot vis-public"></i>
+              awesome-agentic-income
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/agentic-income-skills · federated: Agentic-Income/agentic-income-skills">
+              <i class="vis-dot vis-public"></i>
+              agentic-income-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/agentic-income-template · federated: Agentic-Income/agentic-income-template">
+              <i class="vis-dot vis-public"></i>
+              agentic-income-template
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/affiliate-agent-skills · federated: Agentic-Income/affiliate-agent-skills">
+              <i class="vis-dot vis-public"></i>
+              affiliate-agent-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/awesome-wealth-agent-skills · federated: Agentic-Income/awesome-wealth-agent-skills">
+              <i class="vis-dot vis-public"></i>
+              awesome-wealth-agent-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/awesome-investor-agent-skills · federated: Agentic-Income/awesome-investor-agent-skills">
+              <i class="vis-dot vis-public"></i>
+              awesome-investor-agent-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/GenInvestor · federated: Agentic-Income/GenInvestor">
+              <i class="vis-dot vis-public"></i>
+              GenInvestor
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="active">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Life Commons <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@Life-Commons)</span></div>
+            <div class="card-meta"><a href="https://bluelifecommons.org" target="_blank" rel="noopener">https://bluelifecommons.org</a> · Brand ID: <code>life-commons</code></div>
+          </div>
+          <span class="pill emerald">ACTIVE · 7 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Public-benefit intelligence systems for ocean conservation, paleontology, longevity, mind clarity, and family heritage.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Sage + Embodiment IS + Relational IS</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">marine-intelligence · health-body-substrate · family-tree-archivist · sustainability-researcher</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">Commons &amp; Human Flourishing Sub-Stacks (Ocean, Dino, Health, Mind, Family)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Wisdom ◎ · Horizon ↗ · Creative ✦</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">marine-intelligence-contribute, health-body-substrate, family-tree, safety-private-public-split</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">Local-First Family Stack · Public Dataset Connectors</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">Blue Life Commons Atlas, Dino Life Commons, Health &amp; Mind Models, Family History Atlas</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">bluelifecommons.org · Open Conservation &amp; Educational Commons</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">NON-WAIVABLE: Model, never diagnose (no clinical claims). Strict private/public data split.</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in Life-Commons (6 public, 1 private)">
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/blue-life-commons · federated: Life-Commons/blue-life-commons">
+              <i class="vis-dot vis-public"></i>
+              blue-life-commons
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/dino-life-commons · federated: Life-Commons/dino-life-commons">
+              <i class="vis-dot vis-public"></i>
+              dino-life-commons
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: frankxai/ocean-intelligence · federated: Life-Commons/ocean-intelligence">
+              <i class="vis-dot vis-private"></i>
+              ocean-intelligence
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/health-intelligence-system · federated: Life-Commons/health-intelligence-system">
+              <i class="vis-dot vis-public"></i>
+              health-intelligence-system
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/mind-intelligence-systems · federated: Life-Commons/mind-intelligence-systems">
+              <i class="vis-dot vis-public"></i>
+              mind-intelligence-systems
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/family-intelligence-os · federated: Life-Commons/family-intelligence-os">
+              <i class="vis-dot vis-public"></i>
+              family-intelligence-os
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: frankxai/family-history-atlas · federated: Life-Commons/family-history-atlas">
+              <i class="vis-dot vis-public"></i>
+              family-history-atlas
+            </span>
+          
+        </div>
+      </article>
+      <article class="card org-card" data-mode="reshape-frozen">
+        <div class="card-header">
+          <div>
+            <div class="card-title">OCI AI Architects <span class="mono" style="color:var(--ink-muted);font-weight:400;">(@oci-ai-architects)</span></div>
+            <div class="card-meta"><a href="https://github.com/oci-ai-architects" target="_blank" rel="noopener">https://github.com/oci-ai-architects</a> · Brand ID: <code>oci-community</code></div>
+          </div>
+          <span class="pill amber">RESHAPE-FROZEN · 5 repos</span>
+        </div>
+        <p style="font-size:13.5px;color:var(--ink-secondary);">Community-contributed multi-cloud and OCI generative AI reference architectures and starter kits.</p>
+        <div class="kv-list">
+          <div class="kv-key">Council Lead</div>
+          <div class="kv-val"><strong>Oracle AI Architect (Scoped Read-Only Community Mode)</strong></div>
+          <div class="kv-key">Brand Specialists</div>
+          <div class="kv-val mono" style="font-size:11.5px;">oci-services-expert · oci-drawio-icon-native · oracle-solution-design</div>
+          <div class="kv-key">AI OS Layer</div>
+          <div class="kv-val">External Cloud Architecture Reference Shelf (Reshape-Frozen)</div>
+          <div class="kv-key">Memory Vaults</div>
+          <div class="kv-val">Technical ⬡</div>
+          <div class="kv-key">Skills &amp; Plugins</div>
+          <div class="kv-val mono" style="font-size:11.5px;">oci-drawio-icon-native, oracle-ai-architect, oracle-solution-design</div>
+          <div class="kv-key">MCP &amp; Connectors</div>
+          <div class="kv-val mono" style="font-size:11.5px;color:var(--cyan);">Read-Only GitHub Remote</div>
+          <div class="kv-key">IP, Data &amp; Tech</div>
+          <div class="kv-val">Multi-Cloud AI Architect Guides, OCI GenAI Starter Kits (Strictly separated from Arcanea Labs BV)</div>
+          <div class="kv-key">Community Surface</div>
+          <div class="kv-val">github.com/oci-ai-architects · Enterprise Architect Community</div>
+          <div class="kv-key">Governance Gate</div>
+          <div class="kv-val" style="color:var(--champagne);">RESHAPE-FROZEN: Read-only in estate automation; strict Oracle/BV separation.</div>
+        </div>
+        <div class="repo-chips" aria-label="Repositories in oci-ai-architects (4 public, 1 private)">
+          
+            <span class="repo-chip" title="public repo · primary: oci-ai-architects/multi-cloud-ai-architect · federated: oci-ai-architects/multi-cloud-ai-architect">
+              <i class="vis-dot vis-public"></i>
+              multi-cloud-ai-architect
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: oci-ai-architects/claude-code-oci-ai-architect-skills · federated: oci-ai-architects/claude-code-oci-ai-architect-skills">
+              <i class="vis-dot vis-public"></i>
+              claude-code-oci-ai-architect-skills
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: oci-ai-architects/oci-ai-coe-starter-kit · federated: oci-ai-architects/oci-ai-coe-starter-kit">
+              <i class="vis-dot vis-public"></i>
+              oci-ai-coe-starter-kit
+            </span>
+          
+            <span class="repo-chip" title="public repo · primary: oci-ai-architects/oci-genai-guides · federated: oci-ai-architects/oci-genai-guides">
+              <i class="vis-dot vis-public"></i>
+              oci-genai-guides
+            </span>
+          
+            <span class="repo-chip" title="private repo · primary: oci-ai-architects/oci-ai-architect · federated: oci-ai-architects/oci-ai-architect">
+              <i class="vis-dot vis-private"></i>
+              oci-ai-architect
+            </span>
+          
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PANEL 4: EXPERIMENTS, TRACES, EVALS & HORIZON TELEMETRY -->
+  <section class="tab-panel" id="panel-evals" role="tabpanel" aria-labelledby="tab-evals">
+    <div class="section-head">
+      <div>
+        <h2>Eval-50 Sovereign Memory Benchmark &amp; Horizon Cadence Scorecards</h2>
+        <p>Live metrics read from <code>C:/Users/frank/.starlight/reports/horizon-{2h,12h,1w}-latest.json</code>.</p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom: 24px;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">2h Tactical Pulse</div>
+          <span class="pill emerald">StarlightHorizon2h · EXIT 0</span>
+        </div>
+        <div class="kv-list">
+          <div class="kv-key">Completed At</div>
+          <div class="kv-val mono">2026-10-17T19:00:15.126Z</div>
+          <div class="kv-key">Gateway :5200</div>
+          <div class="kv-val mono">ONLINE (PID 34852)</div>
+          <div class="kv-key">Eval-50 Hit@10</div>
+          <div class="kv-val mono"><strong>100.0%</strong> (50/50 queries)</div>
+          <div class="kv-key">Disambig Class</div>
+          <div class="kv-val mono">Hit@10: 100% (3 queries)</div>
+          <div class="kv-key">Recall Class</div>
+          <div class="kv-val mono">Hit@10: 100% (43 queries)</div>
+          <div class="kv-key">Cross-Vault Class</div>
+          <div class="kv-val mono">Hit@10: 100% (4 queries)</div>
+          <div class="kv-key">Latency (p50/p95)</div>
+          <div class="kv-val mono">219ms / 281ms</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">12h Operational Consolidation</div>
+          <span class="pill gold">StarlightHorizon12h · EXIT 0</span>
+        </div>
+        <div class="kv-list">
+          <div class="kv-key">Completed At</div>
+          <div class="kv-val mono">2026-10-17T18:14:40.927Z</div>
+          <div class="kv-key">Dreaming Scan</div>
+          <div class="kv-val mono">70 files -> 119 insights</div>
+          <div class="kv-key">Promotions</div>
+          <div class="kv-val mono">4 high-confidence candidates</div>
+          <div class="kv-key">Contradictions</div>
+          <div class="kv-val mono">0 conflicts detected</div>
+          <div class="kv-key">90d Half-Life</div>
+          <div class="kv-val mono">152 entries · 0 expired</div>
+          <div class="kv-key">Org Federation</div>
+          <div class="kv-val mono">71/71 repos aligned</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">1w Weekly Governance Sweep</div>
+          <span class="pill cyan">StarlightHorizon1w · EXIT 0</span>
+        </div>
+        <div class="kv-list">
+          <div class="kv-key">Completed At</div>
+          <div class="kv-val mono">2026-10-17T18:14:43.520Z</div>
+          <div class="kv-key">Scheduled Tasks</div>
+          <div class="kv-val mono">64 total (23 Ready, 38 Disabled)</div>
+          <div class="kv-key">n8n Orchestrator</div>
+          <div class="kv-val mono">Versioned & Ready</div>
+          <div class="kv-key">Legacy Tasks Flagged</div>
+          <div class="kv-val mono" style="color:var(--amber);">9 ready tasks with non-zero last exit</div>
+          <div class="kv-key">Flagged Names</div>
+          <div class="kv-val mono" style="font-size:11px;">Starlight-GbrainWatchdog, StarlightCostCollect, StarlightDreaming, StarlightFleetPulse, StarlightOpenRouterSpend, StarlightQueenProbe12h, StarlightQueenProbe2h, StarlightQueenProbeWeek, StarlightTaskHealthWatch</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>Active Substrate &amp; Agentic OS Experiment Registry</h2>
+        <p>Tracked experiments across memory recall, org governance, horizon cadences, context compression, and cloud bridging.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID &amp; Experiment</th>
+            <th>Domain &amp; Owner</th>
+            <th>Baseline</th>
+            <th>Measured Result / Current State</th>
+            <th>Status &amp; Next Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>
+              <strong class="mono">EXP-01</strong>: <strong>Hybrid Sovereign Memory Recall (TF-IDF + RRF + Entity Boost)</strong>
+              <div class="card-meta">scripts/compile-sovereign-memory.mjs</div>
+            </td>
+            <td>
+              <span class="pill violet">Memory Substrate</span>
+              <div class="card-meta" style="margin-top:4px;">Antigravity + Sage</div>
+            </td>
+            <td style="color:var(--ink-secondary);">Hit@10: 0.000 (placeholder vectors) / 0.820 (raw FTS)</td>
+            <td><strong>Hit@10: 1.000 · Recall@5: 1.000 · MRR@10: 1.000 (p50: 218.9ms)</strong></td>
+            <td>
+              <span class="pill emerald">LIVE · VERIFIED</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Keep automated in 2h Horizon cadence; add semantic drift alerts if Hit@10 drops below 0.96</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="mono">EXP-02</strong>: <strong>10-Organization GitHub Federation &amp; Visibility Parity Gate</strong>
+              <div class="card-meta">scripts/org-federation-audit.mjs</div>
+            </td>
+            <td>
+              <span class="pill violet">Estate Governance</span>
+              <div class="card-meta" style="margin-top:4px;">Antigravity + Architect</div>
+            </td>
+            <td style="color:var(--ink-secondary);">Fragmented orgs, missing .github repos, unmapped local checkouts</td>
+            <td><strong>10/10 Orgs standardized · 71/71 local repos wired (origin + org) · 0 visibility leaks</strong></td>
+            <td>
+              <span class="pill emerald">LIVE · VERIFIED</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Automate weekly drift verification in 1w Horizon cadence + GitHub Actions org sync</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="mono">EXP-03</strong>: <strong>Multi-Horizon Autonomous Cadence (2h Tactical / 12h Dreaming / 1w Audit)</strong>
+              <div class="card-meta">scripts/horizon-test-runner.mjs</div>
+            </td>
+            <td>
+              <span class="pill violet">Autonomous Operations</span>
+              <div class="card-meta" style="margin-top:4px;">Antigravity + Queen</div>
+            </td>
+            <td style="color:var(--ink-secondary);">159-day vault staleness · Gateway :5200 offline · Dreaming stalled</td>
+            <td><strong>0d vault staleness · Gateway :5200 auto-healed · 2h/12h/1w Windows Tasks LastTaskResult=0</strong></td>
+            <td>
+              <span class="pill emerald">LIVE · VERIFIED</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Retire 9 legacy duplicate failing Windows tasks into the unified Horizon runner</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="mono">EXP-04</strong>: <strong>Headroom Context Compression + Anthropic/OpenAI Prompt Caching</strong>
+              <div class="card-meta">skills/headroom/SKILL.md</div>
+            </td>
+            <td>
+              <span class="pill violet">Cost &amp; Context Efficiency</span>
+              <div class="card-meta" style="margin-top:4px;">Claude Code + Healer</div>
+            </td>
+            <td style="color:var(--ink-secondary);">Uncompressed tool logs &amp; repeated system prompt token burn</td>
+            <td><strong>Headroom skill &amp; cache boundaries designed; target 55% token reduction</strong></td>
+            <td>
+              <span class="pill gold">READY TO DEPLOY</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Enable Headroom MCP proxy on large grep/log outputs and pin Band-A prefix for 90% cache read discount</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="mono">EXP-05</strong>: <strong>Cloudflare Edge Bridge (Local &lt;-&gt; Cloud Queue &amp; Receipt Bus)</strong>
+              <div class="card-meta">docs/architecture/starlight-local-cloud-agentic-os-masterplan-2026-10-17.md</div>
+            </td>
+            <td>
+              <span class="pill violet">Hybrid Cloud Substrate</span>
+              <div class="card-meta" style="margin-top:4px;">Architect + Codex</div>
+            </td>
+            <td style="color:var(--ink-secondary);">Local stdio bridge unreachable by Railway, n8n, or Claude Cloud routines</td>
+            <td><strong>Architecture spec complete (HMAC-signed HTTPS Worker + Durable Object)</strong></td>
+            <td>
+              <span class="pill gold">NEXT WAVE PRIORITY</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Deploy starlight-edge-bridge Worker and connect StarlightHorizon2h to pull cloud receipts</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="mono">EXP-06</strong>: <strong>Cross-Harness OpenTelemetry &amp; Langfuse Eval Scoreboard</strong>
+              <div class="card-meta">C:/Users/frank/.starlight/telemetry/</div>
+            </td>
+            <td>
+              <span class="pill violet">Observability &amp; Evals</span>
+              <div class="card-meta" style="margin-top:4px;">Sentinel + Prime</div>
+            </td>
+            <td style="color:var(--ink-secondary);">Per-harness isolated JSONL transcripts without unified cost/eval join</td>
+            <td><strong>Horizon JSONL telemetry active (.starlight/telemetry/horizon-*.jsonl)</strong></td>
+            <td>
+              <span class="pill gold">NEXT WAVE PRIORITY</span>
+              <div style="font-size:12px;color:var(--ink-secondary);margin-top:4px;">Stream Horizon JSONL + harness session receipts into unified cost &amp; eval ledger</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PANEL 5: OPERATOR PLAYBOOK & NEXT PROMPTS -->
+  <section class="tab-panel" id="panel-playbook" role="tabpanel" aria-labelledby="tab-playbook">
+    <div class="section-head">
+      <div>
+        <h2>Operator Slash-Command &amp; Automation Playbook</h2>
+        <p>When to run which slash command or CLI script, and which agent leads each cadence.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom: 28px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Cadence / Trigger Moment</th>
+            <th>Slash Command</th>
+            <th>Deterministic CLI / Automation Command</th>
+            <th>Responsible Lead</th>
+            <th>What It Executes</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td><strong>Morning Boot (08:00)</strong></td>
+            <td><span class="pill gold">/dawn</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">node C:/Users/frank/starlight/tools/gen-systems-map.mjs &amp;&amp; node C:/Users/frank/starlight/tools/bake-planes-board.mjs</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="node C:/Users/frank/starlight/tools/gen-systems-map.mjs &amp;&amp; node C:/Users/frank/starlight/tools/bake-planes-board.mjs">Copy CLI</button>
+            </td>
+            <td class="mono">Concierge + Queen</td>
+            <td>Synthesizes overnight 12h Dreaming insights, active worktree lanes, system health, and top 3 priorities for the day.</td>
+          </tr>
+          <tr>
+            <td><strong>Before Any New Slice</strong></td>
+            <td><span class="pill gold">/search-first</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">python C:/Users/frank/AppData/Local/hermes/scripts/starlight_workspace_bootstrap.py --match &lt;kw&gt; --gh</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="python C:/Users/frank/AppData/Local/hermes/scripts/starlight_workspace_bootstrap.py --match &lt;kw&gt; --gh">Copy CLI</button>
+            </td>
+            <td class="mono">Hermes + Architect</td>
+            <td>Enforces the 4-fact git bootstrap check (path, toplevel, origin, branch), claims an ops-guard lease, and recalls vault decisions.</td>
+          </tr>
+          <tr>
+            <td><strong>Every 2 Hours (Automated + On-Demand)</strong></td>
+            <td><span class="pill gold">/sis recent</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">node scripts/horizon-test-runner.mjs --horizon 2h</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="node scripts/horizon-test-runner.mjs --horizon 2h">Copy CLI</button>
+            </td>
+            <td class="mono">StarlightHorizon2h Task + Sage</td>
+            <td>Auto-heals SisGatewayDaemon (:5200), compiles 1,106 sovereign memory atoms, and verifies Eval-50 Hit@10 = 1.000.</td>
+          </tr>
+          <tr>
+            <td><strong>Complex Feature / Multi-File Build</strong></td>
+            <td><span class="pill gold">/goal or /ultrawork</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">git worktree add C:/Users/frank/starlight/worktrees/&lt;scope&gt; -b agent/&lt;harness&gt;/&lt;scope&gt;</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="git worktree add C:/Users/frank/starlight/worktrees/&lt;scope&gt; -b agent/&lt;harness&gt;/&lt;scope&gt;">Copy CLI</button>
+            </td>
+            <td class="mono">Orchestrator + Fire/Crown Gate Swarm</td>
+            <td>Runs an autonomous, self-verifying implementation loop in an isolated git worktree until all tests and gates pass.</td>
+          </tr>
+          <tr>
+            <td><strong>Before Merging Any Consequential PR</strong></td>
+            <td><span class="pill gold">/santa-method + /starlight-board</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">node --test tests/org-federation-audit.test.mjs tests/horizon-test-runner.test.mjs</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="node --test tests/org-federation-audit.test.mjs tests/horizon-test-runner.test.mjs">Copy CLI</button>
+            </td>
+            <td class="mono">Sentinel + Adversarial Reviewer + Board</td>
+            <td>Two independent reviewers critique the exact revision against product-outcome-quality.md and SIP governance invariants.</td>
+          </tr>
+          <tr>
+            <td><strong>Every 12 Hours / End of Day</strong></td>
+            <td><span class="pill gold">/eod + /handover</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">node scripts/horizon-test-runner.mjs --horizon 12h</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="node scripts/horizon-test-runner.mjs --horizon 12h">Copy CLI</button>
+            </td>
+            <td class="mono">StarlightHorizon12h Task + Chronicle</td>
+            <td>Runs Dreaming consolidation, checks 90-day temporal decay, verifies 10-Org remote parity, and writes hub handover.</td>
+          </tr>
+          <tr>
+            <td><strong>Weekly / Sunday Seventh-Day Cadence</strong></td>
+            <td><span class="pill gold">/sunday (or /palace)</span></td>
+            <td>
+              <code class="mono" style="font-size:11.5px;color:var(--cyan);">node scripts/horizon-test-runner.mjs --horizon 1w</code>
+              <button class="btn-action copy-btn" type="button" style="padding:2px 8px;font-size:10.5px;margin-top:4px;" data-copy="node scripts/horizon-test-runner.mjs --horizon 1w">Copy CLI</button>
+            </td>
+            <td class="mono">StarlightHorizon1w Task + Palace Architect</td>
+            <td>Full estate audit: 64 Windows tasks, n8n flows, 10 GitHub Orgs, memory compounding review, and next-week thesis.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>Ready-to-Run Next Prompts (Copy &amp; Dispatch)</h2>
+        <p>The 5 concrete execution slices to complete the Local+Cloud Agentic OS roadmap.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="pill emerald">PROMPT-01</span>
+            <span class="card-title" style="margin-left:6px;">Wave 1: Consolidate the 9 Legacy Failing Scheduled Tasks &amp; Unify Cost Telemetry</span>
+            <div class="card-meta" style="margin-top:4px;">Target Harness: <strong>Antigravity or Claude Code</strong> · Repo: <code>C:/Users/frank/starlight + Starlight-Intelligence-System</code></div>
+          </div>
+          <button class="btn-action copy-btn" type="button" data-copy="Run a surgical cleanup of the 9 legacy failing Windows Scheduled Tasks surfaced by StarlightHorizon1w (Starlight-GbrainWatchdog, StarlightCostCollect, StarlightDreaming, StarlightFleetPulse, StarlightOpenRouterSpend, StarlightQueenProbe2h/12h/Week, StarlightTaskHealthWatch). Since StarlightHorizon2h, StarlightHorizon12h, and StarlightHorizon1w now execute Dreaming, Gateway auto-heal, Eval-50, and Task auditing with LastTaskResult=0, re-point or retire the superseded tasks, fix the OpenRouter/Cost collector script so it writes to C:/Users/frank/.starlight/telemetry/cost-ledger.jsonl, and verify 0 failing ready tasks in horizon-1w-latest.json.">Copy Prompt</button>
+        </div>
+        <div class="prompt-box">Run a surgical cleanup of the 9 legacy failing Windows Scheduled Tasks surfaced by StarlightHorizon1w (Starlight-GbrainWatchdog, StarlightCostCollect, StarlightDreaming, StarlightFleetPulse, StarlightOpenRouterSpend, StarlightQueenProbe2h/12h/Week, StarlightTaskHealthWatch). Since StarlightHorizon2h, StarlightHorizon12h, and StarlightHorizon1w now execute Dreaming, Gateway auto-heal, Eval-50, and Task auditing with LastTaskResult=0, re-point or retire the superseded tasks, fix the OpenRouter/Cost collector script so it writes to C:/Users/frank/.starlight/telemetry/cost-ledger.jsonl, and verify 0 failing ready tasks in horizon-1w-latest.json.</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="pill emerald">PROMPT-02</span>
+            <span class="card-title" style="margin-left:6px;">Wave 2: Build the Cloudflare Edge Bridge (Local &lt;-&gt; Cloud Queue &amp; Receipt Bus)</span>
+            <div class="card-meta" style="margin-top:4px;">Target Harness: <strong>Claude Code or Codex</strong> · Repo: <code>Starlight-Intelligence-System (or starlight-command-center)</code></div>
+          </div>
+          <button class="btn-action copy-btn" type="button" data-copy="Implement the Starlight Cloud-to-Local Edge Bridge so cloud runtimes (Railway n8n, Claude Cloud Routines, Codex Cloud, Vercel webhooks) can safely emit task receipts and heartbeats back to the local estate. Create a lightweight Cloudflare Worker + Durable Object (or Vercel KV queue endpoint) with HMAC-SHA256 bearer verification, and add a pull-sync step into scripts/horizon-test-runner.mjs (2h cadence) that drains verified cloud receipts into C:/Users/frank/starlight/logs/heartbeats/ and C:/Users/frank/starlight/queen/inbox/.">Copy Prompt</button>
+        </div>
+        <div class="prompt-box">Implement the Starlight Cloud-to-Local Edge Bridge so cloud runtimes (Railway n8n, Claude Cloud Routines, Codex Cloud, Vercel webhooks) can safely emit task receipts and heartbeats back to the local estate. Create a lightweight Cloudflare Worker + Durable Object (or Vercel KV queue endpoint) with HMAC-SHA256 bearer verification, and add a pull-sync step into scripts/horizon-test-runner.mjs (2h cadence) that drains verified cloud receipts into C:/Users/frank/starlight/logs/heartbeats/ and C:/Users/frank/starlight/queen/inbox/.</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="pill emerald">PROMPT-03</span>
+            <span class="card-title" style="margin-left:6px;">Wave 3: Wire Headroom Context Compression &amp; Prompt Caching Across Harnesses</span>
+            <div class="card-meta" style="margin-top:4px;">Target Harness: <strong>Claude Code</strong> · Repo: <code>Starlight-Intelligence-System + claude-code-config</code></div>
+          </div>
+          <button class="btn-action copy-btn" type="button" data-copy="Activate the Headroom context compression layer and deterministic Prompt Caching across our local and API harnesses. Configure SisGatewayDaemon (:5200) to expose a /v1/context/compress endpoint and trace token savings in C:/Users/frank/.starlight/telemetry/horizon-2h.jsonl. Ensure static Band-A and vault prefixes are ordered first for 90% Anthropic/OpenAI prompt cache read discounts.">Copy Prompt</button>
+        </div>
+        <div class="prompt-box">Activate the Headroom context compression layer and deterministic Prompt Caching across our local and API harnesses. Configure SisGatewayDaemon (:5200) to expose a /v1/context/compress endpoint and trace token savings in C:/Users/frank/.starlight/telemetry/horizon-2h.jsonl. Ensure static Band-A and vault prefixes are ordered first for 90% Anthropic/OpenAI prompt cache read discounts.</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="pill emerald">PROMPT-04</span>
+            <span class="card-title" style="margin-left:6px;">Wave 4: Land Open PRs (#451 SIS, #275 agentic-ops, #362 agentic-ops-hub) &amp; Sync Org Remotes</span>
+            <div class="card-meta" style="margin-top:4px;">Target Harness: <strong>Claude Code or Antigravity</strong> · Repo: <code>Starlight-Intelligence-System + agentic-ops + agentic-ops-hub</code></div>
+          </div>
+          <button class="btn-action copy-btn" type="button" data-copy="Review and merge ready PRs #451 (Starlight-Intelligence-System), #275 (agentic-ops), and #362 (agentic-ops-hub) after verifying all unit tests and horizon gates pass. Then run node scripts/org-federation-audit.mjs --verify-remote to push main to both origin (frankxai/*) and org (&lt;Org&gt;/*) remotes across the updated flagship repositories.">Copy Prompt</button>
+        </div>
+        <div class="prompt-box">Review and merge ready PRs #451 (Starlight-Intelligence-System), #275 (agentic-ops), and #362 (agentic-ops-hub) after verifying all unit tests and horizon gates pass. Then run node scripts/org-federation-audit.mjs --verify-remote to push main to both origin (frankxai/*) and org (&lt;Org&gt;/*) remotes across the updated flagship repositories.</div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="pill emerald">PROMPT-05</span>
+            <span class="card-title" style="margin-left:6px;">Wave 5: Live Observatory Integration (Mount /horizon &amp; /federation in Starlight Command Center App)</span>
+            <div class="card-meta" style="margin-top:4px;">Target Harness: <strong>Codex or Claude Code</strong> · Repo: <code>C:/Users/frank/starlight/repos/starlight-Command-Center</code></div>
+          </div>
+          <button class="btn-action copy-btn" type="button" data-copy="In starlight-Command-Center/apps/observatory (Next.js port 4321), add an API route /api/horizon that reads C:/Users/frank/.starlight/reports/horizon-{2h,12h,1w}-latest.json and scripts/org-federation-audit.mjs data, and wire a live 'Horizon &amp; 10-Org Federation' tab into the Electron/Next.js Observatory so port 4321 and our standalone HTML5 Command Center share the exact same live schema.">Copy Prompt</button>
+        </div>
+        <div class="prompt-box">In starlight-Command-Center/apps/observatory (Next.js port 4321), add an API route /api/horizon that reads C:/Users/frank/.starlight/reports/horizon-{2h,12h,1w}-latest.json and scripts/org-federation-audit.mjs data, and wire a live 'Horizon &amp; 10-Org Federation' tab into the Electron/Next.js Observatory so port 4321 and our standalone HTML5 Command Center share the exact same live schema.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Generated deterministically by <code>scripts/build-unified-command-center.mjs</code> · 2026-10-17T19:08:25.149Z</div>
+    <div>Attestation: <strong>Built on SIP</strong> · Starlight Intelligence Protocol v1.0</div>
+  </footer>
+</div>
+
+<div id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+
+<script id="command-center-data" type="application/json">{"generatedAt":"2026-10-17T19:08:25.149Z","h2":{"horizon":"2h","startedAt":"2026-10-17T19:00:03.108Z","completedAt":"2026-10-17T19:00:15.126Z","gateway":{"alive":true,"port":5200,"pid":34852,"status":"ok","healed":false},"starlightd":{"status":"idle","sweepCount":1,"lastSweepAt":"2026-10-17T19:00:03.266Z"},"sovereignMemory":{"totalAtoms":1106,"vectorBytes":283264,"kgRows":400,"surfaceStatus":"healthy","staleVaults":0,"consolidationAgeDays":0,"notes":[]},"eval50":{"available":true,"atoms":1106,"queries":50,"metrics":{"hit10":1,"recall5":1,"precision10":0.438,"mrr10":1,"latencyMs":{"p50":218.853,"p95":280.726,"max":296.394}},"byClass":{"disambig":{"queries":3,"hit10":1,"recall5":1,"precision10":0.4},"recall":{"queries":43,"hit10":1,"recall5":1,"precision10":0.433},"cross-vault":{"queries":4,"hit10":1,"recall5":1,"precision10":0.525}}},"coordination":{"activeLanes":0,"totalLanes":0,"leaseFiles":161},"attestation":"Built on SIP"},"h12":{"horizon":"12h","startedAt":"2026-10-17T18:13:54.476Z","completedAt":"2026-10-17T18:14:40.927Z","tactical2h":{"gatewayAlive":true,"surfaceStatus":"healthy","eval50Metrics":{"hit10":1,"recall5":1,"precision10":0.438,"mrr10":1,"latencyMs":{"p50":616.62,"p95":1510.419,"max":1660.241}}},"dreaming":{"processedFiles":70,"extractedInsights":119,"contradictions":0,"promotions":4},"temporalDecay":{"halfLifeDays":90,"entriesScanned":152,"belowArchiveThreshold":0},"orgFederation":{"organizationsCount":10,"totalMappedRepos":71,"localPresentCount":71,"localOrgRemoteAlignedCount":71},"attestation":"Built on SIP"},"h1w":{"horizon":"1w","startedAt":"2026-10-17T18:13:54.475Z","completedAt":"2026-10-17T18:14:43.520Z","operational12h":{"horizon":"12h","startedAt":"2026-10-17T18:13:54.476Z","completedAt":"2026-10-17T18:14:40.927Z","tactical2h":{"gatewayAlive":true,"surfaceStatus":"healthy","eval50Metrics":{"hit10":1,"recall5":1,"precision10":0.438,"mrr10":1,"latencyMs":{"p50":616.62,"p95":1510.419,"max":1660.241}}},"dreaming":{"processedFiles":70,"extractedInsights":119,"contradictions":0,"promotions":4},"temporalDecay":{"halfLifeDays":90,"entriesScanned":152,"belowArchiveThreshold":0},"orgFederation":{"organizationsCount":10,"totalMappedRepos":71,"localPresentCount":71,"localOrgRemoteAlignedCount":71},"attestation":"Built on SIP"},"scheduledTasks":{"total":64,"ready":23,"running":3,"disabled":38,"failingReady":[{"name":"Starlight-GbrainWatchdog","lastResult":1},{"name":"StarlightCostCollect","lastResult":1},{"name":"StarlightDreaming","lastResult":1},{"name":"StarlightFleetPulse","lastResult":2147942667},{"name":"StarlightOpenRouterSpend","lastResult":2},{"name":"StarlightQueenProbe12h","lastResult":267011},{"name":"StarlightQueenProbe2h","lastResult":267011},{"name":"StarlightQueenProbeWeek","lastResult":267011},{"name":"StarlightTaskHealthWatch","lastResult":1}]},"n8nWorkflowPresent":true,"attestation":"Built on SIP"},"sysGraphSummary":{"planes":{"local-task":45,"hermes-cron":61,"n8n":46,"railway-project":7,"railway-service":36,"vercel-project":50,"registered-property":26,"claude-scheduled-task-retired":6,"claude-cloud-routine":13,"codex-automation":5,"loop-fleet":34,"agent-corps":20,"queue":2,"gate":6,"registry":10,"heartbeat":74},"windows":{"total":45,"disabled":4,"live":12,"contradictions":[],"staleBindings":["StarlightAgentForge"],"phantom":1,"terminatedLastRun":23,"failing":["StarlightAgentWatchdog (terminated-0x41306)","StarlightAPIKeyMonitor (terminated-0x41306)","StarlightBuiltToday (terminated-0x41306)","StarlightCrossRepoIndexer (terminated-0x41306)","StarlightDailyObservability (terminated-0x41306)","StarlightDreaming (terminated-0x41306)","StarlightLoopFleet (terminated-0x41306)","StarlightMachineSentinel (terminated-0x41306)","StarlightPortfolioAudit (terminated-0x41306)","StarlightPropertyPulse (terminated-0x41306)","StarlightScoreboard (terminated-0x41306)","StarlightStorageIntelligence (terminated-0x41306)","StarlightStorageReaper (file-not-found-0x80070002)","StarlightSubstrateBackup (terminated-0x41306)","StarlightTelemetryPulse (terminated-0x41306)","StarlightToolPlaneWatchdog (file-not-found-0x80070002)","StarlightWikiCompile (terminated-0x41306)"],"heartbeatFreshButLastRunFailed":["StarlightGitopsAutopilot (terminated-0x41306, hb 46.5h)","StarlightHikariFinishLine (terminated-0x41306, hb 44.8h)","StarlightHikaroRefute (terminated-0x41306, hb 44.3h)","StarlightHumanGate (terminated-0x41306, hb 46.9h)","StarlightIzumiCommit (terminated-0x41306, hb 32.1h)","StarlightKanameDecisionSheet (terminated-0x41306, hb 43.7h)","StarlightQueenWorkgen (terminated-0x41306, hb 47.1h)"],"neverRan":[],"ranOkNoHeartbeat":["StarlightSecretScan","StarlightSystemsMap"],"ranOkHeartbeatStale":["StarlightSearchReaper (5.0h)","StarlightTaskHealthWatch (30.6h)"]},"hermes":{"total":61,"enabled":31,"byJobState":{"scheduled":31,"paused":5,"completed":25},"planeNewestRunAgeH":4.8,"planeSecondNewestRunAgeH":5.2,"insideTolerance":6,"parseable":31,"planeStalled":true,"live":0,"runningOnRecordOnly":["daily-swarm-evolution (cron 20 9 * * *, last 7.1h ago)","awesome-lists-monthly-research-pulse (cron 30 10 1 * *, last 5.9h ago)","daily-arcanea-world-expansion (cron 0 9 * * *, last 5.2h ago)","Time OS weekly swarm (cron 0 17 * * 0, last 3.2d ago)","weekly-agent-lane-prune-fail-closed (cron 30 11 * * 0, last 3.8d ago)"],"notRunning":["daily-velora-forge-fitness-report (cron 20 6 * * *, last 4.0d ago)","daily-backup-and-continuity (cron 0 2 * * *, last 4.2d ago)","gitops-sync-starlight-command-center (cron 0 6 * * *, last 4.0d ago)","overnight-queen-driver (cron 0 23 * * *, last 3.2d ago)","daily-gitops-hygiene-report (cron 0 7 * * *, last 3.9d ago)","mid-day-queen-pulse (cron 0 14 * * *, last 5.6d ago)","workspace-bootstrap-compliance (cron 20 7 * * *, last 3.9d ago)","weekly-skill-portfolio-ops (cron 30 11 * * 1, last 16.8d ago)","swarm-bus-poll-yogabook (cron */15 * * * *, last 3.2d ago)","session-project-auto-rehome (cron 0 */3 * * *, last 3.2d ago)","channel-ops-watchdog (every 30m, last 3.2d ago)","daily-codex-terra-channel-ops (cron 30 8 * * *, last 3.9d ago)","Time OS evening close (cron 0 21 * * *, last 3.2d ago)","book-c940-decision-brief (cron 45 7,19 * * *, last 3.2d ago)","storage-free-watchdog (cron 0 * * * *, last 3.2d ago)","control-plane-upstream-promotion-gates (cron 15 11 * * *, last 3.8d ago)","daily-git-lane-health (cron 15 7 * * *, last 3.9d ago)","observatory-collector-enrich-yogabook (cron */15 * * * *, last 3.2d ago)","daily-starlight-cockpit-swarm (cron 0 8,20 * * *, last 3.2d ago)","usage-capacity-snapshot (every 60m, last 3.2d ago)","estate-selfheal-hourly (every 30m, last 3.2d ago)","industrial-factory-pulse (every 360m, last 3.2d ago)","night-capacity-governor (every 5m, last 3.2d ago)","frontend-domain-canary (every 60m, last 3.2d ago)","frontend-visual-critic-four-doors (cron 45 6 * * *, last 4.0d ago)"],"cadenceUnparsed":[],"lastStatusNotOk":[],"heartbeatOrphaned":[],"completedOneShots":[{"id":"hermes:99357e7a0277","hermesId":"99357e7a0277","name":"starlight-queen-10h-capacity-watch-20260809","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 15m","cadenceMin":15,"slotsMissed":2360,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-09T16:01:31.177130+02:00","lastRunAgeH":590.1,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-09T04:59:25.251059+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:2aed2822c473","hermesId":"2aed2822c473","name":"Flagship GitHub overnight consolidation worker 2026-08-09","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 45m","cadenceMin":45,"slotsMissed":790,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-09T12:54:37.511821+02:00","lastRunAgeH":593.2,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-09T05:18:32.977072+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:18520953b2aa","hermesId":"18520953b2aa","name":"frankx-commerce-462-overnight-controller","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 120m","cadenceMin":120,"slotsMissed":271,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-11T15:48:48.095123+02:00","lastRunAgeH":542.3,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-11T06:07:58.315614+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:aaa37fc36bb4","hermesId":"aaa37fc36bb4","name":"fable5-blitzscale-production-recovery-20260814","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 60m","cadenceMin":60,"slotsMissed":473,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-14T13:00:06.720565+02:00","lastRunAgeH":473.1,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-14T04:42:17.478015+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:d8255d02acf3","hermesId":"d8255d02acf3","name":"sleep-wave-7h-railway-platform-20260815","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":299,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-15T13:21:04.914343+02:00","lastRunAgeH":448.7,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-15T04:50:37.958855+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:f2495dcfa05a","hermesId":"f2495dcfa05a","name":"queen-prompt-delivery-recovery-20260815","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 120m","cadenceMin":120,"slotsMissed":226,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-15T09:28:11.977968+02:00","lastRunAgeH":452.6,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-15T04:59:03.746642+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:2b254ea71822","hermesId":"2b254ea71822","name":"founder-registry-reconcile-7h-20260815","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 60m","cadenceMin":60,"slotsMissed":448,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-15T13:48:40.355751+02:00","lastRunAgeH":448.3,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-15T05:02:42.714759+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:43b04ac6c81b","hermesId":"43b04ac6c81b","name":"all-agent-reflection-night-20260816","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":287,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-16T06:38:52.874306+02:00","lastRunAgeH":431.4,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-16T03:10:51.252191+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:1816a40b41a8","hermesId":"1816a40b41a8","name":"agent-knowledge-foundation-l99-driver-20260816","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 60m","cadenceMin":60,"slotsMissed":426,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-16T11:53:37.438677+02:00","lastRunAgeH":426.2,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-16T05:02:10.756364+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:b1bdeea6ef8a","hermesId":"b1bdeea6ef8a","name":"queen-3h-absence-driver-20260817","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 45m","cadenceMin":45,"slotsMissed":528,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-17T17:34:46.437688+02:00","lastRunAgeH":396.5,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-17T15:03:38.967073+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:69c87d2bb1c7","hermesId":"69c87d2bb1c7","name":"blitz-jp-7h-lead-20260819","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":237,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-19T09:57:15.016522+02:00","lastRunAgeH":356.1,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-19T02:12:34.667417+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:aabb099c258c","hermesId":"aabb099c258c","name":"queen-7h-gitops-tick-20260819","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":238,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-19T09:04:01.832524+02:00","lastRunAgeH":357,"lastStatus":"ok","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-19T02:38:40.082125+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:a65d36a50d42","hermesId":"a65d36a50d42","name":"domain-queen-mesh-tick-20260820","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":218,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-20T14:36:27.036863+02:00","lastRunAgeH":327.5,"lastStatus":"error","failureStreak":null,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-20T02:30:55.398850+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:930574862ee9","hermesId":"930574862ee9","name":"quality-eval-loop-driver-20260821","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":197,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-21T21:59:16.116561+02:00","lastRunAgeH":296.1,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-21T02:51:37.379871+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:467b3cf8c449","hermesId":"467b3cf8c449","name":"24h-coding-agents-lead-20260822","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 120m","cadenceMin":120,"slotsMissed":131,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-23T07:08:23.713927+02:00","lastRunAgeH":262.9,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-22T01:29:26.383245+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:36dac2857ada","hermesId":"36dac2857ada","name":"12h-product-factory-20260822","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 120m","cadenceMin":120,"slotsMissed":134,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-23T00:24:32.382354+02:00","lastRunAgeH":269.7,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-22T09:19:17.962814+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:1920dddb4bf5","hermesId":"1920dddb4bf5","name":"12h-best-state-driver-20260822","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"cron 0 13,15,17,19,21 * * *","cadenceMin":null,"slotsMissed":null,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-22T21:11:16.709710+02:00","lastRunAgeH":272.9,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-22T10:51:09.513039+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:6f2f912b5253","hermesId":"6f2f912b5253","name":"8h-firstrun-factory-20260823","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":172,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-23T12:00:42.827876+02:00","lastRunAgeH":258.1,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-23T03:03:18.177574+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:815db23cb80b","hermesId":"815db23cb80b","name":"8h-autonomous-lead-20260823","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":172,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-23T12:03:46.719406+02:00","lastRunAgeH":258,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-23T03:10:22.004227+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:3776ddf94f8d","hermesId":"3776ddf94f8d","name":"ai-architect-8h-driver","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 120m","cadenceMin":120,"slotsMissed":128,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-23T12:10:22.057857+02:00","lastRunAgeH":257.9,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-23T03:17:01.384130+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:988778dffc0b","hermesId":"988778dffc0b","name":"4h-session-heal-driver-20260827","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 60m","cadenceMin":60,"slotsMissed":154,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-27T19:23:29.578305+02:00","lastRunAgeH":154.7,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-27T16:04:20.267371+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:873eac3cf006","hermesId":"873eac3cf006","name":"4h-session-heal-handoff-20260827","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"once 2026-08-27","cadenceMin":null,"slotsMissed":null,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-27T20:20:51.625090+02:00","lastRunAgeH":153.7,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-27T16:04:35.903031+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:ca99b699a6ab","hermesId":"ca99b699a6ab","name":"8h-godmode-lead-20260827","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"every 90m","cadenceMin":90,"slotsMissed":95,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-28T06:22:12.349351+02:00","lastRunAgeH":143.7,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-27T21:46:32.818468+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"},{"id":"hermes:d57c1a6e46bd","hermesId":"d57c1a6e46bd","name":"8h-godmode-handoff-20260828","plane":"hermes-cron","host":"yogabook","owner":"hermes","enabled":false,"cadence":"once 2026-08-28","cadenceMin":null,"slotsMissed":null,"heartbeat":null,"heartbeatAgeH":null,"lastObserved":"2026-08-28T05:49:20.233857+02:00","lastRunAgeH":144.3,"lastStatus":"ok","failureStreak":0,"jobState":"completed","pausedReason":null,"createdAt":"2026-08-27T21:46:45.009329+02:00","state":"completed","oneShotDriver":true,"ssot":"ops/fleet/FLEET.md § Cron fleet"}],"pausedDrivers":["night-heal-evolve-handoff-20260822 (no reason recorded)"]},"n8n":{"total":46,"active":27,"inactiveBeforeApril":[{"id":"n8n:C0DzEoEHCyh2nutu","name":"FrankX — Product Launch Orchestrator (Claude Swarm)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:VUM3vdQeIwYkjtHt","name":"FrankX — Subscriber Growth Monitor (Weekly)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:ASTFlB8nK7SXh8Qu","name":"FrankX — Daily Content Idea Generator (Claude)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:RpIpv0LIuFJI3p8H","name":"FrankX — Blog Publish → Auto Social (Claude Agent)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:VXVuBweBzR8aUpl8","name":"FrankX — GitHub Activity Monitor (Weekly)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:VrEiYqFLc9WMgv6f","name":"FrankX — Creator Intelligence Swarm (Claude Agents)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-22","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:iiofpKztxKvA13wZ","name":"FrankX — Weekly Newsletter (Thursday 10am)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-21","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:vtjac4qhXmaDU5hQ","name":"FrankX — Stripe Purchase Fulfillment","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-21","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:Efidv5OaPe5uerLP","name":"FrankX — AI Architect Newsletter Engine","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-03-05","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:1oEGJktWo9357uQc","name":"FrankX — Arcanea Video Pipeline","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-28","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:syLlGYHRRJSu2oqs","name":"Arcanean X Story Engine","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-28","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:7PoNOTCaCQubcAK0","name":"FrankX — RSS AI Content Curation","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:z7GX3cbr6ps6IJFI","name":"FrankX — Deep Research Agent (Claude)","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:ftOUGv4YNPzDk49R","name":"FrankX — X + LinkedIn Social Publisher","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:fQBSndbw6r4YhnYn","name":"FrankX — Weekly Model Benchmark","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:nHCMNwe6aJqO29Uu","name":"FrankX — OpenRouter Model Router & Evaluator","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:w7mi39wXYDv0DzEV","name":"FrankX — YouTube Auto-Cross-Publish","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":true,"ssot":"none"},{"id":"n8n:xrPuXJL6iZjBu1GM","name":"FrankX — CoinGecko Portfolio Pulse","plane":"n8n","host":"railway","owner":"n8n","cadence":"1 trigger(s)","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"},{"id":"n8n:ebonv2HC1ctUv6DR","name":"FrankX — Crypto Multi-Timeframe Signals","plane":"n8n","host":"railway","owner":"n8n","cadence":"no trigger","heartbeat":null,"lastObserved":"2026-02-27","state":"inactive","moneyOrSendPath":false,"ssot":"none"}],"inSystemMd":false,"inHealthWatch":false,"heartbeatFiles":0},"railway":{"projects":7,"noServicesListed":["repos (58d46e12-d5a9-4f1e-bd5d-f21226595f08)","repos (c8a3adfc-affa-48f9-9e84-e1465e680d51)"],"duplicateNames":["repos"],"services":36,"agentShaped":["starlight-launchpad/launchpad-operator","perceptive-curiosity/langfuse-worker","perceptive-curiosity/evals-runner","n8n w/workers/hermes-worker","n8n w/workers/Worker"]},"vercel":{"projects":50,"capHit":true,"unlinked":["arcanea-ai-appx","animelegends-arena-al-bench-001","public","starlight-music-studio","agentic-life-os","amsterdam-ai-systems-lab","creator-launch-os","pv-lager-agentic","agentic-gym-os","web","frank","frankx-codex-plugins-team-blog"],"mappedToProperty":24,"mappedViaVercelProject":24,"mappedViaRepo":0,"propertiesCovered":26,"propertiesUncovered":[],"liveCovered":23},"properties":{"total":26,"byStatus":{"live":23,"pending-cutover":3}},"claudeTasksRetired":{"total":6,"enabled":0},"codex":{"total":5,"active":2},"cloudRoutines":{"chains":13,"rows":20,"enabled":["Morning brief (cron 0 6 * * 1-5 (UTC), claude-fable-5, 27 connectors)","Frank morning checklist (cron 57 6 * * * (UTC), claude-sonnet-5, 27 connectors)"],"rearmingChains":["Re-check ops PRs (FrankX#149, SIS#111, skills#27) (8 rows, 7 fires, chain-stopped)"]},"loops":{"total":34,"red":["competitor-radar","content-repurposing","model-tool-release-radar","newsletter-health","plugin-skill-release","preview-deploy-verification"],"staleVsFleet":33,"green":0,"neverRan":1,"noGateCommand":["competitor-radar","content-repurposing","model-tool-release-radar","newsletter-health","preview-deploy-verification"],"fleetTaskState":"failing","fleetLastFire":"2026-09-03T04:39:20","ranSinceFleetFire":0,"planeStalled":true,"newestRun":"2026-09-01T22:42:43.9457601+02:00"},"corps":{"mapped":20,"registered":8,"rendered":68,"byRank":{"exec":5,"corps":3,"steward":12,"other":48},"neverProduced":["corps-design","corps-reliability","exec-cio","steward-memory","steward-music","steward-revenue"],"silent":[]},"heartbeats":{"total":74,"fresh":29,"stale":["heartbeat-built-today.json (2.2d)","heartbeat-content-director.json (2.3d)","heartbeat-daily-backup-continuity.json (4.2d)","heartbeat-excellence-scan.json (3.0d)","heartbeat-npm-registry-truth.json (2.3d)","heartbeat-overnight-queen.json (3.2d)","heartbeat-post-merge-verify.json (5.3d)","heartbeat-pr-closer.json (5.2d)","heartbeat-steward-arcanea.json (5.0d)","heartbeat-steward-content.json (3.6d)","heartbeat-steward-frankx.json (3.6d)","heartbeat-steward-infra.json (3.2d)","heartbeat-steward-partnerships.json (5.0d)","heartbeat-steward-release.json (5.0d)","heartbeat-steward-security.json (3.6d)","heartbeat-steward-skills.json (3.6d)","heartbeat-steward-substrate.json (3.6d)","heartbeat-task-architecture-report.json (3.7d)","heartbeat-task-content-director.json (2.3d)","heartbeat-task-hakari-cost-anomaly.json (2.9d)","heartbeat-task-hakari-roi-review.json (3.5d)","heartbeat-task-izumi-reckoning-prep.json (5.6d)","heartbeat-task-music-release-review.json (6.8d)","heartbeat-task-portfolio-ops-review.json (5.6d)","heartbeat-task-tech-radar.json (6.9d)","heartbeat-telemetry-pulse.json (2.3d)","night-capacity-governor.json (3.2d)","usage-snapshot.json (3.2d)"],"dead":["heartbeat-12h-best-state.json (11.3d)","heartbeat-24h-coding-agents-lead.json (11.8d)","heartbeat-8h-complementary-queen.json (10.8d)","heartbeat-dev-servers.json (20.1d)","heartbeat-hermes-product-os.json (10.9d)","heartbeat-midday-queen-pulse.json (12.7d)","heartbeat-model-arena-daily.json (48.9d)","heartbeat-morning-founder-review.json (31.2d)","heartbeat-pr-digest.json (14.6d)","heartbeat-swarm-bus-poll-yogabook.json (48.8d)"],"orphanTmp":7,"unclaimed":["heartbeat-12h-best-state.json","heartbeat-24h-coding-agents-lead.json","heartbeat-8h-complementary-queen.json","heartbeat-agent-forge.json","heartbeat-bridge.json","heartbeat-dev-servers.json","heartbeat-graph-validation.json","heartbeat-hermes-product-os.json","heartbeat-model-arena-daily.json","heartbeat-newsletter.json","heartbeat-overnight-queen.json","heartbeat-post-merge-verify.json","heartbeat-pr-closer.json","heartbeat-pr-digest.json","heartbeat-repo-secret-sweep.json","heartbeat-systems-map.json","heartbeat-task-content-director.json","heartbeat-task-frontend-excellence-scan.json","heartbeat-task-intel-brief.json","usage-snapshot.json"],"sharedByTwoProducers":[]},"queues":{"bridge":{"completed":4,"pending":8,"in_progress":1},"queenInboxCards":6,"queenHoldFolders":2,"bridgeTransport":"stdio — unreachable from any cloud worker"},"duplicates":[{"cluster":"gitops / autopilot / lane hygiene","planes":["local-task","hermes-cron"],"members":["win:StarlightGitopsAutopilot \"StarlightGitopsAutopilot\" [heartbeat-fresh-but-last-run-failed]","hermes:f58206855f9c \"gitops-sync-starlight-command-center\" [enabled-but-not-running]","hermes:11df3e4a8f9b \"daily-gitops-hygiene-report\" [enabled-but-not-running]","hermes:7f796e4fa185 \"weekly-agent-lane-prune-fail-closed\" [running-on-record-only-but-plane-stalled]","hermes:8082359b3bcd \"daily-git-lane-health\" [enabled-but-not-running]"]},{"cluster":"backup / continuity","planes":["local-task","hermes-cron"],"members":["win:StarlightSubstrateBackup \"StarlightSubstrateBackup\" [failing]","hermes:fa64e9152561 \"daily-backup-and-continuity\" [enabled-but-not-running]"]},{"cluster":"storage / disk watch","planes":["local-task","hermes-cron"],"members":["win:StarlightStorageIntelligence \"StarlightStorageIntelligence\" [failing]","win:StarlightStorageReaper \"StarlightStorageReaper\" [failing]","hermes:038c09c8bd6a \"storage-free-watchdog\" [enabled-but-not-running]"]},{"cluster":"portfolio review / audit","planes":["local-task","hermes-cron","loop-fleet"],"members":["win:StarlightPortfolioAudit \"StarlightPortfolioAudit\" [failing]","win:StarlightPortfolioReviewAgy \"StarlightPortfolioReviewAgy\" [live]","hermes:eea2c13bff35 \"weekly-skill-portfolio-ops\" [enabled-but-not-running]","loop:portfolio-prune \"portfolio-prune\" [stale-vs-fleet]"]},{"cluster":"machine watchdog / sentinel / healthwatch","planes":["local-task","hermes-cron"],"members":["win:StarlightAgentWatchdog \"StarlightAgentWatchdog\" [failing]","win:StarlightMachineSentinel \"StarlightMachineSentinel\" [failing]","win:StarlightTaskHealthWatch \"StarlightTaskHealthWatch\" [ran-ok-heartbeat-stale]","win:StarlightToolPlaneWatchdog \"StarlightToolPlaneWatchdog\" [failing]","hermes:a50fab400041 \"channel-ops-watchdog\" [enabled-but-not-running]","hermes:038c09c8bd6a \"storage-free-watchdog\" [enabled-but-not-running]"]},{"cluster":"music release / catalog","planes":["local-task","n8n"],"members":["win:StarlightMusicReleaseReview \"StarlightMusicReleaseReview\" [live]","n8n:AEalmmG7xGSmq6Wh \"FrankX — Music Catalog Sync\" [active-unverified]","n8n:Qew3SU7Ub4YkeGjI \"FrankX — AI Music Factory v2\" [active-unverified]"]},{"cluster":"cost / usage / capacity","planes":["local-task","hermes-cron","loop-fleet"],"members":["win:StarlightActionsCost \"StarlightActionsCost\" [live]","win:StarlightHakariCostAnomaly \"StarlightHakariCostAnomaly\" [live]","hermes:bc4906e22b41 \"usage-capacity-snapshot\" [enabled-but-not-running]","hermes:8daec8fe1f78 \"night-capacity-governor\" [enabled-but-not-running]","loop:cost-watch \"cost-watch\" [stale-vs-fleet]"]}],"warnings":["WIN_HB binds tasks absent from the scheduler: StarlightAgentForge"]},"organizations":[{"login":"Starlight-Intelligence","displayName":"Starlight Intelligence","website":"https://starlightintelligence.ai","brandId":"sis","governanceMode":"active","repos":[{"name":"starlight-command-center","visibility":"private","primaryOwner":"Starlight-Intelligence"},{"name":"starlight-agent-config","visibility":"private","primaryOwner":"frankxai"},{"name":"starlight-memory","visibility":"private","primaryOwner":"frankxai"},{"name":"starlight-voice","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-technology","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-design-intelligence","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-agent-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-evals","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-android","visibility":"private","primaryOwner":"frankxai"},{"name":"starlightintelligence.ai","visibility":"private","primaryOwner":"frankxai"}],"meta":{"mission":"Core AI operating system, Command Center Observatory, memory engine, voice pack, design intelligence, and evals.","councilLead":"Queen + Prime + Architect","specialistTeam":["starlight-architect","starlight-sentinel","starlight-weaver","starlight-hermes","starlight-sage"],"aiOsLayer":"Layer 1-2: Sovereign Cockpit, Voice & Design System, Eval Harness","vaults":["Strategic ◆","Technical ⬡","Operational ▸"],"skillsAndPlugins":["starlight-intelligence","starlight-queen","visual-qa-gate","brand-voice","agent-quality"],"mcpAndConnectors":["starlight-sis (:5200)","starlight-v0","Linear MCP","GitHub MCP"],"ipAndData":"Starlight Brand Pack v1.0, Command Center Electron/Next.js Observatory, Eval-50 Corpus, Android Kit","contentAndCommunity":"starlightintelligence.ai · Operator Release Notes · Design System Showcases","accessGate":"Branch protection + /starlight-board + SIP Attestation"}},{"login":"Starlight-Intelligence-Systems","displayName":"Starlight Intelligence Systems","website":"https://starlightintelligence.org","brandId":"sis","governanceMode":"active","repos":[{"name":"Starlight-Intelligence-System","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-research-hub","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-knowledge-tree","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-cosmos-engine","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-swarm","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-memory-vault","visibility":"private","primaryOwner":"frankxai"}],"meta":{"mission":"Open sovereign substrate (SIP), multi-agent cognitive architecture, 6 semantic memory vaults, and public research.","councilLead":"Architect + Sage + Prime","specialistTeam":["starlight-sage","starlight-navigator","starlight-hermes","starlight-sentinel"],"aiOsLayer":"Layer 0: Starlight Intelligence Protocol (SIP) + Event-Sourced SQLite/Vector Substrate","vaults":["Strategic ◆","Technical ⬡","Creative ✦","Operational ▸","Wisdom ◎","Horizon ↗"],"skillsAndPlugins":["sis-memory-orchestrator","sip-attest","memory-vault-management","yolo-conductor","santa-method"],"mcpAndConnectors":["mcp-server.js (sis_vault_search, sis_append_entry)","SisGatewayDaemon (:5200)","Syncthing P2P"],"ipAndData":"SIP Specification, 151 Agent Profiles, 89 Skill Rules, 1,106 Sovereign Memory Atoms, Research Papers","contentAndCommunity":"starlightintelligence.org/research/ · Open Protocol Releases · Alliance Federation","accessGate":"Pre-commit substrate symmetry hooks (v75-v79) + /starlight-board"}},{"login":"Arcanea-Labs","displayName":"Arcanea Labs","website":"https://arcanea.ai","brandId":"arcanea","governanceMode":"active","repos":[{"name":"Arcanea","visibility":"public","primaryOwner":"frankxai"},{"name":"arcanea-ai-app","visibility":"public","primaryOwner":"frankxai"},{"name":"arcanea-studio","visibility":"public","primaryOwner":"frankxai"},{"name":"arcanea-ecosystem","visibility":"public","primaryOwner":"frankxai"},{"name":"arcanea-agent-skills","visibility":"private","primaryOwner":"frankxai"},{"name":"arcanea-onchain","visibility":"public","primaryOwner":"frankxai"},{"name":"arcanea-orchestrator","visibility":"public","primaryOwner":"frankxai"},{"name":"AnimeLegends","visibility":"private","primaryOwner":"frankxai"}],"meta":{"mission":"Creative multiverse, Ten Gates progression system, Luminor AI companions, AnimeLegends studio, and onchain lore.","councilLead":"Lumina (Queen) + Weaver + Arcanean Art Director","specialistTeam":["arcanea-story","arcanea-coder","arcanea-reviewer","canon-guardian","anime-storyboarder"],"aiOsLayer":"Creative Worlds & Multimodal Media Pipeline (Ten Gates Framework)","vaults":["Creative ✦","Wisdom ◎","Horizon ↗"],"skillsAndPlugins":["arcanea","canon-check","character-forge","world-forge","anime-character-sheets","suno-ai-mastery"],"mcpAndConnectors":["NanoBanana (nb-image)","Veo Video Pipeline","ElevenLabs Voice","Suno Music Engine"],"ipAndData":"CANON_LOCKED.md, Ten Gates Lore, AnimeLegends Trinity (Akashi, Kage, Mira), NFT & Onchain Contracts","contentAndCommunity":"arcanea.ai · Starbound Crews · Academy Halls · Lore Scrolls & Interactive Fiction","accessGate":"/canon-check + Santa Loop (Fire Gate -> Crown Gate convergence) + CANON_LOCKED read-only rule"}},{"login":"GenCreator-ai","displayName":"GenCreator","website":"https://gencreator.ai","brandId":"gencreator","governanceMode":"active","repos":[{"name":"gencreator.ai","visibility":"private","primaryOwner":"frankxai"},{"name":"GenCreator-OS","visibility":"private","primaryOwner":"frankxai"},{"name":"GenCreator-Studio","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-creator-os","visibility":"public","primaryOwner":"frankxai"},{"name":"creator-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"creator-launch-os","visibility":"public","primaryOwner":"frankxai"},{"name":"suno-mcp-server","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-creator-mcp","visibility":"public","primaryOwner":"frankxai"}],"meta":{"mission":"Agentic Creator OS (ACOS), multi-model studio, music/video/prose production pipelines, and creator monetization.","councilLead":"Envoy + Orchestrator + Creation Engine","specialistTeam":["content-director","music-video-producer","audio-producer","social-strategist","social-visual-director"],"aiOsLayer":"Creator OS & Multi-Channel Production Engine (6-Pillar GenCreator CoE)","vaults":["Creative ✦","Operational ▸","Strategic ◆"],"skillsAndPlugins":["acos","studio","factory","create-music","video-produce","article-creator","music-triage"],"mcpAndConnectors":["suno-mcp-server","starlight-creator-mcp","Postiz (Railway)","Resend","Vercel Blob"],"ipAndData":"845+ Suno Track Catalog, ACOS Plugin Registry, Creator Launch OS Templates, Multi-Platform Workflows","contentAndCommunity":"gencreator.ai · Creator Blueprints · Open Skills & Studio Packs","accessGate":"Waitlist-first gate + BYOK model routing + Zero-Orphan Provenance"}},{"login":"FrankX-AI","displayName":"FrankX","website":"https://frankx.ai","brandId":"frankx","governanceMode":"active","repos":[{"name":"frankx.ai-vercel-website","visibility":"public","primaryOwner":"frankxai"},{"name":"FrankX","visibility":"private","primaryOwner":"frankxai"},{"name":"author-os","visibility":"public","primaryOwner":"frankxai"},{"name":"publishing-house","visibility":"private","primaryOwner":"frankxai"},{"name":"prompt-library","visibility":"public","primaryOwner":"frankxai"},{"name":"claude-skills-library","visibility":"public","primaryOwner":"frankxai"},{"name":"mcp-doctor","visibility":"public","primaryOwner":"frankxai"},{"name":"claude-code-hooks","visibility":"public","primaryOwner":"frankxai"},{"name":"visual-intelligence","visibility":"public","primaryOwner":"frankxai"}],"meta":{"mission":"Personal headquarters of Frank Riemer — AI Architect essays, books, prompt library, and production engineering.","councilLead":"Prime + Frank Brand Editor + Adversarial Reviewer","specialistTeam":["author-team","frank-brand-editor","seo-specialist","visual-intelligence","canary"],"aiOsLayer":"Editorial Publishing House, Book Engine & Flagship Web Surface","vaults":["Strategic ◆","Creative ✦","Wisdom ◎"],"skillsAndPlugins":["frankx-brand","excellence-book-writing","article-excellence","vis-audit","seo-check","product-deploy"],"mcpAndConnectors":["Vercel MCP","Plausible Analytics","Resend Newsletter","Next-Devtools MCP","MCP Doctor"],"ipAndData":"Multi-Book Manuscripts, Prompt Library, Claude Skills Library, Visual Registry (VIS), Metrics Truth Ledger","contentAndCommunity":"frankx.ai · AI Architect Newsletter · Published Books & Technical Deep-Dives","accessGate":"Metrics Truth Rule (metrics/current.json) + Editorial Anti-Slop Gate + Two-Repo Production Deploy"}},{"login":"AI-Architect-Studio","displayName":"AI Architect Studio","website":"https://frankx.ai/ai-architect","brandId":"ai-architect","governanceMode":"active","repos":[{"name":"ai-architect","visibility":"public","primaryOwner":"frankxai"},{"name":"ai-coe","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-architecture-field-guide","visibility":"public","primaryOwner":"frankxai"},{"name":"awesome-ai-coe","visibility":"public","primaryOwner":"frankxai"},{"name":"awesome-agent-operating-systems","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-operating-system-standard","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-ops","visibility":"private","primaryOwner":"frankxai"}],"meta":{"mission":"Enterprise-grade AI Center of Excellence (CoE) blueprints, Agentic OS standards, and operational control plane.","councilLead":"Architect + Sentinel + Navigator","specialistTeam":["starlight-architect","security-auditor","ops-steward","healer"],"aiOsLayer":"Enterprise Architecture Blueprints & Estate Control Plane (agentic-ops)","vaults":["Technical ⬡","Operational ▸","Strategic ◆"],"skillsAndPlugins":["starlight-architect","ai-architecture","ops-health","healer","harnesses","security-auditor"],"mcpAndConnectors":["starlight-department-lab MCP","ops-guard Lease CLI","GitHub Multi-Repo Orchestrator"],"ipAndData":"Agentic OS Standard, AI CoE Field Guide, 10-Org Federation Manifest, Ops-Guard Lease Engine","contentAndCommunity":"frankx.ai/ai-architect · Awesome AI CoE · Awesome Agent Operating Systems","accessGate":"ops-guard worktree lease check + 4-fact git bootstrap contract"}},{"login":"AI-Architect-Academy","displayName":"AI Architect Academy","website":"https://frankx.ai/academy","brandId":"ai-architect","governanceMode":"active","repos":[{"name":"ai-architect-academy","visibility":"public","primaryOwner":"frankxai"},{"name":"starlight-intelligence-academy","visibility":"private","primaryOwner":"frankxai"}],"meta":{"mission":"Cohort-based and self-paced mastery programs teaching builders to architect sovereign AI systems.","councilLead":"Sage + Genius + Concierge","specialistTeam":["learning-architect","workshop-facilitator","practice-evaluator"],"aiOsLayer":"Academy Curriculum, Evaluation Labs & Builder Certification","vaults":["Wisdom ◎","Technical ⬡","Strategic ◆"],"skillsAndPlugins":["workshop-new","workshop-prep","practice-agent-evaluation","feinman-thinking"],"mcpAndConnectors":["starlight-department-lab (get_evaluation_cases, check_evaluation_answers)","Vercel KV Waitlist"],"ipAndData":"30-Day Pillar Syllabus, Cohort Labs, Department Evaluation Cases, Builder Rubrics","contentAndCommunity":"frankx.ai/academy · aiarchitectacademy.com · Student Builder Cohorts","accessGate":"Waitlist-first commercial gate + Oracle separation compliance"}},{"login":"Agentic-Income","displayName":"Agentic Income","website":"https://agenticincome.ai","brandId":"agentic-income","governanceMode":"active","repos":[{"name":"agenticincome","visibility":"private","primaryOwner":"frankxai"},{"name":"agenticpassiveincome","visibility":"private","primaryOwner":"frankxai"},{"name":"awesome-agentic-income","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-income-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"agentic-income-template","visibility":"public","primaryOwner":"frankxai"},{"name":"affiliate-agent-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"awesome-wealth-agent-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"awesome-investor-agent-skills","visibility":"public","primaryOwner":"frankxai"},{"name":"GenInvestor","visibility":"public","primaryOwner":"frankxai"}],"meta":{"mission":"Autonomous wealth research, digital product wedges, affiliate intelligence, and capital allocation frameworks.","councilLead":"Navigator + Business IS + Impact Diligence Analyst","specialistTeam":["investor-research","affiliate-auditor","revenue-modeler","thesis-debater"],"aiOsLayer":"Wealth & Business Intelligence Sub-Stack (Research-Only & Waitlist Wedges)","vaults":["Strategic ◆","Horizon ↗","Operational ▸"],"skillsAndPlugins":["wealth-ops","investor-research","affiliate-audit","template-monetization","weekly-strategy"],"mcpAndConnectors":["Portfolio Snapshot CLI","Vercel KV","Resend"],"ipAndData":"IIS Strategy Theses, Affiliate Catalog, Wealth Agent Skills, Investor Research Graph","contentAndCommunity":"agenticincome.ai · Awesome Agentic Income · Open Wealth Agent Skills","accessGate":"NON-WAIVABLE: Money fails closed. Research-only; zero autonomous money movement."}},{"login":"Life-Commons","displayName":"Life Commons","website":"https://bluelifecommons.org","brandId":"life-commons","governanceMode":"active","repos":[{"name":"blue-life-commons","visibility":"public","primaryOwner":"frankxai"},{"name":"dino-life-commons","visibility":"public","primaryOwner":"frankxai"},{"name":"ocean-intelligence","visibility":"private","primaryOwner":"frankxai"},{"name":"health-intelligence-system","visibility":"public","primaryOwner":"frankxai"},{"name":"mind-intelligence-systems","visibility":"public","primaryOwner":"frankxai"},{"name":"family-intelligence-os","visibility":"public","primaryOwner":"frankxai"},{"name":"family-history-atlas","visibility":"public","primaryOwner":"frankxai"}],"meta":{"mission":"Public-benefit intelligence systems for ocean conservation, paleontology, longevity, mind clarity, and family heritage.","councilLead":"Sage + Embodiment IS + Relational IS","specialistTeam":["marine-intelligence","health-body-substrate","family-tree-archivist","sustainability-researcher"],"aiOsLayer":"Commons & Human Flourishing Sub-Stacks (Ocean, Dino, Health, Mind, Family)","vaults":["Wisdom ◎","Horizon ↗","Creative ✦"],"skillsAndPlugins":["marine-intelligence-contribute","health-body-substrate","family-tree","safety-private-public-split"],"mcpAndConnectors":["Local-First Family Stack","Public Dataset Connectors"],"ipAndData":"Blue Life Commons Atlas, Dino Life Commons, Health & Mind Models, Family History Atlas","contentAndCommunity":"bluelifecommons.org · Open Conservation & Educational Commons","accessGate":"NON-WAIVABLE: Model, never diagnose (no clinical claims). Strict private/public data split."}},{"login":"oci-ai-architects","displayName":"OCI AI Architects","website":"https://github.com/oci-ai-architects","brandId":"oci-community","governanceMode":"reshape-frozen","repos":[{"name":"multi-cloud-ai-architect","visibility":"public","primaryOwner":"oci-ai-architects"},{"name":"claude-code-oci-ai-architect-skills","visibility":"public","primaryOwner":"oci-ai-architects"},{"name":"oci-ai-coe-starter-kit","visibility":"public","primaryOwner":"oci-ai-architects"},{"name":"oci-genai-guides","visibility":"public","primaryOwner":"oci-ai-architects"},{"name":"oci-ai-architect","visibility":"private","primaryOwner":"oci-ai-architects"}],"meta":{"mission":"Community-contributed multi-cloud and OCI generative AI reference architectures and starter kits.","councilLead":"Oracle AI Architect (Scoped Read-Only Community Mode)","specialistTeam":["oci-services-expert","oci-drawio-icon-native","oracle-solution-design"],"aiOsLayer":"External Cloud Architecture Reference Shelf (Reshape-Frozen)","vaults":["Technical ⬡"],"skillsAndPlugins":["oci-drawio-icon-native","oracle-ai-architect","oracle-solution-design"],"mcpAndConnectors":["Read-Only GitHub Remote"],"ipAndData":"Multi-Cloud AI Architect Guides, OCI GenAI Starter Kits (Strictly separated from Arcanea Labs BV)","contentAndCommunity":"github.com/oci-ai-architects · Enterprise Architect Community","accessGate":"RESHAPE-FROZEN: Read-only in estate automation; strict Oracle/BV separation."}}],"localHarnesses":[{"id":"claude-code","name":"Claude Code CLI & Desktop","models":"Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5","costModel":"Max Subscription ($0 marginal) + API Fallback (BYOK)","maxLocalWorkers":"2 Opus / Fable sessions max (Memory Guardian 4 GiB floor)","strengths":"Deep multi-file architecture, /yolo hive conductor, 89 auto-activating skills, adversarial review","contributes":"Primary estate conductor, PR creation, complex refactors, book/editorial prose, Santa Loop Crown Gate","evalsAndTraces":"Transcript JSONL + agent-quality 9-check audit + Eval-50 gate + verification-loop","whenToUse":"Default daily driver for deep engineering, multi-repo orchestration, and high-taste writing","kickoffCloud":"claude --remote \"\u003ctask>\" or trigger claude.ai cloud routines / GitHub Actions @claude"},{"id":"antigravity","name":"Google Antigravity","models":"Gemini 3.1 Pro / Flash + Native Image/Veo","costModel":"Workspace / Pro Subscription ($0 marginal)","maxLocalWorkers":"1 Lead + 3 Subagents (research, self, image-generator)","strengths":"1M+ context window, native reactive background tasks, native schedule tool, NanoBanana/Veo media gen","contributes":"10-Org GitHub federation, sovereign memory compilation, 2h/12h/1w Horizon automation, visual cockpits","evalsAndTraces":"brain/\u003cconv-id>/.system_generated/logs/transcript.jsonl + Horizon JSONL telemetry","whenToUse":"Massive cross-repo migrations, long-context estate sweeps, visual UI/HTML5 cockpits, scheduled horizon loops","kickoffCloud":"Invoke-StarlightHorizonCadence.ps1 / n8n webhook / gcloud run jobs execute"},{"id":"codex","name":"OpenAI Codex CLI & App","models":"GPT-5.4 / Codex-Max / o3","costModel":"ChatGPT Pro Subscription + OpenAI API (Batch 50% off)","maxLocalWorkers":"2 local worktrees + parallel Cloud Sandboxes","strengths":"Surgical code verification, gstack browser QA, deterministic test writing, isolated cloud task sandboxes","contributes":"Independent exact-revision code review, test coverage expansion, parallel bug-fix worktrees","evalsAndTraces":".codex/automations + gstack-benchmark-models + git diff verification","whenToUse":"Second-opinion adversarial engineering review (/gstack-codex), heavy test generation, isolated cloud tasks","kickoffCloud":"codex cloud exec \"\u003cspec>\" (runs in OpenAI cloud container against GitHub repo branch)"},{"id":"hermes","name":"Hermes Agent OS","models":"Multi-Model Router (Claude / Gemini / OpenRouter)","costModel":"Subscription OAuth + OpenRouter metered API","maxLocalWorkers":"1 Desktop daemon + 6 CoE Guardian profiles","strengths":"Isolated profile memory, cron scheduler, deep cross-repo provenance search, 6-Pillar CoE Guardians","contributes":"Morning founder review, workspace bootstrap verification, continuous background provenance scans","evalsAndTraces":"AppData/Local/hermes/cron/jobs.json + logs/heartbeats/heartbeat-*.json","whenToUse":"Standing background crons, isolated persona research, workspace bootstrap checks","kickoffCloud":"Hermes MCP bridge -> Railway / n8n webhook trigger"},{"id":"opencode-omo","name":"OpenCode / oh-my-openagent (OmO)","models":"Heterogeneous (Kimi K2.6, GPT-5.4, Claude, DeepSeek)","costModel":"Direct API / OpenRouter (Pay-per-token)","maxLocalWorkers":"Team Mode (up to 11 specialized role workers)","strengths":"Boulder state tracking (.omo/boulder.json), heterogeneous model arena, low-cost bulk refactoring","contributes":"Cross-model benchmarking, bulk mechanical migrations, fallback harness when primary quotas cap","evalsAndTraces":".omo/boulder.json + OpenRouter spend telemetry","whenToUse":"Heterogeneous model experiments, cost-optimized bulk code transforms","kickoffCloud":"OpenRouter API batch / background worker dispatch"},{"id":"gemini-cli","name":"Gemini CLI","models":"Gemini 3.1 Pro / Flash-Lite","costModel":"Google AI Pro / Free Tier + Vertex API","maxLocalWorkers":"2 fast CLI workers","strengths":"Ultra-fast 1M token repo ingestion, rapid shift/flow gate scanning, low-RAM footprint","contributes":"Fast codebase indexing, large log/transcript summarization, second-source fact checking","evalsAndTraces":"GEMINI.md contract + local session logs","whenToUse":"Summarizing huge transcripts, scanning 50+ files before editing, lightweight terminal queries","kickoffCloud":"Vertex AI Batch Prediction / Cloud Run trigger"},{"id":"grok-build","name":"Grok Build (xAI)","models":"Grok 4 / Grok-Code","costModel":"X Premium+ / xAI API","maxLocalWorkers":"1 worktree worker via grok-harness-adapter","strengths":"Real-time X/social pulse, rapid UI/game prototyping, contrarian thesis stress-testing","contributes":"Social vibe tracking, real-time AI lab release radar, rapid creative prototypes","evalsAndTraces":"grok-harness-adapter logs + branch diff gates","whenToUse":"Social/cultural trend analysis, real-time X intelligence, rapid experimental prototypes","kickoffCloud":"xAI API async completion"}],"cloudPlatforms":[{"id":"claude-cloud","name":"Claude Cloud Routines & Anthropic API","category":"Frontier Cloud Agent & LLM","costTier":"Included in Max + API (Prompt Caching 90% read discount, Batch 50% discount)","currentState":"13 logical cloud routines mapped; 2 noisy self-rearming reminder chains stopped","role":"Scheduled cloud routines (survives laptop closed), Prompt-Cached system prompts, Extended Thinking & Computer Use beta","howToTrigger":"claude.ai/routines schedule OR Anthropic Messages/Batch API with anthropic-beta: prompt-caching","gapToSolve":"Connect Claude Cloud routines to an HTTPS Cloudflare Worker inbox so cloud runs write back to the estate ledger"},{"id":"codex-cloud","name":"OpenAI Codex Cloud & Responses/Batch API","category":"Cloud Sandboxed SWE Fleet","costTier":"Included in Pro + API Batch (50% discount for async 24h evals)","currentState":"Active for isolated repo PR tasks","role":"Zero-local-RAM parallel SWE containers that clone GitHub org repos, run tests, and open draft PRs autonomously","howToTrigger":"codex cloud run --repo \u003cOrg>/\u003cRepo> \"\u003cprompt>\"","gapToSolve":"Pre-warm environment setup scripts in all 10 GitHub Orgs so Codex Cloud containers boot in \u003c15s"},{"id":"google-cloud-vertex","name":"Google Cloud / Vertex AI / Veo / NanoBanana","category":"Multimodal & Long-Context Cloud","costTier":"Workspace / Cloud Credits + Pay-per-second media","currentState":"Active via Antigravity + NanoBanana MCP","role":"1M-2M context caching, magazine-grade visual generation (NanoBanana), Veo video generation, Gemini Flash bulk evals","howToTrigger":"Native generate_image / nb-image skill / Vertex Context Caching API","gapToSolve":"Route bulk Dreaming & vault classification jobs to Gemini Flash-Lite with Context Caching"},{"id":"cloudflare","name":"Cloudflare (Workers, Durable Objects, R2, DNS)","category":"Edge Compute & Sovereign Bridge","costTier":"$5-$20/mo (Workers Paid + R2 zero-egress storage)","currentState":"DNS & edge routing active; Hermes Cloudflare MCP needs re-auth","role":"The missing Local \u003c-> Cloud Bridge! Hosts the HTTPS signed inbox queue, R2 artifact vault, and edge MCP gateways","howToTrigger":"wrangler deploy / HTTPS webhook to edge worker","gapToSolve":"Deploy starlight-edge-bridge Worker + Durable Object so Railway, n8n, and Claude Cloud can enqueue receipts safely"},{"id":"vercel","name":"Vercel Production & Preview Fleet","category":"Web & App Hosting Plane","costTier":"Pro Subscription ($20/mo base + bandwidth/cron)","currentState":"50+ projects mapped across registered properties; waitlist KV active","role":"Hosts frankx.ai, arcanea.ai, starlightintelligence.org, gencreator.ai, and preview deployments on every PR","howToTrigger":"git push origin agent/\u003charness>/\u003cscope> -> Draft PR Preview; merge to main -> Prod","gapToSolve":"Consolidate 5 duplicate unlinked Vercel projects after dropping the legacy required check"},{"id":"railway","name":"Railway Service Mesh","category":"24/7 Container & Daemon Cloud","costTier":"Usage-based (~$123.45/mo measured across projects — target \u003c$45/mo after pruning)","currentState":"Hosts n8n, Postiz, and background services; several empty projects flagged [OPEN] for prune","role":"Always-on Docker services, n8n workflow engine, Postiz social distributor, remote MCP servers","howToTrigger":"railway up / webhook triggers","gapToSolve":"Enumerate all environments live, prune idle services, and wire Railway n8n to the Cloudflare Edge Bridge"},{"id":"n8n-cloud","name":"n8n Workflow Orchestrator","category":"Event & Webhook Automation","costTier":"Self-hosted on Railway ($0 license)","currentState":"starlight-horizon-memory-orchestrator.workflow.json versioned in SIS repo","role":"Scheduled 2h/12h/1w webhook orchestration, Slack/Telegram alerts, GitHub org issue triage, Resend newsletter pipelines","howToTrigger":"Import workflows/n8n/starlight-horizon-memory-orchestrator.workflow.json or POST /webhook/starlight-horizon-run","gapToSolve":"Add heartbeat writer so n8n executions appear in logs/heartbeats/heartbeat-n8n.json (two-signal liveness rule)"},{"id":"openrouter","name":"OpenRouter Unified Model Gateway","category":"Multi-Provider API & Spend Cap","costTier":"Prepaid credit balance with hard per-key spend limits","currentState":"Used by Hermes, OmO, and fallback model routing","role":"Single API key for 200+ models (DeepSeek R1, Kimi K2.6, Qwen, Llama 3.3, Claude, GPT) with automatic fallback & cost tracking","howToTrigger":"OPENROUTER_API_KEY via model-routing skill or Starlight Cost Collector","gapToSolve":"Fix StarlightOpenRouterSpend scheduled task exit code 2 by pointing it to the unified cost ledger"},{"id":"langfuse-otel","name":"Langfuse + Headroom Context Layer","category":"Traces, Evals, Prompt Registry & Token Compression","costTier":"Self-hosted / Free Cloud Tier","currentState":"Skills installed (langfuse, headroom); ready for unified daemon hookup","role":"Captures OpenTelemetry traces across all harnesses, compresses long tool outputs via Headroom (40-70% token savings), tracks Eval-50 over time","howToTrigger":"/headroom wrap + Langfuse OTEL env vars in .starlight/env","gapToSolve":"Wire SisGatewayDaemon (:5200) to emit trace spans for every memory search/add and horizon eval run"}],"experiments":[{"id":"EXP-01","name":"Hybrid Sovereign Memory Recall (TF-IDF + RRF + Entity Boost)","domain":"Memory Substrate","status":"LIVE · VERIFIED","baseline":"Hit@10: 0.000 (placeholder vectors) / 0.820 (raw FTS)","current":"Hit@10: 1.000 · Recall@5: 1.000 · MRR@10: 1.000 (p50: 218.9ms)","owner":"Antigravity + Sage","artifact":"scripts/compile-sovereign-memory.mjs","nextStep":"Keep automated in 2h Horizon cadence; add semantic drift alerts if Hit@10 drops below 0.96"},{"id":"EXP-02","name":"10-Organization GitHub Federation & Visibility Parity Gate","domain":"Estate Governance","status":"LIVE · VERIFIED","baseline":"Fragmented orgs, missing .github repos, unmapped local checkouts","current":"10/10 Orgs standardized · 71/71 local repos wired (origin + org) · 0 visibility leaks","owner":"Antigravity + Architect","artifact":"scripts/org-federation-audit.mjs","nextStep":"Automate weekly drift verification in 1w Horizon cadence + GitHub Actions org sync"},{"id":"EXP-03","name":"Multi-Horizon Autonomous Cadence (2h Tactical / 12h Dreaming / 1w Audit)","domain":"Autonomous Operations","status":"LIVE · VERIFIED","baseline":"159-day vault staleness · Gateway :5200 offline · Dreaming stalled","current":"0d vault staleness · Gateway :5200 auto-healed · 2h/12h/1w Windows Tasks LastTaskResult=0","owner":"Antigravity + Queen","artifact":"scripts/horizon-test-runner.mjs","nextStep":"Retire 9 legacy duplicate failing Windows tasks into the unified Horizon runner"},{"id":"EXP-04","name":"Headroom Context Compression + Anthropic/OpenAI Prompt Caching","domain":"Cost & Context Efficiency","status":"READY TO DEPLOY","baseline":"Uncompressed tool logs & repeated system prompt token burn","current":"Headroom skill & cache boundaries designed; target 55% token reduction","owner":"Claude Code + Healer","artifact":"skills/headroom/SKILL.md","nextStep":"Enable Headroom MCP proxy on large grep/log outputs and pin Band-A prefix for 90% cache read discount"},{"id":"EXP-05","name":"Cloudflare Edge Bridge (Local \u003c-> Cloud Queue & Receipt Bus)","domain":"Hybrid Cloud Substrate","status":"NEXT WAVE PRIORITY","baseline":"Local stdio bridge unreachable by Railway, n8n, or Claude Cloud routines","current":"Architecture spec complete (HMAC-signed HTTPS Worker + Durable Object)","owner":"Architect + Codex","artifact":"docs/architecture/starlight-local-cloud-agentic-os-masterplan-2026-10-17.md","nextStep":"Deploy starlight-edge-bridge Worker and connect StarlightHorizon2h to pull cloud receipts"},{"id":"EXP-06","name":"Cross-Harness OpenTelemetry & Langfuse Eval Scoreboard","domain":"Observability & Evals","status":"NEXT WAVE PRIORITY","baseline":"Per-harness isolated JSONL transcripts without unified cost/eval join","current":"Horizon JSONL telemetry active (.starlight/telemetry/horizon-*.jsonl)","owner":"Sentinel + Prime","artifact":"C:/Users/frank/.starlight/telemetry/","nextStep":"Stream Horizon JSONL + harness session receipts into unified cost & eval ledger"}],"operatorPlaybook":[{"cadence":"Morning Boot (08:00)","slashCommand":"/dawn","cliCommand":"node C:/Users/frank/starlight/tools/gen-systems-map.mjs && node C:/Users/frank/starlight/tools/bake-planes-board.mjs","responsibleAgent":"Concierge + Queen","whatItDoes":"Synthesizes overnight 12h Dreaming insights, active worktree lanes, system health, and top 3 priorities for the day."},{"cadence":"Before Any New Slice","slashCommand":"/search-first","cliCommand":"python C:/Users/frank/AppData/Local/hermes/scripts/starlight_workspace_bootstrap.py --match \u003ckw> --gh","responsibleAgent":"Hermes + Architect","whatItDoes":"Enforces the 4-fact git bootstrap check (path, toplevel, origin, branch), claims an ops-guard lease, and recalls vault decisions."},{"cadence":"Every 2 Hours (Automated + On-Demand)","slashCommand":"/sis recent","cliCommand":"node scripts/horizon-test-runner.mjs --horizon 2h","responsibleAgent":"StarlightHorizon2h Task + Sage","whatItDoes":"Auto-heals SisGatewayDaemon (:5200), compiles 1,106 sovereign memory atoms, and verifies Eval-50 Hit@10 = 1.000."},{"cadence":"Complex Feature / Multi-File Build","slashCommand":"/goal or /ultrawork","cliCommand":"git worktree add C:/Users/frank/starlight/worktrees/\u003cscope> -b agent/\u003charness>/\u003cscope>","responsibleAgent":"Orchestrator + Fire/Crown Gate Swarm","whatItDoes":"Runs an autonomous, self-verifying implementation loop in an isolated git worktree until all tests and gates pass."},{"cadence":"Before Merging Any Consequential PR","slashCommand":"/santa-method + /starlight-board","cliCommand":"node --test tests/org-federation-audit.test.mjs tests/horizon-test-runner.test.mjs","responsibleAgent":"Sentinel + Adversarial Reviewer + Board","whatItDoes":"Two independent reviewers critique the exact revision against product-outcome-quality.md and SIP governance invariants."},{"cadence":"Every 12 Hours / End of Day","slashCommand":"/eod + /handover","cliCommand":"node scripts/horizon-test-runner.mjs --horizon 12h","responsibleAgent":"StarlightHorizon12h Task + Chronicle","whatItDoes":"Runs Dreaming consolidation, checks 90-day temporal decay, verifies 10-Org remote parity, and writes hub handover."},{"cadence":"Weekly / Sunday Seventh-Day Cadence","slashCommand":"/sunday (or /palace)","cliCommand":"node scripts/horizon-test-runner.mjs --horizon 1w","responsibleAgent":"StarlightHorizon1w Task + Palace Architect","whatItDoes":"Full estate audit: 64 Windows tasks, n8n flows, 10 GitHub Orgs, memory compounding review, and next-week thesis."}],"nextPrompts":[{"id":"PROMPT-01","title":"Wave 1: Consolidate the 9 Legacy Failing Scheduled Tasks & Unify Cost Telemetry","targetHarness":"Antigravity or Claude Code","targetRepo":"C:/Users/frank/starlight + Starlight-Intelligence-System","promptText":"Run a surgical cleanup of the 9 legacy failing Windows Scheduled Tasks surfaced by StarlightHorizon1w (Starlight-GbrainWatchdog, StarlightCostCollect, StarlightDreaming, StarlightFleetPulse, StarlightOpenRouterSpend, StarlightQueenProbe2h/12h/Week, StarlightTaskHealthWatch). Since StarlightHorizon2h, StarlightHorizon12h, and StarlightHorizon1w now execute Dreaming, Gateway auto-heal, Eval-50, and Task auditing with LastTaskResult=0, re-point or retire the superseded tasks, fix the OpenRouter/Cost collector script so it writes to C:/Users/frank/.starlight/telemetry/cost-ledger.jsonl, and verify 0 failing ready tasks in horizon-1w-latest.json."},{"id":"PROMPT-02","title":"Wave 2: Build the Cloudflare Edge Bridge (Local \u003c-> Cloud Queue & Receipt Bus)","targetHarness":"Claude Code or Codex","targetRepo":"Starlight-Intelligence-System (or starlight-command-center)","promptText":"Implement the Starlight Cloud-to-Local Edge Bridge so cloud runtimes (Railway n8n, Claude Cloud Routines, Codex Cloud, Vercel webhooks) can safely emit task receipts and heartbeats back to the local estate. Create a lightweight Cloudflare Worker + Durable Object (or Vercel KV queue endpoint) with HMAC-SHA256 bearer verification, and add a pull-sync step into scripts/horizon-test-runner.mjs (2h cadence) that drains verified cloud receipts into C:/Users/frank/starlight/logs/heartbeats/ and C:/Users/frank/starlight/queen/inbox/."},{"id":"PROMPT-03","title":"Wave 3: Wire Headroom Context Compression & Prompt Caching Across Harnesses","targetHarness":"Claude Code","targetRepo":"Starlight-Intelligence-System + claude-code-config","promptText":"Activate the Headroom context compression layer and deterministic Prompt Caching across our local and API harnesses. Configure SisGatewayDaemon (:5200) to expose a /v1/context/compress endpoint and trace token savings in C:/Users/frank/.starlight/telemetry/horizon-2h.jsonl. Ensure static Band-A and vault prefixes are ordered first for 90% Anthropic/OpenAI prompt cache read discounts."},{"id":"PROMPT-04","title":"Wave 4: Land Open PRs (#451 SIS, #275 agentic-ops, #362 agentic-ops-hub) & Sync Org Remotes","targetHarness":"Claude Code or Antigravity","targetRepo":"Starlight-Intelligence-System + agentic-ops + agentic-ops-hub","promptText":"Review and merge ready PRs #451 (Starlight-Intelligence-System), #275 (agentic-ops), and #362 (agentic-ops-hub) after verifying all unit tests and horizon gates pass. Then run node scripts/org-federation-audit.mjs --verify-remote to push main to both origin (frankxai/*) and org (\u003cOrg>/*) remotes across the updated flagship repositories."},{"id":"PROMPT-05","title":"Wave 5: Live Observatory Integration (Mount /horizon & /federation in Starlight Command Center App)","targetHarness":"Codex or Claude Code","targetRepo":"C:/Users/frank/starlight/repos/starlight-Command-Center","promptText":"In starlight-Command-Center/apps/observatory (Next.js port 4321), add an API route /api/horizon that reads C:/Users/frank/.starlight/reports/horizon-{2h,12h,1w}-latest.json and scripts/org-federation-audit.mjs data, and wire a live 'Horizon & 10-Org Federation' tab into the Electron/Next.js Observatory so port 4321 and our standalone HTML5 Command Center share the exact same live schema."}]}</script>
+<script>
+  // Tab switching with keyboard support (Left/Right arrow keys)
+  const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+  const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+  function activateTab(tabBtn) {
+    const target = tabBtn.getAttribute('data-tab');
+    tabs.forEach((t) => t.setAttribute('aria-selected', t === tabBtn ? 'true' : 'false'));
+    panels.forEach((p) => p.classList.toggle('active', p.id === 'panel-' + target));
+  }
+
+  tabs.forEach((tabBtn, idx) => {
+    tabBtn.addEventListener('click', () => activateTab(tabBtn));
+    tabBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        const next = tabs[(idx + 1) % tabs.length];
+        next.focus();
+        activateTab(next);
+      } else if (e.key === 'ArrowLeft') {
+        const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+        prev.focus();
+        activateTab(prev);
+      }
+    });
+  });
+
+  // Theme toggle
+  const themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', () => {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+  });
+
+  // Copy buttons
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+  document.querySelectorAll('.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.getAttribute('data-copy') || '';
+      try {
+        await navigator.clipboard.writeText(text);
+        toast.textContent = 'Copied to clipboard!';
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+      } catch {
+        toast.textContent = 'Select & copy manually';
+        toast.classList.add('show');
+      }
+    });
+  });
+
+  // Runtime search & filter
+  const harnessSearch = document.getElementById('harnessSearch');
+  const workloadFilter = document.getElementById('workloadFilter');
+  function filterRuntimes() {
+    const q = (harnessSearch.value || '').toLowerCase().trim();
+    const mode = workloadFilter.value;
+    document.querySelectorAll('.runtime-row').forEach((row) => {
+      const text = row.textContent.toLowerCase();
+      const kind = row.getAttribute('data-kind');
+      const cost = row.getAttribute('data-cost');
+      const bridge = row.getAttribute('data-bridge');
+      const matchQ = !q || text.includes(q);
+      const matchMode =
+        mode === 'all' ||
+        (mode === 'local' && kind === 'local') ||
+        (mode === 'cloud' && kind === 'cloud') ||
+        (mode === 'zero-marginal' && cost === 'zero-marginal') ||
+        (mode === 'bridge' && bridge === 'bridge');
+      row.style.display = matchQ && matchMode ? '' : 'none';
+    });
+  }
+  if (harnessSearch) harnessSearch.addEventListener('input', filterRuntimes);
+  if (workloadFilter) workloadFilter.addEventListener('change', filterRuntimes);
+
+  // Org search & filter
+  const orgSearch = document.getElementById('orgSearch');
+  const orgModeFilter = document.getElementById('orgModeFilter');
+  function filterOrgs() {
+    const q = (orgSearch.value || '').toLowerCase().trim();
+    const mode = orgModeFilter.value;
+    document.querySelectorAll('.org-card').forEach((card) => {
+      const text = card.textContent.toLowerCase();
+      const cardMode = card.getAttribute('data-mode');
+      const matchQ = !q || text.includes(q);
+      const matchMode = mode === 'all' || cardMode === mode;
+      card.style.display = matchQ && matchMode ? '' : 'none';
+    });
+  }
+  if (orgSearch) orgSearch.addEventListener('input', filterOrgs);
+  if (orgModeFilter) orgModeFilter.addEventListener('change', filterOrgs);
+</script>
+</body>
+</html>
