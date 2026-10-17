@@ -1,0 +1,825 @@
+{
+  "$comment": "Built on SIP — Starlight Model Arena run receipt. Transport clone of R5 with the opencode free tier. Fixtures, scoring and contract axis reused verbatim from tools/arena/deep-reasoning.mjs.",
+  "runId": "arena-2026-10-17-free-arena",
+  "date": "2026-10-17",
+  "status": "RAN",
+  "verdict": "MEASURED",
+  "card": "R5 deep-reasoning fixtures reused verbatim; zero-cost transport (opencode run, free-tier models)",
+  "lane": "deep-reasoning / free-tier transport",
+  "design": "tools/arena/fixtures/deep-reasoning/* (R5 pre-registered)",
+  "harness": "tools/arena/free-arena.mjs — opencode run --format json, default build agent",
+  "opencodeVersion": "opencode v2.0.31",
+  "method": "Identical to R5: minimal framing, no tools restriction beyond the opencode default agent, final ANSWER line scored against pre-registered regexes; FAIL-ATTRACTOR for pre-registered near-misses; contract axis scored independently. No LLM judge.",
+  "contestants": {
+    "glm": "opencode/glm-5.3-flash-free",
+    "mimo": "opencode/mimo-v2.6-flash-free",
+    "deepseek": "opencode/deepseek-v4.1-flash-free",
+    "longcat": "opencode/longcat-2.5-preview-free",
+    "nemotron": "opencode/nemotron-3.5-super-vl-free",
+    "beam": "opencode/beam-free",
+    "spacebunny": "opencode/space-bunny-free",
+    "bigpickle": "opencode/big-pickle"
+  },
+  "priceListUSDPerMTok": {
+    "note": "free tier — recorded as 0/0; subscription-subsidised, not API-free",
+    "input": 0,
+    "output": 0
+  },
+  "caveats": [
+    "Harness overhead: opencode run carries the build agent's system prompt and tools (~61K input tokens on a trivial prompt, measured 2026-10-17). Token columns are harness-inclusive; they measure cost-of-harness-per-answer, not prompt size. Correctness scoring unaffected.",
+    "Uniform stdin delivery: every prompt travels via stdin to `opencode run` (measured support), so all cells share one transport; no argv-size ceiling applies, including the long-context task.",
+    "n=1 per cell — directional only, per README.md doctrine. Promote a claim only after repeated rounds agree.",
+    "Model-in-OpenCode-harness, not a raw API benchmark."
+  ],
+  "results": [
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 87776
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 61215
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 13911
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 28197
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 49851
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 4090
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 7869
+    },
+    {
+      "taskId": "d1-deduction-trap-ledger",
+      "modelKey": "bigpickle",
+      "status": "PASS",
+      "answer": "CREDITS=654 SLOTS=9",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 38951
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 56267
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": {
+        "inputTokens": 82721,
+        "outputTokens": 185,
+        "reasoningTokens": 387,
+        "cacheReadTokens": 3712,
+        "cacheWriteTokens": 0,
+        "costUSD": 0
+      },
+      "durationMs": 19024
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 8462
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 27064
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 56322
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 6061
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "1/2",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 8202
+    },
+    {
+      "taskId": "d2-attractor-random-reveal",
+      "modelKey": "bigpickle",
+      "status": "FAIL-ATTRACTOR",
+      "answer": "1/3",
+      "attractor": "memorized-monty-stay",
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 20083
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 18488
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 10173
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 5916
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 16058
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 31647
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 3051
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 5467
+    },
+    {
+      "taskId": "d3-longctx-reconcile",
+      "modelKey": "bigpickle",
+      "status": "PASS",
+      "answer": "04:50 YES",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 11878
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 54469
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": {
+        "inputTokens": 82518,
+        "outputTokens": 22,
+        "reasoningTokens": 95,
+        "cacheReadTokens": 4352,
+        "cacheWriteTokens": 0,
+        "costUSD": 0
+      },
+      "durationMs": 59261
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 9616
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 23425
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": {
+        "inputTokens": 3534,
+        "outputTokens": 48,
+        "reasoningTokens": 1955,
+        "cacheReadTokens": 86720,
+        "cacheWriteTokens": 0,
+        "costUSD": 0
+      },
+      "durationMs": 110251
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 4728
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 9377
+    },
+    {
+      "taskId": "d4-multifile-idempotency-bug",
+      "modelKey": "bigpickle",
+      "status": "PASS",
+      "answer": "C BILLING/CHARGE.PY:5",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 69803
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 14614
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 29086
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 8694
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 35300
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 89116
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 5351
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 5477
+    },
+    {
+      "taskId": "d5-architecture-slo-tradeoff",
+      "modelKey": "bigpickle",
+      "status": "PASS",
+      "answer": "A 223 3960",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 26196
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "glm",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 25033
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "mimo",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 29379
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "deepseek",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 10803
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "longcat",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 49143
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "nemotron",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 71362
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "beam",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 6035
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "spacebunny",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 7995
+    },
+    {
+      "taskId": "d6-constraint-backtrack-assignment",
+      "modelKey": "bigpickle",
+      "status": "PASS",
+      "answer": "ASH=HARNESS/THU BEX=RETRIEVAL/WED CYD=SUBSTRATE/FRI DOV=MEMORY/TUE ELI=MODEL/MON",
+      "attractor": null,
+      "contract": {
+        "answerLines": 1,
+        "trailingChars": 0,
+        "conformant": true,
+        "violations": []
+      },
+      "transport": "stdin-message",
+      "tokens": null,
+      "durationMs": 23385
+    }
+  ]
+}
