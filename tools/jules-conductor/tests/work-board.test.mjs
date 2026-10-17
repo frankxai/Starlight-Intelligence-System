@@ -59,24 +59,22 @@ test('a merged landmark and a rejected guardian are not armed', () => {
   }
 });
 
-test('issue 163 is queued unsent on VERTICALS.md only', () => {
+test('an accepted verticals pointer is not armed again', () => {
   const action = board.actions.find((item) => item.id === 'sis-verticals-163');
-  assert.equal(action.runner, 'jules');
+  assert.equal(action.runner, 'you');
   assert.deepEqual(action.where, ['VERTICALS.md']);
   assert.equal(action.ready, false);
-  assert.equal(action.repo, 'frankxai/Starlight-Intelligence-System');
-  assert.match(action.prompt, /frankxai\/gencreator\.ai/);
-  assert.match(action.prompt, /gencreator\.ai/);
   assert.match(action.how, /Do not arm/);
-  assert.equal(isBounded({ description: action.prompt, scopeFiles: action.where, repo: action.repo }), true);
+  assert.equal(armAction([], action).armed, null);
   const backlog = JSON.parse(readFileSync(join(root, 'state', 'backlog.json'), 'utf8'));
   const queued = (backlog.queue || []).find((item) => item.id === 'sis-verticals-163');
   assert.equal(queued, undefined);
+  assert.equal((backlog.queue || []).some((item) => item.ready === true), false);
 });
 
 test('every Jules action still on the board is bounded', () => {
   const jules = board.actions.filter((item) => item.runner === 'jules');
-  assert.deepEqual(jules.map((item) => item.id), ['sis-verticals-163']);
+  assert.deepEqual(jules.map((item) => item.id), []);
   assert.equal(jules.some((item) => item.id === 'arcanea-homepage-landmarks'), false);
   assert.equal(jules.some((item) => item.id === 'arcanea-guardian-reports'), false);
   for (const action of jules) {

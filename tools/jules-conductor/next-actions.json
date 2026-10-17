@@ -95,18 +95,18 @@
     },
     {
       "id": "sis-verticals-163",
-      "runner": "jules",
+      "runner": "you",
       "lane": "quality",
       "repo": "frankxai/Starlight-Intelligence-System",
       "title": "Correct the GenCreator repo pointer in VERTICALS.md",
-      "why": "Issue 163. On origin/main, the GenCreator Community section still says primary repo frankxai/gencreator (to be created) and public surface gencreator.community (to be registered). The issue asks for frankxai/gencreator.ai and gencreator.ai. Queued unsent.",
+      "why": "Issue 163. Session 609243126188726697 completed. The diff accepts: only VERTICALS.md, primary repo frankxai/gencreator.ai and public surface gencreator.ai. No pull request was opened, so it was not landed.",
       "where": [
         "VERTICALS.md"
       ],
       "land": "clerk",
       "ready": false,
-      "how": "Queued unsent. Ready stays false. Do not arm and do not run-ready in this run.",
-      "prompt": "From origin/main on frankxai/Starlight-Intelligence-System, change only the GenCreator Community lines in VERTICALS.md. Replace the primary repo frankxai/gencreator (to be created) with frankxai/gencreator.ai. Replace the public surface gencreator.community (to be registered) with gencreator.ai. Leave every other vertical unchanged. Do not create a repository. Do not edit a README, metrics/current.json, or any second file. Open one draft pull request. Do not merge."
+      "how": "Do not arm. The session completed with an accepted changeSet and no pull request. Do not resend this prompt.",
+      "prompt": "Do not send. Session 609243126188726697 already replaced frankxai/gencreator (to be created) with frankxai/gencreator.ai and gencreator.community (to be registered) with gencreator.ai in VERTICALS.md. Do not create a repository and do not edit a second file."
     },
     {
       "id": "sis-pin-package-manager",

@@ -12,6 +12,7 @@ const now = Date.parse('2026-10-17T12:00:00.000Z');
 test('finished owned sessions stay out of the in-flight cap', () => {
   const landmarks = ledger.sessions['1664111359674067715'];
   const guardian = ledger.sessions['3546132594215418190'];
+  const verticals = ledger.sessions['609243126188726697'];
   assert.equal(landmarks.status, 'Completed');
   assert.equal(landmarks.accepted, true);
   assert.equal(landmarks.merged, false);
@@ -20,6 +21,10 @@ test('finished owned sessions stay out of the in-flight cap', () => {
   assert.equal(guardian.accepted, false);
   assert.equal(guardian.merged, false);
   assert.equal(isInflight(guardian, now), false);
+  assert.equal(verticals.status, 'Completed');
+  assert.equal(verticals.accepted, true);
+  assert.equal(verticals.merged, false);
+  assert.equal(isInflight(verticals, now), false);
   const owned = Object.values(ledger.sessions).filter((session) => session.owned === true && isInflight(session, now));
   assert.equal(owned.some((session) => session.id === '1664111359674067715'), false);
   assert.equal(owned.some((session) => session.id === '3546132594215418190'), false);
