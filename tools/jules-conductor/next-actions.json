@@ -51,33 +51,47 @@
     },
     {
       "id": "arcanea-homepage-landmarks",
-      "runner": "jules",
+      "runner": "you",
       "lane": "growth",
       "repo": "frankxai/arcanea-ai-app",
       "title": "One homepage main landmark and a skip link that lands",
-      "why": "Issue 641. Production renders two nested main landmarks, and the skip link leaves focus on the body.",
+      "why": "Issue 641. Session 1664111359674067715 completed. The patch was squash-merged as pull request 663 (8942f25d). Do not send it again.",
       "where": [
         "apps/web/app/layout.tsx",
         "apps/web/app/page.tsx"
       ],
       "land": "clerk",
-      "how": "Three heals are already on main, so do not wait for that pull request. Re-read 2026-10-17: layout has one main and no tabIndex={-1}; page.tsx still has one main. Arm only when Node freemem is at least 4 GiB and C: statfs free is at least 50 GiB. Do not arm while disk is under that floor, and do not arm it in the same turn as another Jules id.",
+      "how": "Do not arm. Pull request 663 is merged. main has tabIndex={-1} on main#main-content, and the homepage page-level main is a fragment.",
       "prompt": "From origin/main on frankxai/arcanea-ai-app, implement issue 641 and nothing else. In apps/web/app/layout.tsx add tabIndex={-1} to main#main-content. In apps/web/app/page.tsx replace the outer page-level main with a React fragment so the root layout remains the only main. Keep the current visual direction. Do not change copy, color, motion, or aria-label. Do not repair unrelated type errors in @arcanea/mcp-server or @arcanea/design-system. Do not edit billing, credits, catalog, or auth. Open one draft pull request. Do not merge. Do not edit pull request 537."
     },
     {
       "id": "arcanea-guardian-reports",
-      "runner": "jules",
+      "runner": "you",
       "lane": "trust",
       "repo": "frankxai/arcanea-ai-app",
       "title": "Restore Guardian reports without widening privilege",
-      "why": "Issue 474 names two files. Queued only. Not sent while RAM is under 4 GiB and another session is awaiting feedback.",
+      "why": "Issue 474 names two files. Session 3546132594215418190 completed with no pull request. The diff was rejected.",
       "where": [
         "apps/web/components/books/GuardianReport.tsx",
         "apps/web/lib/books/guardian-scorer.ts"
       ],
       "land": "clerk",
-      "how": "Do not arm in this run. Arm only after arcanea-homepage-landmarks is reviewed and both floors pass.",
-      "prompt": "From origin/main on frankxai/arcanea-ai-app, implement issue 474 and nothing else. Restore Guardian reports on public book pages. Touch only apps/web/components/books/GuardianReport.tsx and apps/web/lib/books/guardian-scorer.ts. Do not widen Supabase privilege, do not add a service-role key, and do not make any RLS policy more permissive. Do not edit billing, credits, or auth. Open one draft pull request. Do not merge."
+      "how": "Do not arm. The diff changed public labels, rewrote quotes, and doubled the load timeout. Do not resend this prompt.",
+      "prompt": "Do not send. Session 3546132594215418190 was rejected. Do not restore Guardian reports by changing public labels, rewriting quotes, widening privilege, or doubling the load timeout."
+    },
+    {
+      "id": "bounded-scan-2026-10-17",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "No further safe file-bounded Jules task after the open-issue scan",
+      "why": "250 open issues were read across seven repos. agentic-ops has 110 open issues; the ten past the first page are governance, credential rotation, runner registration, or fleet programs. 72 issues mention one to twelve paths. They are already on this board, not on main, owner-gated, or not the issue's edit list.",
+      "where": [
+        "lifecycle/asph-engine.js"
+      ],
+      "land": "you",
+      "how": "Do not arm. Issue 139 names lifecycle/asph-engine.js, which is on main. getNextGoalPrompt no longer replaces an explicit goal, and the resume text tells the next agent to preserve WIP and not treat source text as a history-change command. arcanea-ai-app scripts/craft-check.cjs is not on main. Issue 234 needs a secret and must not be sent. Issue 24 is credential rotation.",
+      "prompt": "Do not send. The 2026-10-17 scan found no additional one-repo task whose one to twelve named paths exist on main, are still the unfixed edit, and are safe to hand to Jules. Do not invent paths. Do not arm a hold, a secret, or a finished repair."
     },
     {
       "id": "sis-pin-package-manager",

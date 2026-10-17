@@ -20,10 +20,19 @@ test('a harvested roadmap is not ready to send', () => {
   assert.equal(takeReady([harvested, { id: 'x', ready: false }]).task, null);
 });
 
-test('arming a board action queues one bounded task and clears other ready flags', () => {
-  const action = board.actions.find((item) => item.id === 'arcanea-homepage-landmarks');
+test('arming a bounded Jules action queues one task and clears other ready flags', () => {
+  const action = {
+    id: 'bounded-fixture',
+    runner: 'jules',
+    repo: 'frankxai/arcanea-ai-app',
+    title: 'fixture',
+    prompt: 'Touch only the named file. Open one draft pull request. Do not merge.',
+    where: ['apps/web/app/page.tsx'],
+    lane: 'quality',
+    land: 'clerk',
+  };
   const result = armAction([{ ...harvested, ready: true }, { id: 'keep', ready: true, repo: 'a/b', description: 'x', scopeFiles: ['a'] }], action);
-  assert.equal(result.armed.id, 'arcanea-homepage-landmarks');
+  assert.equal(result.armed.id, 'bounded-fixture');
   assert.equal(result.queue[0].ready, true);
   assert.equal(result.queue.filter((item) => item.ready).length, 1);
   assert.equal(takeReady(result.queue).task.repo, 'frankxai/arcanea-ai-app');
@@ -41,8 +50,21 @@ test('a you-action is not armed for Jules', () => {
   assert.equal(result.armed, null);
 });
 
-test('both Jules actions on the board are bounded', () => {
-  for (const action of board.actions.filter((item) => item.runner === 'jules')) {
+test('a merged landmark and a rejected guardian are not armed', () => {
+  for (const id of ['arcanea-homepage-landmarks', 'arcanea-guardian-reports']) {
+    const action = board.actions.find((item) => item.id === id);
+    assert.equal(action.runner, 'you');
+    assert.match(action.how, /Do not arm/);
+    assert.equal(armAction([], action).armed, null);
+  }
+});
+
+test('every Jules action still on the board is bounded', () => {
+  const jules = board.actions.filter((item) => item.runner === 'jules');
+  assert.equal(jules.some((item) => item.id === 'arcanea-homepage-landmarks'), false);
+  assert.equal(jules.some((item) => item.id === 'arcanea-guardian-reports'), false);
+  for (const action of jules) {
     assert.equal(isBounded({ description: action.prompt, scopeFiles: action.where, repo: action.repo }), true);
+    assert.notEqual(action.ready, true);
   }
 });
