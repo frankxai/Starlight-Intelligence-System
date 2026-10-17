@@ -103,6 +103,12 @@ export async function startQueenSovereignServer(options?: {
       return;
     }
 
+    if (method === 'GET' && pathname === '/api/queen/estate-gtm') {
+      const refresh = urlObj.searchParams.get('refresh') === '1';
+      sendJson(res, 200, engine.estateRadar.getSnapshot(refresh));
+      return;
+    }
+
     if (method === 'GET' && pathname === '/api/queen/stream') {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',

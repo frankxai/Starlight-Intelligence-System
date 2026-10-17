@@ -161,8 +161,22 @@ describe('Starlight Queen Sovereign Superintelligence v1.0', () => {
       assert.equal(missionPayload.ok, true);
       assert.equal(missionPayload.mission.stages.length, 4);
       assert.equal(missionPayload.mission.receipt.fnv1aHash.length, 16);
+
+      const estateRes = await fetch(`${handle.url}/api/queen/estate-gtm`);
+      assert.equal(estateRes.status, 200);
+      const estatePayload = (await estateRes.json()) as {
+        parallelBreakthroughs: Array<{ id: string }>;
+        productionRepos: Array<{ repoName: string }>;
+        gtmFlywheel: Array<{ stageNumber: number }>;
+        fundamentalLeverageQueue: Array<{ rank: number }>;
+      };
+      assert.ok(estatePayload.parallelBreakthroughs.length >= 5);
+      assert.equal(estatePayload.productionRepos.length, 8);
+      assert.equal(estatePayload.gtmFlywheel.length, 5);
+      assert.equal(estatePayload.fundamentalLeverageQueue.length, 5);
     } finally {
       await handle.close();
     }
   });
 });
+

@@ -58,6 +58,8 @@ export interface HarnessUpgradeAction {
 
 export interface RustKernelGateResult {
   engine: 'rust-starlight-invariants-0.2.0' | 'ts-verified-fallback';
+  nativeBinaryExecuted?: boolean;
+  nativeBinaryPath?: string | null;
   astAllowed: boolean;
   astReason: string;
   wfgDeadlockDetected: boolean;
@@ -348,6 +350,8 @@ const HARNESS_CATALOG: Array<{
     authRails: ['local-native'],
     defaultModels: ['starlight-invariants-0.2.0-rustc-1.99'],
     binaryCandidates: [
+      path.join(process.cwd(), 'crates', 'starlight-invariants', 'target', 'debug', 'starlight.exe'),
+      path.join(process.cwd(), 'crates', 'starlight-invariants', 'target', 'release', 'starlight.exe'),
       path.join(HOME, '.cargo', 'bin', 'cargo.exe'),
       path.join(HOME, '.cargo', 'bin', 'cargo'),
       'cargo',
@@ -715,13 +719,45 @@ export class HarnessMesh {
       ((1 - (1 - vmcpTokenReductionPct / 100) * (1 - headroomCompressionPct / 100) * (1 - rtkCliSavingsPct / 100)) * 100).toFixed(1)
     );
 
-    const elapsedUs = Number((process.hrtime.bigint() - startNs) / 1000n);
     const hasRustCrate = fs.existsSync(
       path.join(this.workspaceRoot, 'crates', 'starlight-invariants', 'Cargo.toml')
     );
+    const debugBin = path.join(this.workspaceRoot, 'crates', 'starlight-invariants', 'target', 'debug', 'starlight.exe');
+    const releaseBin = path.join(this.workspaceRoot, 'crates', 'starlight-invariants', 'target', 'release', 'starlight.exe');
+    const nativeBinaryPath = fs.existsSync(releaseBin)
+      ? releaseBin
+      : fs.existsSync(debugBin)
+        ? debugBin
+        : null;
+
+    let nativeBinaryExecuted = false;
+    if (nativeBinaryPath) {
+      const cacheKey = `rust-vmcp:${nativeBinaryPath}`;
+      const cachedExec = BINARY_PROBE_CACHE.get(cacheKey);
+      if (cachedExec && cachedExec.detectedPath) {
+        nativeBinaryExecuted = true;
+      } else {
+        try {
+          execFileSync(nativeBinaryPath, ['vmcp', '--intent', keywords.join(' ') || 'verify'], {
+            encoding: 'utf8',
+            timeout: 800,
+            windowsHide: true,
+            stdio: ['ignore', 'pipe', 'pipe'],
+          });
+          BINARY_PROBE_CACHE.set(cacheKey, { detectedPath: nativeBinaryPath, version: 'executed' });
+          nativeBinaryExecuted = true;
+        } catch {
+          nativeBinaryExecuted = false;
+        }
+      }
+    }
+
+    const elapsedUs = Number((process.hrtime.bigint() - startNs) / 1000n);
 
     return {
       engine: hasRustCrate ? 'rust-starlight-invariants-0.2.0' : 'ts-verified-fallback',
+      nativeBinaryExecuted,
+      nativeBinaryPath,
       astAllowed,
       astReason,
       wfgDeadlockDetected,

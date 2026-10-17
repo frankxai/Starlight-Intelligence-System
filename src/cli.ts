@@ -1802,6 +1802,48 @@ async function cmdQueen(
       break;
     }
 
+    case "estate":
+    case "gtm": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const radar = engine.estateRadar.getSnapshot(true);
+      if (options.json) {
+        console.log(JSON.stringify(radar, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen — Estate, Multi-Harness Worktrees & GTM Production Radar`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Indexed Sessions:  ${radar.sessionFleet.totalIndexedSessions} (${radar.sessionFleet.protectedToolPlanePids} protected tool-plane PIDs)`);
+      console.log(`  SIS Worktrees:     ${radar.worktrees.length} active/historical worktrees`);
+      console.log(`  Breakthroughs:     ${radar.parallelBreakthroughs.length} parallel harness breakthroughs unified\n`);
+
+      console.log(`  [1] FUNDAMENTAL LEVERAGE QUEUE (What Makes Everything Else Easier):`);
+      for (const item of radar.fundamentalLeverageQueue) {
+        console.log(`    #${item.rank} [${item.status.toUpperCase()}] ${item.title}`);
+        console.log(`       Why: ${item.whyItMakesEverythingEasier}`);
+        console.log(`       Cmd: ${item.commandToExecute}\n`);
+      }
+
+      console.log(`  [2] PARALLEL HARNESS BREAKTHROUGHS:`);
+      for (const b of radar.parallelBreakthroughs) {
+        console.log(`    ◆ ${b.harness.padEnd(38)} | ${b.branch} (${b.headSha})`);
+        console.log(`      ${b.title} — ${b.keyMetric}`);
+      }
+
+      console.log(`\n  [3] 8 CORE PRODUCTION & GTM REPOSITORIES:`);
+      for (const r of radar.productionRepos) {
+        const cleanTag = r.dirtyCount === 0 ? "CLEAN" : `${r.dirtyCount} dirty`;
+        console.log(`    ▸ ${r.repoName.padEnd(32)} | ${r.branch.padEnd(48)} | ${r.headSha} | ${cleanTag.padEnd(10)} | ${r.gtmStage}`);
+      }
+
+      console.log(`\n  [4] 5-STAGE GTM FLYWHEEL BRIDGE:`);
+      for (const s of radar.gtmFlywheel) {
+        console.log(`    Stage 0${s.stageNumber}: ${s.name} (${s.sourceProperty} -> ${s.targetProperty}) [${s.status}]`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
     case "serve": {
       const portArg = args[0] ? parseInt(args[0], 10) : 4329;
       const handle = await startQueenSovereignServer({ port: portArg });
@@ -1811,7 +1853,7 @@ async function cmdQueen(
 
     default:
       console.error(
-        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, serve, agent`
+        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, serve, agent`
       );
       process.exitCode = 1;
   }

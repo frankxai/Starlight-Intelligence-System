@@ -651,6 +651,9 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       <button class="tab-btn" role="tab" aria-selected="false" data-tab="ledger">
         SIP receipt ledger <span class="kbd">6</span>
       </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="estate">
+        Estate, sessions &amp; GTM radar <span class="kbd">7</span>
+      </button>
     </nav>
 
     <!-- TAB 1: PARETO & THOMPSON ROUTER -->
@@ -919,6 +922,107 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         </div>
       </div>
     </section>
+
+    <!-- TAB 7: ESTATE, SESSIONS & GTM RADAR -->
+    <section class="tab-section" id="tab-estate" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Fundamental leverage queue: what makes everything else easier</h2>
+            <p class="panel-subtitle">Highest-leverage actions across substrate convergence, GTM funnel bridge (Risk R1), and clean production releases.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="estate-session-pill">1,268 sessions indexed · 20 worktrees</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Fundamental action</th>
+                <th>Category</th>
+                <th>Why it makes everything else easier</th>
+                <th>Execution command</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-leverage"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Parallel multi-harness breakthroughs across sibling worktrees</h2>
+            <p class="panel-subtitle">Live breakthroughs engineered across Antigravity, Grok, OpenCode, and Claude Code worktrees and unified into Queen v1.0.</p>
+          </div>
+          <span class="badge badge-cyan">5 active harness breakthroughs</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Harness</th>
+                <th>Branch &amp; HEAD</th>
+                <th>Breakthrough</th>
+                <th>Measured telemetry</th>
+                <th>Queen v1.0 binding</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-breakthroughs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">5-stage GTM flywheel &amp; Risk R1 funnel bridge (FrankX → GenCreator → Arcanea / Starlight)</h2>
+            <p class="panel-subtitle">End-to-end commercial architecture connecting 40k+ top-of-funnel readers to open-core CLIs, SaaS realms, and Sovereign Estate retainers.</p>
+          </div>
+          <span class="badge badge-emerald">GTM flywheel wired</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Source → Target property</th>
+                <th>Conversion mechanism</th>
+                <th>Primary KPI</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-gtm-flywheel"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">8 core production &amp; GTM repositories live git status</h2>
+            <p class="panel-subtitle">Real-time branch, HEAD commit, dirty file count, and exact next ship command across C:/Users/frank/starlight/repos.</p>
+          </div>
+          <span class="badge badge-cyan mono">Estate SSOT</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Repository &amp; domain</th>
+                <th>GTM stage</th>
+                <th>Active branch &amp; HEAD</th>
+                <th>Working tree</th>
+                <th>Latest commit</th>
+                <th>Next production command</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-estate-repos"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer" role="contentinfo">
@@ -1071,7 +1175,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
           '<div class="decision-box">' +
             '<h4>2. Tarjan SCC Wait-For Graph deadlock detector</h4>' +
             '<div style="margin-bottom:6px;">' + wfgBadge + '</div>' +
-            '<div class="decision-meta">Evaluated in <strong class="mono">' + res.executionLatencyUs + ' µs</strong> via ' + escapeHtml(res.engine) + '</div>' +
+            '<div class="decision-meta">Evaluated in <strong class="mono">' + res.executionLatencyUs + ' µs</strong> via ' + escapeHtml(res.engine) + (res.nativeBinaryExecuted ? ' · <span style="color:var(--accent-emerald)">Native starlight.exe binary verified</span>' : '') + '</div>' +
           '</div>' +
           '<div class="decision-box">' +
             '<h4>3. vMCP JIT + Headroom + RTK token savings</h4>' +
@@ -1124,6 +1228,99 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
             '</tr>'
           ))
           .join('');
+      }
+
+      function renderEstateGtmRadar() {
+        const eg = state.estateGtm;
+        if (!eg) return;
+        const pill = document.getElementById('estate-session-pill');
+        if (pill) {
+          pill.textContent =
+            eg.sessionFleet.totalIndexedSessions.toLocaleString() +
+            ' sessions indexed · ' +
+            eg.worktrees.length +
+            ' worktrees · ' +
+            eg.sessionFleet.protectedToolPlanePids +
+            ' protected PIDs';
+        }
+
+        const tbodyLev = document.getElementById('tbody-leverage');
+        if (tbodyLev) {
+          tbodyLev.innerHTML = eg.fundamentalLeverageQueue
+            .map((item) => {
+              const badge =
+                item.status === 'executed-in-queen'
+                  ? 'badge-emerald'
+                  : item.status === 'ready-for-pr-merge'
+                    ? 'badge-cyan'
+                    : 'badge-amber';
+              return (
+                '<tr>' +
+                  '<td class="mono"><strong>#' + item.rank + '</strong></td>' +
+                  '<td><strong>' + escapeHtml(item.title) + '</strong><div class="mono" style="font-size:11px;color:var(--text-muted)">' + escapeHtml(item.targetRepoOrWorktree) + '</div></td>' +
+                  '<td><span class="badge badge-cyan">' + escapeHtml(item.category) + '</span></td>' +
+                  '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(item.whyItMakesEverythingEasier) + '</td>' +
+                  '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(item.commandToExecute) + '</td>' +
+                  '<td><span class="badge ' + badge + '">' + escapeHtml(item.status) + '</span></td>' +
+                '</tr>'
+              );
+            })
+            .join('');
+        }
+
+        const tbodyBt = document.getElementById('tbody-breakthroughs');
+        if (tbodyBt) {
+          tbodyBt.innerHTML = eg.parallelBreakthroughs
+            .map((b) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(b.harness) + '</strong></td>' +
+                '<td class="mono" style="font-size:12px;">' + escapeHtml(b.branch) + ' <span style="color:var(--accent-emerald)">(' + escapeHtml(b.headSha) + ')</span></td>' +
+                '<td><strong>' + escapeHtml(b.title) + '</strong></td>' +
+                '<td><span class="badge badge-emerald">' + escapeHtml(b.keyMetric) + '</span></td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(b.queenBinding) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyFly = document.getElementById('tbody-gtm-flywheel');
+        if (tbodyFly) {
+          tbodyFly.innerHTML = eg.gtmFlywheel
+            .map((s) => (
+              '<tr>' +
+                '<td class="mono"><strong>0' + s.stageNumber + '</strong> · ' + escapeHtml(s.name) + '</td>' +
+                '<td class="mono" style="font-size:12px;">' + escapeHtml(s.sourceProperty) + ' → <strong style="color:var(--accent-cyan)">' + escapeHtml(s.targetProperty) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(s.conversionMechanism) + '</td>' +
+                '<td style="font-size:12px;">' + escapeHtml(s.primaryKpi) + '</td>' +
+                '<td><span class="badge badge-emerald">' + escapeHtml(s.status) + '</span></td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyRepos = document.getElementById('tbody-estate-repos');
+        if (tbodyRepos) {
+          tbodyRepos.innerHTML = eg.productionRepos
+            .map((r) => {
+              const badge =
+                r.dirtyCount === 0 ? 'badge-emerald' : 'badge-amber';
+              const dirtyLabel =
+                r.dirtyCount === 0
+                  ? 'CLEAN (0 dirty)'
+                  : r.dirtyCount + ' modified files';
+              return (
+                '<tr>' +
+                  '<td><strong>' + escapeHtml(r.repoName) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan)">' + escapeHtml(r.domain) + '</div></td>' +
+                  '<td><span class="badge badge-cyan">' + escapeHtml(r.gtmStage) + '</span></td>' +
+                  '<td class="mono" style="font-size:12px;">' + escapeHtml(r.branch) + ' <span style="color:var(--accent-emerald)">(' + escapeHtml(r.headSha) + ')</span></td>' +
+                  '<td><span class="badge ' + badge + '">' + dirtyLabel + '</span></td>' +
+                  '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(r.lastCommitSubject) + '</td>' +
+                  '<td class="mono" style="font-size:11px;color:var(--text-muted);">' + escapeHtml(r.nextProductionCommand) + '</td>' +
+                '</tr>'
+              );
+            })
+            .join('');
+        }
       }
 
       function renderRouteDecision(decision) {
@@ -1268,7 +1465,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
           e.preventDefault();
           activateTab('router');
           document.getElementById('input-prompt').focus();
-        } else if (e.key >= '1' && e.key <= '6') {
+        } else if (e.key >= '1' && e.key <= '7') {
           const idx = Number(e.key) - 1;
           if (tabButtons[idx]) {
             activateTab(tabButtons[idx].getAttribute('data-tab'));
@@ -1347,6 +1544,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       renderRustGateBox(state.rustKernelSample);
       renderEvalsAndArena();
       renderReceipts();
+      renderEstateGtmRadar();
       triggerRoute();
 
       // Live Server-Sent Events (SSE) subscription for real-time CLI & swarm updates
@@ -1361,6 +1559,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
                 renderTopMetrics();
                 renderHarnessesTable();
                 renderReceipts();
+                renderEstateGtmRadar();
               }
             } catch {
               // ignore malformed frame
