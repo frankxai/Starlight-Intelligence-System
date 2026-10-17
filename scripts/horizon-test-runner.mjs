@@ -214,11 +214,17 @@ export async function runHorizon12h(repoRoot = DEFAULT_WT_ROOT) {
   const lowConfidence = decayReports.filter((r) => r.currentConfidence < 0.15).length;
 
   const localRows = auditOrWireLocalRemotes();
+  const orgHbPath = 'C:\\Users\\frank\\starlight\\logs\\heartbeats\\heartbeat-task-org-federation.json';
+  const orgHb = readJsonSafe(orgHbPath);
   const orgSummary = {
     organizationsCount: ORG_FEDERATION_MANIFEST.length,
     totalMappedRepos: localRows.length,
     localPresentCount: localRows.filter((r) => r.localFound).length,
     localOrgRemoteAlignedCount: localRows.filter((r) => r.orgAligned).length,
+    alignedMirrorsCount: orgHb?.alignedMirrorsCount ?? null,
+    driftedMirrorsCount: orgHb?.driftedMirrorsCount ?? 0,
+    closedBotPrsCount: orgHb?.closedBotPrsCount ?? 0,
+    heartbeatStatus: orgHb?.status ?? 'pending'
   };
 
   const report = {

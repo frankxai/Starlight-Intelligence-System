@@ -8,6 +8,8 @@ import { execFileSync } from 'node:child_process';
 import {
   ORG_FEDERATION_MANIFEST,
   validateVisibilityParity,
+  validateOrgBasePermission,
+  writeOrgFederationHeartbeat,
   auditOrWireLocalRemotes
 } from '../scripts/org-federation-audit.mjs';
 
@@ -51,6 +53,40 @@ test('validateVisibilityParity enforces strict public/private visibility rules',
   const violation = validateVisibilityParity({ isPrivate: true }, { isPrivate: false });
   assert.equal(violation.ok, false);
   assert.match(violation.reason, /VISIBILITY_VIOLATION/);
+});
+
+test('validateOrgBasePermission rejects default_repository_permission other than none', () => {
+  assert.deepEqual(validateOrgBasePermission({ default_repository_permission: 'none' }), { ok: true });
+  const bad = validateOrgBasePermission({ default_repository_permission: 'read' });
+  assert.equal(bad.ok, false);
+  assert.match(bad.reason, /BASE_PERMISSION_VIOLATION/);
+});
+
+test('writeOrgFederationHeartbeat writes two-signal heartbeat JSON', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sis-org-hb-'));
+  try {
+    const hbPath = path.join(tmpDir, 'heartbeat-task-org-federation.json');
+    const written = writeOrgFederationHeartbeat(
+      {
+        allLocalAligned: true,
+        driftedMirrorsCount: 0,
+        totalOrganizations: 10,
+        totalFederatedRepos: 83,
+        localOrgRemotesAligned: 69,
+        shaParityChecked: true,
+        alignedMirrorsCount: 65,
+        closedBotPrsCount: 28
+      },
+      hbPath
+    );
+    assert.equal(written.status, 'ok');
+    assert.equal(written.alignedMirrorsCount, 65);
+    assert.equal(written.closedBotPrsCount, 28);
+    assert.equal(written.attestation, 'Built on SIP');
+    assert.ok(fs.existsSync(hbPath));
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
 });
 
 test('auditOrWireLocalRemotes detects missing org remote and wires it idempotently', () => {

@@ -1496,7 +1496,7 @@ export function renderCommandCenterHtml(data) {
     <div class="section-head">
       <div>
         <h2>10 GitHub Organizations, Responsible Brand Teams &amp; IP/Connector Matrix</h2>
-        <p>All 71 mapped repositories have verified local checkouts, dual remotes (<code>origin</code> + <code>org</code>), and strict public/private visibility parity.</p>
+        <p>All ${escapeHtml(h12.orgFederation?.localOrgRemoteAlignedCount ?? 69)} local checkouts have dual remotes (<code>origin</code> + <code>org</code>), <code>default_repository_permission: none</code> across all 9 active orgs, read-only mirror hardening (Actions/Dependabot/Issues disabled on mirrors), and verified <code>origin/main === org/main</code> SHA parity.</p>
       </div>
     </div>
 
