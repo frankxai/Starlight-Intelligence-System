@@ -1,0 +1,152 @@
+{
+  "name": "Starlight Horizon Cadence & Memory Orchestrator (2h / 12h / 1w)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "schedule-2h",
+      "name": "Every 2h Tactical Pulse",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [220, 180]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8,20 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule-12h",
+      "name": "Every 12h Operational Sweep (08:00 & 20:00)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [220, 380]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 0"
+            }
+          ]
+        }
+      },
+      "id": "schedule-1w",
+      "name": "Weekly Sunday 09:00 Palace Reckoning",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [220, 580]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "starlight-horizon",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "On-Demand Horizon Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 780]
+    },
+    {
+      "parameters": {
+        "command": "node \"C:/Users/frank/starlight/tools/horizon-test-runner.mjs\" --horizon 2h"
+      },
+      "id": "exec-2h",
+      "name": "Run Starlight 2h Tactical Suite",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [520, 180]
+    },
+    {
+      "parameters": {
+        "command": "node \"C:/Users/frank/starlight/tools/horizon-test-runner.mjs\" --horizon 12h"
+      },
+      "id": "exec-12h",
+      "name": "Run Starlight 12h Operational Suite",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [520, 380]
+    },
+    {
+      "parameters": {
+        "command": "node \"C:/Users/frank/starlight/tools/horizon-test-runner.mjs\" --horizon 1w"
+      },
+      "id": "exec-1w",
+      "name": "Run Starlight 1w Strategic Suite",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [520, 580]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:5200/v1/memory/health",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.STARLIGHT_GATEWAY_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 3000
+        }
+      },
+      "id": "gateway-probe",
+      "name": "Probe SIS Memory Gateway (:5200)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [820, 380]
+    }
+  ],
+  "connections": {
+    "Every 2h Tactical Pulse": {
+      "main": [[{ "node": "Run Starlight 2h Tactical Suite", "type": "main", "index": 0 }]]
+    },
+    "Every 12h Operational Sweep (08:00 & 20:00)": {
+      "main": [[{ "node": "Run Starlight 12h Operational Suite", "type": "main", "index": 0 }]]
+    },
+    "Weekly Sunday 09:00 Palace Reckoning": {
+      "main": [[{ "node": "Run Starlight 1w Strategic Suite", "type": "main", "index": 0 }]]
+    },
+    "On-Demand Horizon Webhook": {
+      "main": [[{ "node": "Run Starlight 2h Tactical Suite", "type": "main", "index": 0 }]]
+    },
+    "Run Starlight 2h Tactical Suite": {
+      "main": [[{ "node": "Probe SIS Memory Gateway (:5200)", "type": "main", "index": 0 }]]
+    },
+    "Run Starlight 12h Operational Suite": {
+      "main": [[{ "node": "Probe SIS Memory Gateway (:5200)", "type": "main", "index": 0 }]]
+    },
+    "Run Starlight 1w Strategic Suite": {
+      "main": [[{ "node": "Probe SIS Memory Gateway (:5200)", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "attestation": "Built on SIP",
+    "version": "1.0.0",
+    "updatedAt": "2026-10-17"
+  }
+}
