@@ -29,6 +29,15 @@ const REPORTS_DIR = path.join(DOT_STARLIGHT, 'reports');
 const SIS_MAIN_ROOT = 'C:/Users/frank/starlight/repos/Starlight-Intelligence-System';
 const DEFAULT_WT_ROOT = path.resolve(import.meta.dirname, '..');
 
+function readJsonSafe(filePath, fallback = null) {
+  try {
+    if (!fs.existsSync(filePath)) return fallback;
+    return JSON.parse(fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, ''));
+  } catch {
+    return fallback;
+  }
+}
+
 function isProcessAlive(pid) {
   if (!pid || typeof pid !== 'number') return false;
   try {
