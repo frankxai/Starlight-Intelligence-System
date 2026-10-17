@@ -21,12 +21,18 @@ test('a harvested roadmap is not ready to send', () => {
 });
 
 test('arming a board action queues one bounded task and clears other ready flags', () => {
-  const action = board.actions.find((item) => item.id === 'arcanea-three-heals');
+  const action = board.actions.find((item) => item.id === 'arcanea-homepage-landmarks');
   const result = armAction([{ ...harvested, ready: true }, { id: 'keep', ready: true, repo: 'a/b', description: 'x', scopeFiles: ['a'] }], action);
-  assert.equal(result.armed.id, 'arcanea-three-heals');
+  assert.equal(result.armed.id, 'arcanea-homepage-landmarks');
   assert.equal(result.queue[0].ready, true);
   assert.equal(result.queue.filter((item) => item.ready).length, 1);
   assert.equal(takeReady(result.queue).task.repo, 'frankxai/arcanea-ai-app');
+});
+
+test('a finished heal is not armed for Jules', () => {
+  const heal = board.actions.find((item) => item.id === 'arcanea-three-heals');
+  assert.equal(heal.runner, 'you');
+  assert.equal(armAction([], heal).armed, null);
 });
 
 test('a you-action is not armed for Jules', () => {

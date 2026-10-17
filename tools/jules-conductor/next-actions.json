@@ -7,29 +7,36 @@
       "repo": "this PC",
       "title": "Free RAM before any Jules session",
       "why": "A session starts only at 4 GiB free RAM and 50 GiB free on C:. Below that, the conductor holds.",
-      "where": ["close extra agent windows", "leave the Hermes watcher as the only clerk"],
+      "where": [
+        "close extra agent windows",
+        "leave the Hermes watcher as the only clerk"
+      ],
       "how": "After RAM is above 4 GiB, arm one id below, then run node tools/jules-conductor/conductor.mjs run-ready from the Starlight repo.",
       "land": "you"
     },
     {
       "id": "gencreator-minor-bumps",
-      "runner": "jules",
+      "runner": "you",
       "lane": "reliability",
       "repo": "frankxai/gencreator.ai",
-      "title": "Ship Dependabot minors without the types major",
-      "why": "Security and patch updates keep shipping. A types major stays out of the product and the MCP package.",
-      "where": ["package.json", "pnpm-lock.yaml", ".github/dependabot.yml"],
+      "title": "Raise framer-motion without reopening the closed bump",
+      "why": "Session 9625580807105179934 completed on 2026-10-15 with no pull request. The package.json line is the one right change. The lockfile also drops supports-color peer keys and esbuild from webpack snapshots. Do not arm this again until a regeneration keeps those keys.",
+      "where": [
+        "package.json",
+        "pnpm-lock.yaml",
+        ".github/dependabot.yml"
+      ],
       "land": "clerk",
       "how": "node tools/jules-conductor/conductor.mjs arm gencreator-minor-bumps",
-      "prompt": "From origin/main on frankxai/gencreator.ai. Dependabot pull request 153 mixes minor bumps with a semver-major. Ship only minor and patch dependency updates from that pull request. Omit every semver-major, including @types/node. Do not change @types/node in the root package.json or in packages/creator-mcp/package.json. Touch only package.json, pnpm-lock.yaml, and .github/dependabot.yml. In dependabot.yml, restrict the minor-and-patch group to update-types minor and patch, and change nothing else in that file. Regenerate the lockfile with the pnpm version pinned in package.json packageManager. Do not hand-edit the lockfile. Open one draft pull request. Do not merge. Do not edit payments, vercel.json, or secrets."
+      "prompt": "From origin/main on frankxai/gencreator.ai. Closed pull request 153 is unmerged and conflicting. Do not reopen it. Do not downgrade any dependency. On main, every package in that pull request is already at or past its target except framer-motion, which is still ^13.4.4. Raise only framer-motion to ^13.5.0 in the root package.json. Leave @types/node unchanged in the root package.json and in packages/creator-mcp/package.json. Do not edit packages/creator-mcp/package.json. .github/dependabot.yml already limits the minor-and-patch group to update-types minor and patch. Do not change that file unless a line contradicts that limit. Regenerate pnpm-lock.yaml with the pnpm version pinned in package.json packageManager. Do not hand-edit the lockfile. Open one draft pull request. Do not merge. Do not edit payments, vercel.json, or secrets."
     },
     {
       "id": "arcanea-three-heals",
-      "runner": "jules",
+      "runner": "you",
       "lane": "trust",
       "repo": "frankxai/arcanea-ai-app",
       "title": "Three product heals on nav, create, and imagine",
-      "why": "The mobile menu, the create heading, and a handled 401 are the scoped fixes a visitor hits. Draft 537 stays untouched.",
+      "why": "Re-read on main 2026-10-17. Mobile UserNav already closes the menu before the dialog, the dialog is z-[70] above the menu z-[55], SplitText already paints at opacity 1, and /imagine already sets an error on HTTP 401. Do not arm.",
       "where": [
         "apps/web/components/navigation/navbar.tsx",
         "apps/web/components/auth/user-nav.tsx",
@@ -41,6 +48,451 @@
       "land": "clerk",
       "how": "node tools/jules-conductor/conductor.mjs arm arcanea-three-heals",
       "prompt": "From origin/main, implement only these three heals. Do not copy draft pull request 537 wholesale and do not take a CRLF-only diff. 1. Mobile nav must close before the auth dialog opens, and the dialog must paint above the menu at 375 and 900. Touch only apps/web/components/navigation/navbar.tsx, apps/web/components/auth/user-nav.tsx, and the z-index in apps/web/components/auth/auth-modal.tsx. 2. The /create heading must paint when split-text cannot run. Touch only apps/web/app/create/create-hub.tsx and apps/web/components/motion/split-text.tsx. No copy change. 3. /imagine must show a handled error on HTTP 401. Touch only apps/web/app/imagine/page.tsx. Do not change billing, credits, catalog, or auth. Add a regression test beside each existing test. Open one pull request. Do not merge. Do not edit pull request 537."
+    },
+    {
+      "id": "arcanea-homepage-landmarks",
+      "runner": "jules",
+      "lane": "growth",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "One homepage main landmark and a skip link that lands",
+      "why": "Issue 641. Production renders two nested main landmarks, and the skip link leaves focus on the body.",
+      "where": [
+        "apps/web/app/layout.tsx",
+        "apps/web/app/page.tsx"
+      ],
+      "land": "clerk",
+      "how": "Three heals are already on main, so do not wait for that pull request. Re-read 2026-10-17: layout has one main and no tabIndex={-1}; page.tsx still has one main. Arm only when Node freemem is at least 4 GiB and C: statfs free is at least 50 GiB. Do not arm while disk is under that floor, and do not arm it in the same turn as another Jules id.",
+      "prompt": "From origin/main on frankxai/arcanea-ai-app, implement issue 641 and nothing else. In apps/web/app/layout.tsx add tabIndex={-1} to main#main-content. In apps/web/app/page.tsx replace the outer page-level main with a React fragment so the root layout remains the only main. Keep the current visual direction. Do not change copy, color, motion, or aria-label. Do not repair unrelated type errors in @arcanea/mcp-server or @arcanea/design-system. Do not edit billing, credits, catalog, or auth. Open one draft pull request. Do not merge. Do not edit pull request 537."
+    },
+    {
+      "id": "arcanea-guardian-reports",
+      "runner": "jules",
+      "lane": "trust",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Restore Guardian reports without widening privilege",
+      "why": "Issue 474 names two files. Queued only. Not sent while RAM is under 4 GiB and another session is awaiting feedback.",
+      "where": [
+        "apps/web/components/books/GuardianReport.tsx",
+        "apps/web/lib/books/guardian-scorer.ts"
+      ],
+      "land": "clerk",
+      "how": "Do not arm in this run. Arm only after arcanea-homepage-landmarks is reviewed and both floors pass.",
+      "prompt": "From origin/main on frankxai/arcanea-ai-app, implement issue 474 and nothing else. Restore Guardian reports on public book pages. Touch only apps/web/components/books/GuardianReport.tsx and apps/web/lib/books/guardian-scorer.ts. Do not widen Supabase privilege, do not add a service-role key, and do not make any RLS policy more permissive. Do not edit billing, credits, or auth. Open one draft pull request. Do not merge."
+    },
+    {
+      "id": "sis-pin-package-manager",
+      "runner": "you",
+      "lane": "reliability",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "title": "Pin the site package manager without rewriting the lockfile",
+      "why": "Issue 239. A fresh lockfile rewrite is the failure mode that rejected the gencreator bump. This stays with a person until the pin can be proven without dropping security overrides.",
+      "where": [
+        "site/package.json"
+      ],
+      "land": "you",
+      "how": "Do not arm. Do not regenerate site lockfiles in this run.",
+      "prompt": "Do not send. Issue 239 needs a packageManager pin in site/package.json and a frozen-lockfile check. Do not delete the npm lockfile and do not regenerate pnpm-lock.yaml in a way that drops security overrides."
+    },
+    {
+      "id": "verified-holds-2026-10-17",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Do not resend issues whose named files are already repaired or owner-gated",
+      "why": "Open issues that mention one to twelve paths were re-read on main. These are not a Jules batch. Sending them would redo finished work or invent owner wording.",
+      "where": [
+        "app/components/BrandMark.tsx",
+        "app/components/Footer.tsx",
+        "app/components/home/HomepageClient.tsx",
+        "app/page.tsx"
+      ],
+      "land": "you",
+      "how": "Do not arm. gencreator issue 14: BrandMark has no hardcoded gradient id and Footer section titles are h2. gencreator issue 89: HomepageClient h1 already uses break-words. gencreator issue 58 and SIS issue 235 stay with the owner because they need reviewed legal or inbox wording. SIS issue 266 stays unsent: a/src/loop-graph.ts, b/src/loop-graph.ts, and budget-regression.test.mjs are not on main, and the issue says integration is held. ACOS issue 101 already pushes temp dirs into made and removes them in after().",
+      "prompt": "Do not send. These files were confirmed on main and the named defects are already repaired or explicitly held for an owner. Do not open a Jules session for gencreator issues 14, 58, or 89, SIS issues 235 or 266, or ACOS issue 101."
+    },
+    {
+      "id": "hold-arcanea-534",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Canon questions stay with Frank and the CCO",
+      "why": "Issue 534 says an agent must not decide canon. It names no edit file list. The handover and AGENTS.md lines are instructions, not the patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 534 says an agent must not decide canon. It names no edit file list. The handover and AGENTS.md lines are instructions, not the patch."
+    },
+    {
+      "id": "hold-arcanea-533",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Blocked pull requests 447, 448, and 490 have no file list",
+      "why": "Issue 533 describes chat history, media analyze, and browser proof. It does not name the source files. Do not invent them.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 533 describes chat history, media analyze, and browser proof. It does not name the source files. Do not invent them."
+    },
+    {
+      "id": "hold-arcanea-532",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Creation Engine video and credit refund stay held",
+      "why": "Issue 532 is a video workflow epic whose done check includes a credit refund. It names no 1-12 file list.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 532 is a video workflow epic whose done check includes a credit refund. It names no 1-12 file list."
+    },
+    {
+      "id": "hold-arcanea-531",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Creation Engine registry, assets, and R2 stay held",
+      "why": "Issue 531 asks to create a model registry with credit prices, RLS, and an R2 adapter. lib/models/registry.ts was not confirmed on main, and the rest is an epic.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 531 asks to create a model registry with credit prices, RLS, and an R2 adapter. lib/models/registry.ts was not confirmed on main, and the rest is an epic."
+    },
+    {
+      "id": "hold-arcanea-529",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Credit debit and BotID stay with the owner",
+      "why": "Issue 529 is the atomic credit ledger and paid-route BotID. Pricing and the ledger stay with Frank. No file list is queued.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 529 is the atomic credit ledger and paid-route BotID. Pricing and the ledger stay with Frank. No file list is queued."
+    },
+    {
+      "id": "hold-arcanea-283",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Realm Graph canon promotion stays human",
+      "why": "Issue 283 says only a signed human receipt may change locked canon. Both named files exist on main. Do not arm.",
+      "where": [
+        ".arcanea/lore/CANON_LOCKED.md",
+        "packages/world-sdk/src/evolution.mjs"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 283 says only a signed human receipt may change locked canon. Both named files exist on main. Do not arm."
+    },
+    {
+      "id": "hold-arcanea-276",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Arcanea program epic stays with the founder gates",
+      "why": "Issue 276 is a multi-repo program. release.arcanea.json is not on main. Human publication, rights, canon, and release gates stay in place.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 276 is a multi-repo program. release.arcanea.json is not on main. Human publication, rights, canon, and release gates stay in place."
+    },
+    {
+      "id": "hold-arcanea-198",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "July swarm capture is history, not a patch",
+      "why": "Issue 198 points at a Yogabook control-plane report and says not to blind-merge. This PC does not write yogabook.json. No repo file list is assigned.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 198 points at a Yogabook control-plane report and says not to blind-merge. This PC does not write yogabook.json. No repo file list is assigned."
+    },
+    {
+      "id": "hold-arcanea-190",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/arcanea-ai-app",
+      "title": "Shader and glass wiring waits for a design pass",
+      "why": "Issue 190 names these three existing pages plus a design-verifier run. The live hero is called out as higher risk. Do not arm.",
+      "where": [
+        "apps/web/components/landing/hero-section.tsx",
+        "apps/web/components/landing/hero-premium.tsx",
+        "apps/web/app/v3/v3-content.tsx"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 190 names these three existing pages plus a design-verifier run. The live hero is called out as higher risk. Do not arm."
+    },
+    {
+      "id": "hold-gencreator-123",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Agency production cell is an epic",
+      "why": "Issue 123 defines a client capture and approval product. lib/storage/r2-client.ts is a policy seam, not an assigned 1-12 file patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 123 defines a client capture and approval product. lib/storage/r2-client.ts is a policy seam, not an assigned 1-12 file patch."
+    },
+    {
+      "id": "hold-gencreator-119",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Creator Agent Pack roadmap is not one patch",
+      "why": "Issue 119 is a roadmap with Frank-gated migrations, webhooks, and pricing. It does not assign one file list.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 119 is a roadmap with Frank-gated migrations, webhooks, and pricing. It does not assign one file list."
+    },
+    {
+      "id": "hold-gencreator-68",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Publication outcomes stay unsent",
+      "why": "Issue 68 forbids live posting, checkout, provider spend, deployment, and merge. docs/execution/2026-09-14-alignment.md is not on main and is not listed.",
+      "where": [
+        "lib/creator-mission-contract.ts",
+        "lib/creator-studio/tools.ts",
+        "lib/distribution/postiz.ts",
+        "PRODUCTION-READINESS.md"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 68 forbids live posting, checkout, provider spend, deployment, and merge. docs/execution/2026-09-14-alignment.md is not on main and is not listed."
+    },
+    {
+      "id": "hold-gencreator-9",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Voice-match milestone stays a product milestone",
+      "why": "Issue 9 is a factory milestone checklist. The factory specs are references, not an assigned code patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 9 is a factory milestone checklist. The factory specs are references, not an assigned code patch."
+    },
+    {
+      "id": "hold-gencreator-8",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/gencreator.ai",
+      "title": "Quiz milestone stays a product milestone",
+      "why": "Issue 8 points at an existing quiz pull request and a factory spec. It does not assign a new 1-12 file patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 8 points at an existing quiz pull request and a factory spec. It does not assign a new 1-12 file patch."
+    },
+    {
+      "id": "hold-sis-444",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "title": "Estate crosswalk must not fork the taxonomy",
+      "why": "Issue 444 says not to rewrite STACK.md, VERTICALS.md, SIS.md, or SIP.md. Taxonomy changes need the board. No edit file list is assigned.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 444 says not to rewrite STACK.md, VERTICALS.md, SIS.md, or SIP.md. Taxonomy changes need the board. No edit file list is assigned."
+    },
+    {
+      "id": "hold-sis-219",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "title": "Paperclip stays a research decision",
+      "why": "Issue 219 does not authorize a new scheduler or a Paperclip install. The adapter profile is context, not an assigned patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 219 does not authorize a new scheduler or a Paperclip install. The adapter profile is context, not an assigned patch."
+    },
+    {
+      "id": "hold-sis-193",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "title": "Run-receipt ratification waits for the board",
+      "why": "Issue 193 is four questions for a convened board. It says the constitution files stay untouched until that decision.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 193 is four questions for a convened board. It says the constitution files stay untouched until that decision."
+    },
+    {
+      "id": "hold-sis-158",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/Starlight-Intelligence-System",
+      "title": "Federation fixture has no assigned patch list",
+      "why": "Issue 158 cites orchestrator, queen driver, loop engine, and session store as the evidence baseline. It asks for a new acceptance case and does not assign those files as the patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 158 cites orchestrator, queen driver, loop engine, and session store as the evidence baseline. It asks for a new acceptance case and does not assign those files as the patch."
+    },
+    {
+      "id": "hold-acos-100",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-creator-os",
+      "title": "Org-import traversal guard is already on main",
+      "why": "Issue 100 also asks to land pull request 92 and stop cancelling PR runs. Main already refuses a non-plain --instance id. The issue does not name the test file.",
+      "where": [
+        "scripts/org-import.mjs"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 100 also asks to land pull request 92 and stop cancelling PR runs. Main already refuses a non-plain --instance id. The issue does not name the test file."
+    },
+    {
+      "id": "hold-acos-99",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-creator-os",
+      "title": "Studio v2 publishing stays with Frank",
+      "why": "Issue 99 has a human gate for image rights, publishing, and uploads. Its new composer, schema, and test files were not confirmed on main and are not listed.",
+      "where": [
+        "docs/agent-os/STUDIO.md",
+        "agent-os/roles/publisher.md",
+        "agent-os/roles/visual-producer.md"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 99 has a human gate for image rights, publishing, and uploads. Its new composer, schema, and test files were not confirmed on main and are not listed."
+    },
+    {
+      "id": "hold-acos-98",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-creator-os",
+      "title": "Cross-family mesh gate has no file list in this repo",
+      "why": "Issue 98 names a prototype in agentic-ops and follow-ups after pull request 86. The AGENTS.md lines in the scan are the shared footer, not the patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 98 names a prototype in agentic-ops and follow-ups after pull request 86. The AGENTS.md lines in the scan are the shared footer, not the patch."
+    },
+    {
+      "id": "hold-acos-96",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-creator-os",
+      "title": "Adopter CI stays blocked on a human merge",
+      "why": "Issue 96 also names a workflow job and says merge is Frank's. The workflow is not listed. The three files above exist and are the non-workflow part of the allowed list.",
+      "where": [
+        "docs/agent-os/ADOPT.md",
+        "scripts/agent-os-init.mjs",
+        "instances/_template/agent-os/overlay.json"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 96 also names a workflow job and says merge is Frank's. The workflow is not listed. The three files above exist and are the non-workflow part of the allowed list."
+    },
+    {
+      "id": "hold-acos-39",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-creator-os",
+      "title": "Workshop pack is not on main and payments stay human",
+      "why": "Issue 39 asks for skills/workshop-event-os/SKILL.md, which is not on main, and it forbids booking payments without human approval.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 39 asks for skills/workshop-event-os/SKILL.md, which is not on main, and it forbids booking payments without human approval."
+    },
+    {
+      "id": "hold-ops-204",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Private capture spool stays local",
+      "why": "Issue 204 adds a private spool reader to this existing file. Input and output stay private. Do not send it to a cloud session.",
+      "where": [
+        "lifecycle/sis-continuity.js"
+      ],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 204 adds a private spool reader to this existing file. Input and output stay private. Do not send it to a cloud session."
+    },
+    {
+      "id": "hold-ops-189",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Cost rule already has open pull request 240",
+      "why": "Issue 189 allows only ops/LOCAL-CLOUD-COST.md. That file is not on main. Pull request 240 is open, BLOCKED, with failed checks. Do not open a second patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 189 allows only ops/LOCAL-CLOUD-COST.md. That file is not on main. Pull request 240 is open, BLOCKED, with failed checks. Do not open a second patch."
+    },
+    {
+      "id": "hold-ops-186",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "C940 reboot hygiene is a local session",
+      "why": "Issue 186 says cloud agents cannot do it. It asks Frank to close windows and reboot. settings.local.json stays untracked.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 186 says cloud agents cannot do it. It asks Frank to close windows and reboot. settings.local.json stays untracked."
+    },
+    {
+      "id": "hold-ops-184",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Vercel project settings stay on Frank's button",
+      "why": "Issue 184 is preview protection, skew, rolling release, and domain redirects. The agent connection returns 403. No repo file list is assigned.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 184 is preview protection, skew, rolling release, and domain redirects. The agent connection returns 403. No repo file list is assigned."
+    },
+    {
+      "id": "hold-ops-183",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Eleven production upgrades stay one repo at a time with Frank",
+      "why": "Issue 183 is one production pull request per site, including frankx.ai. It names the baseline doc as context, not as the patch.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 183 is one production pull request per site, including frankx.ai. It names the baseline doc as context, not as the patch."
+    },
+    {
+      "id": "hold-ops-181",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Continuity live rollout needs Frank's machine",
+      "why": "Issue 181 says cloud agents cannot do it. Trust policy review and local merges stay with Frank. The scan paths are not an assigned patch list.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 181 says cloud agents cannot do it. Trust policy review and local merges stay with Frank. The scan paths are not an assigned patch list."
+    },
+    {
+      "id": "hold-ops-179",
+      "runner": "you",
+      "lane": "quality",
+      "repo": "frankxai/agentic-ops",
+      "title": "Fix-first list stays with Frank where secrets or legal claims are involved",
+      "why": "Issue 179 is 22 defects. The source list is quality/fix-first.md in another repo. It warns of a secret URL and says not to paste it. No file list is copied here.",
+      "where": [],
+      "land": "you",
+      "how": "Do not arm. Owner hold from the 2026-10-17 read-only triage. No Jules session, checkout, install, build, or merge.",
+      "prompt": "Do not send. Issue 179 is 22 defects. The source list is quality/fix-first.md in another repo. It warns of a secret URL and says not to paste it. No file list is copied here."
     }
   ]
 }
