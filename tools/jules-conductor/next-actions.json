@@ -99,13 +99,15 @@
       "lane": "quality",
       "repo": "frankxai/Starlight-Intelligence-System",
       "title": "Correct the GenCreator repo pointer in VERTICALS.md",
-      "why": "Issue 163. Session 609243126188726697 completed. The diff accepts: only VERTICALS.md, primary repo frankxai/gencreator.ai and public surface gencreator.ai. No pull request was opened, so it was not landed.",
+      "why": "Issue 163. Session 609243126188726697 accepted only the two GenCreator lines. Pull request 449 holds that hunk and is unmerged. origin/main still has the old lines.",
       "where": [
         "VERTICALS.md"
       ],
       "land": "clerk",
       "ready": false,
-      "how": "Do not arm. The session completed with an accepted changeSet and no pull request. Do not resend this prompt.",
+      "outcome": "accepted-unlanded",
+      "pr": "https://github.com/frankxai/Starlight-Intelligence-System/pull/449",
+      "how": "Accepted and not landed. Do not start another Jules session for this hunk.",
       "prompt": "Do not send. Session 609243126188726697 already replaced frankxai/gencreator (to be created) with frankxai/gencreator.ai and gencreator.community (to be registered) with gencreator.ai in VERTICALS.md. Do not create a repository and do not edit a second file."
     },
     {

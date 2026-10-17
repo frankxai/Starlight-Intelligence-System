@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { armAction, isBounded, takeReady } from '../work-board.mjs';
+import { armAction, acceptedHunkOpen, classifyObservation, isBounded, mentionPaths, takeReady } from '../work-board.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const board = JSON.parse(readFileSync(join(root, 'next-actions.json'), 'utf8'));
@@ -59,17 +59,33 @@ test('a merged landmark and a rejected guardian are not armed', () => {
   }
 });
 
-test('an accepted verticals pointer is not armed again', () => {
+test('the old GenCreator lines are not open without a pull request', () => {
+  const stale = 'Primary repo: `frankxai/gencreator` *(to be created)*. Public surface: `gencreator.community` *(to be registered)*.';
+  assert.equal(acceptedHunkOpen(stale, null), false);
+  assert.equal(acceptedHunkOpen(stale, ''), false);
+  assert.equal(acceptedHunkOpen(stale, 'https://github.com/frankxai/Starlight-Intelligence-System/pull/1'), true);
+  assert.equal(acceptedHunkOpen('Primary repo: `frankxai/gencreator.ai`. Public surface: `gencreator.ai`.', null), true);
+  assert.equal(classifyObservation({ verdict: 'accept', prUrl: null, merged: false }), 'accepted-unlanded');
+  assert.equal(classifyObservation({ verdict: 'reject', prUrl: null, merged: false }), 'rejected');
+  assert.equal(classifyObservation({ verdict: 'accept', prUrl: 'https://github.com/frankxai/Starlight-Intelligence-System/pull/1', merged: true }), 'landed');
+});
+
+test('mentionPaths keeps a root name and a slash path', () => {
+  assert.deepEqual(
+    mentionPaths('Update VERTICALS.md and metrics/current.json. Skip ../secret.md.'),
+    ['VERTICALS.md', 'metrics/current.json'],
+  );
+});
+
+test('an accepted verticals hunk is open only when the file or a pull request has it', () => {
   const action = board.actions.find((item) => item.id === 'sis-verticals-163');
+  const fileText = readFileSync(join(root, '..', '..', 'VERTICALS.md'), 'utf8');
   assert.equal(action.runner, 'you');
+  assert.equal(action.outcome, 'accepted-unlanded');
   assert.deepEqual(action.where, ['VERTICALS.md']);
-  assert.equal(action.ready, false);
-  assert.match(action.how, /Do not arm/);
   assert.equal(armAction([], action).armed, null);
-  const backlog = JSON.parse(readFileSync(join(root, 'state', 'backlog.json'), 'utf8'));
-  const queued = (backlog.queue || []).find((item) => item.id === 'sis-verticals-163');
-  assert.equal(queued, undefined);
-  assert.equal((backlog.queue || []).some((item) => item.ready === true), false);
+  assert.equal(classifyObservation({ verdict: 'accept', prUrl: action.pr || null, merged: false }), 'accepted-unlanded');
+  assert.equal(acceptedHunkOpen(fileText, action.pr || null), true);
 });
 
 test('every Jules action still on the board is bounded', () => {
