@@ -1348,6 +1348,28 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       renderEvalsAndArena();
       renderReceipts();
       triggerRoute();
+
+      // Live Server-Sent Events (SSE) subscription for real-time CLI & swarm updates
+      if (typeof window.EventSource !== 'undefined') {
+        try {
+          const sse = new EventSource('/api/queen/stream');
+          sse.onmessage = (evt) => {
+            try {
+              const payload = JSON.parse(evt.data);
+              if (payload && payload.state) {
+                state = payload.state;
+                renderTopMetrics();
+                renderHarnessesTable();
+                renderReceipts();
+              }
+            } catch {
+              // ignore malformed frame
+            }
+          };
+        } catch {
+          // non-fatal if SSE unavailable
+        }
+      }
     })();
   </script>
 </body>

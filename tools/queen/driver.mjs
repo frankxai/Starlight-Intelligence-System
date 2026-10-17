@@ -387,20 +387,15 @@ function main() {
           : sub === 'eval-12'
             ? 'eval'
             : sub;
-    import('../../src/queen/index.ts').then(async ({ QueenSovereignEngine, startQueenSovereignServer }) => {
-      const engine = new QueenSovereignEngine(ROOT);
-      if (mapped === 'status') {
-        console.log(JSON.stringify(engine.getFullStateSnapshot(), null, 2));
-      } else if (mapped === 'route') {
-        console.log(JSON.stringify(engine.routeAndRecord({ prompt: argStr || 'Synthesize sovereign multi-agent architecture' }), null, 2));
-      } else if (mapped === 'upgrade-harnesses') {
-        console.log(JSON.stringify(engine.upgradeHarnessesAndRecord(), null, 2));
-      } else if (mapped === 'eval' || mapped === 'compare-grok') {
-        console.log(JSON.stringify(engine.runBenchmarksAndRecord().comparison, null, 2));
-      } else if (mapped === 'serve') {
-        const handle = await startQueenSovereignServer({ workspaceRoot: ROOT });
-        console.log(`[Starlight Queen v1.0] Live Sovereign Cockpit at ${handle.url}`);
-      }
+    import('node:child_process').then(({ spawnSync }) => {
+      const tsxCli = join(ROOT, 'node_modules', 'tsx', 'dist', 'cli.mjs');
+      const cliEntry = join(ROOT, 'src', 'cli.ts');
+      const res = spawnSync(
+        process.execPath,
+        [tsxCli, cliEntry, 'queen', mapped, ...args],
+        { cwd: ROOT, stdio: 'inherit' }
+      );
+      process.exitCode = res.status ?? 0;
     });
     return;
   }
