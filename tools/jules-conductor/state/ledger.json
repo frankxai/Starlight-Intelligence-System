@@ -487,10 +487,54 @@
       "firstSeen": "2026-10-12T13:09:22.714Z",
       "verified": false,
       "merged": false
+    },
+    "9625580807105179934": {
+      "id": "9625580807105179934",
+      "repo": "frankxai/gencreator.ai",
+      "description": "From origin/main on frankxai/gencreator.ai. Closed pull request 153 is unmerged and conflicting. Do not reopen it. Do not downgrade any dependency. On main, every package in that pull request is already at or past its target except framer-motion, which is still ^13.4.4. Raise only framer-motion to ^13.5.0 in the root package.json. Leave @types/node unchanged in the root package.json and in packages/creator-mcp/package.json. Do not edit packages/creator-mcp/package.json. .github/dependabot.yml already limits the minor-and-patch group to update-types minor and patch. Do not change that file unless a line contradicts that limit. Regenerate pnpm-lock.yaml with the pnpm version pinned in package.json packageManager. Do not hand-edit the lockfile. Open one draft pull request. Do not merge. Do not edit payments, vercel.json, or secrets.",
+      "status": "Completed",
+      "firstSeen": "2026-10-15T15:28:30.145Z",
+      "verified": false,
+      "merged": false,
+      "owned": true,
+      "accepted": false,
+      "trackToken": "jules-track-mv9p133x-blp4rl",
+      "reviewedAt": "2026-10-16T03:10:00Z",
+      "review": "Rejected 2026-10-16. Completed with a patch and no pull request. package.json only raises framer-motion to ^13.5.0. The lockfile also drops supports-color peer keys and esbuild from webpack snapshots. pnpm 10.34.5 reproduced that rewrite. Not landed."
+    },
+    "1664111359674067715": {
+      "id": "1664111359674067715",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "From origin/main on frankxai/arcanea-ai-app, implement issue 641 and nothing else. In apps/web/app/layout.tsx add tabIndex={-1} to main#main-content. In apps/web/app/page.tsx replace the outer page-level main with a React fragment so the root layout remains the only main. Keep the current visual direction. Do not change copy, color, motion, or aria-label. Do not repair unrelated type errors in @arcanea/mcp-server or @arcanea/design-system. Do not edit billing, credits, catalog, or auth. Open one draft pull request. Do not merge. Do not edit pull request 537.",
+      "status": "Completed",
+      "firstSeen": "2026-10-17T02:24:33.420Z",
+      "lastSeen": "2026-10-17T02:39:43.364Z",
+      "verified": true,
+      "merged": false,
+      "owned": true,
+      "accepted": true,
+      "trackToken": "jules-track-mvbrwpnz-ibtdp7",
+      "reviewedAt": "2026-10-17T03:36:30Z",
+      "review": "Accept. Completed with no Jules pull request. The patch touched only apps/web/app/layout.tsx and apps/web/app/page.tsx. The same patch was published as arcanea-ai-app #663 and squash-merged as 8942f25d. The session itself did not open that pull request."
+    },
+    "3546132594215418190": {
+      "id": "3546132594215418190",
+      "repo": "frankxai/arcanea-ai-app",
+      "description": "From origin/main on frankxai/arcanea-ai-app, implement issue 474 and nothing else. Restore Guardian reports on public book pages. Touch only apps/web/components/books/GuardianReport.tsx and apps/web/lib/books/guardian-scorer.ts. Do not widen Supabase privilege, do not add a service-role key, and do not make any RLS policy more permissive. Do not edit billing, credits, or auth. Open one draft pull request. Do not merge.",
+      "status": "Completed",
+      "firstSeen": "2026-10-17T02:41:40.632Z",
+      "lastSeen": "2026-10-17T03:07:01.843Z",
+      "verified": true,
+      "merged": false,
+      "owned": true,
+      "accepted": false,
+      "trackToken": "jules-track-mvbsiqda-rxwhpy",
+      "reviewedAt": "2026-10-17T03:08:00Z",
+      "review": "Reject. Completed with a changeSet and no pull request. The read path uses the anon public client, and the diff also changes public labels, rewrites quotes, and doubles the load timeout from 2500ms to 5000ms. Not landed."
     }
   },
   "metrics": {
-    "dispatched": 95,
+    "dispatched": 98,
     "completed": 331,
     "merged": 177,
     "quarantined": 54
