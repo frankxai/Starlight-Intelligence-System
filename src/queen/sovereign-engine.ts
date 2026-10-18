@@ -36,6 +36,12 @@ import {
   SwarmGraphAbsorber,
   SwarmGraphAbsorberSnapshot,
 } from './swarm-graph-absorber';
+import {
+  LivingSurfaceSpec,
+  QueenSpecIntelligenceEngine,
+  SpecEvolutionRequirement,
+  SpecIntelligenceSnapshot,
+} from './spec-intelligence-engine';
 
 export interface SovereignReceiptEntry {
   receiptId: string;
@@ -46,7 +52,8 @@ export interface SovereignReceiptEntry {
     | 'RUST_KERNEL_GATE'
     | 'FRONTIER_BENCHMARK'
     | 'SWARM_DISPATCH'
-    | 'META_SELF_HEAL';
+    | 'META_SELF_HEAL'
+    | 'SPEC_EVOLVE';
   brandId: string;
   makerHarness: string;
   checkerHarness: string;
@@ -81,6 +88,7 @@ export interface QueenSovereignStateSnapshot {
   subscriptions: SubscriptionGovernorSnapshot;
   metaConductor: MetaHarnessConductorSnapshot;
   swarmGraph: SwarmGraphAbsorberSnapshot;
+  specIntelligence: SpecIntelligenceSnapshot;
   activeAgentSessions: TerminalSession[];
   recentReceipts: SovereignReceiptEntry[];
 }
@@ -106,6 +114,7 @@ export class QueenSovereignEngine {
   public readonly subscriptionGovernor: SubscriptionGovernor;
   public readonly metaConductor: MetaHarnessConductor;
   public readonly swarmGraphAbsorber: SwarmGraphAbsorber;
+  public readonly specIntelligence: QueenSpecIntelligenceEngine;
   public readonly lifecycleManager: AgentLifecycleManager;
   private readonly ledgerPath: string;
   private cachedSessions: TerminalSession[] = [];
@@ -124,6 +133,7 @@ export class QueenSovereignEngine {
     this.subscriptionGovernor = new SubscriptionGovernor(workspaceRoot);
     this.metaConductor = new MetaHarnessConductor(workspaceRoot);
     this.swarmGraphAbsorber = new SwarmGraphAbsorber(workspaceRoot);
+    this.specIntelligence = new QueenSpecIntelligenceEngine(workspaceRoot);
     this.lifecycleManager = new AgentLifecycleManager();
     this.ledgerPath = path.join(
       this.workspaceRoot,
@@ -176,6 +186,7 @@ export class QueenSovereignEngine {
     const subscriptions = this.subscriptionGovernor.getSnapshot();
     const metaConductor = this.metaConductor.getSnapshot(false);
     const swarmGraph = this.swarmGraphAbsorber.getSnapshot();
+    const specIntelligence = this.specIntelligence.getSnapshot(false, false);
     const activeAgentSessions = this.cachedSessions;
     const recentReceipts = this.readRecentReceipts(12);
 
@@ -205,9 +216,30 @@ export class QueenSovereignEngine {
       subscriptions,
       metaConductor,
       swarmGraph,
+      specIntelligence,
       activeAgentSessions,
       recentReceipts,
     };
+  }
+
+  public evolveSpecAndRecord(params: {
+    surfaceId: string;
+    directive: string;
+    dimension?: SpecEvolutionRequirement['dimension'];
+  }): LivingSurfaceSpec {
+    const evolved = this.specIntelligence.evolveSurfaceSpec(
+      params.surfaceId,
+      params.directive,
+      params.dimension || 'ARCHITECTURE'
+    );
+    this.appendReceipt({
+      eventType: 'SPEC_EVOLVE',
+      brandId: evolved.brand.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      makerHarness: evolved.makerHarness,
+      checkerHarness: evolved.checkerHarness,
+      summary: `Evolved Living Spec ${evolved.specId} to v${evolved.specVersion} (score=${evolved.rubric.compositeScore}/100): ${params.directive.slice(0, 90)}`,
+    });
+    return evolved;
   }
 
   public routeAndRecord(params: {

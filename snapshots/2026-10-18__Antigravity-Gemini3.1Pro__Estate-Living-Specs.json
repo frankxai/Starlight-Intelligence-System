@@ -1,0 +1,2149 @@
+{
+  "generatedAt": "2026-10-18T20:15:17.597Z",
+  "authoringAgent": "Antigravity (Gemini 3.1 Pro · Queen v2.0 Spec-Intelligence Engine)",
+  "gitSha": "be566c165",
+  "totalSurfaces": 30,
+  "verifiedSourceFilesCount": 30,
+  "averageCompositeScore": 95.7,
+  "totalSpecV2Requirements": 31,
+  "specsDirectory": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces",
+  "sidecarDirectory": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace",
+  "surfaces": [
+    {
+      "specId": "spec-surface-01-queen-v2-router",
+      "specVersion": "2.0.0",
+      "surfaceNum": "01",
+      "surfaceId": "01-queen-v2-router",
+      "title": "Queen v2.0 Cockpit — Tab 1: Pareto & Thompson Router + 4-Stage Topology",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-001 · Queen v2.0 Sovereign Meta-Harness & Pareto Router",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "0411f43a62da8cfc",
+      "domStats": {
+        "buttons": 22,
+        "links": 0,
+        "sections": 11,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts",
+        "existsOnDisk": true,
+        "lineCount": 2191,
+        "byteSize": 94077,
+        "targetEditLine": 3,
+        "exportedSymbols": [
+          "renderQueenCockpitHtml"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts:3:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts:3:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 95,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 97.4,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Pareto & Thompson Beta(α,β) multi-objective task router and 4-stage execution pipeline are live on :4329 with FNV-1a cryptographic receipts.",
+      "detectedBottlenecks": [
+        "Primary checkout on :4329 serves the 6-tab v1.0 layout until PR #20 merges the 12-tab v2.0 worktree.",
+        "Router task input box dispatches to /api/queen/execute-mission but lacks a 1-click \"Attach Living Spec ID\" selector."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-01-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Bind Spec-Trace ID Selector into Pareto Router Mission Input",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts",
+          "targetLine": 3,
+          "currentState": "Mission input accepts free-text prompt + brand context + cloud burst workers.",
+          "targetSpecV2": "Add optional specId dropdown (spec-surface-01..30) to /api/queen/execute-mission so every routed mission appends to memory/spec-trace/<spec-id>.md.",
+          "verificationGate": "npm run test:queen && curl -s http://127.0.0.1:4329/api/queen/spec-intelligence"
+        },
+        {
+          "reqId": "REQ-01-2",
+          "dimension": "ARCHITECTURE",
+          "title": "Promote 12-Tab Queen v2.0 Cockpit to Primary Checkout (:4329)",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts",
+          "targetLine": 3,
+          "currentState": "Running verified on worktree branch agent/antigravity/queen-sovereign-superintelligence-20261017.",
+          "targetSpecV2": "Merge PR #20 after cross-family verification so primary :4329 daemon serves all 12 tabs natively.",
+          "verificationGate": "npm test && curl -s http://127.0.0.1:4329/api/queen/state"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/01-queen-v2-router.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-01-queen-v2-router.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/01-queen-v2-router.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-01-queen-v2-router (v2.0) for Queen v2.0 Cockpit — Tab 1: Pareto & Thompson Router + 4-Stage Topology\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/ui-cockpit.ts:3\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/01-queen-v2-router.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-01-1] Bind Spec-Trace ID Selector into Pareto Router Mission Input: Add optional specId dropdown (spec-surface-01..30) to /api/queen/execute-mission so every routed mission appends to memory/spec-trace/<spec-id>.md. (Verify: npm run test:queen && curl -s http://127.0.0.1:4329/api/queen/spec-intelligence)\n  - [REQ-01-2] Promote 12-Tab Queen v2.0 Cockpit to Primary Checkout (:4329): Merge PR #20 after cross-family verification so primary :4329 daemon serves all 12 tabs natively. (Verify: npm test && curl -s http://127.0.0.1:4329/api/queen/state)\nCommit Trailer Required: Spec: spec-surface-01-queen-v2-router",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-02-queen-v2-harnesses",
+      "specVersion": "2.0.0",
+      "surfaceNum": "02",
+      "surfaceId": "02-queen-v2-harnesses",
+      "title": "Queen v2.0 Cockpit — Tab 2: 12-Harness Federation & Proactive Upgrader",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#harnesses",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-opus-4-7)",
+      "founderIntent": "I-002 · 12-Harness Federation & Proactive Upgrader",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "4e1121e0cca2781e",
+      "domStats": {
+        "buttons": 22,
+        "links": 0,
+        "sections": 11,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/harness-mesh.ts",
+        "existsOnDisk": true,
+        "lineCount": 838,
+        "byteSize": 30509,
+        "targetEditLine": 6,
+        "exportedSymbols": [
+          "HarnessCategory",
+          "ComputeAuthRail",
+          "HarnessCapabilityDescriptor",
+          "HarnessUpgradeAction",
+          "RustKernelGateResult",
+          "WaitForEdge",
+          "McpToolDef",
+          "HarnessMesh"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/harness-mesh.ts:6:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/harness-mesh.ts:6:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Federates 7 local CLI harnesses + 5 cloud runtimes with capability envelopes, latency priors, and 97.9% readiness score.",
+      "detectedBottlenecks": [
+        "OpenCode adapter remains in discovery-only mode until global skill vector test passes.",
+        "Turn-0 instruction spine budget (8k tokens) is checked on demand rather than displayed per harness row."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-02-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Surface Per-Harness Turn-0 Token Budget Bar in Harness Mesh Table",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/harness-mesh.ts",
+          "targetLine": 6,
+          "currentState": "Harness table shows readiness %, concurrency capacity, and active envelope.",
+          "targetSpecV2": "Render exact Turn-0 instruction token count vs. 8,000-token ceiling per harness in harness-mesh.ts.",
+          "verificationGate": "npm run test:work-graph && npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/02-queen-v2-harnesses.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-02-queen-v2-harnesses.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/02-queen-v2-harnesses.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-02-queen-v2-harnesses (v2.0) for Queen v2.0 Cockpit — Tab 2: 12-Harness Federation & Proactive Upgrader\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/harness-mesh.ts:6\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/02-queen-v2-harnesses.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-opus-4-7)\nRequirements:\n  - [REQ-02-1] Surface Per-Harness Turn-0 Token Budget Bar in Harness Mesh Table: Render exact Turn-0 instruction token count vs. 8,000-token ceiling per harness in harness-mesh.ts. (Verify: npm run test:work-graph && npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-02-queen-v2-harnesses",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-03-queen-v2-brands",
+      "specVersion": "2.0.0",
+      "surfaceNum": "03",
+      "surfaceId": "03-queen-v2-brands",
+      "title": "Queen v2.0 Cockpit — Tab 3: 8-Brand × 8-Moat Engineering Switchboard",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#brands",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-opus-4-7)",
+      "founderIntent": "I-003 · 8-Brand × 8-Moat Engineering Switchboard",
+      "strategicObjective": "O3 · GenCreator & Multi-Brand Freedom Engine",
+      "sha256VisualReceipt": "c90ab5bf82342fee",
+      "domStats": {
+        "buttons": 22,
+        "links": 0,
+        "sections": 11,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/brand-switchboard.ts",
+        "existsOnDisk": true,
+        "lineCount": 426,
+        "byteSize": 24349,
+        "targetEditLine": 4,
+        "exportedSymbols": [
+          "BrandId",
+          "EngineeringMoatLayer",
+          "MoatLayerSpec",
+          "BrandPortfolioEntry",
+          "BrandSwitchboard"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/brand-switchboard.ts:4:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/brand-switchboard.ts:4:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Maps all 8 active brands across 8 engineering moat layers (64 cells, 93.4% average readiness) aligned to TRUTH.md.",
+      "detectedBottlenecks": [
+        "Revenue/DemandSignal counters per brand are static snapshots rather than bound to live Stripe/Whop webhook counts."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-03-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Bind DemandSignal & Living Spec Links to Each Brand Switchboard Card",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/brand-switchboard.ts",
+          "targetLine": 4,
+          "currentState": "Each brand card displays domain, primary repo, and 8 moat readiness scores.",
+          "targetSpecV2": "Add 1-click \"Open Brand Repo in IDE\" (vscode://) and live spec score pill to every brand row.",
+          "verificationGate": "npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/03-queen-v2-brands.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-03-queen-v2-brands.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/03-queen-v2-brands.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-03-queen-v2-brands (v2.0) for Queen v2.0 Cockpit — Tab 3: 8-Brand × 8-Moat Engineering Switchboard\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/brand-switchboard.ts:4\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/03-queen-v2-brands.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-opus-4-7)\nRequirements:\n  - [REQ-03-1] Bind DemandSignal & Living Spec Links to Each Brand Switchboard Card: Add 1-click \"Open Brand Repo in IDE\" (vscode://) and live spec score pill to every brand row. (Verify: npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-03-queen-v2-brands",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-04-queen-v2-codex",
+      "specVersion": "2.0.0",
+      "surfaceNum": "04",
+      "surfaceId": "04-queen-v2-codex",
+      "title": "Queen v2.0 Cockpit — Tab 7: Master Codex (10 Orgs, 151 Agents, 12 Truths)",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#codex",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-004 · Master Codex (10 Orgs, 151 Agents, 12 Truths)",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Governance",
+      "sha256VisualReceipt": "ce6449e03e4318b7",
+      "domStats": {
+        "buttons": 22,
+        "links": 0,
+        "sections": 11,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/sovereign-master-codex.ts",
+        "existsOnDisk": true,
+        "lineCount": 851,
+        "byteSize": 42443,
+        "targetEditLine": 4,
+        "exportedSymbols": [
+          "GitHubOrgFederationEntry",
+          "AgentTierDefinition",
+          "CanonicalTruthAndAntiDriftRule",
+          "HorizonMilestonePlan",
+          "SovereignMasterCodexSnapshot",
+          "SovereignMasterCodex"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/sovereign-master-codex.ts:4:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/sovereign-master-codex.ts:4:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Indexes all 10 GitHub organizations, 71 dual-remote local repositories, 151 named agents, 89 skills, and 12 TRUTH.md laws.",
+      "detectedBottlenecks": [
+        "Agent tier rows show counts and sample leads but do not deep-link directly to agents/<name>.md in the IDE."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-04-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Add Direct IDE Links (vscode://) for All 12 Agent Tiers & 10 GitHub Orgs",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/sovereign-master-codex.ts",
+          "targetLine": 4,
+          "currentState": "Master Codex renders organization cards and 12 non-waivable truth laws.",
+          "targetSpecV2": "Attach vscode://file/ links to AGENTS.md, AGENT_REGISTRY.md, and skills/SKILL_REGISTRY.md.",
+          "verificationGate": "npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/04-queen-v2-codex.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-04-queen-v2-codex.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/04-queen-v2-codex.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-04-queen-v2-codex (v2.0) for Queen v2.0 Cockpit — Tab 7: Master Codex (10 Orgs, 151 Agents, 12 Truths)\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/sovereign-master-codex.ts:4\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/04-queen-v2-codex.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-04-1] Add Direct IDE Links (vscode://) for All 12 Agent Tiers & 10 GitHub Orgs: Attach vscode://file/ links to AGENTS.md, AGENT_REGISTRY.md, and skills/SKILL_REGISTRY.md. (Verify: npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-04-queen-v2-codex",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-05-queen-v2-subscriptions",
+      "specVersion": "2.0.0",
+      "surfaceNum": "05",
+      "surfaceId": "05-queen-v2-subscriptions",
+      "title": "Queen v2.0 Cockpit — Tab 8: 10-Rail OAuth Subscription Max-Out Governor",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#subscriptions",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "grok-cli (grok-4.2-heavy)",
+      "founderIntent": "I-006..I-009 · 10-Rail OAuth Subscription Max-Out Governor (10.5x)",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "995b5cfc4f60fd3a",
+      "domStats": {
+        "buttons": 26,
+        "links": 0,
+        "sections": 14,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/subscription-governor.ts",
+        "existsOnDisk": true,
+        "lineCount": 494,
+        "byteSize": 22580,
+        "targetEditLine": 5,
+        "exportedSymbols": [
+          "SubscriptionProviderId",
+          "AuthMechanism",
+          "SubscriptionRailStatus",
+          "MinuteCadenceRule",
+          "SleepWakeMaxOutBlock",
+          "SubscriptionGovernorSnapshot",
+          "SubscriptionGovernor"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/subscription-governor.ts:5:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/subscription-governor.ts:5:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Tracks 10 OAuth/free-tier rails ($285/mo fixed cost unlocking $2,995/mo API equivalent = 10.5x leverage) with 24h hourly wave schedule.",
+      "detectedBottlenecks": [
+        "Rolling 5-hour window utilization uses modeled telemetry unless ~/.claude and ~/.codex JSONL counters are polled."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-05-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Wire Live Session JSONL Token Counter Reader into SubscriptionGovernor",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/subscription-governor.ts",
+          "targetLine": 5,
+          "currentState": "Computes 5h window remaining % and T-30m harvest triggers across 10 rails.",
+          "targetSpecV2": "Read last-5h transcript JSONL byte/message deltas from ~/.claude and ~/.gemini to compute live utilization.",
+          "verificationGate": "npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/05-queen-v2-subscriptions.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-05-queen-v2-subscriptions.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/05-queen-v2-subscriptions.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-05-queen-v2-subscriptions (v2.0) for Queen v2.0 Cockpit — Tab 8: 10-Rail OAuth Subscription Max-Out Governor\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/subscription-governor.ts:5\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/05-queen-v2-subscriptions.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: grok-cli (grok-4.2-heavy)\nRequirements:\n  - [REQ-05-1] Wire Live Session JSONL Token Counter Reader into SubscriptionGovernor: Read last-5h transcript JSONL byte/message deltas from ~/.claude and ~/.gemini to compute live utilization. (Verify: npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-05-queen-v2-subscriptions",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-06-queen-v2-conductor",
+      "specVersion": "2.0.0",
+      "surfaceNum": "06",
+      "surfaceId": "06-queen-v2-conductor",
+      "title": "Queen v2.0 Cockpit — Tab 9: Window CLI Conductor & 14-Card Self-Healer",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#conductor",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-005 · Open-Window CLI Conductor & 14-Card Self-Healer",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "df132ff48b360779",
+      "domStats": {
+        "buttons": 26,
+        "links": 0,
+        "sections": 14,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/meta-harness-conductor.ts",
+        "existsOnDisk": true,
+        "lineCount": 516,
+        "byteSize": 20021,
+        "targetEditLine": 5,
+        "exportedSymbols": [
+          "ActiveTerminalWindow",
+          "StuckCardHealingRecord",
+          "McpUnificationEntry",
+          "MachineResourceGovernance",
+          "MetaHarnessConductorSnapshot",
+          "MetaHarnessConductor"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/meta-harness-conductor.ts:5:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/meta-harness-conductor.ts:5:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Steers 6 active CLI windows via .starlight/steered-prompts/ and healed 14/14 stuck _hold-admission cards so Grok 5m ticks never loop.",
+      "detectedBottlenecks": [
+        "Steered prompt files are staged in .starlight/steered-prompts/ but could also emit a native Spec-Trace sidecar entry."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-06-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Auto-Write Spec-Trace Dispatch Entry on Every Window Steer Action",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/meta-harness-conductor.ts",
+          "targetLine": 5,
+          "currentState": "meta-harness-conductor.ts writes .starlight/steered-prompts/<window-id>.prompt.md.",
+          "targetSpecV2": "Include Spec: <spec-id> header in every steered prompt file for end-to-end commit traceability.",
+          "verificationGate": "npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/06-queen-v2-conductor.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-06-queen-v2-conductor.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/06-queen-v2-conductor.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-06-queen-v2-conductor (v2.0) for Queen v2.0 Cockpit — Tab 9: Window CLI Conductor & 14-Card Self-Healer\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/meta-harness-conductor.ts:5\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/06-queen-v2-conductor.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-06-1] Auto-Write Spec-Trace Dispatch Entry on Every Window Steer Action: Include Spec: <spec-id> header in every steered prompt file for end-to-end commit traceability. (Verify: npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-06-queen-v2-conductor",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-07-queen-v2-swarm-intents",
+      "specVersion": "2.0.0",
+      "surfaceNum": "07",
+      "surfaceId": "07-queen-v2-swarm-intents",
+      "title": "Queen v2.0 Cockpit — Tab 10/11: RuFlow × OmO × Graphiti & 30/30 Intents",
+      "brand": "Starlight Queen v2.0",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:4329/#swarm-intents",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity (Gemini 3.1 Pro)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-opus-4-7)",
+      "founderIntent": "I-010..I-014 · Absorbed RuFlow v3 × OmO × Graphiti & 30/30 Intents",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "bfe61e5dcecd0f13",
+      "domStats": {
+        "buttons": 26,
+        "links": 0,
+        "sections": 14,
+        "h1": "Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/swarm-graph-absorber.ts",
+        "existsOnDisk": true,
+        "lineCount": 881,
+        "byteSize": 36102,
+        "targetEditLine": 4,
+        "exportedSymbols": [
+          "AbsorbedFrameworkCapability",
+          "OmoTeamRoleSpec",
+          "FrontierHarmonizationLayer",
+          "FounderIntentExecutionRecord",
+          "PortfolioObjectiveStatus",
+          "SwarmGraphAbsorberSnapshot",
+          "SwarmGraphAbsorber"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/swarm-graph-absorber.ts:4:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/swarm-graph-absorber.ts:4:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Absorbs 10 frontier capabilities (RuFlow MoE, OmO 11-role Boulder state, Graphiti bi-temporal spine) and tracks 30/30 Founder Intents.",
+      "detectedBottlenecks": [
+        "Each of the 30 Founder Intents should link directly to its corresponding Living Surface Spec (.spec.md) and IDE file."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-07-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Cross-Link All 30 Founder Intents to Living Surface Specs (01..30)",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/swarm-graph-absorber.ts",
+          "targetLine": 4,
+          "currentState": "Displays 30 Founder Intents (I-001..I-030) with status and target package.",
+          "targetSpecV2": "Link each Intent I-001..I-030 directly to docs/superpowers/specs/estate-surfaces/<id>.spec.md.",
+          "verificationGate": "npm run test:queen"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/07-queen-v2-swarm-intents.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-07-queen-v2-swarm-intents.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/07-queen-v2-swarm-intents.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-07-queen-v2-swarm-intents (v2.0) for Queen v2.0 Cockpit — Tab 10/11: RuFlow × OmO × Graphiti & 30/30 Intents\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/src/queen/swarm-graph-absorber.ts:4\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/07-queen-v2-swarm-intents.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-opus-4-7)\nRequirements:\n  - [REQ-07-1] Cross-Link All 30 Founder Intents to Living Surface Specs (01..30): Link each Intent I-001..I-030 directly to docs/superpowers/specs/estate-surfaces/<id>.spec.md. (Verify: npm run test:queen)\nCommit Trailer Required: Spec: spec-surface-07-queen-v2-swarm-intents",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-08-unified-command-center",
+      "specVersion": "2.0.0",
+      "surfaceNum": "08",
+      "surfaceId": "08-unified-command-center",
+      "title": "Starlight Agentic OS — Unified Local + Cloud Command Center",
+      "brand": "Starlight Estate Control Plane",
+      "category": "Local Cockpit",
+      "url": "file:///C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html",
+      "repo": "starlight/command-center",
+      "authorAgent": "Antigravity + Claude Code",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-sonnet-4-6)",
+      "founderIntent": "I-015..I-018 · Unified Local + Cloud Agentic OS Command Center",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "ab6953575993f88b",
+      "domStats": {
+        "buttons": 20,
+        "links": 10,
+        "sections": 18,
+        "h1": "Unified Local + Cloud Agentic Command Center"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html",
+        "existsOnDisk": true,
+        "lineCount": 2575,
+        "byteSize": 225287,
+        "targetEditLine": 1,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html:1:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html:1:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Standalone HTML5 executive command board displaying 100% Eval-50 recall, 1,394 vault atoms, 71/71 repos, and 7 local + 5 cloud harnesses.",
+      "detectedBottlenecks": [
+        "KPI counters in starlight-agentic-os-command-center.html are static HTML rather than fetching live /api/queen/state JSON."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-08-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Add Live Fetch Bridge to http://127.0.0.1:4329/api/queen/state with Graceful Offline Fallback",
+          "targetFile": "C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html",
+          "targetLine": 1,
+          "currentState": "Renders static snapshot metrics from 2026-10-18.",
+          "targetSpecV2": "Poll http://127.0.0.1:4329/api/queen/state when local server is online and add 1-click IDE launcher buttons.",
+          "verificationGate": "Verify DOM update on :4329 state change"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/08-unified-command-center.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-08-unified-command-center.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/08-unified-command-center.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-08-unified-command-center (v2.0) for Starlight Agentic OS — Unified Local + Cloud Command Center\nTarget Source File: C:/Users/frank/starlight/command-center/starlight-agentic-os-command-center.html:1\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/08-unified-command-center.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-sonnet-4-6)\nRequirements:\n  - [REQ-08-1] Add Live Fetch Bridge to http://127.0.0.1:4329/api/queen/state with Graceful Offline Fallback: Poll http://127.0.0.1:4329/api/queen/state when local server is online and add 1-click IDE launcher buttons. (Verify: Verify DOM update on :4329 state change)\nCommit Trailer Required: Spec: spec-surface-08-unified-command-center",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-09-starlight-voice-live",
+      "specVersion": "2.0.0",
+      "surfaceNum": "09",
+      "surfaceId": "09-starlight-voice-live",
+      "title": "Starlight Voice (Ara) — Live Glass Sphere Cockpit (:8765/live)",
+      "brand": "Starlight Voice",
+      "category": "Local Cockpit",
+      "url": "http://127.0.0.1:8765/live",
+      "repo": "repos/starlight-voice",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-023 · Starlight Voice (Ara) Live Glass Sphere Cockpit",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "a3c6371b1192e899",
+      "domStats": {
+        "buttons": 0,
+        "links": 3,
+        "sections": 1,
+        "h1": "Starlight Voice (Ara) — Live Glass Sphere Cockpit (:8765/live)"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlight-voice/README.md",
+        "existsOnDisk": true,
+        "lineCount": 153,
+        "byteSize": 4997,
+        "targetEditLine": 7,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlight-voice/README.md:7:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlight-voice/README.md:7:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 92,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 95,
+        "specTraceAndConversion": 96,
+        "compositeScore": 94.2,
+        "grade": "S"
+      },
+      "executiveDiagnosis": "Minimalist WebGL/Canvas reactive glass sphere for Ara voice sessions on :8765/live (\"No session yet\").",
+      "detectedBottlenecks": [
+        "Only 2 interactive buttons visible on idle screen; lacks a quick \"Start Spec Review Session\" or \"Connect Queen :4329\" button."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-09-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Add Quick-Start Voice Intent Pills (\"Review Today's 30 Specs\", \"Steer Swarms\", \"Capture Memory\")",
+          "targetFile": "C:/Users/frank/starlight/repos/starlight-voice/README.md",
+          "targetLine": 7,
+          "currentState": "Idle state displays glass sphere + \"Ara / No session yet\".",
+          "targetSpecV2": "Render 3 glassmorphic quick-session pills below Ara sphere that initialize voice-to-spec handoff packets.",
+          "verificationGate": "curl -s http://127.0.0.1:8765/live"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/09-starlight-voice-live.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-09-starlight-voice-live.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/09-starlight-voice-live.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-09-starlight-voice-live (v2.0) for Starlight Voice (Ara) — Live Glass Sphere Cockpit (:8765/live)\nTarget Source File: C:/Users/frank/starlight/repos/starlight-voice/README.md:7\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/09-starlight-voice-live.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-09-1] Add Quick-Start Voice Intent Pills (\"Review Today's 30 Specs\", \"Steer Swarms\", \"Capture Memory\"): Render 3 glassmorphic quick-session pills below Ara sphere that initialize voice-to-spec handoff packets. (Verify: curl -s http://127.0.0.1:8765/live)\nCommit Trailer Required: Spec: spec-surface-09-starlight-voice-live",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-10-starlightintelligence-org-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "10",
+      "surfaceId": "10-starlightintelligence-org-home",
+      "title": "starlightintelligence.org — Public Protocol Explorer & Sovereign Substrate",
+      "brand": "Starlight Intelligence Protocol",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://starlightintelligence.org",
+      "repo": "repos/Starlight-Intelligence-System/site",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-opus-4-7)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-024 · starlightintelligence.org Public Protocol Explorer",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "987014792bfb2246",
+      "domStats": {
+        "buttons": 4,
+        "links": 83,
+        "sections": 24,
+        "h1": "Build as if the kindest future\nis the realistic one."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 783,
+        "byteSize": 31615,
+        "targetEditLine": 37,
+        "exportedSymbols": [
+          "revalidate",
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/page.tsx:37:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/page.tsx:37:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "High-taste editorial hero (\"Build as if the kindest future is the realistic one\") with 29 links, 11 semantic sections, and source-verified counts.",
+      "detectedBottlenecks": [
+        "Does not yet showcase the new Queen v2.0 12-Harness Meta-Orchestrator & Spec-Intelligence Workbench on the homepage."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-10-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Add Interactive Queen v2.0 Meta-Harness & Spec-Intelligence Preview Section",
+          "targetFile": "C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/page.tsx",
+          "targetLine": 37,
+          "currentState": "Showcases 151 agent definitions, 89 skill rules, and 6 semantic memory vaults.",
+          "targetSpecV2": "Add a dedicated \"Queen v2.0 Meta-Harness & Spec-Trace\" interactive preview card in site/src/app/page.tsx.",
+          "verificationGate": "npm run lint:site && npm run build:site"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/10-starlightintelligence-org-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-10-starlightintelligence-org-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/10-starlightintelligence-org-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-10-starlightintelligence-org-home (v2.0) for starlightintelligence.org — Public Protocol Explorer & Sovereign Substrate\nTarget Source File: C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/page.tsx:37\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/10-starlightintelligence-org-home.spec.md\nMaker Harness: claude-code (claude-opus-4-7) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-10-1] Add Interactive Queen v2.0 Meta-Harness & Spec-Intelligence Preview Section: Add a dedicated \"Queen v2.0 Meta-Harness & Spec-Trace\" interactive preview card in site/src/app/page.tsx. (Verify: npm run lint:site && npm run build:site)\nCommit Trailer Required: Spec: spec-surface-10-starlightintelligence-org-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-11-starlightintelligence-org-research",
+      "specVersion": "2.0.0",
+      "surfaceNum": "11",
+      "surfaceId": "11-starlightintelligence-org-research",
+      "title": "starlightintelligence.org/research — 3D Memory Palace & Foundations",
+      "brand": "Starlight Intelligence Protocol",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://starlightintelligence.org/research",
+      "repo": "repos/Starlight-Intelligence-System/site",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-opus-4-7)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-016 · starlightintelligence.org/research Memory Palace & Foundations",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "a922a516c6f8c1a5",
+      "domStats": {
+        "buttons": 4,
+        "links": 62,
+        "sections": 16,
+        "h1": "Substrate decisions\nearn their evidence."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/research/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 298,
+        "byteSize": 13288,
+        "targetEditLine": 6,
+        "exportedSymbols": [
+          "revalidate",
+          "metadata",
+          "ResearchIndexPage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/research/page.tsx:6:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/research/page.tsx:6:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Rubric-locked public research surface (\"Substrate decisions earn their evidence\") featuring 3D Memory Palace & Memory Foundations.",
+      "detectedBottlenecks": [
+        "Graphiti Bi-Temporal Fact Spine (b4f20cb16) and 100% Eval-50 Hit@10 benchmark results are not yet published as Research Paper #03."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-11-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Publish Research Artifact #03: Bi-Temporal Fact Supersession & 100% Eval-50 Hit@10",
+          "targetFile": "C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/research/page.tsx",
+          "targetLine": 6,
+          "currentState": "Lists 2 live research artifacts (3D Memory Palace + Memory Foundations).",
+          "targetSpecV2": "Add Research Artifact #03 card in site/src/app/research/page.tsx with downloadable benchmark JSON receipt.",
+          "verificationGate": "npm run lint:site && npm run build:site"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/11-starlightintelligence-org-research.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-11-starlightintelligence-org-research.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/11-starlightintelligence-org-research.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-11-starlightintelligence-org-research (v2.0) for starlightintelligence.org/research — 3D Memory Palace & Foundations\nTarget Source File: C:/Users/frank/starlight/repos/Starlight-Intelligence-System/site/src/app/research/page.tsx:6\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/11-starlightintelligence-org-research.spec.md\nMaker Harness: claude-code (claude-opus-4-7) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-11-1] Publish Research Artifact #03: Bi-Temporal Fact Supersession & 100% Eval-50 Hit@10: Add Research Artifact #03 card in site/src/app/research/page.tsx with downloadable benchmark JSON receipt. (Verify: npm run lint:site && npm run build:site)\nCommit Trailer Required: Spec: spec-surface-11-starlightintelligence-org-research",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-12-starlightintelligence-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "12",
+      "surfaceId": "12-starlightintelligence-ai-home",
+      "title": "starlightintelligence.ai — Applied Commercial Sovereign Intelligence",
+      "brand": "Starlight Intelligence Applied",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://www.starlightintelligence.ai",
+      "repo": "repos/starlightintelligence.ai",
+      "authorAgent": "Antigravity + Codex",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-024 · starlightintelligence.ai Commercial Sovereign Platform",
+      "strategicObjective": "O7 · Arcanea Labs BV Commercial & Product Engine",
+      "sha256VisualReceipt": "11ce8d01d8a7268a",
+      "domStats": {
+        "buttons": 5,
+        "links": 81,
+        "sections": 20,
+        "h1": "Bring the idea\nyou can’t leave alone."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlightintelligence.ai/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 237,
+        "byteSize": 8803,
+        "targetEditLine": 50,
+        "exportedSymbols": [
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlightintelligence.ai/app/page.tsx:50:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlightintelligence.ai/app/page.tsx:50:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 95,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96.4,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Cinematic commercial flagship (\"Bring the idea you can't leave alone\") with verified skip-link accessibility and 16 sections.",
+      "detectedBottlenecks": [
+        "Hero headline slightly clips near the bottom viewport fold on 900px height screens due to large top illustration padding."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-12-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Tighten Hero Vertical Rhythm so Primary CTA Button sits Above the 900px Fold",
+          "targetFile": "C:/Users/frank/starlight/repos/starlightintelligence.ai/app/page.tsx",
+          "targetLine": 50,
+          "currentState": "Hero artwork occupies ~68% of viewport height before headline.",
+          "targetSpecV2": "Reduce hero top aspect-ratio padding by 14% in starlightintelligence.ai/app/page.tsx so H1 + CTA both render above 900px.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/starlightintelligence.ai run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/12-starlightintelligence-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-12-starlightintelligence-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/12-starlightintelligence-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-12-starlightintelligence-ai-home (v2.0) for starlightintelligence.ai — Applied Commercial Sovereign Intelligence\nTarget Source File: C:/Users/frank/starlight/repos/starlightintelligence.ai/app/page.tsx:50\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/12-starlightintelligence-ai-home.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-12-1] Tighten Hero Vertical Rhythm so Primary CTA Button sits Above the 900px Fold: Reduce hero top aspect-ratio padding by 14% in starlightintelligence.ai/app/page.tsx so H1 + CTA both render above 900px. (Verify: npm --prefix C:/Users/frank/starlight/repos/starlightintelligence.ai run build)\nCommit Trailer Required: Spec: spec-surface-12-starlightintelligence-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-13-frankx-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "13",
+      "surfaceId": "13-frankx-ai-home",
+      "title": "frankx.ai — AI Architect Flagship, Studio Release & Blueprints Hero",
+      "brand": "FrankX.AI",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://frankx.ai",
+      "repo": "repos/frankx.ai-vercel-website",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-opus-4-7)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-025 · frankx.ai AI Architect Flagship & Studio Hub",
+      "strategicObjective": "O4 · FrankX Authority, Books & Content Engine",
+      "sha256VisualReceipt": "48b0edeeed9a6a49",
+      "domStats": {
+        "buttons": 27,
+        "links": 150,
+        "sections": 29,
+        "h1": "Build\nintelligence that compounds."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/frankx.ai-vercel-website/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 188,
+        "byteSize": 6281,
+        "targetEditLine": 10,
+        "exportedSymbols": [
+          "metadata",
+          "Page"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/frankx.ai-vercel-website/app/page.tsx:10:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/frankx.ai-vercel-website/app/page.tsx:10:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 89,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 94.8,
+        "grade": "S"
+      },
+      "executiveDiagnosis": "High-authority flagship (\"Build intelligence that compounds\") with 101 links, 17 sections, Studio Release music player, and clear CTAs.",
+      "detectedBottlenecks": [
+        "Gemini-4-Argon model arena update (d816cd59e) is staged on branch and ready for preview verification before production merge."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-13-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Add Interactive \"Explore Architecture Blueprints & Living Specs\" Quick-Drawer on Hero",
+          "targetFile": "C:/Users/frank/starlight/repos/frankx.ai-vercel-website/app/page.tsx",
+          "targetLine": 10,
+          "currentState": "Primary CTAs route to /work-with-me and /start.",
+          "targetSpecV2": "Add secondary pill linking to verified Architecture Blueprints and AI Architect Newsletter capture.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/frankx.ai-vercel-website run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/13-frankx-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-13-frankx-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/13-frankx-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-13-frankx-ai-home (v2.0) for frankx.ai — AI Architect Flagship, Studio Release & Blueprints Hero\nTarget Source File: C:/Users/frank/starlight/repos/frankx.ai-vercel-website/app/page.tsx:10\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/13-frankx-ai-home.spec.md\nMaker Harness: claude-code (claude-opus-4-7) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-13-1] Add Interactive \"Explore Architecture Blueprints & Living Specs\" Quick-Drawer on Hero: Add secondary pill linking to verified Architecture Blueprints and AI Architect Newsletter capture. (Verify: npm --prefix C:/Users/frank/starlight/repos/frankx.ai-vercel-website run build)\nCommit Trailer Required: Spec: spec-surface-13-frankx-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-14-frankx-ai-products",
+      "specVersion": "2.0.0",
+      "surfaceNum": "14",
+      "surfaceId": "14-frankx-ai-products",
+      "title": "frankx.ai/products — Digital Products, Templates & Blueprints Storefront",
+      "brand": "FrankX.AI",
+      "category": "Product & Storefront",
+      "url": "https://frankx.ai/products",
+      "repo": "repos/frankx.ai-vercel-website",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-025 · frankx.ai/products Digital Products & Blueprints Storefront",
+      "strategicObjective": "O4 · FrankX Authority, Books & Content Engine",
+      "sha256VisualReceipt": "3c6a43761e72ce67",
+      "domStats": {
+        "buttons": 27,
+        "links": 82,
+        "sections": 15,
+        "h1": "Operational systems.\nEngineered for production."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/frankx.ai-vercel-website/data/products.json",
+        "existsOnDisk": true,
+        "lineCount": 1666,
+        "byteSize": 66833,
+        "targetEditLine": 1,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/frankx.ai-vercel-website/data/products.json:1:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/frankx.ai-vercel-website/data/products.json:1:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 89,
+        "sourceCodeArchitecture": 95,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.4,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Rich digital product catalog (The Creator Soulbook, Vibe OS, Creator Lab OS, Generative Creator) with category filter pills.",
+      "detectedBottlenecks": [
+        "Product cards show \"Explore\" and \"Coming Soon\" badges; top-tier ready templates should surface instant BYOK download/checkout."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-14-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Promote Top 3 Verified Skill Packs from \"Coming Soon\" to Instant Self-Serve Download/Checkout",
+          "targetFile": "C:/Users/frank/starlight/repos/frankx.ai-vercel-website/data/products.json",
+          "targetLine": 1,
+          "currentState": "Multiple cards display \"Coming Soon\" pill in data/products.json.",
+          "targetSpecV2": "Bind live Whop/Stripe checkout or instant GitHub release download links for the top 3 shipped skill packs.",
+          "verificationGate": "Validate data/products.json schema + build check"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/14-frankx-ai-products.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-14-frankx-ai-products.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/14-frankx-ai-products.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-14-frankx-ai-products (v2.0) for frankx.ai/products — Digital Products, Templates & Blueprints Storefront\nTarget Source File: C:/Users/frank/starlight/repos/frankx.ai-vercel-website/data/products.json:1\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/14-frankx-ai-products.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-14-1] Promote Top 3 Verified Skill Packs from \"Coming Soon\" to Instant Self-Serve Download/Checkout: Bind live Whop/Stripe checkout or instant GitHub release download links for the top 3 shipped skill packs. (Verify: Validate data/products.json schema + build check)\nCommit Trailer Required: Spec: spec-surface-14-frankx-ai-products",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-15-arcanea-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "15",
+      "surfaceId": "15-arcanea-ai-home",
+      "title": "arcanea.ai — Creative Multiverse & 226-Model Studio (Hero)",
+      "brand": "Arcanea",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://www.arcanea.ai",
+      "repo": "repos/arcanea-ai-app",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-opus-4-7)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-023 · arcanea.ai Sovereign World Engine & Luminor Studio Hero",
+      "strategicObjective": "O2 · Arcanea Creative Worlds & Lore Canon",
+      "sha256VisualReceipt": "569bac88efab9fe3",
+      "domStats": {
+        "buttons": 19,
+        "links": 151,
+        "sections": 23,
+        "h1": "Build living worlds\nwith AI agents."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 66,
+        "byteSize": 2318,
+        "targetEditLine": 53,
+        "exportedSymbols": [
+          "Page"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Flagship creative world engine (\"Build living worlds with AI agents\") with interactive prompt composer and 4 quick-action pills.",
+      "detectedBottlenecks": [
+        "Interactive prompt bar on hero can pre-populate live canon examples when a user hovers \"Map a world\" or \"Plan agents\"."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-15-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Pre-Fill Live World-Graph Templates on Quick-Action Pill Click",
+          "targetFile": "C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx",
+          "targetLine": 53,
+          "currentState": "4 pills (\"Map a world\", \"Write a scene\", \"Design visuals\", \"Plan agents\") sit below the prompt input.",
+          "targetSpecV2": "Clicking any pill populates a canon-verified multi-agent world brief into the composer with instant preview.",
+          "verificationGate": "pnpm --dir C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/15-arcanea-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-15-arcanea-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/15-arcanea-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-15-arcanea-ai-home (v2.0) for arcanea.ai — Creative Multiverse & 226-Model Studio (Hero)\nTarget Source File: C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/15-arcanea-ai-home.spec.md\nMaker Harness: claude-code (claude-opus-4-7) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-15-1] Pre-Fill Live World-Graph Templates on Quick-Action Pill Click: Clicking any pill populates a canon-verified multi-agent world brief into the composer with instant preview. (Verify: pnpm --dir C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web build)\nCommit Trailer Required: Spec: spec-surface-15-arcanea-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-16-arcanea-ai-components",
+      "specVersion": "2.0.0",
+      "surfaceNum": "16",
+      "surfaceId": "16-arcanea-ai-components",
+      "title": "arcanea.ai — World Graph & Creation Agent UI/UX Components (Scrolled)",
+      "brand": "Arcanea",
+      "category": "UI/UX Components",
+      "url": "https://www.arcanea.ai/#components",
+      "repo": "repos/arcanea-ai-app",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-opus-4-7)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-023 · arcanea.ai Scrolled UI/UX World Graph & Agent Components",
+      "strategicObjective": "O2 · Arcanea Creative Worlds & Lore Canon",
+      "sha256VisualReceipt": "c7cc00c8fbdff9c4",
+      "domStats": {
+        "buttons": 19,
+        "links": 151,
+        "sections": 23,
+        "h1": "Build living worlds\nwith AI agents."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 66,
+        "byteSize": 2318,
+        "targetEditLine": 53,
+        "exportedSymbols": [
+          "Page"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "4-card Bento showcase (Realm Core, Creation Graph, Living Lore, World Builder) with custom luxury fantasy-tech artwork.",
+      "detectedBottlenecks": [
+        "Cards are static visual showcases; clicking a card should open an interactive JSON/Graph drawer showing the underlying World Graph schema."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-16-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Add Interactive World-Graph Schema Drawer to the 4 Bento Cards",
+          "targetFile": "C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx",
+          "targetLine": 53,
+          "currentState": "4 visual cards describe Realm Core, Creation Graph, Living Lore, and World Builder.",
+          "targetSpecV2": "Clicking any card reveals the live JSON world-node schema + \"Fork this World Template\" CTA.",
+          "verificationGate": "pnpm --dir C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/16-arcanea-ai-components.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-16-arcanea-ai-components.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/16-arcanea-ai-components.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-16-arcanea-ai-components (v2.0) for arcanea.ai — World Graph & Creation Agent UI/UX Components (Scrolled)\nTarget Source File: C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web/app/page.tsx:53\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/16-arcanea-ai-components.spec.md\nMaker Harness: claude-code (claude-opus-4-7) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-16-1] Add Interactive World-Graph Schema Drawer to the 4 Bento Cards: Clicking any card reveals the live JSON world-node schema + \"Fork this World Template\" CTA. (Verify: pnpm --dir C:/Users/frank/starlight/repos/arcanea-ai-app/apps/web build)\nCommit Trailer Required: Spec: spec-surface-16-arcanea-ai-components",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-17-gencreator-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "17",
+      "surfaceId": "17-gencreator-ai-home",
+      "title": "gencreator.ai — Sovereign Creator Economy OS & 6-Pillar CoE (Hero)",
+      "brand": "GenCreator",
+      "category": "Tier-1 Flagship Website",
+      "url": "https://gencreator.ai",
+      "repo": "repos/gencreator.ai",
+      "authorAgent": "Antigravity + Claude Code",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-025 · gencreator.ai Sovereign Creator Economy OS Hero",
+      "strategicObjective": "O3 · GenCreator & ACOS Productization",
+      "sha256VisualReceipt": "542e6b3ee3f76325",
+      "domStats": {
+        "buttons": 7,
+        "links": 47,
+        "sections": 6,
+        "h1": "Turn one clear idea into work you can review and ship."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 64,
+        "byteSize": 1927,
+        "targetEditLine": 5,
+        "exportedSymbols": [
+          "revalidate",
+          "Page"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 89,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 94.8,
+        "grade": "S"
+      },
+      "executiveDiagnosis": "Editorial daylight aesthetic (\"Turn one clear idea into work you can review and ship\") with verified WCAG AA contrast and skip-link.",
+      "detectedBottlenecks": [
+        "ARC-204 has 6 untracked federated-llm-hub files in gencreator.ai that need a clean branch + test gate before merge."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-17-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Close ARC-204: Branch, Test, and Gate the 6 Federated-LLM-Hub Files",
+          "targetFile": "C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx",
+          "targetLine": 5,
+          "currentState": "6 untracked files sit in repos/gencreator.ai working tree.",
+          "targetSpecV2": "Move 6 federated-llm-hub files onto agent/antigravity/arc-204-federated-llm-hub, run build gate, and open Draft PR.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/gencreator.ai run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/17-gencreator-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-17-gencreator-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/17-gencreator-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-17-gencreator-ai-home (v2.0) for gencreator.ai — Sovereign Creator Economy OS & 6-Pillar CoE (Hero)\nTarget Source File: C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/17-gencreator-ai-home.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-17-1] Close ARC-204: Branch, Test, and Gate the 6 Federated-LLM-Hub Files: Move 6 federated-llm-hub files onto agent/antigravity/arc-204-federated-llm-hub, run build gate, and open Draft PR. (Verify: npm --prefix C:/Users/frank/starlight/repos/gencreator.ai run build)\nCommit Trailer Required: Spec: spec-surface-17-gencreator-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-18-gencreator-ai-components",
+      "specVersion": "2.0.0",
+      "surfaceNum": "18",
+      "surfaceId": "18-gencreator-ai-components",
+      "title": "gencreator.ai — Creator Stack & Blueprint UI/UX Components (Scrolled)",
+      "brand": "GenCreator",
+      "category": "UI/UX Components",
+      "url": "https://gencreator.ai/#stack",
+      "repo": "repos/gencreator.ai",
+      "authorAgent": "Antigravity + Claude Code",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-sonnet-4-6)",
+      "founderIntent": "I-025 · gencreator.ai Scrolled UI/UX Creator Stack Components",
+      "strategicObjective": "O3 · GenCreator & ACOS Productization",
+      "sha256VisualReceipt": "9c33efd00bbbdf74",
+      "domStats": {
+        "buttons": 7,
+        "links": 47,
+        "sections": 6,
+        "h1": "Turn one clear idea into work you can review and ship."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 64,
+        "byteSize": 1927,
+        "targetEditLine": 5,
+        "exportedSymbols": [
+          "revalidate",
+          "Page"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 89,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 94.8,
+        "grade": "S"
+      },
+      "executiveDiagnosis": "5-stage pipeline visualization (\"One source becomes a week of work you signed\": Voice -> Draft -> Visual -> Social -> Archive).",
+      "detectedBottlenecks": [
+        "Each of the 5 pipeline cards can link directly to its installable SKILL.md in GenCreator-ai/claude-skills-library."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-18-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Wire \"Copy Skill Install Command\" onto Each of the 5 Pipeline Cards",
+          "targetFile": "C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx",
+          "targetLine": 5,
+          "currentState": "5 pipeline cards explain Voice, Draft, Visual, Social, and Archive stages.",
+          "targetSpecV2": "Add 1-click CLI install snippet (`npx @starlight/skills add <stage>`) to each card.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/gencreator.ai run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/18-gencreator-ai-components.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-18-gencreator-ai-components.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/18-gencreator-ai-components.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-18-gencreator-ai-components (v2.0) for gencreator.ai — Creator Stack & Blueprint UI/UX Components (Scrolled)\nTarget Source File: C:/Users/frank/starlight/repos/gencreator.ai/app/page.tsx:5\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/18-gencreator-ai-components.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-sonnet-4-6)\nRequirements:\n  - [REQ-18-1] Wire \"Copy Skill Install Command\" onto Each of the 5 Pipeline Cards: Add 1-click CLI install snippet (`npx @starlight/skills add <stage>`) to each card. (Verify: npm --prefix C:/Users/frank/starlight/repos/gencreator.ai run build)\nCommit Trailer Required: Spec: spec-surface-18-gencreator-ai-components",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-19-realityarchitect-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "19",
+      "surfaceId": "19-realityarchitect-ai-home",
+      "title": "realityarchitect.ai — Conscious Reality Design & Transformation Academy",
+      "brand": "Reality Architect",
+      "category": "Brand Vertical Website",
+      "url": "https://www.realityarchitect.ai",
+      "repo": "repos/realityarchitect",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-026 · realityarchitect.ai Conscious Reality Design Surface",
+      "strategicObjective": "O5 · Domain Sub-Stacks & Verticals",
+      "sha256VisualReceipt": "019769f09eb3787d",
+      "domStats": {
+        "buttons": 1,
+        "links": 41,
+        "sections": 17,
+        "h1": "Imagine it. Build it. Witness it."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/realityarchitect/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 120,
+        "byteSize": 7069,
+        "targetEditLine": 13,
+        "exportedSymbols": [
+          "Home"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/realityarchitect/app/page.tsx:13:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/realityarchitect/app/page.tsx:13:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 89,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.8,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Warm sacred-geometry aesthetic (\"Imagine it. Build it. Witness it.\") with 7 sections and clear 3-step method.",
+      "detectedBottlenecks": [
+        "Only 2 buttons on the landing page; lacks an interactive \"Seed Your First .reality/intents Ledger\" generator."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-19-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Add Interactive \".reality/intents Seed Generator\" Widget on Homepage",
+          "targetFile": "C:/Users/frank/starlight/repos/realityarchitect/app/page.tsx",
+          "targetLine": 13,
+          "currentState": "Static hero + \"Enter the Practice\" and \"Read the Method\" CTAs.",
+          "targetSpecV2": "Embed a 3-field interactive Intent Seed builder that exports a ready-to-save .reality/intents/YYYY-MM-DD-seed.md file.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/realityarchitect run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/19-realityarchitect-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-19-realityarchitect-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/19-realityarchitect-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-19-realityarchitect-ai-home (v2.0) for realityarchitect.ai — Conscious Reality Design & Transformation Academy\nTarget Source File: C:/Users/frank/starlight/repos/realityarchitect/app/page.tsx:13\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/19-realityarchitect-ai-home.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-19-1] Add Interactive \".reality/intents Seed Generator\" Widget on Homepage: Embed a 3-field interactive Intent Seed builder that exports a ready-to-save .reality/intents/YYYY-MM-DD-seed.md file. (Verify: npm --prefix C:/Users/frank/starlight/repos/realityarchitect run build)\nCommit Trailer Required: Spec: spec-surface-19-realityarchitect-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-20-agenticincome-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "20",
+      "surfaceId": "20-agenticincome-ai-home",
+      "title": "agenticincome.ai — Autonomous Wealth, DeFi & Quant Research Systems",
+      "brand": "Agentic Income",
+      "category": "Brand Vertical Website",
+      "url": "https://agenticincome.ai",
+      "repo": "repos/agenticincome",
+      "authorAgent": "Antigravity + Codex",
+      "makerHarness": "codex-cli (gpt-5.4)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-026 · agenticincome.ai Autonomous Wealth & Quant Research Surface",
+      "strategicObjective": "O5 · Domain Sub-Stacks & Verticals",
+      "sha256VisualReceipt": "15dbcbd5bb0e6d6f",
+      "domStats": {
+        "buttons": 0,
+        "links": 42,
+        "sections": 10,
+        "h1": "Agent-as-a-Service. Engineered revenue."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/agenticincome/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 252,
+        "byteSize": 12120,
+        "targetEditLine": 8,
+        "exportedSymbols": [
+          "metadata",
+          "Home"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/agenticincome/app/page.tsx:8:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/agenticincome/app/page.tsx:8:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "High-precision financial engineering surface (\"Agent-as-a-Service. Engineered revenue.\") with 42 links and 14 sections.",
+      "detectedBottlenecks": [
+        "Local branch agent/claude/agentic-income-packages (a3b673e) is 1 commit ahead of origin and ready for Draft PR promotion."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-20-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Push & Open Draft PR for agent/claude/agentic-income-packages (a3b673e)",
+          "targetFile": "C:/Users/frank/starlight/repos/agenticincome/app/page.tsx",
+          "targetLine": 8,
+          "currentState": "1 unpushed local commit on agent/claude/agentic-income-packages.",
+          "targetSpecV2": "Run build check and open Draft PR on frankxai/agenticincome.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/agenticincome run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/20-agenticincome-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-20-agenticincome-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/20-agenticincome-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-20-agenticincome-ai-home (v2.0) for agenticincome.ai — Autonomous Wealth, DeFi & Quant Research Systems\nTarget Source File: C:/Users/frank/starlight/repos/agenticincome/app/page.tsx:8\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/20-agenticincome-ai-home.spec.md\nMaker Harness: codex-cli (gpt-5.4) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-20-1] Push & Open Draft PR for agent/claude/agentic-income-packages (a3b673e): Run build check and open Draft PR on frankxai/agenticincome. (Verify: npm --prefix C:/Users/frank/starlight/repos/agenticincome run build)\nCommit Trailer Required: Spec: spec-surface-20-agenticincome-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-21-animelegends-ai-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "21",
+      "surfaceId": "21-animelegends-ai-home",
+      "title": "animelegends.ai — AI Anime Studio, Mascot Trinity & Sakuga Pipeline",
+      "brand": "AnimeLegends",
+      "category": "Brand Vertical Website",
+      "url": "https://www.animelegends.ai",
+      "repo": "repos/AnimeLegends",
+      "authorAgent": "Antigravity + Claude Code",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-sonnet-4-6)",
+      "founderIntent": "I-026 · animelegends.ai AI Anime Studio & Mascot Trinity Surface",
+      "strategicObjective": "O2 · Arcanea & Media IP Franchises",
+      "sha256VisualReceipt": "884b4629b30a9ece",
+      "domStats": {
+        "buttons": 6,
+        "links": 36,
+        "sections": 14,
+        "h1": "Where bone\nbecomes bloom."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/AnimeLegends/templates/anime-studio-landing/src/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 10,
+        "byteSize": 478,
+        "targetEditLine": 7,
+        "exportedSymbols": [
+          "LandingPage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/AnimeLegends/templates/anime-studio-landing/src/app/page.tsx:7:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/AnimeLegends/templates/anime-studio-landing/src/app/page.tsx:7:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Striking crimson-and-obsidian anime visual (\"Where bone becomes bloom — Chronicles of the Cursed Blossom\") with skip-link verified.",
+      "detectedBottlenecks": [
+        "Mascot Trinity (Akashi, Kage, Mira) character turnaround sheets are defined in skills but not yet interactive on the hero."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-21-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Embed Interactive Mascot Trinity Character Switcher (Akashi · Kage · Mira)",
+          "targetFile": "C:/Users/frank/starlight/repos/AnimeLegends/templates/anime-studio-landing/src/app/page.tsx",
+          "targetLine": 7,
+          "currentState": "Hero features Episode I \"The Cursed Blossom\" key visual.",
+          "targetSpecV2": "Add 3-tab character sheet drawer showcasing Akashi, Kage, and Mira visual/voice specs.",
+          "verificationGate": "Verify responsive layout at 1440x900 and 390x844"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/21-animelegends-ai-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-21-animelegends-ai-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/21-animelegends-ai-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-21-animelegends-ai-home (v2.0) for animelegends.ai — AI Anime Studio, Mascot Trinity & Sakuga Pipeline\nTarget Source File: C:/Users/frank/starlight/repos/AnimeLegends/templates/anime-studio-landing/src/app/page.tsx:7\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/21-animelegends-ai-home.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-sonnet-4-6)\nRequirements:\n  - [REQ-21-1] Embed Interactive Mascot Trinity Character Switcher (Akashi · Kage · Mira): Add 3-tab character sheet drawer showcasing Akashi, Kage, and Mira visual/voice specs. (Verify: Verify responsive layout at 1440x900 and 390x844)\nCommit Trailer Required: Spec: spec-surface-21-animelegends-ai-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-22-starlight-domains-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "22",
+      "surfaceId": "22-starlight-domains-home",
+      "title": "starlight.domains — Sovereign Domain Portfolio & Venture Incubator",
+      "brand": "Starlight Domains",
+      "category": "Brand Vertical Website",
+      "url": "https://starlight.domains",
+      "repo": "repos/starlight-domains",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-026 · starlight.domains Sovereign Venture & Domain Incubator",
+      "strategicObjective": "O7 · Arcanea Labs BV Portfolio",
+      "sha256VisualReceipt": "46a166641e8dc3b9",
+      "domStats": {
+        "buttons": 2,
+        "links": 13,
+        "sections": 9,
+        "h1": "Domains are product decisions. Not shopping."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlight-domains/src/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 90,
+        "byteSize": 3729,
+        "targetEditLine": 13,
+        "exportedSymbols": [
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlight-domains/src/app/page.tsx:13:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlight-domains/src/app/page.tsx:13:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 95,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Sharp thesis-driven copy (\"Domains are product decisions. Not shopping.\") with 17 links and 5 sections.",
+      "detectedBottlenecks": [
+        "PROPERTIES-REGISTRY.md tracks 35 domains across 4 tiers, which can be exposed as a live filterable portfolio matrix."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-22-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Bind 35-Domain Tier Matrix from PROPERTIES-REGISTRY.md into Interactive Filter Grid",
+          "targetFile": "C:/Users/frank/starlight/repos/starlight-domains/src/app/page.tsx",
+          "targetLine": 13,
+          "currentState": "Hero + thesis sections with 2 buttons.",
+          "targetSpecV2": "Render filterable Tier 1..4 domain incubator table in starlight-domains/src/app/page.tsx.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/starlight-domains run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/22-starlight-domains-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-22-starlight-domains-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/22-starlight-domains-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-22-starlight-domains-home (v2.0) for starlight.domains — Sovereign Domain Portfolio & Venture Incubator\nTarget Source File: C:/Users/frank/starlight/repos/starlight-domains/src/app/page.tsx:13\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/22-starlight-domains-home.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-22-1] Bind 35-Domain Tier Matrix from PROPERTIES-REGISTRY.md into Interactive Filter Grid: Render filterable Tier 1..4 domain incubator table in starlight-domains/src/app/page.tsx. (Verify: npm --prefix C:/Users/frank/starlight/repos/starlight-domains run build)\nCommit Trailer Required: Spec: spec-surface-22-starlight-domains-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-23-starlight-you-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "23",
+      "surfaceId": "23-starlight-you-home",
+      "title": "starlight.you — Personal Identity & Sovereign Second Brain Surface",
+      "brand": "Starlight.You",
+      "category": "Brand Vertical Website",
+      "url": "https://www.starlight.you",
+      "repo": "repos/starlight-you",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-026 · starlight.you Personal Identity & Second Brain Surface",
+      "strategicObjective": "O5 · Domain Sub-Stacks & Verticals",
+      "sha256VisualReceipt": "d1f943a56a03a751",
+      "domStats": {
+        "buttons": 2,
+        "links": 16,
+        "sections": 9,
+        "h1": "One human. One governed AI layer."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlight-you/src/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 145,
+        "byteSize": 5190,
+        "targetEditLine": 27,
+        "exportedSymbols": [
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlight-you/src/app/page.tsx:27:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlight-you/src/app/page.tsx:27:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 95,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 96,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Intimate human-centric framing (\"One human. One governed AI layer.\") with 22 links and 8 sections.",
+      "detectedBottlenecks": [
+        "Zero <button> elements (uses anchor CTAs only); adding an interactive \"/discover-genius\" 60-second intake quiz will boost conversion."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-23-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Embed Interactive 4-Question \"/discover-genius\" Profile Preview Widget",
+          "targetFile": "C:/Users/frank/starlight/repos/starlight-you/src/app/page.tsx",
+          "targetLine": 27,
+          "currentState": "Anchor links to Start with /welcome and See how it works.",
+          "targetSpecV2": "Add interactive Genius Excavation preview card in starlight-you/src/app/page.tsx that generates a starter AGENTS.md.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/starlight-you run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/23-starlight-you-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-23-starlight-you-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/23-starlight-you-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-23-starlight-you-home (v2.0) for starlight.you — Personal Identity & Sovereign Second Brain Surface\nTarget Source File: C:/Users/frank/starlight/repos/starlight-you/src/app/page.tsx:27\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/23-starlight-you-home.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-23-1] Embed Interactive 4-Question \"/discover-genius\" Profile Preview Widget: Add interactive Genius Excavation preview card in starlight-you/src/app/page.tsx that generates a starter AGENTS.md. (Verify: npm --prefix C:/Users/frank/starlight/repos/starlight-you run build)\nCommit Trailer Required: Spec: spec-surface-23-starlight-you-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-24-starlight-technology-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "24",
+      "surfaceId": "24-starlight-technology-home",
+      "title": "starlight.technology — Deep Substrate & Enterprise Agentic Infrastructure",
+      "brand": "Starlight Technology",
+      "category": "Brand Vertical Website",
+      "url": "https://www.starlight.technology",
+      "repo": "repos/starlight-technology",
+      "authorAgent": "Antigravity + Codex",
+      "makerHarness": "codex-cli (gpt-5.4)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-024 · starlight.technology Deep Substrate & Enterprise Infrastructure",
+      "strategicObjective": "O1 · SIS Sovereign Memory & Queen Orchestration",
+      "sha256VisualReceipt": "44bd3a96c8e4f46c",
+      "domStats": {
+        "buttons": 0,
+        "links": 59,
+        "sections": 22,
+        "h1": "Build the right system.\nNot the most expensive one."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlight-technology/src/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 16,
+        "byteSize": 2790,
+        "targetEditLine": 6,
+        "exportedSymbols": [
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": false,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlight-technology/src/app/page.tsx:6:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlight-technology/src/app/page.tsx:6:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Clean architectural thesis (\"Build the right system. Not the most expensive one.\") with 35/35 repo tests passing (PR #42 merged).",
+      "detectedBottlenecks": [
+        "Can surface live latency & token compression numbers (-88.7% vMCP, sub-50µs Rust WFG kernel) in an interactive benchmark table."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-24-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Add Interactive Rust Layer-0 Kernel & vMCP Compression Benchmark Card",
+          "targetFile": "C:/Users/frank/starlight/repos/starlight-technology/src/app/page.tsx",
+          "targetLine": 6,
+          "currentState": "Displays 3-question architectural decision framework.",
+          "targetSpecV2": "Add empirical benchmark comparison table (Static MCP vs. Starlight vMCP + Headroom) in starlight-technology/src/app/page.tsx.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/starlight-technology test"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/24-starlight-technology-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-24-starlight-technology-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/24-starlight-technology-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-24-starlight-technology-home (v2.0) for starlight.technology — Deep Substrate & Enterprise Agentic Infrastructure\nTarget Source File: C:/Users/frank/starlight/repos/starlight-technology/src/app/page.tsx:6\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/24-starlight-technology-home.spec.md\nMaker Harness: codex-cli (gpt-5.4) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-24-1] Add Interactive Rust Layer-0 Kernel & vMCP Compression Benchmark Card: Add empirical benchmark comparison table (Static MCP vs. Starlight vMCP + Headroom) in starlight-technology/src/app/page.tsx. (Verify: npm --prefix C:/Users/frank/starlight/repos/starlight-technology test)\nCommit Trailer Required: Spec: spec-surface-24-starlight-technology-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-25-starlight-academy-home",
+      "specVersion": "2.0.0",
+      "surfaceNum": "25",
+      "surfaceId": "25-starlight-academy-home",
+      "title": "starlightintelligence.academy — Builder Certification & Agentic Mastery",
+      "brand": "Starlight Academy",
+      "category": "Brand Vertical Website",
+      "url": "https://starlightintelligence.academy",
+      "repo": "repos/starlight-intelligence-academy",
+      "authorAgent": "Antigravity + Claude Code",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-sonnet-4-6)",
+      "founderIntent": "I-026 · starlightintelligence.academy Builder Certification & Labs",
+      "strategicObjective": "O3 · GenCreator & Education Funnels",
+      "sha256VisualReceipt": "68407ae6566a60df",
+      "domStats": {
+        "buttons": 2,
+        "links": 60,
+        "sections": 22,
+        "h1": "Imagine more.\nBuild with judgment."
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/starlight-intelligence-academy/app/page.tsx",
+        "existsOnDisk": true,
+        "lineCount": 420,
+        "byteSize": 14725,
+        "targetEditLine": 42,
+        "exportedSymbols": [
+          "HomePage"
+        ],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": true,
+        "hasDesignTokens": true,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/starlight-intelligence-academy/app/page.tsx:42:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/starlight-intelligence-academy/app/page.tsx:42:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 99,
+        "accessibilityAndDom": 95,
+        "sourceCodeArchitecture": 99,
+        "specTraceAndConversion": 99,
+        "compositeScore": 97.4,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Rich interactive lab surface (\"Imagine more. Build with judgment.\") with 7 buttons, 26 links, and 9 sections.",
+      "detectedBottlenecks": [
+        "The starlight-department-lab MCP server has 4 evaluation tools that can be exposed as a live browser self-assessment."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-25-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Connect starlight-department-lab Evaluation Cases to Interactive Lab Preview",
+          "targetFile": "C:/Users/frank/starlight/repos/starlight-intelligence-academy/app/page.tsx",
+          "targetLine": 42,
+          "currentState": "Hero links to Open the Department Lab and Try the 10-Minute Exercise.",
+          "targetSpecV2": "Surface live sample evaluation case from starlight-department-lab directly on the homepage.",
+          "verificationGate": "npm --prefix C:/Users/frank/starlight/repos/starlight-intelligence-academy run build"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/25-starlight-academy-home.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-25-starlight-academy-home.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/25-starlight-academy-home.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-25-starlight-academy-home (v2.0) for starlightintelligence.academy — Builder Certification & Agentic Mastery\nTarget Source File: C:/Users/frank/starlight/repos/starlight-intelligence-academy/app/page.tsx:42\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/25-starlight-academy-home.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-sonnet-4-6)\nRequirements:\n  - [REQ-25-1] Connect starlight-department-lab Evaluation Cases to Interactive Lab Preview: Surface live sample evaluation case from starlight-department-lab directly on the homepage. (Verify: npm --prefix C:/Users/frank/starlight/repos/starlight-intelligence-academy run build)\nCommit Trailer Required: Spec: spec-surface-25-starlight-academy-home",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-26-github-sis-readme",
+      "specVersion": "2.0.0",
+      "surfaceNum": "26",
+      "surfaceId": "26-github-sis-readme",
+      "title": "github.com/frankxai/Starlight-Intelligence-System — Flagship Repository & README",
+      "brand": "GitHub · frankxai",
+      "category": "GitHub & Open Source",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System",
+      "repo": "Starlight-Intelligence-System",
+      "authorAgent": "Antigravity + Claude Code + Codex",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-019 · github.com/frankxai/Starlight-Intelligence-System Flagship",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Open Source",
+      "sha256VisualReceipt": "7e7b26fcf09d513f",
+      "domStats": {
+        "buttons": 38,
+        "links": 607,
+        "sections": 8,
+        "h1": "Starlight Intelligence System"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/README.md",
+        "existsOnDisk": true,
+        "lineCount": 503,
+        "byteSize": 29455,
+        "targetEditLine": 3,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/README.md:3:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/README.md:3:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Flagship open-source repository (151 agents, 89 skills, 6 vaults, SIP v1.1.1, 135/135 symmetry tests).",
+      "detectedBottlenecks": [
+        "Root README.md should document the new Queen v2.0 Spec-Intelligence & IDE Bridge commands (npm run queen:spec:studio)."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-26-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Document Queen v2.0 Spec-Intelligence & IDE Bridge in Root README.md",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/README.md",
+          "targetLine": 3,
+          "currentState": "Documents 151 agents, 89 skills, 6 vaults, and MCP server setup.",
+          "targetSpecV2": "Add \"Starlight Visual & Spec-Intelligence IDE Bridge\" quickstart table in README.md.",
+          "verificationGate": "npm run test:substrate"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/26-github-sis-readme.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-26-github-sis-readme.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/26-github-sis-readme.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-26-github-sis-readme (v2.0) for github.com/frankxai/Starlight-Intelligence-System — Flagship Repository & README\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/README.md:3\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/26-github-sis-readme.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-26-1] Document Queen v2.0 Spec-Intelligence & IDE Bridge in Root README.md: Add \"Starlight Visual & Spec-Intelligence IDE Bridge\" quickstart table in README.md. (Verify: npm run test:substrate)\nCommit Trailer Required: Spec: spec-surface-26-github-sis-readme",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-27-github-claude-skills-readme",
+      "specVersion": "2.0.0",
+      "surfaceNum": "27",
+      "surfaceId": "27-github-claude-skills-readme",
+      "title": "github.com/frankxai/claude-skills-library — 280+ Cross-Harness Skills Library",
+      "brand": "GitHub · frankxai",
+      "category": "GitHub & Open Source",
+      "url": "https://github.com/frankxai/claude-skills-library",
+      "repo": "repos/claude-skills-library",
+      "authorAgent": "Claude Code + Antigravity",
+      "makerHarness": "claude-code (claude-sonnet-4-6)",
+      "checkerHarness": "antigravity (gemini-3.1-pro)",
+      "founderIntent": "I-020 · github.com/frankxai/claude-skills-library README",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Open Source",
+      "sha256VisualReceipt": "e94e3f6394485764",
+      "domStats": {
+        "buttons": 36,
+        "links": 404,
+        "sections": 8,
+        "h1": "Claude Skills Library"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/claude-skills-library/README.md",
+        "existsOnDisk": true,
+        "lineCount": 93,
+        "byteSize": 7584,
+        "targetEditLine": 3,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/claude-skills-library/README.md:3:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/claude-skills-library/README.md:3:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 95,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Canonical cross-harness skills library with vendored ECC pack (8 absorbed harness skills) and zero-secret lint gates.",
+      "detectedBottlenecks": [
+        "Can add a 1-command skill-pack installer matrix for Claude Code, Codex, Antigravity, Cursor, and Grok CLI."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-27-1",
+          "dimension": "CONVERSION_CTA",
+          "title": "Add 6-Harness Skill Projection Matrix to claude-skills-library/README.md",
+          "targetFile": "C:/Users/frank/starlight/repos/claude-skills-library/README.md",
+          "targetLine": 3,
+          "currentState": "Lists absorbed/harness skills and domain skill categories.",
+          "targetSpecV2": "Add copy-paste junction/symlink install table for all 6 harnesses.",
+          "verificationGate": "Verify zero secret / positional-arg lint errors"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/27-github-claude-skills-readme.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-27-github-claude-skills-readme.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/27-github-claude-skills-readme.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-27-github-claude-skills-readme (v2.0) for github.com/frankxai/claude-skills-library — 280+ Cross-Harness Skills Library\nTarget Source File: C:/Users/frank/starlight/repos/claude-skills-library/README.md:3\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/27-github-claude-skills-readme.spec.md\nMaker Harness: claude-code (claude-sonnet-4-6) | Independent Checker: antigravity (gemini-3.1-pro)\nRequirements:\n  - [REQ-27-1] Add 6-Harness Skill Projection Matrix to claude-skills-library/README.md: Add copy-paste junction/symlink install table for all 6 harnesses. (Verify: Verify zero secret / positional-arg lint errors)\nCommit Trailer Required: Spec: spec-surface-27-github-claude-skills-readme",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-28-github-arcanea-org",
+      "specVersion": "2.0.0",
+      "surfaceNum": "28",
+      "surfaceId": "28-github-arcanea-org",
+      "title": "github.com/Arcanea-Labs — Creative Multiverse & Lore Engine Organization",
+      "brand": "GitHub · Arcanea-Labs",
+      "category": "GitHub & Open Source",
+      "url": "https://github.com/Arcanea-Labs",
+      "repo": "Arcanea-Labs/.github",
+      "authorAgent": "Antigravity (Federation Audit)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-021 · github.com/Arcanea-Labs Organization Profile",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Governance",
+      "sha256VisualReceipt": "08af2310919c161f",
+      "domStats": {
+        "buttons": 25,
+        "links": 247,
+        "sections": 6,
+        "h1": "Arcanea Labs"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/arcanea-ai-app/README.md",
+        "existsOnDisk": true,
+        "lineCount": 86,
+        "byteSize": 3301,
+        "targetEditLine": 3,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/arcanea-ai-app/README.md:3:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/arcanea-ai-app/README.md:3:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 95,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Standardized organization profile (\"Creative Superintelligence — AI-Powered Worldbuilding, Lore Engine & Open Creative Universe\") with 29 public repos.",
+      "detectedBottlenecks": [
+        "Pinned repositories can be curated to highlight arcanea-ai-app, arcanea-lore, and arcanea-skills at the top."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-28-1",
+          "dimension": "UI_UX_CRAFT",
+          "title": "Pin Top 6 Flagship Repositories on Arcanea-Labs Org Profile",
+          "targetFile": "C:/Users/frank/starlight/repos/arcanea-ai-app/README.md",
+          "targetLine": 3,
+          "currentState": "Displays org README and Popular repositories list.",
+          "targetSpecV2": "Ensure top 6 pinned repos match WORKSPACE_MAP.md canonical tier-1 order.",
+          "verificationGate": "gh repo list Arcanea-Labs --limit 10"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/28-github-arcanea-org.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-28-github-arcanea-org.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/28-github-arcanea-org.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-28-github-arcanea-org (v2.0) for github.com/Arcanea-Labs — Creative Multiverse & Lore Engine Organization\nTarget Source File: C:/Users/frank/starlight/repos/arcanea-ai-app/README.md:3\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/28-github-arcanea-org.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-28-1] Pin Top 6 Flagship Repositories on Arcanea-Labs Org Profile: Ensure top 6 pinned repos match WORKSPACE_MAP.md canonical tier-1 order. (Verify: gh repo list Arcanea-Labs --limit 10)\nCommit Trailer Required: Spec: spec-surface-28-github-arcanea-org",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-29-github-starlight-org",
+      "specVersion": "2.0.0",
+      "surfaceNum": "29",
+      "surfaceId": "29-github-starlight-org",
+      "title": "github.com/Starlight-Intelligence — Sovereign Substrate & Protocol Organization",
+      "brand": "GitHub · Starlight-Intelligence",
+      "category": "GitHub & Open Source",
+      "url": "https://github.com/Starlight-Intelligence",
+      "repo": "Starlight-Intelligence/.github",
+      "authorAgent": "Antigravity (Federation Audit)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "codex-cli (gpt-5.4)",
+      "founderIntent": "I-021 · github.com/Starlight-Intelligence Organization Profile",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Governance",
+      "sha256VisualReceipt": "ae1a42a349c1dbba",
+      "domStats": {
+        "buttons": 25,
+        "links": 196,
+        "sections": 6,
+        "h1": "Starlight Intelligence"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/SIP.md",
+        "existsOnDisk": true,
+        "lineCount": 126,
+        "byteSize": 6171,
+        "targetEditLine": 9,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": true,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/SIP.md:9:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/SIP.md:9:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 97,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95.5,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Sovereign protocol organization profile (\"Open-source cognitive architecture for persistent AI memory, multi-agent vaults, and cross-platform context\") with 9 repos.",
+      "detectedBottlenecks": [
+        "Automated @starlight-intelligence/* npm package release syndication can link directly from the org profile README."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-29-1",
+          "dimension": "ARCHITECTURE",
+          "title": "Add @starlight-intelligence/core, ai-sdk, and mcp Package Badges to Org Profile",
+          "targetFile": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/SIP.md",
+          "targetLine": 9,
+          "currentState": "Org profile README lists Quick Start npx starlight-sis init.",
+          "targetSpecV2": "Add version + conformance badges for @starlight-intelligence/core, ai-sdk, and mcp.",
+          "verificationGate": "npm run verify:packages"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/29-github-starlight-org.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-29-github-starlight-org.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/29-github-starlight-org.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-29-github-starlight-org (v2.0) for github.com/Starlight-Intelligence — Sovereign Substrate & Protocol Organization\nTarget Source File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/SIP.md:9\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/29-github-starlight-org.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: codex-cli (gpt-5.4)\nRequirements:\n  - [REQ-29-1] Add @starlight-intelligence/core, ai-sdk, and mcp Package Badges to Org Profile: Add version + conformance badges for @starlight-intelligence/core, ai-sdk, and mcp. (Verify: npm run verify:packages)\nCommit Trailer Required: Spec: spec-surface-29-github-starlight-org",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    },
+    {
+      "specId": "spec-surface-30-github-gencreator-org",
+      "specVersion": "2.0.0",
+      "surfaceNum": "30",
+      "surfaceId": "30-github-gencreator-org",
+      "title": "github.com/GenCreator-ai — Creator Economy OS & Skills Organization",
+      "brand": "GitHub · GenCreator-ai",
+      "category": "GitHub & Open Source",
+      "url": "https://github.com/GenCreator-ai",
+      "repo": "GenCreator-ai/.github",
+      "authorAgent": "Antigravity (Federation Audit)",
+      "makerHarness": "antigravity (gemini-3.1-pro)",
+      "checkerHarness": "claude-code (claude-sonnet-4-6)",
+      "founderIntent": "I-022 · github.com/GenCreator-ai Organization Profile",
+      "strategicObjective": "O6 · 10-Org GitHub Federation & Governance",
+      "sha256VisualReceipt": "bfd24334d9948935",
+      "domStats": {
+        "buttons": 25,
+        "links": 211,
+        "sections": 6,
+        "h1": "GenCreator"
+      },
+      "sourceInspection": {
+        "sourceFileAbsPath": "C:/Users/frank/starlight/repos/gencreator.ai/README.md",
+        "existsOnDisk": true,
+        "lineCount": 124,
+        "byteSize": 5301,
+        "targetEditLine": 15,
+        "exportedSymbols": [],
+        "hasSkipLink": false,
+        "hasSemanticMain": true,
+        "hasAriaAttributes": false,
+        "hasDesignTokens": false,
+        "hasReceiptOrTelemetryBinding": false,
+        "vscodeUri": "vscode://file/C:/Users/frank/starlight/repos/gencreator.ai/README.md:15:1",
+        "cursorUri": "cursor://file/C:/Users/frank/starlight/repos/gencreator.ai/README.md:15:1"
+      },
+      "rubric": {
+        "intentFidelity": 96,
+        "designAndTypography": 94,
+        "accessibilityAndDom": 92,
+        "sourceCodeArchitecture": 95,
+        "specTraceAndConversion": 99,
+        "compositeScore": 95,
+        "grade": "S+"
+      },
+      "executiveDiagnosis": "Creator OS organization profile (\"Generative Creator OS — AI-Native Content Pipelines, Multi-Agent Workflows & Creative Automation\") with 21 repos.",
+      "detectedBottlenecks": [
+        "Can link the 5-stage Creator Stack on gencreator.ai directly to the corresponding public repositories in GenCreator-ai."
+      ],
+      "specV2Requirements": [
+        {
+          "reqId": "REQ-30-1",
+          "dimension": "SPEC_TRACE",
+          "title": "Cross-Link GenCreator-ai Org README with gencreator.ai 5-Stage Creator Stack",
+          "targetFile": "C:/Users/frank/starlight/repos/gencreator.ai/README.md",
+          "targetLine": 15,
+          "currentState": "Lists Core Stack table (Agentic Creator OS, Vibe OS, Content Factory, Prompt Library).",
+          "targetSpecV2": "Add bidirectional links to gencreator.ai live stack and Living Spec #17/#18.",
+          "verificationGate": "Verify README links resolve HTTP 200"
+        }
+      ],
+      "specMarkdownPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/30-github-gencreator-org.spec.md",
+      "specSidecarPath": "C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/memory/spec-trace/spec-surface-30-github-gencreator-org.md",
+      "specVscodeUri": "vscode://file/C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/30-github-gencreator-org.spec.md:1:1",
+      "agentDispatchPrompt": "/goal Execute Living Spec spec-surface-30-github-gencreator-org (v2.0) for github.com/GenCreator-ai — Creator Economy OS & Skills Organization\nTarget Source File: C:/Users/frank/starlight/repos/gencreator.ai/README.md:15\nSpec File: C:/Users/frank/starlight/worktrees/sis-queen-sovereign-20261018/docs/superpowers/specs/estate-surfaces/30-github-gencreator-org.spec.md\nMaker Harness: antigravity (gemini-3.1-pro) | Independent Checker: claude-code (claude-sonnet-4-6)\nRequirements:\n  - [REQ-30-1] Cross-Link GenCreator-ai Org README with gencreator.ai 5-Stage Creator Stack: Add bidirectional links to gencreator.ai live stack and Living Spec #17/#18. (Verify: Verify README links resolve HTTP 200)\nCommit Trailer Required: Spec: spec-surface-30-github-gencreator-org",
+      "lastEvolvedAt": "2026-10-18T20:15:17.597Z"
+    }
+  ]
+}

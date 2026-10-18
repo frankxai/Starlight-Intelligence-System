@@ -108,4 +108,25 @@ describe("Starlight Queen Single-Operator Autonomic Engine", () => {
       riskTier: "medium_review", params: { production: false },
     }), "medium_review");
   });
+
+  it("synthesizes 30 Living Surface Specs with IDE deep links (vscode:// and cursor://) and evolves spec versions", async () => {
+    const { QueenSovereignEngine } = await import("../src/queen/sovereign-engine");
+    const engine = new QueenSovereignEngine(process.cwd());
+    const snap = engine.specIntelligence.getSnapshot(true, true);
+
+    assert.equal(snap.totalSurfaces, 30);
+    assert.ok(snap.verifiedSourceFilesCount >= 25);
+    assert.ok(snap.averageCompositeScore >= 90);
+    assert.ok(snap.surfaces[0].sourceInspection.vscodeUri.startsWith("vscode://file/"));
+    assert.ok(snap.surfaces[0].sourceInspection.cursorUri.startsWith("cursor://file/"));
+
+    const evolved = engine.evolveSpecAndRecord({
+      surfaceId: "01-queen-v2-router",
+      directive: "Add 1-click Spec-Trace selector to Pareto router mission bar.",
+      dimension: "SPEC_TRACE",
+    });
+    assert.equal(evolved.specVersion, "2.1.0");
+    assert.ok(evolved.specV2Requirements.some((r) => r.title.includes("Spec-Trace selector")));
+  });
 });
+

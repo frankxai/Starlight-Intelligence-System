@@ -129,6 +129,33 @@ export async function startQueenSovereignServer(options?: {
       return;
     }
 
+    if (method === 'GET' && pathname === '/api/queen/spec-intelligence') {
+      const refresh = urlObj.searchParams.get('refresh') === '1';
+      const writeDisk = urlObj.searchParams.get('write') !== '0';
+      sendJson(res, 200, engine.specIntelligence.getSnapshot(refresh, writeDisk));
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/spec-evolve') {
+      const body = await readJsonBody(req);
+      const surfaceId = String(body.surfaceId || '01-queen-v2-router');
+      const directive = String(
+        body.directive ||
+          'Add interactive Spec-Trace telemetry verification and direct IDE file jump.'
+      );
+      const evolved = engine.evolveSpecAndRecord({
+        surfaceId,
+        directive,
+      });
+      broadcastState('SPEC_EVOLVE');
+      sendJson(res, 200, {
+        ok: true,
+        evolved,
+        specIntelligence: engine.specIntelligence.getSnapshot(false, false),
+      });
+      return;
+    }
+
     if (method === 'POST' && pathname === '/api/queen/self-heal') {
       const body = await readJsonBody(req);
       const applyFixes = Boolean(body.applyFixes || body.applyCardFixes || body.applyStuckCardFixes);
