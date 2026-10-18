@@ -208,7 +208,10 @@
     "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs",
+    "queen:snapshot:screenshots": "npx tsx tools/queen/capture-estate-screenshots.mjs",
+    "queen:snapshot:deck": "node tools/queen/executive-snapshot-deck.mjs",
+    "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/executive-snapshot-deck.mjs"
   },
   "files": [
     "dist/",
