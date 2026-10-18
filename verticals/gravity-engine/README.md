@@ -44,7 +44,7 @@ Built on SIP — Starlight Intelligence Protocol
 - Substrate: starlightintelligence.org/protocol v1.1.1
 - Verticals: [starlight-gravity-engine]
 - Canon: [none]
-- Nodes: [Frank Riemer (Starlight Holding BV)]
+- Nodes: [Frank Riemer (Starlight Intelligence)]
 Generated: 2026-07-22
 ```
 

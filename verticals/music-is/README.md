@@ -3,7 +3,7 @@
 > Frank's operated music vertical. Four sub-labels, persona-multiplication, AI-native asset pipeline, OpenClaws amplification mesh, attribution-cascade royalty graph. The intelligence layer Arcanea Records runs above Suno + DistroKid + Spotify + the social mesh.
 
 **Tier:** Operated vertical (private operating layer; not the public reference at `verticals/sound-intelligence/`).
-**Owner:** Arcanea Records (under Arcanea BV).
+**Owner:** Arcanea Records (registered trade name under Frank Riemer's Dutch Eenmanszaak / Starlight Intelligence).
 **Primary repo (long-term):** `arcanea-ecosystem/labels/arcanea-records` per VERTICALS.md canon.
 **This scaffold:** in-substrate mirror at `verticals/music-is/` for working alongside Starlight skills/agents during build phase. Migrates to dedicated repo when Phase 2 stabilizes.
 **Status:** `scaffolded — v0.1` (2026-04-29).
@@ -38,7 +38,7 @@ This is **not** a public reference vertical. Sovereign sound practitioners forki
 | **Voice & Video IS** | `verticals/voice-video/` | Music videos, talking-head explainers, persona voice clones (with consent disclosure per persona) |
 | **Genius IS (universal)** | substrate | Per-persona voice canon for social drops, fan emails, sync pitches |
 | **Vision IS (universal)** | substrate | Each label's catalog reads as a coherent body of work, not a stream of disconnected releases |
-| **Business IS (universal)** | substrate | Entity decisions (Arcanea BV → Arcanea Records → label splits), publishing splits, PRO registration |
+| **Business IS (universal)** | substrate | Entity decisions (Dutch Eenmanszaak → Arcanea Records trade name → label splits), publishing splits, PRO registration |
 | **Wealth IS (universal)** | substrate | Royalty-cascade graph integrated with Wealth IS theses + DPI tracking |
 | **Arcanea canon** | `arcanea-ecosystem/canon` | Guardian → Arcanea-label persona mapping; mythic IP composes with cinematic catalog |
 
@@ -123,7 +123,7 @@ Label operating PR #261 is reconciled with October studio source without duplica
 ## License & attestation
 
 - **Operating layer** (this scaffold's structural patterns, command surface, sub-system map): MIT — fork-portable for any label.
-- **Operating data** (Frank's catalog, persona canons, label CANONs, royalty graphs, fan data): proprietary to Arcanea BV. Not in public substrate.
+- **Operating data** (Frank's catalog, persona canons, label CANONs, royalty graphs, fan data): proprietary to Frank Riemer (Arcanea Records / Starlight Intelligence). Not in public substrate.
 - **Cross-party artifacts** (sync pitches, license deliveries, collaboration splits) ship with `/sip-attest` carrying "Built on SIP" plus Arcanea Records identifier. Audio uses `/sip-attest-audio`.
 
 Sovereignty clause (SIP § 5) non-waivable.

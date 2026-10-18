@@ -98,7 +98,7 @@ For founders with multiple brands or revenue streams, the holding-vs-operating q
 - **Entity-per-brand (multiple operating entities, no holding):** clean brand separation, liability separation, easier sale of one. Downsides: multiple tax returns, multiple admin loads, multiple formation costs.
 - **Holding + operating entities (the classic creator-founder pattern):** holding owns IP and shares, operating entities run each brand and license from holding. Clean for scale, investor-friendly, tax-structurally interesting depending on jurisdiction. Downsides: setup complexity, ongoing complexity, over-engineering risk for early-stage founders.
 
-The Frank pattern — Starlight Holding BV at the top, Arcanea BV underneath operating the canon/IP business, FrankX as personal brand through ZZP migrating into a sub-structure — is one example of this third pattern. It is not the default. Most solo founders start with sole prop or single-member LLC and migrate into holding structures only when the complexity is earned.
+The Frank pattern (locked 2026-09-29 in `frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md`) is an example of the **umbrella / multi-trade-name** pattern first: a single Dutch Eenmanszaak (Frank Riemer, Amsterdam) operating with multiple registered KvK trade names (`handelsnamen`: **Starlight Intelligence**, **Arcanea**, **Arcanea Records**, **GenCreator**, **VibeClubs**, **FrankX**, **AI Architect Academy**) — keeping zero B.V. overhead until enterprise liability or investor participation earns a holding/operating migration.
 
 ## Decision Matrix Template
 

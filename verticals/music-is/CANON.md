@@ -7,7 +7,7 @@
 ## Identity
 
 - **Vertical name:** Music IS
-- **Operating entity:** Arcanea Records (under Arcanea BV)
+- **Operating entity:** Arcanea Records (registered trade name under Frank Riemer's Dutch Eenmanszaak / Starlight Intelligence)
 - **Owner:** Frank Riemer (architect / A&R / first artist)
 - **Tier:** operated vertical (private operating layer; not public reference)
 - **Public reference vertical:** `verticals/sound-intelligence/` (distinct; for sovereign sound practitioners)
