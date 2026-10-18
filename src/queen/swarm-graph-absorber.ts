@@ -114,16 +114,16 @@ const ABSORBED_FRAMEWORKS: AbsorbedFrameworkCapability[] = [
   },
   {
     id: 'hermes-coe-6pillar',
-    name: 'Hermes Agent 6-Pillar CoE & Self-Creating Skills',
-    upstreamInspiration: 'NousResearch/hermes-agent + Starlight Hermes CoE',
+    name: 'Hermes Stateless Background Job Runner & Skill Compiler',
+    upstreamInspiration: 'NousResearch/hermes-agent + Starlight Hermes Worker',
     absorbedModuleInSis: 'src/queen/harness-mesh.ts + skills/orchestration/hermes-swarm',
     corePrimitivesAbsorbed: [
-      '6-Pillar Center of Excellence Guardians (Strategy, Governance, Talent, Technology, Data, Ethics)',
+      'Stateless Background Job Execution (<6.2k Turn-0 context diet; 6-seat roleplay removed)',
       'Isolated Per-Profile Memory, Sessions, and Procedural Skill Synthesis',
       'Cross-Repo Provenance Search (starlight-hermes)',
     ],
     synergyInQueenMetaHarness:
-      'Powers the GenCreator 6-Pillar CoE and ensures every new workflow discovered overnight is codified into a reusable SKILL.md.',
+      'Powers GenCreator ACOS background workflows and ensures every verified trajectory discovered overnight is codified into a reusable SKILL.md.',
     readinessScore: 96,
   },
   {

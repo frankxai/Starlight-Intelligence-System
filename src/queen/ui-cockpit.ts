@@ -582,11 +582,12 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
     <div class="brand-cluster">
       <span class="pulse-dot" aria-hidden="true"></span>
       <span class="brand-title">Starlight Queen</span>
-      <span class="brand-badge">v2.0 Sovereign Meta-Harness</span>
+      <span class="brand-badge">v3.0 Sovereign Overnight CEO</span>
     </div>
     <div class="telemetry-strip" aria-live="polite">
       <div class="stat-pill">Harnesses online: <strong id="top-harnesses-online">0/12</strong></div>
       <div class="stat-pill">Fleet capacity: <strong id="top-concurrency">0 workers</strong></div>
+      <div class="stat-pill">RAM floor: <strong id="top-ram-floor">1,024 MB</strong></div>
       <div class="stat-pill">Context compression: <strong id="top-compression">96.9%</strong></div>
       <div class="stat-pill">30 intents: <strong id="top-intents-active">30/30 active</strong></div>
       <div class="stat-pill">12-layer eval: <strong id="top-eval-score">97.3/100</strong></div>
@@ -598,7 +599,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       <div>
         <h1 class="hero-headline">Multi-harness superintelligence across local kernels, cloud fleets, and 8 sovereign brands</h1>
         <p class="hero-sub">
-          Queen orchestrates Claude Code, Codex + ChatGPT Plan Worker, Antigravity, OpenCode + Vercel TokenPass, Grok, Google Jules, Hermes CoE, and Ruflo/OmO—guarded by the Layer-0 Rust invariant kernel, RTK + Headroom token compression, and cross-family Maker ≠ Checker verification.
+          Queen orchestrates Claude Code, Codex + ChatGPT Plan Worker, Antigravity, OpenCode + Vercel TokenPass, Grok, Google Jules, Hermes Worker, and Ruflo/OmO—guarded by the Layer-0 Rust invariant kernel, 1.0 GB RAM governor, AgentDB × JEV learning, and cross-family Builder ≠ Verifier verification.
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="btn-hero-upgrade" type="button">
@@ -666,6 +667,9 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-tab="swarm-graph">
         Swarm, graph &amp; 30 intents <span class="kbd">-</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="overnight-ceo">
+        Overnight CEO, 1GB RAM &amp; PR drainer <span class="kbd">=</span>
       </button>
     </nav>
 
@@ -1363,6 +1367,148 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         </div>
       </div>
     </section>
+
+    <!-- TAB 12: OVERNIGHT CEO, 1GB RAM GOVERNOR, PR DRAINER & PLATFORM BATTERIES -->
+    <section class="tab-section" id="tab-overnight-ceo" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">1.0 GB RAM machine governor &amp; safe overnight idle tab reaper</h2>
+            <p class="panel-subtitle">Dynamically scales local harness workers down to a 1,024 MB free RAM hard floor, bursts to 314 zero-RAM cloud workers, and reaps stale/idle overnight tabs while strictly shielding tool-plane PIDs (:4329, :5200, :9223, active IDEs).</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge badge-emerald mono" id="overnight-ram-mode-pill">1,024 MB hard floor active</span>
+            <button class="btn btn-primary" id="btn-overnight-execute" type="button">
+              Execute overnight CEO cycle (1GB RAM shield + PR drainer + AgentDB×JEV)
+            </button>
+          </div>
+        </div>
+        <div id="overnight-exec-banner" style="display:none; margin-bottom:14px; padding:12px; border-radius:8px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); color:#ecfdf5; font-size:13px;"></div>
+        <div class="route-result-grid" id="overnight-ram-summary-cards" style="margin-bottom:16px;"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Session &amp; harness</th>
+                <th>PID &amp; working directory</th>
+                <th>Classification</th>
+                <th>Est. RAM &amp; idle age</th>
+                <th>Overnight governor action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-tabs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Multi-harness PR drainer, cross-family review &amp; runner queue</h2>
+            <p class="panel-subtitle">Drains open PRs and ready branches across all 10 GitHub orgs with mandatory Cross-Family Builder ≠ Verifier verification.</p>
+          </div>
+          <span class="badge badge-cyan mono" id="overnight-pr-count-pill">6 PR slices queued</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Repository &amp; org mirror</th>
+                <th>Branch / PR reference &amp; summary</th>
+                <th>Builder ≠ Verifier</th>
+                <th>Runner gate</th>
+                <th>Status &amp; exact drain command</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-prs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">First-principles Turn-0 context diet (&lt;8,000 token budget) &amp; 4 functional roles</h2>
+            <p class="panel-subtitle">Replaces 50k–83k Turn-0 prompt bloat and 6-seat roleplay theater with 4 crisp engineering primitives: Router, Builder, Verifier, and Scout.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="overnight-diet-pill">Avg -76.0% Turn-0 bloat</span>
+        </div>
+        <div class="table-wrap" style="margin-bottom:16px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Harness</th>
+                <th>Turn-0 tokens (before → after)</th>
+                <th>Reduction</th>
+                <th>Root cause of bloat</th>
+                <th>Surgical fix applied</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-diet"></tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Functional role</th>
+                <th>Replaces legacy theater</th>
+                <th>Primary harnesses</th>
+                <th>Engineering contract</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-roles"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">AgentDB × JEV (agentic-jujutsu v2.3.6) self-evolving trajectory &amp; skill loop</h2>
+            <p class="panel-subtitle">Connects HNSW vector recall + ReasoningBank + Bi-Temporal Fact Spine with evolutionary verification so only artifact-plus-verification-backed outcomes enter reusable skills.</p>
+          </div>
+          <span class="badge badge-cyan mono" id="overnight-jev-pill">+38.4% skill reuse lift</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Trajectory ID &amp; domain</th>
+                <th>Builder ≠ Verifier</th>
+                <th>Verification gate passed</th>
+                <th>Thompson Beta(α, β) update</th>
+                <th>Distilled reusable skill / playbook</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-jev"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">8-brand prebuilt platform batteries, R&amp;D docs &amp; weekly community builder challenges</h2>
+            <p class="panel-subtitle">Wires Next.js 16, Vercel AI SDK 5, TokenPass, Supabase, Stripe/Polar, AgentDB, Remotion/Hyperframes, and Postiz with high-signal community challenges that drive organic traffic and waitlist conversions.</p>
+          </div>
+          <span class="badge badge-emerald mono">8 brands × batteries &amp; challenges</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Brand &amp; domain</th>
+                <th>Prebuilt platform batteries wired</th>
+                <th>Weekly community builder challenge &amp; hook</th>
+                <th>Public artifact &amp; funnel target</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-overnight-batteries"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer" role="contentinfo">
@@ -1897,6 +2043,162 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         }
       }
 
+      function renderOvernightCeoTab() {
+        const oc = state.overnightCeo;
+        if (!oc) return;
+        const ram = oc.ramGovernor;
+        const topRamEl = document.getElementById('top-ram-floor');
+        if (topRamEl && ram) {
+          topRamEl.textContent = ram.freeRamMb.toLocaleString() + ' MB free / ' + ram.hardFloorRamMb.toLocaleString() + ' MB floor';
+        }
+        const modePill = document.getElementById('overnight-ram-mode-pill');
+        if (modePill && ram) {
+          modePill.textContent = ram.governorMode + ' · ' + ram.freeRamMb.toLocaleString() + ' MB free (floor: ' + ram.hardFloorRamMb.toLocaleString() + ' MB)';
+        }
+        const summaryCards = document.getElementById('overnight-ram-summary-cards');
+        if (summaryCards && ram) {
+          summaryCards.innerHTML =
+            '<div class="decision-box">' +
+              '<h4>Physical RAM &amp; 1.0 GB hard floor</h4>' +
+              '<div class="decision-main mono">' + ram.freeRamMb.toLocaleString() + ' MB free / ' + ram.totalRamMb.toLocaleString() + ' MB total</div>' +
+              '<div class="decision-meta">Hard floor: <strong class="mono" style="color:var(--accent-emerald)">' + ram.hardFloorRamMb.toLocaleString() + ' MB (1.0 GB)</strong> · Headroom above floor: <strong class="mono">' + ram.availableHeadroomAboveFloorMb.toLocaleString() + ' MB</strong></div>' +
+            '</div>' +
+            '<div class="decision-box">' +
+              '<h4>Safe worker scaling capacity</h4>' +
+              '<div class="decision-main mono">+' + ram.maxAdditionalLocalWorkersBeforeFloor + ' local · +' + ram.cloudZeroRamWorkersAvailable + ' cloud</div>' +
+              '<div class="decision-meta">' + ram.logicalCpuCores + ' logical CPUs · Avg ' + ram.avgLocalWorkerRamMb + ' MB/worker locally · Jules (250) + OpenCode Free (64) at 0 MB local RAM</div>' +
+            '</div>' +
+            '<div class="decision-box">' +
+              '<h4>Protected tool-plane &amp; idle tab reaper</h4>' +
+              '<div class="decision-main mono">' + ram.reapableRamRecoveryMb + ' MB overnight recoverable</div>' +
+              '<div class="decision-meta">Shielded: :4329 Queen · :5200 Gateway · :9223 Browser Hub · Active IDE PIDs</div>' +
+            '</div>';
+        }
+
+        const tbodyTabs = document.getElementById('tbody-overnight-tabs');
+        if (tbodyTabs && ram) {
+          tbodyTabs.innerHTML = ram.tabReapCandidates
+            .map((t) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(t.sessionId) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(t.harnessId) + '</div></td>' +
+                '<td class="mono" style="font-size:11px;">PID: ' + (t.pid ?? 'cloud/lock') + '<div style="color:var(--text-muted);">' + escapeHtml(t.workingDirectory) + '</div></td>' +
+                '<td><span class="badge ' + (t.classification === 'protected-keep' ? 'badge-emerald' : 'badge-amber') + '">' + escapeHtml(t.classification) + '</span></td>' +
+                '<td class="mono" style="font-size:12px;">~' + t.estimatedRamMb + ' MB · ' + t.idleMinutes + 'm idle</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);"><div>' + escapeHtml(t.recommendedAction) + '</div><div style="font-size:11px;color:var(--text-muted);">' + escapeHtml(t.reason) + '</div></td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyPrs = document.getElementById('tbody-overnight-prs');
+        if (tbodyPrs && oc.prDrainerQueue) {
+          tbodyPrs.innerHTML = oc.prDrainerQueue
+            .map((p) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(p.repoSlug) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan);">Mirror: ' + escapeHtml(p.targetOrgMirror) + '</div></td>' +
+                '<td><div class="mono" style="font-size:11px;color:var(--accent-emerald);">' + escapeHtml(p.branchOrPrRef) + '</div><div style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(p.sliceSummary) + '</div></td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(p.builderHarness) + ' ≠ ' + escapeHtml(p.verifierHarness) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(p.runnerPipeline) + '</td>' +
+                '<td><span class="badge badge-emerald">' + escapeHtml(p.drainStatus) + '</span><div class="mono" style="font-size:11px;margin-top:4px;color:var(--accent-cyan);">' + escapeHtml(p.exactDrainCommand) + '</div></td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyDiet = document.getElementById('tbody-overnight-diet');
+        if (tbodyDiet && oc.turnZeroDiet) {
+          const dietPill = document.getElementById('overnight-diet-pill');
+          if (dietPill) {
+            dietPill.textContent = 'Target <' + oc.turnZeroDiet.targetTurnZeroTokenBudget.toLocaleString() + ' tokens · Avg -' + oc.turnZeroDiet.averageReductionPct + '% bloat';
+          }
+          tbodyDiet.innerHTML = oc.turnZeroDiet.harnessDiets
+            .map((d) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(d.harnessName) + '</strong><div class="mono" style="font-size:11px;color:var(--text-muted);">' + escapeHtml(d.harnessId) + '</div></td>' +
+                '<td class="mono">' + d.measuredTurnZeroTokensBefore.toLocaleString() + ' → <strong style="color:var(--accent-emerald);">' + d.targetTurnZeroTokensAfter.toLocaleString() + '</strong></td>' +
+                '<td class="mono" style="color:var(--accent-emerald);">-' + d.reductionPct + '%</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(d.rootCauseOfBloat) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-primary);">' + escapeHtml(d.surgicalFixApplied) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyRoles = document.getElementById('tbody-overnight-roles');
+        if (tbodyRoles && oc.turnZeroDiet) {
+          tbodyRoles.innerHTML = oc.turnZeroDiet.functionalRoles
+            .map((r) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(r.title) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--accent-amber);">' + escapeHtml(r.replacesLegacyConcept) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(r.primaryHarnesses.join(' · ')) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(r.engineeringContract) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyJev = document.getElementById('tbody-overnight-jev');
+        if (tbodyJev && oc.agentDbJevLoop) {
+          tbodyJev.innerHTML = oc.agentDbJevLoop.recentVerifiedTrajectories
+            .map((t) => (
+              '<tr>' +
+                '<td class="mono"><strong>' + escapeHtml(t.trajectoryId) + '</strong><div style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(t.domain) + '</div></td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(t.builderHarness) + ' ≠ ' + escapeHtml(t.verifierHarness) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(t.verificationGate) + '</td>' +
+                '<td class="mono" style="font-size:12px;color:var(--accent-emerald);">' + escapeHtml(t.thompsonPriorBefore) + ' → ' + escapeHtml(t.thompsonPriorAfter) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(t.distilledPlaybookOrSkill) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyBatteries = document.getElementById('tbody-overnight-batteries');
+        if (tbodyBatteries && oc.brandPlatformBatteries) {
+          tbodyBatteries.innerHTML = oc.brandPlatformBatteries
+            .map((b) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(b.brandName) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(b.domain) + '</div></td>' +
+                '<td style="font-size:11px;color:var(--text-secondary);">' + b.prebuiltPlatformBatteries.map((p) => '<div>• ' + escapeHtml(p) + '</div>').join('') + '</td>' +
+                '<td style="font-size:12px;"><strong>' + escapeHtml(b.weeklyCommunityChallenge.challengeName) + '</strong><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">' + escapeHtml(b.weeklyCommunityChallenge.builderHook) + '</div></td>' +
+                '<td style="font-size:11px;color:var(--accent-emerald);"><div>' + escapeHtml(b.weeklyCommunityChallenge.publicArtifactProduced) + '</div><div class="mono" style="color:var(--text-muted);margin-top:2px;">' + escapeHtml(b.weeklyCommunityChallenge.funnelConversionTarget) + '</div></td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+      }
+
+      async function triggerOvernightExecute() {
+        const res = await fetch('/api/queen/overnight-execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dryRun: false }),
+        });
+        const data = await res.json();
+        if (data.state) {
+          state = data.state;
+          renderTopMetrics();
+          renderOvernightCeoTab();
+          renderReceipts();
+        }
+        const banner = document.getElementById('overnight-exec-banner');
+        if (banner && data.receipt) {
+          banner.style.display = 'block';
+          banner.textContent =
+            'Overnight CEO cycle executed [' +
+            data.receipt.ramGovernorMode +
+            ']: ' +
+            data.receipt.freeRamMb +
+            ' MB free (1,024 MB hard floor), +' +
+            data.receipt.maxAdditionalLocalWorkers +
+            ' local workers available, ' +
+            data.receipt.prSlicesAdvancingCount +
+            ' PR slices advancing, and ' +
+            data.receipt.agentDbJevTrajectoriesCommitted +
+            ' verified AgentDB×JEV trajectories committed.';
+        }
+      }
+
       async function triggerSelfHeal() {
         const res = await fetch('/api/queen/self-heal', {
           method: 'POST',
@@ -2067,6 +2369,12 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
           e.preventDefault();
           activateTab('router');
           document.getElementById('input-prompt').focus();
+        } else if (e.key === '=') {
+          activateTab('overnight-ceo');
+        } else if (e.key === '-') {
+          activateTab('swarm-graph');
+        } else if (e.key === '0') {
+          activateTab('conductor');
         } else if (e.key >= '1' && e.key <= '9') {
           const idx = Number(e.key) - 1;
           if (tabButtons[idx]) {
@@ -2126,6 +2434,10 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       if (btnSelfHeal) {
         btnSelfHeal.addEventListener('click', triggerSelfHeal);
       }
+      const btnOvernightExec = document.getElementById('btn-overnight-execute');
+      if (btnOvernightExec) {
+        btnOvernightExec.addEventListener('click', triggerOvernightExecute);
+      }
       document.getElementById('btn-hero-upgrade').addEventListener('click', () => {
         activateTab('harnesses');
         triggerUpgradeHarnesses();
@@ -2155,6 +2467,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       renderSubscriptionsTab();
       renderConductorTab();
       renderSwarmGraphTab();
+      renderOvernightCeoTab();
       triggerRoute();
 
       // Live Server-Sent Events (SSE) subscription for real-time CLI & swarm updates
@@ -2174,6 +2487,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
                 renderSubscriptionsTab();
                 renderConductorTab();
                 renderSwarmGraphTab();
+                renderOvernightCeoTab();
               }
             } catch {
               // ignore malformed frame

@@ -42,6 +42,15 @@ import {
   SpecEvolutionRequirement,
   SpecIntelligenceSnapshot,
 } from './spec-intelligence-engine';
+import {
+  OvernightCeoGovernor,
+  OvernightCeoSnapshot,
+  OvernightExecutionReceipt,
+} from './overnight-ceo-governor';
+import {
+  QueenMachineCommander,
+  QueenMachineCommanderSnapshot,
+} from './machine-commander';
 
 export interface SovereignReceiptEntry {
   receiptId: string;
@@ -53,7 +62,10 @@ export interface SovereignReceiptEntry {
     | 'FRONTIER_BENCHMARK'
     | 'SWARM_DISPATCH'
     | 'META_SELF_HEAL'
-    | 'SPEC_EVOLVE';
+    | 'SPEC_EVOLVE'
+    | 'OVERNIGHT_CEO_CYCLE'
+    | 'MACHINE_COMMAND'
+    | 'VOID_TUNNEL';
   brandId: string;
   makerHarness: string;
   checkerHarness: string;
@@ -89,6 +101,8 @@ export interface QueenSovereignStateSnapshot {
   metaConductor: MetaHarnessConductorSnapshot;
   swarmGraph: SwarmGraphAbsorberSnapshot;
   specIntelligence: SpecIntelligenceSnapshot;
+  overnightCeo: OvernightCeoSnapshot;
+  machineCommander: QueenMachineCommanderSnapshot;
   activeAgentSessions: TerminalSession[];
   recentReceipts: SovereignReceiptEntry[];
 }
@@ -116,6 +130,8 @@ export class QueenSovereignEngine {
   public readonly swarmGraphAbsorber: SwarmGraphAbsorber;
   public readonly specIntelligence: QueenSpecIntelligenceEngine;
   public readonly lifecycleManager: AgentLifecycleManager;
+  public readonly overnightCeo: OvernightCeoGovernor;
+  public readonly machineCommander: QueenMachineCommander;
   private readonly ledgerPath: string;
   private cachedSessions: TerminalSession[] = [];
 
@@ -135,6 +151,8 @@ export class QueenSovereignEngine {
     this.swarmGraphAbsorber = new SwarmGraphAbsorber(workspaceRoot);
     this.specIntelligence = new QueenSpecIntelligenceEngine(workspaceRoot);
     this.lifecycleManager = new AgentLifecycleManager();
+    this.overnightCeo = new OvernightCeoGovernor(workspaceRoot, this.metaConductor);
+    this.machineCommander = new QueenMachineCommander(workspaceRoot);
     this.ledgerPath = path.join(
       this.workspaceRoot,
       '.starlight',
@@ -187,12 +205,14 @@ export class QueenSovereignEngine {
     const metaConductor = this.metaConductor.getSnapshot(false);
     const swarmGraph = this.swarmGraphAbsorber.getSnapshot();
     const specIntelligence = this.specIntelligence.getSnapshot(false, false);
+    const overnightCeo = this.overnightCeo.getSnapshot();
+    const machineCommander = this.machineCommander.getSnapshot();
     const activeAgentSessions = this.cachedSessions;
     const recentReceipts = this.readRecentReceipts(12);
 
     return {
-      version: '2.0.0-sovereign-meta-harness',
-      codename: 'Starlight Queen Sovereign Superintelligence v2.0',
+      version: '3.0.0-sovereign-overnight-ceo',
+      codename: 'Starlight Queen Sovereign Superintelligence v3.0',
       branch: 'agent/antigravity/queen-sovereign-superintelligence-20261017',
       generatedAt: new Date().toISOString(),
       harnesses: {
@@ -217,9 +237,23 @@ export class QueenSovereignEngine {
       metaConductor,
       swarmGraph,
       specIntelligence,
+      overnightCeo,
+      machineCommander,
       activeAgentSessions,
       recentReceipts,
     };
+  }
+
+  public executeOvernightCeoAndRecord(options: { dryRun?: boolean } = {}): OvernightExecutionReceipt {
+    const receipt = this.overnightCeo.executeOvernightCycle(options);
+    this.appendReceipt({
+      eventType: 'OVERNIGHT_CEO_CYCLE',
+      brandId: 'starlight',
+      makerHarness: 'antigravity',
+      checkerHarness: 'claude-code',
+      summary: `Overnight CEO cycle [${receipt.ramGovernorMode}]: ${receipt.freeRamMb}MB free (1,024MB floor), +${receipt.maxAdditionalLocalWorkers} local workers, ${receipt.prSlicesAdvancingCount} PR slices advancing, ${receipt.agentDbJevTrajectoriesCommitted} AgentDB×JEV trajectories.`,
+    });
+    return receipt;
   }
 
   public evolveSpecAndRecord(params: {

@@ -432,7 +432,7 @@ export class SubscriptionGovernor {
         scheduledObjectives: [
           'O3: FrankX.ai authority & Model Arena interactive telemetry verification',
           'O4: Arcanea 10-Gate Luminor Studio & canon-locked creative pipeline advancement',
-          'O5: GenCreator OS 6-Pillar CoE & open-core skill packaging',
+          'O5: GenCreator ACOS v12 workflow compiler & open-core skill packaging',
         ],
         windowResetHarvestStrategy:
           'Consume full 5-hour rolling window #1 on Claude Max and Codex Cloud containers before the midday window reset.',

@@ -248,7 +248,7 @@ const HARNESS_CATALOG: Array<{
   },
   {
     id: 'hermes-coe',
-    name: 'Hermes Agent (6-Pillar CoE Guardians & Provenance Search)',
+    name: 'Hermes Worker (Stateless Background Job & Provenance Runner)',
     category: 'swarm-orchestrator',
     family: 'multi-family',
     authRails: ['local-native', 'openrouter-api', 'oauth-subscription'],
@@ -263,7 +263,7 @@ const HARNESS_CATALOG: Array<{
     costPer1kTokensUsd: 0.005,
     medianLatencyMs: 610,
     strengths: [
-      'Isolated agent profiles across Strategy, Governance, Talent, Tech, Data, Ethics',
+      'Stateless background job execution & automated SKILL.md extraction (<6.2k Turn-0 tokens)',
       'Cross-repo provenance search & estate workspace bootstrap guardrails',
       'Meta Muse Wonder creative-synthesis & audio-visual ideation routing',
     ],

@@ -169,7 +169,7 @@ const ORG_DEFINITIONS: Array<
       { name: 'AnimeLegends', visibility: 'private', primaryOwner: 'frankxai' },
     ],
     responsibleAgentTeam: {
-      leadQueenPersona: 'Lumina — Nexus of the Ten Gates',
+      leadQueenPersona: 'Arcanea Studio & Canon Engine Lead (Lumina lore scoped to app)',
       stewardAgents: ['starlight-weaver', 'canon-guardian', 'arcanea-author-council', 'social-visual-director'],
       primaryMakerHarness: 'antigravity',
       primaryCheckerHarness: 'claude-code',
@@ -188,7 +188,7 @@ const ORG_DEFINITIONS: Array<
     brandId: 'gencreator',
     governanceMode: 'active',
     missionAndScope:
-      'Agentic Creator OS (ACOS), GenCreator Studio, 6-Pillar AI Center of Excellence (CoE), creator skill packs, launch storefront templates, and Suno/Creator MCP servers.',
+      'Agentic Creator OS (ACOS v12), GenCreator Studio, stateless workflow compilers, creator skill packs, launch storefront templates, and Suno/Creator MCP servers.',
     repos: [
       { name: 'gencreator.ai', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'GenCreator-OS', visibility: 'private', primaryOwner: 'frankxai' },
@@ -200,7 +200,7 @@ const ORG_DEFINITIONS: Array<
       { name: 'starlight-creator-mcp', visibility: 'public', primaryOwner: 'frankxai' },
     ],
     responsibleAgentTeam: {
-      leadQueenPersona: 'Hermes 6-Pillar CoE Conductor',
+      leadQueenPersona: 'GenCreator ACOS Workflow & Multimodal Studio Lead',
       stewardAgents: ['starlight-envoy', 'starlight-music-producer', 'starlight-content-director', 'social-strategist'],
       primaryMakerHarness: 'hermes-coe',
       primaryCheckerHarness: 'claude-code',
@@ -208,7 +208,7 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'agentic-creator-os (ACOS v12, 110+ skills), suno-mcp-server, creator-launch-os',
-      commercialProductOrRetainer: 'GenCreator Pro OS Packs, Self-Serve 6-Pillar CoE Templates & BYOK Studio Licenses',
+      commercialProductOrRetainer: 'GenCreator Pro OS Packs, Self-Serve Studio Templates & BYOK Licenses',
       communitySurface: 'gencreator.ai + GitHub ACOS builder community (Risk R1 funnel bridge target)',
     },
   },

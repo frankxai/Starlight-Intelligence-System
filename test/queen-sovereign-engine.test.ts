@@ -7,6 +7,7 @@ import {
   FrontierEvalEngine,
   HarnessMesh,
   MetaHarnessConductor,
+  OvernightCeoGovernor,
   QueenSovereignEngine,
   SovereignMasterCodex,
   SubscriptionGovernor,
@@ -14,7 +15,7 @@ import {
   startQueenSovereignServer,
 } from '../src/queen';
 
-describe('Starlight Queen Sovereign Superintelligence v2.0 Meta-Harness', () => {
+describe('Starlight Queen Sovereign Superintelligence v3.0 Overnight CEO & Meta-Harness', () => {
   const workspaceRoot = process.cwd();
 
   it('discovers all 12 federated local & cloud harnesses and upgrades them to 100% readiness', () => {
@@ -165,7 +166,33 @@ describe('Starlight Queen Sovereign Superintelligence v2.0 Meta-Harness', () => 
     assert.equal(bundle.filesGenerated.length, 2);
   });
 
-  it('serves live HTTP + JSON API + interactive HTML cockpit on localhost including v2.0 endpoints', async () => {
+  it('governs 1.0 GB RAM floor, Turn-0 Context Diet (<8k tokens), AgentDB×JEV loop, PR drainer, and 8-brand batteries', () => {
+    const ceo = new OvernightCeoGovernor(workspaceRoot);
+    const snap = ceo.getSnapshot();
+
+    assert.equal(snap.queenVersion, '3.0.0-sovereign-overnight-ceo');
+    assert.equal(snap.ramGovernor.hardFloorRamMb, 1024, 'Hard RAM floor must be exactly 1,024 MB (1.0 GB)');
+    assert.ok(snap.ramGovernor.totalRamMb > 4000, 'Must read real physical machine RAM');
+    assert.equal(snap.ramGovernor.cloudZeroRamWorkersAvailable, 314);
+    assert.equal(snap.turnZeroDiet.targetTurnZeroTokenBudget, 8000);
+    assert.equal(snap.turnZeroDiet.functionalRoles.length, 4);
+    for (const h of snap.turnZeroDiet.harnessDiets) {
+      assert.ok(h.targetTurnZeroTokensAfter < 8000, `Harness ${h.harnessId} must be under 8k Turn-0 tokens`);
+    }
+    assert.ok(snap.agentDbJevLoop.verifiedTrajectoriesCount >= 4);
+    assert.ok(snap.prDrainerQueue.length >= 6);
+    for (const pr of snap.prDrainerQueue) {
+      assert.notEqual(pr.builderHarness, pr.verifierHarness, `PR ${pr.id} must enforce Builder !== Verifier`);
+    }
+    assert.equal(snap.brandPlatformBatteries.length, 8);
+
+    const execReceipt = ceo.executeOvernightCycle({ dryRun: true });
+    assert.equal(execReceipt.dryRun, true);
+    assert.equal(execReceipt.hardFloorRamMb, 1024);
+    assert.ok(execReceipt.actionsExecuted.length >= 6);
+  });
+
+  it('serves live HTTP + JSON API + interactive HTML cockpit on localhost including v3.0 Overnight CEO endpoints', async () => {
     const handle = await startQueenSovereignServer({
       port: 0, // ephemeral port for test isolation
       workspaceRoot,
@@ -180,6 +207,7 @@ describe('Starlight Queen Sovereign Superintelligence v2.0 Meta-Harness', () => 
       assert.ok(html.includes('Subscription max-out &amp; cloud rails'));
       assert.ok(html.includes('Window conductor &amp; self-heal'));
       assert.ok(html.includes('Swarm, graph &amp; 30 intents'));
+      assert.ok(html.includes('Overnight CEO, 1GB RAM &amp; PR drainer'));
 
       const routeRes = await fetch(`${handle.url}/api/queen/route`, {
         method: 'POST',
@@ -278,6 +306,31 @@ describe('Starlight Queen Sovereign Superintelligence v2.0 Meta-Harness', () => 
       };
       assert.equal(healPayload.ok, true);
       assert.equal(healPayload.metaConductor.openWindowsCount, 6);
+
+      const ceoRes = await fetch(`${handle.url}/api/queen/overnight-ceo`);
+      assert.equal(ceoRes.status, 200);
+      const ceoPayload = (await ceoRes.json()) as {
+        queenVersion: string;
+        ramGovernor: { hardFloorRamMb: number };
+        brandPlatformBatteries: unknown[];
+      };
+      assert.equal(ceoPayload.queenVersion, '3.0.0-sovereign-overnight-ceo');
+      assert.equal(ceoPayload.ramGovernor.hardFloorRamMb, 1024);
+      assert.equal(ceoPayload.brandPlatformBatteries.length, 8);
+
+      const ceoExecRes = await fetch(`${handle.url}/api/queen/overnight-execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dryRun: true }),
+      });
+      assert.equal(ceoExecRes.status, 200);
+      const ceoExecPayload = (await ceoExecRes.json()) as {
+        ok: boolean;
+        receipt: { hardFloorRamMb: number; prSlicesAdvancingCount: number };
+      };
+      assert.equal(ceoExecPayload.ok, true);
+      assert.equal(ceoExecPayload.receipt.hardFloorRamMb, 1024);
+      assert.ok(ceoExecPayload.receipt.prSlicesAdvancingCount >= 6);
     } finally {
       await handle.close();
     }

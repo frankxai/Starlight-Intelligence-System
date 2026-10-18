@@ -1,6 +1,9 @@
+import * as fs from 'node:fs';
 import * as http from 'node:http';
+import * as path from 'node:path';
 import { QueenSovereignEngine } from './sovereign-engine';
 import { renderQueenCockpitHtml } from './ui-cockpit';
+import { AgentCliSpawnRequest } from './machine-commander';
 
 export interface QueenServerHandle {
   port: number;
@@ -166,6 +169,26 @@ export async function startQueenSovereignServer(options?: {
       return;
     }
 
+    if (method === 'GET' && pathname === '/api/queen/overnight-ceo') {
+      sendJson(res, 200, engine.overnightCeo.getSnapshot());
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/overnight-execute') {
+      const body = await readJsonBody(req);
+      const dryRun = Boolean(body.dryRun);
+      const receipt = engine.executeOvernightCeoAndRecord({ dryRun });
+      const state = engine.getFullStateSnapshot();
+      broadcastState('OVERNIGHT_CEO_CYCLE');
+      sendJson(res, 200, {
+        ok: true,
+        receipt,
+        overnightCeo: state.overnightCeo,
+        state,
+      });
+      return;
+    }
+
     if (method === 'GET' && pathname === '/api/queen/stream') {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
@@ -239,6 +262,122 @@ export async function startQueenSovereignServer(options?: {
       const state = engine.getFullStateSnapshot();
       broadcastState('SWARM_DISPATCH');
       sendJson(res, 200, { ok: true, mission, state });
+      return;
+    }
+
+    if (method === 'GET' && pathname === '/cosmos') {
+      const cosmosHtmlCandidatePaths = [
+        path.join(
+          engine.workspaceRoot,
+          '.starlight',
+          'queen-jarvis-embodied-cosmos.html'
+        ),
+        'C:\\Users\\frank\\.gemini\\antigravity-cli\\brain\\5dc42c9a-4558-47e1-b558-9dbf8e467317\\2026-10-18__Antigravity-Gemini3.1Pro__Starlight-Jarvis-Embodied-Cosmos.html',
+      ];
+      for (const candidate of cosmosHtmlCandidatePaths) {
+        if (fs.existsSync(candidate)) {
+          const html = fs.readFileSync(candidate, 'utf8');
+          res.writeHead(200, {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'no-store',
+          });
+          res.end(html);
+          return;
+        }
+      }
+      const state = engine.getFullStateSnapshot();
+      const html = renderQueenCockpitHtml(state);
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+      });
+      res.end(html);
+      return;
+    }
+
+    if (method === 'GET' && pathname === '/api/queen/machine/overview') {
+      sendJson(res, 200, engine.machineCommander.getSnapshot());
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/machine/spawn-agent') {
+      const body = await readJsonBody(req);
+      const spawnReq: AgentCliSpawnRequest = {
+        harness: (body.harness as AgentCliSpawnRequest['harness']) || 'grok',
+        model: String(body.model || 'grok-4.7'),
+        prompt: String(
+          body.prompt ||
+            'Inspect repo status, run verification gates, and report summary.'
+        ),
+        cwd: body.cwd ? String(body.cwd) : engine.workspaceRoot,
+        reasoningEffort:
+          (body.reasoningEffort as AgentCliSpawnRequest['reasoningEffort']) ||
+          'xhigh',
+        dryRun: body.dryRun !== undefined ? Boolean(body.dryRun) : false,
+      };
+      const receipt = engine.machineCommander.spawnAgentCliTask(spawnReq);
+      broadcastState('MACHINE_COMMAND');
+      sendJson(res, 200, {
+        ok: true,
+        receipt,
+        machineCommander: engine.machineCommander.getSnapshot(),
+      });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/machine/desktop-action') {
+      const body = await readJsonBody(req);
+      const result = engine.machineCommander.executeDesktopAction({
+        action:
+          (body.action as
+            | 'OPEN_FRAMELESS_APP'
+            | 'OPEN_BROWSER_TAB'
+            | 'START_VOID_TUNNEL'
+            | 'CLEAN_ORPHAN_NODE'
+            | 'SYNC_GITHUB_ORGS') || 'OPEN_FRAMELESS_APP',
+        target: body.target ? String(body.target) : undefined,
+        dryRun: body.dryRun !== undefined ? Boolean(body.dryRun) : false,
+      });
+      broadcastState('MACHINE_COMMAND');
+      sendJson(res, 200, {
+        ok: result.ok,
+        result,
+        machineCommander: engine.machineCommander.getSnapshot(),
+      });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/machine/memory-append') {
+      const body = await readJsonBody(req);
+      const entry = engine.machineCommander.appendMemoryVaultEntry({
+        vault: String(body.vault || 'operational'),
+        title: String(body.title || 'Starlight Queen Machine Commander Event'),
+        summary: String(body.summary || 'Recorded machine commander event.'),
+        tags: Array.isArray(body.tags) ? body.tags.map(String) : undefined,
+      });
+      sendJson(res, 200, {
+        ok: true,
+        entry,
+        machineCommander: engine.machineCommander.getSnapshot(),
+      });
+      return;
+    }
+
+    if (method === 'GET' && pathname === '/api/queen/void-tunnel') {
+      sendJson(res, 200, engine.machineCommander.voidGateway.getTunnelStatus(port));
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/void-tunnel/start') {
+      const tunnelStatus = await engine.machineCommander.voidGateway.startQuickTunnel(
+        port
+      );
+      broadcastState('VOID_TUNNEL');
+      sendJson(res, 200, {
+        ok: true,
+        tunnelStatus,
+        machineCommander: engine.machineCommander.getSnapshot(),
+      });
       return;
     }
 

@@ -22,13 +22,13 @@ export default function QueenPage() {
         <div className="relative z-10 mx-auto max-w-5xl px-8 pt-16 pb-20">
           <div className="max-w-4xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-xs tracking-[2px] text-emerald-300 mb-6">
-              Starlight Queen • v2.0 Sovereign Meta-Harness
+              Starlight Queen • v3.0 Sovereign Overnight CEO
             </div>
             <h1 className="font-serif text-[72px] md:text-[92px] leading-[0.9] tracking-[-4.5px] text-white mb-6">
               The Starlight<br />Queen &amp; Her Swarms
             </h1>
             <p className="max-w-2xl text-2xl text-zinc-400 tracking-tight mb-10">
-              Orchestrating 12 local and cloud harnesses across 8 brands—with 10-rail OAuth subscription max-out pacing, open-window CLI prompt steering, absorbed RuFlow v3 × OmO × Graphiti bi-temporal memory, and Layer-0 Rust AST &amp; deadlock verification.
+              Orchestrating 12 local and cloud harnesses across 8 brands—with 1.0 GB physical RAM floor governance, AgentDB × JEV trajectory learning, Turn-0 &lt;8k token context diet, multi-repo PR draining, and Layer-0 Rust AST &amp; deadlock verification.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <a href="#the-loop" className="inline-flex items-center gap-3 rounded-2xl bg-white px-9 py-4 text-lg font-medium tracking-tight text-[#0a0a0f] hover:bg-zinc-200 active:scale-[0.985] transition">
@@ -52,7 +52,7 @@ export default function QueenPage() {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[10px] tracking-wider text-white/50">Scroll to enter the loop</div>
       </header>
 
-      {/* Sovereign v2.0 Telemetry Strip */}
+      {/* Sovereign v3.0 Telemetry Strip */}
       <section className="border-b border-white/10 bg-[#0d0d12] py-12">
         <div className="mx-auto max-w-6xl px-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -62,19 +62,19 @@ export default function QueenPage() {
               <div className="mt-1 font-mono text-xs text-zinc-400">+24.5 vs Grok v0.2 · +14.3 vs YC Oct 2026</div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/40 p-6">
-              <div className="text-xs text-zinc-400">OAuth subscription &amp; cloud rails</div>
-              <div className="mt-2 font-mono text-3xl font-semibold text-cyan-400">10 rails · 10.5x</div>
-              <div className="mt-1 font-mono text-xs text-zinc-400">Claude Max · Codex Pro · AI Ultra · SuperGrok · Zen</div>
+              <div className="text-xs text-zinc-400">1.0 GB RAM floor &amp; cloud burst</div>
+              <div className="mt-2 font-mono text-3xl font-semibold text-cyan-400">1,024 MB floor</div>
+              <div className="mt-1 font-mono text-xs text-zinc-400">+314 zero-RAM cloud workers · safe idle tab reaper</div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/40 p-6">
-              <div className="text-xs text-zinc-400">Window steering &amp; self-heal</div>
-              <div className="mt-2 font-mono text-3xl font-semibold text-white">14/14 healed</div>
-              <div className="mt-1 font-mono text-xs text-zinc-400">6 CLI windows steered · -96.9% context bloat</div>
+              <div className="text-xs text-zinc-400">Turn-0 context diet &amp; vMCP</div>
+              <div className="mt-2 font-mono text-3xl font-semibold text-white">&lt;8,000 tokens</div>
+              <div className="mt-1 font-mono text-xs text-zinc-400">83k → 7.4k Turn-0 · -96.9% combined bloat</div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/40 p-6">
-              <div className="text-xs text-zinc-400">Absorbed swarm &amp; founder intents</div>
-              <div className="mt-2 font-mono text-3xl font-semibold text-amber-300">30/30 ready</div>
-              <div className="mt-1 font-mono text-xs text-zinc-400">RuFlow v3 · OmO 11-role · Graphiti bi-temporal</div>
+              <div className="text-xs text-zinc-400">AgentDB × JEV &amp; PR drainer</div>
+              <div className="mt-2 font-mono text-3xl font-semibold text-amber-300">+38.4% reuse</div>
+              <div className="mt-1 font-mono text-xs text-zinc-400">Cross-family Builder ≠ Verifier · 8-brand batteries</div>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function QueenPage() {
       {/* Intro */}
       <div className="mx-auto max-w-3xl px-8 py-20 text-center">
         <p className="text-3xl leading-tight tracking-[-0.5px] text-white">
-          A continuous Meta-Harness that paces 10 OAuth subscription and cloud burst rails minute-by-minute, steers open terminal windows with worktree-safe prompts, self-heals stuck control-plane cards and MCP schemas, and verifies every slice with cross-family Maker ≠ Checker swarms.
+          An overnight Swarm CEO that enforces a 1.0 GB physical RAM floor, reaps stale idle tabs while shielding tool-plane daemons, drains multi-repo PR queues with cross-family Builder ≠ Verifier pairs, and compounds verified trajectories via AgentDB × JEV.
         </p>
         <p className="mt-6 text-zinc-400">Scroll the loop. See the intelligence move.</p>
       </div>

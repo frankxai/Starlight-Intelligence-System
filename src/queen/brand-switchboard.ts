@@ -102,7 +102,7 @@ const BRAND_PORTFOLIO: BrandPortfolioEntry[] = [
       typography: 'Cinzel / Space Grotesk + Plus Jakarta Sans + JetBrains Mono',
     },
     voiceSignature: 'Mythic precision, luminous craft, 10-Gate creative mastery (strictly canon-locked).',
-    leadQueenPersona: 'Lumina & Aiyami (Crown Gate Synthesis)',
+    leadQueenPersona: 'Arcanea Studio & Canon Engine Lead (Lumina lore scoped to app)',
     preferredMakerHarness: 'claude-code',
     preferredCheckerHarness: 'antigravity',
     moatLayers: [
@@ -118,7 +118,7 @@ const BRAND_PORTFOLIO: BrandPortfolioEntry[] = [
     grokSurfaceSync: {
       connectedToGrokFactory: true,
       grokSurfaceId: 'arcanea.ai',
-      antigravityCompetitiveUpgrade: 'Enforces CANON_LOCKED.md invariants pre-commit and wires Santa Loop (Fire Gate Maker -> Crown Gate Checker) directly into the Queen session.',
+      antigravityCompetitiveUpgrade: 'Enforces CANON_LOCKED.md invariants pre-commit and wires Cross-Family Builder ≠ Verifier directly into the Queen session.',
     },
   },
   {
@@ -168,7 +168,7 @@ const BRAND_PORTFOLIO: BrandPortfolioEntry[] = [
       typography: 'Space Grotesk + Inter + JetBrains Mono',
     },
     voiceSignature: 'Direct, technical, warm, builder-to-builder pattern recognition.',
-    leadQueenPersona: 'FrankX Council Prime & Creation Engine',
+    leadQueenPersona: 'FrankX Systems Architect & Creation Engine Lead',
     preferredMakerHarness: 'claude-code',
     preferredCheckerHarness: 'codex-cloud',
     moatLayers: [
@@ -201,14 +201,14 @@ const BRAND_PORTFOLIO: BrandPortfolioEntry[] = [
       typography: 'Cabinet Grotesk / Space Grotesk + Inter + JetBrains Mono',
     },
     voiceSignature: 'High-velocity, craft-obsessed, anti-slop, empowering solo builders to operate like studios.',
-    leadQueenPersona: 'Hermes 6-Pillar CoE & Studio Director',
+    leadQueenPersona: 'GenCreator ACOS Workflow & Multimodal Studio Lead',
     preferredMakerHarness: 'opencode-tokenpass',
     preferredCheckerHarness: 'antigravity',
     moatLayers: [
       { layer: 'cli', label: 'CLI', artifact: 'studio / create-music / video-produce / harvest CLI', openCorevsProprietary: 'open-core', readinessPct: 95 },
       { layer: 'sdks', label: 'SDKs', artifact: '@gencreator/workflow-tier + Hyperframes & Remotion Adapters', openCorevsProprietary: 'open-core', readinessPct: 92 },
       { layer: 'apis', label: 'APIs', artifact: 'Multimodal Asset Forge API (NanoBanana + Veo + Suno + ElevenLabs)', openCorevsProprietary: 'hybrid-attested', readinessPct: 93 },
-      { layer: 'platforms', label: 'Platforms', artifact: 'Agentic Creator OS (ACOS) + 6-Pillar CoE Framework', openCorevsProprietary: 'open-core', readinessPct: 96 },
+      { layer: 'platforms', label: 'Platforms', artifact: 'Agentic Creator OS (ACOS v12) + Stateless Skill Compiler', openCorevsProprietary: 'open-core', readinessPct: 96 },
       { layer: 'apps', label: 'Apps', artifact: 'Creator Studio Dashboard, Suno Catalog Triage, & Clip Packager', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 91 },
       { layer: 'ai', label: 'AI', artifact: 'Voice-Calibrated Prose & Audio-Reactive Motion Synthesis', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 94 },
       { layer: 'agents', label: 'Agents', artifact: 'Social Strategist, Vibe Tracker, Fact Checker, & Visual Director', openCorevsProprietary: 'hybrid-attested', readinessPct: 95 },

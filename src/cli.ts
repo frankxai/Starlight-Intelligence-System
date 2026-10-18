@@ -1998,7 +1998,7 @@ async function cmdQueen(
         console.log(JSON.stringify(bundle, null, 2));
         return;
       }
-      console.log(`\n[Starlight Queen v2.0] Portable Community Meta-Harness (${bundle.dryRun ? "dry-run" : "installed"}) in ${targetDir}:`);
+      console.log(`\n[Starlight Queen v3.0] Portable Community Meta-Harness (${bundle.dryRun ? "dry-run" : "installed"}) in ${targetDir}:`);
       for (const f of bundle.filesGenerated) {
         console.log(`  ✓ ${f.relativePath} — ${f.description}`);
       }
@@ -2006,9 +2006,41 @@ async function cmdQueen(
       break;
     }
 
+    case "overnight":
+    case "ceo":
+    case "ram":
+    case "pr-drain": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const dryRun = options.dryRun === true;
+      const receipt = engine.executeOvernightCeoAndRecord({ dryRun });
+      const snap = engine.overnightCeo.getSnapshot();
+      if (options.json) {
+        console.log(JSON.stringify({ receipt, overnightCeo: snap }, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen v3.0 — Overnight Swarm CEO, 1.0 GB RAM Governor & PR Drainer`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  RAM Governor Mode:    ${snap.ramGovernor.governorMode}`);
+      console.log(`  Physical Free RAM:    ${snap.ramGovernor.freeRamMb.toLocaleString()} MB / ${snap.ramGovernor.totalRamMb.toLocaleString()} MB (Hard Floor: ${snap.ramGovernor.hardFloorRamMb.toLocaleString()} MB)`);
+      console.log(`  Safe Worker Scaling:  +${snap.ramGovernor.maxAdditionalLocalWorkersBeforeFloor} local workers before 1.0 GB floor | +${snap.ramGovernor.cloudZeroRamWorkersAvailable} cloud zero-RAM workers`);
+      console.log(`  Turn-0 Context Diet:  <${snap.turnZeroDiet.targetTurnZeroTokenBudget.toLocaleString()} token target (Avg -${snap.turnZeroDiet.averageReductionPct}% token bloat across harnesses)`);
+      console.log(`  AgentDB × JEV Loop:   ${snap.agentDbJevLoop.verifiedTrajectoriesCount} verified trajectories (+${snap.agentDbJevLoop.averageSkillReuseLiftPct}% skill reuse lift)\n`);
+      console.log(`  [1] MULTI-HARNESS PR DRAINER QUEUE (${snap.prDrainerQueue.length} slices):`);
+      for (const p of snap.prDrainerQueue) {
+        console.log(`    ✓ ${p.repoSlug.padEnd(42)} | ${p.builderHarness} ≠ ${p.verifierHarness} | ${p.drainStatus}`);
+      }
+      console.log(`\n  [2] 8-BRAND PLATFORM BATTERIES & WEEKLY BUILDER CHALLENGES:`);
+      for (const b of snap.brandPlatformBatteries) {
+        console.log(`    ◆ ${b.brandName.padEnd(32)} (${b.domain.padEnd(26)}) -> ${b.weeklyCommunityChallenge.challengeName}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
     default:
       console.error(
-        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, codex, orgs, truths, subscriptions, conductor, self-heal, swarm-graph, intents, init-community, serve, agent`
+        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, codex, orgs, truths, subscriptions, conductor, self-heal, swarm-graph, intents, init-community, overnight, ceo, ram, pr-drain, serve, agent`
       );
       process.exitCode = 1;
   }
