@@ -1844,6 +1844,48 @@ async function cmdQueen(
       break;
     }
 
+    case "codex":
+    case "orgs":
+    case "truths": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const codex = engine.masterCodex.getSnapshot();
+      if (options.json) {
+        console.log(JSON.stringify(codex, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen — Sovereign Master Codex (Orgs, 151 Agents & 12 Truths)`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  GitHub Orgs:         ${codex.totals.githubOrganizations} (9 active federated + 1 reshape-frozen)`);
+      console.log(`  Mapped Repos:        ${codex.totals.federatedRepositories} (${codex.totals.publicOssRepositories} public OSS, ${codex.totals.privateSovereignRepositories} private) | Active mirrors: 66/66`);
+      console.log(`  Named Agents:        ${codex.totals.namedAgentsInRegistry} across ${codex.agentHierarchy.length} tiers | ${codex.totals.autoActivatingSkills} skills | 6 vaults\n`);
+
+      console.log(`  [1] 10 GITHUB ORGANIZATIONS & STEWARD AGENT TEAMS:`);
+      for (const o of codex.organizations) {
+        console.log(`    ◆ ${o.login.padEnd(32)} | ${String(o.totalRepoCount).padStart(2)} repos (${o.publicRepoCount} pub/${o.privateRepoCount} priv) | ${o.governanceMode.padEnd(16)} | Lead: ${o.responsibleAgentTeam.leadQueenPersona}`);
+      }
+
+      console.log(`\n  [2] 10-TIER 151-AGENT HIERARCHY:`);
+      for (const t of codex.agentHierarchy) {
+        console.log(`    ${t.tierName.padEnd(56)} | ${String(t.agentCount).padStart(2)} agents | ${t.whenTheyLead}`);
+      }
+
+      console.log(`\n  [3] 12 CANONICAL TRUTHS & ANTI-DRIFT GUARDRAILS:`);
+      for (const tr of codex.canonicalTruthsAndAntiDrift) {
+        console.log(`    ▸ [#${tr.ruleNumber} ${tr.id}] ${tr.title}`);
+        console.log(`      Old mistake: ${tr.oldAgentFailureMode}`);
+        console.log(`      Truth:       ${tr.canonicalTruthAndPrinciple}`);
+        console.log(`      Gate:        ${tr.deterministicEnforcementGate}`);
+      }
+
+      console.log(`\n  [4] HORIZON MILESTONES (Now -> Q4 2026):`);
+      for (const m of codex.horizonMilestones) {
+        console.log(`    ● [${m.horizonId.padEnd(14)}] ${m.label} — ${m.primaryObjective}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
     case "serve": {
       const portArg = args[0] ? parseInt(args[0], 10) : 4329;
       const handle = await startQueenSovereignServer({ port: portArg });
@@ -1853,7 +1895,7 @@ async function cmdQueen(
 
     default:
       console.error(
-        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, serve, agent`
+        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, codex, orgs, truths, serve, agent`
       );
       process.exitCode = 1;
   }

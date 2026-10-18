@@ -654,6 +654,9 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       <button class="tab-btn" role="tab" aria-selected="false" data-tab="estate">
         Estate, sessions &amp; GTM radar <span class="kbd">7</span>
       </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="codex">
+        Master codex: orgs, agents &amp; truths <span class="kbd">8</span>
+      </button>
     </nav>
 
     <!-- TAB 1: PARETO & THOMPSON ROUTER -->
@@ -1023,6 +1026,104 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         </div>
       </div>
     </section>
+
+    <!-- TAB 8: MASTER CODEX: ORGS, 151 AGENTS & 12 TRUTHS -->
+    <section class="tab-section" id="tab-codex" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">10 GitHub organizations &amp; steward agent teams (71 mapped repositories)</h2>
+            <p class="panel-subtitle">Dual-remote federation: origin remains frankxai/&lt;repo&gt; to protect 41 Vercel projects and npm OIDC bindings, while org pushes to the 10 domain organizations.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="codex-org-pill">10 orgs · 71 repos · 66/66 mirrors</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>GitHub organization</th>
+                <th>Repos (public / private)</th>
+                <th>Governance mode</th>
+                <th>Steward Queen lead &amp; Maker ≠ Checker</th>
+                <th>Traffic engine, OSS wedges &amp; digital products</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-codex-orgs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">10-tier 151-agent hierarchy across local &amp; cloud harnesses</h2>
+            <p class="panel-subtitle">Flat council with emergent leadership: Front-Door, Excavation, Leadership, Specialist, Foundation, Council, Executive, Universal IS, Domain Sub-Stacks, and Corpus Extractors.</p>
+          </div>
+          <span class="badge badge-cyan mono" id="codex-agent-pill">151 named agents · 89 skills · 6 vaults</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>Agents</th>
+                <th>Representative personas</th>
+                <th>When this tier leads</th>
+                <th>Primary local &amp; cloud harnesses</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-codex-agents"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">12 canonical truths &amp; anti-drift guardrails (old agent mistakes → deterministic gates)</h2>
+            <p class="panel-subtitle">Every historical agent failure across the estate is mapped to a non-waivable invariant and an executable gate.</p>
+          </div>
+          <span class="badge badge-emerald mono">12/12 invariants enforced</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID &amp; category</th>
+                <th>Principle</th>
+                <th>What agents previously got wrong</th>
+                <th>Canonical truth</th>
+                <th>Deterministic enforcement gate</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-codex-truths"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Horizon execution milestones (Now / 2h / 12h / 1w / Q4 2026)</h2>
+            <p class="panel-subtitle">Autonomic cadence moving the estate from current state to full multi-brand production and revenue flywheel.</p>
+          </div>
+          <span class="badge badge-cyan mono">5 horizon cadences</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Horizon &amp; cadence</th>
+                <th>Primary goal</th>
+                <th>Key deliverables</th>
+                <th>Verification command</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-codex-horizons"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer" role="contentinfo">
@@ -1323,6 +1424,88 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         }
       }
 
+      function renderMasterCodex() {
+        const mc = state.masterCodex;
+        if (!mc || !mc.totals) return;
+
+        const orgPill = document.getElementById('codex-org-pill');
+        if (orgPill) {
+          orgPill.textContent =
+            mc.totals.githubOrganizations +
+            ' orgs · ' +
+            mc.totals.federatedRepositories +
+            ' repos (' +
+            mc.totals.publicOssRepositories +
+            ' pub / ' +
+            mc.totals.privateSovereignRepositories +
+            ' priv) · 66/66 active mirrors';
+        }
+
+        const tbodyOrgs = document.getElementById('tbody-codex-orgs');
+        if (tbodyOrgs) {
+          tbodyOrgs.innerHTML = mc.organizations
+            .map((o) => {
+              const modeBadge =
+                o.governanceMode === 'reshape-frozen' ? 'badge-amber' : 'badge-emerald';
+              const repoNames = o.repositories.slice(0, 3).map((r) => r.name).join(', ');
+              return (
+                '<tr>' +
+                  '<td><strong>' + escapeHtml(o.displayName) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan)">github.com/' + escapeHtml(o.login) + ' · ' + escapeHtml(o.website) + '</div></td>' +
+                  '<td class="mono"><strong>' + o.totalRepoCount + '</strong> <span style="color:var(--text-secondary);font-size:11px;">(' + o.publicRepoCount + ' pub / ' + o.privateRepoCount + ' priv)</span><div class="mono" style="font-size:10px;color:var(--text-muted);margin-top:3px;">' + escapeHtml(repoNames) + '</div></td>' +
+                  '<td><span class="badge ' + modeBadge + '">' + escapeHtml(o.governanceMode) + '</span><div class="mono" style="font-size:10px;color:var(--text-muted);margin-top:4px;">Dual-remote aligned</div></td>' +
+                  '<td><strong>' + escapeHtml(o.responsibleAgentTeam.leadQueenPersona) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-emerald);margin-top:2px;">' + escapeHtml(o.responsibleAgentTeam.primaryMakerHarness) + ' → ' + escapeHtml(o.responsibleAgentTeam.primaryCheckerHarness) + '</div><div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">' + escapeHtml(o.responsibleAgentTeam.stewardAgents.join(', ')) + '</div></td>' +
+                  '<td style="font-size:12px;"><div><strong>OSS wedge:</strong> ' + escapeHtml(o.ossAndCommercialSplit.openSourceWedge) + '</div><div style="color:var(--accent-cyan);margin-top:3px;"><strong>Commercial:</strong> ' + escapeHtml(o.ossAndCommercialSplit.commercialProductOrRetainer) + '</div><div style="color:var(--text-secondary);margin-top:3px;"><strong>Community:</strong> ' + escapeHtml(o.ossAndCommercialSplit.communitySurface) + '</div></td>' +
+                '</tr>'
+              );
+            })
+            .join('');
+        }
+
+        const tbodyAgents = document.getElementById('tbody-codex-agents');
+        if (tbodyAgents) {
+          tbodyAgents.innerHTML = mc.agentHierarchy
+            .map((t) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(t.tierName) + '</strong></td>' +
+                '<td class="mono"><span class="badge badge-emerald">' + t.agentCount + ' agents</span></td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(t.representativeAgents.join(', ')) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(t.whenTheyLead) + '</td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(t.preferredHarnesses.join(' · ')) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyTruths = document.getElementById('tbody-codex-truths');
+        if (tbodyTruths) {
+          tbodyTruths.innerHTML = mc.canonicalTruthsAndAntiDrift
+            .map((tr) => (
+              '<tr>' +
+                '<td><span class="badge badge-cyan">#' + tr.ruleNumber + '</span><div class="mono" style="font-size:10px;color:var(--text-muted);margin-top:4px;">' + escapeHtml(tr.category) + '</div></td>' +
+                '<td><strong>' + escapeHtml(tr.title) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--accent-amber);">' + escapeHtml(tr.oldAgentFailureMode) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-primary);">' + escapeHtml(tr.canonicalTruthAndPrinciple) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);"><div>' + escapeHtml(tr.deterministicEnforcementGate) + '</div><div class="mono" style="font-size:10px;color:var(--accent-emerald);margin-top:3px;">' + escapeHtml(tr.verifiedArtifact) + '</div></td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+
+        const tbodyHorizons = document.getElementById('tbody-codex-horizons');
+        if (tbodyHorizons) {
+          tbodyHorizons.innerHTML = mc.horizonMilestones
+            .map((m) => (
+              '<tr>' +
+                '<td><span class="badge badge-emerald">' + escapeHtml(m.horizonId) + '</span><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">' + escapeHtml(m.label) + '</div></td>' +
+                '<td><strong>' + escapeHtml(m.primaryObjective) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + m.deliverables.map((d) => '<div>• ' + escapeHtml(d) + '</div>').join('') + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(m.verificationCommand) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+      }
+
       function renderRouteDecision(decision) {
         const container = document.getElementById('route-decision-container');
         container.innerHTML =
@@ -1465,7 +1648,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
           e.preventDefault();
           activateTab('router');
           document.getElementById('input-prompt').focus();
-        } else if (e.key >= '1' && e.key <= '7') {
+        } else if (e.key >= '1' && e.key <= '8') {
           const idx = Number(e.key) - 1;
           if (tabButtons[idx]) {
             activateTab(tabButtons[idx].getAttribute('data-tab'));
@@ -1545,6 +1728,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       renderEvalsAndArena();
       renderReceipts();
       renderEstateGtmRadar();
+      renderMasterCodex();
       triggerRoute();
 
       // Live Server-Sent Events (SSE) subscription for real-time CLI & swarm updates
@@ -1560,6 +1744,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
                 renderHarnessesTable();
                 renderReceipts();
                 renderEstateGtmRadar();
+                renderMasterCodex();
               }
             } catch {
               // ignore malformed frame

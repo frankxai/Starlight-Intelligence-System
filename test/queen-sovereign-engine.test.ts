@@ -7,6 +7,7 @@ import {
   FrontierEvalEngine,
   HarnessMesh,
   QueenSovereignEngine,
+  SovereignMasterCodex,
   startQueenSovereignServer,
 } from '../src/queen';
 
@@ -111,6 +112,20 @@ describe('Starlight Queen Sovereign Superintelligence v1.0', () => {
     );
   });
 
+  it('codifies all 10 GitHub Orgs (71 mapped repos), 151 Named Agents across 10 tiers, and 12 Canonical Truths', () => {
+    const codex = new SovereignMasterCodex().getSnapshot();
+    assert.equal(codex.totals.githubOrganizations, 10);
+    assert.equal(codex.totals.federatedRepositories, 71);
+    assert.equal(codex.totals.publicOssRepositories, 53);
+    assert.equal(codex.totals.privateSovereignRepositories, 18);
+    assert.equal(codex.totals.namedAgentsInRegistry, 151);
+    assert.equal(codex.agentHierarchy.length, 10);
+    const sumTierAgents = codex.agentHierarchy.reduce((s, t) => s + t.agentCount, 0);
+    assert.equal(sumTierAgents, 151, 'Sum of agent counts across the 10 tiers must equal 151');
+    assert.equal(codex.canonicalTruthsAndAntiDrift.length, 12);
+    assert.equal(codex.horizonMilestones.length, 5);
+  });
+
   it('serves live HTTP + JSON API + interactive HTML cockpit on localhost', async () => {
     const handle = await startQueenSovereignServer({
       port: 0, // ephemeral port for test isolation
@@ -123,6 +138,7 @@ describe('Starlight Queen Sovereign Superintelligence v1.0', () => {
       const html = await htmlRes.text();
       assert.ok(html.includes('Starlight Queen'));
       assert.ok(html.includes('Pareto &amp; Thompson router'));
+      assert.ok(html.includes('Master codex: orgs, agents &amp; truths'));
 
       const routeRes = await fetch(`${handle.url}/api/queen/route`, {
         method: 'POST',
@@ -174,9 +190,21 @@ describe('Starlight Queen Sovereign Superintelligence v1.0', () => {
       assert.equal(estatePayload.productionRepos.length, 8);
       assert.equal(estatePayload.gtmFlywheel.length, 5);
       assert.equal(estatePayload.fundamentalLeverageQueue.length, 5);
+
+      const codexRes = await fetch(`${handle.url}/api/queen/master-codex`);
+      assert.equal(codexRes.status, 200);
+      const codexPayload = (await codexRes.json()) as {
+        totals: { githubOrganizations: number; federatedRepositories: number; namedAgentsInRegistry: number };
+        canonicalTruthsAndAntiDrift: Array<{ id: string }>;
+      };
+      assert.equal(codexPayload.totals.githubOrganizations, 10);
+      assert.equal(codexPayload.totals.federatedRepositories, 71);
+      assert.equal(codexPayload.totals.namedAgentsInRegistry, 151);
+      assert.equal(codexPayload.canonicalTruthsAndAntiDrift.length, 12);
     } finally {
       await handle.close();
     }
   });
 });
+
 

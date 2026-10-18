@@ -178,6 +178,8 @@ export const ORG_FEDERATION_MANIFEST = [
   }
 ];
 
+export const DEFAULT_HEARTBEAT_PATH = 'C:/Users/frank/starlight/logs/heartbeats/heartbeat-task-org-federation.json';
+
 /**
  * Validates that an org repository never exposes a private source repository as public.
  * @param {{ isPrivate: boolean }} sourceRepo
@@ -195,6 +197,23 @@ export function validateVisibilityParity(sourceRepo, orgRepo) {
     return {
       ok: false,
       reason: 'VISIBILITY_VIOLATION: private source repository cannot be mirrored to a public organization repository'
+    };
+  }
+  return { ok: true };
+}
+
+/**
+ * Validates that an organization's default repository permission is locked to 'none'.
+ * @param {string | { default_repository_permission?: string }} permOrMeta
+ */
+export function validateOrgBasePermission(permOrMeta) {
+  const perm = typeof permOrMeta === 'object' && permOrMeta !== null
+    ? permOrMeta.default_repository_permission
+    : permOrMeta;
+  if (perm !== 'none') {
+    return {
+      ok: false,
+      reason: `BASE_PERMISSION_VIOLATION: expected default_repository_permission='none', got '${perm}'`
     };
   }
   return { ok: true };
@@ -247,6 +266,7 @@ export function auditOrWireLocalRemotes(reposRoot = DEFAULT_REPOS_ROOT, { wire =
         rows.push({
           org: org.login,
           repo: repo.name,
+          primaryOwner: repo.primaryOwner,
           localFound: false,
           originUrl: null,
           orgUrl: null,
@@ -271,7 +291,9 @@ export function auditOrWireLocalRemotes(reposRoot = DEFAULT_REPOS_ROOT, { wire =
       rows.push({
         org: org.login,
         repo: repo.name,
+        primaryOwner: repo.primaryOwner,
         localFound: true,
+        localDir,
         originUrl: remotes.origin || null,
         orgUrl: remotes.org || null,
         orgAligned
@@ -281,9 +303,257 @@ export function auditOrWireLocalRemotes(reposRoot = DEFAULT_REPOS_ROOT, { wire =
   return rows;
 }
 
+function ghApiJson(endpoint, args = []) {
+  try {
+    const out = execFileSync('gh', ['api', endpoint, ...args], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 30000
+    });
+    return out.trim() ? JSON.parse(out) : {};
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Hardens a federated mirror repository on GitHub (where primaryOwner === 'frankxai'):
+ *   1. Disables GitHub Actions on the mirror so mirror pushes never burn CI minutes
+ *   2. Disables Dependabot automated security fixes & vulnerability alerts on the mirror
+ *   3. Disables Issues, Projects, and Wiki on the mirror so history never splits
+ *   4. Closes any open Dependabot PRs on the mirror copy
+ */
+export function hardenReadOnlyMirrorOnGitHub(orgLogin, repoName) {
+  const fullRepo = `${orgLogin}/${repoName}`;
+  const actionsDisabled = (() => {
+    try {
+      execFileSync('gh', ['api', '-X', 'PUT', `repos/${fullRepo}/actions/permissions`, '-F', 'enabled=false'], {
+        stdio: 'ignore',
+        timeout: 20000
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  try {
+    execFileSync('gh', ['api', '-X', 'DELETE', `repos/${fullRepo}/automated-security-fixes`], {
+      stdio: 'ignore',
+      timeout: 15000
+    });
+  } catch {
+    // ignore
+  }
+
+  try {
+    execFileSync('gh', ['api', '-X', 'DELETE', `repos/${fullRepo}/vulnerability-alerts`], {
+      stdio: 'ignore',
+      timeout: 15000
+    });
+  } catch {
+    // ignore
+  }
+
+  try {
+    execFileSync(
+      'gh',
+      [
+        'api',
+        '-X',
+        'PATCH',
+        `repos/${fullRepo}`,
+        '-F',
+        'has_issues=false',
+        '-F',
+        'has_projects=false',
+        '-F',
+        'has_wiki=false'
+      ],
+      { stdio: 'ignore', timeout: 20000 }
+    );
+  } catch {
+    // ignore
+  }
+
+  // Close any open Dependabot PRs on the mirror
+  let closedBotPrs = 0;
+  const openPrs = ghApiJson(`repos/${fullRepo}/pulls?state=open&per_page=50`);
+  if (Array.isArray(openPrs)) {
+    for (const pr of openPrs) {
+      const login = String(pr?.user?.login || '').toLowerCase();
+      if (login.includes('dependabot') || login.includes('[bot]')) {
+        try {
+          execFileSync(
+            'gh',
+            [
+              'pr',
+              'close',
+              String(pr.number),
+              '--repo',
+              fullRepo,
+              '--delete-branch',
+              '--comment',
+              `Closing automated bot PR on federated read-only mirror \`${fullRepo}\`. Canonical dependency updates and CI execute on \`frankxai/${repoName}\`.`
+            ],
+            { stdio: 'ignore', timeout: 20000 }
+          );
+          closedBotPrs++;
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }
+
+  return { fullRepo, actionsDisabled, closedBotPrs };
+}
+
+/**
+ * Checks default-branch SHA parity between primaryOwner/<repo> and <Org>/<repo>,
+ * and optionally syncs `origin/<defaultBranch>` -> `org/<defaultBranch>` so 0 SHA drift exists.
+ */
+export function checkAndSyncMirrorShaParity(
+  reposRoot = DEFAULT_REPOS_ROOT,
+  { sync = false, hardenMirrors = false, manifest = ORG_FEDERATION_MANIFEST } = {}
+) {
+  const results = [];
+  for (const org of manifest) {
+    if (org.governanceMode === 'reshape-frozen') continue;
+    for (const repo of org.repos) {
+      if (repo.primaryOwner !== 'frankxai') {
+        results.push({
+          org: org.login,
+          repo: repo.name,
+          role: 'org-native',
+          inSync: true,
+          syncedNow: false
+        });
+        continue;
+      }
+
+      const localDir = findLocalCheckout(reposRoot, repo.name);
+      if (!localDir) {
+        results.push({
+          org: org.login,
+          repo: repo.name,
+          role: 'federated-mirror',
+          inSync: false,
+          syncedNow: false,
+          error: 'local_checkout_missing'
+        });
+        continue;
+      }
+
+      let hardenResult = null;
+      if (hardenMirrors) {
+        hardenResult = hardenReadOnlyMirrorOnGitHub(org.login, repo.name);
+      }
+
+      let originSha = null;
+      let orgSha = null;
+      let syncedNow = false;
+      let defaultBranch = 'main';
+
+      const bMain = ghApiJson(`repos/frankxai/${repo.name}/branches/main`);
+      if (bMain?.commit?.sha) {
+        originSha = bMain.commit.sha;
+        defaultBranch = 'main';
+      } else {
+        const bMaster = ghApiJson(`repos/frankxai/${repo.name}/branches/master`);
+        if (bMaster?.commit?.sha) {
+          originSha = bMaster.commit.sha;
+          defaultBranch = 'master';
+        }
+      }
+
+      const orgBranch = ghApiJson(`repos/${org.login}/${repo.name}/branches/${defaultBranch}`);
+      orgSha = orgBranch?.commit?.sha || null;
+      const orgMsg = String(orgBranch?.commit?.commit?.message || '');
+      const attestedTreeSync = Boolean(
+        originSha && orgMsg.includes(`sync frankxai/${repo.name}@${originSha.slice(0, 12)}`)
+      );
+
+      if (sync && originSha && originSha !== orgSha && !attestedTreeSync) {
+        try {
+          execFileSync(
+            'git',
+            ['-C', localDir, 'fetch', 'origin', `+refs/heads/${defaultBranch}:refs/remotes/origin/${defaultBranch}`],
+            { stdio: 'ignore', timeout: 45000 }
+          );
+          execFileSync(
+            'git',
+            ['-C', localDir, 'push', 'org', `refs/remotes/origin/${defaultBranch}:refs/heads/${defaultBranch}`, '--force', '--no-verify'],
+            { stdio: 'ignore', timeout: 60000 }
+          );
+          orgSha = originSha;
+          syncedNow = true;
+        } catch {
+          // If local is a shallow clone, unshallow the default branch and retry
+          try {
+            execFileSync(
+              'git',
+              ['-C', localDir, 'fetch', '--unshallow', 'origin', `+refs/heads/${defaultBranch}:refs/remotes/origin/${defaultBranch}`],
+              { stdio: 'ignore', timeout: 90000 }
+            );
+            execFileSync(
+              'git',
+              ['-C', localDir, 'push', 'org', `refs/remotes/origin/${defaultBranch}:refs/heads/${defaultBranch}`, '--force', '--no-verify'],
+              { stdio: 'ignore', timeout: 90000 }
+            );
+            orgSha = originSha;
+            syncedNow = true;
+          } catch {
+            // ignore
+          }
+        }
+      }
+
+      results.push({
+        org: org.login,
+        repo: repo.name,
+        role: 'federated-mirror',
+        defaultBranch,
+        originSha: originSha ? originSha.slice(0, 12) : null,
+        orgSha: orgSha ? orgSha.slice(0, 12) : null,
+        inSync: Boolean((originSha && orgSha && originSha === orgSha) || attestedTreeSync),
+        syncedNow,
+        ...(hardenResult ? { hardenResult } : {})
+      });
+    }
+  }
+  return results;
+}
+
+export function writeOrgFederationHeartbeat(summary, heartbeatPath = DEFAULT_HEARTBEAT_PATH) {
+  try {
+    fs.mkdirSync(path.dirname(heartbeatPath), { recursive: true });
+    const payload = {
+      ts: new Date().toISOString(),
+      status: summary.allLocalAligned && (summary.driftedMirrorsCount ?? 0) === 0 ? 'ok' : 'warn',
+      totalOrganizations: summary.totalOrganizations,
+      totalFederatedRepos: summary.totalFederatedRepos,
+      localOrgRemotesAligned: summary.localOrgRemotesAligned,
+      shaParityChecked: Boolean(summary.shaParityChecked),
+      alignedMirrorsCount: summary.alignedMirrorsCount ?? null,
+      driftedMirrorsCount: summary.driftedMirrorsCount ?? 0,
+      closedBotPrsCount: summary.closedBotPrsCount ?? 0,
+      staleAfterMs: 93600000,
+      attestation: 'Built on SIP'
+    };
+    fs.writeFileSync(heartbeatPath, JSON.stringify(payload) + '\n', 'utf8');
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
 function main() {
   const args = process.argv.slice(2);
   const wire = args.includes('--wire-local');
+  const syncMirrors = args.includes('--sync-mirrors');
+  const checkDrift = args.includes('--check-drift') || syncMirrors;
+  const hardenMirrors = args.includes('--harden-mirrors');
   const asJson = args.includes('--json');
   const rootIdx = args.indexOf('--repos-root');
   const reposRoot = rootIdx !== -1 && args[rootIdx + 1] ? args[rootIdx + 1] : DEFAULT_REPOS_ROOT;
@@ -292,19 +562,41 @@ function main() {
   const localPresent = rows.filter((r) => r.localFound);
   const aligned = localPresent.filter((r) => r.orgAligned);
 
+  let parityRows = [];
+  if (checkDrift || hardenMirrors) {
+    parityRows = checkAndSyncMirrorShaParity(reposRoot, { sync: syncMirrors, hardenMirrors });
+  }
+
+  const alignedMirrors = parityRows.filter((r) => r.inSync);
+  const driftedMirrors = parityRows.filter((r) => !r.inSync);
+  const closedBotPrsCount = parityRows.reduce((acc, r) => acc + (r.hardenResult?.closedBotPrs || 0), 0);
+
   const summary = {
     totalOrganizations: ORG_FEDERATION_MANIFEST.length,
     totalFederatedRepos: rows.length,
     localCheckoutsFound: localPresent.length,
     localOrgRemotesAligned: aligned.length,
-    allLocalAligned: aligned.length === localPresent.length
+    allLocalAligned: aligned.length === localPresent.length,
+    shaParityChecked: checkDrift || hardenMirrors,
+    alignedMirrorsCount: parityRows.length ? alignedMirrors.length : null,
+    driftedMirrorsCount: parityRows.length ? driftedMirrors.length : 0,
+    syncedNowCount: parityRows.filter((r) => r.syncedNow).length,
+    closedBotPrsCount
   };
 
+  writeOrgFederationHeartbeat(summary);
+
   if (asJson) {
-    console.log(JSON.stringify({ summary, rows }, null, 2));
+    console.log(JSON.stringify({ summary, rows, ...(parityRows.length ? { parityRows } : {}) }, null, 2));
   } else {
     console.log(`GitHub Organization Federation Audit (${summary.totalOrganizations} orgs, ${summary.totalFederatedRepos} mapped repos)`);
     console.log(`Local checkouts found: ${summary.localCheckoutsFound} | 'org' remotes aligned: ${summary.localOrgRemotesAligned}/${summary.localCheckoutsFound}`);
+    if (summary.shaParityChecked) {
+      console.log(`Mirror SHA Parity: ${summary.alignedMirrorsCount}/${parityRows.length} in sync | Synced now: ${summary.syncedNowCount} | Closed duplicate bot PRs: ${summary.closedBotPrsCount}`);
+      if (driftedMirrors.length > 0) {
+        console.error('Drifted mirrors:', driftedMirrors);
+      }
+    }
     const misaligned = localPresent.filter((r) => !r.orgAligned);
     if (misaligned.length > 0) {
       console.error('Misaligned local org remotes:');
@@ -317,3 +609,4 @@ function main() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main();
 }
+

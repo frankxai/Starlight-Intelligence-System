@@ -20,6 +20,10 @@ import {
 } from './harness-mesh';
 import { AgentLifecycleManager, TerminalSession } from './agent-lifecycle';
 import { EstateGtmRadar, EstateGtmRadarSnapshot } from './estate-gtm-radar';
+import {
+  SovereignMasterCodex,
+  SovereignMasterCodexSnapshot,
+} from './sovereign-master-codex';
 
 export interface SovereignReceiptEntry {
   receiptId: string;
@@ -60,6 +64,7 @@ export interface QueenSovereignStateSnapshot {
   rustKernelSample: RustKernelGateResult;
   benchmarkSummary: HeadToHeadBenchmarkReport;
   estateGtm: EstateGtmRadarSnapshot;
+  masterCodex: SovereignMasterCodexSnapshot;
   activeAgentSessions: TerminalSession[];
   recentReceipts: SovereignReceiptEntry[];
 }
@@ -81,6 +86,7 @@ export class QueenSovereignEngine {
   public readonly brandSwitchboard: BrandSwitchboard;
   public readonly evalEngine: FrontierEvalEngine;
   public readonly estateRadar: EstateGtmRadar;
+  public readonly masterCodex: SovereignMasterCodex;
   public readonly lifecycleManager: AgentLifecycleManager;
   private readonly ledgerPath: string;
   private cachedSessions: TerminalSession[] = [];
@@ -95,6 +101,7 @@ export class QueenSovereignEngine {
       this.brandSwitchboard
     );
     this.estateRadar = new EstateGtmRadar(workspaceRoot);
+    this.masterCodex = new SovereignMasterCodex();
     this.lifecycleManager = new AgentLifecycleManager();
     this.ledgerPath = path.join(
       this.workspaceRoot,
@@ -143,6 +150,7 @@ export class QueenSovereignEngine {
 
     const benchmarkSummary = this.evalEngine.compareAgainstGrokAndIncumbents();
     const estateGtm = this.estateRadar.getSnapshot();
+    const masterCodex = this.masterCodex.getSnapshot();
     const activeAgentSessions = this.cachedSessions;
     const recentReceipts = this.readRecentReceipts(12);
 
@@ -168,6 +176,7 @@ export class QueenSovereignEngine {
       rustKernelSample,
       benchmarkSummary,
       estateGtm,
+      masterCodex,
       activeAgentSessions,
       recentReceipts,
     };
