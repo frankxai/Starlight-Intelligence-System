@@ -126,19 +126,23 @@ describe('TemporalFactSpine (Bi-Temporal Fact Ledger)', () => {
     });
   });
 
-  it('seeds canonical estate truths and supersedes all 8 historical misconceptions', () => {
+  it('seeds canonical estate truths and supersedes all 9 historical misconceptions', () => {
     withTempSpine((spine) => {
       const summary = seedEstateTruths(spine);
-      assert.equal(summary.activeCount, 14);
-      assert.equal(summary.supersededCount, 8);
+      assert.equal(summary.activeCount, 15);
+      assert.equal(summary.supersededCount, 9);
 
-      // Active query never returns stale port 3791 or dormant Arcanea-Labs
-      const block = spine.formatCompactBlock({ maxChars: 4000 });
+      // Active query never returns stale port 3791, dormant Arcanea-Labs, or 3 Dutch B.V.s
+      const block = spine.formatCompactBlock({ maxChars: 4500 });
       assert.doesNotMatch(block, /3791/);
       assert.doesNotMatch(block, /dormant_since_2026_02/);
       assert.doesNotMatch(block, /6_empty_orgs_of_10/);
+      assert.doesNotMatch(block, /FrankX Operations B\.V\./);
+      assert.doesNotMatch(block, /Starlight Holding B\.V\./);
       assert.match(block, /10_active_orgs_96_repos_0_empty/);
       assert.match(block, /prisma@7\.10\.1/);
+      assert.match(block, /Single Dutch Eenmanszaak/);
+      assert.match(block, /Arcanea Records/);
     });
   });
 });

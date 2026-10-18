@@ -2,9 +2,11 @@
  * src/memory/seed-estate-facts.ts — Canonical Bi-Temporal Estate Ground-Truth Seeder.
  *
  * Encodes both the historical misconceptions ("old problems agents got wrong") and the
- * verified 2026-10-18 estate truths across Organizations, B.V. Entities, Brands, Studios,
- * SKUs, Harnesses, Daemons, and Protocols so any agent querying `TemporalFactSpine`
- * receives only active truth while preserving full point-in-time audit lineage.
+ * verified 2026-10-18 estate truths across the Dutch Eenmanszaak & Registered Trade Names
+ * (handelsnamen: Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs,
+ * FrankX, AI Architect Academy), GitHub Organizations, Brands, Studios, SKUs, Harnesses,
+ * Daemons, and Protocols so any agent querying `TemporalFactSpine` receives only active
+ * truth while preserving full point-in-time audit lineage.
  *
  * Built on SIP — operational tier (memory engine v0.3)
  */
@@ -102,7 +104,17 @@ export function seedEstateTruths(spine: TemporalFactSpine): SeedEstateResult {
     provenance: { repo: 'starlight-estate', filePath: '~/.codex/config.toml' },
   });
 
-  // 2. Assert current verified truths (superseding the 8 historical misconceptions above)
+  spine.assertFact({
+    vault: 'strategic',
+    subject: 'estate:legal-entities',
+    predicate: 'dutch_bv_structure',
+    object: 'Planned 3-BV structure (Starlight Holding B.V., FrankX Operations B.V., Arcanea B.V. / Arcanea Labs B.V.) in agentic-ops/registry/companies.yaml — no KvK registration; Starlight Holding rejected by KvK/BOIP on 2026-07-15',
+    tValid: '2026-03-01T00:00:00.000Z',
+    tCreated: '2026-08-04T00:00:00.000Z',
+    provenance: { repo: 'agentic-ops', filePath: 'registry/companies.yaml' },
+  });
+
+  // 2. Assert current verified truths (superseding the 9 historical misconceptions above)
   spine.assertFact({
     vault: 'operational',
     subject: 'service:shared-tool-plane',
@@ -183,7 +195,27 @@ export function seedEstateTruths(spine: TemporalFactSpine): SeedEstateResult {
     provenance: { repo: 'starlight-estate', prNumber: 54 },
   });
 
-  // 3. Assert canonical Estate Architecture, Entities, Brands, Studios, SKUs, and Daemons
+  spine.assertFact({
+    vault: 'strategic',
+    subject: 'estate:legal-entities',
+    predicate: 'dutch_bv_structure',
+    object: 'Single Dutch Eenmanszaak (Frank Riemer, Amsterdam) operating with multiple registered handelsnamen (trade names): Starlight Intelligence (primary), Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy. Zero B.V.s exist; "BV" never appears in any trade name.',
+    tValid: '2026-09-29T00:00:00.000Z',
+    tCreated: currentTime,
+    provenance: { repo: 'frankx-strategy', filePath: 'entity/2026-09-29-entity-and-kvk-plan.md', commitSha: '38adf46' },
+  });
+
+  // 3. Assert canonical Estate Architecture, Trade Names, Studios, SKUs, and Daemons
+  spine.assertFact({
+    vault: 'strategic',
+    subject: 'estate:trade-names',
+    predicate: 'registered_handelsnamen',
+    object: 'Starlight Intelligence (main/primary) · Arcanea · Arcanea Records (music label umbrella: Frank Riemer, Frank\'s Vibes, Arcanea, Nona) · GenCreator · VibeClubs · FrankX · AI Architect Academy (Vibe OS dropped; Starlight Records rejected)',
+    tValid: '2026-09-29T00:00:00.000Z',
+    tCreated: currentTime,
+    provenance: { repo: 'FrankX', filePath: 'CURRENT-LEGAL-IDENTITY.md', commitSha: '3b659c2' },
+  });
+
   spine.assertFact({
     vault: 'operational',
     subject: 'service:sis-memory-gateway',
@@ -202,16 +234,6 @@ export function seedEstateTruths(spine: TemporalFactSpine): SeedEstateResult {
     tValid: currentTime,
     tCreated: currentTime,
     provenance: { repo: 'starlight-agent-config', prNumber: 128 },
-  });
-
-  spine.assertFact({
-    vault: 'strategic',
-    subject: 'estate:legal-entities',
-    predicate: 'dutch_bv_structure',
-    object: 'Starlight Holding B.V. (SIP/Wealth/Gravity IP) · FrankX Operations B.V. (FrankX/GenCreator/Consulting/Products) · Arcanea B.V. (Arcanea/Records/AnimeLegends IP)',
-    tValid: currentTime,
-    tCreated: currentTime,
-    provenance: { repo: 'agentic-ops', filePath: 'registry/companies.yaml' },
   });
 
   spine.assertFact({
@@ -246,9 +268,11 @@ export function seedEstateTruths(spine: TemporalFactSpine): SeedEstateResult {
 
   const all = spine.getLineage('operational', 'service:shared-tool-plane', 'listen_endpoint');
   const active = spine.queryActiveFacts();
+  const supersededCount = all.filter((f) => f.supersededBy !== null).length > 0 ? 9 : 0;
   return {
-    totalRecords: active.length + 8,
+    totalRecords: active.length + supersededCount,
     activeCount: active.length,
-    supersededCount: all.filter((f) => f.supersededBy !== null).length > 0 ? 8 : 0,
+    supersededCount,
   };
 }
+

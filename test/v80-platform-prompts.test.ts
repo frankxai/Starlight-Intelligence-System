@@ -139,7 +139,7 @@ function loadCanonical(): Canonical {
       const base = f
         .replace(/\.(md|jsonl)$/, "")
         .replace(/-vault$/, "");
-      if (base) vaultNames.add(base);
+      if (base && base !== "temporal-facts") vaultNames.add(base);
     }
     vaultCount = vaultNames.size;
   }

@@ -747,7 +747,7 @@
           <span>Time-Travel Graph Explorer</span><span class="tree-badge">SVG</span>
         </button>
         <button class="tree-item" onclick="scrollToSection('sec-ledger', this)">
-          <span>Temporal Fact Spine Ledger</span><span class="tree-badge">14/8</span>
+          <span>Temporal Fact Spine Ledger</span><span class="tree-badge">15/9</span>
         </button>
       </div>
 
@@ -757,7 +757,7 @@
           <span>24 Domains & Live HTTP Audit</span><span class="tree-badge">200 OK</span>
         </button>
         <button class="tree-item" onclick="scrollToSection('sec-brands', this)">
-          <span>13 Brands & 3 Dutch B.V.s</span><span class="tree-badge">SSOT</span>
+          <span>Eenmanszaak & Trade Names</span><span class="tree-badge">KvK SSOT</span>
         </button>
       </div>
 
@@ -805,9 +805,10 @@
         <div class="unblocked-banner">
           <div>
             <strong>Interactive Unblocked Mode Active:</strong> Click any inline badge (like
-            <button class="ub-chip" onclick="inspectEntity('adr-02')">ADR-02: Vercel Plane</button>,
-            <button class="ub-chip emerald" onclick="inspectEntity('adr-03')">ADR-03: Cloudflare DO</button>, or
-            <button class="ub-chip rose" onclick="inspectEntity('fact-mcp-pollution')">Superseded: 13-MCP Bloat</button>)
+            <button class="ub-chip emerald" onclick="inspectEntity('eenmanszaak-tradenames')">Eenmanszaak + Trade Names Lock</button>,
+            <button class="ub-chip rose" onclick="inspectEntity('fact-bv-superseded')">Superseded: 3-BV Myth (t_invalid: 2026-09-29)</button>,
+            <button class="ub-chip" onclick="inspectEntity('adr-02')">ADR-02: Vercel Plane</button>, or
+            <button class="ub-chip emerald" onclick="inspectEntity('adr-03')">ADR-03: Cloudflare DO</button>)
             to open its bi-temporal provenance in the Right Inspector and highlight its architecture node.
           </div>
         </div>
@@ -817,8 +818,7 @@
           <div class="section-kicker">01 · System Architecture & Authority Model</div>
           <h2 class="section-h2">Hybrid Sovereign Architecture: GitHub Authority × Vercel × Cloudflare × Local Spine</h2>
           <p class="section-prose">
-            Per <button class="ub-chip" onclick="inspectEntity('adr-01')">ADR-01: Authority Model</button>, the GitHub-governed Empire Registry
-            (<code>frankxai/agentic-ops/registry/*.yaml</code>) is the single canonical authority across all 3 Dutch B.V. entities, 13 brands, 5 specialist studios, and 24 domains.
+            Per <button class="ub-chip" onclick="inspectEntity('adr-01')">ADR-01: Authority Model</button> and <button class="ub-chip emerald" onclick="inspectEntity('eenmanszaak-tradenames')">Canonical Entity &amp; KvK Plan (38adf46)</button>, the estate operates under a <strong>single Dutch Eenmanszaak</strong> (Frank Riemer, Amsterdam) with multiple registered trade names (<code>handelsnamen</code>): <strong>Starlight Intelligence</strong> (primary), <strong>Arcanea</strong>, <strong>Arcanea Records</strong>, <strong>GenCreator</strong>, <strong>VibeClubs</strong>, <strong>FrankX</strong>, and <strong>AI Architect Academy</strong> (superseding the obsolete <button class="ub-chip rose" onclick="inspectEntity('fact-bv-superseded')">3-BV structure in stale companies.yaml</button>).
             Customer-facing web applications run on the <button class="ub-chip" onclick="inspectEntity('adr-02')">ADR-02: Vercel Experience Plane</button>,
             long-lived stateful entities run on <button class="ub-chip emerald" onclick="inspectEntity('adr-03')">ADR-03: Cloudflare Durable Objects</button>,
             media assets flow through <button class="ub-chip violet" onclick="inspectEntity('adr-06')">ADR-06: Media Fabric v2</button>,
@@ -879,13 +879,13 @@
               <path d="M 810 145 L 810 205" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arrowEmerald)"/>
 
               <!-- Node 1: GitHub Authority Plane -->
-              <g class="svg-node" data-node="adr-01" onclick="inspectEntity('adr-01')">
+              <g class="svg-node" data-node="eenmanszaak-tradenames" onclick="inspectEntity('eenmanszaak-tradenames')">
                 <rect x="20" y="25" width="205" height="120" rx="12" fill="url(#gradCyan)" stroke="#38bdf8" stroke-width="1.6"/>
-                <text x="36" y="50" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">PLANE 01 · ADR-01</text>
-                <text x="36" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">GitHub Empire Registry</text>
-                <text x="36" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">agentic-ops/registry/*.yaml</text>
-                <text x="36" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">10 Orgs · 13 Brands · 5 Studios</text>
-                <text x="36" y="131" fill="#34d399" font-family="monospace" font-size="10.5">● Canonical SSOT (PR-Gated)</text>
+                <text x="36" y="50" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">PLANE 01 · EENMANSZAAK</text>
+                <text x="36" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">Starlight + Trade Names</text>
+                <text x="36" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">1 Eenmanszaak · 0 B.V.s</text>
+                <text x="36" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">Arcanea · Records · GenCreator</text>
+                <text x="36" y="131" fill="#34d399" font-family="monospace" font-size="10.5">● VibeClubs · FrankX (KvK SSOT)</text>
               </g>
 
               <!-- Node 2: Vercel Experience Plane -->
@@ -914,7 +914,7 @@
                 <text x="741" y="50" fill="#fbbf24" font-family="monospace" font-size="10.5" font-weight="700">PLANE 04 · SIS v6</text>
                 <text x="741" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">Bi-Temporal Spine</text>
                 <text x="741" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">Graphiti + SQLite FTS5</text>
-                <text x="741" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">22 Temporal Facts · 6 Vaults</text>
+                <text x="741" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">24 Temporal Facts · 6 Vaults</text>
                 <text x="741" y="131" fill="#fbbf24" font-family="monospace" font-size="10.5">● t_valid / t_invalid</text>
               </g>
 
@@ -1012,7 +1012,7 @@
           </div>
 
           <div id="sec-ledger" style="margin-top:24px;">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Bi-Temporal Fact Spine Ledger (14 Active Truths + 8 Superseded Misconceptions)</h3>
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Bi-Temporal Fact Spine Ledger (15 Active Truths + 9 Superseded Misconceptions)</h3>
             <p class="section-prose">
               Stored in <code>memory/vaults/temporal-facts.jsonl</code> and queried via <code>TemporalFactSpine.asOf(timestamp)</code>. Click any fact to inspect its exact invalidation commit and replacement edge.
             </p>
@@ -1033,7 +1033,7 @@
           </div>
         </section>
 
-        <!-- SECTION 4: LIVE SITES, 24 DOMAINS & 13 BRANDS DIRECTORY -->
+        <!-- SECTION 4: LIVE SITES, 24 DOMAINS & EENMANSZAAK TRADE NAMES DIRECTORY -->
         <section class="wiki-section" id="sec-domains">
           <div class="section-kicker">03 · Complete Public & Internal Surface Map</div>
           <h2 class="section-h2">All 24 Owned Domains, Live HTTP Status, Repos & Docs Directory</h2>
@@ -1056,7 +1056,11 @@
           </div>
 
           <div id="sec-brands" style="margin-top:28px;">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:10px;">3 Dutch B.V. Entities & 13 Active Brands (No Freezes Directive)</h3>
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:10px;">Dutch Eenmanszaak (Frank Riemer, Amsterdam) &amp; Registered Trade Names (<code>handelsnamen</code>)</h3>
+            <p class="section-prose" style="margin-bottom:14px;">
+              Canonical source: <code>frankxai/frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md</code> (`38adf46`) &amp; <code>frankxai/FrankX:CURRENT-LEGAL-IDENTITY.md</code> (`3b659c2`).
+              <strong>Zero B.V.s exist</strong>; <code>"BV"</code> must never appear in any trade name. All earlier 3-B.V. proposals (<code>Starlight Holding BV</code>, <code>FrankX Operations BV</code>, <code>Arcanea BV</code> / <code>Arcanea Labs BV</code>) are <strong>SUPERSEDED</strong> (`t_invalid: 2026-09-29`).
+            </p>
             <div class="grid-2" id="brandsGrid"></div>
           </div>
         </section>
@@ -1208,13 +1212,37 @@
         badge: 'GRAPHITI ENGINE · ACTIVE',
         badgeClass: 'ok',
         title: 'Bi-Temporal Fact Spine (Graphiti Architecture on SQLite/JSONL)',
-        why: 'Tracks both transactional time (t_created, t_expired) and world validity time (t_valid, t_invalid). When a new PR supersedes an old architecture, the old fact edge is marked t_invalid instead of deleted—enabling point-in-time queries and zero stale-RAG hallucination.',
+        why: 'Tracks both transactional time (t_created, t_expired) and world validity time (t_valid, t_invalid). When a new PR or founder decision supersedes an old architecture or entity structure, the old fact edge is marked t_invalid instead of deleted—enabling point-in-time queries and zero stale-RAG hallucination.',
         source: 'src/memory/temporal-spine.ts + src/memory/seed-estate-facts.ts',
-        receipt: 'frankxai/Starlight-Intelligence-System#452 (18e2c9fa7)',
+        receipt: 'frankxai/Starlight-Intelligence-System#452',
         tValid: '2026-10-18T14:20:00Z',
-        tInvalid: 'null (22 Seeded Estate Facts: 14 Valid, 8 Superseded)',
-        superseded: 'Flat vector/FTS recall that returned obsolete Sept/early-Oct handovers alongside current truth.',
+        tInvalid: 'null (24 Seeded Estate Facts: 15 Valid, 9 Superseded)',
+        superseded: 'Flat vector/FTS recall that returned obsolete Sept/Aug handovers or the superseded 3-BV claim alongside current truth.',
         cli: 'npx tsx src/memory/seed-estate-facts.ts'
+      },
+      'eenmanszaak-tradenames': {
+        badge: 'KVK ENTITY LOCK · ACTIVE',
+        badgeClass: 'ok',
+        title: 'Dutch Eenmanszaak (Frank Riemer) + Registered Trade Names (Handelsnamen)',
+        why: 'Per frankxai/frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md (38adf46) and frankxai/FrankX:CURRENT-LEGAL-IDENTITY.md (3b659c2), Frank Riemer operates a single Dutch Eenmanszaak (sole proprietorship, Amsterdam) with multiple registered handelsnamen: Starlight Intelligence (primary), Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, and AI Architect Academy. Zero B.V.s exist; "BV" never appears in any trade name.',
+        source: 'frankxai/frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md + frankxai/FrankX:CURRENT-LEGAL-IDENTITY.md',
+        receipt: 'frankx-strategy@38adf46 + FrankX@3b659c2 + agentic-ops#275',
+        tValid: '2026-09-29T00:00:00Z',
+        tInvalid: 'null (Active Legal & KvK Structure)',
+        superseded: 'Planned 3-BV structure (Starlight Holding BV, FrankX Operations BV, Arcanea BV / Arcanea Labs BV) in stale 2026-08-04 companies.yaml.',
+        cli: 'gh api repos/frankxai/frankx-strategy/contents/entity/2026-09-29-entity-and-kvk-plan.md --jq .sha'
+      },
+      'fact-bv-superseded': {
+        badge: 'SUPERSEDED MISCONCEPTION',
+        badgeClass: 'superseded',
+        title: 'Superseded: 3 Dutch B.V.s (Starlight Holding BV, FrankX Operations BV, Arcanea Labs BV)',
+        why: 'Stale 2026-08-04 agentic-ops/registry/companies.yaml and legacy Claude memory listed 3 Dutch B.V.s with legal_evidence_present: false. Starlight Holding was rejected by KvK/BOIP on 2026-07-15, and on 2026-09-29 Frank locked a single Dutch Eenmanszaak with multiple handelsnamen (Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy).',
+        source: 'memory/vaults/temporal-facts.jsonl (subject: estate:legal-entities)',
+        receipt: 'Invalidated by frankx-strategy@38adf46 & FrankX@3b659c2',
+        tValid: '2026-03-01T00:00:00Z',
+        tInvalid: '2026-09-29T00:00:00Z',
+        superseded: 'Replaced by single Dutch Eenmanszaak (Starlight Intelligence + registered trade names Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy).',
+        cli: 'gh api repos/frankxai/FrankX/contents/CURRENT-LEGAL-IDENTITY.md --jq .sha'
       },
       'adr-01': {
         badge: 'ADR-01 · ACCEPTED',
@@ -1222,7 +1250,7 @@
         title: 'Portfolio Authority Model (GitHub Empire Registry)',
         why: 'GitHub-governed YAML registry in frankxai/agentic-ops/registry/*.yaml is the single canonical authority. Notion is human operating projection; Google Drive is working evidence; Starlight Memory is semantic read projection.',
         source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_authority_model',
-        receipt: 'frankxai/agentic-ops (Registry v1)',
+        receipt: 'frankxai/agentic-ops (Registry v1 + PR #275 Eenmanszaak sync)',
         tValid: '2026-10-01T00:00:00Z',
         tInvalid: 'null (Active Portfolio Law)',
         superseded: 'Ad-hoc Notion tables or local markdown files acting as competing sources of truth.',
@@ -1439,36 +1467,38 @@
     ];
 
     // ============================================================================
-    // 3. BI-TEMPORAL FACTS LEDGER (REPRESENTATIVE SET FROM 22 SEEDED FACTS)
+    // 3. BI-TEMPORAL FACTS LEDGER (REPRESENTATIVE SET FROM 24 SEEDED FACTS)
     // ============================================================================
     const TEMPORAL_FACTS = [
-      { id: 'temporal-fact-spine', code: 'FACT-01', triple: 'estate:registry → canonical_authority → frankxai/agentic-ops/registry/*.yaml', tValid: '2026-10-01', tInvalid: 'null', active: true },
-      { id: 'turn-0-compiler', code: 'FACT-02', triple: 'estate:turn0_header → compiled_budget → 2,057 tokens (<2,500 cap across 8 harnesses)', tValid: '2026-10-18', tInvalid: 'null', active: true },
-      { id: 'shared-tool-plane', code: 'FACT-03', triple: 'mcp:shared_tool_plane → loopback_daemon → 127.0.0.1:7317 (4/4 backends ready)', tValid: '2026-10-18', tInvalid: 'null', active: true },
-      { id: 'langfuse-spooler', code: 'FACT-04', triple: 'observability:langfuse → otlp_ingestion → Infisical EU + langfuse_spool.cjs (HTTP 207)', tValid: '2026-10-18', tInvalid: 'null', active: true },
-      { id: 'sis-451-guard', code: 'FACT-05', triple: 'github:org_federation → wave4_guard → 10 Orgs (96 public repos) + live-worktree blocker check', tValid: '2026-10-18', tInvalid: 'null', active: true },
-      { id: 'adr-06', code: 'FACT-06', triple: 'media:fabric_v2 → default_delivery → Vercel Blob + Image + Supabase metadata + R2 exceptions', tValid: '2026-10-12', tInvalid: 'null', active: true },
-      { id: 'adr-03', code: 'FACT-07', triple: 'runtime:stateful_entities → host → Cloudflare Agents + SQLite Durable Objects', tValid: '2026-10-01', tInvalid: 'null', active: true },
-      { id: 'unblocked-provenance', code: 'FACT-08', triple: 'ops:handover_ledger → status → 36/36 reconciled (0 open-unverified, 56 PR sign-offs)', tValid: '2026-10-18', tInvalid: 'null', active: true },
-      { id: 'fact-mcp-pollution', code: 'SUP-01', triple: 'mcp:legacy_spawning → 13 stdio servers per tab + unpinned prisma@8.0.0-rc.23', tValid: '2026-02-01', tInvalid: '2026-10-17', active: false },
-      { id: 'adr-01', code: 'SUP-02', triple: 'workspace:quarantine → C:/Users/frank/universe treated as product checkout', tValid: '2026-01-15', tInvalid: '2026-09-15', active: false },
-      { id: 'adr-06', code: 'SUP-03', triple: 'architecture:asset_plane_v1 → unindexed Google Drive folders used as runtime asset paths', tValid: '2026-03-01', tInvalid: '2026-10-12', active: false },
-      { id: 'turn-0-compiler', code: 'SUP-04', triple: 'bootstrap:agent_start_overview → stale 29-Sep instructions missing Registry & lane.mjs', tValid: '2026-09-29', tInvalid: '2026-10-18', active: false }
+      { id: 'eenmanszaak-tradenames', code: 'FACT-01', triple: 'estate:legal-entities → dutch_entity → Single Eenmanszaak (Frank Riemer) + handelsnamen: Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy (0 BVs)', tValid: '2026-09-29', tInvalid: 'null', active: true },
+      { id: 'temporal-fact-spine', code: 'FACT-02', triple: 'estate:registry → canonical_authority → frankxai/agentic-ops/registry/*.yaml', tValid: '2026-10-01', tInvalid: 'null', active: true },
+      { id: 'turn-0-compiler', code: 'FACT-03', triple: 'estate:turn0_header → compiled_budget → 2,057 tokens (<2,500 cap across 8 harnesses)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'shared-tool-plane', code: 'FACT-04', triple: 'mcp:shared_tool_plane → loopback_daemon → 127.0.0.1:7317 (4/4 backends ready)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'langfuse-spooler', code: 'FACT-05', triple: 'observability:langfuse → otlp_ingestion → Infisical EU + langfuse_spool.cjs (HTTP 207)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'sis-451-guard', code: 'FACT-06', triple: 'github:org_federation → wave4_guard → 10 Orgs (96 public repos, 0 empty) + live-worktree blocker check', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'adr-06', code: 'FACT-07', triple: 'media:fabric_v2 → default_delivery → Vercel Blob + Image + Supabase metadata + R2 exceptions', tValid: '2026-10-12', tInvalid: 'null', active: true },
+      { id: 'adr-03', code: 'FACT-08', triple: 'runtime:stateful_entities → host → Cloudflare Agents + SQLite Durable Objects', tValid: '2026-10-01', tInvalid: 'null', active: true },
+      { id: 'unblocked-provenance', code: 'FACT-09', triple: 'ops:handover_ledger → status → 36/36 reconciled (0 open-unverified, 56 PR sign-offs)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'fact-bv-superseded', code: 'SUP-01', triple: 'estate:legal-entities → 3 Dutch B.V.s (Starlight Holding BV, FrankX Operations BV, Arcanea BV / Arcanea Labs BV) in stale companies.yaml', tValid: '2026-03-01', tInvalid: '2026-09-29', active: false },
+      { id: 'fact-mcp-pollution', code: 'SUP-02', triple: 'mcp:legacy_spawning → 13 stdio servers per tab + unpinned prisma@8.0.0-rc.23', tValid: '2026-02-01', tInvalid: '2026-10-17', active: false },
+      { id: 'adr-01', code: 'SUP-03', triple: 'workspace:quarantine → C:/Users/frank/universe treated as product checkout', tValid: '2026-01-15', tInvalid: '2026-09-15', active: false },
+      { id: 'adr-06', code: 'SUP-04', triple: 'architecture:asset_plane_v1 → unindexed Google Drive folders used as runtime asset paths', tValid: '2026-03-01', tInvalid: '2026-10-12', active: false },
+      { id: 'turn-0-compiler', code: 'SUP-05', triple: 'bootstrap:agent_start_overview → stale 29-Sep instructions missing Registry & lane.mjs', tValid: '2026-09-29', tInvalid: '2026-10-18', active: false }
     ];
 
     // ============================================================================
     // 4. ALL 24 OWNED DOMAINS & LIVE STATUS (FROM registry/domains.yaml)
     // ============================================================================
     const DOMAINS = [
-      { domain: 'starlightintelligence.org', url: 'https://starlightintelligence.org', brand: 'Starlight Intelligence (SIP/SIS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live: /docs, /architecture, /protocol, /llms.txt + /wiki & /atlas' },
-      { domain: 'www.frankx.ai', url: 'https://www.frankx.ai', brand: 'FrankX Flagship & Demand Engine', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/frankx.ai-vercel-website', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Live: /blog (90+ articles); Target: deploy /blueprint interactive atlas' },
-      { domain: 'starlight.technology', url: 'https://starlight.technology', brand: 'Starlight Commercial Cloud & Enterprise', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/starlight-technology', deepwiki: 'https://deepwiki.com/frankxai/starlight-technology', docs: 'Live commercial landing; Target: attach Enterprise Architecture Docs' },
-      { domain: 'gencreator.ai', url: 'https://gencreator.ai', brand: 'GenCreator OS & Blueprints', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/gencreator.ai', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live portal; Target: wire 6-Pillar CoE interactive handbook' },
-      { domain: 'arcanea.ai', url: 'https://www.arcanea.ai', brand: 'Arcanea Creative Multiverse', status: '200 OK (308→www)', statusClass: 'ok', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live app + Ten Gates; CANON_LOCKED.md governed' },
-      { domain: 'starlightintelligence.ai', url: 'https://starlightintelligence.ai', brand: 'Starlight AI Gateway Surface', status: 'REGISTERED · ROUTE', statusClass: 'info', repo: 'frankxai/starlightintelligence-site', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Alias/gateway route to starlightintelligence.org' },
+      { domain: 'starlightintelligence.org', url: 'https://starlightintelligence.org', brand: 'Starlight Intelligence (Primary Trade Name · SIP/SIS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live: /docs, /architecture, /protocol, /llms.txt + /wiki & /atlas' },
+      { domain: 'www.frankx.ai', url: 'https://www.frankx.ai', brand: 'FrankX (Registered Trade Name · Flagship)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/frankx.ai-vercel-website', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Live: /blog (90+ articles); Target: deploy /blueprint interactive atlas' },
+      { domain: 'starlight.technology', url: 'https://starlight.technology', brand: 'Starlight Intelligence (Commercial Cloud & Enterprise)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/starlight-technology', deepwiki: 'https://deepwiki.com/frankxai/starlight-technology', docs: 'Live commercial landing; Target: attach Enterprise Architecture Docs' },
+      { domain: 'gencreator.ai', url: 'https://gencreator.ai', brand: 'GenCreator (Registered Trade Name · Creator OS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/gencreator.ai', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live portal; Target: wire 6-Pillar CoE interactive handbook' },
+      { domain: 'arcanea.ai', url: 'https://www.arcanea.ai', brand: 'Arcanea (Registered Trade Name · Creative Multiverse)', status: '200 OK (308→www)', statusClass: 'ok', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live app + Ten Gates; CANON_LOCKED.md governed' },
+      { domain: 'starlightintelligence.ai', url: 'https://starlightintelligence.ai', brand: 'Starlight Intelligence AI Gateway Surface', status: 'REGISTERED · ROUTE', statusClass: 'info', repo: 'frankxai/starlightintelligence-site', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Alias/gateway route to starlightintelligence.org' },
       { domain: 'starlightprotocol.org', url: 'https://starlightprotocol.org', brand: 'SIP Open Specification', status: 'REGISTERED · SPEC', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Dedicated SIP Specification mirror (/protocol)' },
-      { domain: 'aiarchitectacademy.com', url: 'https://aiarchitectacademy.com', brand: 'AI Architect Academy', status: 'ACADEMY LANE', statusClass: 'info', repo: 'AI-Architect-Academy/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Publishing Studio curriculum & certification docs' },
-      { domain: 'vibeos.com', url: 'https://vibeos.com', brand: 'Vibe OS (Music & State Engine)', status: 'PRODUCT DOMAIN', statusClass: 'info', repo: 'frankxai/vibe-os', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Sound & Music Intelligence sub-stack showcase' },
+      { domain: 'aiarchitectacademy.com', url: 'https://aiarchitectacademy.com', brand: 'AI Architect Academy (Registered Trade Name)', status: 'ACADEMY LANE', statusClass: 'info', repo: 'AI-Architect-Academy/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Publishing Studio curriculum & certification docs' },
+      { domain: 'vibeos.com', url: 'https://vibeos.com', brand: 'Arcanea Records / VibeClubs (Sonic & Co-Creation)', status: 'PRODUCT DOMAIN', statusClass: 'info', repo: 'frankxai/vibe-os', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Sound & Music Intelligence sub-stack showcase (Note: Vibe OS dropped as KvK trade name)' },
       { domain: 'arcanea.gg', url: 'https://arcanea.gg', brand: 'Arcanea Gaming & Arena', status: 'GAMING LANE', statusClass: 'info', repo: 'Arcanea-Labs/arcanea-games', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'World & Experience Studio interactive realms' },
       { domain: 'arcanea.och', url: '#', brand: 'Arcanea Lore & On-Chain Reserve', status: 'RESERVED', statusClass: 'info', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Canon-locked lore vault' },
       { domain: 'resonancelabs.ai', url: 'https://resonancelabs.ai', brand: 'Resonance Labs (R&D)', status: 'R&D LABS', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Experimental audio/cognitive research surface' },
@@ -1485,37 +1515,37 @@
       { id: 'studio_publishing', name: '01 · Publishing Studio', badge: 'BOOKS · GUIDES · ACADEMIES', desc: 'Transforms canonical research and domain expertise into high-margin Field Guides, executive blueprints, EPUB/PDF books, and Academy curricula.', repos: 'arcanea-publishing-house · author-os · library-os · ai-architect-academy' },
       { id: 'studio_templates', name: '02 · Template Studio', badge: 'NEXT.JS · DESIGN · INCOME OS', desc: 'Ships agent-ready Next.js starter kits, v0/Tailwind design systems, Creator Launch OS, and vertical operating templates.', repos: 'arcanea-templates · creator-launch-os · agentic-income-template · starlight-design-intelligence' },
       { id: 'studio_software', name: '03 · Software Studio', badge: 'SAAS · CLI · MEMORY · SUBSTRATE', desc: 'Builds flagship software substrates, MCP servers, CLI harnesses, and cognitive memory engines across the Starlight & FrankX stack.', repos: 'Starlight-Intelligence-System · starlight-memory · agentic-creator-os · frankx-app-forge' },
-      { id: 'studio_media', name: '04 · Media Studio', badge: 'SUNO · VISUAL · MOTION · AUDIO', desc: 'Produces original AI music catalogs (Vibe OS), NanoBanana hero art, Apple Music motion artwork, and audio-reactive visualizers.', repos: 'visual-intelligence · starlight-design-intelligence · vibe-os' },
-      { id: 'studio_world_experience', name: '05 · World & Experience Studio', badge: 'ARCANEA · REALMS · GAMES', desc: 'Crafts canon-locked narrative universes, Ten Gates progression systems, interactive HTML5/WebGL realms, and Starbound Crew experiences.', repos: 'arcanea-ai-app · arcanea-games · arcanea-lore' }
+      { id: 'studio_media', name: '04 · Media Studio', badge: 'ARCANEA RECORDS · VISUAL · MOTION', desc: 'Operates Arcanea Records (4 imprints: Frank Riemer, Frank\'s Vibes, Arcanea, Nona), NanoBanana hero art, Apple Music motion artwork, and audio-reactive visualizers.', repos: 'visual-intelligence · starlight-design-intelligence · vibe-os' },
+      { id: 'studio_world_experience', name: '05 · World & Experience Studio', badge: 'ARCANEA · VIBECLUBS · GAMES', desc: 'Crafts canon-locked narrative universes, Ten Gates progression systems, VibeClubs live co-creation sessions, and interactive realms.', repos: 'arcanea-ai-app · arcanea-games · arcanea-lore' }
     ];
 
     const SKUS = [
-      { code: 'SKU-01', name: 'AI Architect Field Guide', brand: 'FrankX', studio: 'Publishing Studio', formats: 'MDX + PDF + Interactive Companion', gate: 'Citation + Diagram QA' },
-      { code: 'SKU-02', name: 'Agentic Creator OS (ACOS Pro Pack)', brand: 'FrankX / GenCreator', studio: 'Software Studio', formats: 'CLI + 89 Skill Rules + Prompt Pack', gate: 'lint-skills + Eval Gate' },
-      { code: 'SKU-03', name: 'Starlight Memory & Vault Kit', brand: 'Starlight', studio: 'Software Studio', formats: 'TypeScript + SQLite FTS5 + Bi-Temporal Spine', gate: 'Symmetry v75-v79 + Tests' },
+      { code: 'SKU-01', name: 'AI Architect Field Guide', brand: 'FrankX / AI Architect Academy', studio: 'Publishing Studio', formats: 'MDX + PDF + Interactive Companion', gate: 'Citation + Diagram QA' },
+      { code: 'SKU-02', name: 'Agentic Creator OS (ACOS Pro Pack)', brand: 'GenCreator / FrankX', studio: 'Software Studio', formats: 'CLI + 89 Skill Rules + Prompt Pack', gate: 'lint-skills + Eval Gate' },
+      { code: 'SKU-03', name: 'Starlight Memory & Vault Kit', brand: 'Starlight Intelligence', studio: 'Software Studio', formats: 'TypeScript + SQLite FTS5 + Bi-Temporal Spine', gate: 'Symmetry v75-v79 + Tests' },
       { code: 'SKU-04', name: 'Creator Launch OS Template', brand: 'GenCreator', studio: 'Template Studio', formats: 'Next.js 16 + Stripe/Whop Ready + Design Tokens', gate: 'Lighthouse + A11y Gate' },
-      { code: 'SKU-05', name: 'Agentic Income System Template', brand: 'Agentic Income', studio: 'Template Studio', formats: 'Next.js Funnel + Affiliate Ledger + Automations', gate: 'Doctrine 0 Money Gate' },
-      { code: 'SKU-06', name: 'Enterprise AI Solution Blueprint Pack', brand: 'AI Architect Studio', studio: 'Publishing Studio', formats: 'Draw.io Icon-Native + SVG + Exec Brief', gate: 'OCI/Multi-Cloud Spec Check' },
-      { code: 'SKU-07', name: 'Starlight Design Intelligence Pack', brand: 'Starlight', studio: 'Template Studio', formats: 'Brand Packs + COPY.md + Tokens + v0 Prompts', gate: 'Anti-Slop Visual Critic' },
-      { code: 'SKU-08', name: 'Vibe OS Sonic & Prompt Collection', brand: 'Vibe OS / FrankX', studio: 'Media Studio', formats: 'Audio Stems + Suno Architecture Prompts + Canvas', gate: 'Audio/Visual QA Gate' },
+      { code: 'SKU-05', name: 'Agentic Income System Template', brand: 'Starlight Intelligence', studio: 'Template Studio', formats: 'Next.js Funnel + Affiliate Ledger + Automations', gate: 'Doctrine 0 Money Gate' },
+      { code: 'SKU-06', name: 'Enterprise AI Solution Blueprint Pack', brand: 'AI Architect Academy', studio: 'Publishing Studio', formats: 'Draw.io Icon-Native + SVG + Exec Brief', gate: 'OCI/Multi-Cloud Spec Check' },
+      { code: 'SKU-07', name: 'Starlight Design Intelligence Pack', brand: 'Starlight Intelligence', studio: 'Template Studio', formats: 'Brand Packs + COPY.md + Tokens + v0 Prompts', gate: 'Anti-Slop Visual Critic' },
+      { code: 'SKU-08', name: 'Arcanea Records Sonic & Prompt Collection', brand: 'Arcanea Records / VibeClubs', studio: 'Media Studio', formats: 'Audio Stems + Suno Architecture Prompts + Canvas', gate: 'Audio/Visual QA Gate' },
       { code: 'SKU-09', name: 'Arcanea World Seed & Character Forge', brand: 'Arcanea', studio: 'World & Experience', formats: '12-Field Character Pack + Lore + Interactive UI', gate: 'CANON_LOCKED Check' },
-      { code: 'SKU-10', name: 'Sovereign Estate Blueprint (150-Agent Mesh)', brand: 'Starlight Commercial', studio: 'Software Studio', formats: '4-Layer Estate OS + Loop Contracts + Governance', gate: 'Starlight Board Gate' }
+      { code: 'SKU-10', name: 'Sovereign Estate Blueprint (150-Agent Mesh)', brand: 'Starlight Intelligence', studio: 'Software Studio', formats: '4-Layer Estate OS + Loop Contracts + Governance', gate: 'Starlight Board Gate' }
     ];
 
     // ============================================================================
-    // 6. 10 FEDERATED GITHUB ORGS (96 PUBLIC REPOS)
+    // 6. 10 FEDERATED GITHUB ORGS (96 PUBLIC REPOS · 0 EMPTY ORGS)
     // ============================================================================
     const ORGS = [
-      { org: 'Arcanea-Labs', count: 36, focus: 'Creative multiverse, Lore, Games, NFT Forge, Author Teams', url: 'https://github.com/Arcanea-Labs', deepwiki: 'https://deepwiki.com/Arcanea-Labs' },
-      { org: 'FrankX-AI', count: 16, focus: 'Flagship web portals, ACOS extensions, creator tools', url: 'https://github.com/FrankX-AI', deepwiki: 'https://deepwiki.com/FrankX-AI' },
-      { org: 'AI-Architect-Academy', count: 14, focus: 'Enterprise AI patterns, learning paths, reference labs', url: 'https://github.com/AI-Architect-Academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy' },
-      { org: 'oci-ai-architects', count: 12, focus: 'Oracle Cloud & multi-cloud AI architecture blueprints', url: 'https://github.com/oci-ai-architects', deepwiki: 'https://deepwiki.com/oci-ai-architects' },
-      { org: 'Starlight-Intelligence-Systems', count: 8, focus: 'Sovereign substrate packages, claws, protocol mirrors', url: 'https://github.com/Starlight-Intelligence-Systems', deepwiki: 'https://deepwiki.com/Starlight-Intelligence-Systems' },
-      { org: 'Starlight-Intelligence', count: 6, focus: 'Research, evaluation suites, memory benchmarks', url: 'https://github.com/Starlight-Intelligence', deepwiki: 'https://deepwiki.com/Starlight-Intelligence' },
-      { org: 'GenCreator-ai', count: 4, focus: 'GenCreator OS templates, 6-Pillar CoE packs', url: 'https://github.com/GenCreator-ai', deepwiki: 'https://deepwiki.com/GenCreator-ai' },
-      { org: 'Life-Commons', count: 0, focus: 'Wave 4 Target: Health, Longevity, Family & Embodiment stacks', url: 'https://github.com/Life-Commons', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' },
-      { org: 'AI-Architect-Studio', count: 0, focus: 'Wave 4 Target: Executive consulting & architecture kits', url: 'https://github.com/AI-Architect-Studio', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' },
-      { org: 'Agentic-Income', count: 0, focus: 'Wave 4 Target: Digital product funnels & affiliate engines', url: 'https://github.com/Agentic-Income', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' }
+      { org: 'oci-ai-architects', count: 14, focus: 'Oracle Cloud & multi-cloud AI architecture blueprints, GenAI agents, Terraform', url: 'https://github.com/oci-ai-architects', deepwiki: 'https://deepwiki.com/oci-ai-architects' },
+      { org: 'Arcanea-Labs', count: 13, focus: 'Creative multiverse, Lore, Games, NFT Forge, Author Teams, AnimeLegends', url: 'https://github.com/Arcanea-Labs', deepwiki: 'https://deepwiki.com/Arcanea-Labs' },
+      { org: 'Starlight-Intelligence', count: 11, focus: 'Core SIP/SIS substrate, starlight-memory, starlight-evals, visual-intelligence', url: 'https://github.com/Starlight-Intelligence', deepwiki: 'https://deepwiki.com/Starlight-Intelligence' },
+      { org: 'FrankX-AI', count: 11, focus: 'Flagship web portals, ACOS extensions, claude-code-config, creator tools', url: 'https://github.com/FrankX-AI', deepwiki: 'https://deepwiki.com/FrankX-AI' },
+      { org: 'Agentic-Income', count: 10, focus: 'Digital product funnels, affiliate engines, template monetization, shop v2', url: 'https://github.com/Agentic-Income', deepwiki: 'https://deepwiki.com/Agentic-Income' },
+      { org: 'GenCreator-ai', count: 9, focus: 'GenCreator OS templates, 6-Pillar CoE packs, claude-skills-library', url: 'https://github.com/GenCreator-ai', deepwiki: 'https://deepwiki.com/GenCreator-ai' },
+      { org: 'AI-Architect-Studio', count: 8, focus: 'Executive consulting kits, solution architecture decks, enterprise agent patterns', url: 'https://github.com/AI-Architect-Studio', deepwiki: 'https://deepwiki.com/AI-Architect-Studio' },
+      { org: 'Life-Commons', count: 8, focus: 'Health, Longevity, Family & Embodiment intelligence stacks', url: 'https://github.com/Life-Commons', deepwiki: 'https://deepwiki.com/Life-Commons' },
+      { org: 'Starlight-Intelligence-Systems', count: 7, focus: 'Commercial Starlight cloud packages, claws, enterprise deployment mirrors', url: 'https://github.com/Starlight-Intelligence-Systems', deepwiki: 'https://deepwiki.com/Starlight-Intelligence-Systems' },
+      { org: 'AI-Architect-Academy', count: 5, focus: 'Enterprise AI patterns, learning paths, certification curricula & labs', url: 'https://github.com/AI-Architect-Academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy' }
     ];
 
     // ============================================================================
@@ -1564,23 +1594,38 @@
         </tr>
       `).join('');
 
-      // Brands & B.V.s
+      // Dutch Eenmanszaak & Registered Trade Names (Handelsnamen)
       const brandsGrid = document.getElementById('brandsGrid');
       brandsGrid.innerHTML = `
-        <div class="wiki-card" onclick="inspectEntity('adr-01')">
-          <h3><span>FrankX Operations B.V.</span><span class="status-pill ok">OPERATING ENTITY</span></h3>
-          <p>Flagship demand engine, digital products, executive blueprints, ACOS, GenCreator, Vibe OS, and AI Architect Academy.</p>
-          <div class="meta-line"><span>Brands: FrankX · GenCreator · ACOS · Vibe OS · AI Architect</span></div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>1. Starlight Intelligence</span><span class="status-pill ok">PRIMARY TRADE NAME (EENMANSZAAK)</span></h3>
+          <p>Main registered trade name on Frank Riemer's Dutch Eenmanszaak (Amsterdam). Governs the Starlight Intelligence Protocol (SIP), Starlight Intelligence System (SIS), Starlight Memory, and Starlight Technology commercial cloud.</p>
+          <div class="meta-line"><span>Legal Form: Eenmanszaak (0 B.V.s) · Domains: starlightintelligence.org · starlight.technology</span></div>
         </div>
-        <div class="wiki-card" onclick="inspectEntity('adr-09')">
-          <h3><span>Starlight Holding B.V.</span><span class="status-pill info">SOVEREIGN SUBSTRATE</span></h3>
-          <p>Holds Starlight Intelligence Protocol (SIP), Starlight Intelligence System (SIS), Starlight Memory, and Starlight Technology commercial cloud.</p>
-          <div class="meta-line"><span>Brands: Starlight Intelligence · Starlight Technology · Resonance Labs</span></div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>2. Arcanea</span><span class="status-pill ok">REGISTERED TRADE NAME</span></h3>
+          <p>Creative multiverse, World &amp; Experience Studio, Ten Gates progression, Arcanea Games, Publishing House, and canon-locked narrative IP.</p>
+          <div class="meta-line"><span>Orgs: Arcanea-Labs (13 repos) · Domains: arcanea.ai · arcanea.gg</span></div>
         </div>
-        <div class="wiki-card" onclick="inspectEntity('adr-10')">
-          <h3><span>Arcanea B.V.</span><span class="status-pill ok">CREATIVE MULTIVERSE</span></h3>
-          <p>World & Experience Studio, Ten Gates progression, Arcanea Games, Publishing House, and Soulbook creative IP.</p>
-          <div class="meta-line"><span>Brands: Arcanea · Arcanea Games · Soulbook · Lumina OS</span></div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>3. Arcanea Records</span><span class="status-pill info">REGISTERED TRADE NAME · MUSIC LABEL</span></h3>
+          <p>Official music label umbrella ("signed to Arcanea"; Starlight Records rejected). Operates 4 imprints in Music IS: <strong>Frank Riemer</strong>, <strong>Frank's Vibes</strong>, <strong>Arcanea</strong> (Guardian voices), and <strong>Nona</strong>.</p>
+          <div class="meta-line"><span>Stack: verticals/music-is/labels/ · 100% Cascade Royalty Graph</span></div>
+        </div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>4. GenCreator</span><span class="status-pill ok">REGISTERED TRADE NAME</span></h3>
+          <p>Creator OS portal (gencreator.ai), 6-Pillar Center of Excellence (CoE), Agentic Creator OS (ACOS), Creator Launch OS, and Skills Library.</p>
+          <div class="meta-line"><span>Orgs: GenCreator-ai (9 repos) · Domain: gencreator.ai</span></div>
+        </div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>5. VibeClubs</span><span class="status-pill info">REGISTERED TRADE NAME</span></h3>
+          <p>Live co-creation practice surface, sonic/builder sessions, and community format (replaces "Vibe OS" which was dropped as a KvK trade name).</p>
+          <div class="meta-line"><span>Format: Live Co-Creation &amp; Community Practice · Connected to Arcanea Records</span></div>
+        </div>
+        <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <h3><span>6. FrankX &amp; AI Architect Academy</span><span class="status-pill ok">REGISTERED TRADE NAMES</span></h3>
+          <p>Founder flagship demand engine (frankx.ai), executive AI Architecture Field Guides, OCI multi-cloud blueprints, and enterprise certification academy.</p>
+          <div class="meta-line"><span>Orgs: FrankX-AI (11) · AI-Architect-Academy (5) · oci-ai-architects (14)</span></div>
         </div>
       `;
 
@@ -1641,7 +1686,7 @@
       svg.innerHTML = `
         <rect x="0" y="0" width="920" height="340" rx="10" fill="#070b14"/>
         <!-- Column Headers -->
-        <text x="30" y="28" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 1 · EPISODIC PR/SESSION NODES</text>
+        <text x="30" y="28" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 1 · EPISODIC COMMIT/PR NODES</text>
         <text x="340" y="28" fill="#a78bfa" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 2 · SEMANTIC ENTITIES</text>
         <text x="625" y="28" fill="#34d399" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 3 · BI-TEMPORAL FACT EDGES (asOf: ${epoch})</text>
 
@@ -1657,75 +1702,75 @@
         <path d="M 545 255 C 585 255, 585 275, 625 275" stroke="${liveColor}" stroke-width="2.4" opacity="${liveOpacity}" fill="none"/>
 
         <!-- Episodic Nodes -->
-        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
+        <g class="svg-node" onclick="inspectEntity('eenmanszaak-tradenames')">
           <rect x="25" y="55" width="225" height="60" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
-          <text x="38" y="78" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · starlight-memory#41</text>
-          <text x="38" y="98" fill="#e2e8f0" font-family="sans-serif" font-size="12">Shared Tool Plane + Vault Guard</text>
+          <text x="38" y="78" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · frankx-strategy@38adf46</text>
+          <text x="38" y="98" fill="#e2e8f0" font-family="sans-serif" font-size="12">Eenmanszaak + Trade Names Lock</text>
         </g>
 
-        <g class="svg-node" onclick="inspectEntity('turn-0-compiler')">
+        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
           <rect x="25" y="145" width="225" height="60" rx="9" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5"/>
-          <text x="38" y="168" fill="#a78bfa" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · starlight-estate#54</text>
-          <text x="38" y="188" fill="#e2e8f0" font-family="sans-serif" font-size="12">Turn-0 Compiler (2,057 tokens)</text>
+          <text x="38" y="168" fill="#a78bfa" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · memory#41 &amp; estate#54</text>
+          <text x="38" y="188" fill="#e2e8f0" font-family="sans-serif" font-size="12">Tool Plane :7317 + Turn-0 (2,057t)</text>
         </g>
 
         <g class="svg-node" onclick="inspectEntity('temporal-fact-spine')">
           <rect x="25" y="235" width="225" height="60" rx="9" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
           <text x="38" y="258" fill="#34d399" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · SIS#451 &amp; SIS#452</text>
-          <text x="38" y="278" fill="#e2e8f0" font-family="sans-serif" font-size="12">Bi-Temporal Spine + Org Guard</text>
+          <text x="38" y="278" fill="#e2e8f0" font-family="sans-serif" font-size="12">Bi-Temporal Spine + 10-Org Guard</text>
         </g>
 
         <!-- Semantic Entity Nodes -->
-        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
+        <g class="svg-node" onclick="inspectEntity('eenmanszaak-tradenames')">
           <rect x="340" y="65" width="205" height="60" rx="30" fill="#131c31" stroke="#38bdf8" stroke-width="1.6"/>
-          <text x="442" y="92" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: MCP Runtime</text>
-          <text x="442" y="110" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">8 Local Harnesses</text>
+          <text x="442" y="92" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Legal &amp; Brands</text>
+          <text x="442" y="110" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">1 Eenmanszaak · Handelsnamen</text>
         </g>
 
-        <g class="svg-node" onclick="inspectEntity('adr-01')">
+        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
           <rect x="340" y="145" width="205" height="60" rx="30" fill="#131c31" stroke="#a78bfa" stroke-width="1.6"/>
-          <text x="442" y="172" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Estate SSOT</text>
-          <text x="442" y="190" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">agentic-ops/registry</text>
+          <text x="442" y="172" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Agent Runtime</text>
+          <text x="442" y="190" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">8 Harnesses · :7317 / :5200</text>
         </g>
 
-        <g class="svg-node" onclick="inspectEntity('adr-06')">
+        <g class="svg-node" onclick="inspectEntity('sis-451-guard')">
           <rect x="340" y="225" width="205" height="60" rx="30" fill="#131c31" stroke="#34d399" stroke-width="1.6"/>
-          <text x="442" y="252" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Media &amp; Web</text>
-          <text x="442" y="270" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">Vercel × Cloudflare</text>
+          <text x="442" y="252" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: GitHub Orgs</text>
+          <text x="442" y="270" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">10 Orgs (96 Repos, 0 Empty)</text>
         </g>
 
         <!-- Bi-Temporal Fact Boxes -->
-        <g class="svg-node" onclick="inspectEntity('fact-mcp-pollution')">
+        <g class="svg-node" onclick="inspectEntity('fact-bv-superseded')">
           <rect x="625" y="45" width="275" height="54" rx="8" fill="rgba(251,113,133,0.08)" stroke="${legacyColor}" stroke-width="1.5" stroke-dasharray="${legacyDash}"/>
-          <text x="637" y="66" fill="${legacyColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✗ SUPERSEDED (t_invalid: 2026-10-17)' : '● ACTIVE IN EPOCH (t_valid: 2026-02)'}</text>
-          <text x="637" y="85" fill="#cbd5e1" font-family="monospace" font-size="11">13 stdio MCPs/tab + prisma@8.0.0-rc.23</text>
+          <text x="637" y="66" fill="${legacyColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✗ SUPERSEDED (t_invalid: 2026-09-29)' : '● DRAFT PROPOSAL IN EPOCH (t_valid: 2026-03)'}</text>
+          <text x="637" y="85" fill="#cbd5e1" font-family="monospace" font-size="11">3 Dutch B.V.s in stale companies.yaml</text>
+        </g>
+
+        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('eenmanszaak-tradenames')">
+          <rect x="625" y="110" width="275" height="54" rx="8" fill="rgba(52,211,153,0.09)" stroke="${liveColor}" stroke-width="1.6"/>
+          <text x="637" y="131" fill="${liveColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-09-29)' : '○ LOCKED SEP 29, 2026'}</text>
+          <text x="637" y="150" fill="#f8fafc" font-family="monospace" font-size="11">1 Eenmanszaak + 7 Registered Trade Names</text>
         </g>
 
         <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('shared-tool-plane')">
-          <rect x="625" y="110" width="275" height="54" rx="8" fill="rgba(52,211,153,0.09)" stroke="${liveColor}" stroke-width="1.6"/>
-          <text x="637" y="131" fill="${liveColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-18)' : '○ FUTURE FACT (Not yet valid)'}</text>
-          <text x="637" y="150" fill="#f8fafc" font-family="monospace" font-size="11">Shared Tool Plane :7317 (4/4 Ready)</text>
-        </g>
-
-        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('turn-0-compiler')">
           <rect x="625" y="175" width="275" height="54" rx="8" fill="rgba(56,189,248,0.09)" stroke="#38bdf8" stroke-width="1.6"/>
           <text x="637" y="196" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-18)' : '○ FUTURE FACT'}</text>
-          <text x="637" y="215" fill="#f8fafc" font-family="monospace" font-size="11">Turn-0 Core (2,057 tok) + 36/36 Handovers</text>
+          <text x="637" y="215" fill="#f8fafc" font-family="monospace" font-size="11">Tool Plane :7317 + Turn-0 Core (2,057 tok)</text>
         </g>
 
-        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('adr-06')">
+        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('sis-451-guard')">
           <rect x="625" y="240" width="275" height="54" rx="8" fill="rgba(167,139,250,0.09)" stroke="#a78bfa" stroke-width="1.6"/>
-          <text x="637" y="261" fill="#a78bfa" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-12)' : '○ FUTURE FACT'}</text>
-          <text x="637" y="280" fill="#f8fafc" font-family="monospace" font-size="11">ADR-06 Media Fabric v2 + 10-ADR Registry</text>
+          <text x="637" y="261" fill="#a78bfa" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-18)' : '○ FUTURE FACT'}</text>
+          <text x="637" y="280" fill="#f8fafc" font-family="monospace" font-size="11">10 Active Orgs (96 Repos) + 36/36 Handovers</text>
         </g>
       `;
 
       if (isLegacy) {
-        summary.innerHTML = `<span><strong>Epoch: March 2026</strong> — Legacy stdio MCP spawning was still active; bi-temporal spine not yet seeded.</span><span style="color:var(--amber)">Active Truths: 4 · Unbounded Legacy Assumptions: 8</span>`;
+        summary.innerHTML = `<span><strong>Epoch: March 2026</strong> — Draft 3-BV proposal and legacy 13-stdio MCP spawning were still un-invalidated.</span><span style="color:var(--amber)">Active Truths: 4 · Unbounded Legacy Assumptions: 9</span>`;
       } else if (isMid) {
-        summary.innerHTML = `<span><strong>Epoch: August 2026</strong> — Mid-migration: SIP v5 live, but handovers &amp; MCP daemons still fragmented.</span><span style="color:var(--cyan)">Active Truths: 9 · Pending Reconciliations: 5</span>`;
+        summary.innerHTML = `<span><strong>Epoch: August 2026</strong> — Stale <code>companies.yaml</code> (2026-08-04) still listed 3 B.V.s despite KvK/BOIP rejecting Starlight Holding on July 15.</span><span style="color:var(--cyan)">Active Truths: 9 · Pending Reconciliations: 6</span>`;
       } else {
-        summary.innerHTML = `<span><strong>Epoch: October 18, 2026 (LIVE)</strong> — All 8 legacy misconceptions marked <code>t_invalid</code>; 14 canonical truths active.</span><span style="color:var(--emerald)">✓ 14 Valid Truths · 8 Superseded · 0 Open-Unverified Handovers</span>`;
+        summary.innerHTML = `<span><strong>Epoch: October 18, 2026 (LIVE)</strong> — All 9 legacy misconceptions (including 3-BV structure) marked <code>t_invalid</code>; 15 canonical truths active.</span><span style="color:var(--emerald)">✓ 15 Valid Truths · 9 Superseded · 1 Eenmanszaak + Registered Trade Names</span>`;
       }
     }
 

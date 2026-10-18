@@ -201,8 +201,8 @@ Hans Zimmer × Hildur Gudnadottir × Two Steps from Hell anchors
 
 ### Royalty-cascade graph default
 - Composer (Frank): 45%
-- Publisher (Arcanea Records BV): 25%
-- Master rights (Arcanea Records BV label): 20%
+- Publisher (Arcanea Records): 25%
+- Master rights (Arcanea Records label): 20%
 - Arcanea ecosystem canonical attribution (Alera Guardian narrative compounding): 10%
 
 ---

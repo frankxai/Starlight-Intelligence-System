@@ -24,17 +24,18 @@ Modern documentation and architecture systems must serve **two first-class consu
 
 ```mermaid
 flowchart TB
-  subgraph L1["Layer 1 · 3 Dutch Legal Entities (B.V.)"]
-    BV1["FrankX Holding B.V.\nIP · Equity · Brand Vault · Treasury"]
-    BV2["Starlight Ventures B.V.\nEnterprise AI · SaaS · Advisory · Studios"]
-    BV3["Arcanea Labs B.V.\nCreative Universe · Games · Phase 1 Stripe"]
-    BV1 --> BV2 & BV3
+  subgraph L1["Layer 1 · 1 Dutch Legal Entity (Eenmanszaak — Frank Riemer, Amsterdam) + Registered Trade Names (Handelsnamen)"]
+    EZ["Dutch Eenmanszaak (Frank Riemer · KvK)\nZero B.V.s exist · 'BV' never appears in any trade name"]
+    TN1["Starlight Intelligence (Primary / Main)\nAI Substrate · SIP Protocol · Memory · Systems"]
+    TN2["Arcanea & Arcanea Records\nCreative Universe · Music Label (4 Imprints)"]
+    TN3["GenCreator · VibeClubs · FrankX · AI Architect Academy\nCreator OS · Live Co-Creation · Flagship & Education"]
+    EZ --> TN1 & TN2 & TN3
   end
 
   subgraph L2["Layer 2 · 5 Product Studios · 13 Brands · 10-SKU Release Train"]
     S1["Studio 1: Starlight Intelligence\nSKU-02 SIS · SKU-03 Shop v2 · SKU-06 Design · SKU-08 Memory"]
-    S2["Studio 2: Arcanea Creative\nSKU-04 Arcanea Realm App · SKU-10 Vibe OS"]
-    S3["Studio 3: GenCreator & FrankX\nSKU-01 ACOS Pro · SKU-05 6-Pillar CoE · SKU-07 Skills Library"]
+    S2["Studio 2: Arcanea Creative & Arcanea Records\nSKU-04 Arcanea Realm App · 4 Music Label Imprints"]
+    S3["Studio 3: GenCreator, VibeClubs & FrankX\nSKU-01 ACOS Pro · SKU-05 6-Pillar CoE · SKU-07 Skills Library"]
     S4["Studio 4: AI Architect Enterprise\nSKU-09 AI Architect Academy & OCI Blueprints"]
     S5["Studio 5: Life & Wealth Systems\nAgentic Income · Life Commons"]
   end
@@ -56,12 +57,13 @@ flowchart TB
   subgraph L5["Layer 5 · Sovereign Runtime Daemons, Bi-Temporal Spine & Telemetry"]
     D1["SIS Memory Gateway (127.0.0.1:5200 — OK, 3,590 entries)"]
     D2["Shared Tool Plane (127.0.0.1:7317 — READY, 4/4 backends, 38 tools)"]
-    D3["Bi-Temporal Fact Spine (22 records: 14 active truths / 8 superseded)"]
+    D3["Bi-Temporal Fact Spine (24 records: 15 active truths / 9 superseded)"]
     D4["Infisical EU (6e39a7d9...) + Zero-Loss Local Langfuse OTLP Spooler"]
   end
 
-  BV2 --> S1 & S3 & S4 & S5
-  BV3 --> S2
+  TN1 --> S1 & S5
+  TN2 --> S2
+  TN3 --> S3 & S4
   S1 --> O1
   S2 --> O2
   S3 --> O3
