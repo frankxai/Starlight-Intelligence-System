@@ -715,7 +715,7 @@
 
     <div class="search-box">
       <span class="search-icon">⌕</span>
-      <input type="text" id="wikiSearch" class="search-input" placeholder="Filter 10 ADRs, 24 domains, 5 studios, 22 Graphiti facts..." />
+      <input type="text" id="wikiSearch" class="search-input" placeholder="Filter 10 ADRs, 28 Vercel domains, 5 studios, 24 Graphiti facts..." />
       <span class="search-kbd">⌘K</span>
     </div>
 
@@ -742,7 +742,7 @@
       </div>
 
       <div class="tree-group">
-        <div class="tree-header"><span>02 · Bi-Temporal Graphiti</span><span>22</span></div>
+        <div class="tree-header"><span>02 · Bi-Temporal Graphiti</span><span>24</span></div>
         <button class="tree-item" onclick="scrollToSection('sec-graphiti', this)">
           <span>Time-Travel Graph Explorer</span><span class="tree-badge">SVG</span>
         </button>
@@ -752,9 +752,9 @@
       </div>
 
       <div class="tree-group">
-        <div class="tree-header"><span>03 · Live Sites & Domains</span><span>24</span></div>
+        <div class="tree-header"><span>03 · Live Sites & Domains</span><span>28</span></div>
         <button class="tree-item" onclick="scrollToSection('sec-domains', this)">
-          <span>24 Domains & Live HTTP Audit</span><span class="tree-badge">200 OK</span>
+          <span>28 Vercel Domains & HTTP Audit</span><span class="tree-badge">200 OK</span>
         </button>
         <button class="tree-item" onclick="scrollToSection('sec-brands', this)">
           <span>Eenmanszaak & Trade Names</span><span class="tree-badge">KvK SSOT</span>
@@ -1033,22 +1033,23 @@
           </div>
         </section>
 
-        <!-- SECTION 4: LIVE SITES, 24 DOMAINS & EENMANSZAAK TRADE NAMES DIRECTORY -->
+        <!-- SECTION 4: LIVE VERCEL-VERIFIED DOMAINS & EENMANSZAAK TRADE NAMES DIRECTORY -->
         <section class="wiki-section" id="sec-domains">
-          <div class="section-kicker">03 · Complete Public & Internal Surface Map</div>
-          <h2 class="section-h2">All 24 Owned Domains, Live HTTP Status, Repos & Docs Directory</h2>
+          <div class="section-kicker">03 · Complete Live Vercel-Verified Domain & Surface Map</div>
+          <h2 class="section-h2">All 26 Estate Domains + 2 Hosted Third-Party Domains (Verified via <code>vercel domains ls</code> &amp; <code>registry/domains.yaml</code>)</h2>
           <p class="section-prose">
-            Every domain in <code>registry/domains.yaml</code> mapped to its brand, canonical GitHub repository, live HTTP status (probed 2026-10-18), public documentation surface, and DeepWiki architectural mirror.
+            Live-verified against <code>vercel domains ls</code> and <code>vercel project ls</code> under the <code>starlight-intelligence</code> team on <strong>2026-10-18</strong>, plus <code>registry/domains.yaml</code> and <code>registry/exclusions.yaml</code>.
+            Every row maps directly to a live Vercel project (or verified IONOS registration) and clearly separates hosted third-party domains (<code>anaceciliacancino.com</code>, <code>cecilia.chat</code>) from Frank's estate brands.
           </p>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Domain (Clickable)</th>
-                  <th>Brand & Role</th>
-                  <th>HTTP Status</th>
-                  <th>Canonical Repo & DeepWiki</th>
-                  <th>Target Internal / External Docs Surface</th>
+                  <th>Domain (Vercel Verified)</th>
+                  <th>Trade Name / Brand &amp; Role</th>
+                  <th>Registrar &amp; Expiry</th>
+                  <th>Vercel Project &amp; GitHub Repo</th>
+                  <th>Live Target &amp; Notes</th>
                 </tr>
               </thead>
               <tbody id="domainsTableBody"></tbody>
@@ -1487,25 +1488,50 @@
     ];
 
     // ============================================================================
-    // 4. ALL 24 OWNED DOMAINS & LIVE STATUS (FROM registry/domains.yaml)
+    // 4. ALL LIVE VERCEL-VERIFIED DOMAINS (vercel domains ls + registry/domains.yaml)
     // ============================================================================
     const DOMAINS = [
-      { domain: 'starlightintelligence.org', url: 'https://starlightintelligence.org', brand: 'Starlight Intelligence (Primary Trade Name · SIP/SIS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live: /docs, /architecture, /protocol, /llms.txt + /wiki & /atlas' },
-      { domain: 'www.frankx.ai', url: 'https://www.frankx.ai', brand: 'FrankX (Registered Trade Name · Flagship)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/frankx.ai-vercel-website', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Live: /blog (90+ articles); Target: deploy /blueprint interactive atlas' },
-      { domain: 'starlight.technology', url: 'https://starlight.technology', brand: 'Starlight Intelligence (Commercial Cloud & Enterprise)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/starlight-technology', deepwiki: 'https://deepwiki.com/frankxai/starlight-technology', docs: 'Live commercial landing; Target: attach Enterprise Architecture Docs' },
-      { domain: 'gencreator.ai', url: 'https://gencreator.ai', brand: 'GenCreator (Registered Trade Name · Creator OS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/gencreator.ai', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live portal; Target: wire 6-Pillar CoE interactive handbook' },
-      { domain: 'arcanea.ai', url: 'https://www.arcanea.ai', brand: 'Arcanea (Registered Trade Name · Creative Multiverse)', status: '200 OK (308→www)', statusClass: 'ok', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live app + Ten Gates; CANON_LOCKED.md governed' },
-      { domain: 'starlightintelligence.ai', url: 'https://starlightintelligence.ai', brand: 'Starlight Intelligence AI Gateway Surface', status: 'REGISTERED · ROUTE', statusClass: 'info', repo: 'frankxai/starlightintelligence-site', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Alias/gateway route to starlightintelligence.org' },
-      { domain: 'starlightprotocol.org', url: 'https://starlightprotocol.org', brand: 'SIP Open Specification', status: 'REGISTERED · SPEC', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Dedicated SIP Specification mirror (/protocol)' },
-      { domain: 'aiarchitectacademy.com', url: 'https://aiarchitectacademy.com', brand: 'AI Architect Academy (Registered Trade Name)', status: 'ACADEMY LANE', statusClass: 'info', repo: 'AI-Architect-Academy/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Publishing Studio curriculum & certification docs' },
-      { domain: 'vibeos.com', url: 'https://vibeos.com', brand: 'Arcanea Records / VibeClubs (Sonic & Co-Creation)', status: 'PRODUCT DOMAIN', statusClass: 'info', repo: 'frankxai/vibe-os', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Sound & Music Intelligence sub-stack showcase (Note: Vibe OS dropped as KvK trade name)' },
-      { domain: 'arcanea.gg', url: 'https://arcanea.gg', brand: 'Arcanea Gaming & Arena', status: 'GAMING LANE', statusClass: 'info', repo: 'Arcanea-Labs/arcanea-games', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'World & Experience Studio interactive realms' },
-      { domain: 'arcanea.och', url: '#', brand: 'Arcanea Lore & On-Chain Reserve', status: 'RESERVED', statusClass: 'info', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Canon-locked lore vault' },
-      { domain: 'resonancelabs.ai', url: 'https://resonancelabs.ai', brand: 'Resonance Labs (R&D)', status: 'R&D LABS', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Experimental audio/cognitive research surface' },
-      { domain: 'soulbook.ai', url: 'https://soulbook.ai', brand: 'Soulbook (Conscious Publishing)', status: 'PUBLISHING LANE', statusClass: 'info', repo: 'frankxai/author-os', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Publishing Studio book & guided journal surface' },
-      { domain: 'luminaos.com', url: 'https://luminaos.com', brand: 'Lumina OS', status: 'CREATOR LANE', statusClass: 'info', repo: 'frankxai/agentic-creator-os', deepwiki: 'https://deepwiki.com/frankxai/agentic-creator-os', docs: 'Creator OS product surface' },
-      { domain: 'acos.ai / agenticcreator.ai', url: '#', brand: 'Agentic Creator OS (ACOS)', status: 'PACKAGE + CLI', statusClass: 'ok', repo: 'frankxai/agentic-creator-os', deepwiki: 'https://deepwiki.com/frankxai/agentic-creator-os', docs: '75+ skills & commands documentation' },
-      { domain: '12 Regional & Defensive Domains (.de, .nl, .io, .co, .app)', url: '#', brand: 'Multi-Brand Defensive & Locale Portfolio', status: 'DNS GOVERNED', statusClass: 'info', repo: 'frankxai/agentic-ops', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Tracked in agentic-ops/registry/domains.yaml (Human-gated DNS)' }
+      // 1. Starlight Intelligence (Primary Trade Name)
+      { domain: 'starlightintelligence.org', url: 'https://starlightintelligence.org', brand: 'Starlight Intelligence (Primary Trade Name · SIP/SIS)', status: 'Vercel · Exp 2027-04-06', statusClass: 'ok', repo: 'site → frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live 200 OK: /docs, /architecture, /protocol, /llms.txt, /wiki, /atlas' },
+      { domain: 'starlightintelligence.ai', url: 'https://starlightintelligence.ai', brand: 'Starlight Intelligence (Primary AI Surface)', status: 'Vercel · Exp 2028-07-19', statusClass: 'ok', repo: 'starlightintelligence-ai → frankxai/starlightintelligence.ai', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live Vercel project (starlightintelligence-ai)' },
+      { domain: 'starlight.technology', url: 'https://starlight.technology', brand: 'Starlight Intelligence (Technology & Commercial Storefront)', status: 'Vercel · Exp 2027-07-19', statusClass: 'ok', repo: 'starlight-technology → frankxai/starlight-technology', deepwiki: 'https://deepwiki.com/frankxai/starlight-technology', docs: 'Live 200 OK: Commercial storefront & architecture docs' },
+      { domain: 'starlight.you', url: 'https://starlight.you', brand: 'Starlight Intelligence (Personal Intelligence Surface)', status: 'Vercel · Exp 2027-07-19', statusClass: 'ok', repo: 'starlight-you → frankxai/starlightintelligence.ai', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live Vercel project (starlight-you)' },
+      { domain: 'starlight.domains', url: 'https://starlight.domains', brand: 'Starlight Intelligence (Public Registry & Domain Command)', status: 'Vercel · Exp 2027-07-19', statusClass: 'ok', repo: 'starlight-domains → frankxai/frankx-domain-command', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live Vercel project (starlight-domains)' },
+      { domain: 'starlightintelligence.academy', url: 'https://starlightintelligence.academy', brand: 'Starlight Intelligence Academy', status: 'Vercel · Exp 2027-07-10', statusClass: 'ok', repo: 'starlight-intelligence-academy → frankxai/starlight-intelligence-academy', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live Vercel project (starlight-intelligence-academy)' },
+
+      // 2. Arcanea & Arcanea Records
+      { domain: 'arcanea.ai (www / app)', url: 'https://www.arcanea.ai', brand: 'Arcanea (Registered Trade Name · Creative Multiverse)', status: 'Third-Party Reg · Vercel Prod', statusClass: 'ok', repo: 'arcanea-ai-app → frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live 200 OK (www.arcanea.ai + app.arcanea.ai) · CANON_LOCKED.md' },
+      { domain: 'arcanea.dev', url: 'https://arcanea.dev', brand: 'Arcanea Developer & Domain Portals', status: 'Vercel · Exp 2027-04-06', statusClass: 'ok', repo: 'arcanea-domain-portals → frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live Vercel project (arcanea-domain-portals)' },
+      { domain: 'arcanean.org', url: 'https://arcanean.org', brand: 'Arcanea Community & Library', status: 'Vercel · Exp 2027-04-06', statusClass: 'ok', repo: 'arcanea-domain-portals → frankxai/arcanean-library', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Bound to arcanea-domain-portals on Vercel' },
+      { domain: 'arcanea.academy', url: 'https://arcanea.academy', brand: 'Arcanea Academy (World Proof Lab)', status: 'Vercel · Exp 2027-07-10', statusClass: 'ok', repo: 'arcanea-academy → frankxai/arcanea-academy', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live Vercel project (arcanea-academy)' },
+      { domain: 'arcanealabs.com', url: 'https://arcanealabs.com', brand: 'Arcanea Portal Alias (No BV)', status: 'Vercel · Exp 2027-04-06', statusClass: 'info', repo: 'arcanea-domain-portals → frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Bound to arcanea-domain-portals on Vercel' },
+      { domain: 'arcanean.dev', url: 'https://arcanean.dev', brand: 'Arcanea Developer Surface (IONOS)', status: 'IONOS · Exp 2027-04-06', statusClass: 'info', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Registrar screenshot verified in registry/domains.yaml' },
+      { domain: 'animelegends.ai', url: 'https://www.animelegends.ai', brand: 'Anime Legends (Arcanea Media/IP Satellite)', status: 'Vercel · Exp 2027-11-04', statusClass: 'ok', repo: 'anime-legends → frankxai/AnimeLegends', deepwiki: 'https://deepwiki.com/Arcanea-Labs/AnimeLegends', docs: 'Live Vercel project (anime-legends)' },
+
+      // 3. GenCreator
+      { domain: 'gencreator.ai', url: 'https://gencreator.ai', brand: 'GenCreator (Registered Trade Name · Creator OS)', status: 'Vercel · Exp 2028-04-06', statusClass: 'ok', repo: 'gencreator-ai → frankxai/gencreator.ai', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live 200 OK: Creator OS & 6-Pillar CoE portal' },
+      { domain: 'gencreator.community', url: 'https://gencreator.community', brand: 'GenCreator Community Hub', status: 'Vercel · Exp 2027-07-10', statusClass: 'ok', repo: 'gencreator-community → frankxai/gencreator-community', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live Vercel project (gencreator-community)' },
+
+      // 4. VibeClubs
+      { domain: 'vibeclubs.ai', url: 'https://vibeclubs.ai', brand: 'VibeClubs (Registered Trade Name · Co-Creation Community)', status: 'Vercel · Exp 2028-04-06', statusClass: 'ok', repo: 'vibeclubs-web → frankxai/vibeclubs', deepwiki: 'https://deepwiki.com/frankxai/vibeclubs', docs: 'Live Vercel project (vibeclubs-web · / and /start)' },
+
+      // 5. FrankX & AI Architect Academy
+      { domain: 'frankx.ai (www.frankx.ai)', url: 'https://www.frankx.ai', brand: 'FrankX (Registered Trade Name · Flagship Demand Engine)', status: 'Third-Party Reg · Vercel Prod', statusClass: 'ok', repo: 'frankx-ai-vercel-website → frankxai/frankx.ai-vercel-website', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Live 200 OK: /blog, /coe, /products, /prompt-library' },
+      { domain: 'aiarchitectacademy.com', url: 'https://aiarchitectacademy.com', brand: 'AI Architect Academy (Registered Trade Name)', status: 'Vercel · Exp 2027-09-01', statusClass: 'ok', repo: 'aiarchitectacademy → frankxai/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Live Vercel project (aiarchitectacademy)' },
+      { domain: 'aiarchitect.community', url: 'https://aiarchitect.community', brand: 'AI Architect Community', status: 'Vercel · Exp 2027-08-17', statusClass: 'ok', repo: 'aiarchitectacademy → frankxai/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Bound to aiarchitectacademy project on Vercel' },
+
+      // 6. Reality Architect, Agentic Income, Life/Ocean Commons & Incubations
+      { domain: 'realityarchitect.ai', url: 'https://www.realityarchitect.ai', brand: 'Reality Architect (Creator-Method & Vault)', status: 'Vercel · Exp 2028-06-05', statusClass: 'ok', repo: 'realityarchitect → frankxai/realityarchitect', deepwiki: 'https://deepwiki.com/frankxai/realityarchitect', docs: 'Live Vercel project (realityarchitect)' },
+      { domain: 'realitydiffusion.ai', url: 'https://realitydiffusion.ai', brand: 'Reality Architect Alias', status: 'Third-Party Reg · Vercel NS', statusClass: 'info', repo: 'realityarchitect → frankxai/realityarchitect', deepwiki: 'https://deepwiki.com/frankxai/realityarchitect', docs: 'Bound to realityarchitect project on Vercel' },
+      { domain: 'agenticincome.ai (go.agenticincome.ai)', url: 'https://www.agenticincome.ai', brand: 'Agentic Income (Primary & Go Funnel)', status: 'Vercel · Exp 2028-05-31', statusClass: 'ok', repo: 'agenticincome & go-agenticincome → frankxai/agenticincome', deepwiki: 'https://deepwiki.com/Agentic-Income/agenticincome', docs: 'Live Vercel projects (agenticincome + go-agenticincome)' },
+      { domain: 'agenticpassiveincome.com', url: 'https://www.agenticpassiveincome.com', brand: 'Agentic Income Campaign Surface', status: 'Vercel · Exp 2027-05-31', statusClass: 'ok', repo: 'agenticpassiveincome → frankxai/agenticpassiveincome', deepwiki: 'https://deepwiki.com/Agentic-Income/agenticpassiveincome', docs: 'Live Vercel project (agenticpassiveincome)' },
+      { domain: 'disruptivepassiveincome.com', url: 'https://disruptivepassiveincome.com', brand: 'Disruptive Passive Income (DPI Open Core)', status: 'Third-Party Reg · Vercel Prod', statusClass: 'info', repo: 'dpi-open-core → frankxai/dpi', deepwiki: 'https://deepwiki.com/Agentic-Income/dpi', docs: 'Live Vercel project (dpi-open-core)' },
+      { domain: 'oceanintelligence.app', url: 'https://oceanintelligence.app', brand: 'Ocean Intelligence (Marine Intelligence Product)', status: 'Vercel · Exp 2027-07-10', statusClass: 'ok', repo: 'ocean-intelligence → frankxai/ocean-intelligence', deepwiki: 'https://deepwiki.com/Life-Commons/ocean-intelligence', docs: 'Live Vercel project (ocean-intelligence)' },
+      { domain: 'bluelifecommons.org', url: 'https://bluelifecommons.org', brand: 'Blue Life Commons (Life Commons Institution)', status: 'Vercel · Exp 2027-07-10', statusClass: 'ok', repo: 'blue-life-commons → frankxai/blue-life-commons', deepwiki: 'https://deepwiki.com/Life-Commons/blue-life-commons', docs: 'Live Vercel project (blue-life-commons)' },
+      { domain: 'akamoto.io', url: 'https://akamoto.io', brand: 'Akamoto (Incubation Surface)', status: 'Vercel · Exp 2027-11-07', statusClass: 'info', repo: 'akamoto → frankxai/akamoto', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live Vercel project (akamoto)' },
+
+      // 7. Hosted Third-Party Personal Brand (Not Frank's Estate Brand)
+      { domain: 'anaceciliacancino.com & cecilia.chat', url: 'https://anaceciliacancino.com', brand: 'Hosted for Third Party (Ana Cecilia Cancino — NOT Frank Estate Brand)', status: 'Vercel Hosted · Exp 2027-05-01', statusClass: 'superseded', repo: 'ana & cecilia-chat → frankxai/Ana', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'ecosystem.json: "third party\'s personal brand OS hosted by Frank — not an estate brand"' }
     ];
 
     // ============================================================================
@@ -1600,12 +1626,12 @@
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>1. Starlight Intelligence</span><span class="status-pill ok">PRIMARY TRADE NAME (EENMANSZAAK)</span></h3>
           <p>Main registered trade name on Frank Riemer's Dutch Eenmanszaak (Amsterdam). Governs the Starlight Intelligence Protocol (SIP), Starlight Intelligence System (SIS), Starlight Memory, and Starlight Technology commercial cloud.</p>
-          <div class="meta-line"><span>Legal Form: Eenmanszaak (0 B.V.s) · Domains: starlightintelligence.org · starlight.technology</span></div>
+          <div class="meta-line"><span>Vercel Domains (6): starlightintelligence.org · starlightintelligence.ai · starlight.technology · starlight.you · starlight.domains · starlightintelligence.academy</span></div>
         </div>
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>2. Arcanea</span><span class="status-pill ok">REGISTERED TRADE NAME</span></h3>
-          <p>Creative multiverse, World &amp; Experience Studio, Ten Gates progression, Arcanea Games, Publishing House, and canon-locked narrative IP.</p>
-          <div class="meta-line"><span>Orgs: Arcanea-Labs (13 repos) · Domains: arcanea.ai · arcanea.gg</span></div>
+          <p>Creative multiverse, World &amp; Experience Studio, Ten Gates progression, Arcanea Games, Publishing House, Anime Legends, and canon-locked narrative IP.</p>
+          <div class="meta-line"><span>Vercel/IONOS Domains (7): arcanea.ai · arcanea.dev · arcanean.dev · arcanean.org · arcanea.academy · arcanealabs.com · animelegends.ai</span></div>
         </div>
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>3. Arcanea Records</span><span class="status-pill info">REGISTERED TRADE NAME · MUSIC LABEL</span></h3>
@@ -1614,18 +1640,18 @@
         </div>
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>4. GenCreator</span><span class="status-pill ok">REGISTERED TRADE NAME</span></h3>
-          <p>Creator OS portal (gencreator.ai), 6-Pillar Center of Excellence (CoE), Agentic Creator OS (ACOS), Creator Launch OS, and Skills Library.</p>
-          <div class="meta-line"><span>Orgs: GenCreator-ai (9 repos) · Domain: gencreator.ai</span></div>
+          <p>Creator OS portal, 6-Pillar Center of Excellence (CoE), Agentic Creator OS (ACOS), Creator Launch OS, and Skills Library.</p>
+          <div class="meta-line"><span>Vercel Domains (2): gencreator.ai · gencreator.community · Org: GenCreator-ai (9 repos)</span></div>
         </div>
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>5. VibeClubs</span><span class="status-pill info">REGISTERED TRADE NAME</span></h3>
           <p>Live co-creation practice surface, sonic/builder sessions, and community format (replaces "Vibe OS" which was dropped as a KvK trade name).</p>
-          <div class="meta-line"><span>Format: Live Co-Creation &amp; Community Practice · Connected to Arcanea Records</span></div>
+          <div class="meta-line"><span>Vercel Domain (1): vibeclubs.ai (vibeclubs-web project) · Connected to Arcanea Records</span></div>
         </div>
         <div class="wiki-card" onclick="inspectEntity('eenmanszaak-tradenames')">
           <h3><span>6. FrankX &amp; AI Architect Academy</span><span class="status-pill ok">REGISTERED TRADE NAMES</span></h3>
-          <p>Founder flagship demand engine (frankx.ai), executive AI Architecture Field Guides, OCI multi-cloud blueprints, and enterprise certification academy.</p>
-          <div class="meta-line"><span>Orgs: FrankX-AI (11) · AI-Architect-Academy (5) · oci-ai-architects (14)</span></div>
+          <p>Founder flagship demand engine, executive AI Architecture Field Guides, OCI multi-cloud blueprints, and enterprise certification academy.</p>
+          <div class="meta-line"><span>Vercel Domains (3): frankx.ai · aiarchitectacademy.com · aiarchitect.community</span></div>
         </div>
       `;
 
