@@ -28,7 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { runTerminalCli } from "./terminal-cli.js";
-import { runSpendCli } from "./spend-cli.js";
+import { findExtension, runExtension } from "./extensions.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -1705,13 +1705,6 @@ async function main(): Promise<void> {
     process.exitCode = result.exitCode;
     return;
   }
-  if (["spend", "plan"].includes(terminalArgs[0])) {
-    const result = await runSpendCli(terminalArgs);
-    if (result.stdout) console.log(result.stdout);
-    if (result.stderr) console.error(result.stderr);
-    process.exitCode = result.exitCode;
-    return;
-  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
@@ -1976,10 +1969,16 @@ async function main(): Promise<void> {
       break;
     }
 
-    default:
+    default: {
+      const extension = findExtension(command);
+      if (extension) {
+        process.exitCode = runExtension(extension, terminalArgs.slice(terminalArgs.indexOf(command) + 1));
+        return;
+      }
       console.error(`[starlight] Unknown command: "${command}"`);
-      console.error("Run 'starlight --help' for usage.");
+      console.error(`No built-in command or installed starlight-${command} extension. Run 'starlight --help' for usage.`);
       process.exitCode = 1;
+    }
   }
 }
 
