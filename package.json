@@ -211,9 +211,10 @@
     "release:packages": "node scripts/publish-npm-ecosystem.mjs",
     "queen:snapshot:screenshots": "npx tsx tools/queen/capture-estate-screenshots.mjs",
     "queen:snapshot:deck": "node tools/queen/render-keynote-grade-deck.mjs",
-    "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/render-keynote-grade-deck.mjs && npx tsx tools/queen/launch-spec-intelligence-studio.mjs && node tools/queen/launch-visual-observatory.mjs",
+    "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/render-keynote-grade-deck.mjs && npx tsx tools/queen/launch-spec-intelligence-studio.mjs && npx tsx tools/queen/launch-jarvis-embodied-cosmos.mjs && node tools/queen/launch-visual-observatory.mjs",
     "queen:observatory": "node tools/queen/launch-visual-observatory.mjs --open",
-    "queen:spec:studio": "npx tsx tools/queen/launch-spec-intelligence-studio.mjs --open"
+    "queen:spec:studio": "npx tsx tools/queen/launch-spec-intelligence-studio.mjs --open",
+    "queen:cosmos:jarvis": "npx tsx tools/queen/launch-jarvis-embodied-cosmos.mjs --open"
   },
   "files": [
     "dist/",
