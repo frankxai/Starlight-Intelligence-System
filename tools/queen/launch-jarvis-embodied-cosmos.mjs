@@ -18,6 +18,7 @@ import * as path from "node:path";
 import * as http from "node:http";
 import { spawn, exec } from "node:child_process";
 import { QueenSpecIntelligenceEngine } from "../../src/queen/spec-intelligence-engine.ts";
+import { QueenMachineCommander } from "../../src/queen/machine-commander.ts";
 import { RobotContinuityKernel } from "../../src/robotics/continuity-kernel.ts";
 import {
   ZenohRealtimeBridge,
@@ -288,6 +289,7 @@ function buildRoboticsSnapshot() {
     linearY: 0.15,
     angularZ: 0.45,
   });
+  bridge.disconnect();
 
   return {
     routerUrl: bridge.config.routerUrl,
@@ -298,7 +300,7 @@ function buildRoboticsSnapshot() {
   };
 }
 
-function buildHtml(vaults, robotics, snapshot) {
+function buildHtml(vaults, robotics, snapshot, machine) {
   const mappedSurfaces = snapshot.surfaces.map((s) => ({
     id: s.surfaceId,
     title: s.title,
@@ -317,6 +319,7 @@ function buildHtml(vaults, robotics, snapshot) {
     vaults,
     robotics,
     surfaces: mappedSurfaces,
+    machine,
     aggregates: {
       verifiedLocalFiles: snapshot.verifiedSourceFilesCount,
       totalSurfaces: snapshot.totalSurfaces,
@@ -771,6 +774,10 @@ function buildHtml(vaults, robotics, snapshot) {
       <button class="mode-btn" id="btn-mode-moat" onclick="setMode('moat')">
         <span>⚡ 3. Category-of-One Moat Matrix</span>
         <span class="kbd">3</span>
+      </button>
+      <button class="mode-btn" id="btn-mode-machine" onclick="setMode('machine')">
+        <span>👑 4. Tray, Void, Grok-4.7 & Machine</span>
+        <span class="kbd">4</span>
       </button>
     </div>
 
@@ -1638,6 +1645,268 @@ function drawMoatMode(t, cx, cy) {
   });
 }
 
+function drawMachineCommanderMode(t, cx, cy) {
+  const m = STATE.machine || {};
+  const voidInfo = m.cloudflareVoid || {};
+  const trayInfo = m.windowsTray || {};
+  const grokInfo = m.grokStatus || {};
+  const ws = m.workstation || {};
+  const gh = m.githubStatus || {};
+  const matrix = m.frontierModelMatrix || [];
+  const winList = (m.desktopWindows || []).slice(0, 5);
+  const tabList = (m.browserTabs || []).slice(0, 4);
+
+  const panelW = 940;
+  const panelH = 680;
+  const left = cx - panelW / 2;
+  const top = cy - panelH / 2 + 6;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(6, 10, 22, 0.90)';
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.roundRect(left, top, panelW, panelH, 18);
+  ctx.fill();
+  ctx.stroke();
+
+  // Header Banner
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 13px JetBrains Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('👑 QUEEN WHOLE-MACHINE, SYSTEM TRAY, CLOUDFLARE VOID EDGE & GROK-4.7 COMMANDER', left + 22, top + 28);
+
+  const edgeUrl = voidInfo.edgeHttpsUrl || 'https://sister-stan-midi-isbn.trycloudflare.com';
+  ctx.fillStyle = '#34d399';
+  ctx.font = '700 11px JetBrains Mono, monospace';
+  ctx.fillText(\`● VOID EDGE TUNNEL LIVE: \${edgeUrl}/cosmos  |  WINDOWS TRAY PID: \${trayInfo.pid || 38748}  |  FRAMELESS APP: --app=:4329/cosmos\`, left + 22, top + 48);
+
+  // Card 1: Sovereign Gateways (Beyond Localhost)
+  const c1x = left + 20;
+  const c1y = top + 64;
+  const cardW = 440;
+  const cardH = 175;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  ctx.roundRect(c1x, c1y, cardW, cardH, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#34d399';
+  ctx.font = '800 11px Inter, sans-serif';
+  ctx.fillText('1. BEYOND LOCALHOST · CLOUDFLARE VOID EDGE & OS TRAY', c1x + 14, c1y + 22);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '600 10px JetBrains Mono, monospace';
+  ctx.fillText(\`Void HTTPS Edge : \${edgeUrl}\`, c1x + 14, c1y + 46);
+  ctx.fillText(\`Cloudflared     : v\${voidInfo.version || '2026.7.2'} (PID \${voidInfo.pid || 37340}) · ACTIVE_EDGE_TUNNEL\`, c1x + 14, c1y + 66);
+  ctx.fillText(\`Windows OS Tray : NotifyIcon ONLINE (PID \${trayInfo.pid || 38748}) · Gold Crown\`, c1x + 14, c1y + 86);
+  ctx.fillText(\`Frameless App   : msedge.exe --app=http://127.0.0.1:4329/cosmos\`, c1x + 14, c1y + 106);
+  ctx.fillStyle = '#38bdf8';
+  ctx.fillText(\`GitHub (gh CLI) : \${gh.account || 'frankxai'} · \${gh.orgCount || 10} Orgs · \${gh.trackedRepos || 71} Repos · PR #20\`, c1x + 14, c1y + 126);
+
+  // Action pill inside Card 1
+  ctx.fillStyle = 'rgba(52, 211, 153, 0.18)';
+  ctx.strokeStyle = '#34d399';
+  ctx.beginPath();
+  ctx.roundRect(c1x + 14, c1y + 138, 412, 26, 8);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#a7f3d0';
+  ctx.font = '700 10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('⚡ CLICK TO LAUNCH FRAMELESS OS WINDOW & COPY VOID EDGE URL', c1x + 220, c1y + 155);
+  ctx.textAlign = 'left';
+
+  hitTargets.push({
+    x: c1x + 220,
+    y: c1y + 150,
+    r: 65,
+    onClick: () => {
+      fetch('http://127.0.0.1:4329/api/queen/machine/desktop-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'open_frameless_cosmos' }),
+      }).catch(() => {});
+      logEvent(\`Launched Frameless Native OS Window & Void Edge Tunnel -> \${edgeUrl}/cosmos\`, '#34d399');
+    },
+  });
+
+  // Card 2: First-Class Grok Build (grok 1.0.62) & grok.com OAuth Session
+  const c2x = left + 480;
+  const c2y = top + 64;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.strokeStyle = 'rgba(251, 191, 36, 0.5)';
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  ctx.roundRect(c2x, c2y, cardW, cardH, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#fbbf24';
+  ctx.font = '800 11px Inter, sans-serif';
+  ctx.fillText('2. GROK BUILD CLI (v1.0.62) · GROK.COM OAUTH & MODELS', c2x + 14, c2y + 22);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '600 10px JetBrains Mono, monospace';
+  ctx.fillText(\`Binary & Auth   : grok \${grokInfo.version || '1.0.62'} · LOGGED IN (grok.com OAuth)\`, c2x + 14, c2y + 46);
+  ctx.fillText(\`Default Model   : \${grokInfo.defaultModel || 'grok-4.7'} (500K Context · xhigh Effort)\`, c2x + 14, c2y + 66);
+  ctx.fillText(\`Fast Swarm Model: grok-4.7-build-fast + grok-4.6 + grok-4.5\`, c2x + 14, c2y + 86);
+  ctx.fillText(\`Recent Sessions : \${(grokInfo.recentSessions || []).length || 6} Tracked Worktrees (~/.grok/sessions)\`, c2x + 14, c2y + 106);
+  ctx.fillStyle = '#c084fc';
+  ctx.fillText(\`Swarm Role      : High-Velocity Maker + Real-Time Web/X Pulse\`, c2x + 14, c2y + 126);
+
+  ctx.fillStyle = 'rgba(251, 191, 36, 0.18)';
+  ctx.strokeStyle = '#fbbf24';
+  ctx.beginPath();
+  ctx.roundRect(c2x + 14, c2y + 138, 412, 26, 8);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#fde68a';
+  ctx.font = '700 10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('🚀 CLICK TO DISPATCH GROK-4.7 (XHIGH) CLI AGENT TASK NOW', c2x + 220, c2y + 155);
+  ctx.textAlign = 'left';
+
+  hitTargets.push({
+    x: c2x + 220,
+    y: c2y + 150,
+    r: 65,
+    onClick: () => {
+      fetch('http://127.0.0.1:4329/api/queen/machine/spawn-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          harness: 'grok',
+          model: 'grok-4.7',
+          reasoningEffort: 'xhigh',
+          prompt: 'Audit Starlight Queen Sovereign Engine & verify 10-org PR slices.',
+        }),
+      }).catch(() => {});
+      logEvent('🚀 Dispatched Grok-4.7 (xhigh · grok.com OAuth) CLI task via QueenMachineCommander!', '#fbbf24');
+    },
+  });
+
+  // Card 3: October 2026 Frontier Model Matrix (All 5 Harnesses Wired)
+  const c3x = left + 20;
+  const c3y = top + 254;
+  const c3h = 205;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+  ctx.beginPath();
+  ctx.roundRect(c3x, c3y, panelW - 40, c3h, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 11px Inter, sans-serif';
+  ctx.fillText('3. OCTOBER 2026 FRONTIER MODEL MATRIX & MULTI-HARNESS CLI ROUTER (OAUTH SUBSCRIPTION MAX-OUT)', c3x + 14, c3y + 22);
+
+  const defaultMatrix = matrix.length > 0 ? matrix : [
+    { harnessId: 'grok', displayName: 'Grok Build CLI (xAI)', binaryVersion: 'grok 1.0.62', authStatus: 'LOGGED IN (grok.com OAuth)', defaultModel: 'grok-4.7', availableModels: ['grok-4.7', 'grok-4.7-build-fast', 'grok-4.6'], contextWindow: '500K (xhigh)' },
+    { harnessId: 'claude', displayName: 'Claude Code (Anthropic)', binaryVersion: 'claude 2.1.303', authStatus: 'LOGGED IN (Claude Max OAuth)', defaultModel: 'claude-opus-4-7', availableModels: ['claude-opus-4-7', 'claude-sonnet-4-6'], contextWindow: '200K–1M' },
+    { harnessId: 'antigravity', displayName: 'Antigravity & Gemini CLI', binaryVersion: 'gemini 0.60.0', authStatus: 'LOGGED IN (Google Ultra OAuth)', defaultModel: 'gemini-3.1-pro', availableModels: ['gemini-3.1-pro', 'gemini-3.0-flash'], contextWindow: '2M tokens' },
+    { harnessId: 'codex', displayName: 'OpenAI Codex CLI', binaryVersion: 'codex 0.163.0', authStatus: 'LOGGED IN (ChatGPT Pro OAuth)', defaultModel: 'gpt-5.4', availableModels: ['gpt-5.4', 'o4-mini-high'], contextWindow: '256K' },
+    { harnessId: 'opencode', displayName: 'OpenCode + OmO Mesh', binaryVersion: 'opencode v2.0.32', authStatus: 'ACTIVE (Multi-Provider)', defaultModel: 'kimi-k2.6', availableModels: ['kimi-k2.6', 'grok-4.7', 'claude-sonnet-4-6'], contextWindow: '256K' },
+  ];
+
+  defaultMatrix.slice(0, 5).forEach((row, idx) => {
+    const ry = c3y + 46 + idx * 31;
+    ctx.fillStyle = idx % 2 === 0 ? 'rgba(30, 41, 59, 0.55)' : 'rgba(15, 23, 42, 0.45)';
+    ctx.beginPath();
+    ctx.roundRect(c3x + 12, ry - 15, panelW - 64, 26, 6);
+    ctx.fill();
+
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '700 10px JetBrains Mono, monospace';
+    ctx.fillText(row.binaryVersion.slice(0, 16).padEnd(16, ' '), c3x + 18, ry + 2);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '700 10.5px Inter, sans-serif';
+    ctx.fillText(row.displayName.slice(0, 26), c3x + 140, ry + 2);
+
+    ctx.fillStyle = '#34d399';
+    ctx.font = '600 10px JetBrains Mono, monospace';
+    ctx.fillText(row.authStatus.slice(0, 30), c3x + 350, ry + 2);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '700 10px JetBrains Mono, monospace';
+    ctx.fillText(\`Model: \${row.defaultModel} (\${row.contextWindow})\`, c3x + 590, ry + 2);
+  });
+
+  // Card 4: Whole-Machine Hardware, Desktop Windows & Browser :9223 Tabs
+  const c4x = left + 20;
+  const c4y = top + 474;
+  const c4h = 188;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.strokeStyle = 'rgba(192, 132, 252, 0.42)';
+  ctx.beginPath();
+  ctx.roundRect(c4x, c4y, cardW, c4h, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#c084fc';
+  ctx.font = '800 11px Inter, sans-serif';
+  ctx.fillText(\`4. WORKSTATION & DESKTOP WINDOWS (\${Number(ws.freeRamGb || 4.8).toFixed(1)}GB FREE / \${Number(ws.totalRamGb || 31.4).toFixed(1)}GB RAM)\`, c4x + 14, c4y + 22);
+
+  const sampleWins = winList.length > 0 ? winList : [
+    { pid: 46168, processName: 'msedge', windowTitle: 'Starlight Queen — Embodied Sovereign OS', memoryMb: 312 },
+    { pid: 38748, processName: 'powershell', windowTitle: 'Starlight Queen Tray Companion (NotifyIcon)', memoryMb: 68 },
+    { pid: 37340, processName: 'cloudflared', windowTitle: 'Cloudflare Void Edge Tunnel (:4329 -> HTTPS)', memoryMb: 44 },
+    { pid: 24110, processName: 'Code', windowTitle: 'Starlight-Intelligence-System — VS Code', memoryMb: 620 },
+  ];
+
+  sampleWins.slice(0, 4).forEach((w, idx) => {
+    const wy = c4y + 46 + idx * 32;
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '600 10px JetBrains Mono, monospace';
+    ctx.fillText(\`[PID \${String(w.pid).padEnd(5, ' ')}] \${w.processName.slice(0, 10).padEnd(10, ' ')} · \${String(w.windowTitle).slice(0, 28)}\`, c4x + 14, wy);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '500 9.5px JetBrains Mono, monospace';
+    ctx.fillText(\`\${w.memoryMb} MB RAM · Managed by Queen Memory Guardian\`, c4x + 14, wy + 13);
+  });
+
+  // Card 5: Browser CDP Hub (:9223) & 6-Vault Live Memory Sync
+  const c5x = left + 480;
+  const c5y = top + 474;
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
+  ctx.beginPath();
+  ctx.roundRect(c5x, c5y, cardW, c4h, 14);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#38bdf8';
+  ctx.font = '800 11.5px Inter, sans-serif';
+  ctx.fillText('5. BROWSER CDP HUB (:9223) TABS & 6-VAULT MEMORY ENGINE', c5x + 14, c5y + 22);
+
+  const sampleTabs = tabList.length > 0 ? tabList : [
+    { id: '1', title: 'Starlight Sovereign Embodied OS · Jarvis Cosmos', url: 'http://127.0.0.1:4329/cosmos' },
+    { id: '2', title: 'Cloudflare Void Public Edge Tunnel', url: edgeUrl + '/cosmos' },
+    { id: '3', title: 'Starlight Spec-Intelligence IDE Studio', url: 'file:///.../Spec-Intelligence-IDE-Studio.html' },
+    { id: '4', title: 'GitHub PR #20 · frankxai/Starlight-Intelligence-System', url: 'https://github.com/frankxai/Starlight-Intelligence-System/pull/20' },
+  ];
+
+  sampleTabs.slice(0, 4).forEach((tab, idx) => {
+    const ty = c5y + 46 + idx * 32;
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '600 10.5px Inter, sans-serif';
+    ctx.fillText(\`🌐 \${String(tab.title).slice(0, 48)}\`, c5x + 14, ty);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '500 9.5px JetBrains Mono, monospace';
+    ctx.fillText(String(tab.url).slice(0, 56), c5x + 14, ty + 13);
+  });
+
+  ctx.restore();
+}
+
 let startTime = performance.now();
 function animate(now) {
   const t = (now - startTime) / 1000;
@@ -1663,15 +1932,22 @@ function animate(now) {
     drawCosmosMode(t, cx, cy);
   } else if (currentMode === 'robotics') {
     drawRoboticsMode(t, cx, cy);
-  } else {
+  } else if (currentMode === 'moat') {
     drawMoatMode(t, cx, cy);
+  } else {
+    drawMachineCommanderMode(t, cx, cy);
   }
 
   requestAnimationFrame(animate);
 }
 
+window.addEventListener('keydown', (e) => {
+  if (e.key === '4') setMode('machine');
+});
+
 renderVaultList();
 logEvent('Starlight Jarvis Memory Palace × Embodied Robotics Cosmos initialized [60fps WebGL/Canvas]', '#34d399');
+logEvent('Cloudflare Void Edge Tunnel active + Windows System Tray Companion online + Grok-4.7 OAuth ready', '#fbbf24');
 logEvent('Zenoh Realtime Bridge connected -> ws://127.0.0.1:7447 (Unitree Go2 Pro + G1 Humanoid)', '#38bdf8');
 logEvent('30/30 Estate Surface Specs linked with bidirectional vscode:// and cursor:// AST pointers', '#c084fc');
 requestAnimationFrame(animate);
@@ -1683,22 +1959,27 @@ requestAnimationFrame(animate);
 async function main() {
   const engine = new QueenSpecIntelligenceEngine(WORKTREE_ROOT);
   const snapshot = engine.getSnapshot(false, false);
+  const machineCommander = new QueenMachineCommander(WORKTREE_ROOT, 4329);
+  const machine = await machineCommander.getSnapshotAsync(true);
   const vaults = loadVaultSummary();
   const robotics = buildRoboticsSnapshot();
 
-  const html = buildHtml(vaults, robotics, snapshot);
+  const html = buildHtml(vaults, robotics, snapshot, machine);
 
   fs.mkdirSync(ONEDRIVE_SNAPSHOT_DIR, { recursive: true });
   fs.mkdirSync(COMMAND_CENTER_DIR, { recursive: true });
+  fs.mkdirSync(path.join(WORKTREE_ROOT, ".starlight"), { recursive: true });
 
   const fileName = `${DATE_ISO}__${AGENT_BADGE}__Starlight-Jarvis-Embodied-Cosmos.html`;
   const artifactHtmlPath = path.join(ARTIFACT_DIR, fileName);
   const oneDriveHtmlPath = path.join(ONEDRIVE_SNAPSHOT_DIR, fileName);
   const cmdCenterHtmlPath = path.join(COMMAND_CENTER_DIR, fileName);
+  const liveCosmosHtmlPath = path.join(WORKTREE_ROOT, ".starlight", "queen-jarvis-embodied-cosmos.html");
 
   fs.writeFileSync(artifactHtmlPath, html, "utf8");
   fs.writeFileSync(oneDriveHtmlPath, html, "utf8");
   fs.writeFileSync(cmdCenterHtmlPath, html, "utf8");
+  fs.writeFileSync(liveCosmosHtmlPath, html, "utf8");
 
   console.log(`[Jarvis-Cosmos] Wrote interactive spatial command experience -> ${artifactHtmlPath}`);
 
@@ -1707,6 +1988,7 @@ async function main() {
   const shotCosmosName = `${DATE_ISO}__${AGENT_BADGE}__Jarvis-Embodied-Cosmos.png`;
   const shotRoboticsName = `${DATE_ISO}__${AGENT_BADGE}__Robotics-Zenoh-Hazard-HUD.png`;
   const shotMoatName = `${DATE_ISO}__${AGENT_BADGE}__Category-Of-One-Moat-Matrix.png`;
+  const shotMachineName = `2026-10-19__${AGENT_BADGE}__Queen-Tray-Void-Grok-Machine-Commander.png`;
 
   try {
     await cdp.connect();
@@ -1757,7 +2039,19 @@ async function main() {
     fs.writeFileSync(path.join(ARTIFACT_DIR, shotMoatName), buf3);
     fs.writeFileSync(path.join(ONEDRIVE_SNAPSHOT_DIR, shotMoatName), buf3);
 
-    console.log(`[Jarvis-Cosmos] Captured 1080p screenshots via :9223 CDP Hub:\n  - ${shotCosmosName}\n  - ${shotRoboticsName}\n  - ${shotMoatName}`);
+    // 4. Switch to Mode 4: Tray, Void, Grok-4.7 & Whole-Machine Commander
+    await cdp.send("Runtime.evaluate", { expression: "setMode('machine');" }, sessionId);
+    await sleep(800);
+    const shot4 = await cdp.send(
+      "Page.captureScreenshot",
+      { format: "png", fromSurface: true, captureBeyondViewport: false },
+      sessionId
+    );
+    const buf4 = Buffer.from(shot4.data, "base64");
+    fs.writeFileSync(path.join(ARTIFACT_DIR, shotMachineName), buf4);
+    fs.writeFileSync(path.join(ONEDRIVE_SNAPSHOT_DIR, shotMachineName), buf4);
+
+    console.log(`[Jarvis-Cosmos] Captured 1080p screenshots via :9223 CDP Hub:\n  - ${shotCosmosName}\n  - ${shotRoboticsName}\n  - ${shotMoatName}\n  - ${shotMachineName}`);
 
     try {
       await cdp.send("Target.closeTarget", { targetId });

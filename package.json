@@ -214,7 +214,9 @@
     "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/render-keynote-grade-deck.mjs && npx tsx tools/queen/launch-spec-intelligence-studio.mjs && npx tsx tools/queen/launch-jarvis-embodied-cosmos.mjs && node tools/queen/launch-visual-observatory.mjs",
     "queen:observatory": "node tools/queen/launch-visual-observatory.mjs --open",
     "queen:spec:studio": "npx tsx tools/queen/launch-spec-intelligence-studio.mjs --open",
-    "queen:cosmos:jarvis": "npx tsx tools/queen/launch-jarvis-embodied-cosmos.mjs --open"
+    "queen:cosmos:jarvis": "npx tsx tools/queen/launch-jarvis-embodied-cosmos.mjs --open",
+    "queen:tray": "npx tsx tools/queen/launch-queen-tray.mjs",
+    "queen:void": "npx tsx tools/queen/launch-queen-tray.mjs --no-window"
   },
   "files": [
     "dist/",

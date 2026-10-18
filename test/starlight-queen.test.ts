@@ -128,5 +128,39 @@ describe("Starlight Queen Single-Operator Autonomic Engine", () => {
     assert.equal(evolved.specVersion, "2.1.0");
     assert.ok(evolved.specV2Requirements.some((r) => r.title.includes("Spec-Trace selector")));
   });
+
+  it("discovers Grok 1.0.62 OAuth session, Cloudflare Void Edge Gateway, and Whole-Machine Commander", async () => {
+    const { QueenSovereignEngine } = await import("../src/queen/sovereign-engine");
+    const engine = new QueenSovereignEngine(process.cwd());
+    const fullState = engine.getFullStateSnapshot();
+
+    assert.ok(fullState.machineCommander);
+    assert.equal(fullState.machineCommander.grokStatus.defaultModel, "grok-4.7");
+    assert.ok(
+      fullState.machineCommander.grokStatus.availableModels.some(
+        (m) => m.id === "grok-4.7-build-fast"
+      )
+    );
+    assert.ok(fullState.machineCommander.frontierModelMatrix.length >= 5);
+    assert.equal(fullState.machineCommander.githubStatus.account, "frankxai");
+
+    const spawnReceipt = engine.machineCommander.spawnAgentCliTask({
+      harness: "grok",
+      model: "grok-4.7",
+      reasoningEffort: "xhigh",
+      prompt: "Verify sovereign test suite",
+      dryRun: true,
+    });
+    assert.equal(spawnReceipt.harness, "grok");
+    assert.equal(spawnReceipt.model, "grok-4.7");
+    assert.equal(spawnReceipt.status, "COMPLETED");
+
+    const desktopReceipt = engine.machineCommander.executeDesktopAction({
+      action: "OPEN_FRAMELESS_APP",
+      dryRun: true,
+    });
+    assert.equal(desktopReceipt.ok, true);
+  });
 });
+
 

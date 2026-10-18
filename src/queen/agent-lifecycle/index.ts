@@ -11,6 +11,7 @@ export * from './providers/base.js';
 export * from './providers/codex-provider.js';
 export * from './providers/claude-provider.js';
 export * from './providers/opencode-provider.js';
+export * from './providers/grok-provider.js';
 export * from './providers/generic-provider.js';
 export * from './discovery-registry.js';
 export * from './handover-writer.js';

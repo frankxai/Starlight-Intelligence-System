@@ -11,6 +11,7 @@ import type { AgentProvider } from './providers/base.js';
 import { CodexProvider } from './providers/codex-provider.js';
 import { ClaudeProvider } from './providers/claude-provider.js';
 import { OpenCodeProvider } from './providers/opencode-provider.js';
+import { GrokProvider } from './providers/grok-provider.js';
 import { GenericProvider } from './providers/generic-provider.js';
 import { ProcessTreeManager } from './process-tree.js';
 import type {
@@ -28,7 +29,7 @@ export class AgentDiscoveryRegistry {
     this.registerProvider(new CodexProvider());
     this.registerProvider(new ClaudeProvider());
     this.registerProvider(new OpenCodeProvider());
-    this.registerProvider(new GenericProvider('grok'));
+    this.registerProvider(new GrokProvider());
     this.registerProvider(new GenericProvider('hermes'));
     this.registerProvider(new GenericProvider('antigravity'));
   }
