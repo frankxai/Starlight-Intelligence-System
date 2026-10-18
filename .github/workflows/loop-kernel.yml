@@ -89,7 +89,8 @@ jobs:
       - name: Specialist contract and identity checks
         run: |
           node scripts/build-specialist-catalog.mjs --check
-          npm run test:specialists
+          node --test test/specialist-catalog.test.mjs test/public-specialist-lineage.test.mjs
+          node --import tsx --test test/specialist-agent-loader.test.ts
 
       - name: Build
         run: npm run build

@@ -139,7 +139,7 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "setup:gemini": "pwsh ./scripts/install-gemini-mcp.ps1",
-    "agents:harness-check": "node scripts/check-agent-harness.mjs && node scripts/build-specialist-catalog.mjs --check",
+    "agents:harness-check": "node scripts/check-agent-harness.mjs",
     "upstreams:check": "node scripts/validate-upstreams.mjs",
     "mesh:generate": "node scripts/mesh-generate.mjs",
     "mesh:check": "node scripts/mesh-generate.mjs --check",
@@ -180,7 +180,7 @@
     "test:work-graph": "node --import tsx --test test/work-graph.test.ts test/work-graph-cli.test.ts test/loop-graph.test.ts test/loop-engine.test.ts test/loop-safety.test.ts test/instruction-compiler.test.ts",
     "test:graph-engineering": "node scripts/validate-graph-engineering.mjs",
     "test:community": "node --import tsx --test test/community.test.ts",
-    "test:operational": "npm run test:specialists && npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/mcp-search-scope.test.ts && node --import tsx --test test/mcp-append-provenance.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session && npm run test:sovereign",
+    "test:operational": "npm run test:community && node --import tsx --test src/adapters/adapters.test.ts && node --import tsx --test src/orchestrator.test.ts && node --import tsx --test src/temporal.test.ts && node --import tsx --test src/swarm.test.ts && node --import tsx --test src/yolo/yolo.test.ts && node --import tsx --test src/yolo/finance-bridge.test.ts && node --import tsx --test src/infra/infra.test.ts && node --import tsx --test src/finance/finance.test.ts && node --import tsx --test test/core-regressions.test.ts && node --import tsx --test test/v92-foundry.test.ts && node --import tsx --test test/mcp-server-smoke.test.ts && node --import tsx --test test/mcp-server-quality.test.ts && node --import tsx --test test/mcp-search-scope.test.ts && node --import tsx --test test/mcp-append-provenance.test.ts && node --import tsx --test test/smoke-quickstart.test.ts && node --import tsx --test test/estate-factory-smoke.test.ts && node --import tsx --test test/swarm.test.ts && node --import tsx --test test/goal.test.ts && npm run test:blueprints && npm run test:work-graph && npm run test:graph-engineering && npm run test:queen-session && npm run test:sovereign",
     "test:sovereign": "node --import tsx --test test/sovereign-durability.test.ts test/robot-continuity.test.ts test/starlight-queen.test.ts test/marketplace.test.ts test/cloud-worker-e2e.test.ts test/durability-transports.test.ts test/robotics-zenoh-bridge.test.ts test/marketplace-pack-manager.test.ts test/starlightd.test.ts",
     "test:durability": "node --import tsx --test test/sovereign-durability.test.ts test/durability-transports.test.ts",
     "test:robotics": "node --import tsx --test test/robot-continuity.test.ts test/robotics-zenoh-bridge.test.ts",
@@ -208,8 +208,7 @@
     "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "release:packages": "node scripts/publish-npm-ecosystem.mjs",
-    "test:specialists": "node --test test/specialist-catalog.test.mjs test/public-specialist-lineage.test.mjs && node --import tsx --test test/specialist-agent-loader.test.ts"
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
   },
   "files": [
     "dist/",
