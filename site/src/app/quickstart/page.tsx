@@ -142,7 +142,7 @@ export default function QuickstartPage() {
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
             Build the current source, point one MCP client at its server, and
-            confirm the 13 tools before writing your first memory.
+            inspect its tool inventory before writing your first memory.
           </p>
           <a
             href="#step-1"
@@ -170,8 +170,8 @@ node dist/cli.js init --vaults`}
         </Terminal>
         <div className="mt-5 rounded-xl border border-amber-500/[0.16] bg-amber-500/[0.05] p-5">
           <p className="text-[13px] leading-relaxed text-slate-300">
-            Distribution note: as verified on July 24, 2026, npm serves
-            v6.0.1 while this repository is v8.3.0. Use the source path above
+            Distribution note: as verified on October 18, 2026, npm serves
+            v8.5.1 while this repository is v8.5.2. Use the source path above
             for the current system.
           </p>
         </div>
@@ -232,7 +232,7 @@ node dist/cli.js init --vaults`}
           {`printf '%s\\n' '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \\
   | node /path/to/Starlight-Intelligence-System/dist/mcp-server.js
 
-# result.tools contains 13 sis_* tool definitions`}
+# result.tools contains the server's current sis_* tool definitions`}
         </Terminal>
       </section>
 

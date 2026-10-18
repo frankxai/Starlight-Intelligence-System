@@ -109,7 +109,7 @@ export default function DownloadPage() {
                 </span>
                 <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">SIP Starter Source</h3>
                 <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
-                  The v8.3.0 source is public. A checksum-backed SIP Starter
+                  The v8.5.2 source is public. A checksum-backed SIP Starter
                   archive has not been published for this version, so this
                   surface routes to source instead of manufacturing a release.
                 </p>
@@ -454,7 +454,7 @@ export default function DownloadPage() {
               Build what is current.
             </h2>
             <p className="mt-4 text-slate-400 text-sm leading-relaxed font-light">
-              Until a v8.3.0 Starter archive is published, the repository is
+              Until a v8.5.2 Starter archive is published, the repository is
               the only current distribution path.
             </p>
           </div>
@@ -477,7 +477,7 @@ node dist/cli.js init --vaults`}
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-400">
             No release page, ZIP, TAR.GZ, manifest, or checksum is claimed for
-            SIP Starter v8.3.0. The machine-readable endpoint reports the same
+            SIP Starter v8.5.2. The machine-readable endpoint reports the same
             source-only state.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
