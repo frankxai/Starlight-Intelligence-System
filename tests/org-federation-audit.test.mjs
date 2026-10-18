@@ -8,6 +8,7 @@ import { execFileSync } from 'node:child_process';
 import {
   ORG_FEDERATION_MANIFEST,
   validateVisibilityParity,
+  validateConsolidationWaveSafety,
   validateOrgBasePermission,
   writeOrgFederationHeartbeat,
   auditOrWireLocalRemotes
@@ -53,6 +54,54 @@ test('validateVisibilityParity enforces strict public/private visibility rules',
   const violation = validateVisibilityParity({ isPrivate: true }, { isPrivate: false });
   assert.equal(violation.ok, false);
   assert.match(violation.reason, /VISIBILITY_VIOLATION/);
+});
+
+test('validateConsolidationWaveSafety refuses folding active federated org repos or Wave 3 privatized repos into public destinations', () => {
+  // 1. Active federated repositories must not be subtree-folded
+  for (const protectedRepo of [
+    'starlight-voice',
+    'starlight-cosmos-engine',
+    'arcanea-studio',
+    'arcanea-ecosystem',
+    'arcanea-onchain'
+  ]) {
+    const res = validateConsolidationWaveSafety({
+      repo: protectedRepo,
+      sourceIsPrivate: false,
+      destination: 'arcanea-ai-app',
+      destinationIsPrivate: false
+    });
+    assert.equal(res.ok, false);
+    assert.match(res.reason, /FEDERATED_REPO_PROTECTED/);
+  }
+
+  // 2. Wave 3a/3b privatized repositories must not be folded into public destinations
+  const gravityViolation = validateConsolidationWaveSafety({
+    repo: 'starlight-gravity-engine',
+    sourceIsPrivate: true,
+    destination: 'Starlight-Intelligence-System',
+    destinationIsPrivate: false
+  });
+  assert.equal(gravityViolation.ok, false);
+  assert.match(gravityViolation.reason, /WAVE4_VISIBILITY_VIOLATION/);
+
+  const researchViolation = validateConsolidationWaveSafety({
+    repo: 'arcanea-ai-research',
+    sourceIsPrivate: true,
+    destination: 'arcanea-ai-app',
+    destinationIsPrivate: false
+  });
+  assert.equal(researchViolation.ok, false);
+  assert.match(researchViolation.reason, /WAVE4_VISIBILITY_VIOLATION/);
+
+  // 3. Safe non-federated public-to-public fold passes
+  const safeFold = validateConsolidationWaveSafety({
+    repo: 'arcanea-dashboard-template',
+    sourceIsPrivate: false,
+    destination: 'arcanea-ai-app',
+    destinationIsPrivate: false
+  });
+  assert.deepEqual(safeFold, { ok: true });
 });
 
 test('validateOrgBasePermission rejects default_repository_permission other than none', () => {

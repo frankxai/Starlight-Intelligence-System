@@ -62,7 +62,7 @@ export const ORG_FEDERATION_MANIFEST = [
       { name: 'arcanea-ecosystem', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'arcanea-agent-skills', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'arcanea-onchain', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'arcanea-orchestrator', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'arcanea-orchestrator', visibility: 'public', primaryOwner: 'Arcanea-Labs' },
       { name: 'AnimeLegends', visibility: 'private', primaryOwner: 'frankxai' }
     ]
   },
@@ -124,7 +124,7 @@ export const ORG_FEDERATION_MANIFEST = [
     brandId: 'ai-architect',
     governanceMode: 'active',
     repos: [
-      { name: 'ai-architect-academy', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'ai-architect-academy', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'starlight-intelligence-academy', visibility: 'private', primaryOwner: 'frankxai' }
     ]
   },
@@ -197,6 +197,36 @@ export function validateVisibilityParity(sourceRepo, orgRepo) {
     return {
       ok: false,
       reason: 'VISIBILITY_VIOLATION: private source repository cannot be mirrored to a public organization repository'
+    };
+  }
+  return { ok: true };
+}
+
+/**
+ * Guards Wave 4 subtree-fold proposals against:
+ * 1. Folding a first-class federated organization repository (in ORG_FEDERATION_MANIFEST) into a monorepo.
+ * 2. Folding a private repository (including Wave 3a/3b newly privatized repos) into a public destination.
+ * @param {{ repo: string, sourceIsPrivate: boolean, destination: string, destinationIsPrivate: boolean }} candidate
+ * @param {typeof ORG_FEDERATION_MANIFEST} [manifest]
+ */
+export function validateConsolidationWaveSafety(candidate, manifest = ORG_FEDERATION_MANIFEST) {
+  if (!candidate || !candidate.repo || !candidate.destination) {
+    return { ok: false, reason: 'candidate.repo and candidate.destination are required' };
+  }
+  const repoLower = String(candidate.repo).toLowerCase();
+  for (const org of manifest) {
+    const hit = org.repos.find((r) => r.name.toLowerCase() === repoLower);
+    if (hit) {
+      return {
+        ok: false,
+        reason: `FEDERATED_REPO_PROTECTED: '${candidate.repo}' is an active federated repository in '${org.login}/${hit.name}' and must not be subtree-folded into '${candidate.destination}'`
+      };
+    }
+  }
+  if (candidate.sourceIsPrivate && !candidate.destinationIsPrivate) {
+    return {
+      ok: false,
+      reason: `WAVE4_VISIBILITY_VIOLATION: private repo '${candidate.repo}' cannot be subtree-folded into public destination '${candidate.destination}'`
     };
   }
   return { ok: true };
