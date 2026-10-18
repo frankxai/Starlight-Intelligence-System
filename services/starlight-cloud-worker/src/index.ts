@@ -217,17 +217,10 @@ export class StarlightCloudWorker {
       halfLifeDays: req.halfLifeDays || 90,
     };
 
-    let tenantList = MEMORY_INDEX.get(tenant.tenantId);
-    if (!tenantList) {
-      tenantList = [];
-      MEMORY_INDEX.set(tenant.tenantId, tenantList);
-    }
-    tenantList.push(atom);
-
     // Persist to Edge D1 Relational SQLite if bound
     if (env?.STARLIGHT_DB) {
       try {
-        await env.STARLIGHT_DB.prepare(`
+        const persisted = await env.STARLIGHT_DB.prepare(`
           INSERT INTO memory_atoms (id, tenant_id, tier, namespace, content, metadata, tags, is_encrypted, half_life_days, created_at, updated_at)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
@@ -243,10 +236,22 @@ export class StarlightCloudWorker {
           atom.createdAt,
           atom.updatedAt
         ).run();
-      } catch (err) {
-        console.error('[STARLIGHT:D1] Failed to persist atom:', err);
+        if (persisted?.success !== true) {
+          throw new Error('Memory persistence failed.');
+        }
+      } catch {
+        throw new Error('Memory persistence failed.');
       }
     }
+
+    // Do not expose a configured write before its affirmative acknowledgement.
+    // With no D1 binding this remains the existing non-durable component mode.
+    let tenantList = MEMORY_INDEX.get(tenant.tenantId);
+    if (!tenantList) {
+      tenantList = [];
+      MEMORY_INDEX.set(tenant.tenantId, tenantList);
+    }
+    tenantList.push(atom);
 
     // Persist to Edge KV if bound
     if (env?.STARLIGHT_KV) {

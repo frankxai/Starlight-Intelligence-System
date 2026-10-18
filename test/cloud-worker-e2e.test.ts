@@ -171,3 +171,91 @@ describe('Cloud worker ingress containment (synthetic requests)', () => {
   });
 
 });
+
+import type { Env } from '../services/starlight-cloud-worker/src/index.js';
+import type { IngestionRequest, IngestionResult, QueryRequest, QueryResponse, TenantContext } from '../services/starlight-cloud-worker/src/types.js';
+
+/** Synthetic internal checks; these do not qualify protected HTTP access or durable recovery. */
+const component = StarlightCloudWorker as unknown as {
+  handleAppend(tenant: TenantContext, request: IngestionRequest, env: Env): Promise<IngestionResult>;
+  handleQuery(tenant: TenantContext, request: QueryRequest, env: Env): Promise<QueryResponse>;
+};
+let serial = 0;
+const tenant = (): TenantContext => ({
+  tenantId: `synthetic-write-ack-${serial++}`,
+  orgName: 'Synthetic fixture', plan: 'solo', quotaRemaining: 1, byovEnabled: false,
+});
+const request = { content: 'synthetic acknowledgement fixture' };
+const database = (run: () => Promise<unknown>) => ({
+  prepare() { return { bind() { return { run }; } }; },
+});
+const cachedCount = async (actor: TenantContext) =>
+  (await component.handleQuery(actor, { query: 'acknowledgement' }, {})).count;
+
+describe('Configured D1 acknowledgement ordering (synthetic component)', () => {
+  for (const [name, run] of [
+    ['throws', async () => { throw new Error('synthetic-private-provider-detail'); }],
+    ['explicit failure', async () => ({ success: false })],
+    ['undefined acknowledgement', async () => undefined],
+    ['null acknowledgement', async () => null],
+    ['empty acknowledgement', async () => ({})],
+    ['truthy nonboolean acknowledgement', async () => ({ success: 'true' })],
+  ] as const) {
+    it(`rejects ${name} before publishing caches`, async () => {
+      const actor = tenant();
+      let kvWrites = 0;
+      await assert.rejects(
+        component.handleAppend(actor, request, {
+          STARLIGHT_DB: database(run),
+          STARLIGHT_KV: { async put() { kvWrites++; } },
+        }),
+        { message: 'Memory persistence failed.' },
+      );
+      assert.equal(kvWrites, 0);
+      assert.equal(await cachedCount(actor), 0);
+    });
+  }
+
+  it('does not expose an atom while the configured write is pending', async () => {
+    const actor = tenant();
+    let acknowledge!: (value: unknown) => void;
+    let attempted!: () => void;
+    const started = new Promise<void>((resolve) => { attempted = resolve; });
+    const pending = new Promise((resolve) => { acknowledge = resolve; });
+    let kvWrites = 0;
+    const append = component.handleAppend(actor, request, {
+      STARLIGHT_DB: database(async () => { attempted(); return pending; }),
+      STARLIGHT_KV: { async put() { kvWrites++; } },
+    });
+    try {
+      await started;
+      assert.equal(await cachedCount(actor), 0);
+      assert.equal(kvWrites, 0);
+    } finally {
+      acknowledge({ success: true });
+      await append;
+    }
+    assert.equal(await cachedCount(actor), 1);
+    assert.equal(kvWrites, 1);
+  });
+
+  it('publishes an affirmed write after D1 succeeds', async () => {
+    const actor = tenant();
+    const events: string[] = [];
+    const result = await component.handleAppend(actor, request, {
+      STARLIGHT_DB: database(async () => { events.push('d1'); return { success: true }; }),
+      STARLIGHT_KV: { async put() { events.push('kv'); } },
+    });
+    assert.equal(result.success, true);
+    assert.deepEqual(events, ['d1', 'kv']);
+    assert.equal(await cachedCount(actor), 1);
+  });
+
+  it('retains the explicit no-binding in-memory component mode, not durable acceptance', async () => {
+    const actor = tenant();
+    const result = await component.handleAppend(actor, request, {});
+    assert.equal(result.success, true);
+    assert.equal(await cachedCount(actor), 1);
+  });
+});
+
