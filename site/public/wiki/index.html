@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Starlight Sovereign Wiki — DeepWiki × Unblocked × Graphiti Bi-Temporal Hub</title>
+  <meta name="description" content="Standardized interactive HTML5/SVG technical wiki, Unblocked contextual provenance inspector, Graphiti bi-temporal knowledge graph, and live 24-domain directory." />
+  <style>
+    :root {
+      --bg-0: #05070e;
+      --bg-1: #090d18;
+      --bg-2: #0f1628;
+      --bg-3: #162038;
+      --surface: rgba(15, 22, 40, 0.78);
+      --surface-hover: rgba(25, 36, 64, 0.92);
+      --border: rgba(148, 163, 184, 0.14);
+      --border-strong: rgba(56, 189, 248, 0.42);
+      --text-0: #f8fafc;
+      --text-1: #cbd5e1;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.16);
+      --emerald: #34d399;
+      --emerald-glow: rgba(52, 211, 153, 0.15);
+      --violet: #a78bfa;
+      --violet-glow: rgba(167, 139, 250, 0.16);
+      --amber: #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.15);
+      --rose: #fb7185;
+      --rose-glow: rgba(251, 113, 133, 0.15);
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg-0);
+      color: var(--text-0);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    .topbar {
+      height: 56px;
+      background: rgba(5, 7, 14, 0.9);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      position: relative;
+      z-index: 60;
+      gap: 12px;
+    }
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+    .brand-orb {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 30% 30%, var(--cyan), #2563eb 58%, #4f46e5);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 13px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--cyan-glow);
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      white-space: nowrap;
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 440px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text-0);
+      padding: 7px 64px 7px 32px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      outline: none;
+      transition: border-color 0.2s var(--ease-spring), box-shadow 0.2s var(--ease-spring);
+    }
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-glow);
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-3);
+      font-size: 12px;
+      pointer-events: none;
+    }
+    .search-kbd {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-2);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-link {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-1);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      transition: all 0.18s var(--ease-spring);
+      white-space: nowrap;
+    }
+    .top-link:hover, .top-link.primary {
+      border-color: rgba(56, 189, 248, 0.45);
+      color: var(--cyan);
+      background: var(--cyan-glow);
+    }
+    .mobile-toggle {
+      display: none;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text-0);
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* 3-Pane DeepWiki × Unblocked Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 276px minmax(0, 1fr) 368px;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    /* Left Pane: DeepWiki Standardized Tree */
+    .left-sidebar {
+      background: var(--bg-1);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 16px 12px 28px;
+      user-select: none;
+    }
+    .tree-group {
+      margin-bottom: 18px;
+    }
+    .tree-header {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-3);
+      padding: 0 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-1);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s var(--ease-spring);
+      margin-bottom: 2px;
+      gap: 8px;
+    }
+    .tree-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-0);
+    }
+    .tree-item.active {
+      background: var(--cyan-glow);
+      color: var(--cyan);
+      border-color: rgba(56, 189, 248, 0.32);
+      font-weight: 600;
+    }
+    .tree-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-2);
+      flex-shrink: 0;
+    }
+    .tree-item.active .tree-badge {
+      background: rgba(56, 189, 248, 0.22);
+      color: var(--cyan);
+    }
+
+    /* Center Pane: Interactive Wiki Canvas */
+    .center-canvas {
+      overflow-y: auto;
+      padding: 28px 36px 80px;
+      scroll-behavior: smooth;
+      background:
+        radial-gradient(900px 380px at 50% 0%, rgba(56, 189, 248, 0.07), transparent 70%),
+        var(--bg-0);
+    }
+    .wiki-article {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Breadcrumb + Hero Header */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-2);
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .breadcrumb span.sep { color: var(--text-3); }
+    .article-title {
+      font-size: clamp(22px, 2.8vw, 31px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .article-lead {
+      font-size: 14.5px;
+      color: var(--text-1);
+      margin-bottom: 18px;
+      max-width: 820px;
+    }
+
+    /* Unblocked-Style Inline Highlight Chips */
+    .ub-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 8px;
+      margin: 0 2px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      cursor: pointer;
+      transition: all 0.18s var(--ease-spring);
+      vertical-align: baseline;
+    }
+    .ub-chip::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .ub-chip.emerald {
+      background: var(--emerald-glow);
+      color: var(--emerald);
+      border-color: rgba(52, 211, 153, 0.34);
+    }
+    .ub-chip.violet {
+      background: var(--violet-glow);
+      color: var(--violet);
+      border-color: rgba(167, 139, 250, 0.34);
+    }
+    .ub-chip.amber {
+      background: var(--amber-glow);
+      color: var(--amber);
+      border-color: rgba(251, 191, 36, 0.34);
+    }
+    .ub-chip.rose {
+      background: var(--rose-glow);
+      color: var(--rose);
+      border-color: rgba(251, 113, 133, 0.34);
+    }
+    .ub-chip:hover, .ub-chip.selected {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+      border-color: var(--text-0);
+    }
+
+    /* Callout Bar */
+    .unblocked-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 15px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.11), rgba(167, 139, 250, 0.09));
+      border: 1px solid rgba(56, 189, 248, 0.26);
+      margin-bottom: 24px;
+      font-size: 12.5px;
+      color: var(--text-1);
+    }
+
+    /* Section Chapters */
+    .wiki-section {
+      margin-bottom: 44px;
+      padding-top: 8px;
+    }
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    .section-h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-prose {
+      font-size: 13.8px;
+      color: var(--text-1);
+      margin-bottom: 16px;
+    }
+
+    /* SVG Interactive Box */
+    .svg-frame {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px 0 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38);
+      overflow: hidden;
+    }
+    .svg-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .svg-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-0);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scrubber-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .epoch-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.18s var(--ease-spring);
+    }
+    .epoch-btn:hover { color: var(--text-0); }
+    .epoch-btn.active {
+      background: var(--cyan-glow);
+      color: var(--cyan);
+      border-color: var(--cyan);
+      font-weight: 600;
+    }
+    .svg-canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .svg-node {
+      cursor: pointer;
+      transition: transform 0.22s var(--ease-spring), filter 0.22s var(--ease-spring);
+    }
+    .svg-node:hover {
+      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.55));
+    }
+    .svg-node.pulse-highlight rect, .svg-node.pulse-highlight circle {
+      stroke-width: 2.8px !important;
+      filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.85));
+    }
+
+    /* Tables & Cards */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-1);
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-2);
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+      color: var(--text-1);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr.interactive-row {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    tr.interactive-row:hover {
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .status-pill.ok { background: var(--emerald-glow); color: var(--emerald); border: 1px solid rgba(52, 211, 153, 0.3); }
+    .status-pill.warn { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(251, 191, 36, 0.3); }
+    .status-pill.superseded { background: var(--rose-glow); color: var(--rose); border: 1px solid rgba(251, 113, 133, 0.3); text-decoration: line-through; }
+    .status-pill.info { background: var(--cyan-glow); color: var(--cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .wiki-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      transition: all 0.2s var(--ease-spring);
+      cursor: pointer;
+    }
+    .wiki-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      background: var(--surface-hover);
+    }
+    .wiki-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .wiki-card p {
+      font-size: 12.5px;
+      color: var(--text-2);
+      margin-bottom: 10px;
+    }
+    .meta-line {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ext-link {
+      color: var(--cyan);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+    }
+    .ext-link:hover { text-decoration: underline; }
+
+    /* Right Pane: Unblocked Contextual Provenance & Bi-Temporal Inspector */
+    .right-inspector {
+      background: var(--bg-1);
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 18px 16px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .inspector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inspector-kicker {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .inspector-kicker .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .inspector-card {
+      background: var(--bg-2);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      transition: all 0.25s var(--ease-spring);
+    }
+    .inspector-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 6px 0 8px;
+      color: var(--text-0);
+    }
+    .inspector-body {
+      font-size: 12.5px;
+      color: var(--text-1);
+      margin-bottom: 12px;
+    }
+    .kv-list {
+      display: grid;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .kv-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .kv-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
+    }
+    .kv-val {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-0);
+      word-break: break-word;
+    }
+    .kv-val.superseded-box {
+      background: rgba(251, 113, 133, 0.09);
+      border-left: 2px solid var(--rose);
+      padding: 6px 8px;
+      border-radius: 4px;
+      color: #fda4af;
+      font-family: var(--font-sans);
+      font-size: 12px;
+    }
+    .copy-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s var(--ease-spring);
+    }
+    .copy-btn:hover {
+      background: rgba(56, 189, 248, 0.24);
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 240px minmax(0, 1fr) 320px;
+      }
+    }
+    @media (max-width: 960px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .left-sidebar {
+        display: none;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        width: 280px;
+        z-index: 70;
+        box-shadow: 12px 0 32px rgba(0, 0, 0, 0.65);
+      }
+      .left-sidebar.open { display: block; }
+      .right-inspector {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 44vh;
+        z-index: 65;
+        border-left: none;
+        border-top: 1px solid var(--border-strong);
+        box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.65);
+      }
+      .center-canvas {
+        padding: 20px 16px 46vh;
+      }
+      .mobile-toggle { display: inline-flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION -->
+  <header class="topbar">
+    <div class="brand-cluster">
+      <button class="mobile-toggle" id="sidebarToggle" aria-label="Toggle Wiki Tree">☰ Index</button>
+      <div class="brand-orb">✦</div>
+      <div>
+        <div class="brand-title">Starlight Sovereign Wiki</div>
+      </div>
+      <span class="brand-tag">DeepWiki × Unblocked × Graphiti v2.4</span>
+    </div>
+
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="wikiSearch" class="search-input" placeholder="Filter 10 ADRs, 24 domains, 5 studios, 22 Graphiti facts..." />
+      <span class="search-kbd">⌘K</span>
+    </div>
+
+    <div class="top-actions">
+      <a href="/atlas/index.html" class="top-link">⇄ Interactive Atlas</a>
+      <a href="/llms.txt" class="top-link">llms.txt</a>
+      <a href="https://starlightintelligence.org/docs" target="_blank" rel="noopener" class="top-link primary">Live Docs ↗</a>
+    </div>
+  </header>
+
+  <!-- 3-PANE DEEPWIKI × UNBLOCKED WORKSPACE -->
+  <div class="workspace">
+
+    <!-- LEFT RAIL: DEEPWIKI STANDARDIZED TREE -->
+    <aside class="left-sidebar" id="leftSidebar">
+      <div class="tree-group">
+        <div class="tree-header"><span>01 · Architecture & ADRs</span><span>10</span></div>
+        <button class="tree-item active" onclick="scrollToSection('sec-overview', this)">
+          <span>Sovereign Substrate Overview</span><span class="tree-badge">SIP</span>
+        </button>
+        <button class="tree-item" onclick="scrollToSection('sec-adrs', this)">
+          <span>10 Portfolio ADRs & Runtime</span><span class="tree-badge">ADR 1-10</span>
+        </button>
+      </div>
+
+      <div class="tree-group">
+        <div class="tree-header"><span>02 · Bi-Temporal Graphiti</span><span>22</span></div>
+        <button class="tree-item" onclick="scrollToSection('sec-graphiti', this)">
+          <span>Time-Travel Graph Explorer</span><span class="tree-badge">SVG</span>
+        </button>
+        <button class="tree-item" onclick="scrollToSection('sec-ledger', this)">
+          <span>Temporal Fact Spine Ledger</span><span class="tree-badge">14/8</span>
+        </button>
+      </div>
+
+      <div class="tree-group">
+        <div class="tree-header"><span>03 · Live Sites & Domains</span><span>24</span></div>
+        <button class="tree-item" onclick="scrollToSection('sec-domains', this)">
+          <span>24 Domains & Live HTTP Audit</span><span class="tree-badge">200 OK</span>
+        </button>
+        <button class="tree-item" onclick="scrollToSection('sec-brands', this)">
+          <span>13 Brands & 3 Dutch B.V.s</span><span class="tree-badge">SSOT</span>
+        </button>
+      </div>
+
+      <div class="tree-group">
+        <div class="tree-header"><span>04 · Studios & Release Train</span><span>15</span></div>
+        <button class="tree-item" onclick="scrollToSection('sec-studios', this)">
+          <span>5 Federated Product Studios</span><span class="tree-badge">5</span>
+        </button>
+        <button class="tree-item" onclick="scrollToSection('sec-skus', this)">
+          <span>10 Official SKUs & Funnels</span><span class="tree-badge">10</span>
+        </button>
+      </div>
+
+      <div class="tree-group">
+        <div class="tree-header"><span>05 · Orgs & Docs Stack</span><span>96</span></div>
+        <button class="tree-item" onclick="scrollToSection('sec-orgs', this)">
+          <span>10 GitHub Orgs & DeepWikis</span><span class="tree-badge">96 Repos</span>
+        </button>
+        <button class="tree-item" onclick="scrollToSection('sec-blueprint', this)">
+          <span>Internal vs External Wiki Stack</span><span class="tree-badge">$0 Edge</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- CENTER PANE: INTERACTIVE DOCUMENTATION + INLINE UNBLOCKED CHIPS + SVG SCHEMATICS -->
+    <main class="center-canvas" id="centerCanvas">
+      <article class="wiki-article">
+
+        <!-- HERO -->
+        <div class="breadcrumb">
+          <span>frankxai / Starlight-Intelligence-System</span>
+          <span class="sep">/</span>
+          <span>Sovereign Wiki</span>
+          <span class="sep">/</span>
+          <span style="color:var(--emerald)">Verified 2026-10-18 · Turn-0 Compiled (2,057 tokens)</span>
+        </div>
+        <h1 class="article-title">Starlight Sovereign Technical Wiki & Provenance Hub</h1>
+        <p class="article-lead">
+          Engineered with <button class="ub-chip" onclick="inspectEntity('deepwiki-pattern')">DeepWiki Orderliness</button>,
+          <button class="ub-chip emerald" onclick="inspectEntity('unblocked-provenance')">Unblocked Contextual Provenance</button>, and our
+          <button class="ub-chip violet" onclick="inspectEntity('temporal-fact-spine')">Graphiti Bi-Temporal Fact Spine</button>.
+          Hover or click any highlighted chip or vector node to inspect its exact YAML/TypeScript source, git commit receipt, active validity window (<code>t_valid</code>), and superseded misconceptions (<code>t_invalid</code>).
+        </p>
+
+        <div class="unblocked-banner">
+          <div>
+            <strong>Interactive Unblocked Mode Active:</strong> Click any inline badge (like
+            <button class="ub-chip" onclick="inspectEntity('adr-02')">ADR-02: Vercel Plane</button>,
+            <button class="ub-chip emerald" onclick="inspectEntity('adr-03')">ADR-03: Cloudflare DO</button>, or
+            <button class="ub-chip rose" onclick="inspectEntity('fact-mcp-pollution')">Superseded: 13-MCP Bloat</button>)
+            to open its bi-temporal provenance in the Right Inspector and highlight its architecture node.
+          </div>
+        </div>
+
+        <!-- SECTION 1: OVERVIEW & HYBRID RUNTIME SCHEMATIC -->
+        <section class="wiki-section" id="sec-overview">
+          <div class="section-kicker">01 · System Architecture & Authority Model</div>
+          <h2 class="section-h2">Hybrid Sovereign Architecture: GitHub Authority × Vercel × Cloudflare × Local Spine</h2>
+          <p class="section-prose">
+            Per <button class="ub-chip" onclick="inspectEntity('adr-01')">ADR-01: Authority Model</button>, the GitHub-governed Empire Registry
+            (<code>frankxai/agentic-ops/registry/*.yaml</code>) is the single canonical authority across all 3 Dutch B.V. entities, 13 brands, 5 specialist studios, and 24 domains.
+            Customer-facing web applications run on the <button class="ub-chip" onclick="inspectEntity('adr-02')">ADR-02: Vercel Experience Plane</button>,
+            long-lived stateful entities run on <button class="ub-chip emerald" onclick="inspectEntity('adr-03')">ADR-03: Cloudflare Durable Objects</button>,
+            media assets flow through <button class="ub-chip violet" onclick="inspectEntity('adr-06')">ADR-06: Media Fabric v2</button>,
+            and local multi-harness agents share the <button class="ub-chip amber" onclick="inspectEntity('shared-tool-plane')">Shared Tool Plane (:7317)</button>
+            and <button class="ub-chip" onclick="inspectEntity('langfuse-spooler')">Langfuse OTLP Spooler</button>.
+          </p>
+
+          <!-- SVG 1: VERCEL × CLOUDFLARE × GITHUB × LOCAL SPINE -->
+          <div class="svg-frame">
+            <div class="svg-toolbar">
+              <div class="svg-title">
+                <span>⬡ Interactive Vector Schematic — 4-Plane Sovereign Architecture (Click any node)</span>
+              </div>
+              <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-2);">
+                Zero-Compute Static SVG · 60fps Hardware Accelerated
+              </div>
+            </div>
+            <svg class="svg-canvas" viewBox="0 0 920 370" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gradCyan" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#1e293b" stop-opacity="0.85"/>
+                </linearGradient>
+                <linearGradient id="gradEmerald" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#10b981" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#1e293b" stop-opacity="0.85"/>
+                </linearGradient>
+                <linearGradient id="gradViolet" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#1e293b" stop-opacity="0.85"/>
+                </linearGradient>
+                <linearGradient id="gradAmber" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#1e293b" stop-opacity="0.85"/>
+                </linearGradient>
+                <marker id="arrowCyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+                </marker>
+                <marker id="arrowEmerald" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+                </marker>
+              </defs>
+
+              <!-- Background Grid -->
+              <g stroke="rgba(148,163,184,0.06)" stroke-width="1">
+                <line x1="0" y1="60" x2="920" y2="60"/><line x1="0" y1="140" x2="920" y2="140"/>
+                <line x1="0" y1="220" x2="920" y2="220"/><line x1="0" y1="300" x2="920" y2="300"/>
+                <line x1="230" y1="0" x2="230" y2="370"/><line x1="460" y1="0" x2="460" y2="370"/><line x1="690" y1="0" x2="690" y2="370"/>
+              </g>
+
+              <!-- Connecting Flow Lines -->
+              <path d="M 225 85 L 265 85" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+              <path d="M 455 85 L 495 85" stroke="#34d399" stroke-width="2" marker-end="url(#arrowEmerald)"/>
+              <path d="M 685 85 L 725 85" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrowCyan)"/>
+              <path d="M 125 145 L 125 205" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arrowCyan)"/>
+              <path d="M 360 145 L 360 205" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arrowEmerald)"/>
+              <path d="M 590 145 L 590 205" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arrowCyan)"/>
+              <path d="M 810 145 L 810 205" stroke="#34d399" stroke-width="1.8" stroke-dasharray="4 4" marker-end="url(#arrowEmerald)"/>
+
+              <!-- Node 1: GitHub Authority Plane -->
+              <g class="svg-node" data-node="adr-01" onclick="inspectEntity('adr-01')">
+                <rect x="20" y="25" width="205" height="120" rx="12" fill="url(#gradCyan)" stroke="#38bdf8" stroke-width="1.6"/>
+                <text x="36" y="50" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">PLANE 01 · ADR-01</text>
+                <text x="36" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">GitHub Empire Registry</text>
+                <text x="36" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">agentic-ops/registry/*.yaml</text>
+                <text x="36" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">10 Orgs · 13 Brands · 5 Studios</text>
+                <text x="36" y="131" fill="#34d399" font-family="monospace" font-size="10.5">● Canonical SSOT (PR-Gated)</text>
+              </g>
+
+              <!-- Node 2: Vercel Experience Plane -->
+              <g class="svg-node" data-node="adr-02" onclick="inspectEntity('adr-02')">
+                <rect x="265" y="25" width="190" height="120" rx="12" fill="url(#gradEmerald)" stroke="#34d399" stroke-width="1.6"/>
+                <text x="281" y="50" fill="#34d399" font-family="monospace" font-size="10.5" font-weight="700">PLANE 02 · ADR-02 &amp; 06</text>
+                <text x="281" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">Vercel Experience Plane</text>
+                <text x="281" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">Next.js + AI SDK + Blob</text>
+                <text x="281" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">frankx.ai · arcanea · sis.org</text>
+                <text x="281" y="131" fill="#34d399" font-family="monospace" font-size="10.5">● 200 OK Edge Delivery</text>
+              </g>
+
+              <!-- Node 3: Cloudflare Durable Entity Plane -->
+              <g class="svg-node" data-node="adr-03" onclick="inspectEntity('adr-03')">
+                <rect x="495" y="25" width="190" height="120" rx="12" fill="url(#gradViolet)" stroke="#a78bfa" stroke-width="1.6"/>
+                <text x="511" y="50" fill="#a78bfa" font-family="monospace" font-size="10.5" font-weight="700">PLANE 03 · ADR-03 &amp; 04</text>
+                <text x="511" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">Cloudflare Agents + DO</text>
+                <text x="511" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">SQLite DO + CF Workflows</text>
+                <text x="511" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">Starlings · Queens · R2 Media</text>
+                <text x="511" y="131" fill="#a78bfa" font-family="monospace" font-size="10.5">● Stateful Entity Hibernation</text>
+              </g>
+
+              <!-- Node 4: Sovereign Local & Memory Spine -->
+              <g class="svg-node" data-node="temporal-fact-spine" onclick="inspectEntity('temporal-fact-spine')">
+                <rect x="725" y="25" width="175" height="120" rx="12" fill="url(#gradAmber)" stroke="#fbbf24" stroke-width="1.6"/>
+                <text x="741" y="50" fill="#fbbf24" font-family="monospace" font-size="10.5" font-weight="700">PLANE 04 · SIS v6</text>
+                <text x="741" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">Bi-Temporal Spine</text>
+                <text x="741" y="94" fill="#cbd5e1" font-family="monospace" font-size="11">Graphiti + SQLite FTS5</text>
+                <text x="741" y="113" fill="#94a3b8" font-family="sans-serif" font-size="11">22 Temporal Facts · 6 Vaults</text>
+                <text x="741" y="131" fill="#fbbf24" font-family="monospace" font-size="10.5">● t_valid / t_invalid</text>
+              </g>
+
+              <!-- Bottom Row: Execution & Governance Primitives -->
+              <g class="svg-node" data-node="turn-0-compiler" onclick="inspectEntity('turn-0-compiler')">
+                <rect x="20" y="210" width="205" height="130" rx="12" fill="#0f172a" stroke="rgba(56,189,248,0.4)" stroke-width="1.4"/>
+                <text x="36" y="236" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">BOOT · estate#54</text>
+                <text x="36" y="258" fill="#f8fafc" font-family="sans-serif" font-size="13.5" font-weight="700">Turn-0 Core Compiler</text>
+                <text x="36" y="279" fill="#cbd5e1" font-family="monospace" font-size="11">2,057 tokens (&lt; 2,500 cap)</text>
+                <text x="36" y="299" fill="#94a3b8" font-family="sans-serif" font-size="11">8 Harnesses · GEMINI.md synced</text>
+                <text x="36" y="320" fill="#34d399" font-family="monospace" font-size="10.5">✓ 0 Turn-0 Drift</text>
+              </g>
+
+              <g class="svg-node" data-node="shared-tool-plane" onclick="inspectEntity('shared-tool-plane')">
+                <rect x="265" y="210" width="190" height="130" rx="12" fill="#0f172a" stroke="rgba(52,211,153,0.4)" stroke-width="1.4"/>
+                <text x="281" y="236" fill="#34d399" font-family="monospace" font-size="10.5" font-weight="700">MCP · memory#41</text>
+                <text x="281" y="258" fill="#f8fafc" font-family="sans-serif" font-size="13.5" font-weight="700">Shared Tool Plane</text>
+                <text x="281" y="279" fill="#cbd5e1" font-family="monospace" font-size="11">http://127.0.0.1:7317</text>
+                <text x="281" y="299" fill="#94a3b8" font-family="sans-serif" font-size="11">4/4 Backends · ~48MB RAM</text>
+                <text x="281" y="320" fill="#34d399" font-family="monospace" font-size="10.5">✓ Saves 1.8GB Node Bloat</text>
+              </g>
+
+              <g class="svg-node" data-node="langfuse-spooler" onclick="inspectEntity('langfuse-spooler')">
+                <rect x="495" y="210" width="190" height="130" rx="12" fill="#0f172a" stroke="rgba(167,139,250,0.4)" stroke-width="1.4"/>
+                <text x="511" y="236" fill="#a78bfa" font-family="monospace" font-size="10.5" font-weight="700">OTLP · config#128</text>
+                <text x="511" y="258" fill="#f8fafc" font-family="sans-serif" font-size="13.5" font-weight="700">Infisical EU × Langfuse</text>
+                <text x="511" y="279" fill="#cbd5e1" font-family="monospace" font-size="11">langfuse_spool.cjs</text>
+                <text x="511" y="299" fill="#94a3b8" font-family="sans-serif" font-size="11">Zero-Loss JSONL Spooler</text>
+                <text x="511" y="320" fill="#a78bfa" font-family="monospace" font-size="10.5">✓ ADR-07 &amp; ADR-08 Wired</text>
+              </g>
+
+              <g class="svg-node" data-node="deepwiki-pattern" onclick="inspectEntity('deepwiki-pattern')">
+                <rect x="725" y="210" width="175" height="130" rx="12" fill="#0f172a" stroke="rgba(251,191,36,0.4)" stroke-width="1.4"/>
+                <text x="741" y="236" fill="#fbbf24" font-family="monospace" font-size="10.5" font-weight="700">DOCS · SIS#452</text>
+                <text x="741" y="258" fill="#f8fafc" font-family="sans-serif" font-size="13.5" font-weight="700">Sovereign Wiki + Atlas</text>
+                <text x="741" y="279" fill="#cbd5e1" font-family="monospace" font-size="11">/wiki + /atlas + /llms.txt</text>
+                <text x="741" y="299" fill="#94a3b8" font-family="sans-serif" font-size="11">HTML5/SVG · Mobile LAN</text>
+                <text x="741" y="320" fill="#fbbf24" font-family="monospace" font-size="10.5">✓ $0 Compute Edge Asset</text>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <!-- SECTION 2: 10 ACCEPTED PORTFOLIO ADRs -->
+        <section class="wiki-section" id="sec-adrs">
+          <div class="section-kicker">01.B · Canonical Architecture Decisions</div>
+          <h2 class="section-h2">All 10 Accepted Portfolio ADRs (<code>registry/architecture_decisions.yaml</code>)</h2>
+          <p class="section-prose">
+            Every engineering choice across our websites, agent runtimes, media pipelines, and studios is governed by these 10 accepted decisions. Click any ADR row to inspect its full provenance, boundaries, and superseded legacy assumptions in the Right Rail.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ADR ID</th>
+                  <th>Decision Title</th>
+                  <th>Canonical Stack & Boundary</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adrTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SECTION 3: GRAPHITI BI-TEMPORAL KNOWLEDGE GRAPH EXPLORER -->
+        <section class="wiki-section" id="sec-graphiti">
+          <div class="section-kicker">02 · Graphiti Bi-Temporal Context & Provenance Engine</div>
+          <h2 class="section-h2">Interactive Bi-Temporal Knowledge Graph & Time-Travel Scrubber</h2>
+          <p class="section-prose">
+            Standard RAG vector databases fail in fast-moving multi-agent estates because they retrieve outdated markdown handovers with high cosine similarity.
+            Our <button class="ub-chip violet" onclick="inspectEntity('temporal-fact-spine')">TemporalFactSpine (src/memory/temporal-spine.ts)</button> implements
+            <strong>Graphiti's 3-Subgraph Bi-Temporal Architecture</strong> directly on our zero-dependency SQLite/JSONL substrate:
+            <strong>Episodic Nodes</strong> (PRs, commits, handovers) → <strong>Semantic Entity Nodes</strong> (Repos, Harnesses, Studios, Daemons) →
+            <strong>Bi-Temporal Fact Edges</strong> carrying 4 timestamps (<code>t_valid</code>, <code>t_invalid</code>, <code>t_created</code>, <code>t_expired</code>).
+          </p>
+
+          <!-- SVG 2: INTERACTIVE TIME-TRAVEL GRAPHITI EXPLORER -->
+          <div class="svg-frame">
+            <div class="svg-toolbar">
+              <div class="svg-title">
+                <span>⏱ Bi-Temporal Knowledge Graph — Scrub Epoch to Watch Stale Assumptions Flip:</span>
+              </div>
+              <div class="scrubber-controls" id="epochButtons">
+                <button class="epoch-btn" onclick="setGraphEpoch('2026-03')">Mar 2026 (Legacy)</button>
+                <button class="epoch-btn" onclick="setGraphEpoch('2026-08')">Aug 2026 (Mid-Migration)</button>
+                <button class="epoch-btn active" onclick="setGraphEpoch('2026-10-18')">Oct 18, 2026 (Live Truth)</button>
+              </div>
+            </div>
+            <svg class="svg-canvas" id="graphitiSvg" viewBox="0 0 920 340" xmlns="http://www.w3.org/2000/svg">
+              <!-- Dynamic SVG rendered by JS based on selected epoch -->
+            </svg>
+            <div id="epochSummaryBar" style="margin-top:10px;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.03);font-family:var(--font-mono);font-size:11.5px;color:var(--text-1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            </div>
+          </div>
+
+          <div id="sec-ledger" style="margin-top:24px;">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:8px;">Bi-Temporal Fact Spine Ledger (14 Active Truths + 8 Superseded Misconceptions)</h3>
+            <p class="section-prose">
+              Stored in <code>memory/vaults/temporal-facts.jsonl</code> and queried via <code>TemporalFactSpine.asOf(timestamp)</code>. Click any fact to inspect its exact invalidation commit and replacement edge.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fact ID</th>
+                    <th>Subject → Predicate → Object</th>
+                    <th>t_valid</th>
+                    <th>t_invalid</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody id="factsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: LIVE SITES, 24 DOMAINS & 13 BRANDS DIRECTORY -->
+        <section class="wiki-section" id="sec-domains">
+          <div class="section-kicker">03 · Complete Public & Internal Surface Map</div>
+          <h2 class="section-h2">All 24 Owned Domains, Live HTTP Status, Repos & Docs Directory</h2>
+          <p class="section-prose">
+            Every domain in <code>registry/domains.yaml</code> mapped to its brand, canonical GitHub repository, live HTTP status (probed 2026-10-18), public documentation surface, and DeepWiki architectural mirror.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Domain (Clickable)</th>
+                  <th>Brand & Role</th>
+                  <th>HTTP Status</th>
+                  <th>Canonical Repo & DeepWiki</th>
+                  <th>Target Internal / External Docs Surface</th>
+                </tr>
+              </thead>
+              <tbody id="domainsTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="sec-brands" style="margin-top:28px;">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:10px;">3 Dutch B.V. Entities & 13 Active Brands (No Freezes Directive)</h3>
+            <div class="grid-2" id="brandsGrid"></div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: 5 SPECIALIST STUDIOS & 10-SKU RELEASE TRAIN -->
+        <section class="wiki-section" id="sec-studios">
+          <div class="section-kicker">04 · Federated Product Studios & Commercial SKUs</div>
+          <h2 class="section-h2">5 Specialist Product Studios × 10 Official SKUs (<code>product_studios.yaml</code>)</h2>
+          <p class="section-prose">
+            Governed by <button class="ub-chip" onclick="inspectEntity('adr-10')">ADR-10: 5 Federated Studios</button> and the
+            <code>starlight-product-studios</code> plugin. Each product is authored once as a canonical domain spec and compiled into channel-specific formats (Next.js route, LemonSqueezy/Stripe checkout, EPUB/PDF, MCP pack, or World Seed).
+          </p>
+          <div class="grid-2" id="studiosGrid"></div>
+
+          <div id="sec-skus" style="margin-top:26px;">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:10px;">10 Canonical Product Releases (<code>registry/product_releases.yaml</code>)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>SKU ID</th>
+                    <th>Product Name & Brand</th>
+                    <th>Studio & Lane</th>
+                    <th>Formats & Channels</th>
+                    <th>Proof Gate</th>
+                  </tr>
+                </thead>
+                <tbody id="skusTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: 10 GITHUB ORGS & INTERNAL/EXTERNAL DOCS STACK -->
+        <section class="wiki-section" id="sec-orgs">
+          <div class="section-kicker">05 · GitHub Federation & Documentation Architecture</div>
+          <h2 class="section-h2">10 Federated GitHub Orgs (`96` Public Repos) + Wave 4 Migration Safety</h2>
+          <p class="section-prose">
+            Protected by <button class="ub-chip emerald" onclick="inspectEntity('sis-451-guard')">SIS#451 Wave 4 Transfer Guard</button>:
+            repositories are classified into <code>already-migrated</code>, <code>ready-for-org-transfer</code>, and <code>blocked-has-live-worktree</code> so no active local checkout is ever broken by a remote GitHub org transfer. Every public repository automatically gets an instant external architectural mirror at <code>https://deepwiki.com/&lt;org&gt;/&lt;repo&gt;</code> alongside our sovereign HTML5/SVG wikis.
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>GitHub Organization</th>
+                  <th>Public Repos</th>
+                  <th>Domain Focus & Flagships</th>
+                  <th>GitHub Org & DeepWiki Index</th>
+                </tr>
+              </thead>
+              <tbody id="orgsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SECTION 7: INTERNAL VS EXTERNAL DOCS BLUEPRINT -->
+        <section class="wiki-section" id="sec-blueprint">
+          <div class="section-kicker">06 · Sovereign Documentation & Aesthetic Standard</div>
+          <h2 class="section-h2">What Is Live Where & What We Aim For (Internal vs External Experience)</h2>
+          <div class="grid-2">
+            <div class="wiki-card" onclick="inspectEntity('internal-wiki-standard')">
+              <h3><span>1. Internal Sovereign Cockpit (Frank & 8 Agent Harnesses)</span><span class="status-pill ok">LIVE NOW</span></h3>
+              <p>
+                <strong>Surface:</strong> <code>/wiki/index.html</code> + <code>/atlas/index.html</code> + <code>/llms.txt</code> served locally on port <code>4321</code> (Desktop + Mobile Wi-Fi LAN + Tailscale) and deployed on <code>starlightintelligence.org</code>.
+              </p>
+              <div class="meta-line">
+                <span>• Unblocked inline provenance</span>
+                <span>• Graphiti time-travel scrubber</span>
+                <span>• $0 static HTML5/SVG</span>
+              </div>
+            </div>
+            <div class="wiki-card" onclick="inspectEntity('external-docs-standard')">
+              <h3><span>2. External Public Docs & Developer Portals</span><span class="status-pill info">TARGET STANDARD</span></h3>
+              <p>
+                <strong>Surface:</strong> <code>starlightintelligence.org/docs</code> (SIP & Memory), <code>frankx.ai/blueprint</code> (Enterprise AI Reference Architectures), <code>arcanea.ai/lore</code> (World Canon), plus <code>deepwiki.com/frankxai/*</code> for OSS repos.
+              </p>
+              <div class="meta-line">
+                <span>• Next.js + Fumadocs / MDX</span>
+                <span>• Embedded interactive SVGs</span>
+                <span>• Auto-compiled from YAML SSOT</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </main>
+
+    <!-- RIGHT RAIL: UNBLOCKED CONTEXTUAL PROVENANCE & BI-TEMPORAL INSPECTOR -->
+    <aside class="right-inspector" id="rightInspector">
+      <div class="inspector-header">
+        <div class="inspector-kicker">
+          <span class="live-dot"></span>
+          <span>Unblocked × Graphiti Inspector</span>
+        </div>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);">Click any chip/node</span>
+      </div>
+
+      <div class="inspector-card" id="inspectorCard">
+        <!-- Populated dynamically by inspectEntity() -->
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:12px;">
+        <div class="tree-header" style="padding-left:0;"><span>Quick Live Endpoints</span><span>Verified</span></div>
+        <div style="display:grid;gap:6px;font-family:var(--font-mono);font-size:11px;">
+          <a href="/atlas/index.html" class="ext-link">→ /atlas/index.html (6-Tab Master Atlas)</a>
+          <a href="/wiki/index.html" class="ext-link">→ /wiki/index.html (This Sovereign Wiki)</a>
+          <a href="/llms.txt" class="ext-link">→ /llms.txt (Agent Context Index)</a>
+          <a href="https://starlightintelligence.org/docs" target="_blank" rel="noopener" class="ext-link">→ starlightintelligence.org/docs (200 OK)</a>
+          <a href="https://www.frankx.ai/blog" target="_blank" rel="noopener" class="ext-link">→ www.frankx.ai/blog (200 OK)</a>
+          <a href="https://deepwiki.com/frankxai/Starlight-Intelligence-System" target="_blank" rel="noopener" class="ext-link">→ deepwiki.com/frankxai/SIS ↗</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <script>
+    // ============================================================================
+    // 1. CANONICAL ENTITY & PROVENANCE DATABASE (UNBLOCKED + GRAPHITI)
+    // ============================================================================
+    const ENTITIES = {
+      'deepwiki-pattern': {
+        badge: 'WIKI ARCHITECTURE',
+        badgeClass: 'info',
+        title: 'DeepWiki Orderliness + Sovereign Static HTML5/SVG',
+        why: 'Gives both humans (on desktop/mobile) and LLM harnesses a deterministic, hierarchical index of every repo, ADR, studio, and domain with zero vendor lock-in and $0 compute cost.',
+        source: 'site/public/wiki/index.html + site/public/atlas/index.html',
+        receipt: 'frankxai/Starlight-Intelligence-System#452',
+        tValid: '2026-10-18T19:00:00Z',
+        tInvalid: 'null (Active Canonical Surface)',
+        superseded: 'Scattered markdown files across 80+ repos without visual schematics or bi-temporal validity checks.',
+        cli: 'curl -I http://localhost:4321/wiki/index.html'
+      },
+      'unblocked-provenance': {
+        badge: 'PROVENANCE UX',
+        badgeClass: 'ok',
+        title: 'Unblocked-Style Contextual Provenance Inspector',
+        why: 'Inspired by getunblocked.com: every architectural claim in prose is linked directly to the PR, commit SHA, YAML registry, and superseded historical assumption so engineers and agents never guess why code exists.',
+        source: 'src/memory/temporal-spine.ts + memory/vaults/temporal-facts.jsonl',
+        receipt: 'frankxai/Starlight-Intelligence-System#452 (18e2c9fa7)',
+        tValid: '2026-10-18T15:00:00Z',
+        tInvalid: 'null (Active Standard)',
+        superseded: 'Static documentation where claims had no commit receipt or invalidation timestamp.',
+        cli: 'node --test tests/temporal-spine.test.mjs'
+      },
+      'temporal-fact-spine': {
+        badge: 'GRAPHITI ENGINE · ACTIVE',
+        badgeClass: 'ok',
+        title: 'Bi-Temporal Fact Spine (Graphiti Architecture on SQLite/JSONL)',
+        why: 'Tracks both transactional time (t_created, t_expired) and world validity time (t_valid, t_invalid). When a new PR supersedes an old architecture, the old fact edge is marked t_invalid instead of deleted—enabling point-in-time queries and zero stale-RAG hallucination.',
+        source: 'src/memory/temporal-spine.ts + src/memory/seed-estate-facts.ts',
+        receipt: 'frankxai/Starlight-Intelligence-System#452 (18e2c9fa7)',
+        tValid: '2026-10-18T14:20:00Z',
+        tInvalid: 'null (22 Seeded Estate Facts: 14 Valid, 8 Superseded)',
+        superseded: 'Flat vector/FTS recall that returned obsolete Sept/early-Oct handovers alongside current truth.',
+        cli: 'npx tsx src/memory/seed-estate-facts.ts'
+      },
+      'adr-01': {
+        badge: 'ADR-01 · ACCEPTED',
+        badgeClass: 'info',
+        title: 'Portfolio Authority Model (GitHub Empire Registry)',
+        why: 'GitHub-governed YAML registry in frankxai/agentic-ops/registry/*.yaml is the single canonical authority. Notion is human operating projection; Google Drive is working evidence; Starlight Memory is semantic read projection.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_authority_model',
+        receipt: 'frankxai/agentic-ops (Registry v1)',
+        tValid: '2026-10-01T00:00:00Z',
+        tInvalid: 'null (Active Portfolio Law)',
+        superseded: 'Ad-hoc Notion tables or local markdown files acting as competing sources of truth.',
+        cli: 'git -C C:/Users/frank/starlight/repos/agentic-ops log -n 3 registry/'
+      },
+      'adr-02': {
+        badge: 'ADR-02 · ACCEPTED',
+        badgeClass: 'ok',
+        title: 'Vercel Experience Plane (Next.js + AI SDK + AI Gateway)',
+        why: 'All customer-facing websites, creator portals, and app frontends default to Vercel + Next.js App Router + Vercel AI SDK + Vercel AI Gateway for sub-50ms edge delivery and preview-gated CI.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_experience_plane',
+        receipt: 'frankxai/agentic-ops/registry/architecture_decisions.yaml',
+        tValid: '2026-10-01T00:00:00Z',
+        tInvalid: 'null (Active Default Plane)',
+        superseded: 'Fragmented hosting across unmonitored VPS instances for marketing and docs sites.',
+        cli: 'curl -I https://starlightintelligence.org'
+      },
+      'adr-03': {
+        badge: 'ADR-03 · ACCEPTED',
+        badgeClass: 'ok',
+        title: 'Persistent Entity Runtime (Cloudflare Agents + SQLite Durable Objects)',
+        why: 'Long-lived addressable stateful entities (Starlings, Queen Coordinators, Arcanea World Actors, WebSocket rooms) run on Cloudflare Agents + SQLite-backed Durable Objects with hibernation so idle entities cost $0.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_persistent_entity_runtime',
+        receipt: 'frankxai/agentic-ops/registry/architecture_decisions.yaml',
+        tValid: '2026-10-01T00:00:00Z',
+        tInvalid: 'null (Active Stateful Runtime)',
+        superseded: 'Stateless serverless lambdas polling external databases every 5 seconds for agent state.',
+        cli: 'gh repo view frankxai/starlight-estate'
+      },
+      'adr-04': {
+        badge: 'ADR-04 · ACCEPTED',
+        badgeClass: 'info',
+        title: 'Durable Execution Boundary (Cloudflare Workflows vs Vercel Workflows)',
+        why: 'Rule: one_workflow_one_durable_orchestrator. Entity-driven and cross-brand multi-step orchestration uses Cloudflare Workflows; Next.js app-local background jobs use Vercel Workflows + Vercel Sandbox.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_durable_execution_boundary',
+        receipt: 'frankxai/agentic-ops/registry/architecture_decisions.yaml',
+        tValid: '2026-10-01T00:00:00Z',
+        tInvalid: 'null (Active Boundary)',
+        superseded: 'Nested dual-orchestrators or fragile local Windows sleep loops.',
+        cli: 'python C:/Users/frank/starlight/tools/starlight_ops.py status'
+      },
+      'adr-05': {
+        badge: 'ADR-05 · ACCEPTED',
+        badgeClass: 'info',
+        title: 'Managed Agent Delegation (Stateless Workers, Never Canonical Identity)',
+        why: 'Claude Managed Agents, OpenAI Agents SDK, and Google Jules (frankxai/Starlight-Intelligence-System#434) operate as delegated execution workers on isolated branches—never holding canonical identity or bypassing Maker/Checker PR gates.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_managed_agent_delegation',
+        receipt: 'frankxai/Starlight-Intelligence-System#434',
+        tValid: '2026-10-09T00:00:00Z',
+        tInvalid: 'null (Active Cloud Worker Law)',
+        superseded: 'Unbounded background cloud loops pushing directly to main without verifier receipts.',
+        cli: 'gh issue view 434 --repo frankxai/Starlight-Intelligence-System'
+      },
+      'adr-06': {
+        badge: 'ADR-06 · ACCEPTED',
+        badgeClass: 'ok',
+        title: 'Vercel-First Media Fabric v2 (Supersedes Legacy Asset Plane)',
+        why: 'Vercel Blob + Vercel Image is default for web asset delivery; Supabase/Postgres holds canonical asset metadata; Cloudflare R2 & Cloudinary are documented exceptions for massive raw/video pipelines; Google Drive is for human masters only.',
+        source: 'agentic-ops/registry/architecture_decisions.yaml#architecture_media_fabric_v2',
+        receipt: 'Supersedes architecture_data_and_asset_planes',
+        tValid: '2026-10-12T00:00:00Z',
+        tInvalid: 'null (Supersedes v1 Asset Plane)',
+        superseded: 'architecture_data_and_asset_planes (serving unoptimized assets or mixing human Drive folders with runtime CDN paths).',
+        cli: 'git -C C:/Users/frank/starlight/repos/visual-intelligence status -sb'
+      },
+      'adr-07': {
+        badge: 'ADR-07 · ACCEPTED',
+        badgeClass: 'ok',
+        title: 'Agent Credentials & Tool Plane (MCP + Infisical EU + Vercel Connect)',
+        why: 'MCP is our universal tool contract; Infisical EU (Project 6e39a7d9-be07-4f58-babb-0cf650321feb) governs operator/service secrets; Vercel Connect handles user-delegated OAuth.',
+        source: 'starlight-agent-config/core/tools/langfuse_spool.cjs',
+        receipt: 'frankxai/starlight-agent-config#128 (3a23ebe)',
+        tValid: '2026-10-18T11:30:00Z',
+        tInvalid: 'null (Active Security Spine)',
+        superseded: 'Hardcoded keys or expired Langfuse tokens in local shell profiles.',
+        cli: 'node C:/Users/frank/starlight/repos/starlight-agent-config/core/tools/langfuse_spool.cjs status'
+      },
+      'adr-08': {
+        badge: 'ADR-08 · ACCEPTED',
+        badgeClass: 'ok',
+        title: 'Observability & Cost Attribution Contract (Langfuse EU OTLP)',
+        why: 'Every agent run attributes brand_id, product_id, agent_id, workflow_id, provider, model, tokens, cost, latency_ms, and outcome_status via our zero-loss local JSONL spooler into Langfuse EU.',
+        source: 'starlight-agent-config/core/tools/langfuse_spool.cjs',
+        receipt: 'frankxai/starlight-agent-config#128 (3a23ebe)',
+        tValid: '2026-10-18T11:30:00Z',
+        tInvalid: 'null (Verified HTTP 207 Ingestion)',
+        superseded: 'Unattributed token spend across 8 local harnesses with no trace correlation.',
+        cli: 'node C:/Users/frank/starlight/repos/starlight-agent-config/core/tools/langfuse_spool.cjs flush'
+      },
+      'adr-09': {
+        badge: 'ADR-09 · ACCEPTED',
+        badgeClass: 'info',
+        title: 'Provider Portability Contract (SIP Substrate Neutrality)',
+        why: 'Domain logic, 151 agent definitions, 89 skill rules, and evaluation rubrics remain 100% provider-neutral so Claude, Codex, Gemini/Antigravity, Grok, Hermes, and OpenCode operate interchangeably.',
+        source: 'Starlight-Intelligence-System/SIP.md + AGENTS.md',
+        receipt: 'frankxai/Starlight-Intelligence-System#452',
+        tValid: '2026-06-01T00:00:00Z',
+        tInvalid: 'null (Core SIP Law)',
+        superseded: 'Vendor-locked assistant threads trapped inside a single SaaS chat window.',
+        cli: 'node scripts/check-public-install-contract.mjs'
+      },
+      'adr-10': {
+        badge: 'ADR-10 · ACCEPTED',
+        badgeClass: 'ok',
+        title: '5 Federated Product Studios Over 1 Control Plane',
+        why: 'Rule: canonical_product_once_channel_specific_compilation_many. Publishing, Template, Software, Media, and World & Experience studios share one registry and compile to all distribution channels.',
+        source: 'agentic-ops/registry/product_studios.yaml',
+        receipt: 'frankxai/agentic-ops (starlight-product-studios plugin)',
+        tValid: '2026-10-14T00:00:00Z',
+        tInvalid: 'null (5 Studios Active)',
+        superseded: 'Siloed per-repo product launches without shared SKU metadata or proof gates.',
+        cli: 'cat C:/Users/frank/starlight/repos/agentic-ops/registry/product_studios.yaml'
+      },
+      'turn-0-compiler': {
+        badge: 'ESTATE#54 · SHIPPED',
+        badgeClass: 'ok',
+        title: 'Turn-0 Core Compiler (2,057 Tokens Across All 8 Harnesses)',
+        why: 'Compiles a deterministic, budget-capped (<2,500 token) Turn-0 instruction header across Claude, Codex, Gemini/Antigravity, Cursor, Windsurf, Cline, Roo, and OpenCode.',
+        source: 'starlight-estate/tools/compile-turn0-core.mjs + GEMINI.md',
+        receipt: 'frankxai/starlight-estate#54 (e6f4727)',
+        tValid: '2026-10-18T12:15:00Z',
+        tInvalid: 'null (2,057 / 2,500 tokens)',
+        superseded: 'Bloated 18,000-token startup prompts that caused instructions drift between Claude and Gemini.',
+        cli: 'node C:/Users/frank/starlight/repos/starlight-estate/tools/compile-turn0-core.mjs --check'
+      },
+      'shared-tool-plane': {
+        badge: 'MEMORY#41 · 4/4 READY',
+        badgeClass: 'ok',
+        title: 'Shared Tool Plane Loopback Daemon (127.0.0.1:7317)',
+        why: 'Replaces spawning 13 duplicate stdio MCP processes per terminal tab with a single local HTTP loopback multiplexer (~48MB RAM total) serving starlight-memory, sis-core, department-lab, and verification.',
+        source: 'starlight-memory/src/vault-path-guard.mjs',
+        receipt: 'frankxai/starlight-memory#41 (8a593c0)',
+        tValid: '2026-10-18T10:45:00Z',
+        tInvalid: 'null (4/4 Backends Ready)',
+        superseded: '13 stdio MCP servers × N tabs consuming 1.8GB+ RAM and causing WSL2 OOM crashes.',
+        cli: 'curl -s http://127.0.0.1:7317/health'
+      },
+      'langfuse-spooler': {
+        badge: 'CONFIG#128 · LIVE',
+        badgeClass: 'ok',
+        title: 'Infisical EU × Langfuse Zero-Loss OTLP Spooler',
+        why: 'Fetches live credentials from Infisical EU and spools every harness session event locally to ~/.starlight/logs/langfuse-spool.jsonl before batch-flushing to https://cloud.langfuse.com/api/public/ingestion.',
+        source: 'starlight-agent-config/core/tools/langfuse_spool.cjs',
+        receipt: 'frankxai/starlight-agent-config#128 (3a23ebe)',
+        tValid: '2026-10-18T11:30:00Z',
+        tInvalid: 'null (HTTP 207 Verified)',
+        superseded: 'Broken ~/.starlight/env.langfuse keys returning 401 Unauthorized.',
+        cli: 'node C:/Users/frank/starlight/repos/starlight-agent-config/core/tools/langfuse_spool.cjs test'
+      },
+      'sis-451-guard': {
+        badge: 'SIS#451 · 6/6 TESTS',
+        badgeClass: 'ok',
+        title: '10-Org Federation & Wave 4 Live-Worktree Safety Guard',
+        why: 'Audits all 10 GitHub Orgs (96 public repos) and cross-references local git worktrees so Wave 4 repo transfers never break an active agent checkout on disk.',
+        source: 'scripts/org-federation-audit.mjs + tests/org-federation-audit.test.mjs',
+        receipt: 'frankxai/Starlight-Intelligence-System#451 (9840daab1)',
+        tValid: '2026-10-18T13:10:00Z',
+        tInvalid: 'null (6/6 Tests Passing)',
+        superseded: 'Blind GitHub repository transfers that orphaned local origin remotes.',
+        cli: 'node --test tests/org-federation-audit.test.mjs'
+      },
+      'fact-mcp-pollution': {
+        badge: 'SUPERSEDED MISCONCEPTION',
+        badgeClass: 'superseded',
+        title: 'Superseded: Per-Tab 13 Stdio MCP Spawning & Prisma 8.0.0-rc.23',
+        why: 'Historically, every agent tab launched 13 separate Node stdio MCP processes and included an unpinned npx -y prisma mcp that pulled broken 8.0.0-rc.23.',
+        source: 'memory/vaults/temporal-facts.jsonl#fact-superseded-02',
+        receipt: 'Invalidated by starlight-memory#41 & ~/.claude.json pin',
+        tValid: '2026-02-01T00:00:00Z',
+        tInvalid: '2026-10-17T00:00:00Z',
+        superseded: 'Replaced by Shared Tool Plane (127.0.0.1:7317) and pinned prisma@6.19.0.',
+        cli: 'curl -s http://127.0.0.1:7317/health'
+      },
+      'internal-wiki-standard': {
+        badge: 'INTERNAL STANDARD · LIVE',
+        badgeClass: 'ok',
+        title: 'Internal Sovereign Cockpit (/wiki + /atlas + /llms.txt)',
+        why: 'Zero-dependency HTML5 + SVG single-file apps served locally on :4321 (Desktop, Wi-Fi LAN, Tailscale) and on Vercel edge. Combines DeepWiki tree navigation, Unblocked inline provenance, and Graphiti time-travel.',
+        source: 'site/public/wiki/index.html + site/public/atlas/index.html',
+        receipt: 'frankxai/Starlight-Intelligence-System#452',
+        tValid: '2026-10-18T19:00:00Z',
+        tInvalid: 'null',
+        superseded: 'Reading raw terminal JSONL or disconnected markdown files.',
+        cli: 'curl -I http://127.0.0.1:4321/wiki/index.html'
+      },
+      'external-docs-standard': {
+        badge: 'EXTERNAL STANDARD',
+        badgeClass: 'info',
+        title: 'Public Documentation & DeepWiki Federation Standard',
+        why: 'Public docs (starlightintelligence.org/docs, frankx.ai, arcanea.ai) pair Next.js App Router + MDX/Fumadocs with embedded interactive SVGs, /llms.txt for AI crawlers, and automatic deepwiki.com/<org>/<repo> mirrors for all 96 OSS repos.',
+        source: 'site/src/ + site/public/llms.txt',
+        receipt: 'frankxai/Starlight-Intelligence-System#452',
+        tValid: '2026-10-18T19:00:00Z',
+        tInvalid: 'null',
+        superseded: 'Unindexed pages missing llms.txt or visual architecture diagrams.',
+        cli: 'curl -I https://starlightintelligence.org/llms.txt'
+      }
+    };
+
+    // ============================================================================
+    // 2. 10 PORTFOLIO ADRs DATA
+    // ============================================================================
+    const ADRS = [
+      { id: 'adr-01', code: 'ADR-01', title: 'Portfolio Authority Model', stack: 'GitHub Empire Registry (agentic-ops/registry/*.yaml) = Canonical SSOT; Notion = Human Projection; Drive = Evidence', status: 'ACCEPTED' },
+      { id: 'adr-02', code: 'ADR-02', title: 'Web Experience Plane', stack: 'Vercel + Next.js App Router + Vercel AI SDK + Vercel AI Gateway across all public brand portals', status: 'ACCEPTED' },
+      { id: 'adr-03', code: 'ADR-03', title: 'Persistent Stateful Entity Runtime', stack: 'Cloudflare Agents + SQLite Durable Objects + WebSockets for Starlings, Queens & World Actors', status: 'ACCEPTED' },
+      { id: 'adr-04', code: 'ADR-04', title: 'Durable Execution Boundary', stack: 'Cloudflare Workflows for cross-brand/entity flows; Vercel Workflows + Sandbox for Next.js app jobs', status: 'ACCEPTED' },
+      { id: 'adr-05', code: 'ADR-05', title: 'Managed Agent Delegation', stack: 'Claude Managed Agents / OpenAI SDK / Google Jules = stateless workers on branches, never canonical authority', status: 'ACCEPTED' },
+      { id: 'adr-06', code: 'ADR-06', title: 'Vercel-First Media Fabric v2', stack: 'Vercel Blob + Image (web default) · Supabase (metadata) · Cloudflare R2/Cloudinary (exceptions) · Drive (masters)', status: 'SUPERSEDES v1' },
+      { id: 'adr-07', code: 'ADR-07', title: 'Agent Credentials & Tool Plane', stack: 'MCP tool contract + Infisical EU (operator/service secrets) + Vercel Connect (user OAuth)', status: 'ACCEPTED' },
+      { id: 'adr-08', code: 'ADR-08', title: 'Observability & Cost Attribution', stack: 'Langfuse EU OTLP + local JSONL spooler attributing brand_id, product_id, agent_id, tokens, cost, latency', status: 'LIVE 207' },
+      { id: 'adr-09', code: 'ADR-09', title: 'Provider Portability Contract', stack: 'SIP substrate neutrality: domain specs, 151 agents, 89 skills & evals run across all 8 harnesses', status: 'ACCEPTED' },
+      { id: 'adr-10', code: 'ADR-10', title: '5 Federated Product Studios', stack: 'Publishing · Template · Software · Media · World & Experience over 1 shared control plane', status: 'ACCEPTED' }
+    ];
+
+    // ============================================================================
+    // 3. BI-TEMPORAL FACTS LEDGER (REPRESENTATIVE SET FROM 22 SEEDED FACTS)
+    // ============================================================================
+    const TEMPORAL_FACTS = [
+      { id: 'temporal-fact-spine', code: 'FACT-01', triple: 'estate:registry → canonical_authority → frankxai/agentic-ops/registry/*.yaml', tValid: '2026-10-01', tInvalid: 'null', active: true },
+      { id: 'turn-0-compiler', code: 'FACT-02', triple: 'estate:turn0_header → compiled_budget → 2,057 tokens (<2,500 cap across 8 harnesses)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'shared-tool-plane', code: 'FACT-03', triple: 'mcp:shared_tool_plane → loopback_daemon → 127.0.0.1:7317 (4/4 backends ready)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'langfuse-spooler', code: 'FACT-04', triple: 'observability:langfuse → otlp_ingestion → Infisical EU + langfuse_spool.cjs (HTTP 207)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'sis-451-guard', code: 'FACT-05', triple: 'github:org_federation → wave4_guard → 10 Orgs (96 public repos) + live-worktree blocker check', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'adr-06', code: 'FACT-06', triple: 'media:fabric_v2 → default_delivery → Vercel Blob + Image + Supabase metadata + R2 exceptions', tValid: '2026-10-12', tInvalid: 'null', active: true },
+      { id: 'adr-03', code: 'FACT-07', triple: 'runtime:stateful_entities → host → Cloudflare Agents + SQLite Durable Objects', tValid: '2026-10-01', tInvalid: 'null', active: true },
+      { id: 'unblocked-provenance', code: 'FACT-08', triple: 'ops:handover_ledger → status → 36/36 reconciled (0 open-unverified, 56 PR sign-offs)', tValid: '2026-10-18', tInvalid: 'null', active: true },
+      { id: 'fact-mcp-pollution', code: 'SUP-01', triple: 'mcp:legacy_spawning → 13 stdio servers per tab + unpinned prisma@8.0.0-rc.23', tValid: '2026-02-01', tInvalid: '2026-10-17', active: false },
+      { id: 'adr-01', code: 'SUP-02', triple: 'workspace:quarantine → C:/Users/frank/universe treated as product checkout', tValid: '2026-01-15', tInvalid: '2026-09-15', active: false },
+      { id: 'adr-06', code: 'SUP-03', triple: 'architecture:asset_plane_v1 → unindexed Google Drive folders used as runtime asset paths', tValid: '2026-03-01', tInvalid: '2026-10-12', active: false },
+      { id: 'turn-0-compiler', code: 'SUP-04', triple: 'bootstrap:agent_start_overview → stale 29-Sep instructions missing Registry & lane.mjs', tValid: '2026-09-29', tInvalid: '2026-10-18', active: false }
+    ];
+
+    // ============================================================================
+    // 4. ALL 24 OWNED DOMAINS & LIVE STATUS (FROM registry/domains.yaml)
+    // ============================================================================
+    const DOMAINS = [
+      { domain: 'starlightintelligence.org', url: 'https://starlightintelligence.org', brand: 'Starlight Intelligence (SIP/SIS)', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Live: /docs, /architecture, /protocol, /llms.txt + /wiki & /atlas' },
+      { domain: 'www.frankx.ai', url: 'https://www.frankx.ai', brand: 'FrankX Flagship & Demand Engine', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/frankx.ai-vercel-website', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Live: /blog (90+ articles); Target: deploy /blueprint interactive atlas' },
+      { domain: 'starlight.technology', url: 'https://starlight.technology', brand: 'Starlight Commercial Cloud & Enterprise', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/starlight-technology', deepwiki: 'https://deepwiki.com/frankxai/starlight-technology', docs: 'Live commercial landing; Target: attach Enterprise Architecture Docs' },
+      { domain: 'gencreator.ai', url: 'https://gencreator.ai', brand: 'GenCreator OS & Blueprints', status: '200 OK · LIVE', statusClass: 'ok', repo: 'frankxai/gencreator.ai', deepwiki: 'https://deepwiki.com/frankxai/gencreator.ai', docs: 'Live portal; Target: wire 6-Pillar CoE interactive handbook' },
+      { domain: 'arcanea.ai', url: 'https://www.arcanea.ai', brand: 'Arcanea Creative Multiverse', status: '200 OK (308→www)', statusClass: 'ok', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Live app + Ten Gates; CANON_LOCKED.md governed' },
+      { domain: 'starlightintelligence.ai', url: 'https://starlightintelligence.ai', brand: 'Starlight AI Gateway Surface', status: 'REGISTERED · ROUTE', statusClass: 'info', repo: 'frankxai/starlightintelligence-site', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Alias/gateway route to starlightintelligence.org' },
+      { domain: 'starlightprotocol.org', url: 'https://starlightprotocol.org', brand: 'SIP Open Specification', status: 'REGISTERED · SPEC', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Dedicated SIP Specification mirror (/protocol)' },
+      { domain: 'aiarchitectacademy.com', url: 'https://aiarchitectacademy.com', brand: 'AI Architect Academy', status: 'ACADEMY LANE', statusClass: 'info', repo: 'AI-Architect-Academy/ai-architect-academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy/ai-architect-academy', docs: 'Publishing Studio curriculum & certification docs' },
+      { domain: 'vibeos.com', url: 'https://vibeos.com', brand: 'Vibe OS (Music & State Engine)', status: 'PRODUCT DOMAIN', statusClass: 'info', repo: 'frankxai/vibe-os', deepwiki: 'https://deepwiki.com/frankxai/frankx.ai-vercel-website', docs: 'Sound & Music Intelligence sub-stack showcase' },
+      { domain: 'arcanea.gg', url: 'https://arcanea.gg', brand: 'Arcanea Gaming & Arena', status: 'GAMING LANE', statusClass: 'info', repo: 'Arcanea-Labs/arcanea-games', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'World & Experience Studio interactive realms' },
+      { domain: 'arcanea.och', url: '#', brand: 'Arcanea Lore & On-Chain Reserve', status: 'RESERVED', statusClass: 'info', repo: 'frankxai/arcanea-ai-app', deepwiki: 'https://deepwiki.com/frankxai/arcanea-ai-app', docs: 'Canon-locked lore vault' },
+      { domain: 'resonancelabs.ai', url: 'https://resonancelabs.ai', brand: 'Resonance Labs (R&D)', status: 'R&D LABS', statusClass: 'info', repo: 'frankxai/Starlight-Intelligence-System', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Experimental audio/cognitive research surface' },
+      { domain: 'soulbook.ai', url: 'https://soulbook.ai', brand: 'Soulbook (Conscious Publishing)', status: 'PUBLISHING LANE', statusClass: 'info', repo: 'frankxai/author-os', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Publishing Studio book & guided journal surface' },
+      { domain: 'luminaos.com', url: 'https://luminaos.com', brand: 'Lumina OS', status: 'CREATOR LANE', statusClass: 'info', repo: 'frankxai/agentic-creator-os', deepwiki: 'https://deepwiki.com/frankxai/agentic-creator-os', docs: 'Creator OS product surface' },
+      { domain: 'acos.ai / agenticcreator.ai', url: '#', brand: 'Agentic Creator OS (ACOS)', status: 'PACKAGE + CLI', statusClass: 'ok', repo: 'frankxai/agentic-creator-os', deepwiki: 'https://deepwiki.com/frankxai/agentic-creator-os', docs: '75+ skills & commands documentation' },
+      { domain: '12 Regional & Defensive Domains (.de, .nl, .io, .co, .app)', url: '#', brand: 'Multi-Brand Defensive & Locale Portfolio', status: 'DNS GOVERNED', statusClass: 'info', repo: 'frankxai/agentic-ops', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System', docs: 'Tracked in agentic-ops/registry/domains.yaml (Human-gated DNS)' }
+    ];
+
+    // ============================================================================
+    // 5. 5 SPECIALIST PRODUCT STUDIOS & 10 SKUs
+    // ============================================================================
+    const STUDIOS = [
+      { id: 'studio_publishing', name: '01 · Publishing Studio', badge: 'BOOKS · GUIDES · ACADEMIES', desc: 'Transforms canonical research and domain expertise into high-margin Field Guides, executive blueprints, EPUB/PDF books, and Academy curricula.', repos: 'arcanea-publishing-house · author-os · library-os · ai-architect-academy' },
+      { id: 'studio_templates', name: '02 · Template Studio', badge: 'NEXT.JS · DESIGN · INCOME OS', desc: 'Ships agent-ready Next.js starter kits, v0/Tailwind design systems, Creator Launch OS, and vertical operating templates.', repos: 'arcanea-templates · creator-launch-os · agentic-income-template · starlight-design-intelligence' },
+      { id: 'studio_software', name: '03 · Software Studio', badge: 'SAAS · CLI · MEMORY · SUBSTRATE', desc: 'Builds flagship software substrates, MCP servers, CLI harnesses, and cognitive memory engines across the Starlight & FrankX stack.', repos: 'Starlight-Intelligence-System · starlight-memory · agentic-creator-os · frankx-app-forge' },
+      { id: 'studio_media', name: '04 · Media Studio', badge: 'SUNO · VISUAL · MOTION · AUDIO', desc: 'Produces original AI music catalogs (Vibe OS), NanoBanana hero art, Apple Music motion artwork, and audio-reactive visualizers.', repos: 'visual-intelligence · starlight-design-intelligence · vibe-os' },
+      { id: 'studio_world_experience', name: '05 · World & Experience Studio', badge: 'ARCANEA · REALMS · GAMES', desc: 'Crafts canon-locked narrative universes, Ten Gates progression systems, interactive HTML5/WebGL realms, and Starbound Crew experiences.', repos: 'arcanea-ai-app · arcanea-games · arcanea-lore' }
+    ];
+
+    const SKUS = [
+      { code: 'SKU-01', name: 'AI Architect Field Guide', brand: 'FrankX', studio: 'Publishing Studio', formats: 'MDX + PDF + Interactive Companion', gate: 'Citation + Diagram QA' },
+      { code: 'SKU-02', name: 'Agentic Creator OS (ACOS Pro Pack)', brand: 'FrankX / GenCreator', studio: 'Software Studio', formats: 'CLI + 89 Skill Rules + Prompt Pack', gate: 'lint-skills + Eval Gate' },
+      { code: 'SKU-03', name: 'Starlight Memory & Vault Kit', brand: 'Starlight', studio: 'Software Studio', formats: 'TypeScript + SQLite FTS5 + Bi-Temporal Spine', gate: 'Symmetry v75-v79 + Tests' },
+      { code: 'SKU-04', name: 'Creator Launch OS Template', brand: 'GenCreator', studio: 'Template Studio', formats: 'Next.js 16 + Stripe/Whop Ready + Design Tokens', gate: 'Lighthouse + A11y Gate' },
+      { code: 'SKU-05', name: 'Agentic Income System Template', brand: 'Agentic Income', studio: 'Template Studio', formats: 'Next.js Funnel + Affiliate Ledger + Automations', gate: 'Doctrine 0 Money Gate' },
+      { code: 'SKU-06', name: 'Enterprise AI Solution Blueprint Pack', brand: 'AI Architect Studio', studio: 'Publishing Studio', formats: 'Draw.io Icon-Native + SVG + Exec Brief', gate: 'OCI/Multi-Cloud Spec Check' },
+      { code: 'SKU-07', name: 'Starlight Design Intelligence Pack', brand: 'Starlight', studio: 'Template Studio', formats: 'Brand Packs + COPY.md + Tokens + v0 Prompts', gate: 'Anti-Slop Visual Critic' },
+      { code: 'SKU-08', name: 'Vibe OS Sonic & Prompt Collection', brand: 'Vibe OS / FrankX', studio: 'Media Studio', formats: 'Audio Stems + Suno Architecture Prompts + Canvas', gate: 'Audio/Visual QA Gate' },
+      { code: 'SKU-09', name: 'Arcanea World Seed & Character Forge', brand: 'Arcanea', studio: 'World & Experience', formats: '12-Field Character Pack + Lore + Interactive UI', gate: 'CANON_LOCKED Check' },
+      { code: 'SKU-10', name: 'Sovereign Estate Blueprint (150-Agent Mesh)', brand: 'Starlight Commercial', studio: 'Software Studio', formats: '4-Layer Estate OS + Loop Contracts + Governance', gate: 'Starlight Board Gate' }
+    ];
+
+    // ============================================================================
+    // 6. 10 FEDERATED GITHUB ORGS (96 PUBLIC REPOS)
+    // ============================================================================
+    const ORGS = [
+      { org: 'Arcanea-Labs', count: 36, focus: 'Creative multiverse, Lore, Games, NFT Forge, Author Teams', url: 'https://github.com/Arcanea-Labs', deepwiki: 'https://deepwiki.com/Arcanea-Labs' },
+      { org: 'FrankX-AI', count: 16, focus: 'Flagship web portals, ACOS extensions, creator tools', url: 'https://github.com/FrankX-AI', deepwiki: 'https://deepwiki.com/FrankX-AI' },
+      { org: 'AI-Architect-Academy', count: 14, focus: 'Enterprise AI patterns, learning paths, reference labs', url: 'https://github.com/AI-Architect-Academy', deepwiki: 'https://deepwiki.com/AI-Architect-Academy' },
+      { org: 'oci-ai-architects', count: 12, focus: 'Oracle Cloud & multi-cloud AI architecture blueprints', url: 'https://github.com/oci-ai-architects', deepwiki: 'https://deepwiki.com/oci-ai-architects' },
+      { org: 'Starlight-Intelligence-Systems', count: 8, focus: 'Sovereign substrate packages, claws, protocol mirrors', url: 'https://github.com/Starlight-Intelligence-Systems', deepwiki: 'https://deepwiki.com/Starlight-Intelligence-Systems' },
+      { org: 'Starlight-Intelligence', count: 6, focus: 'Research, evaluation suites, memory benchmarks', url: 'https://github.com/Starlight-Intelligence', deepwiki: 'https://deepwiki.com/Starlight-Intelligence' },
+      { org: 'GenCreator-ai', count: 4, focus: 'GenCreator OS templates, 6-Pillar CoE packs', url: 'https://github.com/GenCreator-ai', deepwiki: 'https://deepwiki.com/GenCreator-ai' },
+      { org: 'Life-Commons', count: 0, focus: 'Wave 4 Target: Health, Longevity, Family & Embodiment stacks', url: 'https://github.com/Life-Commons', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' },
+      { org: 'AI-Architect-Studio', count: 0, focus: 'Wave 4 Target: Executive consulting & architecture kits', url: 'https://github.com/AI-Architect-Studio', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' },
+      { org: 'Agentic-Income', count: 0, focus: 'Wave 4 Target: Digital product funnels & affiliate engines', url: 'https://github.com/Agentic-Income', deepwiki: 'https://deepwiki.com/frankxai/Starlight-Intelligence-System' }
+    ];
+
+    // ============================================================================
+    // 7. RENDER TABLES & GRIDS
+    // ============================================================================
+    function renderAllTables(filterText = '') {
+      const q = filterText.trim().toLowerCase();
+
+      // ADRs
+      const adrBody = document.getElementById('adrTableBody');
+      adrBody.innerHTML = ADRS.filter(a => !q || (a.code + a.title + a.stack).toLowerCase().includes(q)).map(a => `
+        <tr class="interactive-row" onclick="inspectEntity('${a.id}')">
+          <td><span class="ub-chip">${a.code}</span></td>
+          <td><strong style="color:var(--text-0)">${a.title}</strong></td>
+          <td>${a.stack}</td>
+          <td><span class="status-pill ok">${a.status}</span></td>
+        </tr>
+      `).join('');
+
+      // Temporal Facts
+      const factsBody = document.getElementById('factsTableBody');
+      factsBody.innerHTML = TEMPORAL_FACTS.filter(f => !q || (f.code + f.triple).toLowerCase().includes(q)).map(f => `
+        <tr class="interactive-row" onclick="inspectEntity('${f.id}')">
+          <td style="font-family:var(--font-mono);font-weight:700;color:${f.active ? 'var(--emerald)' : 'var(--rose)'}">${f.code}</td>
+          <td style="font-family:var(--font-mono);font-size:11.5px;">${f.triple}</td>
+          <td style="font-family:var(--font-mono);font-size:11px;">${f.tValid}</td>
+          <td style="font-family:var(--font-mono);font-size:11px;color:${f.active ? 'var(--text-3)' : 'var(--rose)'}">${f.tInvalid}</td>
+          <td><span class="status-pill ${f.active ? 'ok' : 'superseded'}">${f.active ? 'VALID TRUTH' : 'SUPERSEDED'}</span></td>
+        </tr>
+      `).join('');
+
+      // Domains
+      const domBody = document.getElementById('domainsTableBody');
+      domBody.innerHTML = DOMAINS.filter(d => !q || (d.domain + d.brand + d.repo + d.docs).toLowerCase().includes(q)).map(d => `
+        <tr class="interactive-row" onclick="inspectEntity('adr-02')">
+          <td>
+            ${d.url !== '#' ? `<a href="${d.url}" target="_blank" rel="noopener" class="ext-link" style="font-weight:700">${d.domain} ↗</a>` : `<strong style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-0)">${d.domain}</strong>`}
+          </td>
+          <td>${d.brand}</td>
+          <td><span class="status-pill ${d.statusClass}">${d.status}</span></td>
+          <td>
+            <div style="font-family:var(--font-mono);font-size:11px;">${d.repo}</div>
+            <a href="${d.deepwiki}" target="_blank" rel="noopener" class="ext-link" style="font-size:10.5px;">DeepWiki Mirror ↗</a>
+          </td>
+          <td style="font-size:12px;">${d.docs}</td>
+        </tr>
+      `).join('');
+
+      // Brands & B.V.s
+      const brandsGrid = document.getElementById('brandsGrid');
+      brandsGrid.innerHTML = `
+        <div class="wiki-card" onclick="inspectEntity('adr-01')">
+          <h3><span>FrankX Operations B.V.</span><span class="status-pill ok">OPERATING ENTITY</span></h3>
+          <p>Flagship demand engine, digital products, executive blueprints, ACOS, GenCreator, Vibe OS, and AI Architect Academy.</p>
+          <div class="meta-line"><span>Brands: FrankX · GenCreator · ACOS · Vibe OS · AI Architect</span></div>
+        </div>
+        <div class="wiki-card" onclick="inspectEntity('adr-09')">
+          <h3><span>Starlight Holding B.V.</span><span class="status-pill info">SOVEREIGN SUBSTRATE</span></h3>
+          <p>Holds Starlight Intelligence Protocol (SIP), Starlight Intelligence System (SIS), Starlight Memory, and Starlight Technology commercial cloud.</p>
+          <div class="meta-line"><span>Brands: Starlight Intelligence · Starlight Technology · Resonance Labs</span></div>
+        </div>
+        <div class="wiki-card" onclick="inspectEntity('adr-10')">
+          <h3><span>Arcanea B.V.</span><span class="status-pill ok">CREATIVE MULTIVERSE</span></h3>
+          <p>World & Experience Studio, Ten Gates progression, Arcanea Games, Publishing House, and Soulbook creative IP.</p>
+          <div class="meta-line"><span>Brands: Arcanea · Arcanea Games · Soulbook · Lumina OS</span></div>
+        </div>
+      `;
+
+      // Studios
+      const studiosGrid = document.getElementById('studiosGrid');
+      studiosGrid.innerHTML = STUDIOS.filter(s => !q || (s.name + s.desc + s.repos).toLowerCase().includes(q)).map(s => `
+        <div class="wiki-card" onclick="inspectEntity('adr-10')">
+          <h3><span>${s.name}</span><span class="status-pill info">${s.badge}</span></h3>
+          <p>${s.desc}</p>
+          <div class="meta-line"><span>Repos: ${s.repos}</span></div>
+        </div>
+      `).join('');
+
+      // SKUs
+      const skusBody = document.getElementById('skusTableBody');
+      skusBody.innerHTML = SKUS.filter(s => !q || (s.code + s.name + s.brand + s.studio).toLowerCase().includes(q)).map(s => `
+        <tr class="interactive-row" onclick="inspectEntity('adr-10')">
+          <td><span class="ub-chip emerald">${s.code}</span></td>
+          <td><strong style="color:var(--text-0)">${s.name}</strong><div style="font-size:11px;color:var(--text-3)">${s.brand}</div></td>
+          <td>${s.studio}</td>
+          <td style="font-family:var(--font-mono);font-size:11px;">${s.formats}</td>
+          <td><span class="status-pill ok">${s.gate}</span></td>
+        </tr>
+      `).join('');
+
+      // Orgs
+      const orgsBody = document.getElementById('orgsTableBody');
+      orgsBody.innerHTML = ORGS.filter(o => !q || (o.org + o.focus).toLowerCase().includes(q)).map(o => `
+        <tr class="interactive-row" onclick="inspectEntity('sis-451-guard')">
+          <td><a href="${o.url}" target="_blank" rel="noopener" class="ext-link" style="font-weight:700">${o.org} ↗</a></td>
+          <td style="font-family:var(--font-mono);font-weight:700;color:var(--text-0)">${o.count}</td>
+          <td>${o.focus}</td>
+          <td><a href="${o.deepwiki}" target="_blank" rel="noopener" class="ext-link">deepwiki.com/${o.org} ↗</a></td>
+        </tr>
+      `).join('');
+    }
+
+    // ============================================================================
+    // 8. INTERACTIVE GRAPHITI TIME-TRAVEL SVG RENDERER
+    // ============================================================================
+    function setGraphEpoch(epoch) {
+      document.querySelectorAll('#epochButtons .epoch-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(epoch));
+      });
+
+      const isLegacy = epoch === '2026-03';
+      const isMid = epoch === '2026-08';
+      const isLive = epoch === '2026-10-18';
+
+      const svg = document.getElementById('graphitiSvg');
+      const summary = document.getElementById('epochSummaryBar');
+
+      const legacyColor = isLive ? '#fb7185' : '#34d399';
+      const legacyDash = isLive ? '6 4' : 'none';
+      const liveOpacity = isLegacy ? '0.22' : (isMid ? '0.6' : '1.0');
+      const liveColor = isLive ? '#34d399' : '#64748b';
+
+      svg.innerHTML = `
+        <rect x="0" y="0" width="920" height="340" rx="10" fill="#070b14"/>
+        <!-- Column Headers -->
+        <text x="30" y="28" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 1 · EPISODIC PR/SESSION NODES</text>
+        <text x="340" y="28" fill="#a78bfa" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 2 · SEMANTIC ENTITIES</text>
+        <text x="625" y="28" fill="#34d399" font-family="monospace" font-size="11" font-weight="700">SUBGRAPH 3 · BI-TEMPORAL FACT EDGES (asOf: ${epoch})</text>
+
+        <!-- Edges -->
+        <path d="M 250 85 C 295 85, 295 95, 340 95" stroke="#38bdf8" stroke-width="1.8" fill="none"/>
+        <path d="M 250 175 C 295 175, 295 175, 340 175" stroke="#a78bfa" stroke-width="1.8" fill="none"/>
+        <path d="M 250 265 C 295 265, 295 255, 340 255" stroke="#34d399" stroke-width="1.8" fill="none"/>
+
+        <!-- Bi-temporal Edges from Entities to Facts -->
+        <path d="M 545 95 C 585 95, 585 75, 625 75" stroke="${legacyColor}" stroke-width="2" stroke-dasharray="${legacyDash}" fill="none"/>
+        <path d="M 545 95 C 585 95, 585 135, 625 135" stroke="${liveColor}" stroke-width="2.4" opacity="${liveOpacity}" fill="none"/>
+        <path d="M 545 175 C 585 175, 585 205, 625 205" stroke="${liveColor}" stroke-width="2.4" opacity="${liveOpacity}" fill="none"/>
+        <path d="M 545 255 C 585 255, 585 275, 625 275" stroke="${liveColor}" stroke-width="2.4" opacity="${liveOpacity}" fill="none"/>
+
+        <!-- Episodic Nodes -->
+        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
+          <rect x="25" y="55" width="225" height="60" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+          <text x="38" y="78" fill="#38bdf8" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · starlight-memory#41</text>
+          <text x="38" y="98" fill="#e2e8f0" font-family="sans-serif" font-size="12">Shared Tool Plane + Vault Guard</text>
+        </g>
+
+        <g class="svg-node" onclick="inspectEntity('turn-0-compiler')">
+          <rect x="25" y="145" width="225" height="60" rx="9" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="38" y="168" fill="#a78bfa" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · starlight-estate#54</text>
+          <text x="38" y="188" fill="#e2e8f0" font-family="sans-serif" font-size="12">Turn-0 Compiler (2,057 tokens)</text>
+        </g>
+
+        <g class="svg-node" onclick="inspectEntity('temporal-fact-spine')">
+          <rect x="25" y="235" width="225" height="60" rx="9" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+          <text x="38" y="258" fill="#34d399" font-family="monospace" font-size="10.5" font-weight="700">EPISODE · SIS#451 &amp; SIS#452</text>
+          <text x="38" y="278" fill="#e2e8f0" font-family="sans-serif" font-size="12">Bi-Temporal Spine + Org Guard</text>
+        </g>
+
+        <!-- Semantic Entity Nodes -->
+        <g class="svg-node" onclick="inspectEntity('shared-tool-plane')">
+          <rect x="340" y="65" width="205" height="60" rx="30" fill="#131c31" stroke="#38bdf8" stroke-width="1.6"/>
+          <text x="442" y="92" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: MCP Runtime</text>
+          <text x="442" y="110" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">8 Local Harnesses</text>
+        </g>
+
+        <g class="svg-node" onclick="inspectEntity('adr-01')">
+          <rect x="340" y="145" width="205" height="60" rx="30" fill="#131c31" stroke="#a78bfa" stroke-width="1.6"/>
+          <text x="442" y="172" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Estate SSOT</text>
+          <text x="442" y="190" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">agentic-ops/registry</text>
+        </g>
+
+        <g class="svg-node" onclick="inspectEntity('adr-06')">
+          <rect x="340" y="225" width="205" height="60" rx="30" fill="#131c31" stroke="#34d399" stroke-width="1.6"/>
+          <text x="442" y="252" text-anchor="middle" fill="#f8fafc" font-family="sans-serif" font-size="12.5" font-weight="700">Entity: Media &amp; Web</text>
+          <text x="442" y="270" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10.5">Vercel × Cloudflare</text>
+        </g>
+
+        <!-- Bi-Temporal Fact Boxes -->
+        <g class="svg-node" onclick="inspectEntity('fact-mcp-pollution')">
+          <rect x="625" y="45" width="275" height="54" rx="8" fill="rgba(251,113,133,0.08)" stroke="${legacyColor}" stroke-width="1.5" stroke-dasharray="${legacyDash}"/>
+          <text x="637" y="66" fill="${legacyColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✗ SUPERSEDED (t_invalid: 2026-10-17)' : '● ACTIVE IN EPOCH (t_valid: 2026-02)'}</text>
+          <text x="637" y="85" fill="#cbd5e1" font-family="monospace" font-size="11">13 stdio MCPs/tab + prisma@8.0.0-rc.23</text>
+        </g>
+
+        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('shared-tool-plane')">
+          <rect x="625" y="110" width="275" height="54" rx="8" fill="rgba(52,211,153,0.09)" stroke="${liveColor}" stroke-width="1.6"/>
+          <text x="637" y="131" fill="${liveColor}" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-18)' : '○ FUTURE FACT (Not yet valid)'}</text>
+          <text x="637" y="150" fill="#f8fafc" font-family="monospace" font-size="11">Shared Tool Plane :7317 (4/4 Ready)</text>
+        </g>
+
+        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('turn-0-compiler')">
+          <rect x="625" y="175" width="275" height="54" rx="8" fill="rgba(56,189,248,0.09)" stroke="#38bdf8" stroke-width="1.6"/>
+          <text x="637" y="196" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-18)' : '○ FUTURE FACT'}</text>
+          <text x="637" y="215" fill="#f8fafc" font-family="monospace" font-size="11">Turn-0 Core (2,057 tok) + 36/36 Handovers</text>
+        </g>
+
+        <g class="svg-node" opacity="${liveOpacity}" onclick="inspectEntity('adr-06')">
+          <rect x="625" y="240" width="275" height="54" rx="8" fill="rgba(167,139,250,0.09)" stroke="#a78bfa" stroke-width="1.6"/>
+          <text x="637" y="261" fill="#a78bfa" font-family="monospace" font-size="10" font-weight="700">${isLive ? '✓ VALID TRUTH (t_valid: 2026-10-12)' : '○ FUTURE FACT'}</text>
+          <text x="637" y="280" fill="#f8fafc" font-family="monospace" font-size="11">ADR-06 Media Fabric v2 + 10-ADR Registry</text>
+        </g>
+      `;
+
+      if (isLegacy) {
+        summary.innerHTML = `<span><strong>Epoch: March 2026</strong> — Legacy stdio MCP spawning was still active; bi-temporal spine not yet seeded.</span><span style="color:var(--amber)">Active Truths: 4 · Unbounded Legacy Assumptions: 8</span>`;
+      } else if (isMid) {
+        summary.innerHTML = `<span><strong>Epoch: August 2026</strong> — Mid-migration: SIP v5 live, but handovers &amp; MCP daemons still fragmented.</span><span style="color:var(--cyan)">Active Truths: 9 · Pending Reconciliations: 5</span>`;
+      } else {
+        summary.innerHTML = `<span><strong>Epoch: October 18, 2026 (LIVE)</strong> — All 8 legacy misconceptions marked <code>t_invalid</code>; 14 canonical truths active.</span><span style="color:var(--emerald)">✓ 14 Valid Truths · 8 Superseded · 0 Open-Unverified Handovers</span>`;
+      }
+    }
+
+    // ============================================================================
+    // 9. UNBLOCKED PROVENANCE INSPECTORINTERACTION
+    // ============================================================================
+    function inspectEntity(entityKey) {
+      const data = ENTITIES[entityKey] || ENTITIES['temporal-fact-spine'];
+      const card = document.getElementById('inspectorCard');
+
+      // Highlight matching SVG node if visible
+      document.querySelectorAll('.svg-node').forEach(n => {
+        n.classList.toggle('pulse-highlight', n.getAttribute('data-node') === entityKey);
+      });
+
+      card.innerHTML = `
+        <span class="status-pill ${data.badgeClass}">${data.badge}</span>
+        <div class="inspector-title">${data.title}</div>
+        <div class="inspector-body">${data.why}</div>
+        <div class="kv-list">
+          <div class="kv-item">
+            <span class="kv-label">Canonical Source (SSOT)</span>
+            <span class="kv-val">${data.source}</span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">Git / PR Receipt</span>
+            <span class="kv-val" style="color:var(--cyan)">${data.receipt}</span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">Graphiti Bi-Temporal Window</span>
+            <span class="kv-val">t_valid: ${data.tValid}<br/>t_invalid: ${data.tInvalid}</span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">Superseded Assumption (Never Repeat)</span>
+            <div class="kv-val superseded-box">${data.superseded}</div>
+          </div>
+        </div>
+        <button class="copy-btn" onclick="copyCmd('${data.cli.replace(/'/g, "\\'")}', this)">
+          ⎘ Copy Verification Command: ${data.cli}
+        </button>
+      `;
+    }
+
+    function copyCmd(cmd, btn) {
+      navigator.clipboard?.writeText(cmd);
+      const prev = btn.textContent;
+      btn.textContent = '✓ Copied to Clipboard!';
+      setTimeout(() => { btn.textContent = prev; }, 1600);
+    }
+
+    function scrollToSection(id, btn) {
+      document.querySelectorAll('.left-sidebar .tree-item').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('leftSidebar').classList.remove('open');
+    }
+
+    // Search filter + Cmd+K shortcut
+    const searchInput = document.getElementById('wikiSearch');
+    searchInput.addEventListener('input', (e) => renderAllTables(e.target.value));
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.getElementById('leftSidebar').classList.toggle('open');
+    });
+
+    // Boot initial state
+    renderAllTables('');
+    setGraphEpoch('2026-10-18');
+    inspectEntity('temporal-fact-spine');
+  </script>
+</body>
+</html>
