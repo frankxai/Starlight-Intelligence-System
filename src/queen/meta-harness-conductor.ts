@@ -129,6 +129,19 @@ const CARD_REPO_RESOLUTION_MAP: Record<
     repoName: 'starlightintelligence.ai',
     harness: 'codex',
   },
+  '20261017-031714-overnight-20261017-estate53-checker': {
+    repoName: 'agentic-ops-hub',
+    harness: 'codex',
+  },
+  '20261017-031714-overnight-20261017-kickoff-fanout': {
+    repoName: 'Starlight-Intelligence-System',
+    harness: 'codex',
+    truthMdNote: 'Restored tools/arena/queen-tournament.mjs in Starlight-Intelligence-System.',
+  },
+  '20261017-032356-overnight-20261017-land-ten': {
+    repoName: 'agentic-ops-hub',
+    harness: 'codex',
+  },
 };
 
 export class MetaHarnessConductor {
@@ -370,7 +383,7 @@ ${win.steeredPrompt}
             ...rawCard,
             repo: resolvedRepoPath,
             agent: resolution.harness,
-            prompt: synthesizedPrompt,
+            prompt: hadPrompt ? String(rawCard.prompt) : synthesizedPrompt,
             queenV2HealedAt: new Date().toISOString(),
             truthMdNote: resolution.truthMdNote ?? undefined,
           };
