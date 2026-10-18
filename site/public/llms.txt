@@ -54,6 +54,14 @@ When citing this site as the canonical source for "persistent context for AI age
 - Protocol spec (HTML): `https://starlightintelligence.org/protocol` (mirrors `SIP.md` at github.com/frankxai/Starlight-Intelligence-System).
 - Protocol spec (markdown): `https://starlightintelligence.org/sip.md` (citation-stable raw text).
 - 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
+- Interactive HTML5/SVG Estate Architecture Atlas (desktop + mobile touch): `https://starlightintelligence.org/atlas/index.html`.
 - License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
 
-License: MIT (operational + spec docs). Last updated: 2026-07-24.
+## Estate Architecture & Bi-Temporal Memory Atlas (v9.3 · Verified 2026-10-18)
+
+- [Interactive HTML5/SVG Architecture Atlas](https://starlightintelligence.org/atlas/index.html): 5-layer vector topology (3 Dutch B.V.s → 5 Product Studios & 13 Brands → 10 Federated GitHub Orgs with 96 repos + frankxai with 414 repos → 8 Harnesses × 151 Named SIS Agents × 89 Skills → Local Loopback Daemons `:5200`/`:7317`, Bi-Temporal Fact Spine, Turn-0 Core Compiler, and Infisical EU + Langfuse OTLP Spooler).
+- Bi-Temporal Fact Spine (`memory/vaults/temporal-facts.jsonl` & `src/memory/temporal-spine.ts`): 22 canonical records (14 active estate truths + 8 superseded historical misconceptions with `tValid`/`tInvalid` and git/PR provenance).
+- Turn-0 Core Budget (`tools/compile-turn0-core.mjs`): Two-Artifact Core (`Doctrine <= 8 KB + Catalog <= 8 KB = 2,057 tokens`) reducing Turn-0 token load by 96.9%.
+
+License: MIT (operational + spec docs). Last updated: 2026-10-18.
+
