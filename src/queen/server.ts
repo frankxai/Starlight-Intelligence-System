@@ -114,6 +114,31 @@ export async function startQueenSovereignServer(options?: {
       return;
     }
 
+    if (method === 'GET' && pathname === '/api/queen/subscriptions') {
+      sendJson(res, 200, engine.subscriptionGovernor.getSnapshot());
+      return;
+    }
+
+    if (method === 'GET' && pathname === '/api/queen/meta-conductor') {
+      sendJson(res, 200, engine.metaConductor.getSnapshot(false));
+      return;
+    }
+
+    if (method === 'GET' && pathname === '/api/queen/swarm-graph') {
+      sendJson(res, 200, engine.swarmGraphAbsorber.getSnapshot());
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/api/queen/self-heal') {
+      const body = await readJsonBody(req);
+      const applyFixes = Boolean(body.applyFixes || body.applyCardFixes || body.applyStuckCardFixes);
+      const conductor = engine.selfHealAndRecord(applyFixes);
+      const state = engine.getFullStateSnapshot();
+      broadcastState('META_SELF_HEAL');
+      sendJson(res, 200, { ok: true, conductor, metaConductor: conductor, state });
+      return;
+    }
+
     if (method === 'GET' && pathname === '/api/queen/stream') {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',

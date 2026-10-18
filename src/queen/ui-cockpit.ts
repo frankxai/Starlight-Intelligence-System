@@ -582,12 +582,13 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
     <div class="brand-cluster">
       <span class="pulse-dot" aria-hidden="true"></span>
       <span class="brand-title">Starlight Queen</span>
-      <span class="brand-badge">v1.0 Sovereign Superintelligence</span>
+      <span class="brand-badge">v2.0 Sovereign Meta-Harness</span>
     </div>
     <div class="telemetry-strip" aria-live="polite">
       <div class="stat-pill">Harnesses online: <strong id="top-harnesses-online">0/12</strong></div>
       <div class="stat-pill">Fleet capacity: <strong id="top-concurrency">0 workers</strong></div>
       <div class="stat-pill">Context compression: <strong id="top-compression">96.9%</strong></div>
+      <div class="stat-pill">30 intents: <strong id="top-intents-active">30/30 active</strong></div>
       <div class="stat-pill">12-layer eval: <strong id="top-eval-score">97.3/100</strong></div>
     </div>
   </header>
@@ -656,6 +657,15 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       </button>
       <button class="tab-btn" role="tab" aria-selected="false" data-tab="codex">
         Master codex: orgs, agents &amp; truths <span class="kbd">8</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="subscriptions">
+        Subscription max-out &amp; cloud rails <span class="kbd">9</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="conductor">
+        Window conductor &amp; self-heal <span class="kbd">0</span>
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="swarm-graph">
+        Swarm, graph &amp; 30 intents <span class="kbd">-</span>
       </button>
     </nav>
 
@@ -981,7 +991,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         <div class="panel-header">
           <div>
             <h2 class="panel-title">5-stage GTM flywheel &amp; Risk R1 funnel bridge (FrankX → GenCreator → Arcanea / Starlight)</h2>
-            <p class="panel-subtitle">End-to-end commercial architecture connecting 40k+ top-of-funnel readers to open-core CLIs, SaaS realms, and Sovereign Estate retainers.</p>
+            <p class="panel-subtitle">End-to-end commercial architecture connecting 40k+ top-of-funnel readers to open-core CLIs, SaaS realms, and self-serve Sovereign Estate OS packs.</p>
           </div>
           <span class="badge badge-emerald">GTM flywheel wired</span>
         </div>
@@ -1120,6 +1130,235 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
               </tr>
             </thead>
             <tbody id="tbody-codex-horizons"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9: SUBSCRIPTION MAX-OUT & CLOUD RAILS -->
+    <section class="tab-section" id="tab-subscriptions" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">10 subscription, OAuth &amp; cloud burst rails (daily / hourly / minute-by-minute max-out)</h2>
+            <p class="panel-subtitle">Proactively harvests 5-hour rolling windows across Claude Max 20x, ChatGPT Pro / Codex Cloud, Google AI Ultra / Jules, SuperGrok, Meta Muse Wonder, OpenCode Free Arena, Vercel TokenPass, and Cloudflare Durable Agents.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="sub-multiplier-pill">10.5x leverage · $4,850/mo value extracted</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Provider &amp; plan tier</th>
+                <th>Auth mechanism &amp; status</th>
+                <th>Window &amp; target utilization</th>
+                <th>Beta features wired</th>
+                <th>Minute-by-minute autonomous role</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-sub-rails"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Minute-by-minute &amp; 4-hour rolling window cadence</h2>
+            <p class="panel-subtitle">Ensures zero wasted subscription quota while keeping local laptop RAM protected.</p>
+          </div>
+          <span class="badge badge-cyan mono">5 autonomous timers</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Cadence</th>
+                <th>Action</th>
+                <th>Primary rails</th>
+                <th>Local RAM impact</th>
+                <th>Mechanism</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-sub-cadence"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">16-hour autonomous sleep/wake subscription max-out plan</h2>
+            <p class="panel-subtitle">Coordinates overnight cloud waves with 5-hour rolling window resets so 100% of paid capacity compounds while Frank sleeps.</p>
+          </div>
+          <span class="badge badge-emerald mono">16h overnight plan</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Window block</th>
+                <th>Mode &amp; target</th>
+                <th>Harnesses &amp; cloud extensions</th>
+                <th>Scheduled objectives</th>
+                <th>Window reset harvest strategy</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-sub-16h"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 10: WINDOW CONDUCTOR & SELF-HEAL -->
+    <section class="tab-section" id="tab-conductor" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Live open-window prompt steerer &amp; machine RAM/storage governor</h2>
+            <p class="panel-subtitle">Emits tailored continuation prompts to .starlight/steered-prompts/ for every open terminal/CLI session while enforcing HOLD RAM admission and protecting live PIDs.</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge badge-amber mono" id="conductor-ram-pill">RAM governance active</span>
+            <button class="btn btn-primary" id="btn-self-heal" type="button">Run Meta-Harness self-heal &amp; repair stuck cards</button>
+          </div>
+        </div>
+        <div id="self-heal-banner" style="display:none; margin-bottom:14px; padding:12px; border-radius:8px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); color:#ecfdf5; font-size:13px;"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Window ID &amp; harness</th>
+                <th>Repository &amp; branch</th>
+                <th>Status</th>
+                <th>Assigned objective</th>
+                <th>Steered continuation prompt (saved to .starlight/steered-prompts/)</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-conductor-windows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">14 stuck _hold-admission task cards: root-cause diagnosis &amp; self-healing</h2>
+            <p class="panel-subtitle">Fixes Grok’s repeat-refusal loop by resolving missing repo paths, injecting self-contained prompts, and applying TRUTH.md Freedom Engine overrides.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="conductor-cards-pill">14/14 cards diagnosed</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Card ID</th>
+                <th>Previous Grok refusal reason</th>
+                <th>Resolved repository &amp; harness</th>
+                <th>TRUTH.md override</th>
+                <th>Healing status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-conductor-cards"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Unified MCP server fleet &amp; memory-mcp shard healer</h2>
+            <p class="panel-subtitle">Unifies 6 MCP servers behind Layer-0 Rust vMCP (-88.7% schema bloat) and heals the &gt;128KB taste index bottleneck.</p>
+          </div>
+          <span class="badge badge-cyan mono">6 MCP servers unified</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>MCP server</th>
+                <th>Scope</th>
+                <th>Status</th>
+                <th>Raw → vMCP tokens</th>
+                <th>Self-healing &amp; unification note</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-conductor-mcp"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 11: SWARM, GRAPH & 30 INTENTS -->
+    <section class="tab-section" id="tab-swarm-graph" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Absorbed meta-harness superpowers (RuFlow v3 × OmO × AgentDB/Graphiti × Hermes × Paperclip/Unblocked)</h2>
+            <p class="panel-subtitle">Combines the strongest open-source swarm, memory graph, and context compression architectures into a single installable SIS package.</p>
+          </div>
+          <span class="badge badge-emerald mono">6 frameworks absorbed · 11 OmO roles</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Absorbed framework</th>
+                <th>Upstream inspiration</th>
+                <th>SIS module</th>
+                <th>Core primitives absorbed</th>
+                <th>Synergy in Starlight Queen v2.0</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-absorbed-frameworks"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">October 18, 2026 frontier tech &amp; GitHub top-10,000 harmonization matrix</h2>
+            <p class="panel-subtitle">How every layer of the stack harmonizes for a 1-laptop solopreneur + elastic cloud fleet.</p>
+          </div>
+          <span class="badge badge-cyan mono">6 harmonized stack layers</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Solopreneur problem solved</th>
+                <th>Top Oct 2026 tech wired</th>
+                <th>SIS artifact</th>
+                <th>Local RAM footprint</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-oct2026-matrix"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">30 founder intents (I-001..I-030) &amp; 7 portfolio objectives (O1..O7) — 28 Grok-held intents unblocked</h2>
+            <p class="panel-subtitle">Every seed intent from ~/.reality/intents/2026-10-17-seed.md is mapped to an active Maker ≠ Checker execution lane.</p>
+          </div>
+          <span class="badge badge-emerald mono" id="intents-unblocked-pill">30/30 intents active (28 unblocked from Grok hold)</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Intent &amp; objective</th>
+                <th>Title &amp; scope</th>
+                <th>Grok v0.2 → Queen v2.0</th>
+                <th>Maker → Checker</th>
+                <th>Target repo / artifact &amp; verification</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-founder-intents"></tbody>
           </table>
         </div>
       </div>
@@ -1506,6 +1745,186 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
         }
       }
 
+      function renderSubscriptionsTab() {
+        const sg = state.subscriptions;
+        if (!sg) return;
+        const tbodyRails = document.getElementById('tbody-sub-rails');
+        if (tbodyRails) {
+          tbodyRails.innerHTML = sg.rails
+            .map((r) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(r.providerName) + '</strong><div style="font-size:11px;color:var(--text-secondary);">' + escapeHtml(r.planTier) + '</div></td>' +
+                '<td class="mono" style="font-size:11px;"><span class="badge badge-cyan">' + escapeHtml(r.authMechanism) + '</span><div style="margin-top:4px;color:var(--text-muted);">' + escapeHtml(r.authSourcePath) + '</div></td>' +
+                '<td class="mono">' + r.estimatedWindowUtilizationPct + '% <div style="font-size:11px;color:var(--text-secondary);">(' + r.remainingBurstCapacityUnits + ' burst units)</div></td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(r.minuteByMinuteRole) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-primary);">' + escapeHtml(r.bestForTasks.join(', ')) + ' (Failover: ' + escapeHtml(r.failoverRailId) + ')</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodySchedule = document.getElementById('tbody-sub-schedule');
+        if (tbodySchedule) {
+          tbodySchedule.innerHTML = sg.sixteenHourMaxOutPlan
+            .map((w) => (
+              '<tr>' +
+                '<td class="mono"><strong>' + escapeHtml(w.hoursLabel) + '</strong></td>' +
+                '<td><strong>' + escapeHtml(w.founderMode) + ' (' + w.targetQuotaUtilizationPct + '% quota)</strong></td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(w.cloudExtensionsActive.join(' · ')) + '</td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(w.primaryHarnesses.join(', ')) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + w.scheduledObjectives.map((d) => '<div>• ' + escapeHtml(d) + '</div>').join('') + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyCadence = document.getElementById('tbody-sub-cadence');
+        if (tbodyCadence) {
+          tbodyCadence.innerHTML = sg.minuteCadenceSchedule
+            .map((c) => (
+              '<tr>' +
+                '<td class="mono"><span class="badge badge-emerald">' + escapeHtml(c.cadenceLabel) + '</span></td>' +
+                '<td><strong>' + escapeHtml(c.actionTitle) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(c.description) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(c.primaryRails.join(' · ')) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+      }
+
+      function renderConductorTab() {
+        const mc = state.metaConductor;
+        if (!mc) return;
+        const tbodyWindows = document.getElementById('tbody-conductor-windows');
+        if (tbodyWindows) {
+          tbodyWindows.innerHTML = mc.activeWindows
+            .map((w) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(w.windowId) + '</strong><div class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(w.harness) + ' (' + escapeHtml(w.status) + ')</div></td>' +
+                '<td class="mono" style="font-size:11px;"><div>' + escapeHtml(w.repoName) + '</div><div style="color:var(--text-muted);">' + escapeHtml(w.branch) + '</div></td>' +
+                '<td style="font-size:12px;color:var(--text-primary);">' + escapeHtml(w.assignedObjective) + '</td>' +
+                '<td style="font-size:11px;color:var(--text-secondary);">' + escapeHtml(w.steeredPrompt) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-emerald);">' + escapeHtml(w.promptFilePath) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyCards = document.getElementById('tbody-conductor-cards');
+        if (tbodyCards) {
+          tbodyCards.innerHTML = mc.healedCards
+            .map((c) => (
+              '<tr>' +
+                '<td class="mono" style="font-size:11px;"><strong>' + escapeHtml(c.cardId) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--accent-amber);">' + escapeHtml(c.previousFailureReason) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(c.resolvedRepoPath) + '</td>' +
+                '<td><span class="badge badge-emerald">' + escapeHtml(c.status) + '</span></td>' +
+                '<td style="font-size:11px;color:var(--text-secondary);">Harness: ' + escapeHtml(c.resolvedHarness) + ' · Self-contained prompt injected: ' + (c.selfContainedPromptInjected ? 'YES' : 'NO') + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyMcp = document.getElementById('tbody-conductor-mcp');
+        if (tbodyMcp) {
+          tbodyMcp.innerHTML = mc.mcpMatrix
+            .map((m) => (
+              '<tr>' +
+                '<td class="mono"><strong>' + escapeHtml(m.mcpServerId) + '</strong></td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(m.scope) + '</td>' +
+                '<td><span class="badge ' + (m.status === 'healthy-unified' ? 'badge-emerald' : 'badge-cyan') + '">' + escapeHtml(m.status) + '</span></td>' +
+                '<td class="mono" style="color:var(--accent-emerald);">-' + m.tokenSavingsPct + '%</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(m.healingNote) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+      }
+
+      function renderSwarmGraphTab() {
+        const sg = state.swarmGraph;
+        if (!sg) return;
+        const tbodyFw = document.getElementById('tbody-absorbed-frameworks');
+        if (tbodyFw) {
+          tbodyFw.innerHTML = sg.absorbedFrameworks
+            .map((f) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(f.name) + '</strong></td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(f.upstreamInspiration) + '</td>' +
+                '<td style="font-size:11px;color:var(--text-secondary);">' + f.corePrimitivesAbsorbed.map((p) => '<div>• ' + escapeHtml(p) + '</div>').join('') + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(f.absorbedModuleInSis) + '</td>' +
+                '<td style="font-size:12px;color:var(--accent-emerald);">' + escapeHtml(f.synergyInQueenMetaHarness) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyRoles = document.getElementById('tbody-omo-roles');
+        if (tbodyRoles) {
+          tbodyRoles.innerHTML = sg.omoTeamRoles
+            .map((r) => (
+              '<tr>' +
+                '<td><strong>' + escapeHtml(r.greekOrArchetypeName) + '</strong><div class="mono" style="font-size:10px;color:var(--text-muted);">' + escapeHtml(r.roleId) + '</div></td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(r.defaultModel) + '</td>' +
+                '<td class="mono" style="font-size:11px;">' + escapeHtml(r.defaultHarness) + ' → ' + escapeHtml(r.fallbackFreeModel) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(r.mission) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyFrontier = document.getElementById('tbody-frontier-matrix');
+        if (tbodyFrontier) {
+          tbodyFrontier.innerHTML = sg.oct2026HarmonizationMatrix
+            .map((l) => (
+              '<tr>' +
+                '<td><strong>0' + l.layerNumber + ' · ' + escapeHtml(l.layerName) + '</strong></td>' +
+                '<td style="font-size:12px;color:var(--accent-cyan);">' + escapeHtml(l.topOct2026TechSelected.join(' · ')) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(l.solopreneurProblemSolved) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-emerald);">' + escapeHtml(l.sisIntegrationArtifact) + ' (' + escapeHtml(l.laptopRamFootprint) + ')</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+        const tbodyIntents = document.getElementById('tbody-founder-intents');
+        if (tbodyIntents) {
+          tbodyIntents.innerHTML = sg.founderIntentsLedger
+            .map((i) => (
+              '<tr>' +
+                '<td class="mono"><span class="badge badge-emerald">' + escapeHtml(i.intentId) + '</span> <span class="badge badge-cyan">' + escapeHtml(i.objectiveLink) + '</span></td>' +
+                '<td><strong>' + escapeHtml(i.title) + '</strong><div class="mono" style="font-size:10px;color:var(--text-muted);">' + escapeHtml(i.queenV2Disposition) + ' (was: ' + escapeHtml(i.grokPreviousDisposition) + ')</div></td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-cyan);">' + escapeHtml(i.makerHarness) + ' ≠ ' + escapeHtml(i.checkerHarness) + '</td>' +
+                '<td style="font-size:12px;color:var(--text-secondary);">' + escapeHtml(i.targetRepoOrPath) + '</td>' +
+                '<td class="mono" style="font-size:11px;color:var(--accent-emerald);">' + escapeHtml(i.verificationCommand) + '</td>' +
+              '</tr>'
+            ))
+            .join('');
+        }
+      }
+
+      async function triggerSelfHeal() {
+        const res = await fetch('/api/queen/self-heal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ applyCardFixes: true }),
+        });
+        const data = await res.json();
+        if (data.state) {
+          state = data.state;
+          renderTopMetrics();
+          renderConductorTab();
+          renderReceipts();
+        }
+        const banner = document.getElementById('self-heal-banner');
+        const cond = data.metaConductor || (data.state && data.state.metaConductor);
+        if (banner && cond) {
+          banner.style.display = 'block';
+          banner.textContent =
+            'Self-heal complete: repaired ' +
+            cond.stuckCardsHealedCount +
+            ' control-plane cards, steered ' +
+            cond.openWindowsCount +
+            ' open CLI windows into .starlight/steered-prompts/, and unified ' +
+            cond.mcpServersUnified +
+            ' MCP servers behind vMCP.';
+        }
+      }
+
       function renderRouteDecision(decision) {
         const container = document.getElementById('route-decision-container');
         container.innerHTML =
@@ -1648,7 +2067,7 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
           e.preventDefault();
           activateTab('router');
           document.getElementById('input-prompt').focus();
-        } else if (e.key >= '1' && e.key <= '8') {
+        } else if (e.key >= '1' && e.key <= '9') {
           const idx = Number(e.key) - 1;
           if (tabButtons[idx]) {
             activateTab(tabButtons[idx].getAttribute('data-tab'));
@@ -1703,6 +2122,10 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       document.getElementById('form-route').addEventListener('submit', triggerRoute);
       document.getElementById('btn-execute-mission').addEventListener('click', triggerExecuteMission);
       document.getElementById('btn-upgrade-harnesses').addEventListener('click', triggerUpgradeHarnesses);
+      const btnSelfHeal = document.getElementById('btn-self-heal');
+      if (btnSelfHeal) {
+        btnSelfHeal.addEventListener('click', triggerSelfHeal);
+      }
       document.getElementById('btn-hero-upgrade').addEventListener('click', () => {
         activateTab('harnesses');
         triggerUpgradeHarnesses();
@@ -1729,6 +2152,9 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
       renderReceipts();
       renderEstateGtmRadar();
       renderMasterCodex();
+      renderSubscriptionsTab();
+      renderConductorTab();
+      renderSwarmGraphTab();
       triggerRoute();
 
       // Live Server-Sent Events (SSE) subscription for real-time CLI & swarm updates
@@ -1745,6 +2171,9 @@ export function renderQueenCockpitHtml(initialState: QueenSovereignStateSnapshot
                 renderReceipts();
                 renderEstateGtmRadar();
                 renderMasterCodex();
+                renderSubscriptionsTab();
+                renderConductorTab();
+                renderSwarmGraphTab();
               }
             } catch {
               // ignore malformed frame

@@ -278,7 +278,7 @@ const BRAND_PORTFOLIO: BrandPortfolioEntry[] = [
       { layer: 'apps', label: 'Apps', artifact: 'Architecture Diagram Generator, SDD Composer, & Fleet Auditor', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 92 },
       { layer: 'ai', label: 'AI', artifact: 'Multi-Cloud Topology Synthesis & Adversarial Security Sentinel', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 94 },
       { layer: 'agents', label: 'Agents', artifact: 'Architect, Sentinel, Steward, & Domain Vertical Queens', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 96 },
-      { layer: 'subscriptions', label: 'Subscriptions', artifact: 'Sovereign Estate Retainers, Agent Army Commissioning, & Advisory', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 93 },
+      { layer: 'subscriptions', label: 'Subscriptions', artifact: 'Self-Serve Estate OS Packs, BYOK Architecture Blueprints, & Waitlist Demand Signals', openCorevsProprietary: 'sovereign-proprietary', readinessPct: 95 },
     ],
     grokSurfaceSync: {
       connectedToGrokFactory: true,

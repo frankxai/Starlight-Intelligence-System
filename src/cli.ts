@@ -1889,13 +1889,126 @@ async function cmdQueen(
     case "serve": {
       const portArg = args[0] ? parseInt(args[0], 10) : 4329;
       const handle = await startQueenSovereignServer({ port: portArg });
-      console.log(`[Starlight Queen v1.0] Live Sovereign Command Cockpit running at ${handle.url}`);
+      console.log(`[Starlight Queen v2.0] Live Sovereign Command Cockpit running at ${handle.url}`);
+      break;
+    }
+
+    case "subscriptions":
+    case "maxout": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const sub = engine.subscriptionGovernor.getSnapshot();
+      if (options.json) {
+        console.log(JSON.stringify(sub, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen v2.0 — Subscription Max-Out & Cloud Burst Governor`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  OAuth Rails Active:  ${sub.authenticatedRailsCount}/${sub.totalRails} rails authenticated`);
+      console.log(`  Quota Target / ROI:  ${sub.averagePaidQuotaUtilizationTargetPct}% target utilization | ${sub.effectiveMultiplier} ($${sub.estimatedMonthlyValueExtractedUsd}/mo value on $${sub.flatSubscriptionCostUsd}/mo flat)\n`);
+      console.log(`  [1] 10 SUBSCRIPTION & CLOUD RAILS:`);
+      for (const r of sub.rails) {
+        console.log(`    ◆ ${r.providerName.padEnd(32)} | ${r.planTier.padEnd(34)} | ${String(r.estimatedWindowUtilizationPct).padStart(2)}% util (${r.remainingBurstCapacityUnits} burst units) | ${r.authMechanism}`);
+        console.log(`      Role: ${r.minuteByMinuteRole}`);
+      }
+      console.log(`\n  [2] 16-HOUR AUTONOMOUS SLEEP/WAKE SCHEDULE:`);
+      for (const w of sub.sixteenHourMaxOutPlan) {
+        console.log(`    ● ${w.hoursLabel.padEnd(28)} | ${w.founderMode.padEnd(30)} | Harnesses: ${w.primaryHarnesses.join(", ")}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "conductor":
+    case "windows": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const cond = engine.metaConductor.getSnapshot(false);
+      if (options.json) {
+        console.log(JSON.stringify(cond, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen v2.0 — Open-Window Prompt Conductor & MCP Unifier`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  RAM / Admission:     ${cond.machineGovernance.freeRamMb} MB free (${cond.machineGovernance.admissionVerdict}) | ${cond.machineGovernance.protectedPidsCount} protected PIDs`);
+      console.log(`  Steered Windows:     ${cond.openWindowsCount} active terminal/CLI windows -> .starlight/steered-prompts/`);
+      console.log(`  Stuck Cards Ready:   ${cond.stuckCardsDiagnosed} cards in queen/inbox/_hold-admission/`);
+      console.log(`  MCP Servers Unified: ${cond.mcpServersUnified} servers (-${cond.averageMcpTokenReductionPct}% schema bloat via vMCP)\n`);
+      for (const w of cond.activeWindows) {
+        console.log(`    ▸ [${w.harness.padEnd(16)}] ${w.assignedObjective}`);
+        console.log(`      Prompt file: ${w.promptFilePath}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "self-heal": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const applyFixes = options.force === true || !options.dryRun;
+      const cond = engine.selfHealAndRecord(applyFixes);
+      if (options.json) {
+        console.log(JSON.stringify(cond, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen v2.0 — Autonomous Self-Heal & Control-Plane Card Repair`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Stuck Cards Healed:  ${cond.stuckCardsHealedCount}/${cond.stuckCardsDiagnosed} (applyFixes=${applyFixes})`);
+      console.log(`  Open Windows Steered:${cond.steeredPromptsEmitted} continuation prompts emitted`);
+      console.log(`  MCP Servers Healed:  ${cond.mcpServersUnified} unified via vMCP (-${cond.averageMcpTokenReductionPct}% schema tokens)\n`);
+      for (const c of cond.healedCards) {
+        console.log(`    ✓ ${c.cardId.padEnd(42)} -> [${c.status.toUpperCase()}] repo=${c.resolvedRepoPath}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "swarm-graph":
+    case "intents": {
+      const engine = new QueenSovereignEngine(process.cwd());
+      const sg = engine.swarmGraphAbsorber.getSnapshot();
+      if (options.json) {
+        console.log(JSON.stringify(sg, null, 2));
+        return;
+      }
+      console.log(`\n══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Starlight Queen v2.0 — Absorbed RuFlow×OmO×Graphiti & 30/30 Founder Intents`);
+      console.log(`══════════════════════════════════════════════════════════════════════════════`);
+      console.log(`  Absorbed Frameworks: ${sg.absorbedFrameworksCount} (RuFlow v3, OmO 11-Role, AgentDB+Graphiti, Hermes CoE, Paperclip+Unblocked, Rust Layer-0)`);
+      console.log(`  Portfolio Objectives:${sg.portfolioObjectives.length} (O1..O7)`);
+      console.log(`  Founder Intents:     ${sg.founderIntentsUnblockedCount}/${sg.founderIntentsTotal} UNBLOCKED & EXECUTABLE (was ${sg.grokPreviouslyHeldCount} HELD in Grok v0.2)\n`);
+      console.log(`  [1] ABSORBED FRAMEWORKS:`);
+      for (const f of sg.absorbedFrameworks) {
+        console.log(`    ◆ ${f.name.padEnd(54)} | Readiness: ${f.readinessScore}%`);
+      }
+      console.log(`\n  [2] 30 FOUNDER INTENTS (I-001..I-030):`);
+      for (const i of sg.founderIntentsLedger) {
+        console.log(`    ✓ [${i.intentId} · ${i.objectiveLink}] ${i.title.padEnd(46)} | ${i.makerHarness} ≠ ${i.checkerHarness} | ${i.queenV2Disposition}`);
+      }
+      console.log(`══════════════════════════════════════════════════════════════════════════════\n`);
+      break;
+    }
+
+    case "init-community": {
+      const targetDir = args[0] ? resolve(args[0]) : process.cwd();
+      const engine = new QueenSovereignEngine(process.cwd());
+      const dryRun = options.dryRun === true && !options.force;
+      const bundle = engine.swarmGraphAbsorber.generatePortableCommunityBundle(targetDir, dryRun);
+      if (options.json) {
+        console.log(JSON.stringify(bundle, null, 2));
+        return;
+      }
+      console.log(`\n[Starlight Queen v2.0] Portable Community Meta-Harness (${bundle.dryRun ? "dry-run" : "installed"}) in ${targetDir}:`);
+      for (const f of bundle.filesGenerated) {
+        console.log(`  ✓ ${f.relativePath} — ${f.description}`);
+      }
+      console.log("");
       break;
     }
 
     default:
       console.error(
-        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, codex, orgs, truths, serve, agent`
+        `[starlight] Unknown queen action: "${action}". Available: status, route, upgrade-harnesses, brands, rust-gate, eval, compare-grok, estate, gtm, codex, orgs, truths, subscriptions, conductor, self-heal, swarm-graph, intents, init-community, serve, agent`
       );
       process.exitCode = 1;
   }

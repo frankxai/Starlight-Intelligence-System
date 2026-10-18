@@ -24,6 +24,18 @@ import {
   SovereignMasterCodex,
   SovereignMasterCodexSnapshot,
 } from './sovereign-master-codex';
+import {
+  SubscriptionGovernor,
+  SubscriptionGovernorSnapshot,
+} from './subscription-governor';
+import {
+  MetaHarnessConductor,
+  MetaHarnessConductorSnapshot,
+} from './meta-harness-conductor';
+import {
+  SwarmGraphAbsorber,
+  SwarmGraphAbsorberSnapshot,
+} from './swarm-graph-absorber';
 
 export interface SovereignReceiptEntry {
   receiptId: string;
@@ -33,7 +45,8 @@ export interface SovereignReceiptEntry {
     | 'UPGRADE_HARNESSES'
     | 'RUST_KERNEL_GATE'
     | 'FRONTIER_BENCHMARK'
-    | 'SWARM_DISPATCH';
+    | 'SWARM_DISPATCH'
+    | 'META_SELF_HEAL';
   brandId: string;
   makerHarness: string;
   checkerHarness: string;
@@ -65,6 +78,9 @@ export interface QueenSovereignStateSnapshot {
   benchmarkSummary: HeadToHeadBenchmarkReport;
   estateGtm: EstateGtmRadarSnapshot;
   masterCodex: SovereignMasterCodexSnapshot;
+  subscriptions: SubscriptionGovernorSnapshot;
+  metaConductor: MetaHarnessConductorSnapshot;
+  swarmGraph: SwarmGraphAbsorberSnapshot;
   activeAgentSessions: TerminalSession[];
   recentReceipts: SovereignReceiptEntry[];
 }
@@ -87,6 +103,9 @@ export class QueenSovereignEngine {
   public readonly evalEngine: FrontierEvalEngine;
   public readonly estateRadar: EstateGtmRadar;
   public readonly masterCodex: SovereignMasterCodex;
+  public readonly subscriptionGovernor: SubscriptionGovernor;
+  public readonly metaConductor: MetaHarnessConductor;
+  public readonly swarmGraphAbsorber: SwarmGraphAbsorber;
   public readonly lifecycleManager: AgentLifecycleManager;
   private readonly ledgerPath: string;
   private cachedSessions: TerminalSession[] = [];
@@ -102,6 +121,9 @@ export class QueenSovereignEngine {
     );
     this.estateRadar = new EstateGtmRadar(workspaceRoot);
     this.masterCodex = new SovereignMasterCodex();
+    this.subscriptionGovernor = new SubscriptionGovernor(workspaceRoot);
+    this.metaConductor = new MetaHarnessConductor(workspaceRoot);
+    this.swarmGraphAbsorber = new SwarmGraphAbsorber(workspaceRoot);
     this.lifecycleManager = new AgentLifecycleManager();
     this.ledgerPath = path.join(
       this.workspaceRoot,
@@ -151,12 +173,15 @@ export class QueenSovereignEngine {
     const benchmarkSummary = this.evalEngine.compareAgainstGrokAndIncumbents();
     const estateGtm = this.estateRadar.getSnapshot();
     const masterCodex = this.masterCodex.getSnapshot();
+    const subscriptions = this.subscriptionGovernor.getSnapshot();
+    const metaConductor = this.metaConductor.getSnapshot(false);
+    const swarmGraph = this.swarmGraphAbsorber.getSnapshot();
     const activeAgentSessions = this.cachedSessions;
     const recentReceipts = this.readRecentReceipts(12);
 
     return {
-      version: '1.0.0-sovereign',
-      codename: 'Starlight Queen Sovereign Superintelligence',
+      version: '2.0.0-sovereign-meta-harness',
+      codename: 'Starlight Queen Sovereign Superintelligence v2.0',
       branch: 'agent/antigravity/queen-sovereign-superintelligence-20261017',
       generatedAt: new Date().toISOString(),
       harnesses: {
@@ -177,6 +202,9 @@ export class QueenSovereignEngine {
       benchmarkSummary,
       estateGtm,
       masterCodex,
+      subscriptions,
+      metaConductor,
+      swarmGraph,
       activeAgentSessions,
       recentReceipts,
     };
@@ -241,6 +269,26 @@ export class QueenSovereignEngine {
       summary: `12-Layer Frontier Eval complete: Antigravity=${comparison.overallScores.antigravityQueenV1} vs Grok=${comparison.overallScores.grokQueenV02} vs YC_Oct2026=${comparison.overallScores.ycOct2026IncumbentAvg}`,
     });
     return { layers, comparison };
+  }
+
+  public get metaHarnessConductor(): MetaHarnessConductor {
+    return this.metaConductor;
+  }
+
+  public selfHealAndRecord(applyCardFixes = false): MetaHarnessConductorSnapshot {
+    const snapshot = this.metaConductor.getSnapshot(applyCardFixes);
+    this.appendReceipt({
+      eventType: 'META_SELF_HEAL',
+      brandId: 'starlight',
+      makerHarness: 'antigravity',
+      checkerHarness: 'claude-code',
+      summary: `Meta-Harness Self-Heal: ${snapshot.steeredPromptsEmitted} open-window prompts emitted, ${snapshot.stuckCardsDiagnosed} stuck cards diagnosed (apply=${applyCardFixes}), ${snapshot.mcpServersUnified} MCP servers unified (-${snapshot.averageMcpTokenReductionPct}% schema tokens).`,
+    });
+    return snapshot;
+  }
+
+  public runSelfHealAndSteer(applyCardFixes = false): MetaHarnessConductorSnapshot {
+    return this.selfHealAndRecord(applyCardFixes);
   }
 
   public executeMissionAndRecord(params: {

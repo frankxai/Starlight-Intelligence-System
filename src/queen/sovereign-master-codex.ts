@@ -146,8 +146,8 @@ const ORG_DEFINITIONS: Array<
       asyncCloudFleet: 'ruflo-omo-swarm + jules-conductor',
     },
     ossAndCommercialSplit: {
-      openSourceWedge: '@starlight-intelligence/sis npm package, SIP specification, 6-vault SQLite/FTS5 substrate',
-      commercialProductOrRetainer: 'Sovereign Estate Commissioning ($2,500/mo retainer + $25k Blueprint Sprints)',
+      openSourceWedge: '@arcanea/starlight-intelligence-system npm package, SIP specification, 6-vault SQLite/FTS5 substrate',
+      commercialProductOrRetainer: 'Self-Serve Sovereign Estate OS Packs, BYOK Cloud Mesh Licenses & Waitlist DemandSignal Tiers (Zero Retainers)',
       communitySurface: 'starlightintelligence.org/research + GitHub Discussions & Alliance Attestations',
     },
   },
@@ -178,7 +178,7 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'Arcanea open lore primers, arcanea-orchestrator, and community world-forge templates',
-      commercialProductOrRetainer: 'Arcanea Realm Builder ($29/mo), Luminor Studio Pro ($99/mo), NFT & Book Editions',
+      commercialProductOrRetainer: 'Arcanea Realm Builder SaaS, Luminor Studio Pro, Digital Books & Collectible Media IP',
       communitySurface: 'arcanea.ai + Starbound Crews & 10-Gate Academy Guilds',
     },
   },
@@ -209,7 +209,7 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'agentic-creator-os (ACOS v12, 110+ skills), suno-mcp-server, creator-launch-os',
-      commercialProductOrRetainer: 'GenCreator Pro ($39/mo) & 6-Pillar CoE Studio Team ($149/mo)',
+      commercialProductOrRetainer: 'GenCreator Pro OS Packs, Self-Serve 6-Pillar CoE Templates & BYOK Studio Licenses',
       communitySurface: 'gencreator.ai + GitHub ACOS builder community (Risk R1 funnel bridge target)',
     },
   },
@@ -241,7 +241,7 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'claude-skills-library, claude-code-hooks, mcp-doctor, prompt-library, visual-intelligence',
-      commercialProductOrRetainer: 'AI Architect Newsletter Pro ($19/mo), Digital Books & Blueprints, Advisory ($490/mo)',
+      commercialProductOrRetainer: 'AI Architect Newsletter Pro, Digital Books, Self-Serve Architecture Blueprints & Templates (Zero Consulting)',
       communitySurface: 'frankx.ai (Top-of-funnel engine feeding GenCreator, Arcanea & Starlight)',
     },
   },
@@ -252,7 +252,7 @@ const ORG_DEFINITIONS: Array<
     brandId: 'ai-architect-studio',
     governanceMode: 'active',
     missionAndScope:
-      'Enterprise AI architecture lifecycle, 6-pillar AI Center of Excellence (CoE) reference kits, OCI/multi-cloud solution design diagrams, and agentic operating standards.',
+      'Enterprise AI architecture reference kits, 6-pillar AI Center of Excellence (CoE) blueprints, multi-cloud solution design diagrams, and self-serve agentic operating standards.',
     repos: [
       { name: 'ai-architect', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'ai-coe', visibility: 'public', primaryOwner: 'frankxai' },
@@ -271,8 +271,8 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'awesome-ai-coe, awesome-agent-operating-systems, agentic-architecture-field-guide',
-      commercialProductOrRetainer: 'Enterprise AI Department Blueprint Sprint ($25k) & Studio Retainer ($5k/mo)',
-      communitySurface: 'frankx.ai/ai-architect + Enterprise CTO/CDO Executive Briefings',
+      commercialProductOrRetainer: 'Self-Serve AI Department Blueprint Packs, BYOK CoE Reference Kits & Waitlist DemandSignal Capture',
+      communitySurface: 'frankx.ai/ai-architect + Self-Serve Enterprise Architecture Library',
     },
   },
   {
@@ -282,7 +282,7 @@ const ORG_DEFINITIONS: Array<
     brandId: 'ai-architect-academy',
     governanceMode: 'active',
     missionAndScope:
-      'Hands-on AI architecture curriculum, live kata labs, automated grading rubrics, and verifiableSIP-attested operator credentials.',
+      'Hands-on AI architecture curriculum, live kata labs, automated grading rubrics, and verifiable SIP-attested operator credentials.',
     repos: [
       { name: 'ai-architect-academy', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'starlight-intelligence-academy', visibility: 'private', primaryOwner: 'frankxai' },
@@ -296,8 +296,8 @@ const ORG_DEFINITIONS: Array<
     },
     ossAndCommercialSplit: {
       openSourceWedge: 'ai-architect-academy open kata starter labs & benchmark rubrics',
-      commercialProductOrRetainer: 'Academy Builder Membership ($79/mo) & Executive Cohort ($1,490)',
-      communitySurface: 'frankx.ai/academy + Certified AI Architect Alumni Network',
+      commercialProductOrRetainer: 'Self-Paced Academy Builder Pass, Automated Kata Grading & SIP-Attested Credentials',
+      communitySurface: 'frankx.ai/academy + Certified AI Architect Builder Network',
     },
   },
   {
@@ -691,15 +691,15 @@ const CANONICAL_TRUTHS: CanonicalTruthAndAntiDriftRule[] = [
   {
     ruleNumber: 12,
     id: 'truth-12-non-waivable-sovereignty',
-    title: 'Money Fails Closed, Model Never Diagnose, and Canon Locks Are Read-Only',
+    title: 'Freedom Engine Doctrine (TRUTH.md), Money Fails Closed, Model Never Diagnose & Canon Locks',
     category: 'ci-cost-safety',
     oldAgentFailureMode:
-      'Speculative autonomous spend, clinical language in mind/health repos, or unapproved edits to locked lore canon.',
+      'Pitching consulting/retainers/hourly services, referencing past Oracle employment as active, speculative autonomous spend, or clinical language in mind/health repos.',
     canonicalTruthAndPrinciple:
-      'Money movement always fails closed without Frank’s explicit approval; mind/health repos model observations without clinical diagnosis; CANON_LOCKED.md changes only via /lock-decision.',
+      '100% scalable software, digital products, and media IP (zero consulting/retainers; waitlist-first DemandSignal capture per TRUTH.md); money movement fails closed; mind/health repos model observations without clinical diagnosis; CANON_LOCKED.md is read-only.',
     deterministicEnforcementGate:
-      'Starlight Band-A non-waivable contract projected across all repos via scripts/agents-md-project.mjs.',
-    verifiedArtifact: 'AGENTS.md',
+      'C:/Users/frank/starlight/TRUTH.md + Starlight Band-A non-waivable contract projected via scripts/agents-md-project.mjs.',
+    verifiedArtifact: 'C:/Users/frank/starlight/TRUTH.md',
   },
 ];
 
@@ -766,7 +766,7 @@ const HORIZON_MILESTONES: HorizonMilestonePlan[] = [
       'Operate the benchmark sovereign multi-agent ecosystem competing above top-quartile YC Oct 2026 startups across substrate, creator media, and enterprise AI departments.',
     deliverables: [
       '10 GitHub Organizations operating with autonomous per-org Steward Agent Teams and Maker≠Checker CI gates',
-      'Compound recurring revenue across SaaS realms ($29-$299/mo), Academy cohorts ($1,490), and Sovereign Estate retainers ($2.5k-$25k)',
+      'Compound recurring revenue across scalable SaaS realms, self-serve BYOK Blueprint packs, digital books, and DemandSignal waitlists (Zero Consulting/Retainers per TRUTH.md)',
       '100% verifiable SIP provenance across code, memory vaults, benchmarks, and visual media',
     ],
     verificationCommand: 'npx tsx src/cli.ts queen eval',
