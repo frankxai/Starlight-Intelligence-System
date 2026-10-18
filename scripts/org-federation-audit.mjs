@@ -489,115 +489,95 @@ export function hardenReadOnlyMirrorOnGitHub(orgLogin, repoName) {
   return { fullRepo, actionsDisabled, closedBotPrs };
 }
 
+const FULL_GIT_SHA = /^[a-f0-9]{40}$/i;
+const SYNC_REFUSAL = 'MIRROR_SYNC_NOT_QUALIFIED: read-only mirrors have no reviewed sync writer; use --check-drift and retain current locks.';
+
+function readRepositoryHead(fullName, readApi) {
+  let repository;
+  let branch;
+  let commit;
+  try {
+    repository = readApi(`repos/${fullName}`);
+    if (!Number.isSafeInteger(repository?.id) || repository.id <= 0
+        || repository.full_name?.toLowerCase() !== fullName.toLowerCase()
+        || typeof repository.default_branch !== 'string' || !repository.default_branch) {
+      return { error: 'repository_identity_or_default_branch_unverified' };
+    }
+    branch = readApi(`repos/${fullName}/branches/${encodeURIComponent(repository.default_branch)}`);
+    if (!FULL_GIT_SHA.test(branch?.commit?.sha || '')) {
+      return { repositoryId: repository.id, error: 'default_head_unverified' };
+    }
+    const sha = branch.commit.sha.toLowerCase();
+    // Resolve tree identity from the immutable commit, never a commit message.
+    commit = readApi(`repos/${fullName}/git/commits/${sha}`);
+    if (commit?.sha?.toLowerCase() !== sha || !FULL_GIT_SHA.test(commit?.tree?.sha || '')) {
+      return { repositoryId: repository.id, sha, error: 'immutable_commit_unverified' };
+    }
+    return {
+      repositoryId: repository.id,
+      fullName: repository.full_name,
+      defaultBranch: repository.default_branch,
+      sha,
+      tree: commit.tree.sha.toLowerCase(),
+      observedAt: new Date().toISOString()
+    };
+  } catch {
+    return { repositoryId: repository?.id ?? null, error: 'provider_read_failed' };
+  }
+}
+
 /**
- * Checks default-branch SHA parity between primaryOwner/<repo> and <Org>/<repo>,
- * and optionally syncs `origin/<defaultBranch>` -> `org/<defaultBranch>` so 0 SHA drift exists.
+ * Reads actual default-head commit/tree evidence from both repositories.
+ * Retains the historical export name, but refuses unqualified sync before effects.
+ * Local checkouts are not a prerequisite for read-only provider observations.
  */
 export function checkAndSyncMirrorShaParity(
   reposRoot = DEFAULT_REPOS_ROOT,
-  { sync = false, hardenMirrors = false, manifest = ORG_FEDERATION_MANIFEST } = {}
+  { sync = false, hardenMirrors = false, manifest = ORG_FEDERATION_MANIFEST, readApi = ghApiJson } = {}
 ) {
+  if (sync) throw new Error(SYNC_REFUSAL);
   const results = [];
   for (const org of manifest) {
     if (org.governanceMode === 'reshape-frozen') continue;
     for (const repo of org.repos) {
       if (repo.primaryOwner !== 'frankxai') {
         results.push({
-          org: org.login,
-          repo: repo.name,
-          role: 'org-native',
-          inSync: true,
-          syncedNow: false
+          org: org.login, repo: repo.name, role: 'org-native',
+          parityState: 'not_applicable', inSync: null, syncedNow: false
         });
         continue;
       }
-
-      const localDir = findLocalCheckout(reposRoot, repo.name);
-      if (!localDir) {
-        results.push({
-          org: org.login,
-          repo: repo.name,
-          role: 'federated-mirror',
-          inSync: false,
-          syncedNow: false,
-          error: 'local_checkout_missing'
-        });
-        continue;
-      }
-
-      let hardenResult = null;
-      if (hardenMirrors) {
-        hardenResult = hardenReadOnlyMirrorOnGitHub(org.login, repo.name);
-      }
-
-      let originSha = null;
-      let orgSha = null;
-      let syncedNow = false;
-      let defaultBranch = 'main';
-
-      const bMain = ghApiJson(`repos/frankxai/${repo.name}/branches/main`);
-      if (bMain?.commit?.sha) {
-        originSha = bMain.commit.sha;
-        defaultBranch = 'main';
-      } else {
-        const bMaster = ghApiJson(`repos/frankxai/${repo.name}/branches/master`);
-        if (bMaster?.commit?.sha) {
-          originSha = bMaster.commit.sha;
-          defaultBranch = 'master';
-        }
-      }
-
-      const orgBranch = ghApiJson(`repos/${org.login}/${repo.name}/branches/${defaultBranch}`);
-      orgSha = orgBranch?.commit?.sha || null;
-      const orgMsg = String(orgBranch?.commit?.commit?.message || '');
-      const attestedTreeSync = Boolean(
-        originSha && orgMsg.includes(`sync frankxai/${repo.name}@${originSha.slice(0, 12)}`)
-      );
-
-      if (sync && originSha && originSha !== orgSha && !attestedTreeSync) {
-        try {
-          execFileSync(
-            'git',
-            ['-C', localDir, 'fetch', 'origin', `+refs/heads/${defaultBranch}:refs/remotes/origin/${defaultBranch}`],
-            { stdio: 'ignore', timeout: 45000 }
-          );
-          execFileSync(
-            'git',
-            ['-C', localDir, 'push', 'org', `refs/remotes/origin/${defaultBranch}:refs/heads/${defaultBranch}`, '--force', '--no-verify'],
-            { stdio: 'ignore', timeout: 60000 }
-          );
-          orgSha = originSha;
-          syncedNow = true;
-        } catch {
-          // If local is a shallow clone, unshallow the default branch and retry
-          try {
-            execFileSync(
-              'git',
-              ['-C', localDir, 'fetch', '--unshallow', 'origin', `+refs/heads/${defaultBranch}:refs/remotes/origin/${defaultBranch}`],
-              { stdio: 'ignore', timeout: 90000 }
-            );
-            execFileSync(
-              'git',
-              ['-C', localDir, 'push', 'org', `refs/remotes/origin/${defaultBranch}:refs/heads/${defaultBranch}`, '--force', '--no-verify'],
-              { stdio: 'ignore', timeout: 90000 }
-            );
-            orgSha = originSha;
-            syncedNow = true;
-          } catch {
-            // ignore
-          }
-        }
-      }
-
+      const hardenResult = hardenMirrors
+        ? hardenReadOnlyMirrorOnGitHub(org.login, repo.name) : null;
+      const source = readRepositoryHead(`${repo.primaryOwner}/${repo.name}`, readApi);
+      const mirror = readRepositoryHead(`${org.login}/${repo.name}`, readApi);
+      const inconsistentTree = !source.error && !mirror.error
+        && source.sha === mirror.sha && source.tree !== mirror.tree;
+      const error = source.error ? `source_${source.error}`
+        : mirror.error ? `mirror_${mirror.error}`
+          : inconsistentTree ? 'immutable_commit_tree_mismatch' : null;
+      const known = error === null;
+      const inSync = known ? source.sha === mirror.sha : null;
       results.push({
         org: org.login,
         repo: repo.name,
         role: 'federated-mirror',
-        defaultBranch,
-        originSha: originSha ? originSha.slice(0, 12) : null,
-        orgSha: orgSha ? orgSha.slice(0, 12) : null,
-        inSync: Boolean((originSha && orgSha && originSha === orgSha) || attestedTreeSync),
-        syncedNow,
+        defaultBranch: source.defaultBranch ?? null,
+        mirrorDefaultBranch: mirror.defaultBranch ?? null,
+        sourceRepositoryId: source.repositoryId ?? null,
+        mirrorRepositoryId: mirror.repositoryId ?? null,
+        originSha: source.sha ?? null,
+        orgSha: mirror.sha ?? null,
+        originTree: source.tree ?? null,
+        orgTree: mirror.tree ?? null,
+        sourceObservedAt: source.observedAt ?? null,
+        mirrorObservedAt: mirror.observedAt ?? null,
+        observedAt: new Date().toISOString(),
+        parityState: known ? (inSync ? 'aligned' : 'drift') : 'unknown',
+        treeInSync: known ? source.tree === mirror.tree : null,
+        inSync,
+        syncedNow: false,
+        ...(error ? { error } : {}),
         ...(hardenResult ? { hardenResult } : {})
       });
     }
@@ -779,16 +759,25 @@ export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dry
 
 export function writeOrgFederationHeartbeat(summary, heartbeatPath = DEFAULT_HEARTBEAT_PATH) {
   try {
+    const parityChecked = summary.shaParityChecked === true;
+    const expected = summary.expectedMirrorsCount;
+    const parityComplete = parityChecked && Number.isSafeInteger(expected) && expected > 0
+      && summary.checkedMirrorsCount === expected
+      && summary.alignedMirrorsCount === expected
+      && summary.driftedMirrorsCount === 0 && summary.unknownMirrorsCount === 0;
     fs.mkdirSync(path.dirname(heartbeatPath), { recursive: true });
     const payload = {
       ts: new Date().toISOString(),
-      status: summary.allLocalAligned && (summary.driftedMirrorsCount ?? 0) === 0 ? 'ok' : 'warn',
+      status: summary.allLocalAligned === true && parityComplete ? 'ok' : 'warn',
       totalOrganizations: summary.totalOrganizations,
       totalFederatedRepos: summary.totalFederatedRepos,
       localOrgRemotesAligned: summary.localOrgRemotesAligned,
-      shaParityChecked: Boolean(summary.shaParityChecked),
-      alignedMirrorsCount: summary.alignedMirrorsCount ?? null,
-      driftedMirrorsCount: summary.driftedMirrorsCount ?? 0,
+      shaParityChecked: parityChecked,
+      expectedMirrorsCount: summary.expectedMirrorsCount ?? null,
+      checkedMirrorsCount: parityChecked ? summary.checkedMirrorsCount ?? null : null,
+      alignedMirrorsCount: parityChecked ? summary.alignedMirrorsCount ?? null : null,
+      driftedMirrorsCount: parityChecked ? summary.driftedMirrorsCount ?? null : null,
+      unknownMirrorsCount: parityChecked ? summary.unknownMirrorsCount ?? null : null,
       closedBotPrsCount: summary.closedBotPrsCount ?? 0,
       staleAfterMs: 93600000,
       attestation: 'Built on SIP'
@@ -808,6 +797,12 @@ function main() {
   const hardenMirrors = args.includes('--harden-mirrors');
   const syncGovernance = args.includes('--sync-governance');
   const asJson = args.includes('--json');
+  // Refuse before --wire-local, --harden-mirrors or governance can mutate anything.
+  if (syncMirrors) {
+    console.error(SYNC_REFUSAL);
+    process.exitCode = 1;
+    return;
+  }
   const rootIdx = args.indexOf('--repos-root');
   const reposRoot = rootIdx !== -1 && args[rootIdx + 1] ? args[rootIdx + 1] : DEFAULT_REPOS_ROOT;
 
@@ -825,8 +820,14 @@ function main() {
     governanceRows = syncOrgGovernanceRepos();
   }
 
-  const alignedMirrors = parityRows.filter((r) => r.inSync);
-  const driftedMirrors = parityRows.filter((r) => !r.inSync);
+  const mirrorRows = parityRows.filter((r) => r.role === 'federated-mirror');
+  const alignedMirrors = mirrorRows.filter((r) => r.inSync === true);
+  const driftedMirrors = mirrorRows.filter((r) => r.inSync === false);
+  const unknownMirrors = mirrorRows.filter((r) => r.inSync === null);
+  const parityChecked = checkDrift || hardenMirrors;
+  const expectedMirrorsCount = ORG_FEDERATION_MANIFEST
+    .filter((org) => org.governanceMode !== 'reshape-frozen')
+    .reduce((count, org) => count + org.repos.filter((repo) => repo.primaryOwner === 'frankxai').length, 0);
   const closedBotPrsCount = parityRows.reduce((acc, r) => acc + (r.hardenResult?.closedBotPrs || 0), 0);
 
   const summary = {
@@ -834,16 +835,21 @@ function main() {
     totalFederatedRepos: rows.length,
     localCheckoutsFound: localPresent.length,
     localOrgRemotesAligned: aligned.length,
-    allLocalAligned: aligned.length === localPresent.length,
-    shaParityChecked: checkDrift || hardenMirrors,
-    alignedMirrorsCount: parityRows.length ? alignedMirrors.length : null,
-    driftedMirrorsCount: parityRows.length ? driftedMirrors.length : 0,
+    allLocalAligned: localPresent.length > 0 && aligned.length === localPresent.length,
+    shaParityChecked: parityChecked,
+    expectedMirrorsCount,
+    checkedMirrorsCount: parityChecked ? alignedMirrors.length + driftedMirrors.length : null,
+    alignedMirrorsCount: parityChecked ? alignedMirrors.length : null,
+    driftedMirrorsCount: parityChecked ? driftedMirrors.length : null,
+    unknownMirrorsCount: parityChecked ? unknownMirrors.length : null,
     syncedNowCount: parityRows.filter((r) => r.syncedNow).length,
     closedBotPrsCount,
     ...(syncGovernance ? { governanceSyncedCount: governanceRows.filter((r) => r.ok).length } : {})
   };
 
   writeOrgFederationHeartbeat(summary);
+  if (parityChecked && (unknownMirrors.length > 0 || driftedMirrors.length > 0
+      || mirrorRows.length !== expectedMirrorsCount)) process.exitCode = 1;
 
   if (asJson) {
     console.log(
@@ -862,7 +868,7 @@ function main() {
     console.log(`GitHub Organization Federation Audit (${summary.totalOrganizations} orgs, ${summary.totalFederatedRepos} mapped repos)`);
     console.log(`Local checkouts found: ${summary.localCheckoutsFound} | 'org' remotes aligned: ${summary.localOrgRemotesAligned}/${summary.localCheckoutsFound}`);
     if (summary.shaParityChecked) {
-      console.log(`Mirror SHA Parity: ${summary.alignedMirrorsCount}/${parityRows.length} in sync | Synced now: ${summary.syncedNowCount} | Closed duplicate bot PRs: ${summary.closedBotPrsCount}`);
+      console.log(`Mirror SHA Parity: ${summary.alignedMirrorsCount}/${summary.expectedMirrorsCount} aligned | Unknown: ${summary.unknownMirrorsCount} | Synced now: ${summary.syncedNowCount} | Closed duplicate bot PRs: ${summary.closedBotPrsCount}`);
       if (driftedMirrors.length > 0) {
         console.error('Drifted mirrors:', driftedMirrors);
       }
@@ -882,5 +888,3 @@ function main() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main();
 }
-
-
