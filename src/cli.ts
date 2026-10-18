@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { runTerminalCli } from "./terminal-cli.js";
+import { runSpendCli } from "./spend-cli.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -1699,6 +1700,13 @@ async function main(): Promise<void> {
   const terminalArgs = process.argv.slice(2);
   if (["domain", "harness", "run", "creator", "ecosystem"].includes(terminalArgs[0])) {
     const result = await runTerminalCli(terminalArgs);
+    if (result.stdout) console.log(result.stdout);
+    if (result.stderr) console.error(result.stderr);
+    process.exitCode = result.exitCode;
+    return;
+  }
+  if (["spend", "plan"].includes(terminalArgs[0])) {
+    const result = await runSpendCli(terminalArgs);
     if (result.stdout) console.log(result.stdout);
     if (result.stderr) console.error(result.stderr);
     process.exitCode = result.exitCode;

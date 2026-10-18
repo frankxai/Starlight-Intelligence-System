@@ -1,0 +1,50 @@
+# Spend and capacity planning: offline fixtures only, no tokscale or network.
+# Does not edit package.json (foundry RULES_LOCK). Runs the dedicated test file only.
+name: Spend gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/spend.ts"
+      - "src/spend-cli.ts"
+      - "src/cli.ts"
+      - "test/spend.test.ts"
+      - ".github/workflows/spend-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/spend.ts"
+      - "src/spend-cli.ts"
+      - "src/cli.ts"
+      - "test/spend.test.ts"
+      - ".github/workflows/spend-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spend-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spend-gate:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@11.5.0
+          pnpm install --frozen-lockfile
+
+      - name: Spend tests
+        run: node --import tsx --test test/spend.test.ts
