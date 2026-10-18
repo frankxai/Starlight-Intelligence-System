@@ -23,6 +23,8 @@ import {
 } from "@/lib/sip-download";
 import {
   PLUGIN_MODULES_ASSET_BASE,
+  PLUGIN_MODULES_INSTALL,
+  PLUGIN_MODULES_MODULE_NAME,
   PLUGIN_STARTER_ASSET_BASE,
   PLUGIN_STARTER_MODULE_NAME,
   PLUGIN_STARTER_SHA256,
@@ -138,7 +140,7 @@ export default function DownloadPage() {
             </div>
 
             {/* Card 2: Codex Plugin Starter */}
-            <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-violet-500/30 hover:shadow-[0_0_40px_rgba(167,139,250,0.08)]">
+            <div id="codex-plugin-starter" className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090911]/60 backdrop-blur-md transition-all hover:border-violet-500/30 hover:shadow-[0_0_40px_rgba(167,139,250,0.08)]">
               <div className="aspect-[16/9] w-full relative overflow-hidden bg-slate-950 border-b border-white/[0.04]">
                 <Image
                   src="/assets/visuals/codex_starter_cover.png"
@@ -179,7 +181,7 @@ export default function DownloadPage() {
       </section>
 
       {/* 3. Starlight Intelligence Modules (6 plugin kits) */}
-      <section className="px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
+      <section id="starlight-intelligence-modules" className="scroll-mt-24 px-6 py-20 border-b border-white/[0.04] bg-[#040409]/30">
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
             <div>
@@ -190,7 +192,7 @@ export default function DownloadPage() {
               </p>
             </div>
             <Link
-              href="/download/latest.json"
+              href="/download/plugins/latest.json"
               className="text-[13px] text-cyan-400 hover:text-cyan-300 font-semibold transition-colors flex items-center gap-1"
             >
               API Metadata JSON <ArrowRight className="h-3.5 w-3.5" />
@@ -291,6 +293,26 @@ export default function DownloadPage() {
                 </div>
               );
             })}
+          </div>
+          <div className="mt-10 rounded-xl border border-white/[0.08] bg-[#090912]/80 p-5 sm:p-6">
+            <h3 className="font-serif text-2xl font-semibold text-white">Install the public modules</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              Verify the ZIP checksum before extracting it. The June module archives
+              need one local layout repair for current Codex: copy their marketplace
+              manifest into its discovery directory. The commands below include that
+              repair. Individual kits need the same copy from their extracted directory.
+            </p>
+            <a
+              href={`${PLUGIN_MODULES_ASSET_BASE}/${PLUGIN_MODULES_MODULE_NAME}.zip`}
+              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-cyan-300 underline underline-offset-4 hover:text-cyan-200"
+            >
+              <Download className="h-4 w-4" /> Download the six-module suite
+            </a>
+            <Terminal>{PLUGIN_MODULES_INSTALL.join("\n")}</Terminal>
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">
+              Verified with Codex 0.163.0 on 18 October 2026. These plugins provide
+              local skill guides; installing them does not provision hosted agents or memory.
+            </p>
           </div>
         </div>
       </section>
@@ -515,7 +537,7 @@ node dist/cli.js init --vaults`}
           <ValidationStep
             n="03"
             title="Verify the boundary"
-            body="Call tools/list over JSON-RPC and confirm the current 13-tool MCP surface."
+            body="Call tools/list over JSON-RPC and inspect the server's current tool inventory."
           />
         </div>
         
