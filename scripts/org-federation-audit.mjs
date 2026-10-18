@@ -777,6 +777,53 @@ export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dry
   return results;
 }
 
+export const FLAGSHIP_OSS_REPOS = [
+  'Starlight-Intelligence-System',
+  'claude-skills-library',
+  'arcanea-agent-skills',
+  'mcp-doctor',
+  'awesome-agent-operating-systems',
+  'awesome-ai-coe',
+  'starlight-command-center'
+];
+
+export function auditOssReadiness(reposRoot = DEFAULT_REPOS_ROOT, repoNames = FLAGSHIP_OSS_REPOS) {
+  return repoNames.map((repo) => {
+    const repoDir = path.join(reposRoot, repo);
+    const exists = fs.existsSync(repoDir);
+    if (!exists) {
+      return {
+        repo,
+        exists: false,
+        hasReadme: false,
+        hasAgentsMd: false,
+        hasLicense: false,
+        hasPackageJson: false,
+        hasWorkflows: false,
+        readinessScore: 0
+      };
+    }
+    const hasReadme = fs.existsSync(path.join(repoDir, 'README.md'));
+    const hasAgentsMd = fs.existsSync(path.join(repoDir, 'AGENTS.md')) || fs.existsSync(path.join(repoDir, 'CLAUDE.md'));
+    const hasLicense = fs.existsSync(path.join(repoDir, 'LICENSE')) || fs.existsSync(path.join(repoDir, 'LICENSE.md'));
+    const hasPackageJson = fs.existsSync(path.join(repoDir, 'package.json'));
+    const workflowsDir = path.join(repoDir, '.github', 'workflows');
+    const hasWorkflows = fs.existsSync(workflowsDir) && fs.readdirSync(workflowsDir).some((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
+    const checks = [hasReadme, hasAgentsMd, hasLicense, hasPackageJson, hasWorkflows];
+    const readinessScore = Math.round((checks.filter(Boolean).length / checks.length) * 100);
+    return {
+      repo,
+      exists: true,
+      hasReadme,
+      hasAgentsMd,
+      hasLicense,
+      hasPackageJson,
+      hasWorkflows,
+      readinessScore
+    };
+  });
+}
+
 export function writeOrgFederationHeartbeat(summary, heartbeatPath = DEFAULT_HEARTBEAT_PATH) {
   try {
     fs.mkdirSync(path.dirname(heartbeatPath), { recursive: true });
@@ -807,6 +854,7 @@ function main() {
   const checkDrift = args.includes('--check-drift') || syncMirrors;
   const hardenMirrors = args.includes('--harden-mirrors');
   const syncGovernance = args.includes('--sync-governance');
+  const auditOss = args.includes('--audit-oss');
   const asJson = args.includes('--json');
   const rootIdx = args.indexOf('--repos-root');
   const reposRoot = rootIdx !== -1 && args[rootIdx + 1] ? args[rootIdx + 1] : DEFAULT_REPOS_ROOT;
@@ -825,6 +873,11 @@ function main() {
     governanceRows = syncOrgGovernanceRepos();
   }
 
+  let ossRows = [];
+  if (auditOss) {
+    ossRows = auditOssReadiness(reposRoot);
+  }
+
   const alignedMirrors = parityRows.filter((r) => r.inSync);
   const driftedMirrors = parityRows.filter((r) => !r.inSync);
   const closedBotPrsCount = parityRows.reduce((acc, r) => acc + (r.hardenResult?.closedBotPrs || 0), 0);
@@ -840,7 +893,8 @@ function main() {
     driftedMirrorsCount: parityRows.length ? driftedMirrors.length : 0,
     syncedNowCount: parityRows.filter((r) => r.syncedNow).length,
     closedBotPrsCount,
-    ...(syncGovernance ? { governanceSyncedCount: governanceRows.filter((r) => r.ok).length } : {})
+    ...(syncGovernance ? { governanceSyncedCount: governanceRows.filter((r) => r.ok).length } : {}),
+    ...(auditOss ? { ossReposAudited: ossRows.length, ossAvgReadiness: Math.round(ossRows.reduce((a, r) => a + r.readinessScore, 0) / (ossRows.length || 1)) } : {})
   };
 
   writeOrgFederationHeartbeat(summary);
@@ -852,7 +906,8 @@ function main() {
           summary,
           rows,
           ...(parityRows.length ? { parityRows } : {}),
-          ...(governanceRows.length ? { governanceRows } : {})
+          ...(governanceRows.length ? { governanceRows } : {}),
+          ...(ossRows.length ? { ossRows } : {})
         },
         null,
         2
@@ -869,6 +924,10 @@ function main() {
     }
     if (syncGovernance) {
       console.log(`Org Governance (.github CODEOWNERS + AGENTS.md): ${summary.governanceSyncedCount}/9 active orgs synced`);
+    }
+    if (auditOss) {
+      console.log(`Flagship OSS Readiness (${summary.ossReposAudited} repos | avg ${summary.ossAvgReadiness}%):`);
+      console.table(ossRows);
     }
     const misaligned = localPresent.filter((r) => !r.orgAligned);
     if (misaligned.length > 0) {
