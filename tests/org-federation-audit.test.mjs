@@ -11,10 +11,13 @@ import {
   validateConsolidationWaveSafety,
   validateOrgBasePermission,
   writeOrgFederationHeartbeat,
-  auditOrWireLocalRemotes
+  auditOrWireLocalRemotes,
+  buildOrgCodeownersContent,
+  buildOrgAgentsContractContent,
+  syncOrgGovernanceRepos
 } from '../scripts/org-federation-audit.mjs';
 
-test('ORG_FEDERATION_MANIFEST covers all 10 GitHub Organizations with valid metadata', () => {
+test('ORG_FEDERATION_MANIFEST covers all 10 GitHub Organizations with valid metadata and responsible agent teams', () => {
   assert.equal(ORG_FEDERATION_MANIFEST.length, 10);
   const expectedLogins = [
     'Starlight-Intelligence',
@@ -36,6 +39,11 @@ test('ORG_FEDERATION_MANIFEST covers all 10 GitHub Organizations with valid meta
   for (const org of ORG_FEDERATION_MANIFEST) {
     assert.ok(org.displayName.length > 0, `${org.login} missing displayName`);
     assert.match(org.website, /^https:\/\//, `${org.login} invalid website`);
+    assert.ok(org.steward && org.steward.length > 0, `${org.login} missing steward`);
+    assert.ok(org.executiveSeat && org.executiveSeat.length > 0, `${org.login} missing executiveSeat`);
+    assert.ok(org.universalIS && org.universalIS.length > 0, `${org.login} missing universalIS`);
+    assert.ok(org.councilLead && org.councilLead.length > 0, `${org.login} missing councilLead`);
+    assert.ok(Array.isArray(org.primaryHarnesses) && org.primaryHarnesses.length > 0, `${org.login} missing primaryHarnesses`);
     assert.ok(Array.isArray(org.repos) && org.repos.length > 0, `${org.login} has no mapped repos`);
     const seen = new Set();
     for (const r of org.repos) {
@@ -44,6 +52,23 @@ test('ORG_FEDERATION_MANIFEST covers all 10 GitHub Organizations with valid meta
       assert.ok(r.visibility === 'public' || r.visibility === 'private');
     }
   }
+});
+
+test('buildOrgCodeownersContent and buildOrgAgentsContractContent produce deterministic governance artifacts', () => {
+  const sisOrg = ORG_FEDERATION_MANIFEST[0];
+  const codeowners = buildOrgCodeownersContent(sisOrg);
+  assert.match(codeowners, /\* @frankxai/);
+  assert.match(codeowners, /starlight-architect/);
+
+  const agentsMd = buildOrgAgentsContractContent(sisOrg);
+  assert.match(agentsMd, /Responsible Agent Team & Governance/);
+  assert.match(agentsMd, /starlight-architect/);
+  assert.match(agentsMd, /Built on SIP/);
+
+  const dryRun = syncOrgGovernanceRepos(ORG_FEDERATION_MANIFEST, { dryRun: true });
+  assert.equal(dryRun.length, 10);
+  assert.equal(dryRun.filter((r) => r.dryRun).length, 9);
+  assert.equal(dryRun.filter((r) => r.skipped && r.reason === 'reshape-frozen').length, 1);
 });
 
 test('validateVisibilityParity enforces strict public/private visibility rules', () => {

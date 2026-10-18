@@ -21,6 +21,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://starlightintelligence.ai',
     brandId: 'sis',
     governanceMode: 'active',
+    steward: 'steward-starlight',
+    executiveSeat: 'CTO (Technology & Infrastructure) + CDO (Data & Memory)',
+    universalIS: ['Starlight Orchestrator', 'Code IS', 'Second Brain IS', 'Voice & Video IS'],
+    councilLead: ['starlight-architect', 'starlight-orchestrator', 'starlight-sentinel'],
+    primaryHarnesses: ['Claude Code', 'Antigravity', 'Codex', 'Grok', 'Hermes'],
     repos: [
       { name: 'starlight-command-center', visibility: 'private', primaryOwner: 'Starlight-Intelligence' },
       { name: 'starlight-agent-config', visibility: 'private', primaryOwner: 'frankxai' },
@@ -40,6 +45,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://starlightintelligence.org',
     brandId: 'sis',
     governanceMode: 'active',
+    steward: 'steward-starlight',
+    executiveSeat: 'CSO (Strategy & Protocol) + CAIO (AI & Swarm Governance)',
+    universalIS: ['Starlight Orchestrator', 'Second Brain IS', 'Self IS'],
+    councilLead: ['starlight-prime', 'starlight-sage', 'starlight-hermes'],
+    primaryHarnesses: ['Claude Code', 'Antigravity', 'Codex', 'OpenCode'],
     repos: [
       { name: 'Starlight-Intelligence-System', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'starlight-research-hub', visibility: 'public', primaryOwner: 'frankxai' },
@@ -55,6 +65,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://arcanea.ai',
     brandId: 'arcanea',
     governanceMode: 'active',
+    steward: 'steward-arcanea',
+    executiveSeat: 'CCO (Creative & Canon)',
+    universalIS: ['Creator IS', 'Brand IS', 'Voice & Video IS'],
+    councilLead: ['starlight-weaver', 'starlight-visionary', 'luminor-council'],
+    primaryHarnesses: ['Antigravity', 'Claude Code', 'Codex', 'Grok'],
     repos: [
       { name: 'Arcanea', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'arcanea-ai-app', visibility: 'public', primaryOwner: 'frankxai' },
@@ -72,6 +87,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://gencreator.ai',
     brandId: 'gencreator',
     governanceMode: 'active',
+    steward: 'steward-gencreator',
+    executiveSeat: 'CMO (Growth & Creator Distribution) + CCO (Creative)',
+    universalIS: ['Creator IS', 'Voice & Video IS', 'Brand IS', 'Sound / Music IS'],
+    councilLead: ['starlight-envoy', 'starlight-music-ar', 'starlight-production'],
+    primaryHarnesses: ['Claude Code', 'Antigravity', 'Codex', 'Hermes'],
     repos: [
       { name: 'gencreator.ai', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'GenCreator-OS', visibility: 'private', primaryOwner: 'frankxai' },
@@ -89,6 +109,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://frankx.ai',
     brandId: 'frankx',
     governanceMode: 'active',
+    steward: 'steward-frankx',
+    executiveSeat: 'CEO (Founder Office) + CMO (Editorial & Authority)',
+    universalIS: ['Brand IS', 'Creator IS', 'Business IS', 'Code IS'],
+    councilLead: ['starlight-prime', 'starlight-weaver', 'starlight-social-strategist'],
+    primaryHarnesses: ['Claude Code', 'Codex', 'Antigravity', 'Grok'],
     repos: [
       { name: 'frankx.ai-vercel-website', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'FrankX', visibility: 'private', primaryOwner: 'frankxai' },
@@ -107,6 +132,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://frankx.ai/ai-architect',
     brandId: 'ai-architect',
     governanceMode: 'active',
+    steward: 'steward-enterprise',
+    executiveSeat: 'CTO (Enterprise Architecture) + COO (Estate Operations)',
+    universalIS: ['Business IS', 'Code IS', 'Starlight Orchestrator'],
+    councilLead: ['starlight-architect', 'starlight-navigator', 'starlight-sentinel'],
+    primaryHarnesses: ['Claude Code', 'Codex', 'Antigravity'],
     repos: [
       { name: 'ai-architect', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'ai-coe', visibility: 'public', primaryOwner: 'frankxai' },
@@ -123,6 +153,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://frankx.ai/academy',
     brandId: 'ai-architect',
     governanceMode: 'active',
+    steward: 'steward-education',
+    executiveSeat: 'CHRO (Talent & Learning CoE)',
+    universalIS: ['People Intelligence Sub-Stack', 'Second Brain IS'],
+    councilLead: ['starlight-training', 'starlight-culture', 'starlight-concierge'],
+    primaryHarnesses: ['Claude Code', 'Codex', 'Antigravity'],
     repos: [
       { name: 'ai-architect-academy', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'starlight-intelligence-academy', visibility: 'private', primaryOwner: 'frankxai' }
@@ -134,6 +169,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://agenticincome.ai',
     brandId: 'agentic-income',
     governanceMode: 'active',
+    steward: 'steward-wealth',
+    executiveSeat: 'CFO (Capital, Pricing & FinOps)',
+    universalIS: ['Wealth IS', 'Business IS'],
+    councilLead: ['starlight-business', 'starlight-navigator', 'starlight-sentinel'],
+    primaryHarnesses: ['Claude Code', 'Codex', 'Hermes', 'Grok'],
     repos: [
       { name: 'agenticincome', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'agenticpassiveincome', visibility: 'private', primaryOwner: 'frankxai' },
@@ -152,6 +192,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://bluelifecommons.org',
     brandId: 'life-commons',
     governanceMode: 'active',
+    steward: 'steward-commons',
+    executiveSeat: 'CSO (Impact, Longevity & Ethics Guardian)',
+    universalIS: ['Health IS', 'Family IS', 'Self IS', 'Marine Intelligence'],
+    councilLead: ['starlight-embodiment', 'starlight-relational', 'starlight-sage'],
+    primaryHarnesses: ['Claude Code', 'Antigravity', 'Hermes'],
     repos: [
       { name: 'blue-life-commons', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'dino-life-commons', visibility: 'public', primaryOwner: 'frankxai' },
@@ -168,6 +213,11 @@ export const ORG_FEDERATION_MANIFEST = [
     website: 'https://github.com/oci-ai-architects',
     brandId: 'oci-community',
     governanceMode: 'reshape-frozen',
+    steward: 'steward-enterprise (read-only)',
+    executiveSeat: 'CTO (Archive & Reference)',
+    universalIS: ['Code IS'],
+    councilLead: ['starlight-sentinel'],
+    primaryHarnesses: ['Read-Only (Reshape PR #1 Gate)'],
     repos: [
       { name: 'multi-cloud-ai-architect', visibility: 'public', primaryOwner: 'oci-ai-architects' },
       { name: 'claude-code-oci-ai-architect-skills', visibility: 'public', primaryOwner: 'oci-ai-architects' },
@@ -555,6 +605,178 @@ export function checkAndSyncMirrorShaParity(
   return results;
 }
 
+export function buildOrgCodeownersContent(org) {
+  const lines = [
+    `# ${org.displayName} (${org.login}) — Organization Default CODEOWNERS`,
+    `# Website: ${org.website}`,
+    `# Brand ID: ${org.brandId} | Governance Mode: ${org.governanceMode}`,
+    `# Steward Agent: ${org.steward || 'starlight-steward'}`,
+    `# Executive Seat: ${org.executiveSeat || 'Chief Architecture & Ecosystem Officer (CAEO)'}`,
+    `# Universal IS: ${org.universalIS || 'Starlight Orchestrator'}`,
+    `# Council Lead: ${org.councilLead || 'Prime + Sentinel'}`,
+    `# Primary Harnesses: ${(org.primaryHarnesses || ['claude-code', 'antigravity', 'codex']).join(', ')}`,
+    '#',
+    '# Human approval gate (Maker != Checker invariant):',
+    '* @frankxai',
+    '/.github/ @frankxai',
+    '/AGENTS.md @frankxai',
+    '/SECURITY.md @frankxai',
+    ''
+  ];
+  return lines.join('\n');
+}
+
+export function buildOrgAgentsContractContent(org) {
+  const repoRows = (org.repos || [])
+    .map((r) => {
+      const role =
+        r.primaryOwner && r.primaryOwner.toLowerCase() === org.login.toLowerCase()
+          ? 'org-primary (canonical)'
+          : `federated-mirror (SSOT: ${r.primaryOwner}/${r.name})`;
+      return `| \`${r.name}\` | \`${r.visibility}\` | \`${r.primaryOwner}\` | ${role} |`;
+    })
+    .join('\n');
+
+  return [
+    `# ${org.displayName} — Agent Operating Contract`,
+    '',
+    `Scope: All repositories under the **${org.login}** GitHub Organization (${org.website}).`,
+    `Brand register: \`${org.brandId}\``,
+    '',
+    '## Responsible Agent Team & Governance',
+    '',
+    '| Role | Assigned Owner |',
+    '| :--- | :--- |',
+    `| **Human Codeowner** | \`@frankxai\` |`,
+    `| **Organization Steward** | \`${org.steward || 'starlight-steward'}\` |`,
+    `| **Executive Seat** | ${org.executiveSeat || 'Chief Architecture & Ecosystem Officer (CAEO)'} |`,
+    `| **Universal IS** | ${org.universalIS || 'Starlight Orchestrator'} |`,
+    `| **Council Lead** | ${org.councilLead || 'Prime + Sentinel'} |`,
+    `| **Primary Harnesses** | ${(org.primaryHarnesses || ['claude-code', 'antigravity', 'codex']).map((h) => `\`${h}\``).join(', ')} |`,
+    '',
+    '## Core Guardrails',
+    '',
+    '1. **Think before coding.** State assumptions and surface tradeoffs. Verify file contents and branch state before writing.',
+    '2. **Surgical changes.** Touch only the files required for the active slice. Never overwrite or reset another agent\'s uncommitted worktree.',
+    '3. **Branch and worktree discipline.** Never push directly to `main`. Work on `agent/<harness>/<scope>` in a dedicated worktree and open a **draft** pull request first.',
+    '4. **Maker != Checker.** The harness that authors a pull request never approves or merges its own pull request.',
+    '5. **CI budget discipline.** Keep pull requests in draft until local verification (`lint`, `typecheck`, `test`, `build`) passes. Mark ready for review once.',
+    '6. **Non-waivable safety.**',
+    '   - Never commit secrets, API keys, or `.env` files.',
+    '   - Preserve repository visibility parity: never copy or mirror private repository contents into a public repository.',
+    '   - Money fails closed; no autonomous spend or paid API provisioning without explicit human approval.',
+    '   - In health and mind domains, model observations only; never diagnose or make clinical claims.',
+    '',
+    `## Federated Repository Roster (${(org.repos || []).length} repositories)`,
+    '',
+    '| Repository | Visibility | Primary Owner | Role |',
+    '| :--- | :--- | :--- | :--- |',
+    repoRows,
+    '',
+    'Built on SIP',
+    ''
+  ].join('\n');
+}
+
+function upsertGithubRepoFile(repoFullName, filePath, contentUtf8, commitMessage) {
+  let existingSha = null;
+  let existingContent = null;
+  try {
+    const raw = execFileSync('gh', ['api', `repos/${repoFullName}/contents/${filePath}`], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 20000
+    });
+    const parsed = JSON.parse(raw);
+    existingSha = parsed.sha || null;
+    if (parsed.content) {
+      existingContent = Buffer.from(parsed.content.replace(/\n/g, ''), 'base64').toString('utf8');
+    }
+  } catch {
+    existingSha = null;
+  }
+
+  if (existingContent === contentUtf8) {
+    return { updated: false, sha: existingSha, unchanged: true };
+  }
+
+  const b64 = Buffer.from(contentUtf8, 'utf8').toString('base64');
+  const args = [
+    'api',
+    '-X',
+    'PUT',
+    `repos/${repoFullName}/contents/${filePath}`,
+    '-f',
+    `message=${commitMessage}`,
+    '-f',
+    `content=${b64}`
+  ];
+  if (existingSha) {
+    args.push('-f', `sha=${existingSha}`);
+  }
+  const out = execFileSync('gh', args, {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+    timeout: 30000
+  });
+  const parsedOut = JSON.parse(out);
+  return { updated: true, sha: parsedOut?.content?.sha || null, unchanged: false };
+}
+
+export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dryRun = false } = {}) {
+  const results = [];
+  for (const org of manifest) {
+    if (org.governanceMode === 'reshape-frozen') {
+      results.push({ org: org.login, skipped: true, reason: 'reshape-frozen' });
+      continue;
+    }
+    const govRepo = `${org.login}/.github`;
+    const codeowners = buildOrgCodeownersContent(org);
+    const agentsMd = buildOrgAgentsContractContent(org);
+    if (dryRun) {
+      results.push({
+        org: org.login,
+        repo: govRepo,
+        dryRun: true,
+        codeownersBytes: Buffer.byteLength(codeowners, 'utf8'),
+        agentsMdBytes: Buffer.byteLength(agentsMd, 'utf8')
+      });
+      continue;
+    }
+    try {
+      const coRes = upsertGithubRepoFile(
+        govRepo,
+        'CODEOWNERS',
+        codeowners,
+        `chore(governance): wire CODEOWNERS and steward team (${org.steward})`
+      );
+      const agRes = upsertGithubRepoFile(
+        govRepo,
+        'AGENTS.md',
+        agentsMd,
+        `docs(governance): wire Responsible Agent Team and federated roster in AGENTS.md`
+      );
+      results.push({
+        org: org.login,
+        repo: govRepo,
+        steward: org.steward,
+        codeownersUpdated: coRes.updated,
+        agentsMdUpdated: agRes.updated,
+        ok: true
+      });
+    } catch (err) {
+      results.push({
+        org: org.login,
+        repo: govRepo,
+        steward: org.steward,
+        ok: false,
+        error: err.message
+      });
+    }
+  }
+  return results;
+}
+
 export function writeOrgFederationHeartbeat(summary, heartbeatPath = DEFAULT_HEARTBEAT_PATH) {
   try {
     fs.mkdirSync(path.dirname(heartbeatPath), { recursive: true });
@@ -584,6 +806,7 @@ function main() {
   const syncMirrors = args.includes('--sync-mirrors');
   const checkDrift = args.includes('--check-drift') || syncMirrors;
   const hardenMirrors = args.includes('--harden-mirrors');
+  const syncGovernance = args.includes('--sync-governance');
   const asJson = args.includes('--json');
   const rootIdx = args.indexOf('--repos-root');
   const reposRoot = rootIdx !== -1 && args[rootIdx + 1] ? args[rootIdx + 1] : DEFAULT_REPOS_ROOT;
@@ -595,6 +818,11 @@ function main() {
   let parityRows = [];
   if (checkDrift || hardenMirrors) {
     parityRows = checkAndSyncMirrorShaParity(reposRoot, { sync: syncMirrors, hardenMirrors });
+  }
+
+  let governanceRows = [];
+  if (syncGovernance) {
+    governanceRows = syncOrgGovernanceRepos();
   }
 
   const alignedMirrors = parityRows.filter((r) => r.inSync);
@@ -611,13 +839,25 @@ function main() {
     alignedMirrorsCount: parityRows.length ? alignedMirrors.length : null,
     driftedMirrorsCount: parityRows.length ? driftedMirrors.length : 0,
     syncedNowCount: parityRows.filter((r) => r.syncedNow).length,
-    closedBotPrsCount
+    closedBotPrsCount,
+    ...(syncGovernance ? { governanceSyncedCount: governanceRows.filter((r) => r.ok).length } : {})
   };
 
   writeOrgFederationHeartbeat(summary);
 
   if (asJson) {
-    console.log(JSON.stringify({ summary, rows, ...(parityRows.length ? { parityRows } : {}) }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          summary,
+          rows,
+          ...(parityRows.length ? { parityRows } : {}),
+          ...(governanceRows.length ? { governanceRows } : {})
+        },
+        null,
+        2
+      )
+    );
   } else {
     console.log(`GitHub Organization Federation Audit (${summary.totalOrganizations} orgs, ${summary.totalFederatedRepos} mapped repos)`);
     console.log(`Local checkouts found: ${summary.localCheckoutsFound} | 'org' remotes aligned: ${summary.localOrgRemotesAligned}/${summary.localCheckoutsFound}`);
@@ -626,6 +866,9 @@ function main() {
       if (driftedMirrors.length > 0) {
         console.error('Drifted mirrors:', driftedMirrors);
       }
+    }
+    if (syncGovernance) {
+      console.log(`Org Governance (.github CODEOWNERS + AGENTS.md): ${summary.governanceSyncedCount}/9 active orgs synced`);
     }
     const misaligned = localPresent.filter((r) => !r.orgAligned);
     if (misaligned.length > 0) {
@@ -639,4 +882,5 @@ function main() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main();
 }
+
 

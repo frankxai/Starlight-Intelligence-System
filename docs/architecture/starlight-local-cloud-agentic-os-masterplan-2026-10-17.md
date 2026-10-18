@@ -144,4 +144,41 @@ All **10 GitHub Organizations** (`71` mapped repositories) are audited by `scrip
 ### Wave 5: Live Observatory Integration (`starlight-Command-Center` Port 4321)
 - **Problem**: `starlight-Command-Center/apps/observatory` (Next.js port `4321`) currently reads legacy heartbeats (`heartbeat-queen`, `heartbeat-loopfleet`), while our new `horizon-{2h,12h,1w}-latest.json` and 10-Org Federation telemetry live in `.starlight/reports/`.
 - **Solution**:
-  - Add `/api/horizon` to `apps/observatory` and embed our new Unified Command Center views directly into the Electron/Next.js Observatory so standalone HTML5 (`starlight-agentic-os-command-center.html`) and live port `4321` share 100% identical data contracts.
+  - Added `/api/horizon` to `apps/observatory` (`Starlight-Intelligence/starlight-command-center#80`, `7/7` tests pass) and embedded our new Unified Command Center views directly into the Electron/Next.js Observatory so standalone HTML5 (`starlight-agentic-os-command-center.html`) and live port `4321` share 100% identical data contracts.
+
+---
+
+## 5. Canonical Estate Synthesis (2026-10-18 Convergence)
+
+### 5.1 5-Tier Agent Topology (`151` Named Agents · `6` Executive Seats · `10` Universal IS · `12` Harnesses)
+| Tier | Scale | Members & Seats | Mandate & Contract SSOT |
+| :--- | :--- | :--- | :--- |
+| **Tier 0 · Substrate & Council Core** | `6` Council Leads + Board | `Queen`, `Prime`, `Architect`, `Sentinel`, `Navigator`, `Weaver`, `Hermes`, `Sage` | Constitutional governance (`/starlight-board`), memory vault curation, security gating (`SIP.md`, `CLAUDE.md`, `AGENTS.md` Band-A) |
+| **Tier 1 · Front-Door & Excavation** | `4` Specialists | `Concierge`, `Envoy`, `Voice Operator`, `Genius` | Intake (`/welcome`, `/intake`), scattered-expertise excavation (`/discover-genius`), handoff packets |
+| **Tier 2 · Executive C-Suite Seats** | `6` Executive Seats | `CAEO` (Architecture), `CCO` (Creative/Arcanea), `CPO` (Creator Products), `CGO` (Growth/Academy), `CFO` (Wealth/FinOps), `CSO` (Commons/Safety) | Accountable executive ownership across all 10 GitHub Organizations (`<Org>/.github/AGENTS.md` + `CODEOWNERS`) |
+| **Tier 3 · 10 Universal IS** | `10` Universal IS + Health | `Starlight Orchestrator`, `Self`, `Wealth`, `Family`, `Business`, `Creator`, `Second Brain`, `Code`, `Voice & Video`, `Brand` | Locked v8.0 `STACK.md` operating systems |
+| **Tier 4 · Domain Sub-Stacks & Stewards** | `125+` Specialists | `People IS` (6), `Sound IS` (6), `Music IS` (7), `Arcanea Guardians` (10), `Social Fleet` (7), `9` Active Org Stewards | Auto-activating skill rules (`89` rules across `17` domains in `skills/skill-rules.json`) |
+
+### 5.2 Self-Serve Digital Product Ladder (`frankx.ai-vercel-website#1067`)
+| Rung | Price | Canonical SKUs | Delivery & `TRUTH.md` Compliance |
+| :--- | :--- | :--- | :--- |
+| **Rung 0 · Free Gravity Well** | `$0` | `Golden Age of Intelligence` (normalized in `lib/products.ts`), `Soulbook`, `Vibe OS`, `Prompt Library` | Instant web reader + optional Resend email capture |
+| **Rung 1 · Impulse Context Wedge** | `$1` | `reality.md Starter Pack` (`reality-md-starter-pack`) | Stripe Checkout (`100c`) -> Instant ZIP (`reality.md` template + `AGENTS.md` bootstrap + 10 prompts) |
+| **Rung 2 · Quick-Win Creator Pack** | `$7` | `25 Suno Power Prompts Pack` (`suno-power-pack-25`) | Stripe Checkout (`700c`) -> Instant PDF + Meta-Tag Arrangement Cheat Sheet |
+| **Rung 3 · UI & Music Core Packs** | `$19 – $27` | `Aurora UI Kit` (`$19`) · `Complete Suno Prompt Library` (`$27` / `2700c` aligned) | Stripe Checkout (`1900c` / `2700c`) -> PDF + Notion ZIP bundle |
+| **Rung 4 · Flagship Operating Kits** | `$47` | `Creative AI Toolkit` (`$47`) · `ACOS Creator Kit` (`$47`) | Stripe Checkout (`4700c`) -> Access Code + Reference PDFs |
+| **Rung 5 · Sovereign Systems & Field Kits** | `$67 – $97` | `Income Architecture` (`$67`), `System Architect` (`$97`), `Memory Palace OS` (`$97`), `DPI Field Kit` (`$97`), `Starlight Operator Pack` (`$97`) | Stripe Checkout / Waitlist Gate -> ZIP Field Kits |
+| **Rung 6 · Pro Fleet & Team Blueprints** | `$147 – $497` | `Visual Creation Loop` (`$147`), `Agent Fleet Pro` (`$147`), `Command Center Template` (`$497`), `Creation Chronicles` (`$497`), `Team Blueprint License` (`$497`) | 100% DIY / self-serve multi-seat templates; legacy 1:1 consulting stripped per `TRUTH.md` §1/§2 |
+
+### 5.3 Old-vs-New Agent Failure Prevention Matrix
+| Old Agent Problem / Drift | Previous Failure Impact | New Deterministic Fix & Guardrail |
+| :--- | :--- | :--- |
+| `verify-lane.mjs` used `path.basename(top)` in worktrees | Failed pre-push verification in worktrees and rejected non-`frankxai` org remotes | Resolved repo name from `git remote get-url origin` and allowed all 10 federated GitHub orgs (`starlight-estate#54`) |
+| `agentic-ops#275` schema `1.1.0` drift + hourly Actions cron | Blocked CI (`Registry Validation` / `Portfolio Governance`) & burned ~1,488 private Actions runs/mo | Aligned `github_organizations.yaml` to `1.0.0`, wired `validate_registry.py`, disabled hourly cron, added draft PR guards (`121/121` tests pass) |
+| `mcp-registry.json` pointed `starlight-sis` to `mcp-server.js` and included `higgsfield-mcp` | Broken MCP startup for SIS + violation of Estate Rule 7 (Higgsfield ban) | Upgraded `mcp-registry.json` to `v1.2.0`: pointed to `dist/mcp-server.js`, retired `higgsfield-mcp`, added `sis-memory-gateway` & `starlight-cloud-worker` |
+| `TRUTH.md`, `OBJECTIVES.md`, `SYSTEM.md`, `WORKSPACE_MAP.md` had conflicting counts & ports | Agents cited stale repo/agent counts or port `3847` instead of `4321`/`5200` | Synchronized all 4 control-plane SSOTs (`192` local repos, `10` GitHub Orgs, `71` federated repos, `12` harnesses, `151` agents, `:5200` Gateway, `:4321` Observatory) |
+| `frankx.ai-vercel-website` had `$27` vs `$29` price mismatch, legacy `golden-age-book` shape, and 1:1 consulting copy | Checkout charged `$29` while page said `$27`; legacy book lacked `ProductRecord` fields; consulting copy violated `TRUTH.md` | Wired `normalizeProductRecord()`, `$1`/`$7` micro-SKUs, `$27` (`2700c`) Stripe parity, and self-serve Team Blueprint License (`frankx.ai-vercel-website#1067`) |
+| `9` active `<Org>/.github` governance repos lacked `CODEOWNERS` & Steward matrices | No automated GitHub codeowner gate or documented Steward/Executive Seat per org | Added `syncOrgGovernanceRepos()` (`--sync-governance`) and deployed `CODEOWNERS` + updated `AGENTS.md` to all `9/9` active `<Org>/.github` repos |
+
+Built on SIP
+

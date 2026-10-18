@@ -638,6 +638,193 @@ export function collectCommandCenterData({
     }
   ];
 
+  const canonicalAtlas = {
+    agentTiers: [
+      {
+        tier: 'Tier 0 · Substrate & Council Core',
+        count: '6 Council Leads + Starlight Board',
+        members: 'Queen, Prime, Architect, Sentinel, Navigator, Weaver, Hermes, Sage',
+        role: 'Constitutional governance (/starlight-board), memory vault curation, security gating, and cross-repo architecture.',
+        contract: 'SIP.md + CLAUDE.md + AGENTS.md Band-A'
+      },
+      {
+        tier: 'Tier 1 · Front-Door & Excavation',
+        count: '4 Front-Door Specialists',
+        members: 'Concierge (/welcome, /intake), Envoy (creator handoff), Voice Operator (cockpit packets), Genius (/discover-genius)',
+        role: 'Zero-friction intake, scattered-expertise excavation, and structured handoff packet generation.',
+        contract: 'agents/starlight-{concierge,envoy,voice-operator,genius}.md'
+      },
+      {
+        tier: 'Tier 2 · Executive C-Suite Seats',
+        count: '6 Executive Seats',
+        members: 'CAEO (Architecture), CCO (Creative/Arcanea), CPO (Creator Products), CGO (Growth/Academy), CFO (Wealth/FinOps), CSO (Commons/Safety)',
+        role: 'Accountable executive ownership across all 10 GitHub Organizations, capital allocation, and release sign-off.',
+        contract: 'TRUTH.md + OBJECTIVES.md + <Org>/.github/AGENTS.md'
+      },
+      {
+        tier: 'Tier 3 · 10 Universal Intelligence Systems',
+        count: '10 Universal IS + Cross-Cutting Health',
+        members: 'Starlight Orchestrator, Self IS, Wealth IS, Family IS, Business IS, Creator IS, Second Brain IS, Code IS, Voice & Video IS, Brand IS',
+        role: 'Locked v8.0 STACK.md operating systems spanning personal mastery, creator production, code, and sovereign wealth.',
+        contract: 'STACK.md + VERTICALS.md'
+      },
+      {
+        tier: 'Tier 4 · Domain Sub-Stacks & Org Stewards',
+        count: '125+ Domain & Vertical Specialists',
+        members: 'People IS (6), Sound IS (6), Music IS (7), Arcanea Guardians (10), Social Fleet (7), Partner Adapters (5), 9 Org Stewards',
+        role: 'Specialized domain execution with auto-activating skill rules (89 rules across 17 domains in skills/skill-rules.json).',
+        contract: 'agents/AGENT_REGISTRY.md + skills/SKILL_REGISTRY.md'
+      }
+    ],
+    productLadder: [
+      {
+        rung: 'Rung 0 · Free Gravity Well',
+        price: '$0 (Free)',
+        skus: 'Golden Age of Intelligence (Web Reader), Soulbook Framework, Vibe OS Guide, Prompt Library',
+        delivery: 'Instant browser reader + optional Resend email capture',
+        status: 'LIVE · Normalized in lib/products.ts (PR #1067)'
+      },
+      {
+        rung: 'Rung 1 · Impulse Context Wedge',
+        price: '$1',
+        skus: 'reality.md Starter Pack (reality-md-starter-pack)',
+        delivery: 'Stripe Checkout (100c) -> Instant ZIP (reality.md template + AGENTS.md bootstrap + 10 prompts)',
+        status: 'WIRED · PR #1067 (lib/products.ts + checkout + delivery)'
+      },
+      {
+        rung: 'Rung 2 · Quick-Win Creator Pack',
+        price: '$7',
+        skus: '25 Suno Power Prompts Pack (suno-power-pack-25)',
+        delivery: 'Stripe Checkout (700c) -> Instant PDF + Meta-Tag Arrangement Cheat Sheet',
+        status: 'WIRED · PR #1067 (lib/products.ts + checkout + delivery)'
+      },
+      {
+        rung: 'Rung 3 · UI & Music Core Packs',
+        price: '$19 – $27',
+        skus: 'Aurora UI Kit ($19) · Complete Suno Prompt Library ($27, 150+ prompts)',
+        delivery: 'Stripe Checkout (1900c / 2700c) -> PDF + Notion ZIP bundle',
+        status: 'LIVE · Fixed $27/2700c parity in PR #1067'
+      },
+      {
+        rung: 'Rung 4 · Flagship Operating Kits',
+        price: '$47',
+        skus: 'Creative AI Toolkit ($47) · Agentic Creator OS Creator Kit ($47)',
+        delivery: 'Stripe Checkout (4700c) -> Access Code + Quickstart & Complete Reference PDFs',
+        status: 'LIVE · Production Checkout Active'
+      },
+      {
+        rung: 'Rung 5 · Sovereign Systems & Field Kits',
+        price: '$67 – $97',
+        skus: 'Income Architecture ($67) · System Architect ($97) · Memory Palace OS ($97) · DPI Field Kit ($97) · Starlight Operator Pack ($97)',
+        delivery: 'Stripe Checkout / Waitlist Gate -> ZIP Field Kits + Access Codes',
+        status: 'LIVE · Waitlist-First / Self-Serve'
+      },
+      {
+        rung: 'Rung 6 · Pro Fleet & Team Blueprints',
+        price: '$147 – $497',
+        skus: 'Visual Creation Loop ($147) · Agent Fleet Pro ($147) · Command Center Template ($497) · Creation Chronicles ($497) · Team Blueprint License ($497)',
+        delivery: 'Self-serve multi-seat repository templates & async audit checklists (Zero 1:1 consulting per TRUTH.md)',
+        status: 'LIVE · TRUTH.md §1/§2 Self-Serve Enforced in PR #1067'
+      }
+    ],
+    milestoneLadder: [
+      {
+        id: 'F1–F2',
+        horizon: 'Horizon 1 · Foundation',
+        objective: '10-Org GitHub Federation, 9/9 .github Governance Repos (CODEOWNERS + AGENTS.md), 71/71 Dual Remotes, 65/65 Mirror SHA Parity',
+        owner: 'Antigravity + Architect',
+        verification: 'node scripts/org-federation-audit.mjs --check-drift --sync-governance',
+        status: 'COMPLETE (100%)'
+      },
+      {
+        id: 'F3–F4',
+        horizon: 'Horizon 1 · Foundation',
+        objective: 'Control-Plane Truth Convergence (TRUTH.md, OBJECTIVES.md, SYSTEM.md, WORKSPACE_MAP.md, mcp-registry.json v1.2.0, verify-lane.mjs)',
+        owner: 'Antigravity + Sentinel',
+        verification: 'frankxai/starlight-estate#54 + frankxai/agentic-ops#275 (121/121 tests)',
+        status: 'COMPLETE (100%)'
+      },
+      {
+        id: 'F5',
+        horizon: 'Horizon 1 · Foundation',
+        objective: 'Workstation Harness Doctor 20/20 Green + mcp-doctor Main Checkout Alignment + Zero Broken Skill Symlinks',
+        owner: 'Antigravity + Hermes',
+        verification: 'pwsh installers/doctor.ps1 (20/20 True) + mcp-doctor on main (v0.5.0)',
+        status: 'COMPLETE (100%)'
+      },
+      {
+        id: 'P1–P2',
+        horizon: 'Horizon 2 · Proof & Revenue',
+        objective: 'Sovereign Memory 1,106 Atoms + Eval-50 Hit@10 = 1.000 + 2h/12h/1w Autonomous Horizon Cadences Self-Healed',
+        owner: 'Antigravity + Sage + Queen',
+        verification: 'node scripts/horizon-test-runner.mjs --horizon all (Exit 0)',
+        status: 'COMPLETE (100%)'
+      },
+      {
+        id: 'P3–P5',
+        horizon: 'Horizon 2 · Proof & Revenue',
+        objective: 'Digital Product Ladder ($0 -> $1 -> $7 -> $27 -> $47 -> $97 -> $497) Wired & TRUTH.md Self-Serve Compliant',
+        owner: 'Antigravity + CPO',
+        verification: 'frankxai/frankx.ai-vercel-website#1067',
+        status: 'READY TO MERGE (PR #1067)'
+      },
+      {
+        id: 'S1–S4',
+        horizon: 'Horizon 3 · Scale & Cloud Mesh',
+        objective: 'Deploy Cloudflare Edge Bridge Worker to Prod Edge + Top Up OpenRouter + Prune Idle Railway Services (<$45/mo)',
+        owner: 'Operator + Claude Code + Codex',
+        verification: 'wrangler deploy + StarlightOpenRouterSpend Exit 0 + Railway Audit',
+        status: 'NEXT WAVE (Ready Prompts 2, 4, 5)'
+      },
+      {
+        id: 'S5–S7',
+        horizon: 'Horizon 3 · Scale & Cloud Mesh',
+        objective: 'Live Port 4321 Electron/Next.js Observatory Integration + Cross-Org Automated Release Syndication',
+        owner: 'Antigravity + Codex',
+        verification: 'Starlight-Intelligence/starlight-command-center#80 (7/7 tests)',
+        status: 'READY TO MERGE (PR #80)'
+      }
+    ],
+    failurePrevention: [
+      {
+        problem: 'verify-lane.mjs failed in git worktrees because path.basename(top) returned worktree folder name instead of repo name',
+        impact: 'Blocked pre-push verification in worktrees and rejected non-frankxai org remotes',
+        fix: 'Resolved repo name from git remote get-url origin and expanded org allowlist to all 10 federated GitHub orgs (starlight-estate#54)',
+        status: 'FIXED & VERIFIED'
+      },
+      {
+        problem: 'agentic-ops#275 failed CI (Registry Validation & Portfolio Governance) + hourly cron burned 1,488 private Actions runs/mo',
+        impact: 'Blocked 10-Org registry PR and exhausted frankxai private GitHub Actions billing quota',
+        fix: 'Aligned github_organizations.yaml to schema 1.0.0, added manifest & referential validator in validate_registry.py, disabled hourly cron, added draft PR guards (121/121 tests pass)',
+        status: 'FIXED & VERIFIED'
+      },
+      {
+        problem: 'mcp-registry.json pointed starlight-sis to non-existent mcp-server.js and included banned higgsfield-mcp',
+        impact: 'Broken MCP startup for SIS server and policy violation of Estate Rule 7 (Higgsfield ban)',
+        fix: 'Upgraded mcp-registry.json to v1.2.0: pointed starlight-sis to dist/mcp-server.js, retired higgsfield-mcp, added sis-memory-gateway & starlight-cloud-worker',
+        status: 'FIXED & VERIFIED'
+      },
+      {
+        problem: 'TRUTH.md, OBJECTIVES.md, SYSTEM.md, and WORKSPACE_MAP.md had conflicting repo counts (147 vs 192), agent counts (61 vs 151), and port numbers (3847 vs 4321)',
+        impact: 'Agents hallucinated stale ports, wrong agent counts, or attempted to edit reshape-frozen orgs',
+        fix: 'Synchronized all 4 control-plane SSOTs to 192 local repos, 10 GitHub Orgs, 71 federated repos, 12 harnesses, 151 agents, port 5200 Gateway, and port 4321 Observatory',
+        status: 'FIXED & VERIFIED'
+      },
+      {
+        problem: 'frankx.ai-vercel-website had $27 vs $29 price mismatch on suno-prompt-library, unnormalized golden-age-book, and 1:1 consulting copy',
+        impact: 'Stripe checkout charged $29 while page promised $27; legacy book lacked ProductRecord fields; consulting copy violated TRUTH.md',
+        fix: 'Wired normalizeProductRecord(), $1/$7 micro-SKUs, $27 (2700c) Stripe parity, and self-serve Team Blueprint License in frankx.ai-vercel-website#1067',
+        status: 'FIXED & VERIFIED'
+      },
+      {
+        problem: '9 active <Org>/.github governance repositories lacked CODEOWNERS and explicit Responsible Agent Team matrices',
+        impact: 'No automated GitHub codeowner gate or documented Steward/Executive Seat per organization',
+        fix: 'Added syncOrgGovernanceRepos() (--sync-governance) and deployed CODEOWNERS + updated AGENTS.md to all 9 active <Org>/.github repos',
+        status: 'FIXED & VERIFIED'
+      }
+    ]
+  };
+
   return {
     generatedAt: new Date().toISOString(),
     h2,
@@ -650,7 +837,8 @@ export function collectCommandCenterData({
     cloudPlatforms,
     experiments,
     operatorPlaybook,
-    nextPrompts
+    nextPrompts,
+    canonicalAtlas
   };
 }
 
@@ -663,7 +851,7 @@ function escapeHtml(str) {
 }
 
 export function renderCommandCenterHtml(data) {
-  const { h2, h12, h1w, ecoTelemetry, organizations, localHarnesses, cloudPlatforms, experiments, operatorPlaybook, nextPrompts } = data;
+  const { h2, h12, h1w, ecoTelemetry, organizations, localHarnesses, cloudPlatforms, experiments, operatorPlaybook, nextPrompts, canonicalAtlas } = data;
   const totalRepos = organizations.reduce((acc, o) => acc + o.repos.length, 0);
   const publicRepos = organizations.reduce((acc, o) => acc + o.repos.filter((r) => r.visibility === 'public').length, 0);
   const privateRepos = totalRepos - publicRepos;
@@ -1218,6 +1406,9 @@ export function renderCommandCenterHtml(data) {
     <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-playbook" id="tab-playbook" data-tab="playbook">
       5. Slash Commands, Daemons &amp; Next Prompts <span class="tab-count">5 Ready Prompts</span>
     </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-atlas" id="tab-atlas" data-tab="atlas">
+      6. Canonical Atlas: Agents, Products, Milestones &amp; Fixes <span class="tab-count">151 Agents · 7 Rungs</span>
+    </button>
   </nav>
 
   <!-- PANEL 1: EXECUTIVE PULSE (WHAT WE HAVE VS WHAT WE HOPE FOR) -->
@@ -1524,6 +1715,10 @@ export function renderCommandCenterHtml(data) {
         </div>
         <p style="font-size:13.5px;color:var(--ink-secondary);">${escapeHtml(org.meta.mission)}</p>
         <div class="kv-list">
+          <div class="kv-key">Org Steward</div>
+          <div class="kv-val mono" style="color:var(--emerald);"><strong>${escapeHtml(org.steward || 'starlight-steward')}</strong> · <code>CODEOWNERS: @frankxai</code></div>
+          <div class="kv-key">Executive Seat</div>
+          <div class="kv-val"><strong>${escapeHtml(org.executiveSeat || 'Chief Architecture & Ecosystem Officer (CAEO)')}</strong></div>
           <div class="kv-key">Council Lead</div>
           <div class="kv-val"><strong>${escapeHtml(org.meta.councilLead)}</strong></div>
           <div class="kv-key">Brand Specialists</div>
@@ -1727,6 +1922,134 @@ export function renderCommandCenterHtml(data) {
         </div>
         <div class="prompt-box">${escapeHtml(np.promptText)}</div>
       </div>`).join('')}
+    </div>
+  </section>
+
+  <!-- PANEL 6: CANONICAL ATLAS (ALL AGENTS, PRODUCTS, MILESTONES & FAILURE PREVENTION) -->
+  <section class="tab-panel" id="panel-atlas" role="tabpanel" aria-labelledby="tab-atlas">
+    <div class="section-head">
+      <div>
+        <h2>5-Tier Agent Topology (151 Named Agents · 6 Executive Seats · 10 Universal IS · 12 Harnesses)</h2>
+        <p>Every agent tier maps to a deterministic Markdown contract, auto-activating skill rules (89 rules across 17 domains), and an accountable human/steward gate.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom: 28px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent Tier</th>
+            <th>Scale</th>
+            <th>Key Members &amp; Seats</th>
+            <th>Operational Mandate</th>
+            <th>Contract &amp; Registry SSOT</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(canonicalAtlas?.agentTiers || []).map((t) => `
+          <tr>
+            <td><strong>${escapeHtml(t.tier)}</strong></td>
+            <td><span class="pill gold">${escapeHtml(t.count)}</span></td>
+            <td class="mono" style="font-size:12px;">${escapeHtml(t.members)}</td>
+            <td>${escapeHtml(t.role)}</td>
+            <td class="mono" style="font-size:11.5px;color:var(--cyan);">${escapeHtml(t.contract)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>Self-Serve Digital Product Ladder ($0 &rarr; $1 &rarr; $7 &rarr; $27 &rarr; $47 &rarr; $97 &rarr; $497)</h2>
+        <p>Aligned with <code>TRUTH.md</code> &sect;1/&sect;2 (100% DIY / self-serve; zero 1:1 consulting or retainer offers) and wired in <code>frankx.ai-vercel-website#1067</code>.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom: 28px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Ladder Rung</th>
+            <th>Price</th>
+            <th>Canonical SKUs</th>
+            <th>Delivery &amp; Checkout Mechanism</th>
+            <th>Verification Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(canonicalAtlas?.productLadder || []).map((p) => `
+          <tr>
+            <td><strong>${escapeHtml(p.rung)}</strong></td>
+            <td><span class="pill emerald">${escapeHtml(p.price)}</span></td>
+            <td><strong>${escapeHtml(p.skus)}</strong></td>
+            <td class="mono" style="font-size:12px;">${escapeHtml(p.delivery)}</td>
+            <td><span class="pill cyan">${escapeHtml(p.status)}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>Q4 Horizon 1–3 Milestone Ladder (Foundation &rarr; Proof &amp; Revenue &rarr; Cloud Mesh Scale)</h2>
+        <p>From current verified machine state to full local+cloud autonomous operation.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom: 28px;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Horizon</th>
+            <th>Milestone Objective</th>
+            <th>Owner</th>
+            <th>Verification Gate &amp; Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(canonicalAtlas?.milestoneLadder || []).map((m) => `
+          <tr>
+            <td class="mono"><strong>${escapeHtml(m.id)}</strong></td>
+            <td><span class="pill violet">${escapeHtml(m.horizon)}</span></td>
+            <td><strong>${escapeHtml(m.objective)}</strong></td>
+            <td class="mono">${escapeHtml(m.owner)}</td>
+            <td>
+              <span class="pill ${m.status.includes('COMPLETE') ? 'emerald' : 'gold'}">${escapeHtml(m.status)}</span>
+              <div class="card-meta" style="margin-top:4px;">${escapeHtml(m.verification)}</div>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2>Old-vs-New Agent Failure Prevention Matrix (Root Problems Solved)</h2>
+        <p>Every recurring agent failure mode discovered across the estate and the deterministic guardrail now preventing regression.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Old Agent Problem / Drift</th>
+            <th>Previous Failure Impact</th>
+            <th>New Deterministic Fix &amp; Guardrail</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(canonicalAtlas?.failurePrevention || []).map((f) => `
+          <tr>
+            <td><strong>${escapeHtml(f.problem)}</strong></td>
+            <td style="color:var(--ink-secondary);">${escapeHtml(f.impact)}</td>
+            <td>${escapeHtml(f.fix)}</td>
+            <td><span class="pill emerald">${escapeHtml(f.status)}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
     </div>
   </section>
 

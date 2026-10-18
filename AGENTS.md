@@ -114,7 +114,7 @@ SIS is engineered to enable the orchestration of specialized, autonomous LLM swa
 ### 2. The Swarm Harness Process
 1. **Define Swarm Personalities**: Author markdown profiles in `agents/starlight-*.md` outlining an agent's Tier, Scope, Invariants, and Voice. Register them under the flat council registry `agents/AGENT_REGISTRY.md`.
 2. **Spawn Skills & Triggers**: Write skill specifications under `skills/<domain>/<skill-name>.md` and associate them with activation keywords in `skills/skill-rules.json`.
-3. **Mount the MCP Server**: Expose the server using Node (`mcp-server.js`). This injects memory management tools (`sis_vault_search`, `sis_append_entry`) and SAGE orchestration tools directly into the agents' execution context.
+3. **Mount the MCP Server**: Expose the server using Node (`dist/mcp-server.js`). This injects memory management tools (`sis_vault_search`, `sis_append_entry`) and SAGE orchestration tools directly into the agents' execution context.
 4. **Execute Goal Checklists**: Spin up a goal session using `starlight goal init "<goal-description>"`. SAGE automatically generates a checklist, tracks state, takes git checkpoints, and triggers automated rollbacks if Sentinel audits fail.
 
 ### 3. Practical Example: Swarm Node Specification
