@@ -228,6 +228,21 @@ Test: Does the generated surface make a builder feel the system thinking, moving
 5. Queen driver may be extended (separate change) to print a "skill recipe" line for visual motion.
 6. The l99 reference surfaces (site/queen-vision.html, docs/queen-motion/index.html, site/src/app/queen/page.tsx, docs/visuals/) remain untouched — they are the canonical example this skill generalizes from.
 
+### Procedure 8: The Starlight Visual Estate Observatory & Daily/Weekly CEO Snapshot Practice (`queen:snapshot:all` + `queen:observatory`)
+
+To give the CEO/Investor and all autonomous swarms a deterministic, longitudinal visual memory of every site, cockpit, UI/UX component, and GitHub surface:
+
+1. **Layer 1 — Single-Tab Sequential CDP Capture (`npm run queen:snapshot:screenshots`):**
+   - Runs `tools/queen/capture-estate-screenshots.mjs` against `http://127.0.0.1:9223/wsEndpoint` (honoring the Browser Hub Mandate, never calling `playwright.launch()`).
+   - Sequentially visits all 30 estate surfaces (`01`–`07` Queen v2.0 11-Tab Cockpit, `08` Unified Command Center, `09` Starlight Voice Live Sphere, `10`–`25` Production Websites, Product Storefronts & Scrolled UI/UX Components, `26`–`30` GitHub Flagship READMEs & Orgs) at `1440x900`, recording PNGs, SHA-256 visual hashes, and DOM telemetry into `snapshots/YYYY-MM-DD-visual-estate-snapshot.json`.
+2. **Layer 2 — Executive Deck & Cinema Compilation (`npm run queen:snapshot:deck`):**
+   - Runs `tools/queen/executive-snapshot-deck.mjs` to compile a zero-dependency 36-slide Office Open XML PowerPoint presentation (`YYYY-MM-DD-Starlight-CEO-Investor-Snapshot.pptx`), a 36-slide interactive HTML5 deck (`YYYY-MM-DD-ceo-investor-deck.html`), and longitudinal baseline metadata (`snapshots/YYYY-MM-DD-executive-snapshot.json`) mapping all 30 Founder Intents (`I-001`..`I-030`) and 7 Strategic Objectives (`O1`..`O7`).
+3. **Layer 3 — Memory Vault & MCP Compounding:**
+   - Persists each snapshot baseline into `memory/vaults/operational.jsonl` and the `starlight-memory` MCP server (`memory_remember` in `operational` and `strategic` vaults) with SHA-256 visual provenance.
+4. **Layer 4 — Cloud Vault Sync & Live Cinema Launch (`npm run queen:observatory`):**
+   - Runs `tools/queen/launch-visual-observatory.mjs` to mirror the dated snapshot bundle into `OneDrive/Starlight Creative Vault/01_ESTATE_SNAPSHOTS/YYYY-MM-DD/`, generate the 30-surface 4K Master Contact Sheet (`00-ESTATE-30-SURFACE-MASTER-GRID.png`), and launch the interactive **Starlight Visual Observatory Cinema** (`starlight-visual-observatory-cinema.html`) directly on the operator's screen.
+
 This skill is ready. Write it. Activate it. Use it to give every sovereign builder the same living visual heart the Queen now has.
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1. Vision skill. Queen v0.2 Visual Composition Layer made executable, reusable, excellence-gated. For any vertical. For the builder who wants the intelligence to be felt. l99 complete. The swarms are now portable.
+

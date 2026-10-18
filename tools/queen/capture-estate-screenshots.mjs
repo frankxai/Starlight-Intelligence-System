@@ -526,11 +526,34 @@ async function main() {
   fs.mkdirSync(SNAPSHOT_DIR, { recursive: true });
 
   const onlyV2Tabs = process.argv.includes('--only-v2-tabs');
-  const activeSurfaces = onlyV2Tabs
-    ? SURFACES_TO_CAPTURE.filter((s) =>
-        ['05-queen-v2-subscriptions', '06-queen-v2-conductor', '07-queen-v2-swarm-intents'].includes(s.id)
-      )
-    : SURFACES_TO_CAPTURE;
+  const onlyObservatory = process.argv.includes('--observatory');
+  const OBSERVATORY_SURFACES = [
+    {
+      id: '00-ESTATE-30-SURFACE-MASTER-GRID',
+      category: 'Executive Poster',
+      brand: 'Starlight Visual Observatory',
+      title: 'Starlight Estate — 30/30 Live Surfaces Master Contact Sheet (2026-10-18)',
+      url: 'file:///C:/Users/frank/OneDrive/Starlight%20Creative%20Vault/01_ESTATE_SNAPSHOTS/2026-10-18/00-ESTATE-30-SURFACE-MASTER-GRID.html',
+      waitMs: 1400,
+      repo: 'Starlight-Intelligence-System',
+    },
+    {
+      id: '00-VISUAL-OBSERVATORY-LIVE-CINEMA',
+      category: 'Executive Cinema',
+      brand: 'Starlight Visual Observatory',
+      title: 'Starlight Visual Observatory & Coding Agent Live Cinema (Auto-Tour Mode)',
+      url: 'file:///C:/Users/frank/starlight/command-center/starlight-visual-observatory-cinema.html',
+      waitMs: 1400,
+      repo: 'Starlight-Intelligence-System',
+    },
+  ];
+  const activeSurfaces = onlyObservatory
+    ? OBSERVATORY_SURFACES
+    : onlyV2Tabs
+      ? SURFACES_TO_CAPTURE.filter((s) =>
+          ['05-queen-v2-subscriptions', '06-queen-v2-conductor', '07-queen-v2-swarm-intents'].includes(s.id)
+        )
+      : SURFACES_TO_CAPTURE;
 
   let tempQueenServer = null;
   try {
@@ -685,6 +708,18 @@ async function main() {
         await tempQueenServer.close();
       } catch {}
     }
+  }
+
+  if (onlyObservatory) {
+    const oneDriveDir = 'C:/Users/frank/OneDrive/Starlight Creative Vault/01_ESTATE_SNAPSHOTS/2026-10-18';
+    fs.mkdirSync(oneDriveDir, { recursive: true });
+    for (const r of results) {
+      if (r.fileName && fs.existsSync(path.join(ARTIFACT_DIR, r.fileName))) {
+        fs.copyFileSync(path.join(ARTIFACT_DIR, r.fileName), path.join(oneDriveDir, r.fileName));
+      }
+    }
+    console.log(`\n[OBSERVATORY] Captured ${results.length} observatory master images and synced to OneDrive Creative Vault.`);
+    return;
   }
 
   const manifestPath = path.join(SNAPSHOT_DIR, '2026-10-18-visual-estate-snapshot.json');
