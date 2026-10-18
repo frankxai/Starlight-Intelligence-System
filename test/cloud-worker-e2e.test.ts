@@ -259,3 +259,55 @@ describe('Configured D1 acknowledgement ordering (synthetic component)', () => {
   });
 });
 
+import { SwarmCoordinator } from '../services/starlight-cloud-worker/src/index.js';
+
+describe('Direct SwarmCoordinator containment (synthetic requests)', () => {
+  const expected = {
+    error: 'Service Unavailable',
+    code: 'swarm_coordinator_unavailable',
+    message: 'Swarm coordination unavailable: verified identity and durable lease arbitration are not configured.',
+  };
+  for (const [method, path] of [
+    ['POST', '/lease/acquire'],
+    ['POST', '/v1/swarm/lease/acquire'],
+    ['GET', '/lease/acquire'],
+    ['OPTIONS', '/lease/acquire'],
+    ['POST', '/lease/release'],
+    ['GET', '/health'],
+    ['GET', '/'],
+    ['DELETE', '/other'],
+  ] as const) {
+    it(`refuses direct ${method} ${path} without a lease or active claim`, async () => {
+      let effects = 0;
+      const forbidden = new Proxy({}, {
+        get() { effects++; throw new Error('Protected binding accessed'); },
+      });
+      const coordinator = new SwarmCoordinator(forbidden, forbidden);
+      const response = await coordinator.fetch(new Request(`https://synthetic.invalid${path}`, {
+        method,
+        headers: { Authorization: 'Bearer synthetic', 'X-Starlight-Tenant': 'synthetic-tenant' },
+        ...(method === 'POST' ? { body: '{invalid-json' } : {}),
+      }));
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get('Cache-Control'), 'no-store');
+      assert.match(response.headers.get('Content-Type') || '', /^application\/json/);
+      assert.deepEqual(await response.json(), expected);
+      assert.equal(effects, 0);
+    });
+  }
+
+  it('does not read the request, state or environment while unavailable', async () => {
+    let effects = 0;
+    const forbidden = new Proxy({}, {
+      get() { effects++; throw new Error('Protected input accessed'); },
+    });
+    const coordinator = new SwarmCoordinator(forbidden, forbidden);
+    const response = await coordinator.fetch(forbidden as Request);
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get('Cache-Control'), 'no-store');
+    assert.deepEqual(await response.json(), expected);
+    assert.equal(effects, 0);
+  });
+});
+
+

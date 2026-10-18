@@ -565,17 +565,16 @@ export class SwarmCoordinator {
     this.env = env;
   }
 
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    if (url.pathname.endsWith('/lease/acquire')) {
-      return new Response(JSON.stringify({ status: 'acquired', timestamp: new Date().toISOString() }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    return new Response(JSON.stringify({ status: 'active', role: 'SwarmCoordinator' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+  async fetch(_request: Request): Promise<Response> {
+    // The direct Durable Object surface has no verified caller or durable
+    // lease arbitration. Do not manufacture an acquired lease or active state.
+    return new Response(JSON.stringify({
+      error: 'Service Unavailable',
+      code: 'swarm_coordinator_unavailable',
+      message: 'Swarm coordination unavailable: verified identity and durable lease arbitration are not configured.',
+    }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 }
