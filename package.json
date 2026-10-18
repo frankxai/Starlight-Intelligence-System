@@ -210,8 +210,8 @@
     "version:packages": "changeset version",
     "release:packages": "node scripts/publish-npm-ecosystem.mjs",
     "queen:snapshot:screenshots": "npx tsx tools/queen/capture-estate-screenshots.mjs",
-    "queen:snapshot:deck": "node tools/queen/executive-snapshot-deck.mjs",
-    "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/executive-snapshot-deck.mjs && node tools/queen/launch-visual-observatory.mjs",
+    "queen:snapshot:deck": "node tools/queen/render-keynote-grade-deck.mjs",
+    "queen:snapshot:all": "npx tsx tools/queen/capture-estate-screenshots.mjs && node tools/queen/render-keynote-grade-deck.mjs && node tools/queen/launch-visual-observatory.mjs",
     "queen:observatory": "node tools/queen/launch-visual-observatory.mjs --open"
   },
   "files": [
