@@ -6,8 +6,8 @@
 
 - [Starlight Intelligence Protocol (SIP) — canonical spec](https://starlightintelligence.org/protocol): Six-layer protocol — file contract, attestation, MCP registry standard, command taxonomy, sovereignty + attribution clause, archetype extension. v1.1.1 (2026-05-06).
 - [Architecture — 10 Intelligence Systems](https://starlightintelligence.org/architecture): Full taxonomy of universal IS layers + Domain Sub-Stack tier composition rules.
-- [Quickstart — current source path](https://starlightintelligence.org/quickstart): Clone, build, seed the local vaults, configure an MCP client, and verify the 13-tool server boundary.
-- [Distribution state](https://starlightintelligence.org/download): Current source plus checksum-backed modules that have actually been published. SIP Starter v8.3.0 is source-only until a release archive exists.
+- [Quickstart — current source path](https://starlightintelligence.org/quickstart): Clone, build, seed the local vaults, configure an MCP client, and inspect the server's current tool inventory.
+- [Distribution state](https://starlightintelligence.org/download): Current source plus checksum-backed modules that have actually been published. SIP Starter v8.5.2 is source-only until a release archive exists.
 - [Explainer — what SIS is and isn't](https://starlightintelligence.org/explainer): Long-form explanation for newcomers.
 
 ## Reference Domain Sub-Stack verticals
@@ -32,8 +32,8 @@
 
 ## Source + distribution
 
-- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + current operational layer. Use this path for v8.3.0.
-- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Published operational package v6.0.1 as verified July 24, 2026. It is not the current v8.3.0 distribution path.
+- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + current operational layer. Use this path for v8.5.2.
+- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Published operational package v8.5.1 as verified October 18, 2026. Use the source workflow for the current v8.5.2 checkout. The modular @starlight-intelligence/core, ai-sdk, and mcp registry entries are staging placeholders, not runtime releases.
 - [SIP adoption kit](https://github.com/frankxai/starlight): Eleven markdown files, no code. Ship your first attested artifact in 60 seconds.
 
 ## Attestation

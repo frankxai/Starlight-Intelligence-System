@@ -232,8 +232,8 @@ GET /api/vaults/frank    # Full vault data as JSON`}</Code>
 
         <Section id="mcp-server" title="MCP Server">
           <P>
-            Build the current repository first. As verified on July 24, 2026,
-            npm still serves v6.0.1 while the repository is v8.3.0.
+            Build the current repository first. As verified on October 18, 2026,
+            npm serves v8.5.1 while the repository is v8.5.2.
           </P>
           <Code>{`git clone https://github.com/frankxai/Starlight-Intelligence-System
 cd Starlight-Intelligence-System
@@ -251,7 +251,7 @@ node dist/cli.js init --vaults`}</Code>
   }
 }`}</Code>
           <P>
-            The current server exposes 13 tools, including{" "}
+            Inspect the server&apos;s current tool inventory, including{" "}
             <code className="text-slate-300">sis_vault_search</code>,{" "}
             <code className="text-slate-300">sis_recent_entries</code>,{" "}
             <code className="text-slate-300">sis_append_entry</code>,{" "}
