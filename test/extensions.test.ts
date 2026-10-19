@@ -6,9 +6,10 @@ import { join } from "node:path";
 import { BUILTIN_COMMANDS, findExtension, npmShimTarget, runExtension } from "../src/extensions.js";
 
 // The shape npm's cmd-shim writes (copied from a real `npm install -g` shim).
-function npmCmdShim(rel: string, { prog = "node", flags = "" } = {}): string {
+function npmCmdShim(rel: string, { prog = "node", flags = "", vars = [] as string[] } = {}): string {
   return [
-    "@ECHO off", "GOTO start", ":find_dp0", "SET dp0=%~dp0", "EXIT /b", ":start", "SETLOCAL", "CALL :find_dp0", "",
+    "@ECHO off", "GOTO start", ":find_dp0", "SET dp0=%~dp0", "EXIT /b", ":start", "SETLOCAL", "CALL :find_dp0",
+    ...vars.map(v => `@SET ${v}`), "",
     'IF EXIST "%dp0%\\node.exe" (', '  SET "_prog=%dp0%\\node.exe"', ") ELSE (", `  SET "_prog=${prog}"`,
     "  SET PATHEXT=%PATHEXT:;.JS;=;%", ")", "",
     `endLocal & goto #_undefined_# 2>NUL || title %COMSPEC% & "%_prog%" ${flags} "%dp0%\\${rel}" %*`, "",
@@ -16,10 +17,10 @@ function npmCmdShim(rel: string, { prog = "node", flags = "" } = {}): string {
 }
 
 const RECORDER = (log: string) =>
-  `#!/usr/bin/env node\nrequire("node:fs").writeFileSync(${JSON.stringify(log)}, JSON.stringify({ argv: process.argv.slice(2), execArgv: process.execArgv }));\nprocess.exit(7);\n`;
+  `#!/usr/bin/env node\nrequire("node:fs").writeFileSync(${JSON.stringify(log)}, JSON.stringify({ argv: process.argv.slice(2), execArgv: process.execArgv, shimVar: process.env.STARLIGHT_SHIM_VAR }));\nprocess.exit(7);\n`;
 
 /** A global bin dir holding one npm-style Windows shim and its script. */
-function windowsInstall(name: string, opts: { prog?: string; flags?: string; script?: string } = {}) {
+function windowsInstall(name: string, opts: { prog?: string; flags?: string; script?: string; vars?: string[] } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "sis-ext-"));
   const log = join(dir, "args.json");
   const script = opts.script ?? "cli.cjs";
@@ -57,7 +58,7 @@ describe("starlight extensions", () => {
 
   it("resolves an npm .cmd shim to its script on any host, so no shell is involved", () => {
     const { dir, script } = windowsInstall("spend");
-    assert.deepEqual(npmShimTarget(join(dir, "starlight-spend.cmd")), { script, flags: [] });
+    assert.deepEqual(npmShimTarget(join(dir, "starlight-spend.cmd")), { script, flags: [], env: {} });
     const found = findExtension("spend", { PATH: dir }, "win32", "node");
     assert.deepEqual(found && { file: found.file, prefix: found.prefix }, { file: "node", prefix: [script] });
   });
@@ -69,7 +70,25 @@ describe("starlight extensions", () => {
 
   it("accepts an extensionless bin when the shim's program is node", () => {
     const { dir, script } = windowsInstall("plain", { script: "starlight-plain" });
-    assert.deepEqual(npmShimTarget(join(dir, "starlight-plain.cmd")), { script, flags: [] });
+    assert.deepEqual(npmShimTarget(join(dir, "starlight-plain.cmd")), { script, flags: [], env: {} });
+  });
+
+  it("passes the environment npm copied from an env -S shebang to the extension", () => {
+    const { dir, log } = windowsInstall("envy", { vars: ["STARLIGHT_SHIM_VAR=from-shim"] });
+    const found = findExtension("envy", { PATH: dir }, "win32", process.execPath)!;
+    assert.deepEqual(found.env, { STARLIGHT_SHIM_VAR: "from-shim" });
+    assert.equal(runExtension(found, []), 7);
+    assert.equal(JSON.parse(readFileSync(log, "utf8")).shimVar, "from-shim");
+  });
+
+  it("refuses a shim whose environment value needs cmd.exe expansion", () => {
+    const { dir } = windowsInstall("expand", { vars: ["HOME_COPY=%USERPROFILE%"] });
+    assert.equal(findExtension("expand", { PATH: dir }, "win32"), null);
+  });
+
+  it("finds an extension in a quoted Windows PATH entry", () => {
+    const { dir, script } = windowsInstall("quotedpath");
+    assert.deepEqual(findExtension("quotedpath", { PATH: `"${dir}"` }, "win32", "node")?.prefix, [script]);
   });
 
   it("refuses shims that run another program or carry flags needing shell quoting", () => {
