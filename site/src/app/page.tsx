@@ -288,6 +288,17 @@ export default async function HomePage() {
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400">
+              First step: clone the repo and build it. The quickstart walks
+              through it in four steps. Stuck or have an idea?{" "}
+              <a
+                href="https://github.com/frankxai/Starlight-Intelligence-System/issues/new/choose"
+                className="inline-flex min-h-11 items-center font-medium text-white underline underline-offset-4 hover:text-slate-200"
+              >
+                Open a GitHub issue
+              </a>
+              .
+            </p>
 
             <dl className="mt-10 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.06] sm:grid-cols-4">
               <CensusStat value={String(CURRENT_METRICS.registeredAgents)} label="Agent definitions" />
@@ -716,7 +727,7 @@ export default async function HomePage() {
               href="/quickstart"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition-micro hover:bg-slate-200"
             >
-              Build from source
+              Start the quickstart
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <Link
@@ -727,6 +738,16 @@ export default async function HomePage() {
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
+          <p className="mt-6 text-sm text-slate-400">
+            Questions, bugs, or ideas go to{" "}
+            <a
+              href="https://github.com/frankxai/Starlight-Intelligence-System/issues/new/choose"
+              className="font-medium text-white underline underline-offset-4 hover:text-slate-200"
+            >
+              GitHub issues
+            </a>
+            . That is the community channel today.
+          </p>
         </div>
       </section>
     </div>

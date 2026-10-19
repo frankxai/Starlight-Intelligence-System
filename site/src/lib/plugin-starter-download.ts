@@ -35,6 +35,22 @@ export const PLUGIN_MODULES_PLUGINS = [
   "creator-product-kit",
 ] as const;
 
+// The checksum-backed June archives store marketplace.json at their root.
+// Current Codex discovers local manifests under .agents/plugins instead.
+// Copy after verifying and extracting the original archive; do not rewrite it.
+export const PLUGIN_MODULES_LAYOUT_REPAIR =
+  `node -e "const fs = require('node:fs'); fs.mkdirSync('.agents/plugins', { recursive: true }); fs.copyFileSync('marketplace.json', '.agents/plugins/marketplace.json');"`;
+
+export const PLUGIN_MODULES_INSTALL = [
+  `unzip ${PLUGIN_MODULES_MODULE_NAME}.zip -d starlight-public-modules`,
+  "cd starlight-public-modules",
+  PLUGIN_MODULES_LAYOUT_REPAIR,
+  "codex plugin marketplace add .",
+  ...PLUGIN_MODULES_PLUGINS.map(
+    (plugin) => `codex plugin add ${plugin}@starlight-public-modules`,
+  ),
+] as const;
+
 export const PLUGIN_PRODUCT_KITS = [
   {
     label: "Founder Command Kit",
@@ -163,13 +179,17 @@ export function getPluginModulesLatestManifest() {
     })),
     plugins: PLUGIN_MODULES_PLUGINS,
     marketplaceName: "starlight-public-modules",
-    install: [
-      `unzip ${PLUGIN_MODULES_MODULE_NAME}.zip`,
-      "codex plugin marketplace add <path-to-extracted-bundle>",
-      ...PLUGIN_MODULES_PLUGINS.map(
-        (plugin) => `codex plugin add ${plugin}@starlight-public-modules`,
-      ),
-    ],
+    layoutCompatibility: {
+      status: "requires-layout-repair",
+      verifiedWith: "@openai/codex@0.163.0",
+      verifiedAt: "2026-10-18",
+      originalManifest: "marketplace.json",
+      loaderManifest: ".agents/plugins/marketplace.json",
+      repairCommand: PLUGIN_MODULES_LAYOUT_REPAIR,
+      individualKitNote:
+        "Run the same layout repair from an extracted individual kit directory before adding its local marketplace.",
+    },
+    install: PLUGIN_MODULES_INSTALL,
     privateSuitePolicy:
       "The full 52-plugin suite remains private-only; public distribution uses sanitized wrapper modules.",
   };

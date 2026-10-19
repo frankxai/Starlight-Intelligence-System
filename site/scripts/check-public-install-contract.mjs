@@ -6,6 +6,9 @@ import { fileURLToPath } from "node:url";
 
 const SITE_ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const REPO_ROOT = resolve(SITE_ROOT, "..");
+const SOURCE_VERSION = JSON.parse(
+  readFileSync(join(REPO_ROOT, "package.json"), "utf8"),
+).version;
 const SEARCH_ROOTS = [
   join(SITE_ROOT, "src"),
   join(SITE_ROOT, "public"),
@@ -43,7 +46,7 @@ const forbidden = [
   {
     pattern:
       /(?:npm|pnpm|yarn)\s+(?:install|add)\s+@arcanea\/starlight-intelligence-system/g,
-    reason: "the registry package is v6.0.1, not the current v8.3.0 source",
+    reason: "the source workflow must build the checkout rather than substitute a registry release",
   },
   {
     pattern:
@@ -102,25 +105,28 @@ requireMarkers(join(SITE_ROOT, "src/app/quickstart/page.tsx"), [
   "git clone https://github.com/frankxai/Starlight-Intelligence-System",
   "npm run build",
   "/path/to/Starlight-Intelligence-System/dist/mcp-server.js",
-  "result.tools contains 13 sis_* tool definitions",
+  "result.tools contains the server's current sis_* tool definitions",
   "content",
   "~/.starlight/vaults/technical.jsonl",
   "npm serves",
-  "v6.0.1",
+  "v8.5.1",
+  `v${SOURCE_VERSION}`,
   "~/.config/opencode/opencode.json",
 ]);
 
 requireMarkers(join(SITE_ROOT, "src/app/docs/page.tsx"), [
   "git clone https://github.com/frankxai/Starlight-Intelligence-System",
   "/path/to/Starlight-Intelligence-System/dist/mcp-server.js",
-  "The current server exposes 13 tools",
-  "npm still serves v6.0.1",
+  "Inspect the server&apos;s current tool inventory",
+  "npm serves v8.5.1",
+  `v${SOURCE_VERSION}`,
 ]);
 
 requireMarkers(join(SITE_ROOT, "src/app/download/page.tsx"), [
   "Inspect source",
   "A checksum-backed SIP Starter",
   "The machine-readable endpoint reports the same",
+  `SIP Starter v${SOURCE_VERSION}`,
 ]);
 
 requireMarkers(join(SITE_ROOT, "src/lib/sip-download.ts"), [
@@ -128,13 +134,14 @@ requireMarkers(join(SITE_ROOT, "src/lib/sip-download.ts"), [
   "tag: null",
   "releaseUrl: null",
   "assets: []",
-  "No v8.3.0 tag, release, or checksum-backed SIP Starter archive has been published",
+  `SIP_STARTER_VERSION = "${SOURCE_VERSION}"`,
+  `No v${SOURCE_VERSION} tag, release, or checksum-backed SIP Starter archive has been published`,
 ]);
 
 requireMarkers(join(SITE_ROOT, "public/llms.txt"), [
-  "Use this path for v8.3.0",
-  "Published operational package v6.0.1 as verified July 24, 2026",
-  "SIP Starter v8.3.0 is source-only until a release archive exists",
+  `Use this path for v${SOURCE_VERSION}`,
+  "Published operational package v8.5.1 as verified October 18, 2026",
+  `SIP Starter v${SOURCE_VERSION} is source-only until a release archive exists`,
 ]);
 
 requireMarkers(join(SITE_ROOT, "public/agents.md"), [
