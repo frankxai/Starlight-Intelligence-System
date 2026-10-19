@@ -17,12 +17,16 @@ import { randomBytes } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmdirSync,
   writeFileSync,
   rmSync,
   chmodSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { SisGatewayCore } from './server.js';
+import { acquireLock, breakStaleLock, inspectLock } from './lock.js';
 import type { GatewayRequest } from './protocol.js';
 
 // ── Types ────────────────────────────────────────────────────
@@ -69,6 +73,16 @@ async function readBody(req: IncomingMessage): Promise<string> {
   });
 }
 
+function isProcessDead(pid: unknown): boolean {
+  if (typeof pid !== 'number' || !Number.isSafeInteger(pid) || pid < 1) return false;
+  try {
+    process.kill(pid, 0);
+    return false;
+  } catch (err) {
+    return (err as NodeJS.ErrnoException).code === 'ESRCH';
+  }
+}
+
 // ── SIS Gateway Daemon ───────────────────────────────────────
 
 export class SisGatewayDaemon {
@@ -77,6 +91,7 @@ export class SisGatewayDaemon {
   private token: string = '';
   private spawnLockPath: string;
   private spawnLockAcquired = false;
+  private releaseLockFn: (() => void) | null = null;
   private server: import('node:http').Server | null = null;
 
   constructor(opts: DaemonOptions = {}) {
@@ -85,21 +100,66 @@ export class SisGatewayDaemon {
     this.spawnLockPath = join(this.storageRoot, SPAWN_LOCK_NAME);
   }
 
+  private tryBreakDeadSpawnLock(lockPath: string): boolean {
+    const inspection = inspectLock(lockPath);
+    if (!inspection.locked) return true;
+    if (!inspection.corrupted && inspection.meta?.token) {
+      try {
+        return breakStaleLock(lockPath, inspection.meta.token);
+      } catch {
+        return false;
+      }
+    }
+    // Legacy empty lock directory (pre-lock.ts) paired with a dead PID in gateway.json
+    try {
+      const entries = readdirSync(lockPath);
+      if (entries.length === 0) {
+        const gwJsonPath = join(this.storageRoot, GATEWAY_JSON);
+        if (existsSync(gwJsonPath)) {
+          const info = JSON.parse(readFileSync(gwJsonPath, 'utf-8')) as Partial<DaemonInfo>;
+          if (isProcessDead(info.pid)) {
+            rmdirSync(lockPath);
+            return true;
+          }
+        }
+      }
+    } catch {
+      return false;
+    }
+    return false;
+  }
+
   /**
    * Start the HTTP daemon.
-   * Returns the bound port. Throws if the spawn-guard lock is already held.
+   * Returns the bound port. Throws if the spawn-guard lock is already held by a live process.
    */
   async start(opts: DaemonOptions = {}): Promise<number> {
-    // Acquire spawn guard
+    if (!existsSync(this.storageRoot)) {
+      mkdirSync(this.storageRoot, { recursive: true });
+    }
+
+    // Acquire spawn guard (with dead-PID stale lock recovery)
     const lockPath = this.spawnLockPath;
     try {
-      mkdirSync(lockPath);
+      this.releaseLockFn = await acquireLock(lockPath, { timeoutMs: 150, retryMs: 25 });
       this.spawnLockAcquired = true;
     } catch {
-      throw new Error(
-        `SIS gateway daemon already running (spawn guard at ${lockPath}). ` +
-        'Use the existing daemon or stop it first.'
-      );
+      if (this.tryBreakDeadSpawnLock(lockPath)) {
+        try {
+          this.releaseLockFn = await acquireLock(lockPath, { timeoutMs: 150, retryMs: 25 });
+          this.spawnLockAcquired = true;
+        } catch {
+          throw new Error(
+            `SIS gateway daemon already running (spawn guard at ${lockPath}). ` +
+            'Use the existing daemon or stop it first.'
+          );
+        }
+      } else {
+        throw new Error(
+          `SIS gateway daemon already running (spawn guard at ${lockPath}). ` +
+          'Use the existing daemon or stop it first.'
+        );
+      }
     }
 
     // Generate token
@@ -217,7 +277,14 @@ export class SisGatewayDaemon {
 
   private releaseSpawnLock(): void {
     if (this.spawnLockAcquired) {
-      try { rmSync(this.spawnLockPath, { recursive: true, force: true }); } catch { /* ignore */ }
+      if (this.releaseLockFn) {
+        try { this.releaseLockFn(); } catch {
+          try { rmSync(this.spawnLockPath, { recursive: true, force: true }); } catch { /* ignore */ }
+        }
+        this.releaseLockFn = null;
+      } else {
+        try { rmSync(this.spawnLockPath, { recursive: true, force: true }); } catch { /* ignore */ }
+      }
       this.spawnLockAcquired = false;
     }
   }
