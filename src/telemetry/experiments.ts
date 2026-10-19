@@ -234,7 +234,7 @@ export class StarlightExperimentRunner {
       try {
         const content = readFileSync(join(arenaRunsDir, file), 'utf-8');
         const receipt = JSON.parse(content) as ArenaRunReceipt;
-        if (receipt.runId && Array.isArray(receipt.tasks)) {
+        if ((receipt.runId || receipt.round_id) && Array.isArray(receipt.tasks)) {
           await telemetry.recordArenaRun(receipt);
           synced++;
         }

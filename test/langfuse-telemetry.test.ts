@@ -166,6 +166,64 @@ describe('Starlight Langfuse Cloud (EU) Telemetry', () => {
     const res = await t.recordArenaRun(receipt);
     assert.equal(res, null);
   });
+
+  it('recordArenaRun supports FrankX round_id receipt schema with string[] contestants and visual_evidence', async () => {
+    const t = new StarlightTelemetry({ enabled: false });
+    const scored: Array<{ name: string; value: number; comment?: string }> = [];
+    const spans: Array<{ name: string }> = [];
+    let recordedTraceName = '';
+
+    // Inject mock client to verify score normalization (pass=1, partial=0.5, fail=0)
+    (t as unknown as { client: unknown }).client = {
+      trace: (opts: { name: string }) => {
+        recordedTraceName = opts.name;
+        return {
+          id: 'trace-r6-argon',
+          span: (sOpts: { name: string }) => {
+            spans.push(sOpts);
+            return { end: () => {} };
+          },
+          score: (scOpts: { name: string; value: number; comment?: string }) => {
+            scored.push(scOpts);
+          },
+        };
+      },
+      flushAsync: async () => {},
+    };
+
+    const frankxReceipt: ArenaRunReceipt = {
+      round_id: 'r6-argon-proving-ground-2026-10-14',
+      date: '2026-10-14',
+      title: 'Round 6 — Gemini 4 Argon Proving Ground',
+      methodology: 'Mechanical verification + CDP Browser Hub (:9223) visual inspection',
+      contestants: ['Gemini 4 Argon', 'Claude Fable 5.1', 'Claude Opus 5'],
+      visual_evidence: {
+        screenshots: ['/images/arena/r6-argon-model-arena.png'],
+        cdp_endpoint: 'http://localhost:9223/wsEndpoint',
+      },
+      tasks: [
+        {
+          id: 't1-nextjs16-rsc-arena-card',
+          category: 'coding',
+          prompt: 'Build strict model-intelligence row joiner',
+          results: {
+            'gemini-4-argon': { status: 'pass', latency_ms: 1840, cost_usd: 0.0082, notes: '5/5 asserts passed' },
+            'claude-fable-5-1': { status: 'partial', latency_ms: 2410, cost_usd: 0.031 },
+            'claude-opus-5': { status: 'fail', latency_ms: 3100, cost_usd: 0.042 },
+          },
+        },
+      ],
+    };
+
+    const res = await t.recordArenaRun(frankxReceipt);
+    assert.deepEqual(res, { traceId: 'trace-r6-argon' });
+    assert.equal(recordedTraceName, 'arena:r6-argon-proving-ground-2026-10-14');
+    assert.equal(spans.length, 1);
+    assert.equal(scored.length, 3);
+    assert.equal(scored[0]?.value, 1.0);
+    assert.equal(scored[1]?.value, 0.5);
+    assert.equal(scored[2]?.value, 0.0);
+  });
 });
 
 describe('Starlight Experiment Runner', () => {

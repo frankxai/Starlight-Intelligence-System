@@ -117,12 +117,180 @@ function Show-StarlightRepos {
     Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
 }
 
-# Helper: Run history sync across harnesses
-function Invoke-HistorySync {
+# ------------------------------------------------------------------------------
+# Starlight Console Palette & Zero-Mojibake Glyph Primitives (PS 5.1 + PS 7 safe)
+# ------------------------------------------------------------------------------
+# Using [char] code points keeps this file 100% 7-bit ASCII on disk so Windows
+# PowerShell 5.1 never misreads UTF-8 bytes as Windows-1252 ("ðŸ„", "âš¡", "ðŸš€").
+$script:AgyGlyphStar    = [string][char]0x2726 # ✦
+$script:AgyGlyphArrow   = [string][char]0x25B8 # ▸
+$script:AgyGlyphDot     = [string][char]0x00B7 # ·
+$script:AgyGlyphDiamond = [string][char]0x25C6 # ◆
+$script:AgyGlyphCheck   = [string][char]0x2713 # ✓
+$script:AgyGlyphRule    = [string][char]0x2500 # ─
+
+function global:Write-AgyTint {
+    param(
+        [string]$Text,
+        [string]$Rgb = '231,238,246',
+        [switch]$NoNewline
+    )
+    $esc = [char]27
+    $painted = '{0}[38;2;{1}m{2}{0}[0m' -f $esc, $Rgb, $Text
+    if ($NoNewline) {
+        Write-Host $painted -NoNewline
+    } else {
+        Write-Host $painted
+    }
+}
+
+function global:Format-AgyShortPath {
+    param([string]$Path)
+    if (-not $Path) { return '' }
+    $homeDir = $env:USERPROFILE
+    if ($homeDir -and $Path.StartsWith($homeDir, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return ('~' + $Path.Substring($homeDir.Length)).Replace('\', '/')
+    }
+    return $Path.Replace('\', '/')
+}
+
+function global:Get-AgyRepoTelemetry {
+    param(
+        [string]$TargetPath,
+        [string]$Harness = 'antigravity'
+    )
+    $info = @{
+        Name        = Split-Path -Leaf $TargetPath
+        ShortPath   = Format-AgyShortPath $TargetPath
+        Branch      = ''
+        DirtyCount  = 0
+        BranchOwner = ''
+        LaneWarning = ''
+    }
+    if (Test-Path -LiteralPath (Join-Path $TargetPath '.git')) {
+        $git = Get-Command git -ErrorAction SilentlyContinue
+        if ($git) {
+            try {
+                $b = (& $git.Source -C $TargetPath rev-parse --abbrev-ref HEAD 2>$null)
+                if ($b) { $info.Branch = ([string]$b).Trim() }
+                $statusLines = @(& $git.Source -C $TargetPath status --porcelain 2>$null | Where-Object { $_ })
+                $info.DirtyCount = $statusLines.Count
+            } catch {}
+        }
+    }
+    if ($info.Branch -match '^(?:agent|codex)/([^/]+)(?:/|$)') {
+        $owner = $Matches[1].ToLowerInvariant()
+        $info.BranchOwner = $owner
+        $expectedMap = @{
+            'antigravity' = @('antigravity', 'agy', 'gemini')
+            'claude'      = @('claude', 'claude-code')
+            'codex'       = @('codex')
+            'grok'        = @('grok')
+            'deepagent'   = @('deepagent', 'dcode')
+        }
+        $allowed = $expectedMap[$Harness.ToLowerInvariant()]
+        if ($allowed -and ($allowed -notcontains $owner)) {
+            $info.LaneWarning = "branch owned by '$owner' - commit on agent/$Harness/<scope> or use a worktree"
+        }
+    }
+    return $info
+}
+
+# Helper: Run history sync across harnesses (non-blocking by default on agent launch)
+function global:Invoke-HistorySync {
+    param(
+        [switch]$Interactive,
+        [switch]$Force
+    )
     $syncScript = "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
-    if (Test-Path $syncScript) {
-        Write-Host "🔄 Syncing harness histories..." -ForegroundColor DarkGray
-        node $syncScript | Out-Null
+    $stateFile  = Join-Path $env:USERPROFILE ".gemini\antigravity-cli\.sync-state.json"
+    if (-not (Test-Path -LiteralPath $syncScript)) {
+        return "no-script"
+    }
+
+    if ($Interactive) {
+        $dot = $script:AgyGlyphDot
+        Write-AgyTint -Text "  $($script:AgyGlyphStar) history-sync  $dot  scanning Claude / Codex / Antigravity..." -Rgb '126,200,195'
+        $argList = @($syncScript)
+        if ($Force) { $argList += '--full' }
+        & node @argList
+        return "synced-now"
+    }
+
+    # Check watermark freshness so launches never stall on Node startup
+    $ageSec = 999999
+    if (-not $Force -and (Test-Path -LiteralPath $stateFile)) {
+        try {
+            $ageSec = ((Get-Date) - (Get-Item -LiteralPath $stateFile).LastWriteTime).TotalSeconds
+        } catch {}
+    }
+
+    if ($ageSec -lt 300) {
+        $mins = [int][Math]::Max(0, [Math]::Round($ageSec / 60))
+        if ($mins -eq 0) { return "history synced <1m ago" }
+        return "history synced ${mins}m ago"
+    }
+
+    # Fire-and-forget in background so terminal transition is instant (<20ms)
+    try {
+        Start-Process -FilePath "node" -ArgumentList "`"$syncScript`"" -WindowStyle Hidden -ErrorAction SilentlyContinue | Out-Null
+        return "history sync bg"
+    } catch {
+        return "history sync skipped"
+    }
+}
+
+function global:Write-StarlightLaunchBanner {
+    param(
+        [Parameter(Mandatory=$true)][string]$Harness,
+        [Parameter(Mandatory=$true)][string]$ModeLabel,
+        [Parameter(Mandatory=$true)][string]$TargetPath,
+        [string]$SyncStatus = '',
+        [string]$Prompt = ''
+    )
+    $cyan  = '126,200,195'
+    $ink   = '231,238,246'
+    $sage  = '143,191,168'
+    $amber = '230,192,123'
+    $dim   = '92,107,122'
+
+    $star  = $script:AgyGlyphStar
+    $arrow = $script:AgyGlyphArrow
+    $dot   = $script:AgyGlyphDot
+
+    $meta = Get-AgyRepoTelemetry -TargetPath $TargetPath -Harness $Harness
+
+    Write-Host ''
+    Write-AgyTint -Text "  $star " -Rgb $cyan -NoNewline
+    Write-AgyTint -Text $Harness -Rgb $ink -NoNewline
+    Write-AgyTint -Text "  $dot  " -Rgb $dim -NoNewline
+    Write-AgyTint -Text $meta.Name -Rgb $cyan -NoNewline
+    Write-AgyTint -Text "  $dot  " -Rgb $dim -NoNewline
+    Write-AgyTint -Text $ModeLabel -Rgb $sage -NoNewline
+    if ($SyncStatus) {
+        Write-AgyTint -Text "  $dot  $SyncStatus" -Rgb $dim -NoNewline
+    }
+    Write-Host ''
+
+    Write-AgyTint -Text "  $arrow " -Rgb $dim -NoNewline
+    Write-AgyTint -Text $meta.ShortPath -Rgb $dim -NoNewline
+    if ($meta.Branch) {
+        Write-AgyTint -Text "   branch " -Rgb $dim -NoNewline
+        Write-AgyTint -Text $meta.Branch -Rgb $cyan -NoNewline
+        if ($meta.DirtyCount -gt 0) {
+            Write-AgyTint -Text "  $dot  $($meta.DirtyCount) dirty" -Rgb $amber -NoNewline
+        } else {
+            Write-AgyTint -Text "  $dot  clean" -Rgb $sage -NoNewline
+        }
+    }
+    Write-Host ''
+
+    if ($meta.LaneWarning) {
+        Write-AgyTint -Text "  ! $($meta.LaneWarning)" -Rgb $amber
+    }
+    if ($Prompt) {
+        $preview = if ($Prompt.Length -gt 72) { $Prompt.Substring(0, 69) + '...' } else { $Prompt }
+        Write-AgyTint -Text "  $arrow prompt: `"$preview`"" -Rgb $ink
     }
 }
 
@@ -143,22 +311,21 @@ function Invoke-AgyYolo {
         return
     }
 
-    # Sync history from other harnesses
-    Invoke-HistorySync
+    # Sync history from other harnesses (non-blocking background check)
+    $syncState = Invoke-HistorySync
 
     # Set env for hook-env.sh detection (agy/antigravity)
     $env:AGY_PROJECT_DIR = $TargetPath
     $env:AGY_SESSION = "1"
 
-    # Switch location
+    # Switch location & render Starlight launch card
     Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    $modeLabel = if ($Prompt) { "yolo + prompt (--dangerously-skip-permissions)" } else { "yolo interactive (--dangerously-skip-permissions)" }
+    Write-StarlightLaunchBanner -Harness 'antigravity' -ModeLabel $modeLabel -TargetPath $TargetPath -SyncStatus $syncState -Prompt $Prompt
 
     if ($Prompt) {
-        Write-Host "🚀 Spawning YOLO Agent with pre-seeded prompt: '$Prompt'" -ForegroundColor Green
         & $global:AGY_EXE_PATH --dangerously-skip-permissions --prompt-interactive $Prompt
     } else {
-        Write-Host "🚀 Spawning YOLO Agent (interactive)..." -ForegroundColor Green
         & $global:AGY_EXE_PATH --dangerously-skip-permissions
     }
 }
@@ -295,7 +462,6 @@ function agy-run {
     $match = Get-StarlightRepo $RepoKey
     if (-not $match) { return }
 
-    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
     Invoke-AgyYolo -TargetPath $match.FullName -Prompt $Prompt
 }
 
@@ -321,7 +487,7 @@ function Invoke-ClaudeYolo {
     }
 
     # Sync history from other harnesses
-    Invoke-HistorySync
+    $syncState = Invoke-HistorySync
 
     # Set env for hook-env.sh detection (portable hooks identify harness)
     $env:CLAUDE_PROJECT_DIR = $TargetPath
@@ -329,8 +495,7 @@ function Invoke-ClaudeYolo {
 
     # Switch location
     Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning Claude Code YOLO Agent..." -ForegroundColor Green
+    Write-StarlightLaunchBanner -Harness 'claude' -ModeLabel 'yolo (--dangerously-skip-permissions)' -TargetPath $TargetPath -SyncStatus $syncState
     & $claudeExe --dangerously-skip-permissions
 }
 
@@ -350,15 +515,14 @@ function Invoke-CodexInRepo {
     }
 
     # Sync history from other harnesses
-    Invoke-HistorySync
+    $syncState = Invoke-HistorySync
 
     # Set env for hook-env.sh detection
     $env:CODEX_PROJECT_DIR = $TargetPath
     $env:CODEX_SESSION = "1"
 
     Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning Codex..." -ForegroundColor Green
+    Write-StarlightLaunchBanner -Harness 'codex' -ModeLabel 'interactive' -TargetPath $TargetPath -SyncStatus $syncState
     & $codexPath
 }
 
@@ -380,7 +544,7 @@ function Invoke-AgentDispatch {
     }
 
     Set-Location $TargetPath
-    Write-Host "⚡ Dispatch [$Lane] → $TargetPath" -ForegroundColor DarkCyan
+    Write-StarlightLaunchBanner -Harness $Lane -ModeLabel 'headless dispatch' -TargetPath $TargetPath -Prompt $Prompt
 
     switch ($Lane) {
         'grok' {
@@ -441,19 +605,18 @@ function Invoke-GrokYolo {
     }
 
     # Sync history from other harnesses
-    Invoke-HistorySync
+    $syncState = Invoke-HistorySync
 
     # Set env for hook-env.sh detection (so portable hooks like session-logger fire as grok)
     $env:GROK_PROJECT_DIR = $TargetPath
     $env:GROK_CLI = "1"
 
     Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
     if ($Prompt) {
-        Write-Host "🚀 Grok headless dispatch..." -ForegroundColor Green
+        Write-StarlightLaunchBanner -Harness 'grok' -ModeLabel 'headless (--max-turns 8)' -TargetPath $TargetPath -SyncStatus $syncState -Prompt $Prompt
         & $grokExe -p $Prompt --cwd $TargetPath --disable-web-search --max-turns 8 --output-format plain
     } else {
-        Write-Host "🚀 Spawning Grok YOLO Agent..." -ForegroundColor Green
+        Write-StarlightLaunchBanner -Harness 'grok' -ModeLabel 'yolo (--always-approve)' -TargetPath $TargetPath -SyncStatus $syncState
         & $grokExe --always-approve
     }
 }
@@ -469,11 +632,12 @@ function Invoke-DeepAgentYolo {
         return
     }
 
+    $syncState = Invoke-HistorySync
+
     # Switch location
     Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning DeepAgent YOLO Agent (interactive)..." -ForegroundColor Green
     $env:DA_PROJECT_DIR = $TargetPath
+    Write-StarlightLaunchBanner -Harness 'deepagent' -ModeLabel 'yolo (--auto-approve)' -TargetPath $TargetPath -SyncStatus $syncState
     dcode --auto-approve --shell-allow-list all
 }
 
@@ -548,7 +712,6 @@ function da-run {
     if (-not $RepoKey) {
         # bare "da" launches DeepAgent in current folder (per integration spec)
         $current = (Get-Location).Path
-        Write-Host "Launching DeepAgent in current dir..." -ForegroundColor DarkCyan
         Invoke-DeepAgentYolo -TargetPath $current
         return
     }
@@ -556,7 +719,6 @@ function da-run {
     $match = Get-StarlightRepo $RepoKey
     if (-not $match) { return }
 
-    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
     $env:DA_PROJECT_DIR = $match.FullName
     Invoke-DeepAgentYolo -TargetPath $match.FullName
 }
@@ -705,7 +867,6 @@ function cl-run {
     $match = Get-StarlightRepo $RepoKey
     if (-not $match) { return }
 
-    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
     $env:CLAUDE_PROJECT_DIR = $match.FullName
     $env:CLAUDECODE = "1"
     Invoke-ClaudeYolo -TargetPath $match.FullName
@@ -727,7 +888,6 @@ function cd-run {
     $match = Get-StarlightRepo $RepoKey
     if (-not $match) { return }
 
-    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
     $env:CODEX_PROJECT_DIR = $match.FullName
     $env:CODEX_SESSION = "1"
     Invoke-CodexInRepo -TargetPath $match.FullName
@@ -890,7 +1050,6 @@ function gr-run {
     $match = Get-StarlightRepo $RepoKey
     if (-not $match) { return }
 
-    Write-Host "Resolved '$RepoKey' to: $($match.Name)" -ForegroundColor Cyan
     $env:GROK_PROJECT_DIR = $match.FullName
     $env:GROK_CLI = "1"
     Invoke-GrokYolo -TargetPath $match.FullName
@@ -958,7 +1117,8 @@ function asph-rs {
 }
 
 function asph-sync {
-    node "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+    param([switch]$Full)
+    Invoke-HistorySync -Interactive -Force:$Full | Out-Null
 }
 
 function starlight-status-all {
@@ -996,8 +1156,9 @@ function starlight-status-all {
     # Restore original directory location
     Set-Location $currentPath
     
-    Write-Host "`n🧠 Starlight Fleet Repository Status" -ForegroundColor Cyan
-    Write-Host "==========================================================" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-AgyTint -Text "  $($script:AgyGlyphStar) Starlight Fleet Repository Status" -Rgb '126,200,195'
+    Write-AgyTint -Text ("  " + ($script:AgyGlyphRule * 58)) -Rgb '92,107,122'
     $results | Format-Table -AutoSize
 }
 
