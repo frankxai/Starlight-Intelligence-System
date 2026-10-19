@@ -13,8 +13,8 @@
  * Built on SIP (Starlight Intelligence Protocol) v1.1.1
  */
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { existsSync, readFileSync, lstatSync, realpathSync } from 'node:fs';
+import { dirname, join, relative, isAbsolute, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   createReviewReceipt,
@@ -86,8 +86,16 @@ export function main(argv = process.argv.slice(2)) {
   }
 
   if (args.route) {
+    if (!['codex', 'claude-code', 'antigravity', 'cto', 'jules', 'grok', 'dependabot', 'github-actions'].includes(args.maker) ||
+        typeof args.ram !== 'string' || typeof args.agents !== 'string' ||
+        !Number.isFinite(Number(args.ram)) || Number(args.ram) < 0 ||
+        !Number.isInteger(Number(args.agents)) || Number(args.agents) < 0) {
+      process.stderr.write('Routing requires --maker and finite --ram / integer --agents telemetry.\n');
+      return 2;
+    }
     const plan = routeSwarmTask(
       {
+        maker: args.maker,
         id: String(args.id || 'cli-task'),
         repo: String(args.repo || 'frankxai/Starlight-Intelligence-System'),
         title: String(args.title || 'Swarm task'),
@@ -95,14 +103,28 @@ export function main(argv = process.argv.slice(2)) {
         scopeFiles: fileList,
       },
       {
-        freeRamGb: args.ram ? Number(args.ram) : 8.0,
-        activeLocalAgents: args.agents ? Number(args.agents) : 1,
+        freeRamGb: Number(args.ram),
+        activeLocalAgents: Number(args.agents),
       },
     );
     process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
     return 0;
   }
 
+  if (fileList.length === 0) {
+    process.stderr.write('Sweep requires an explicit non-empty --files scope. No files were audited.\n');
+    return 2;
+  }
+  for (const relPath of fileList) {
+    const fullPath = join(REPO_ROOT, relPath);
+    const relativePath = relative(REPO_ROOT, fullPath);
+    if (isAbsolute(relPath) || relativePath === '..' || relativePath.startsWith(`..${sep}`) ||
+        !existsSync(fullPath) || !lstatSync(fullPath).isFile() ||
+        relative(REPO_ROOT, realpathSync(fullPath)).startsWith(`..${sep}`)) {
+      process.stderr.write(`Sweep scope must name existing regular files inside the repository: ${relPath}\n`);
+      return 2;
+    }
+  }
   const samples = fileList
     .map((relPath) => {
       const fullPath = join(REPO_ROOT, relPath);

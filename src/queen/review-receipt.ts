@@ -70,11 +70,29 @@ export interface CreateReviewReceiptInput {
   diffSummary?: string;
 }
 
+export interface ReviewChangedFile {
+  filename: string;
+  previous_filename?: string;
+}
+
+/** GitHub-provided provenance, fetched through the trusted read path. Never take it from a receipt body. */
+export interface ReviewCommentEnvelope {
+  body: string;
+  user: { login: string };
+  author_association: string;
+  performed_via_github_app: { slug: string } | null;
+  created_at: string;
+  updated_at: string;
+  edit_history_checked: boolean;
+  last_edited_at: string | null;
+  content_edit_count: number;
+}
+
 export interface ValidateReceiptExpectation {
   repository: string;
   pr: number;
   headSha: string;
-  changedFiles: string[];
+  changedFiles: Array<string | ReviewChangedFile>;
   autoMergeArmed?: boolean;
 }
 
@@ -83,6 +101,7 @@ export interface ValidateReceiptResult {
   risky: boolean;
   reason: string;
   receipt?: ReviewReceiptV1;
+  provenanceChecked?: boolean;
 }
 
 const INSTRUCTION_NAMES = new Set([
@@ -198,7 +217,7 @@ export function isReviewerAllowed(
   provider: string,
   risky: boolean,
 ): boolean {
-  if (!(REVIEW_PROVIDERS as readonly string[]).includes(provider)) {
+  if (!(MAKERS as readonly string[]).includes(maker) || !(REVIEW_PROVIDERS as readonly string[]).includes(provider)) {
     return false;
   }
   if (maker === provider) {
@@ -247,7 +266,8 @@ export function createReviewReceipt(input: CreateReviewReceiptInput): {
   if (!Number.isInteger(input.pr) || input.pr < 1) {
     throw new Error(`Invalid PR number: ${input.pr}`);
   }
-  if (!input.reviewedFiles || input.reviewedFiles.length === 0) {
+  if (!Array.isArray(input.reviewedFiles) || input.reviewedFiles.length === 0 ||
+      !input.reviewedFiles.every((file) => typeof file === 'string' && file.trim().length > 0)) {
     throw new Error('reviewedFiles must contain at least one file path');
   }
   if (typeof input.review !== 'string' || input.review.length < 80) {
@@ -267,6 +287,11 @@ export function createReviewReceipt(input: CreateReviewReceiptInput): {
   }
 
   const verdict: ReviewVerdict = input.verdict ?? 'PASS';
+  if (!['PASS', 'FAIL'].includes(verdict) || (input.blockingFindings !== undefined &&
+      (!Array.isArray(input.blockingFindings) || !input.blockingFindings.every((item) => typeof item === 'string'))) ||
+      (verdict === 'PASS' && (input.blockingFindings?.length ?? 0) > 0)) {
+    throw new Error('Invalid verdict or blocking findings; PASS cannot carry blocking findings.');
+  }
   const blockingFindings = input.blockingFindings ?? [];
   const reviewSha256 = sha256Hex(input.review);
   const packetSha256 =
@@ -296,18 +321,27 @@ export function createReviewReceipt(input: CreateReviewReceiptInput): {
   };
 
   const body = `${REVIEW_RECEIPT_MARKER}${JSON.stringify(receipt, null, 2)}`;
+  if (body.length > 60000) throw new Error('Receipt exceeds the merge gate comment limit.');
   return { receipt, body, risky };
 }
 
 /**
- * Validates a raw comment body against merge_review_gate.py invariants.
+ * Checks payload shape and exact-head coverage only. This does not authenticate a reviewer.
+ * Use validateReviewReceiptComment with GitHub provenance for a trusted-comment decision.
  */
 export function validateReviewReceiptBody(
   body: string,
   expected: ValidateReceiptExpectation,
 ): ValidateReceiptResult {
-  const normalizedChanged = [...new Set(expected.changedFiles.map((f) => f.replace(/\\/g, '/')))].sort();
-  const risky = normalizedChanged.some((f) => isHighRiskPath(f));
+  if (!Array.isArray(expected.changedFiles) || expected.changedFiles.some((file) =>
+    typeof file !== 'string' && (!file || typeof file.filename !== 'string' ||
+      (file.previous_filename !== undefined && typeof file.previous_filename !== 'string')))) {
+    return { valid: false, risky: true, reason: 'Malformed changed-file metadata.', provenanceChecked: false };
+  }
+  const entries = expected.changedFiles.map((file) => typeof file === 'string' ? { filename: file } : file);
+  const normalizedChanged = [...new Set(entries.map((file) => file.filename.replace(/\\/g, '/')))].sort();
+  const risky = entries.some((file) => isHighRiskPath(file.filename) ||
+    (file.previous_filename !== undefined && isHighRiskPath(file.previous_filename)));
 
   if (!/^[0-9a-f]{40}$/.test(expected.headSha) || normalizedChanged.length === 0) {
     return {
@@ -351,7 +385,12 @@ export function validateReviewReceiptBody(
     };
   }
 
-  const reviewedSet = new Set((receipt.reviewedFiles ?? []).map((f) => String(f).replace(/\\/g, '/')));
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt) ||
+      !Array.isArray(receipt.reviewedFiles) ||
+      !receipt.reviewedFiles.every((file) => typeof file === 'string' && file.trim().length > 0)) {
+    return { valid: false, risky, reason: 'Malformed receipt object or reviewedFiles.' };
+  }
+  const reviewedSet = new Set(receipt.reviewedFiles.map((f) => f.replace(/\\/g, '/')));
   const expectedSet = new Set(normalizedChanged);
   const filesMatch =
     reviewedSet.size === expectedSet.size &&
@@ -389,7 +428,33 @@ export function validateReviewReceiptBody(
   return {
     valid: true,
     risky,
-    reason: `Exact-head PASS by ${receipt.provider} (maker ${receipt.maker}) at ${expected.headSha}.`,
+    reason: `Exact-head payload PASS by ${receipt.provider}; GitHub provenance has not been checked.`,
+    provenanceChecked: false,
     receipt,
   };
+}
+
+/** Mirrors trusted-App, author-association and immutable-comment checks of the canonical gate.
+ * The caller must fetch a complete current-head file listing and select the latest trusted receipt.
+ * This single-comment helper does not establish chronology against newer reviews.
+ */
+export function validateReviewReceiptComment(
+  comment: ReviewCommentEnvelope,
+  expected: ValidateReceiptExpectation,
+): ValidateReceiptResult {
+  if (!comment || typeof comment !== 'object' || comment.user?.login !== 'frankxai' ||
+      !['OWNER', 'MEMBER', 'COLLABORATOR'].includes(comment.author_association) ||
+      !['cursor', 'chatgpt-codex-connector'].includes(comment.performed_via_github_app?.slug ?? '') ||
+      typeof comment.created_at !== 'string' || !comment.created_at ||
+      comment.created_at !== comment.updated_at || comment.edit_history_checked !== true ||
+      comment.last_edited_at !== null || comment.content_edit_count !== 0 || typeof comment.body !== 'string') {
+    return { valid: false, risky: true, reason: 'Missing or untrusted GitHub comment provenance.', provenanceChecked: false };
+  }
+  // A trusted gate decision requires the authoritative record form, including rename sources.
+  if (!Array.isArray(expected.changedFiles) || expected.changedFiles.some((file) => typeof file === 'string')) {
+    return { valid: false, risky: true, reason: 'Trusted validation requires GitHub changed-file records.', provenanceChecked: true };
+  }
+  const result = validateReviewReceiptBody(comment.body, expected);
+  return { ...result, provenanceChecked: true,
+    reason: result.valid ? 'Exact-head receipt payload and GitHub comment provenance pass; latest-review selection remains required.' : result.reason };
 }

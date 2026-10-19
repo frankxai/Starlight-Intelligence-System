@@ -163,7 +163,9 @@ export function auditEditorialSentenceCase(
       .split(/\s+/)
       .filter((w) => /^[A-Z]{2,}$/.test(w) && !ACRONYM_ALLOWLIST.has(w));
 
-    if (words.length >= 3) {
+    const capitalized = headingText.replace(/`[^`]*`/g, '').split(/\s+/).slice(1)
+      .filter((word) => /^[A-Z][a-z]+$/.test(word) && !['Starlight', 'Arcanea', 'FrankX', 'GenCreator', 'TypeScript', 'JavaScript'].includes(word));
+    if (words.length >= 1 || capitalized.length >= 2) {
       findings.push({
         category: 'editorial-sentence-case',
         severity: 'warning',
@@ -185,6 +187,9 @@ export function auditWeaverAntiSlop(
   content: string,
 ): ImmuneFinding[] {
   const findings: ImmuneFinding[] = [];
+  // Exact fixtures/rule definitions contain the phrases on purpose. Do not suppress arbitrary tests.
+  const normalized = filePath.replace(/\\/g, '/');
+  if (normalized === 'src/queen/immune-sweeper.ts' || normalized === 'test/queen-swarm-immune.test.ts') return findings;
   const lines = content.split(/\r?\n/);
 
   for (let i = 0; i < lines.length; i++) {
@@ -223,40 +228,26 @@ export function auditMetricsTruth(
   try {
     const raw = readFileSync(metricsPath, 'utf8');
     const parsed = JSON.parse(raw) as Record<string, unknown>;
-    const lastVerified =
-      (parsed.last_verified as string | undefined) ??
-      (parsed.lastVerified as string | undefined) ??
-      ((parsed.meta as Record<string, unknown> | undefined)?.last_verified as string | undefined);
-
-    if (!lastVerified) {
-      findings.push({
-        category: 'metrics-truth',
-        severity: 'warning',
-        file: 'metrics/current.json',
-        message: 'metrics/current.json is missing a top-level last_verified timestamp.',
-      });
-      return findings;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) ||
+        !parsed.metrics || typeof parsed.metrics !== 'object' || Array.isArray(parsed.metrics) ||
+        Object.keys(parsed.metrics).length === 0) {
+      throw new Error('Expected non-empty metrics.<key> entries.');
     }
-
-    const verifiedDate = new Date(lastVerified);
-    if (Number.isNaN(verifiedDate.getTime())) {
-      findings.push({
-        category: 'metrics-truth',
-        severity: 'warning',
-        file: 'metrics/current.json',
-        message: `metrics/current.json has an unparseable last_verified value ("${lastVerified}").`,
-      });
-      return findings;
+    if (!Number.isFinite(maxAgeDays) || maxAgeDays <= 0 || !Number.isFinite(now.getTime())) {
+      throw new Error('Invalid metrics freshness policy or clock.');
     }
-
-    const ageDays = (now.getTime() - verifiedDate.getTime()) / (1000 * 60 * 60 * 24);
-    if (ageDays > maxAgeDays) {
-      findings.push({
-        category: 'metrics-truth',
-        severity: 'info',
-        file: 'metrics/current.json',
-        message: `metrics/current.json was last verified ${Math.round(ageDays)} days ago (threshold ${maxAgeDays} days).`,
-      });
+    for (const [key, value] of Object.entries(parsed.metrics as Record<string, unknown>)) {
+      const metric = value && typeof value === 'object' && !Array.isArray(value)
+        ? value as Record<string, unknown> : null;
+      const verified = metric?.last_verified;
+      const date = typeof verified === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(verified)
+        ? new Date(`${verified}T00:00:00.000Z`) : new Date(NaN);
+      const validDate = Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === verified;
+      const age = validDate ? (now.getTime() - date.getTime()) / 86_400_000 : NaN;
+      if (!validDate || age < 0 || age > maxAgeDays || metric?.stale === true) {
+        findings.push({ category: 'metrics-truth', severity: 'blocker', file: 'metrics/current.json',
+          message: `Metric ${key} has missing, invalid, future, explicitly stale or expired verification evidence.` });
+      }
     }
   } catch (err) {
     findings.push({
@@ -276,6 +267,9 @@ export function auditMetricsTruth(
 export function runImmuneSweep(input: ImmuneSweepInput): ImmuneSweepReport {
   const findings: ImmuneFinding[] = [];
   const files = input.files ?? [];
+  if (files.length === 0) {
+    findings.push({ category: 'weaver-anti-slop', severity: 'blocker', message: 'No file samples supplied; source audit was not performed.' });
+  }
   const allPaths = new Set<string>(
     (input.changedPaths ?? []).map((p) => p.replace(/\\/g, '/')),
   );

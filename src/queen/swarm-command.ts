@@ -247,15 +247,15 @@ export function assignDomainGeneral(task: SwarmTaskRequest): {
  */
 export function selectComputePlane(
   task: SwarmTaskRequest,
-  telemetry: HostTelemetrySnapshot = { freeRamGb: 8.0, activeLocalAgents: 1 },
+  telemetry?: HostTelemetrySnapshot,
 ): {
   computePlane: ComputePlane;
   computeReason: string;
   spilledOverToCloud: boolean;
 } {
   const mode = task.mode ?? 'interactive';
-  const minFreeRamGb = telemetry.minFreeRamGb ?? DEFAULT_MIN_FREE_RAM_GB;
-  const maxLocalAgents = telemetry.maxLocalAgents ?? DEFAULT_MAX_LOCAL_AGENTS;
+  const minFreeRamGb = telemetry?.minFreeRamGb ?? DEFAULT_MIN_FREE_RAM_GB;
+  const maxLocalAgents = telemetry?.maxLocalAgents ?? DEFAULT_MAX_LOCAL_AGENTS;
   const parallelCount = task.parallelCount ?? 1;
 
   if (mode === 'ci-verification') {
@@ -274,7 +274,15 @@ export function selectComputePlane(
     };
   }
 
-  if (mode === 'autonomous-batch' || parallelCount > maxLocalAgents) {
+  if (!telemetry || !Number.isFinite(telemetry.freeRamGb) || telemetry.freeRamGb < 0 ||
+      !Number.isInteger(telemetry.activeLocalAgents) || telemetry.activeLocalAgents < 0 ||
+      !Number.isFinite(minFreeRamGb) || minFreeRamGb < DEFAULT_MIN_FREE_RAM_GB ||
+      !Number.isInteger(maxLocalAgents) || maxLocalAgents < 1 || maxLocalAgents > DEFAULT_MAX_LOCAL_AGENTS ||
+      !Number.isInteger(parallelCount) || parallelCount < 1) {
+    throw new Error('Fresh finite host telemetry and non-weakened capacity limits are required.');
+  }
+
+  if (mode === 'autonomous-batch') {
     return {
       computePlane: 'cloud-run-worker',
       computeReason: `Batch execution (parallelCount=${parallelCount}) routes to scale-to-zero Cloud Run and Jules workers.`,
@@ -290,10 +298,10 @@ export function selectComputePlane(
     };
   }
 
-  if (telemetry.activeLocalAgents >= maxLocalAgents) {
+  if (telemetry.activeLocalAgents + parallelCount > maxLocalAgents) {
     return {
       computePlane: 'cloud-run-worker',
-      computeReason: `Active local terminals (${telemetry.activeLocalAgents}) reached cap (${maxLocalAgents}); spilling over to Cloud Run worker.`,
+      computeReason: `Active local agents (${telemetry.activeLocalAgents}) plus requested agents (${parallelCount}) exceed cap (${maxLocalAgents}); proposing Cloud Run worker.`,
       spilledOverToCloud: true,
     };
   }
