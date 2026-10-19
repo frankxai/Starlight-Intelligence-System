@@ -37,8 +37,20 @@ Operator: Antigravity (`/goal`). Evidence files: `docs/ops/jules-backlog-2026-10
   - Paced in waves of 8 every 15 minutes.
   - Dispatch respects the conductor's capacity gate (4 GiB RAM, 50 GiB disk).
   
-  Sent sessions are written into `tools/jules-conductor/state/ledger.json` with their track token, so `conductor tick` records each PR.
+  Sent sessions are mirrored into `tools/jules-conductor/state/ledger.json` with their track token. `conductor tick` cannot resolve repos outside `config.repoProfiles` (Jules truncates repo names in list output), so a separate reconcile script matches PRs by track token instead.
 - **Held for review-gated release:** dependency bumps (lockfiles), `.env.example`, CI workflow edits and anything touching auth, payments, deploy or agent instruction files. Release them one repo at a time after the current drafts clear.
+
+### What actually happened (as of 2026-10-19 03:00 CEST)
+
+- **60 sessions dispatched:** 19 via the `jules` CLI, then 41 via the REST API (`POST /v1alpha/sessions`). The last 18 go out in paced waves until about 03:35.
+- **The CLI does not create PRs.** All 19 CLI sessions completed with patches but no PR. Antigravity published them from the session `gitPatch` instead:
+  - Published 15 as draft PRs on `agent/jules/<card-id>` branches, dropping generated `next-env.d.ts` noise.
+  - Held 6 for human review: 5 add a `test` script to `package.json` (GenCreator-OS ×4, agenticincome ×1), and 1 edits `tsconfig.json`/`.eslintrc.json` (arcanea-studio).
+  - 1 session (arcanea-studio-001) is waiting on user feedback in the Jules UI.
+- **The API's `automationMode: AUTO_CREATE_PR` works, but Jules opens PRs as ready-for-review**, even though the prompt says draft. A reconcile loop converts them back to drafts every 10 minutes overnight. 28 PRs were attached at the first pass and 13 were redrafted.
+- **Per-repo cap bug fixed mid-run.** The cap counted only the current run, so GenCreator-OS reached 6 sessions and starlight-intelligence-academy reached 5. It now counts every session sent tonight.
+- **SEO cards held back.** Some robots/sitemap cards point non-flagship repos at `https://arcanea.ai`. Correct each repo's real host before releasing them.
+- Nothing was merged. Every Jules PR needs an independent-seat review.
 
 ## Knowledge base, loops and graph engineering
 
