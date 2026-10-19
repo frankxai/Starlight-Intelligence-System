@@ -33,11 +33,21 @@ HIGH_RISK_PATTERNS = [
     r'(^|/)src/finance/', r'(finance|revenue|payout|pnl)',
     # Cost controls: the cost snapshot, its sources and the cost-plane config template.
     r'(^|/)src/infra/cost-snapshot\.ts$', r'(^|/)src/infra/cost-sources/', r'(^|/)cost-plane-config\.template\.json$',
+    # The daily cost snapshot cron jobs (Windows and POSIX).
+    r'(^|/)scripts/cron/daily-cost-snapshot\.ps1$', r'(^|/)scripts/cron/posix/daily-cost-snapshot\.sh$',
+    # The Alexandria paid-call router, receipts and ledger.
+    r'(^|/)src/alexandria/',
 ]
-# "ledger" alone also names decision, task and source ledgers; it is high risk only on a
-# financial path (a ledger of costs, credits, spend, budgets or accounts).
+# Every ledger path is high risk by default: a financial ledger need not use a money word.
+# Only these known non-financial ledgers are exempt (decision, source and loop ledgers).
 LEDGER_PATTERN = r'ledger'
-FINANCIAL_CONTEXT = r'(financ|accounting|treasury|cost|credit|spend|budget|billing|payment|invoice|revenue|payout|pnl)'
+NON_FINANCIAL_LEDGERS = [
+    r'^tools/queen/ledger\.jsonl$',
+    r'^docs/research/([^/]+/)*source-ledger[^/]*\.(md|jsonl|json|csv)$',
+    r'^src/ledgers\.ts$',
+    r'^test/v01-ledgers\.test\.ts$',
+    r'^docs/graph-engineering/loops/([^/]+/)*ledger\.md$',
+]
 INSTRUCTION_NAMES = {'agents.md', 'agents.override.md', 'skill.md', 'skills.md',
                      'soul.md', 'rules.md', 'claude.md', 'gemini.md', 'grok.md'}
 
@@ -77,7 +87,7 @@ def high_risk(path):
             or any(re.search(pattern, lowered) for pattern in MANIFEST_DIR_PATTERNS)
             or any(re.search(pattern, lowered) for pattern in HIGH_RISK_PATTERNS)
             or (re.search(LEDGER_PATTERN, lowered) is not None
-                and re.search(FINANCIAL_CONTEXT, lowered) is not None))
+                and not any(re.search(pattern, lowered) for pattern in NON_FINANCIAL_LEDGERS)))
 
 
 def item_paths(item):
