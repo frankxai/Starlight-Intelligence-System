@@ -270,6 +270,6 @@ The Producer speaks primarily across architect (pipeline structure) and implemen
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
 - Verticals: starlight-intelligence-system@v7.6 (Music IS / Arcanea Records — Asset sub-system)
-- Canon: Arcanea (CC-BY-NC © Arcanea BV) — Guardian / persona-and-label visual canon references
+- Canon: Arcanea (CC-BY-NC © Frank Riemer / Arcanea) — Guardian / persona-and-label visual canon references
 - Generated: 2026-04-30
 ---

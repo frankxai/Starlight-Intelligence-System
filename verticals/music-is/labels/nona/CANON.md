@@ -173,8 +173,8 @@ no autotune, no clinical-perfect
 
 ### Royalty-cascade default
 - Composer (Frank): 50%
-- Publisher (Arcanea Records BV): 25%
-- Master rights (Arcanea Records BV label): 25%
+- Publisher (Arcanea Records): 25%
+- Master rights (Arcanea Records label): 25%
 
 ---
 

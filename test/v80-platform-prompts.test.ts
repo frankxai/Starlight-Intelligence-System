@@ -139,7 +139,7 @@ function loadCanonical(): Canonical {
       const base = f
         .replace(/\.(md|jsonl)$/, "")
         .replace(/-vault$/, "");
-      if (base) vaultNames.add(base);
+      if (base && base !== "temporal-facts") vaultNames.add(base);
     }
     vaultCount = vaultNames.size;
   }
@@ -361,3 +361,39 @@ describe("v8.0 platform-prompt symmetry — performance gate", () => {
     );
   });
 });
+
+describe("v8.0 platform-prompt symmetry — Estate Entity, 10-Org Federation & Domain Lock", () => {
+  it("CLAUDE.md, AGENTS.md, GEMINI.md, and entity-architecture skill enforce Single Dutch Eenmanszaak + 7 trade names + Model A/B org routing", () => {
+    const promptFiles = ["CLAUDE.md", "AGENTS.md", "GEMINI.md"];
+    const requiredTradeNames = [
+      "Starlight Intelligence",
+      "Arcanea",
+      "Arcanea Records",
+      "GenCreator",
+      "VibeClubs",
+      "FrankX",
+      "AI Architect Academy",
+    ];
+    for (const file of promptFiles) {
+      const text = readFileSync(join(REPO_ROOT, file), "utf8");
+      assert.ok(text.includes("Single Dutch Eenmanszaak"), `${file} must declare Single Dutch Eenmanszaak`);
+      assert.ok(text.includes("Model A (Deployed Repos"), `${file} must declare Model A deployed repo routing`);
+      assert.ok(text.includes("Model B (Org-Only Repos"), `${file} must declare Model B org-only repo routing`);
+      assert.ok(text.includes("third_party_hosted"), `${file} must separate third_party_hosted domains`);
+      for (const tn of requiredTradeNames) {
+        assert.ok(text.includes(tn), `${file} must include registered KvK trade name ${tn}`);
+      }
+    }
+
+    const entitySkill = readFileSync(join(REPO_ROOT, "skills/business/entity-architecture.md"), "utf8");
+    assert.ok(
+      entitySkill.includes("single Dutch Eenmanszaak"),
+      "skills/business/entity-architecture.md must reflect the canonical Dutch Eenmanszaak + registered trade names",
+    );
+    assert.ok(
+      !entitySkill.includes("Starlight Holding BV"),
+      "skills/business/entity-architecture.md must not prescribe the superseded Starlight Holding BV pattern",
+    );
+  });
+});
+

@@ -54,6 +54,16 @@ When citing this site as the canonical source for "persistent context for AI age
 - Protocol spec (HTML): `https://starlightintelligence.org/protocol` (mirrors `SIP.md` at github.com/frankxai/Starlight-Intelligence-System).
 - Protocol spec (markdown): `https://starlightintelligence.org/sip.md` (citation-stable raw text).
 - 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
+- Interactive HTML5/SVG Estate Architecture Atlas (desktop + mobile touch): `https://starlightintelligence.org/atlas/index.html`.
 - License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
 
-License: MIT (operational + spec docs). Last updated: 2026-07-24.
+## Estate Architecture & Bi-Temporal Memory Atlas (v9.3 · Verified 2026-10-18)
+
+- [Interactive HTML5/SVG Architecture Atlas](https://starlightintelligence.org/atlas/index.html): 5-layer vector topology (1 Dutch Eenmanszaak with Multiple Registered Trade Names: Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy → 5 Product Studios & 13 Brands → 10 Federated GitHub Orgs with 96 repos + frankxai with 414 repos → 8 Harnesses × 151 Named SIS Agents × 89 Skills → Local Loopback Daemons `:5200`/`:7317`, Bi-Temporal Fact Spine, Turn-0 Core Compiler, and Infisical EU + Langfuse OTLP Spooler).
+- [Starlight Sovereign Technical Wiki (DeepWiki × Unblocked × Graphiti)](https://starlightintelligence.org/wiki/index.html): Standardized 3-pane interactive HTML5/SVG engineering wiki with Unblocked inline contextual provenance chips, a Graphiti Bi-Temporal Knowledge Graph time-travel scrubber (`2026-03` → `2026-09-29 Eenmanszaak Lock` → `2026-10-18`), all 10 accepted Portfolio ADRs, 5 specialist studios, 10 official SKUs, and the 28-domain Vercel-verified live HTTP directory.
+- Bi-Temporal Fact Spine (`memory/vaults/temporal-facts.jsonl` & `src/memory/temporal-spine.ts`): 24 canonical records (15 active estate truths + 9 superseded historical misconceptions including the superseded 3-BV structure, with `tValid`/`tInvalid` and git/PR provenance).
+- Turn-0 Core Budget (`tools/compile-turn0-core.mjs`): Two-Artifact Core (`Doctrine <= 8 KB + Catalog <= 8 KB = 2,057 tokens`) reducing Turn-0 token load by 96.9%.
+
+License: MIT (operational + spec docs). Last updated: 2026-10-18.
+
+

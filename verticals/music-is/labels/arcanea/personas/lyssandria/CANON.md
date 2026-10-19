@@ -188,8 +188,8 @@ Arvo Pärt × Lisa Gerrard × Hans Zimmer (ancient-grounded) anchors
 
 ### Royalty-cascade graph default (per Arcanea label canon)
 - Composer (Frank): 45%
-- Publisher (Arcanea Records BV): 25%
-- Master rights (Arcanea Records BV label): 20%
+- Publisher (Arcanea Records): 25%
+- Master rights (Arcanea Records label): 20%
 - Arcanea ecosystem canonical attribution: 10%
 
 ---

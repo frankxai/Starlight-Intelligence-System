@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Starlight Architecture &amp; Estate Atlas — Interactive HTML5/SVG Command Center</title>
+  <meta name="description" content="Interactive HTML5 + SVG Architecture Atlas for the Starlight Intelligence System: 1 Dutch Eenmanszaak + Registered Trade Names (Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX), 5 Studios, 13 Brands, 10 GitHub Orgs, 8 Harnesses, 151 Agents, Bi-Temporal Memory Spine, and Stack Economics." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-void: #060609;
+      --bg-surface: #0c0d14;
+      --bg-elevated: #12141f;
+      --border-hairline: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(103, 232, 249, 0.45);
+      --violet: #a78bfa;
+      --cyan: #67e8f9;
+      --emerald: #34d399;
+      --amber: #fbbf24;
+      --fuchsia: #e879f9;
+      --rose: #fb7185;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      background-color: var(--bg-void);
+      color: #f1f5f9;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    .font-serif-editorial { font-family: 'Newsreader', Georgia, serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+
+    /* Subtle cosmic grid background */
+    .bg-grid {
+      background-size: 36px 36px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+
+    /* Animated SVG data flow lines */
+    @keyframes packetFlow {
+      to { stroke-dashoffset: -48; }
+    }
+    .edge-animated {
+      stroke-dasharray: 6 6;
+      animation: packetFlow 1.8s linear infinite;
+    }
+    .edge-dim {
+      opacity: 0.14;
+      transition: opacity 0.25s ease, stroke-width 0.25s ease;
+    }
+    .edge-highlight {
+      opacity: 0.95 !important;
+      stroke-width: 2.5px !important;
+      stroke-dasharray: 6 6;
+      animation: packetFlow 1.2s linear infinite;
+    }
+
+    /* SVG Node interactivity */
+    .arch-node {
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    }
+    .arch-node:hover .node-box {
+      stroke-opacity: 0.95;
+      filter: drop-shadow(0 0 12px rgba(103, 232, 249, 0.25));
+    }
+    .arch-node.selected .node-box {
+      stroke-width: 2.2px;
+      stroke: #67e8f9 !important;
+      filter: drop-shadow(0 0 16px rgba(103, 232, 249, 0.45));
+    }
+    .arch-node.dimmed {
+      opacity: 0.22;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; r: 4; }
+      50% { opacity: 0.45; r: 5.5; }
+    }
+    .live-pulse {
+      animation: pulseDot 2.4s ease-in-out infinite;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #060609; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(103,232,249,0.4); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .edge-animated, .edge-highlight, .live-pulse { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-grid min-h-screen flex flex-col selection:bg-cyan-500/20 selection:text-cyan-200">
+
+  <!-- TOP COMMAND BAR -->
+  <header class="sticky top-0 z-40 border-b border-white/[0.08] bg-[#060609]/85 backdrop-blur-xl">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500/30 via-cyan-500/20 to-emerald-500/30 border border-white/15 flex items-center justify-center shadow-inner shrink-0">
+          <svg class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="truncate">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-sm tracking-tight text-white">Starlight Architecture &amp; Estate Atlas</span>
+            <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono-code bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              v9.3 LIVE · SIP ATTESTED
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 truncate hidden md:block">
+            Unblocked-Grade Provenance × Linear Dark Craft × Gemini 4 Argon Interactive HTML5/SVG Mobile Engine
+          </p>
+        </div>
+      </div>
+
+      <!-- Search & Action Controls -->
+      <div class="flex items-center gap-2">
+        <div class="relative hidden sm:block">
+          <input
+            id="globalSearch"
+            type="text"
+            placeholder="Filter nodes, orgs, SKUs... (Press /)"
+            class="w-56 lg:w-72 bg-white/[0.04] border border-white/[0.1] focus:border-cyan-400/60 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none transition"
+          />
+          <kbd class="absolute right-2.5 top-1.5 text-[10px] font-mono-code text-slate-500 border border-white/10 rounded px-1">/</kbd>
+        </div>
+
+        <button onclick="copyLLMMarkdown()" id="btnCopyLLM" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-violet-500/15 hover:bg-violet-500/25 text-violet-200 border border-violet-500/30 transition flex items-center gap-1.5 shrink-0" title="Copy full architecture state as Markdown for LLMs">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span class="hidden sm:inline">Copy for LLM</span>
+        </button>
+
+        <button onclick="exportSVGDiagram()" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-200 border border-cyan-500/30 transition flex items-center gap-1.5 shrink-0" title="Download vector SVG schematic">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span class="hidden sm:inline">Export SVG</span>
+        </button>
+
+        <a href="/wiki/index.html" class="px-2.5 py-1.5 rounded-lg text-xs font-mono-code bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition shrink-0">
+          ✦ Sovereign Wiki ↗
+        </a>
+
+        <a href="/llms.txt" target="_blank" class="px-2.5 py-1.5 rounded-lg text-xs font-mono-code bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 border border-white/[0.1] transition shrink-0">
+          /llms.txt
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs (Mobile Horizontal Scroll + Desktop Bar) -->
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-white/[0.05] py-1.5">
+      <button onclick="switchTab('topology')" id="tab-topology" class="tab-btn active px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+        1. Interactive SVG Topology (5 Layers)
+      </button>
+      <button onclick="switchTab('memory')" id="tab-memory" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent">
+        2. Bi-Temporal Memory &amp; Turn-0 Simulator
+      </button>
+      <button onclick="switchTab('orgs')" id="tab-orgs" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent">
+        3. 10 GitHub Orgs · 5 Studios · 10 SKUs
+      </button>
+      <button onclick="switchTab('economics')" id="tab-economics" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent">
+        4. Docs &amp; Wiki Stack Economics (Unblocked / Fumadocs / DeepWiki)
+      </button>
+      <button onclick="switchTab('argon')" id="tab-argon" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent">
+        5. Gemini 4 Argon Mobile HTML5/SVG Studio
+      </button>
+      <button onclick="switchTab('masterplan')" id="tab-masterplan" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent">
+        6. ICP · CLTV/ROI · 8h-Shift Master Plan
+      </button>
+    </div>
+  </header>
+
+  <!-- LIVE TELEMETRY STRIP -->
+  <div class="border-b border-white/[0.06] bg-[#090a10]/90">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-2 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-[11px]">
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="text-slate-400">SIS Gateway:</span>
+        <span class="font-mono-code text-white font-medium">:5200 (3,590 entries)</span>
+      </div>
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="text-slate-400">Tool Plane:</span>
+        <span class="font-mono-code text-white font-medium">:7317 (4/4 · 38 tools)</span>
+      </div>
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+        <span class="text-slate-400">Turn-0 Budget:</span>
+        <span class="font-mono-code text-cyan-300 font-medium">2,057 tok (97% cut)</span>
+      </div>
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-violet-400"></span>
+        <span class="text-slate-400">Temporal Spine:</span>
+        <span class="font-mono-code text-violet-300 font-medium">15 active / 9 superseded</span>
+      </div>
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+        <span class="text-slate-400">GitHub Estate:</span>
+        <span class="font-mono-code text-amber-300 font-medium">10 Orgs (96) + 414</span>
+      </div>
+      <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.05]">
+        <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
+        <span class="text-slate-400">Fleet:</span>
+        <span class="font-mono-code text-fuchsia-300 font-medium">8 Harnesses × 151 Agents</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-5">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: INTERACTIVE SVG TOPOLOGY CANVAS + UNBLOCKED PROVENANCE DRAWER -->
+    <!-- ===================================================================== -->
+    <section id="view-topology" class="space-y-4">
+      <!-- Filter Bar & Zoom Controls -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-[#0c0d14] border border-white/[0.08] rounded-xl p-3">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-[11px] font-mono-code uppercase tracking-wider text-slate-400 mr-1">Layer Filter:</span>
+          <button onclick="filterLayer('all')" data-layer="all" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-white/10 text-white border border-white/20">All Layers (22 Nodes)</button>
+          <button onclick="filterLayer('bv')" data-layer="bv" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/25">L1 · Eenmanszaak &amp; Trade Names</button>
+          <button onclick="filterLayer('studio')" data-layer="studio" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-violet-500/10 text-violet-300 border border-violet-500/25">L2 · 5 Studios &amp; 13 Brands</button>
+          <button onclick="filterLayer('org')" data-layer="org" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">L3 · 10 GitHub Orgs</button>
+          <button onclick="filterLayer('harness')" data-layer="harness" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/25">L4 · 8 Harnesses &amp; 151 Agents</button>
+          <button onclick="filterLayer('runtime')" data-layer="runtime" class="layer-pill px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">L5 · Daemons, Memory &amp; Telemetry</button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] text-slate-400 hidden xl:inline mr-1">Tap any node for Unblocked provenance · Pinch/drag to pan &amp; zoom</span>
+          <button onclick="zoomSVG(1.2)" class="p-1.5 rounded bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs text-slate-200" title="Zoom In">+</button>
+          <button onclick="zoomSVG(0.85)" class="p-1.5 rounded bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs text-slate-200" title="Zoom Out">−</button>
+          <button onclick="resetSVGZoom()" class="px-2 py-1 rounded bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-[11px] font-mono-code text-slate-300">Reset View</button>
+        </div>
+      </div>
+
+      <!-- Split Canvas + Provenance Inspector -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        <!-- SVG Interactive Viewport (8 cols on desktop) -->
+        <div class="lg:col-span-8 bg-[#090a10] border border-white/[0.08] rounded-2xl overflow-hidden relative shadow-2xl">
+          <div class="px-4 py-2.5 border-b border-white/[0.06] flex items-center justify-between text-[11px] text-slate-400 bg-[#0c0d14]/80">
+            <span class="font-mono-code text-slate-300">STARLIGHT_SOVEREIGN_TOPOLOGY.svg · Vector Coordinate Space (1200 × 760)</span>
+            <span id="activeNodeBadge" class="font-mono-code text-cyan-300">Selected:TemporalFactSpine</span>
+          </div>
+
+          <div id="svgContainer" class="w-full h-[520px] sm:h-[640px] overflow-hidden touch-none select-none cursor-grab active:cursor-grabbing relative">
+            <svg id="estateTopologySVG" viewBox="0 0 1200 760" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gradAmber" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="gradViolet" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="gradCyan" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="gradFuchsia" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#e879f9" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#c026d3" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="gradEmerald" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#34d399" stop-opacity="0.24"/>
+                  <stop offset="100%" stop-color="#059669" stop-opacity="0.05"/>
+                </linearGradient>
+              </defs>
+
+              <g id="svgViewportGroup" transform="translate(0,0) scale(1)">
+                <!-- LAYER BAND LABELS -->
+                <g class="opacity-60">
+                  <text x="24" y="42" fill="#fbbf24" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1.5">L1 · DUTCH EENMANSZAAK (FRANK RIEMER) + REGISTERED TRADE NAMES (STARLIGHT INTELLIGENCE · ARCANEA · ARCANEA RECORDS · GENCREATOR · VIBECLUBS)</text>
+                  <line x1="24" y1="50" x2="1176" y2="50" stroke="rgba(251,191,36,0.15)" stroke-dasharray="3 3"/>
+
+                  <text x="24" y="172" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1.5">L2 · 5 PRODUCT STUDIOS · 13 BRANDS · 10-SKU RELEASE TRAIN</text>
+                  <line x1="24" y1="180" x2="1176" y2="180" stroke="rgba(167,139,250,0.15)" stroke-dasharray="3 3"/>
+
+                  <text x="24" y="312" fill="#67e8f9" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1.5">L3 · 10 FEDERATED GITHUB ORGS (96 REPOS, 0 EMPTY) + FRANKXAI (414 REPOS)</text>
+                  <line x1="24" y1="320" x2="1176" y2="320" stroke="rgba(103,232,249,0.15)" stroke-dasharray="3 3"/>
+
+                  <text x="24" y="458" fill="#e879f9" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1.5">L4 · 8 HARNESSES × 151 NAMED SIS AGENTS × 89 AUTO-ACTIVATING SKILLS</text>
+                  <line x1="24" y1="466" x2="1176" y2="466" stroke="rgba(232,121,249,0.15)" stroke-dasharray="3 3"/>
+
+                  <text x="24" y="604" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" letter-spacing="1.5">L5 · SOVEREIGN SUBSTRATE · DAEMONS (:5200/:7317) · BI-TEMPORAL SPINE · INFISICAL/LANGFUSE</text>
+                  <line x1="24" y1="612" x2="1176" y2="612" stroke="rgba(52,211,153,0.15)" stroke-dasharray="3 3"/>
+                </g>
+
+                <!-- DYNAMIC EDGES GROUP (populated by JS) -->
+                <g id="svgEdgesGroup"></g>
+
+                <!-- DYNAMIC NODES GROUP (populated by JS) -->
+                <g id="svgNodesGroup"></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- UNBLOCKED-STYLE PROVENANCE & ARCHITECTURE INSPECTOR (4 cols on desktop) -->
+        <aside id="nodeInspector" class="lg:col-span-4 bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-5 space-y-4 sticky top-24 shadow-2xl">
+          <div class="flex items-start justify-between gap-2 border-b border-white/[0.07] pb-3">
+            <div>
+              <span id="inspLayerBadge" class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono-code uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                L5 · Sovereign Memory Engine
+              </span>
+              <h2 id="inspTitle" class="mt-1.5 text-lg font-semibold text-white tracking-tight">
+                Bi-Temporal Fact Spine (TemporalFactSpine)
+              </h2>
+              <p id="inspSubtitle" class="text-xs font-mono-code text-cyan-300 mt-0.5">
+                src/memory/temporal-spine.ts · 22 records
+              </p>
+            </div>
+            <span id="inspStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-mono-code bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
+              LIVE · VERIFIED
+            </span>
+          </div>
+
+          <!-- Architectural Purpose -->
+          <div>
+            <h3 class="text-[11px] font-mono-code uppercase tracking-wider text-slate-400">Why It Exists (Architectural Mechanism)</h3>
+            <p id="inspPurpose" class="mt-1 text-xs leading-relaxed text-slate-300">
+              Graphiti-inspired zero-LLM-cost bi-temporal fact ledger stored in git-tracked JSONL. Tracks both world validity (tValid / tInvalid) and transaction time (tCreated / tExpired) with supersededBy pointers so stale agent assumptions are automatically invalidated when estate truth evolves.
+            </p>
+          </div>
+
+          <!-- Unblocked-Style Code & PR Provenance -->
+          <div class="rounded-xl bg-[#08090f] border border-white/[0.07] p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-mono-code uppercase tracking-wider text-violet-300">Code &amp; Decision Provenance</span>
+              <span id="inspPRBadge" class="text-[11px] font-mono-code text-cyan-300">SIS#452 @ 7bea14863</span>
+            </div>
+            <div class="text-xs space-y-1.5 font-mono-code">
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">Primary Path:</span>
+                <span id="inspPath" class="text-slate-200 text-right truncate">src/memory/temporal-spine.ts</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">Test Gate:</span>
+                <span id="inspTests" class="text-emerald-300 text-right">4/4 temporal + 135/135 symmetry</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">Owner / Steward:</span>
+                <span id="inspOwner" class="text-slate-300 text-right">Sage · Architect · Antigravity</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Old Misconception Replaced -->
+          <div class="rounded-xl bg-rose-500/[0.05] border border-rose-500/20 p-3 space-y-1">
+            <span class="text-[10px] font-mono-code uppercase tracking-wider text-rose-300">Old Problem / Misconception Eliminated</span>
+            <p id="inspMisconception" class="text-xs text-slate-300 leading-relaxed">
+              Previously, flat vault notes had no temporal invalidation (tInvalid), so agents kept repeating outdated claims ("9 GitHub Orgs are empty", "hand-edit NEXT-PROMPTS.md"). Now superseded automatically on slot collision.
+            </p>
+          </div>
+
+          <!-- Interactive CLI / Action Snippet -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-mono-code uppercase tracking-wider text-slate-400">Verify / Operate Command</span>
+              <button onclick="copyInspectorCmd()" id="btnCopyCmd" class="text-[11px] font-mono-code text-cyan-300 hover:underline">Copy Command</button>
+            </div>
+            <pre id="inspCommand" class="bg-[#060609] border border-white/[0.08] rounded-lg p-2.5 text-[11px] font-mono-code text-cyan-200 overflow-x-auto">npx tsx --test test/temporal-spine.test.ts</pre>
+          </div>
+
+          <!-- Connected Nodes -->
+          <div>
+            <span class="text-[11px] font-mono-code uppercase tracking-wider text-slate-400">Connected Upstream / Downstream Nodes</span>
+            <div id="inspConnections" class="mt-2 flex flex-wrap gap-1.5"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: BI-TEMPORAL MEMORY & TURN-0 BUDGET SIMULATOR                  -->
+    <!-- ===================================================================== -->
+    <section id="view-memory" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Left: Turn-0 Context Budget Interactive Simulator -->
+        <div class="lg:col-span-5 bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">H-turn0-budget · tools/compile-turn0-core.mjs</span>
+            <span class="text-xs font-mono-code text-emerald-300">5/5 Tests Pass</span>
+          </div>
+          <h2 class="text-lg font-semibold text-white">Interactive Turn-0 Context Budget Simulator</h2>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Before Wave 2, every agent session loaded <code class="text-rose-300">50,000–83,000 tokens</code> at Turn 0, causing Codex 32 KiB truncation and context rot. Adjust the simulator below to compare legacy Turn-0 loading vs our compiled <strong>Two-Artifact Core</strong> (<code class="text-cyan-300">Doctrine &le; 8 KB + Catalog &le; 8 KB</code>).
+          </p>
+
+          <div class="space-y-3 pt-2">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-300">Sessions / Day Across 8 Harnesses:</span>
+                <span id="simSessionsVal" class="font-mono-code text-cyan-300 font-semibold">40 sessions/day</span>
+              </div>
+              <input id="simSessions" type="range" min="5" max="150" value="40" oninput="updateTurn0Sim()" class="w-full accent-cyan-400 cursor-pointer" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+              <div class="rounded-xl bg-rose-500/[0.06] border border-rose-500/20 p-3">
+                <div class="text-[10px] font-mono-code uppercase text-rose-300">Legacy Turn-0 (Uncompiled)</div>
+                <div id="simLegacyTokens" class="text-lg font-mono-code font-semibold text-white mt-1">2.64M tok/day</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">~66,000 tok/session · Truncates on Codex</div>
+              </div>
+              <div class="rounded-xl bg-emerald-500/[0.08] border border-emerald-500/25 p-3">
+                <div class="text-[10px] font-mono-code uppercase text-emerald-300">Compiled Turn-0 Core (Live)</div>
+                <div id="simNewTokens" class="text-lg font-mono-code font-semibold text-emerald-300 mt-1">82.3K tok/day</div>
+                <div class="text-[11px] text-slate-300 mt-0.5">2,057 tok/session (3,495 B + 4,730 B)</div>
+              </div>
+            </div>
+
+            <div class="rounded-xl bg-[#08090f] border border-white/[0.07] p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-slate-400">Net Context Window Saved Daily</div>
+                <div id="simSavedPct" class="text-sm font-mono-code text-cyan-300 font-semibold">96.9% reduction (2.56M tokens/day freed for reasoning)</div>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-cyan-500/15 text-cyan-300 font-mono-code text-xs">GEMINI.md 8.2 KB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Canonical Bi-Temporal Fact Spine Ledger (15 Active + 9 Superseded) -->
+        <div class="lg:col-span-7 bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-violet-500/15 text-violet-300 border border-violet-500/30">memory/vaults/temporal-facts.jsonl · Seeded via seed-estate-facts.ts</span>
+              <h2 class="text-lg font-semibold text-white mt-1">Bi-Temporal Fact Ledger (9 Superseded Misconceptions → 15 Active Truths)</h2>
+            </div>
+            <div class="flex gap-1.5">
+              <button onclick="filterFacts('all')" class="px-2.5 py-1 rounded text-xs font-mono-code bg-white/10 text-white">All (24)</button>
+              <button onclick="filterFacts('active')" class="px-2.5 py-1 rounded text-xs font-mono-code bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Active (15)</button>
+              <button onclick="filterFacts('superseded')" class="px-2.5 py-1 rounded text-xs font-mono-code bg-rose-500/15 text-rose-300 border border-rose-500/30">Superseded (9)</button>
+            </div>
+          </div>
+
+          <div id="temporalFactsTable" class="space-y-2 max-h-[420px] overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: 10 GITHUB ORGS · 5 STUDIOS · 10-SKU RELEASE TRAIN             -->
+    <!-- ===================================================================== -->
+    <section id="view-orgs" class="hidden space-y-6">
+      <div>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <h2 class="text-lg font-semibold text-white">10 Active Federated GitHub Organizations (96 Repos, 0 Empty) + frankxai (414 Repos)</h2>
+            <p class="text-xs text-slate-400">Protected by <code class="text-cyan-300">scripts/org-federation-audit.mjs</code> &amp; <code class="text-cyan-300">validateConsolidationWaveSafety()</code> (SIS#451 @ 9840daab1). Click DeepWiki on any public org to inspect auto-indexed repo graphs.</p>
+          </div>
+        </div>
+        <div id="orgsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5"></div>
+      </div>
+
+      <div class="pt-2">
+        <h2 class="text-lg font-semibold text-white mb-1">The 10-SKU Multi-Brand Release Train (<code class="text-cyan-300 text-sm">registry/repositories.yaml</code>)</h2>
+        <p class="text-xs text-slate-400 mb-3">Every SKU is bound to a Studio, a registered trade name (<code>handelsnaam</code>) on Frank Riemer's Dutch Eenmanszaak, a canonical repository, and independent cross-harness Maker/Checker PR sign-off.</p>
+        <div id="skusGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 4: DOCS & WIKI STACK ECONOMICS (UNBLOCKED / FUMADOCS / DEEPWIKI) -->
+    <!-- ===================================================================== -->
+    <section id="view-economics" class="hidden space-y-6">
+      <div class="bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="px-2.5 py-0.5 rounded text-[10px] font-mono-code uppercase bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">Architecture &amp; FinOps Decision Matrix</span>
+            <h2 class="text-xl font-semibold text-white mt-1.5">How the Best Engineering Teams Build Agent + Human Docs in 2026 (Without SaaS Lock-In)</h2>
+          </div>
+          <span class="text-xs font-mono-code text-emerald-300 bg-emerald-500/10 border border-emerald-500/25 px-3 py-1 rounded-lg">
+            Recommended Stack Incremental Cost: $0 / month
+          </span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-4xl">
+          You asked who sets the top aesthetic &amp; technical standard alongside <strong>Unblocked (<code class="text-cyan-300">getunblocked.com</code>)</strong>, and how we should architect our docs across <strong>Vercel, Vite, Next.js, OpenWiki, and DeepWiki</strong> for maximum speed, agent readability, and cost efficiency. Here is the exact breakdown:
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400 font-mono-code text-[11px]">
+                <th class="py-3 px-3">Platform / Approach</th>
+                <th class="py-3 px-3">Best Aesthetic / UX Strength</th>
+                <th class="py-3 px-3">Agent Readability (MCP / llms.txt)</th>
+                <th class="py-3 px-3">Cost for 10 Orgs / 73 Active Repos</th>
+                <th class="py-3 px-3">Starlight Verdict</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.06] text-slate-200">
+              <tr class="bg-emerald-500/[0.05]">
+                <td class="py-3 px-3 font-semibold text-emerald-300">1. Starlight Native Atlas (Static HTML5/SVG + Fumadocs on Next.js Static/Edge)</td>
+                <td class="py-3 px-3">Linear + Stripe + Argon interactive vector schematics, 60fps mobile touch pan/zoom, zero layout shift</td>
+                <td class="py-3 px-3"><span class="text-emerald-300 font-mono-code">10/10</span> · Native <code class="text-cyan-300">/llms.txt</code>, <code class="text-cyan-300">/sip.md</code>, one-click Copy for LLM, + <code class="text-cyan-300">:5200/:7317</code> MCP</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$0/mo incremental (Static CDN assets = 0 Vercel Fluid Compute invocations)</td>
+                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-200 font-mono-code text-[10px]">PRIMARY CANON (LIVE NOW)</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-cyan-300">2. Unblocked (getunblocked.com) Pattern</td>
+                <td class="py-3 px-3">Code-to-Decision provenance: connects PRs, discussions, and superseded assumptions to files</td>
+                <td class="py-3 px-3"><span class="text-cyan-300 font-mono-code">9/10</span> · Strong Q&amp;A synthesis, but cloud-hosted index</td>
+                <td class="py-3 px-3 font-mono-code text-amber-300">~$25–$40/seat/mo SaaS ($300–$480/yr) vs $0 via our TemporalFactSpine</td>
+                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 font-mono-code text-[10px]">BUILT NATIVELY IN SIS#452</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-violet-300">3. DeepWiki (deepwiki.com by Cognition)</td>
+                <td class="py-3 px-3">Zero-config auto-generated repo wiki + Mermaid call graphs for any public GitHub repo</td>
+                <td class="py-3 px-3"><span class="text-violet-300 font-mono-code">9/10</span> · Free DeepWiki MCP server + URL swap (<code class="text-slate-300">deepwiki.com/org/repo</code>)</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$0 for all 96 Public Org Repos (Paid only for private repos)</td>
+                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-200 font-mono-code text-[10px]">USE FREE FOR 96 PUBLIC REPOS</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-slate-200">4. Vite / Astro Starlight Static Sites (GitHub Pages / Cloudflare Pages)</td>
+                <td class="py-3 px-3">Sub-second builds, zero JS overhead by default, great for standalone OSS package docs</td>
+                <td class="py-3 px-3"><span class="text-emerald-300 font-mono-code">9/10</span> · Clean static Markdown + Pagefind / Orama static search index</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$0/mo (Unlimited bandwidth on Cloudflare Pages / GitHub Pages)</td>
+                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-white/10 text-slate-200 font-mono-code text-[10px]">USE FOR OSS ORG REPO DOCS</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-rose-300">5. Mintlify / ReadMe Paid SaaS</td>
+                <td class="py-3 px-3">Polished hosted docs template</td>
+                <td class="py-3 px-3"><span class="text-slate-300 font-mono-code">8/10</span> · Hosted llms.txt</td>
+                <td class="py-3 px-3 font-mono-code text-rose-300">$150–$300/mo per domain ($1,800–$3,600/yr+)</td>
+                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-200 font-mono-code text-[10px]">REJECT (OVERPRICED SAAS)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 5: GEMINI 4 ARGON MOBILE HTML5/SVG PROMPT STUDIO                 -->
+    <!-- ===================================================================== -->
+    <section id="view-argon" class="hidden space-y-5">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-5 bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-5 space-y-4">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-mono-code uppercase bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30">
+            Gemini 4 Argon · Canvas &amp; Mobile SVG Engine
+          </span>
+          <h2 class="text-lg font-semibold text-white">Argon Interactive HTML5 + SVG Prompt Generator</h2>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Select any Starlight subsystem below to generate a precision-tuned prompt for <strong>Gemini 4 Argon</strong> (in the Gemini Mobile App or Google AI Studio). Every generated prompt enforces our exact <code class="text-cyan-300">site/DESIGN.md</code> color tokens (<code class="text-violet-300">#060609</code>, <code class="text-cyan-300">#67e8f9</code>, <code class="text-violet-300">#a78bfa</code>), responsive SVG <code class="text-cyan-300">viewBox</code> math, mobile touch gestures (<code class="text-cyan-300">touchstart/touchmove</code>), and Unblocked-style provenance drawers—ready to drop straight into <code class="text-cyan-300">site/public/atlas/</code>.
+          </p>
+
+          <div class="space-y-3">
+            <label class="block text-xs font-mono-code text-slate-400">Select Target Subsystem Diagram:</label>
+            <select id="argonTopicSelect" onchange="updateArgonPrompt()" class="w-full bg-[#060609] border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+              <option value="swarm">1. Queen &amp; 151-Agent Swarm Routing Topology (8 Harnesses)</option>
+              <option value="memory">2. Bi-Temporal Fact Spine &amp; Hybrid SQLite FTS5 Memory Palace</option>
+              <option value="orgs">3. 1 Dutch Eenmanszaak &amp; Trade Names → 5 Studios → 10 Federated GitHub Orgs Map</option>
+              <option value="coe">4. GenCreator 6-Pillar Enterprise Center of Excellence (CoE)</option>
+              <option value="arcanea">5. Arcanea Ten Gates &amp; Guardian Progression Engine</option>
+            </select>
+
+            <button onclick="copyArgonPrompt()" id="btnCopyArgon" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-violet-500/30 via-fuchsia-500/30 to-cyan-500/30 hover:from-violet-500/40 hover:to-cyan-500/40 text-white border border-cyan-400/40 transition">
+              Copy Argon Mobile HTML5/SVG Prompt to Clipboard
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono-code text-slate-400">Generated Gemini 4 Argon Prompt (Paste into Gemini App Canvas / AI Studio)</span>
+            <span class="text-[11px] font-mono-code text-cyan-300">Single-File HTML5 + SVG + Touch Ready</span>
+          </div>
+          <pre id="argonPromptOutput" class="bg-[#060609] border border-white/[0.08] rounded-xl p-4 text-xs font-mono-code text-slate-200 whitespace-pre-wrap leading-relaxed max-h-[420px] overflow-y-auto"></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 6: ICP · CLTV/ROI · 8H-SHIFT MASTER EXECUTION BLUEPRINT          -->
+    <!-- ===================================================================== -->
+    <section id="view-masterplan" class="hidden space-y-6">
+      <!-- ICP, Community, CLTV & ROI Matrix -->
+      <div class="bg-[#0c0d14] border border-white/[0.08] rounded-2xl p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="px-2.5 py-0.5 rounded text-[10px] font-mono-code uppercase bg-amber-500/15 text-amber-300 border border-amber-500/30">STRATEGY.md × Commercial Unit Economics</span>
+            <h2 class="text-xl font-semibold text-white mt-1.5">ICP, Community, 4-Step Value Ladder, Target CLTV &amp; ROI Matrix</h2>
+          </div>
+          <span class="text-xs font-mono-code text-cyan-300 bg-cyan-500/10 border border-cyan-500/25 px-3 py-1 rounded-lg">
+            80%+ Shared Platform Reuse · Fail-Closed Money Gate
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400 font-mono-code text-[11px]">
+                <th class="py-3 px-3">ICP Segment &amp; Community</th>
+                <th class="py-3 px-3">Step 1: Free Proof Magnet (CAC &rarr; ~$0)</th>
+                <th class="py-3 px-3">Step 2: Activation SKU ($49–$299)</th>
+                <th class="py-3 px-3">Step 3: Recurring / Library ($29–$199/mo)</th>
+                <th class="py-3 px-3">Step 4: Enterprise / Bespoke ($5k–$25k+)</th>
+                <th class="py-3 px-3">Target 24m CLTV &amp; ROI Driver</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.06] text-slate-200">
+              <tr class="bg-violet-500/[0.04]">
+                <td class="py-3 px-3 font-semibold text-violet-300">1. AI Builders &amp; Agent Engineers<br/><span class="text-[11px] font-normal text-slate-400">GitHub OSS (10 Orgs) · Starlight Discord</span></td>
+                <td class="py-3 px-3">SIP Starter + Public Vaults + <code class="text-cyan-300">/atlas</code> + Agentic Architecture Field Guide</td>
+                <td class="py-3 px-3">Field Guide Pro Pack + ACOS Pro Blueprint + Skills Library Pack</td>
+                <td class="py-3 px-3">Starlight Memory / Workbench Pro (Bi-Temporal Sync + Evals)</td>
+                <td class="py-3 px-3">Sovereign Estate &amp; Swarm Commissioning Blueprint</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$450–$2,400 CLTV<br/><span class="text-[10px] text-slate-400">Zero paid ads; GitHub star &rarr; SKU funnel</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-cyan-300">2. Technical Creators &amp; Solopreneurs<br/><span class="text-[11px] font-normal text-slate-400">FrankX.ai Newsletter · GenCreator · VibeClubs</span></td>
+                <td class="py-3 px-3">FrankX Essays + Prompt Library + Arcanea Records Free Tracks</td>
+                <td class="py-3 px-3">Creator Launch OS + Agentic Income Website Starter + Sonic Pack</td>
+                <td class="py-3 px-3">GenCreator &amp; VibeClubs Membership + Monthly Template/Skill Drops</td>
+                <td class="py-3 px-3">Executive Creator OS Audit &amp; Custom Automation</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$350–$1,800 CLTV<br/><span class="text-[10px] text-slate-400">85%+ gross margin digital SKUs</span></td>
+              </tr>
+              <tr class="bg-emerald-500/[0.04]">
+                <td class="py-3 px-3 font-semibold text-emerald-300">3. Enterprise AI Architects &amp; CTOs<br/><span class="text-[11px] font-normal text-slate-400">AI Architect Academy · OCI Architects</span></td>
+                <td class="py-3 px-3">6-Pillar GenCreator CoE Assessment (<code class="text-cyan-300">frankx.ai/coe</code>) + OCI Reference Repos</td>
+                <td class="py-3 px-3">Enterprise Architecture Blueprint Kit &amp; SDD Templates</td>
+                <td class="py-3 px-3">AI Architect Academy Team Seat / Cohort Access</td>
+                <td class="py-3 px-3">6-Pillar CoE Advisory Sprint (Starlight Intelligence Eenmanszaak)</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$3,500–$25,000+ CLTV<br/><span class="text-[10px] text-slate-400">Highest B2B cashflow velocity</span></td>
+              </tr>
+              <tr>
+                <td class="py-3 px-3 font-semibold text-amber-300">4. Worldbuilders, Gamers &amp; Fiction Authors<br/><span class="text-[11px] font-normal text-slate-400">Arcanea Realm · Ten Gates Academy</span></td>
+                <td class="py-3 px-3">Origin Class Quiz + Free Lore Scrolls + Public Realm Gallery</td>
+                <td class="py-3 px-3">Arcanea World Seed (Visual Bible + Ebook + OST) + AuthorOS</td>
+                <td class="py-3 px-3">Metered Realm Creation Credits (<code class="text-cyan-300">arcanea.ai</code>)</td>
+                <td class="py-3 px-3">Franchise / Collector Editions &amp; Co-Created Realms</td>
+                <td class="py-3 px-3 font-mono-code text-emerald-300">$180–$950 CLTV<br/><span class="text-[10px] text-slate-400">High viral retention &amp; IP equity</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 8-Hour Shift Execution Playbook: NOW -> TOMORROW -> NEXT WEEK -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="bg-[#0c0d14] border border-emerald-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-emerald-500/20 text-emerald-300">SHIFT 1 · NOW (TODAY — 8H)</span>
+            <span class="text-[11px] font-mono-code text-emerald-300">WIP: 1 Primitive + 2 SKUs</span>
+          </div>
+          <h3 class="text-base font-semibold text-white">Promote Signed PRs &amp; Lock Shared Checkout</h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed list-disc pl-4">
+            <li><strong>Merge the 56 Signed-Off PRs in Priority Order:</strong> Start with substrate (`SIS#451/#452`, `starlight-estate#54`, `starlight-agent-config#128`, `starlight-memory#41`, `agentic-ops-hub#363`), then promote `frankx.ai-vercel-website` (`#1056`, `#1044`, `#1043`, `#1033`), `starlight-technology#45`, and `arcanea-ai-app#655`.</li>
+            <li><strong>M2 Commerce &amp; Entitlement Rehearsal (Starlight Intelligence Eenmanszaak Stripe):</strong> Run one end-to-end test order → webhook → Supabase entitlement → download receipt → refund rehearsal for <strong>Agentic Architecture Field Guide</strong> + <strong>Creator Launch OS</strong>.</li>
+            <li><strong>Zero-Drift Nightly Guard:</strong> Schedule `org-federation-audit.mjs` + `compile-turn0-core.mjs` + `handover.mjs lint` as a lightweight GitHub Action on `main`.</li>
+          </ul>
+        </div>
+
+        <div class="bg-[#0c0d14] border border-cyan-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-cyan-500/20 text-cyan-300">SHIFT 2 · TOMORROW (NEXT 24H)</span>
+            <span class="text-[11px] font-mono-code text-cyan-300">Conversion &amp; Aesthetic Polish</span>
+          </div>
+          <h3 class="text-base font-semibold text-white">Ship First 2 Revenue SKUs + Interactive Proof</h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed list-disc pl-4">
+            <li><strong>Embed Argon HTML5/SVG Diagrams on Product Landing Pages:</strong> Put interactive SVG architecture previews directly on the <strong>Field Guide</strong> (`starlight.technology`) and <strong>6-Pillar CoE</strong> (`frankx.ai/coe`) pages so buyers experience the engineering depth before purchasing.</li>
+            <li><strong>Unify `packages/entitlements` Shared Contract:</strong> One shared TypeScript verification helper checking Stripe checkout session + license key across `starlight.technology`, `frankx.ai`, and `arcanea.ai`.</li>
+            <li><strong>Visual QA Gate (`visual-qa-gate`):</strong> Run desktop (`1440px`) + mobile (`390px`) keyboard/touch/contrast audits across the top 5 conversion routes.</li>
+          </ul>
+        </div>
+
+        <div class="bg-[#0c0d14] border border-violet-500/30 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-violet-500/20 text-violet-300">SHIFT 3 · NEXT WEEK (DAYS 3–7)</span>
+            <span class="text-[11px] font-mono-code text-violet-300">Scale, Community &amp; Investor Room</span>
+          </div>
+          <h3 class="text-base font-semibold text-white">4 Live SKUs, Community Flywheel &amp; Investor Data Room</h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed list-disc pl-4">
+            <li><strong>Ship SKUs 3 &amp; 4 (`AuthorOS` + `Arcanea World Seed`):</strong> Complete the 4-SKU milestone (`ROADMAP.md` M4) across 3 revenue models (direct digital pack, metered credits, enterprise CoE advisory).</li>
+            <li><strong>Live Investor &amp; Partner Data Room (`/atlas?mode=investor`):</strong> Expose verified non-private telemetry from `metrics/current.json` (510 repos across 10 Orgs, 151 agents, 89 skills, 96.9% Turn-0 compression, Maker/Checker sign-off velocity).</li>
+            <li><strong>DeepWiki + GitHub Discussions Community Loop:</strong> Enable DeepWiki badges on all 96 public org repos routing developers into the canonical offer ladder.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/[0.08] bg-[#060609] py-4 px-4 sm:px-6 mt-8">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-300 font-medium">Built on SIP</span>
+        <span>·</span>
+        <span>Starlight Intelligence System v9.3</span>
+        <span>·</span>
+        <span>Static Edge Asset ($0 Compute Cost)</span>
+      </div>
+      <div class="flex items-center gap-4 font-mono-code">
+        <a href="/architecture" class="hover:text-cyan-300 transition">/architecture</a>
+        <a href="/docs" class="hover:text-cyan-300 transition">/docs</a>
+        <a href="/protocol" class="hover:text-cyan-300 transition">/protocol</a>
+        <a href="/llms.txt" class="hover:text-cyan-300 transition">/llms.txt</a>
+        <a href="https://github.com/frankxai/Starlight-Intelligence-System" target="_blank" class="hover:text-cyan-300 transition">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- INTERACTIVE ENGINE SCRIPT -->
+  <script>
+    // =========================================================================
+    // 1. CANONICAL ESTATE TOPOLOGY DATA (5 LAYERS, 22 NODES, 28 EDGES)
+    // =========================================================================
+    const NODES = [
+      // L1: Dutch Eenmanszaak + Registered Trade Names (Handelsnamen) (y = 82)
+      {
+        id: 'bv-holding', layer: 'bv', x: 185, y: 82, w: 265, h: 54,
+        title: 'Starlight Intelligence (Eenmanszaak)', sub: 'Primary Trade Name · Frank Riemer (KvK · 0 B.V.s)',
+        badge: 'L1 · Dutch Eenmanszaak (Main)', color: '#fbbf24', grad: 'url(#gradAmber)',
+        status: 'ACTIVE · KVK LOCKED', pr: 'frankx-strategy@38adf46 + FrankX@3b659c2',
+        path: 'frankxai/frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md',
+        tests: 'CURRENT-LEGAL-IDENTITY.md PASS (0 B.V.s)', owner: 'Frank Riemer (Founder, Amsterdam)',
+        purpose: 'Single Dutch Eenmanszaak (sole proprietorship) with multiple registered handelsnamen (trade names): Starlight Intelligence (primary), Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, and AI Architect Academy. Money fails closed per Band-A non-waivable rule.',
+        misconception: 'Supersedes the obsolete 3-BV claim (Starlight Holding BV, FrankX Operations BV, Arcanea BV / Arcanea Labs BV) in stale 2026-08-04 companies.yaml. Zero B.V.s exist; "BV" never appears in a trade name.',
+        cmd: 'gh api repos/frankxai/frankx-strategy/contents/entity/2026-09-29-entity-and-kvk-plan.md --jq .sha'
+      },
+      {
+        id: 'bv-starlight', layer: 'bv', x: 525, y: 82, w: 265, h: 54,
+        title: 'GenCreator · VibeClubs · FrankX', sub: 'Registered Trade Names · Creator OS · Academy',
+        badge: 'L1 · Registered Handelsnamen', color: '#fbbf24', grad: 'url(#gradAmber)',
+        status: 'ACTIVE · KVK LOCKED', pr: 'FrankX@3b659c2 + agentic-ops#275',
+        path: 'frankxai/FrankX:CURRENT-LEGAL-IDENTITY.md',
+        tests: 'validate_product_lifecycle.py PASS', owner: 'Frank Riemer (h.o.d.n.)',
+        purpose: 'Registered trade names (handelsnamen) on the Eenmanszaak for GenCreator (gencreator.ai, 6-Pillar CoE, ACOS), VibeClubs (live co-creation & community sessions), FrankX (flagship), and AI Architect Academy.',
+        misconception: 'Supersedes "FrankX Operations B.V." and "Starlight Ventures B.V."; also note "Vibe OS" was explicitly dropped as a KvK trade name in favor of VibeClubs & Arcanea Records.',
+        cmd: 'gh api repos/frankxai/FrankX/contents/CURRENT-LEGAL-IDENTITY.md --jq .sha'
+      },
+      {
+        id: 'bv-arcanea', layer: 'bv', x: 865, y: 82, w: 265, h: 54,
+        title: 'Arcanea & Arcanea Records', sub: 'Registered Trade Names · Multiverse · Music Label',
+        badge: 'L1 · Registered Handelsnamen', color: '#fbbf24', grad: 'url(#gradAmber)',
+        status: 'ACTIVE · KVK LOCKED', pr: 'frankx-strategy@38adf46',
+        path: 'verticals/music-is/labels/arcanea/CANON.md',
+        tests: 'Music IS 4-Imprint Canon PASS', owner: 'Frank Riemer (h.o.d.n. Arcanea / Arcanea Records)',
+        purpose: 'Registered trade names for the Arcanea creative multiverse and Arcanea Records ("signed to Arcanea" music label umbrella governing 4 imprints: Frank Riemer, Frank\'s Vibes, Arcanea, and Nona).',
+        misconception: 'Supersedes "Arcanea B.V.", "Arcanea Labs B.V.", "Arcanea Records B.V.", and rejected "Starlight Records".',
+        cmd: 'gh repo list Arcanea-Labs --limit 20'
+      },
+
+      // L2: 5 Product Studios (y = 212)
+      {
+        id: 'st-starlight', layer: 'studio', x: 60, y: 212, w: 205, h: 56,
+        title: 'Studio 1: Starlight IS', sub: 'SIS · SIP Protocol · Starlight Tech',
+        badge: 'L2 · Product Studio', color: '#a78bfa', grad: 'url(#gradViolet)',
+        status: '3 BRANDS · SKU-02/03/06/08', pr: 'starlight-technology#45 @ 58c0db3',
+        path: 'C:/Users/frank/starlight/repos/starlight-technology',
+        tests: 'Flagship Shop v2 signed (antigravity/pass)', owner: 'Architect · Prime',
+        purpose: 'Builds the sovereign intelligence substrate (SIP v1.1.1), Starlight Intelligence System v9.3, Starlight Memory, and Flagship Shop v2.',
+        misconception: 'Unifies substrate research (starlightintelligence.org) with commercial SKU delivery (starlight.technology).',
+        cmd: 'node C:/Users/frank/starlight/tools/pr-gate.mjs verify --repo frankxai/starlight-technology --pr 45'
+      },
+      {
+        id: 'st-arcanea', layer: 'studio', x: 295, y: 212, w: 205, h: 56,
+        title: 'Studio 2: Arcanea', sub: 'Arcanea · Games · Stellaris · Vibe Gods',
+        badge: 'L2 · Creative Studio', color: '#a78bfa', grad: 'url(#gradViolet)',
+        status: '4 BRANDS · SKU-04/10', pr: 'arcanea-ai-app#655 @ e522758',
+        path: 'C:/Users/frank/starlight/repos/arcanea-ai-app',
+        tests: '7 PRs signed (#657/#655/#653/#660/#656/#626/#606)', owner: 'Weaver · Lumina',
+        purpose: 'Operates arcanea.ai, the Ten Gates Academy, Realm Creation Engine, and metered spend guardrails.',
+        misconception: 'Enforces strict fail-closed credit metering (PR #655) and CANON_LOCKED.md lore boundaries.',
+        cmd: 'node C:/Users/frank/starlight/tools/pr-gate.mjs verify --repo frankxai/arcanea-ai-app --pr 655'
+      },
+      {
+        id: 'st-gencreator', layer: 'studio', x: 530, y: 212, w: 205, h: 56,
+        title: 'Studio 3: GenCreator & FrankX', sub: 'FrankX.ai · GenCreator · ACOS',
+        badge: 'L2 · Creator Studio', color: '#a78bfa', grad: 'url(#gradViolet)',
+        status: '3 BRANDS · SKU-01/05/07', pr: 'frankx.ai-vercel-website#1043 @ c2bf87b',
+        path: 'C:/Users/frank/starlight/repos/frankx.ai-vercel-website',
+        tests: '9 PRs signed (#1066/#1056/#1044/#1043/#1033...)', owner: 'Envoy · Creation Engine',
+        purpose: 'Powers frankx.ai, the 6-Pillar GenCreator Center of Excellence (CoE), Agentic Creator OS (ACOS), and the 89+ Skills Library.',
+        misconception: 'Connects GenCreator 6-Pillar CoE blueprints directly into frankx.ai navigation and assessment funnels.',
+        cmd: 'node C:/Users/frank/starlight/tools/pr-gate.mjs verify --repo frankxai/frankx.ai-vercel-website --pr 1043'
+      },
+      {
+        id: 'st-architect', layer: 'studio', x: 765, y: 212, w: 200, h: 56,
+        title: 'Studio 4: AI Architect', sub: 'Academy · Studio · OCI Architects',
+        badge: 'L2 · Enterprise Studio', color: '#a78bfa', grad: 'url(#gradViolet)',
+        status: '3 BRANDS · SKU-09', pr: 'SIS#451 @ 9840daab1',
+        path: 'C:/Users/frank/starlight/repos/Starlight-Intelligence-System/scripts/org-federation-audit.mjs',
+        tests: 'org-federation-audit.test.mjs (6/6 PASS)', owner: 'Oracle AI Architect · Navigator',
+        purpose: 'Delivers enterprise AI reference architectures, OCI GenAI blueprints, and AI Architect Academy cohorts.',
+        misconception: 'Maintains strict Oracle separation while scaling public reference blueprints across 27 repos in 3 orgs.',
+        cmd: 'node --test C:/Users/frank/starlight/worktrees/sis-org-federation-20261017/tests/org-federation-audit.test.mjs'
+      },
+      {
+        id: 'st-life', layer: 'studio', x: 990, y: 212, w: 180, h: 56,
+        title: 'Studio 5: Life & Wealth', sub: 'Agentic Income · Life Commons',
+        badge: 'L2 · Sovereign Systems', color: '#a78bfa', grad: 'url(#gradViolet)',
+        status: '2 BRANDS · 18 ORG REPOS', pr: 'SIS STACK.md v8.0',
+        path: 'C:/Users/frank/starlight/repos/Starlight-Intelligence-System/STACK.md',
+        tests: 'v8.4 universal-IS symmetry PASS', owner: 'Wealth IS · Embodiment IS',
+        purpose: 'Houses Asymmetric Passive Income (DPI) research, investor-research kits, longevity/energy intelligence, and non-clinical mind models.',
+        misconception: 'Enforces non-waivable rules: Money fails closed; Model, never diagnose.',
+        cmd: 'gh repo list Agentic-Income --limit 15'
+      },
+
+      // L3: 10 Federated GitHub Orgs + frankxai (y = 350)
+      {
+        id: 'org-starlight', layer: 'org', x: 50, y: 350, w: 210, h: 58,
+        title: 'Starlight Orgs (2 Orgs · 18 Repos)', sub: 'Starlight-Intelligence (11) · Systems (7)',
+        badge: 'L3 · Federated GitHub Orgs', color: '#67e8f9', grad: 'url(#gradCyan)',
+        status: '18 PUBLIC · 2 MIRRORS PROTECTED', pr: 'SIS#451 @ 9840daab1',
+        path: 'scripts/org-federation-audit.mjs',
+        tests: 'validateConsolidationWaveSafety PASS', owner: 'Starlight-Intelligence',
+        purpose: 'Public OSS & enterprise protocol surface for Starlight. Protects starlight-voice and starlight-cosmos-engine active mirrors from accidental archival.',
+        misconception: 'Zero empty orgs: all 18 repositories across both Starlight orgs are populated and verified.',
+        cmd: 'gh repo list Starlight-Intelligence --limit 20'
+      },
+      {
+        id: 'org-arcanea', layer: 'org', x: 280, y: 350, w: 200, h: 58,
+        title: 'Arcanea-Labs Org (13 Repos)', sub: 'Orchestrator · Studio · Ecosystem · Onchain',
+        badge: 'L3 · Federated GitHub Org', color: '#67e8f9', grad: 'url(#gradCyan)',
+        status: '13 PUBLIC · PRIMARY OWNER', pr: 'SIS#451 @ 9840daab1',
+        path: 'scripts/org-federation-audit.mjs',
+        tests: '6/6 Federation Tests PASS', owner: 'Arcanea-Labs',
+        purpose: 'Canonical home of arcanea-orchestrator (primaryOwner: Arcanea-Labs) plus active mirrors for arcanea-studio, arcanea-ecosystem, and arcanea-onchain.',
+        misconception: 'Directly falsifies and supersedes the stale Feb 2026 "Arcanea-Labs dormant" claim.',
+        cmd: 'gh repo list Arcanea-Labs --limit 20'
+      },
+      {
+        id: 'org-creator', layer: 'org', x: 500, y: 350, w: 210, h: 58,
+        title: 'FrankX-AI (11) & GenCreator (9)', sub: '20 Public Repos · ACOS · CoE · Skills',
+        badge: 'L3 · Federated GitHub Orgs', color: '#67e8f9', grad: 'url(#gradCyan)',
+        status: '20 PUBLIC REPOS ACTIVE', pr: 'claude-skills-library#72 @ 6a2d516',
+        path: 'C:/Users/frank/starlight/repos/agentic-ops/registry/repositories.yaml',
+        tests: 'agentskills.io v8.8 conformance PASS', owner: 'FrankX-AI · GenCreator-ai',
+        purpose: 'Public distribution orgs for Agentic Creator OS (ACOS), GenCreator CoE frameworks, templates, and conformant agent skills.',
+        misconception: 'Separates public forkable kits from private frankx.ai production state.',
+        cmd: 'gh repo list FrankX-AI --limit 20'
+      },
+      {
+        id: 'org-architect', layer: 'org', x: 730, y: 350, w: 215, h: 58,
+        title: 'Architect Orgs (3 Orgs · 27 Repos)', sub: 'OCI (14) · Studio (8) · Academy (5)',
+        badge: 'L3 · Federated GitHub Orgs', color: '#67e8f9', grad: 'url(#gradCyan)',
+        status: '26 PUBLIC · 1 PRIVATE', pr: 'SIS#451 @ 9840daab1',
+        path: 'scripts/org-federation-audit.mjs',
+        tests: 'ai-architect-academy private check PASS', owner: 'AI-Architect-Studio / OCI',
+        purpose: 'Houses 14 OCI AI Architect repos, 8 AI Architect Studio repos, and 5 AI Architect Academy repos.',
+        misconception: 'Corrected ai-architect-academy visibility to private in org-federation-audit.mjs.',
+        cmd: 'gh repo list oci-ai-architects --limit 20'
+      },
+      {
+        id: 'org-frankxai', layer: 'org', x: 965, y: 350, w: 205, h: 58,
+        title: 'frankxai + Life/Income (432)', sub: 'frankxai (414) · Income (10) · Life (8)',
+        badge: 'L3 · Control Plane & Hub', color: '#67e8f9', grad: 'url(#gradCyan)',
+        status: '56 PRS SIGNED OFF', pr: 'agentic-ops-hub#363 @ 22181a5',
+        path: 'C:/Users/frank/starlight/worktrees/agentic-ops-hub-handover/ops/HANDOVER-INDEX.md',
+        tests: 'handover lint: ok (36 handovers, 0 unverified)', owner: 'All Harnesses via pr-gate.mjs',
+        purpose: 'Primary working remotes (frankxai) and coordination hub (agentic-ops-hub) plus Agentic-Income (10) and Life-Commons (8).',
+        misconception: 'All 10 open-unverified handovers reconciled; NEXT-PROMPTS.md is 100% generated via scripts/handover.mjs index.',
+        cmd: 'node C:/Users/frank/starlight/worktrees/agentic-ops-hub-handover/scripts/handover.mjs lint'
+      },
+
+      // L4: 8 Harnesses & 151 SIS Agents (y = 496)
+      {
+        id: 'har-antigravity', layer: 'harness', x: 55, y: 496, w: 260, h: 58,
+        title: 'Antigravity + Gemini CLI + Argon', sub: '1M–2M Context Conductor · Checker · HTML5/SVG',
+        badge: 'L4 · Primary Conductor Harness', color: '#e879f9', grad: 'url(#gradFuchsia)',
+        status: '56 PR SIGNOFFS POSTED', pr: 'starlight-estate#54 @ e6f4727',
+        path: 'C:/Users/frank/starlight/GEMINI.md',
+        tests: 'compile-turn0-core.test.mjs (5/5 PASS)', owner: 'Antigravity',
+        purpose: 'High-context estate conductor, independent Maker/Checker reviewer (pr-gate.mjs signoff), reactive subagent orchestrator, and Argon HTML5/SVG builder.',
+        misconception: 'Generated GEMINI.md (8,214 bytes) so Gemini/Antigravity boots with exact 2,057-token compiled Turn-0 parity.',
+        cmd: 'node C:/Users/frank/starlight/worktrees/starlight-antigravity-20261017/tools/compile-turn0-core.mjs'
+      },
+      {
+        id: 'har-local', layer: 'harness', x: 340, y: 496, w: 270, h: 58,
+        title: 'Claude Code · Codex · OpenCode · Cursor', sub: 'Local Builder Fleet · Worktree Isolated',
+        badge: 'L4 · Local Coding Harnesses (4)', color: '#e879f9', grad: 'url(#gradFuchsia)',
+        status: 'PRISMA-LOCAL & CODEX FIXED', pr: 'starlight-agent-config#128 @ 3a23ebe',
+        path: 'C:/Users/frank/.claude/CLAUDE.md',
+        tests: 'test_bootstrap_coherence.py (22/22 PASS)', owner: 'Local Fleet',
+        purpose: 'Executes scoped feature & infrastructure slices in isolated worktrees under C:/Users/frank/starlight/worktrees/ guarded by starlight_ops.py leases.',
+        misconception: 'Fixed Codex 32 KiB truncation (project_doc_max_bytes = 98304) and pinned Prisma-Local MCP to prisma@7.10.1.',
+        cmd: 'python -m unittest discover -s C:/Users/frank/starlight/worktrees/agent-config-antigravity-20261017/core/workspace-bootstrap/tests -p "test_*.py"'
+      },
+      {
+        id: 'har-cloud', layer: 'harness', x: 635, y: 496, w: 245, h: 58,
+        title: 'Jules (Cloud) + Hermes (6-Pillar CoE)', sub: 'Async Repo Sweeps & Provenance Search',
+        badge: 'L4 · Cloud & Autonomous Harnesses (2)', color: '#e879f9', grad: 'url(#gradFuchsia)',
+        status: 'SIS#449 & ARCANEA#606 SIGNED', pr: 'SIS#449 @ 8003a38',
+        path: 'C:/Users/frank/starlight/repos/Starlight-Intelligence-System/VERTICALS.md',
+        tests: 'pr-gate.mjs verify SIS#449 PASS', owner: 'Jules · Hermes',
+        purpose: 'Jules handles asynchronous multi-repo hygiene/accessibility PRs; Hermes powers isolated 6-Pillar GenCreator CoE Guardians and deep provenance search.',
+        misconception: 'Cloud agents never self-merge: their PRs are verified and signed off by local Checker harnesses via pr-gate.mjs.',
+        cmd: 'node C:/Users/frank/starlight/tools/pr-gate.mjs verify --repo frankxai/Starlight-Intelligence-System --pr 449'
+      },
+      {
+        id: 'har-council', layer: 'harness', x: 905, y: 496, w: 265, h: 58,
+        title: '151 Named SIS Agents & 89 Skills', sub: 'Queen · Prime · Architect · Sage · 17 Domains',
+        badge: 'L4 · Shared Cognitive Registry', color: '#e879f9', grad: 'url(#gradFuchsia)',
+        status: '135/135 SYMMETRY PASS', pr: 'agents/AGENT_REGISTRY.md',
+        path: 'C:/Users/frank/starlight/repos/Starlight-Intelligence-System/agents/AGENT_REGISTRY.md',
+        tests: 'v8.7 agent-count + v8.8 agentskills PASS', owner: 'Starlight Council',
+        purpose: 'Unified flat council of 151 specialist personas and 89 auto-activating skill packages shared across all 8 harnesses.',
+        misconception: 'Zero phantom skills (EXEMPT_PHANTOMS = 0, EXEMPT_AGENTSKILLS = 0).',
+        cmd: 'npm --prefix C:/Users/frank/starlight/worktrees/sis-antigravity-production-20261010 test'
+      },
+
+      // L5: Sovereign Runtime Daemons, Bi-Temporal Spine & Telemetry (y = 642)
+      {
+        id: 'run-gateway', layer: 'runtime', x: 45, y: 642, w: 220, h: 60,
+        title: 'SIS Memory Gateway (:5200)', sub: 'Loopback Daemon · 3,590 Vault Entries',
+        badge: 'L5 · Live Daemon (PID 26492)', color: '#34d399', grad: 'url(#gradEmerald)',
+        status: 'HTTP 200 OK · LOCK HARDENED', pr: 'SIS#452 @ 7bea14863',
+        path: 'src/gateway/daemon.ts',
+        tests: '20/20 spawn-lock unit tests PASS', owner: 'Sage · Memory Engine',
+        purpose: 'Per-harness loopback HTTP daemon indexing 6 semantic vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon) with SQLite FTS5 + RRF.',
+        misconception: 'Unbricked stale 0-byte .gateway-spawn.lock from 14 Oct and wired acquireLock/breakStaleLock into daemon.ts.',
+        cmd: 'curl -s http://127.0.0.1:5200/health'
+      },
+      {
+        id: 'run-spine', layer: 'runtime', x: 285, y: 642, w: 230, h: 60,
+        title: 'Bi-Temporal Fact Spine', sub: 'tValid/tInvalid · 14 Active / 8 Superseded',
+        badge: 'L5 · Temporal Truth Ledger', color: '#34d399', grad: 'url(#gradEmerald)',
+        status: '22 FACTS SEEDED · GIT-TRACKED', pr: 'SIS#452 @ 7bea14863',
+        path: 'src/memory/temporal-spine.ts',
+        tests: 'test/temporal-spine.test.ts (4/4 PASS)', owner: 'Sage · Antigravity',
+        purpose: 'Graphiti-grade temporal validity + git/PR provenance without Neo4j RAM bloat or LLM extraction latency.',
+        misconception: 'Supersedes all 8 historical estate misconceptions automatically with deterministic Turn-0 markdown rendering.',
+        cmd: 'npx tsx --test C:/Users/frank/starlight/worktrees/sis-antigravity-production-20261010/test/temporal-spine.test.ts'
+      },
+      {
+        id: 'run-toolplane', layer: 'runtime', x: 535, y: 642, w: 225, h: 60,
+        title: 'Shared Tool Plane (:7317)', sub: '4/4 Backends Ready · 38 MCP Tools',
+        badge: 'L5 · Live Daemon (PID 10036)', color: '#34d399', grad: 'url(#gradEmerald)',
+        status: 'STATE: READY · DOCTOR HEALTHY', pr: 'starlight-memory#41 @ 8a593c0',
+        path: 'C:/Users/frank/starlight/repos/starlight-memory/src/doctor.mjs',
+        tests: '6/6 doctor disjoint-path tests PASS', owner: 'Starlight Tool Plane',
+        purpose: 'Multiplexes starlight-bridge, headroom, railway, and starlight-memory (38 tools) over 127.0.0.1:7317 so harnesses don\'t spawn duplicate stdio processes.',
+        misconception: 'Deduplicated 257 KB taste-feedback-ledger-index.md (2,043 -> 134 entries), ending 299 restart loops.',
+        cmd: 'node C:/Users/frank/starlight/repos/starlight-memory/bin/starlight-memory.mjs doctor'
+      },
+      {
+        id: 'run-turn0', layer: 'runtime', x: 780, y: 642, w: 195, h: 60,
+        title: 'Turn-0 Core Compiler', sub: '2,057 Tokens (3.5 KB + 4.7 KB)',
+        badge: 'L5 · Context Engine', color: '#34d399', grad: 'url(#gradEmerald)',
+        status: '96.9% TOKEN REDUCTION', pr: 'starlight-estate#54 @ e6f4727',
+        path: 'tools/compile-turn0-core.mjs',
+        tests: 'compile-turn0-core.test.mjs (5/5 PASS)', owner: 'Architect · Antigravity',
+        purpose: 'Compiles Turn-0 into two strict <= 8 KB artifacts (Doctrine + Catalog) plus GEMINI.md so every harness starts fast and never truncates.',
+        misconception: 'Eliminates 50k–83k Turn-0 token bloat across Claude, Codex, and Gemini.',
+        cmd: 'node --test C:/Users/frank/starlight/worktrees/starlight-antigravity-20261017/tools/tests/compile-turn0-core.test.mjs'
+      },
+      {
+        id: 'run-infisical', layer: 'runtime', x: 995, y: 642, w: 180, h: 60,
+        title: 'Infisical EU + Langfuse', sub: 'Zero-Loss OTLP JSONL Spooler',
+        badge: 'L5 · Secrets & Telemetry', color: '#34d399', grad: 'url(#gradEmerald)',
+        status: 'EU SESSION ACTIVE · SPOOLED', pr: 'starlight-agent-config#128 @ 3a23ebe',
+        path: 'core/tools/langfuse_spool.cjs',
+        tests: 'test_langfuse_spool.cjs (3/3 PASS)', owner: 'Sentinel · Security',
+        purpose: 'Fetches rotated keys from Infisical EU (6e39a7d9...) and buffers OTLP traces locally to ~/.starlight/telemetry/langfuse-spool.jsonl on HTTP 403/429.',
+        misconception: 'Prevents silent telemetry loss when Langfuse Cloud hits organization billing tier limits.',
+        cmd: 'node C:/Users/frank/.starlight/bin/langfuse-spool.cjs --status'
+      }
+    ];
+
+    const EDGES = [
+      // Eenmanszaak -> Trade Names & Studios
+      ['bv-holding', 'bv-starlight'],
+      ['bv-holding', 'bv-arcanea'],
+      ['bv-holding', 'st-starlight'],
+      ['bv-starlight', 'st-gencreator'],
+      ['bv-starlight', 'st-architect'],
+      ['bv-starlight', 'st-life'],
+      ['bv-arcanea', 'st-arcanea'],
+
+      // Studios -> GitHub Orgs
+      ['st-starlight', 'org-starlight'],
+      ['st-arcanea', 'org-arcanea'],
+      ['st-gencreator', 'org-creator'],
+      ['st-architect', 'org-architect'],
+      ['st-life', 'org-frankxai'],
+      ['st-starlight', 'org-frankxai'],
+
+      // Orgs <-> Harnesses
+      ['org-starlight', 'har-antigravity'],
+      ['org-arcanea', 'har-local'],
+      ['org-creator', 'har-local'],
+      ['org-architect', 'har-cloud'],
+      ['org-frankxai', 'har-antigravity'],
+      ['org-frankxai', 'har-council'],
+
+      // Harnesses -> Runtime Daemons & Spine
+      ['har-antigravity', 'run-gateway'],
+      ['har-antigravity', 'run-spine'],
+      ['har-antigravity', 'run-turn0'],
+      ['har-local', 'run-gateway'],
+      ['har-local', 'run-toolplane'],
+      ['har-local', 'run-turn0'],
+      ['har-cloud', 'run-spine'],
+      ['har-council', 'run-toolplane'],
+      ['har-council', 'run-infisical']
+    ];
+
+    // =========================================================================
+    // 2. BI-TEMPORAL FACTS DATA (15 ACTIVE + 9 SUPERSEDED = 24 RECORDS)
+    // =========================================================================
+    const TEMPORAL_FACTS = [
+      { status: 'active', slot: 'strategic :: estate:legal-entities :: dutch_bv_structure', val: 'Single Dutch Eenmanszaak (sole proprietorship under Frank Riemer, Amsterdam; zero B.V.s exist; "BV" never appears in any trade name) operating registered trade names (handelsnamen): Starlight Intelligence (primary), Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, and AI Architect Academy.', ref: 'frankx-strategy@38adf46 + FrankX@3b659c2' },
+      { status: 'superseded', slot: 'strategic :: estate:legal-entities :: dutch_bv_structure', val: '3 Dutch B.V. entities: FrankX Operations B.V., Starlight Holding B.V., and Arcanea B.V. / Arcanea Labs B.V.', ref: 'Superseded 2026-09-29 (Eenmanszaak Lock)' },
+      { status: 'active', slot: 'strategic :: estate:trade-names :: registered_handelsnamen', val: 'Registered KvK trade names (handelsnamen) on the single Eenmanszaak: Starlight Intelligence (primary), Arcanea, Arcanea Records (music label umbrella across 4 imprints), GenCreator, VibeClubs (live co-creation community; "Vibe OS" dropped as KvK name), FrankX, and AI Architect Academy.', ref: 'frankx-strategy:entity/2026-09-29-entity-and-kvk-plan.md' },
+      { status: 'active', slot: 'operational :: github.orgs.federation :: active_org_count', val: 'All 10 GitHub Organizations are populated and active (96 org repos + 414 frankxai repos = 510 total; 0 empty orgs).', ref: 'SIS#451 @ 9840daab1' },
+      { status: 'superseded', slot: 'operational :: github.orgs.federation :: active_org_count', val: 'Only frankxai is active; Arcanea-Labs is dormant since 2026-02 and 9 orgs are empty.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'operational :: github.org.Arcanea-Labs :: status', val: 'Active organization with 13 public repositories; primaryOwner of arcanea-orchestrator and host of 3 protected mirrors (arcanea-studio, arcanea-ecosystem, arcanea-onchain).', ref: 'SIS#451 @ 9840daab1' },
+      { status: 'superseded', slot: 'operational :: github.org.Arcanea-Labs :: status', val: 'Dormant since 2026-02 (stale forks only).', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'operational :: repo.agentic-ops :: primary_checkout_state', val: 'Primary checkout at C:/Users/frank/starlight/repos/agentic-ops is on main with valid Empire Registry (1 Dutch Eenmanszaak + registered trade names, 13 brands, 24 domains, 5 studios, 10 releases, 27 products, 73 repos).', ref: 'agentic-ops#275' },
+      { status: 'superseded', slot: 'operational :: repo.agentic-ops :: primary_checkout_state', val: 'Primary checkout is missing registry/repositories.yaml, STRATEGY.md, ROADMAP.md, and QUALITY.md.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'operational :: hub.handovers :: workflow_contract', val: 'ops/handovers/<id>.md is sole SSOT (36 handovers, 0 open-unverified); NEXT-PROMPTS.md and HANDOVER-INDEX.md are generated via node scripts/handover.mjs index && node scripts/handover.mjs lint.', ref: 'agentic-ops-hub#363 @ 22181a5' },
+      { status: 'superseded', slot: 'operational :: hub.handovers :: workflow_contract', val: 'Append directly to ops/NEXT-PROMPTS.md (2,102 lines) by hand at session close.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'technical :: mcp.prisma-local :: command_spec', val: 'Pinned to npx -y prisma@7.10.1 mcp in ~/.claude/plugins/synced/.../prisma~g2/.mcp.json because prisma@8.0.0-rc.23 removed the mcp subcommand.', ref: 'Local MCP Fix 2026-10-18' },
+      { status: 'superseded', slot: 'technical :: mcp.prisma-local :: command_spec', val: 'Run unpinned npx -y prisma mcp (crashes on prisma 8.0.0-rc.23).', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'operational :: bootstrap.startup_coherence :: read_order', val: '17 Oct 2026 3-step check: 1) registry/repositories.yaml, 2) node tools/lane.mjs claim, 3) ops/HANDOVER-INDEX.md (H-startup-coherence 5/5 complete).', ref: 'starlight-agent-config#128 @ 3a23ebe' },
+      { status: 'superseded', slot: 'operational :: bootstrap.startup_coherence :: read_order', val: '29 Sep 2026 AGENT_START_OVERVIEW.md pointing to hand-edited NEXT-PROMPTS.md.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'technical :: context.turn0 :: token_budget', val: 'Compiled Two-Artifact Turn-0 Core (Doctrine 3,495 B <= 8 KB + Catalog 4,730 B <= 8 KB = 2,057 tokens total) + GEMINI.md (8,214 B) + Codex project_doc_max_bytes = 98304.', ref: 'starlight-estate#54 @ e6f4727' },
+      { status: 'superseded', slot: 'technical :: context.turn0 :: token_budget', val: '50,000 to 83,000 tokens per harness at Turn 0 with 32 KiB Codex truncation.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'operational :: daemon.shared-tool-plane :: status', val: '127.0.0.1:7317 is READY (4/4 backends: starlight-bridge, headroom, railway, starlight-memory; 38 tools) and 127.0.0.1:5200 is OK (3,590 vault entries).', ref: 'starlight-memory#41 @ 8a593c0' },
+      { status: 'superseded', slot: 'operational :: daemon.shared-tool-plane :: status', val: 'Degraded at restartAttempt 299 due to 257 KB taste-feedback-ledger-index.md and stale .gateway-spawn.lock.', ref: 'Superseded 2026-10-18' },
+      { status: 'active', slot: 'technical :: telemetry.langfuse :: ingestion_guard', val: 'Infisical EU (6e39a7d9-be07-4f58-babb-0cf650321feb) active + keys synced (sha8=95576ADD) + zero-loss local OTLP JSONL spooler (langfuse_spool.cjs) buffers on HTTP 403/429/5xx.', ref: 'starlight-agent-config#128 @ 3a23ebe' },
+      { status: 'active', slot: 'strategic :: estate.product_studios :: portfolio', val: '5 Product Studios governing 13 Brands, 24 Domains, 10 Product Releases (10-SKU Release Train), 27 Products, and 73 Active Registered Repositories.', ref: 'agentic-ops @ 149dd3c' },
+      { status: 'active', slot: 'technical :: fleet.agents :: census', val: '8 Harnesses (Antigravity, Claude Code, Codex, OpenCode, Cursor, Gemini CLI, Jules, Hermes) orchestrating 151 Named SIS Agents and 89 Auto-Activating Skills.', ref: 'agents/AGENT_REGISTRY.md' },
+      { status: 'active', slot: 'operational :: governance.pr_gate :: cross_harness_signoff', val: 'Maker/Checker rule enforced via tools/pr-gate.mjs: every PR requires exact-SHA signoff by a different harness; 56 PRs signed off by Antigravity across 9 repos.', ref: 'agentic-ops-hub#363 @ 22181a5' },
+      { status: 'active', slot: 'strategic :: docs.architecture :: dual_consumer_standard', val: 'Static-first HTML5/SVG Atlas (/atlas/index.html) + Interactive Wiki (/wiki/index.html) + /llms.txt + Free Public DeepWiki mirrors at $0/mo incremental compute cost.', ref: 'SIS#452 Atlas' }
+    ];
+
+    // =========================================================================
+    // 3. 10 GITHUB ORGS & 10-SKU DATA
+    // =========================================================================
+    const ORGS_DATA = [
+      { name: 'Starlight-Intelligence', count: 11, vis: '11 Public', studio: 'Studio 1 · Starlight OSS & Protocol', highlights: 'Starlight-Intelligence-System, starlight-protocol, starlight-memory, starlight-voice (protected mirror), starlight-cosmos-engine (protected mirror)', repoForWiki: 'Starlight-Intelligence/Starlight-Intelligence-System' },
+      { name: 'Starlight-Intelligence-Systems', count: 7, vis: '7 Public', studio: 'Studio 1 · Starlight Enterprise', highlights: 'starlight-enterprise, starlight-cloud, starlight-gateway, starlight-governance', repoForWiki: 'Starlight-Intelligence-Systems/starlight-enterprise' },
+      { name: 'Arcanea-Labs', count: 13, vis: '13 Public', studio: 'Studio 2 · Arcanea Creative Universe', highlights: 'arcanea-orchestrator (primaryOwner), arcanea-studio (mirror), arcanea-ecosystem (mirror), arcanea-onchain (mirror)', repoForWiki: 'Arcanea-Labs/arcanea-orchestrator' },
+      { name: 'GenCreator-ai', count: 9, vis: '9 Public', studio: 'Studio 3 · GenCreator & CoE', highlights: 'gencreator-framework, gencreator-coe, gencreator-skills, gencreator-cli', repoForWiki: 'GenCreator-ai/gencreator-framework' },
+      { name: 'FrankX-AI', count: 11, vis: '11 Public', studio: 'Studio 3 · FrankX & ACOS', highlights: 'agentic-creator-os, frankx-templates, frankx-music-pipeline, vibe-os', repoForWiki: 'FrankX-AI/agentic-creator-os' },
+      { name: 'AI-Architect-Studio', count: 8, vis: '8 Public', studio: 'Studio 4 · Enterprise Architecture', highlights: 'enterprise-ai-blueprints, multi-agent-reference, solution-design-kit', repoForWiki: 'AI-Architect-Studio/enterprise-ai-blueprints' },
+      { name: 'AI-Architect-Academy', count: 5, vis: '4 Public · 1 Private', studio: 'Studio 4 · Academy & Cohorts', highlights: 'ai-architect-academy (private), curriculum, labs, certifications', repoForWiki: 'AI-Architect-Academy/curriculum' },
+      { name: 'oci-ai-architects', count: 14, vis: '14 Public', studio: 'Studio 4 · Cloud & OCI Blueprints', highlights: 'oci-genai-blueprints, oci-agent-spec, oci-drawio-icons, oci-rag-reference', repoForWiki: 'oci-ai-architects/oci-genai-blueprints' },
+      { name: 'Agentic-Income', count: 10, vis: '10 Public', studio: 'Studio 5 · Wealth & DPI Systems', highlights: 'wealth-dpi, investor-research-kit, autonomous-treasury, digital-product-engine', repoForWiki: 'Agentic-Income/wealth-dpi' },
+      { name: 'Life-Commons', count: 8, vis: '8 Public', studio: 'Studio 5 · Longevity & Energy IS', highlights: 'longevity-os, energy-intelligence, family-substrate, mind-models', repoForWiki: 'Life-Commons/longevity-os' },
+      { name: 'frankxai (Founder Control Hub)', count: 414, vis: '178 Public · 236 Private', studio: 'All Studios · Primary Working Remotes', highlights: 'Starlight-Intelligence-System, starlight-estate, starlight-agent-config, agentic-ops, agentic-ops-hub, frankx.ai-vercel-website, arcanea-ai-app', repoForWiki: 'frankxai/Starlight-Intelligence-System' }
+    ];
+
+    const SKUS_DATA = [
+      { id: 'SKU-01', name: 'Agentic Creator OS (ACOS) Pro', studio: 'Studio 3 · GenCreator & FrankX', repo: 'frankxai/frankx.ai-vercel-website', gate: 'PRs #1033, #1043, #1044 signed (antigravity/pass)' },
+      { id: 'SKU-02', name: 'Starlight Intelligence System (SIS v9.3)', studio: 'Studio 1 · Starlight Intelligence', repo: 'frankxai/Starlight-Intelligence-System', gate: 'PRs #447–#452 verified (135/135 symmetry pass)' },
+      { id: 'SKU-03', name: 'Starlight Flagship Shop v2 (10-SKU Storefront)', studio: 'Studio 1 · Starlight Intelligence', repo: 'frankxai/starlight-technology', gate: 'PR #45 (58c0db3) signed (antigravity/pass)' },
+      { id: 'SKU-04', name: 'Arcanea Creative Universe & Realm App', studio: 'Studio 2 · Arcanea Creative', repo: 'frankxai/arcanea-ai-app', gate: 'PR #655 (spend guard) + 6 PRs signed (antigravity/pass)' },
+      { id: 'SKU-05', name: 'GenCreator 6-Pillar CoE Assessment & Hub', studio: 'Studio 3 · GenCreator & FrankX', repo: 'frankxai/frankx.ai-vercel-website', gate: 'PRs #1033, #1043, #1044 signed (antigravity/pass)' },
+      { id: 'SKU-06', name: 'Starlight Design Intelligence (13-Brand Tokens)', studio: 'Studio 1 · Starlight Intelligence', repo: 'frankxai/starlight-design-intelligence', gate: 'PRs #52, #40, #39, #38 signed (antigravity/pass)' },
+      { id: 'SKU-07', name: 'Claude & Starlight Skills Library (89+ Skills)', studio: 'Studio 3 · GenCreator & FrankX', repo: 'frankxai/claude-skills-library', gate: 'PRs #72, #46, #40 signed (antigravity/pass)' },
+      { id: 'SKU-08', name: 'Starlight Memory & Bi-Temporal Vault Engine', studio: 'Studio 1 · Starlight Intelligence', repo: 'frankxai/starlight-memory', gate: 'PR #41 (8a593c0) + SIS#452 (7bea14863) green' },
+      { id: 'SKU-09', name: 'AI Architect Academy Cohort & Blueprints', studio: 'Studio 4 · AI Architect Enterprise', repo: 'AI-Architect-Academy/curriculum', gate: 'Federated across AI-Architect-Academy (5 repos)' },
+      { id: 'SKU-10', name: 'Arcanea Records & VibeClubs Music Suite', studio: 'Studio 2/3 · Arcanea Records & VibeClubs', repo: 'frankxai/frankx.ai-vercel-website', gate: '7 Music IS + 6 Sound IS agents active' }
+    ];
+
+    // =========================================================================
+    // 4. RENDER INTERACTIVE SVG TOPOLOGY
+    // =========================================================================
+    let selectedNodeId = 'run-spine';
+    let currentLayerFilter = 'all';
+
+    function renderTopologySVG() {
+      const edgesGroup = document.getElementById('svgEdgesGroup');
+      const nodesGroup = document.getElementById('svgNodesGroup');
+      edgesGroup.innerHTML = '';
+      nodesGroup.innerHTML = '';
+
+      const nodeMap = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+      // Draw bezier edges
+      EDGES.forEach(([fromId, toId]) => {
+        const a = nodeMap[fromId];
+        const b = nodeMap[toId];
+        if (!a || !b) return;
+        const x1 = a.x + a.w / 2;
+        const y1 = a.y + a.h;
+        const x2 = b.x + b.w / 2;
+        const y2 = b.y;
+        const cy1 = y1 + (y2 - y1) * 0.45;
+        const cy2 = y1 + (y2 - y1) * 0.55;
+
+        const isConnected = (fromId === selectedNodeId || toId === selectedNodeId);
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${cy1}, ${x2} ${cy2}, ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', isConnected ? '#67e8f9' : 'rgba(255,255,255,0.16)');
+        path.setAttribute('stroke-width', isConnected ? '2.2' : '1.2');
+        path.setAttribute('class', isConnected ? 'edge-highlight' : 'edge-animated');
+        path.dataset.from = fromId;
+        path.dataset.to = toId;
+        edgesGroup.appendChild(path);
+      });
+
+      // Draw nodes
+      NODES.forEach(n => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const isSelected = n.id === selectedNodeId;
+        const isDimmed = (currentLayerFilter !== 'all' && n.layer !== currentLayerFilter);
+        g.setAttribute('class', `arch-node ${isSelected ? 'selected' : ''} ${isDimmed ? 'dimmed' : ''}`);
+        g.setAttribute('transform', `translate(${n.x}, ${n.y})`);
+        g.onclick = (e) => { e.stopPropagation(); selectNode(n.id); };
+
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('width', n.w);
+        rect.setAttribute('height', n.h);
+        rect.setAttribute('rx', '10');
+        rect.setAttribute('fill', n.grad);
+        rect.setAttribute('stroke', n.color);
+        rect.setAttribute('stroke-opacity', isSelected ? '1' : '0.45');
+        rect.setAttribute('stroke-width', isSelected ? '2.2' : '1.2');
+        rect.setAttribute('class', 'node-box');
+        g.appendChild(rect);
+
+        // Live status dot
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', '14');
+        dot.setAttribute('cy', '20');
+        dot.setAttribute('r', '4');
+        dot.setAttribute('fill', n.color);
+        dot.setAttribute('class', 'live-pulse');
+        g.appendChild(dot);
+
+        // Title
+        const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        title.setAttribute('x', '26');
+        title.setAttribute('y', '24');
+        title.setAttribute('fill', '#ffffff');
+        title.setAttribute('font-family', 'Inter, sans-serif');
+        title.setAttribute('font-size', '12');
+        title.setAttribute('font-weight', '600');
+        title.textContent = n.title;
+        g.appendChild(title);
+
+        // Subtitle
+        const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        sub.setAttribute('x', '14');
+        sub.setAttribute('y', '42');
+        sub.setAttribute('fill', '#cbd5e1');
+        sub.setAttribute('font-family', 'JetBrains Mono, monospace');
+        sub.setAttribute('font-size', '10');
+        sub.textContent = n.sub;
+        g.appendChild(sub);
+
+        nodesGroup.appendChild(g);
+      });
+    }
+
+    function selectNode(id) {
+      selectedNodeId = id;
+      const n = NODES.find(x => x.id === id);
+      if (!n) return;
+
+      document.getElementById('activeNodeBadge').textContent = `Selected: ${n.title}`;
+      document.getElementById('inspLayerBadge').textContent = n.badge;
+      document.getElementById('inspTitle').textContent = n.title;
+      document.getElementById('inspSubtitle').textContent = n.sub;
+      document.getElementById('inspStatusBadge').textContent = n.status;
+      document.getElementById('inspPurpose').textContent = n.purpose;
+      document.getElementById('inspPRBadge').textContent = n.pr;
+      document.getElementById('inspPath').textContent = n.path;
+      document.getElementById('inspTests').textContent = n.tests;
+      document.getElementById('inspOwner').textContent = n.owner;
+      document.getElementById('inspMisconception').textContent = n.misconception;
+      document.getElementById('inspCommand').textContent = n.cmd;
+
+      // Connected nodes pills
+      const connectedIds = new Set();
+      EDGES.forEach(([a, b]) => {
+        if (a === id) connectedIds.add(b);
+        if (b === id) connectedIds.add(a);
+      });
+      const connContainer = document.getElementById('inspConnections');
+      connContainer.innerHTML = '';
+      connectedIds.forEach(cid => {
+        const cn = NODES.find(x => x.id === cid);
+        if (!cn) return;
+        const btn = document.createElement('button');
+        btn.className = 'px-2 py-1 rounded text-[11px] font-mono-code bg-white/[0.05] hover:bg-cyan-500/20 text-slate-200 border border-white/10 transition';
+        btn.textContent = cn.title;
+        btn.onclick = () => selectNode(cid);
+        connContainer.appendChild(btn);
+      });
+
+      renderTopologySVG();
+    }
+
+    function filterLayer(layer) {
+      currentLayerFilter = layer;
+      renderTopologySVG();
+    }
+
+    // =========================================================================
+    // 5. PAN & PINCH-ZOOM ENGINE FOR DESKTOP & MOBILE TOUCH
+    // =========================================================================
+    let panX = 0, panY = 0, scale = 1;
+    let isDragging = false, startX = 0, startY = 0;
+
+    const svgContainer = document.getElementById('svgContainer');
+    const svgViewportGroup = document.getElementById('svgViewportGroup');
+
+    function applyTransform() {
+      svgViewportGroup.setAttribute('transform', `translate(${panX}, ${panY}) scale(${scale})`);
+    }
+    function zoomSVG(factor) {
+      scale = Math.min(2.5, Math.max(0.55, scale * factor));
+      applyTransform();
+    }
+    function resetSVGZoom() {
+      panX = 0; panY = 0; scale = 1;
+      applyTransform();
+    }
+
+    svgContainer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      applyTransform();
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    svgContainer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      zoomSVG(e.deltaY < 0 ? 1.08 : 0.92);
+    }, { passive: false });
+
+    // Mobile Touch Support
+    let lastTouchDist = null;
+    svgContainer.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - panX;
+        startY = e.touches[0].clientY - panY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        lastTouchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+      }
+    }, { passive: true });
+
+    svgContainer.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isDragging) {
+        panX = e.touches[0].clientX - startX;
+        panY = e.touches[0].clientY - startY;
+        applyTransform();
+      } else if (e.touches.length === 2 && lastTouchDist) {
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        zoomSVG(dist / lastTouchDist);
+        lastTouchDist = dist;
+      }
+    }, { passive: true });
+
+    svgContainer.addEventListener('touchend', () => {
+      isDragging = false;
+      lastTouchDist = null;
+    });
+
+    // =========================================================================
+    // 6. BI-TEMPORAL FACTS & TURN-0 SIMULATOR
+    // =========================================================================
+    function updateTurn0Sim() {
+      const sessions = Number(document.getElementById('simSessions').value);
+      document.getElementById('simSessionsVal').textContent = `${sessions} sessions/day`;
+      const legacy = sessions * 66000;
+      const compiled = sessions * 2057;
+      document.getElementById('simLegacyTokens').textContent = `${(legacy / 1e6).toFixed(2)}M tok/day`;
+      document.getElementById('simNewTokens').textContent = `${(compiled / 1e3).toFixed(1)}K tok/day`;
+      const saved = ((legacy - compiled) / 1e6).toFixed(2);
+      document.getElementById('simSavedPct').textContent = `96.9% reduction (${saved}M tokens/day freed for deep reasoning)`;
+    }
+
+    function filterFacts(mode) {
+      const container = document.getElementById('temporalFactsTable');
+      container.innerHTML = '';
+      TEMPORAL_FACTS.filter(f => mode === 'all' || f.status === mode).forEach(f => {
+        const isSup = f.status === 'superseded';
+        const div = document.createElement('div');
+        div.className = `rounded-xl p-3 border ${isSup ? 'bg-rose-500/[0.04] border-rose-500/20 opacity-75' : 'bg-emerald-500/[0.05] border-emerald-500/25'}`;
+        div.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="font-mono-code text-[11px] ${isSup ? 'text-rose-300 line-through' : 'text-cyan-300'}">${f.slot}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono-code ${isSup ? 'bg-rose-500/20 text-rose-200' : 'bg-emerald-500/20 text-emerald-200'}">
+              ${isSup ? 'SUPERSEDED (tInvalid set)' : 'ACTIVE TRUTH (tInvalid = null)'} · ${f.ref}
+            </span>
+          </div>
+          <p class="mt-1.5 text-xs ${isSup ? 'text-slate-400 line-through' : 'text-slate-200'}">${f.val}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // =========================================================================
+    // 7. ORGS & SKUS RENDERER
+    // =========================================================================
+    function renderOrgsAndSkus() {
+      const orgsGrid = document.getElementById('orgsGrid');
+      orgsGrid.innerHTML = ORGS_DATA.map(o => `
+        <div class="bg-[#0c0d14] border border-white/[0.08] hover:border-cyan-400/40 rounded-xl p-4 flex flex-col justify-between gap-3 transition">
+          <div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-semibold text-sm text-white">${o.name}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">${o.count} repos (${o.vis})</span>
+            </div>
+            <div class="text-[11px] font-mono-code text-violet-300 mt-1">${o.studio}</div>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">${o.highlights}</p>
+          </div>
+          <div class="flex items-center gap-2 pt-2 border-t border-white/[0.06] text-[11px] font-mono-code">
+            <a href="https://github.com/${o.name.split(' ')[0]}" target="_blank" class="px-2.5 py-1 rounded bg-white/[0.05] hover:bg-white/[0.1] text-slate-200">GitHub Org ↗</a>
+            <a href="https://deepwiki.com/${o.repoForWiki}" target="_blank" class="px-2.5 py-1 rounded bg-violet-500/15 hover:bg-violet-500/25 text-violet-200 border border-violet-500/30">DeepWiki Graph ↗</a>
+          </div>
+        </div>
+      `).join('');
+
+      const skusGrid = document.getElementById('skusGrid');
+      skusGrid.innerHTML = SKUS_DATA.map(s => `
+        <div class="bg-[#0c0d14] border border-white/[0.08] rounded-xl p-3.5 flex items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono-code bg-amber-500/15 text-amber-300 border border-amber-500/30">${s.id}</span>
+              <span class="font-semibold text-xs sm:text-sm text-white">${s.name}</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">${s.studio} · <code class="text-cyan-300">${s.repo}</code></div>
+          </div>
+          <span class="px-2.5 py-1 rounded text-[10px] font-mono-code bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">${s.gate}</span>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // 8. GEMINI 4 ARGON PROMPT GENERATOR
+    // =========================================================================
+    const ARGON_PROMPTS = {
+      swarm: `Create a self-contained, mobile-first interactive HTML5 + SVG architectural diagram of the "Starlight Intelligence 8-Harness × 151-Agent Swarm Topology".
+
+Requirements:
+1. Visual Design & Brand Tokens:
+   - Background: Deep cosmic obsidian (#060609), elevated cards (#0c0d14), 1px hairlines (rgba(255,255,255,0.08)).
+   - Accents: Violet (#a78bfa), Cyan (#67e8f9), Emerald (#34d399), Amber (#fbbf24), Fuchsia (#e879f9).
+   - Fonts: Inter (UI), JetBrains Mono (metrics/ports/SHAs), Newsreader (editorial headings).
+2. Interactive SVG Vector Schematic (viewBox="0 0 1200 720"):
+   - Show the 8 Harnesses (Antigravity, Claude Code, Codex, OpenCode, Cursor, Gemini CLI, Jules, Hermes) routing through the Starlight Orchestrator / Queen into the 7 Agent Tiers (Front-Door, Excavation, Leadership, Specialist, Foundation, Universal IS, Domain Sub-Stacks = 151 Named Agents) and 2 local loopback daemons (SIS Memory Gateway 127.0.0.1:5200 and Shared Tool Plane 127.0.0.1:7317).
+   - Animate packet flow along cubic bezier SVG paths using stroke-dasharray.
+3. Mobile & Touch First:
+   - Support 1-finger touch pan and 2-finger pinch-to-zoom on the SVG canvas.
+   - Tapping any node opens a responsive Unblocked-style Provenance Drawer showing exact repo path, PR SHA receipt, test gate status, and a one-click copy CLI command.
+4. Output a single, complete, zero-dependency .html file ready to save to site/public/atlas/.`,
+
+      memory: `Create a self-contained, mobile-first interactive HTML5 + SVG diagram of the "Starlight Bi-Temporal Fact Spine & Hybrid SQLite FTS5 Memory Engine".
+
+Requirements:
+1. Brand Palette: #060609 background, #67e8f9 cyan, #a78bfa violet, #34d399 emerald, #fb7185 rose.
+2. Interactive SVG Pipeline:
+   - Visualize the 5 stages: (1) Append-Only JSONL Vaults (Strategic, Technical, Creative, Operational, Wisdom, Horizon) -> (2) Bi-Temporal Fact Spine (tValid, tInvalid, tCreated, tExpired, supersededBy) -> (3) SQLite FTS5 + RRF Hybrid Index (:5200) -> (4) Turn-0 Core Compiler (Doctrine <= 8KB + Catalog <= 8KB = 2,057 tokens) -> (5) Zero-Loss OTLP Langfuse Spooler.
+   - Include an interactive timeline slider allowing the user to scrub across dates and watch stale misconceptions flip from ACTIVE (emerald) to SUPERSEDED (rose) when a new PR commit lands.
+3. Full mobile touch support and responsive layout. Provide the complete single-file .html code.`,
+
+      orgs: `Create a self-contained, mobile-first interactive HTML5 + SVG map of the "Starlight Eenmanszaak, Registered Trade Names & GitHub Federation Topology" (1 Dutch Eenmanszaak -> Registered KvK Trade Names: Starlight Intelligence, Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy -> 5 Product Studios -> 10 GitHub Organizations with 96 Repos + frankxai with 414 Repos -> 10-SKU Release Train). Include interactive filter pills by Studio and a slide-over inspector showing primaryOwner, visibility, and DeepWiki links.`,
+
+      coe: `Create a self-contained, mobile-first interactive HTML5 + SVG diagram of the "GenCreator 6-Pillar Enterprise AI Center of Excellence (CoE)" (Strategy, Governance, Talent, Technology, Data, Ethics) powered by isolated Hermes Agent profiles and connected to frankx.ai/coe assessment flows.`,
+
+      arcanea: `Create a self-contained, mobile-first interactive HTML5 + SVG diagram of the "Arcanea Ten Gates & Luminor Guardian Progression Engine", mapping all 10 Gates, frequencies, Guardians, and fail-closed metered credit guardrails.`
+    };
+
+    function updateArgonPrompt() {
+      const key = document.getElementById('argonTopicSelect').value;
+      document.getElementById('argonPromptOutput').textContent = ARGON_PROMPTS[key] || ARGON_PROMPTS.swarm;
+    }
+
+    function copyArgonPrompt() {
+      const text = document.getElementById('argonPromptOutput').textContent;
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById('btnCopyArgon');
+      const old = btn.textContent;
+      btn.textContent = '✓ Copied Argon Prompt to Clipboard!';
+      setTimeout(() => { btn.textContent = old; }, 2000);
+    }
+
+    // =========================================================================
+    // 9. TAB NAVIGATION, SEARCH & EXPORTS
+    // =========================================================================
+    function switchTab(tab) {
+      ['topology', 'memory', 'orgs', 'economics', 'argon', 'masterplan'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          btn.className = 'tab-btn active px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition bg-cyan-500/15 text-cyan-300 border border-cyan-500/30';
+        } else {
+          btn.className = 'tab-btn px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition text-slate-400 hover:text-white border border-transparent';
+        }
+      });
+    }
+
+    function copyInspectorCmd() {
+      const cmd = document.getElementById('inspCommand').textContent;
+      navigator.clipboard.writeText(cmd);
+      const btn = document.getElementById('btnCopyCmd');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Command'; }, 1500);
+    }
+
+    function copyLLMMarkdown() {
+      const md = [
+        '# Starlight Intelligence System — Estate Architecture Atlas (v9.3)',
+        '',
+        '## Live Runtime State',
+        '- Legal Entity: Single Dutch Eenmanszaak (Frank Riemer, Amsterdam; zero B.V.s exist)',
+        '- Registered KvK Trade Names (handelsnamen): Starlight Intelligence (primary), Arcanea, Arcanea Records, GenCreator, VibeClubs, FrankX, AI Architect Academy',
+        '- SIS Memory Gateway: http://127.0.0.1:5200 (OK, 3,590 entries)',
+        '- Starlight Shared Tool Plane: http://127.0.0.1:7317 (READY, 4/4 backends, 38 tools)',
+        '- Turn-0 Core Budget: 2,057 tokens (Doctrine 3,495 B + Catalog 4,730 B <= 8 KB + 8 KB)',
+        '- Bi-Temporal Fact Spine: 24 records (15 active truths, 9 superseded misconceptions)',
+        '',
+        '## 5-Layer Topology Nodes',
+        ...NODES.map(n => `- **${n.title}** (${n.badge}): ${n.purpose} [Path: \`${n.path}\` | Gate: \`${n.tests}\`]`),
+        '',
+        '## Active Bi-Temporal Estate Truths',
+        ...TEMPORAL_FACTS.filter(f => f.status === 'active').map(f => `- \`${f.slot}\`: ${f.val} (${f.ref})`)
+      ].join('\n');
+      navigator.clipboard.writeText(md);
+      const btn = document.getElementById('btnCopyLLM');
+      btn.innerHTML = '<span>✓ Copied Markdown!</span>';
+      setTimeout(() => { btn.innerHTML = '<span>Copy for LLM</span>'; }, 2000);
+    }
+
+    function exportSVGDiagram() {
+      const svgEl = document.getElementById('estateTopologySVG');
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(svgEl);
+      const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'starlight-estate-topology-v9.3.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Search Filter
+    document.getElementById('globalSearch').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        filterLayer('all');
+        return;
+      }
+      const match = NODES.find(n =>
+        n.title.toLowerCase().includes(q) ||
+        n.sub.toLowerCase().includes(q) ||
+        n.purpose.toLowerCase().includes(q)
+      );
+      if (match) selectNode(match.id);
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('globalSearch').focus();
+      }
+    });
+
+    // Boot
+    selectNode('run-spine');
+    filterFacts('all');
+    renderOrgsAndSkus();
+    updateArgonPrompt();
+  </script>
+</body>
+</html>

@@ -270,6 +270,6 @@ The Distributor speaks primarily across architect (rail-routing structure), impl
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty, archetype]
 - Verticals: starlight-intelligence-system@v7.6 (Music IS / Arcanea Records — Distribution sub-system)
-- Canon: Arcanea (CC-BY-NC © Arcanea BV) — Guardian / Arcanea-label references in distribution context
+- Canon: Arcanea (CC-BY-NC © Frank Riemer / Arcanea) — Guardian / Arcanea-label references in distribution context
 - Generated: 2026-04-30
 ---
