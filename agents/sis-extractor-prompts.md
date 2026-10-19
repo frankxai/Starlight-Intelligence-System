@@ -47,6 +47,22 @@ interface Atom {
 
 `skills/`, `agents/`, `commands/` are user-authored prompt artifacts — explicit corpus.
 
+## Capabilities
+
+- Walks the `prompts` corpus during `/sis-forge` Phase 1 and clusters recurring topics.
+- Emits ≤200 weighted JSONL atoms matching `tools/sis-forge/atom-schema.ts`.
+- Degrades gracefully: partial output marked `degraded:true` on timeout, empty output when the corpus is empty.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| All six vaults | Read-only (corpus input where in scope) |
+
+Extractors write only to the `<atom-output-path>` they are given, never to vaults.
+
 ---
 
 **Built on SIP** — Source command: /sis-forge Phase 1 extractor
