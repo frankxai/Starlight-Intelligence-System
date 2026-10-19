@@ -1705,6 +1705,12 @@ async function main(): Promise<void> {
     process.exitCode = result.exitCode;
     return;
   }
+  // Before argument parsing, so an extension receives its own flags, --help included.
+  const extension = terminalArgs[0] ? findExtension(terminalArgs[0]) : null;
+  if (extension) {
+    process.exitCode = runExtension(extension, terminalArgs.slice(1));
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
@@ -1969,16 +1975,10 @@ async function main(): Promise<void> {
       break;
     }
 
-    default: {
-      const extension = findExtension(command);
-      if (extension) {
-        process.exitCode = runExtension(extension, terminalArgs.slice(terminalArgs.indexOf(command) + 1));
-        return;
-      }
+    default:
       console.error(`[starlight] Unknown command: "${command}"`);
       console.error(`No built-in command or installed starlight-${command} extension. Run 'starlight --help' for usage.`);
       process.exitCode = 1;
-    }
   }
 }
 
