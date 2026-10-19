@@ -134,3 +134,6 @@ tools/arena/out/
 # Local harness worktrees and gstack artifacts
 .gstack/
 .worktrees/
+
+# agent-hygiene pack — diverged copies set aside by install.sh
+.claude/skills/.replaced/

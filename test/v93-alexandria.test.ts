@@ -1488,6 +1488,96 @@ describe("v93 — replay deduplication and settled receipts (#424)", () => {
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 
+  it("joins an in-flight call with the same requestId instead of reserving and dispatching again", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const ledger = new ReceiptLedger(path);
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => { release = resolve; });
+      let dispatched = 0;
+      const slow = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatched += 1;
+          await gate;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "0xinflight" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const sessionId = "inflight-sess";
+      const alexandria = new Alexandria({ library, transports: [slow as never], maxCredits: 20, ledger, sessionId });
+      try {
+        const first = alexandria.execute({ capabilityId: cap, options: { address: "0xinflight" }, requestId: "req-inflight-1" });
+        const second = alexandria.execute({ capabilityId: cap, options: { address: "0xinflight" }, requestId: "req-inflight-1" });
+        const mismatch = alexandria.execute({ capabilityId: cap, options: { address: "0xother" }, requestId: "req-inflight-1" });
+        await assert.rejects(
+          mismatch,
+          (err: unknown) => err instanceof AlexandriaError && err.code === "retry_mismatch" && err.requestId === "req-inflight-1"
+        );
+        await new Promise((r) => setTimeout(r, 30));
+        assert.equal(dispatched, 1, "the duplicate was not sent to the provider");
+        assert.equal(alexandria.budget.spent, 5, "the duplicate did not take a second reservation");
+        release();
+        const [a, b] = await Promise.all([first, second]);
+        assert.equal(a.receipt.id, b.receipt.id, "both callers receive the one receipt");
+        assert.equal(a.result.records.length, 1);
+        assert.equal(dispatched, 1);
+        assert.equal(alexandria.budget.spent, 5, "settlement did not bill the joined call");
+        assert.equal(ledger.read().length, 2, "one pending line and one outcome");
+        assert.equal(ledger.spent(sessionId), 5, "a resumed tally counts the request once");
+        await assert.rejects(
+          alexandria.execute({ capabilityId: cap, options: { address: "0xinflight" }, requestId: "req-inflight-1" }),
+          (err: unknown) => err instanceof AlexandriaError && err.code === "replay_completed"
+        );
+        assert.equal(dispatched, 1, "a settled replay still does not dispatch");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("joins an in-flight call when the reservation already fills the session ceiling", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const ledger = new ReceiptLedger(join(dir, "receipts.jsonl"));
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => { release = resolve; });
+      let dispatched = 0;
+      const slow = {
+        kind: "firecrawl-alexandria" as const,
+        execute: async (calls: { provider: string; capability: string; requestId?: string }[]) => {
+          dispatched += 1;
+          await gate;
+          return calls.map((c) => ({
+            provider: c.provider,
+            capability: c.capability,
+            records: [{ address: "x" }],
+            creditsCost: 5,
+            observedAt: "2026-10-08T12:00:00.000Z",
+            requestId: c.requestId,
+          }));
+        },
+      };
+      const alexandria = new Alexandria({ library, transports: [slow as never], maxCredits: 5, ledger, sessionId: "inflight-ceiling" });
+      try {
+        const first = alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-ceiling-1" });
+        const second = alexandria.execute({ capabilityId: cap, options: { address: "x" }, requestId: "req-ceiling-1" });
+        await new Promise((r) => setTimeout(r, 30));
+        assert.equal(dispatched, 1);
+        assert.equal(alexandria.budget.spent, 5);
+        release();
+        const [a, b] = await Promise.all([first, second]);
+        assert.equal(a.receipt.id, b.receipt.id);
+        assert.equal(alexandria.budget.spent, 5, "the joined call was not refused as over_budget and was not billed twice");
+      } finally { alexandria.close(); }
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
   it("translates ledger read error during settled lookup to receipt_persist_failed", async () => {
     const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
     try {

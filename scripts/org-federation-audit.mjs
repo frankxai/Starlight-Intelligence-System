@@ -687,11 +687,12 @@ export function buildOrgAgentsContractContent(org) {
   ].join('\n');
 }
 
-function upsertGithubRepoFile(repoFullName, filePath, contentUtf8, commitMessage) {
+function upsertGithubRepoFile(repoFullName, filePath, contentUtf8, commitMessage, branch = 'agent/antigravity/governance-sync') {
   let existingSha = null;
   let existingContent = null;
+  const branchParam = branch ? [`--raw-field`, `ref=${branch}`] : [];
   try {
-    const raw = execFileSync('gh', ['api', `repos/${repoFullName}/contents/${filePath}`], {
+    const raw = execFileSync('gh', ['api', `repos/${repoFullName}/contents/${filePath}`, ...branchParam], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 20000
@@ -720,6 +721,9 @@ function upsertGithubRepoFile(repoFullName, filePath, contentUtf8, commitMessage
     '-f',
     `content=${b64}`
   ];
+  if (branch) {
+    args.push('-f', `branch=${branch}`);
+  }
   if (existingSha) {
     args.push('-f', `sha=${existingSha}`);
   }
@@ -732,7 +736,7 @@ function upsertGithubRepoFile(repoFullName, filePath, contentUtf8, commitMessage
   return { updated: true, sha: parsedOut?.content?.sha || null, unchanged: false };
 }
 
-export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dryRun = false } = {}) {
+export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dryRun = false, branch = 'agent/antigravity/governance-sync' } = {}) {
   const results = [];
   for (const org of manifest) {
     if (org.governanceMode === 'reshape-frozen') {
@@ -747,6 +751,7 @@ export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dry
         org: org.login,
         repo: govRepo,
         dryRun: true,
+        branch,
         codeownersBytes: Buffer.byteLength(codeowners, 'utf8'),
         agentsMdBytes: Buffer.byteLength(agentsMd, 'utf8')
       });
@@ -757,13 +762,15 @@ export function syncOrgGovernanceRepos(manifest = ORG_FEDERATION_MANIFEST, { dry
         govRepo,
         'CODEOWNERS',
         codeowners,
-        `chore(governance): wire CODEOWNERS and steward team (${org.steward})`
+        `chore(governance): wire CODEOWNERS and steward team (${org.steward})`,
+        branch
       );
       const agRes = upsertGithubRepoFile(
         govRepo,
         'AGENTS.md',
         agentsMd,
-        `docs(governance): wire Responsible Agent Team and federated roster in AGENTS.md`
+        `docs(governance): wire Responsible Agent Team and federated roster in AGENTS.md`,
+        branch
       );
       results.push({
         org: org.login,
