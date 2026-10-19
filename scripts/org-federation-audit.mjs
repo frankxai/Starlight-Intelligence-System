@@ -140,8 +140,8 @@ export const ORG_FEDERATION_MANIFEST = [
     repos: [
       { name: 'ai-architect', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'ai-coe', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'agentic-architecture-field-guide', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'awesome-ai-coe', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'agentic-architecture-field-guide', visibility: 'public', primaryOwner: 'AI-Architect-Studio' },
+      { name: 'awesome-ai-coe', visibility: 'public', primaryOwner: 'AI-Architect-Studio' },
       { name: 'awesome-agent-operating-systems', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'agentic-operating-system-standard', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'agentic-ops', visibility: 'private', primaryOwner: 'frankxai' }
@@ -181,7 +181,7 @@ export const ORG_FEDERATION_MANIFEST = [
       { name: 'agentic-income-skills', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'agentic-income-template', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'affiliate-agent-skills', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'awesome-wealth-agent-skills', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'awesome-wealth-agent-skills', visibility: 'public', primaryOwner: 'Agentic-Income' },
       { name: 'awesome-investor-agent-skills', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'GenInvestor', visibility: 'public', primaryOwner: 'frankxai' }
     ]
@@ -199,10 +199,10 @@ export const ORG_FEDERATION_MANIFEST = [
     primaryHarnesses: ['Claude Code', 'Antigravity', 'Hermes'],
     repos: [
       { name: 'blue-life-commons', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'dino-life-commons', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'dino-life-commons', visibility: 'public', primaryOwner: 'Life-Commons' },
       { name: 'ocean-intelligence', visibility: 'private', primaryOwner: 'frankxai' },
       { name: 'health-intelligence-system', visibility: 'public', primaryOwner: 'frankxai' },
-      { name: 'mind-intelligence-systems', visibility: 'public', primaryOwner: 'frankxai' },
+      { name: 'mind-intelligence-systems', visibility: 'public', primaryOwner: 'Life-Commons' },
       { name: 'family-intelligence-os', visibility: 'public', primaryOwner: 'frankxai' },
       { name: 'family-history-atlas', visibility: 'public', primaryOwner: 'frankxai' }
     ]
@@ -356,17 +356,26 @@ export function auditOrWireLocalRemotes(reposRoot = DEFAULT_REPOS_ROOT, { wire =
       }
 
       let remotes = getLocalRemotes(localDir);
-      if (wire && remotes.org !== expectedOrgUrl) {
-        if (remotes.org) {
-          execFileSync('git', ['-C', localDir, 'remote', 'set-url', 'org', expectedOrgUrl], { stdio: 'ignore' });
-        } else {
-          execFileSync('git', ['-C', localDir, 'remote', 'add', 'org', expectedOrgUrl], { stdio: 'ignore' });
+      const norm = (u) => (u ? u.replace(/\.git$/i, '').toLowerCase() : '');
+      const originIsOrg = norm(remotes.origin) === norm(expectedOrgUrl);
+
+      if (wire) {
+        if (originIsOrg && repo.primaryOwner === org.login) {
+          if (remotes.org) {
+            execFileSync('git', ['-C', localDir, 'remote', 'remove', 'org'], { stdio: 'ignore' });
+            remotes = getLocalRemotes(localDir);
+          }
+        } else if (remotes.org !== expectedOrgUrl) {
+          if (remotes.org) {
+            execFileSync('git', ['-C', localDir, 'remote', 'set-url', 'org', expectedOrgUrl], { stdio: 'ignore' });
+          } else {
+            execFileSync('git', ['-C', localDir, 'remote', 'add', 'org', expectedOrgUrl], { stdio: 'ignore' });
+          }
+          remotes = getLocalRemotes(localDir);
         }
-        remotes = getLocalRemotes(localDir);
       }
 
-      const norm = (u) => (u ? u.replace(/\.git$/i, '').toLowerCase() : '');
-      const orgAligned = norm(remotes.org) === norm(expectedOrgUrl);
+      const orgAligned = norm(remotes.org) === norm(expectedOrgUrl) || originIsOrg;
 
       rows.push({
         org: org.login,
@@ -375,7 +384,7 @@ export function auditOrWireLocalRemotes(reposRoot = DEFAULT_REPOS_ROOT, { wire =
         localFound: true,
         localDir,
         originUrl: remotes.origin || null,
-        orgUrl: remotes.org || null,
+        orgUrl: remotes.org || (originIsOrg ? remotes.origin : null),
         orgAligned
       });
     }
