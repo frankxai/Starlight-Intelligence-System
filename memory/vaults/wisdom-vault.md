@@ -6,7 +6,7 @@ writers:
 - sage
 - prime
 readers: all
-last_consolidated: '2026-05-11'
+last_consolidated: '2026-10-17'
 ---
 
 # Wisdom Vault
@@ -130,5 +130,35 @@ When Vaults (memory), Transmissions (communication), and Skills (capability) wor
 5. Cross-system Transmissions spread improvements
 
 Over time, the system gets smarter at getting smarter. This is the compound intelligence effect.
+
+---
+
+### [2026-05-20] Lead-with-Authority & Runtime-Over-Plan Doctrine
+
+**Category:** principle
+**Confidence:** 0.95
+**Source:** Starlight Sage / Dreaming Promotion (eval-50 verified)
+**Related:** Operational Vault — Multi-Agent Execution
+
+1. **Lead with authority (feedback_lead_with_authority):** Drive directives end-to-end; subagents act as QA and parallel scouts; do not pause at intermediate gates — the Board IS the gate (falsifier: unanimous BLOCK via /starlight-board).
+2. **Verify plans before executing (feedback_verify_plans_before_executing):** Plans encode write-time understanding while reality moves; always read cited file:line and verify runtime behavior (not mere file presence) before acting.
+3. **Karpathy hygiene (CLAUDE_md_agent_hygiene):** State assumptions, verify model claims against runtime, push back on underspecified asks, ship minimum surgical edits, and treat LLMs as text predictors with leaky knowledge.
+4. **Walker-fix over N exemptions (feedback_walker_fix_over_n_exemptions):** When v76+v77+v78 symmetry tests cascade on the same drift class, fix the upstream walker rather than adding N downstream exemptions so EXEMPT_* ledgers stay meaningful.
+5. **Audit metrics vs cause (feedback_audit_metrics_vs_cause):** An audit outlier is a hypothesis prompt, not a diagnosis — verify the root cause inside the repository before dispatching a fix.
+6. **Parallel agent dispatch (feedback_parallel_agent_pattern) & secret-safe fixtures (feedback_test_fixtures_secret_safe):** Dispatch 3 background agents + main thread for substrate work (~7 min wall-clock); build secret test prefixes piecewise so GitHub push-protection scans never trip on test fixtures.
+
+---
+
+### [2026-10-17] Sovereign Substrate & Multi-Harness Harmony
+
+**Category:** meta-pattern
+**Confidence:** 0.98
+**Source:** Starlight Prime & Antigravity / 10-Org Federation & Horizon Cadence
+**Related:** Strategic Vault — 10-Organization GitHub Federation
+
+When 7 agent harnesses (claude, codex, gemini, antigravity, opencode, hermes, grok) share 237 repositories and 10 GitHub Organizations, three invariants prevent entropy:
+1. **Dual-Remote Federation:** Preserve origin -> frankxai/* for deployment/OIDC stability while federating domain surfaces via org -> <GitHub-Org>/* with strict visibility parity.
+2. **Lease-Gated Worktrees:** Every harness works in an isolated worktree on agent/<harness>/<scope> with an explicit starlight_ops.py lease and draft-gated CI (if: github.event.pull_request.draft == false).
+3. **Horizon Cadence (2h / 12h / 1w):** Memory only compounds when consolidation, retrieval evaluation (eval-50), and remote drift checks run on an automated 2-hour tactical, 12-hour operational, and 1-week strategic rhythm.
 
 ---
