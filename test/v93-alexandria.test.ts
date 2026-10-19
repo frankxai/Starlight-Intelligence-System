@@ -19,7 +19,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -47,7 +47,7 @@ import {
   validateRegistry,
 } from "../src/alexandria/index.js";
 import type { Experiment } from "../src/alexandria/index.js";
-import { capabilityTurn } from "../src/alexandria/receipts.js";
+import { capabilityTurn, ledgerIdentity } from "../src/alexandria/receipts.js";
 
 const REPO_ROOT = repoRootFromTestFile(import.meta.url);
 const VERTICAL = join(REPO_ROOT, "verticals", "alexandria");
@@ -1069,6 +1069,46 @@ describe("v93 — paid-call guard fix-forward (#320 audit)", () => {
       await assert.rejects(second, (err: unknown) => err instanceof AlexandriaError && err.code === "session_closed");
       assert.equal(dispatched, 1, "the queued call was never sent");
       assert.equal(alexandria.budget.spent, 5, "its reservation was refunded");
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("gives a dangling symlink and its not-yet-created target one ledger identity and one turn", { skip: process.platform === "win32" }, async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      mkdirSync(join(dir, "real"));
+      const target = join(dir, "real", "receipts.jsonl");
+      const link = join(dir, "link.jsonl");
+      symlinkSync(target, link);
+      assert.ok(!existsSync(target), "the ledger does not exist yet");
+      assert.equal(ledgerIdentity(link).key, ledgerIdentity(target).key, "a dangling link resolves to its target");
+      symlinkSync("other.jsonl", join(dir, "real", "relative.jsonl"));
+      symlinkSync(join(dir, "real"), join(dir, "dirlink"));
+      assert.equal(ledgerIdentity(join(dir, "dirlink", "relative.jsonl")).key, ledgerIdentity(join(dir, "real", "other.jsonl")).key, "a relative target is read from the link's real directory");
+      const release = await capabilityTurn(target, cap);
+      await assert.rejects(capabilityTurn(link, cap, 100), /held the .* turn/, "the link waits on the target's turn");
+      release();
+    } finally { rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it("skips the prefix rehash only for a settled, unchanged ledger", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "alexandria-"));
+    try {
+      const path = join(dir, "receipts.jsonl");
+      const base = { id: "rcpt_test", callFingerprint: "f", provider: "p", capability: "c", records: [], creditsCost: 1, reserved: 1, sessionId: "s", maxCredits: 10, observedAt: "2026-10-08T12:00:00.000Z" };
+      writeFileSync(path, Array.from({ length: 40 }, (_, i) => JSON.stringify({ ...base, capability: `f${i}` }) + "\n").join(""));
+      await new Promise((r) => setTimeout(r, 2100)); // settled on fine and coarse timestamps alike
+      const ledger = new ReceiptLedger(path);
+      const scan = () => (ledger as unknown as { overrunScan: { stamp?: string; scansSinceVerify: number } }).overrunScan;
+      ledger.suspendedCapabilities();
+      assert.ok(scan().stamp, "a settled ledger records its stamp");
+      ledger.suspendedCapabilities();
+      assert.equal(scan().scansSinceVerify, 1, "an unchanged settled ledger is trusted by stamp");
+      ledger.append({ ...base, capability: "own" } as never);
+      assert.equal(scan().stamp, undefined, "a post-append stamp is never trusted");
+      ledger.suspendedCapabilities();
+      assert.equal(scan().scansSinceVerify, 0, "so the next scan rehashes");
+      appendFileSync(path, JSON.stringify({ ...base, capability: "foreign", overrun: true }) + "\n");
+      assert.deepEqual([...ledger.suspendedCapabilities()], ["p/foreign"], "a foreign append is seen");
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });
