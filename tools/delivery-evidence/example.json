@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "notice": "SYNTHETIC EXAMPLE. Not Starlight production telemetry.",
+  "window": {
+    "start": "2026-10-01T00:00:00Z",
+    "end": "2026-10-03T00:00:00Z"
+  },
+  "services": [
+    {
+      "id": "example-service",
+      "production_observation_complete": true
+    }
+  ],
+  "releases": [
+    {
+      "id": "example-promotion",
+      "deployment_id": "dpl_synthetic",
+      "service_id": "example-service",
+      "environment": "production",
+      "exposed_at": "2026-10-02T01:00:00Z",
+      "evidence": {
+        "kind": "vercel.deployment.promoted",
+        "ref": "synthetic:evt_example"
+      },
+      "changes": [
+        {
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "committed_at": "2026-10-02T00:00:00Z"
+        }
+      ],
+      "changes_complete": true,
+      "requires_intervention": null,
+      "is_rework": null
+    }
+  ]
+}

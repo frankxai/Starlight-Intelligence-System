@@ -63,6 +63,10 @@ export class StarlightCloudWorker {
         attestation: 'Built on SIP v1.1.1',
         edgeRegion: request.headers.get('cf-ipcountry') || 'global-edge',
         timestamp: new Date().toISOString(),
+        protectedApi: {
+          status: 'unavailable',
+          reason: 'identity_membership_verifier_missing',
+        },
         bindings: {
           vectorize: !!env.STARLIGHT_VECTORS,
           d1: !!env.STARLIGHT_DB,
@@ -81,20 +85,20 @@ export class StarlightCloudWorker {
 
     // 4. Authenticate incoming API requests
     const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
       return new Response(JSON.stringify({
         error: 'Unauthorized',
         message: 'Missing or malformed Authorization header. Expected Bearer token.',
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    const token = authHeader.slice(7).trim();
-    const tenant = this.resolveTenant(token, request.headers.get('X-Starlight-Tenant'));
+    const tenant = this.resolveTenant();
     if (!tenant) {
       return new Response(JSON.stringify({
-        error: 'Forbidden',
-        message: 'Invalid or revoked Starlight API key.',
-      }), { status: 403, headers: this.CORS_HEADERS });
+        error: 'Service Unavailable',
+        code: 'protected_api_unavailable',
+        message: 'Protected API unavailable: verified identity and tenant membership are not configured.',
+      }), { status: 503, headers: { ...this.CORS_HEADERS, 'Cache-Control': 'no-store' } });
     }
 
     try {
@@ -180,16 +184,12 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(token: string, explicitTenant?: string | null): TenantContext | null {
-    if (!token || token.length < 8) return null;
-    const tenantId = explicitTenant || `tenant_${token.slice(0, 10)}`;
-    return {
-      tenantId,
-      orgName: `Starlight Org ${tenantId.slice(0, 8)}`,
-      plan: 'studio',
-      quotaRemaining: 950000,
-      byovEnabled: true,
-    };
+  private static resolveTenant(): TenantContext | null {
+    // No verified identity/membership authority is wired into this worker.
+    // Contain every protected route until a reviewed verifier is integrated.
+    // Token shape, caller-selected tenants and asserted Access headers are not
+    // authentication, membership, entitlement or quota evidence.
+    return null;
   }
 
   private static async handleAppend(
@@ -217,17 +217,10 @@ export class StarlightCloudWorker {
       halfLifeDays: req.halfLifeDays || 90,
     };
 
-    let tenantList = MEMORY_INDEX.get(tenant.tenantId);
-    if (!tenantList) {
-      tenantList = [];
-      MEMORY_INDEX.set(tenant.tenantId, tenantList);
-    }
-    tenantList.push(atom);
-
     // Persist to Edge D1 Relational SQLite if bound
     if (env?.STARLIGHT_DB) {
       try {
-        await env.STARLIGHT_DB.prepare(`
+        const persisted = await env.STARLIGHT_DB.prepare(`
           INSERT INTO memory_atoms (id, tenant_id, tier, namespace, content, metadata, tags, is_encrypted, half_life_days, created_at, updated_at)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
@@ -243,10 +236,22 @@ export class StarlightCloudWorker {
           atom.createdAt,
           atom.updatedAt
         ).run();
-      } catch (err) {
-        console.error('[STARLIGHT:D1] Failed to persist atom:', err);
+        if (persisted?.success !== true) {
+          throw new Error('Memory persistence failed.');
+        }
+      } catch {
+        throw new Error('Memory persistence failed.');
       }
     }
+
+    // Do not expose a configured write before its affirmative acknowledgement.
+    // With no D1 binding this remains the existing non-durable component mode.
+    let tenantList = MEMORY_INDEX.get(tenant.tenantId);
+    if (!tenantList) {
+      tenantList = [];
+      MEMORY_INDEX.set(tenant.tenantId, tenantList);
+    }
+    tenantList.push(atom);
 
     // Persist to Edge KV if bound
     if (env?.STARLIGHT_KV) {
@@ -560,17 +565,16 @@ export class SwarmCoordinator {
     this.env = env;
   }
 
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    if (url.pathname.endsWith('/lease/acquire')) {
-      return new Response(JSON.stringify({ status: 'acquired', timestamp: new Date().toISOString() }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    return new Response(JSON.stringify({ status: 'active', role: 'SwarmCoordinator' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+  async fetch(_request: Request): Promise<Response> {
+    // The direct Durable Object surface has no verified caller or durable
+    // lease arbitration. Do not manufacture an acquired lease or active state.
+    return new Response(JSON.stringify({
+      error: 'Service Unavailable',
+      code: 'swarm_coordinator_unavailable',
+      message: 'Swarm coordination unavailable: verified identity and durable lease arbitration are not configured.',
+    }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 }

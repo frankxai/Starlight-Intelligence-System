@@ -1,0 +1,25 @@
+{
+  "schema": "starlight.loop-graph.v1",
+  "id": "specialist-artifact-review",
+  "shape": "converge",
+  "executorRole": "maker",
+  "supervisorRole": "checker",
+  "brakes": {
+    "maxTurns": 6,
+    "maxCostUnits": 4,
+    "emptyRoundsToStop": 2,
+    "allowedActions": [],
+    "requireWriteback": true
+  },
+  "nodes": [
+    { "id": "admit", "role": "system", "kind": "code", "costUnits": 0, "outputContract": "admitted-task" },
+    { "id": "make", "role": "maker", "kind": "agent", "costUnits": 1, "outputContract": "artifact-with-sources" },
+    { "id": "checks", "role": "system", "kind": "code", "costUnits": 0, "outputContract": "artifact-check-report" },
+    { "id": "verify", "role": "checker", "kind": "agent", "costUnits": 1, "outputContract": "independent-verdict" }
+  ],
+  "edges": [
+    { "from": "admit", "to": "make", "contract": "admitted-task" },
+    { "from": "make", "to": "checks", "contract": "artifact-with-sources" },
+    { "from": "checks", "to": "verify", "contract": "artifact-check-report" }
+  ]
+}
