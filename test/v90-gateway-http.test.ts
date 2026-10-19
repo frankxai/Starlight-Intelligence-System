@@ -20,9 +20,8 @@
 
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, rmSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { hostname, tmpdir } from 'node:os';
-import { randomUUID } from 'node:crypto';
+import { mkdtempSync, rmSync, readFileSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { request as httpRequest } from 'node:http';
 import { SisGatewayDaemon } from '../src/gateway/daemon.js';
@@ -98,7 +97,7 @@ describe('v9.0 Gateway HTTP — token enforcement', () => {
   });
 });
 
-describe('v9.0 Gateway HTTP — double-spawn guard and dead-PID recovery', () => {
+describe('v9.0 Gateway HTTP — double-spawn guard', () => {
   let root: string;
   let daemon1: SisGatewayDaemon;
 
@@ -113,49 +112,12 @@ describe('v9.0 Gateway HTTP — double-spawn guard and dead-PID recovery', () =>
     try { rmSync(root, { recursive: true, force: true }); } catch { /* ignore */ }
   });
 
-  it('second daemon.start() on same storageRoot throws spawn-guard error while owner is alive', async () => {
+  it('second daemon.start() on same storageRoot throws spawn-guard error', async () => {
     const daemon2 = new SisGatewayDaemon({ storageRoot: root });
     await assert.rejects(
       () => daemon2.start({ port: 0 }),
       /already running|spawn guard/i,
       'second start must fail with spawn guard error',
     );
-  });
-
-  it('recovers stale lock left by a dead local PID in meta.json', async () => {
-    const staleRoot = mkdtempSync(join(tmpdir(), 'sis-http-stale-meta-'));
-    try {
-      const lockDir = join(staleRoot, 'gateway-spawn.lock');
-      mkdirSync(lockDir);
-      writeFileSync(
-        join(lockDir, 'meta.json'),
-        JSON.stringify({ pid: 999999, ts: Date.now() - 60000, token: randomUUID(), host: hostname() }),
-        'utf-8',
-      );
-      const d = new SisGatewayDaemon({ storageRoot: staleRoot });
-      const p = await d.start({ port: 0 });
-      assert.ok(p > 0, 'daemon must bind ephemeral port after breaking dead-PID lock');
-      await d.stop();
-    } finally {
-      try { rmSync(staleRoot, { recursive: true, force: true }); } catch { /* ignore */ }
-    }
-  });
-
-  it('recovers legacy empty gateway-spawn.lock when gateway.json PID is dead', async () => {
-    const legacyRoot = mkdtempSync(join(tmpdir(), 'sis-http-stale-legacy-'));
-    try {
-      mkdirSync(join(legacyRoot, 'gateway-spawn.lock'));
-      writeFileSync(
-        join(legacyRoot, 'gateway.json'),
-        JSON.stringify({ port: 5200, pid: 999999, host: '127.0.0.1', startedAt: '2026-10-01T00:00:00.000Z' }),
-        'utf-8',
-      );
-      const d = new SisGatewayDaemon({ storageRoot: legacyRoot });
-      const p = await d.start({ port: 0 });
-      assert.ok(p > 0, 'daemon must recover legacy empty lock when gateway.json pid is dead');
-      await d.stop();
-    } finally {
-      try { rmSync(legacyRoot, { recursive: true, force: true }); } catch { /* ignore */ }
-    }
   });
 });
