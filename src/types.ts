@@ -45,6 +45,11 @@ export interface BrandSystem {
 export interface AgentDefinition {
   id: string;
   name: string;
+  /** Presentation aliases never replace the stable routing ID. */
+  aliases?: string[];
+  /** Original profile frontmatter identity, retained across label changes. */
+  profileName?: string;
+  sourceRef?: string;
   type: "specialist" | "meta";
   description: string;
   skills: string[];
