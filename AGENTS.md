@@ -237,6 +237,8 @@ For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to th
 
 Full per-agent file: `agents/<agent-name>.md`.
 
+Operational specialist labels and portable prompts: read `docs/agents/specialist-catalog.md` and `agents/catalog/specialists.json`. Describe the role and expected artifact first; legacy names remain optional aliases. Preserve the separate runtime filename ID, frontmatter profile identity, and Foundry ontology ID. Regenerate with `node scripts/build-specialist-catalog.mjs`; export one inspectable prompt with `node scripts/export-specialist.mjs <id> --print`. Generated instructions and graph relationships do not establish native bindings, permissions, or running agents.
+
 ---
 
 ## Skills (auto-activating)

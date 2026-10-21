@@ -1,5 +1,7 @@
 # Starlight Agent Registry
 
+The [specialist catalog](catalog/specialists.json) presents each agent by its descriptive role, purpose, expected artifact, and acceptance checks. Existing filenames, frontmatter identities, and Foundry ontology IDs remain intact; creative names are optional presentation aliases. The [catalog guide](../docs/agents/specialist-catalog.md) covers source validation, graph relationships, bounded loops, and portable instruction exports. This is the operational profile catalog; it does not establish that every agent has a running deployment.
+
 > One-hundred-fifty-one minds in the core registry. Nine universal intelligence layers + Domain Sub-Stack Tier (People + Sound + Music + Energy + Legal + Space + Marine + Longevity + Infrastructure + Partners + Research + Assets + Distribution) + Council Archetype Tier + Evaluator. One system. No hierarchy is permanent — only the mission is.
 >
 > **L99 Swarm Topology Update (2026-06-17):** Scaled swarm topology specifying Kings (policy locks), Queens (orchestration loops), Starlight Board, and Model Council consensus. The complete fleet of 150 agents is specified in the [Starlight 150 Agent Blueprint](../docs/AGENT_BLUEPRINT.md) and documented in the [Swarm Topology Strategy](../docs/swarm-topology.md).

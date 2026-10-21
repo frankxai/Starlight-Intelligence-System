@@ -74,6 +74,17 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 **Patterns confirmed.** An embed is only honest if it reads the same record as the page: render the card from the catalogue and the resolver, never from copied strings. Defer heavy client tools on marketing routes with an intersection gate plus an explicit load button; dynamic import alone still ships the chunk at hydration. Provisioning that the API refuses (Blob store creation returned 403) is written down as the one manual step on the PR rather than faked in code.
 
 **Verification.** 106 vitest across 14 files, lint/typecheck/build green, Playwright 19 routes × 4 widths clean, embed link targets and copy flow checked, Lighthouse `/shop` 90/100/96/100. Open: Frank to create the private Blob store (fra1) and set `SHOP_ADMIN_TOKEN`; fulfilment gates 1-10 unchanged.
+### [2026-10-16] Starlight Technology shop v2 — flagship edition, free lab, fail-closed checkout
+
+**Repo:** `frankxai/starlight-technology`, branch `claude/starlight-shop-production-wl99xc` (draft PR, preview-first; production stays on `main`).
+
+**Decision.** `/shop` becomes a native-digital-products storefront with third-party hardware and tooling as labelled recommendations second. No marketplace, no reseller pass-through. Paid checkout is structurally disabled until ten fulfilment gates carry dated evidence (`data/commerce/fulfilment-gates.json`, resolver `resolveCheckoutState()`); the UI renders an availability list instead of a Buy button and the public readiness board is rendered from the same record.
+
+**Shipped.** Typed catalogue (`src/lib/catalog`), flagship **Source-to-Brief Workflow Edition** (€149 proposed, SKU `ST-WE-S2B-001`, v1.0.0-rc.1), free **Source-to-Brief Lab** (browser-only, exports `brief.md` + `starlight.brief/v1` JSON), five collections, how-it-works, licensing-and-support, updates, availability, fail-closed availability API and signature-verified payment webhook receiver, measurement contract v1 (off by default), JSON-LD, sitemap, OG images. Existing hardware decision pages and the affiliate approval boundary untouched.
+
+**Patterns confirmed.** Fail-closed by record, not by flag: a missing gate keeps checkout closed even with a payment URL present. Product schema attaches `Offer` only in the open state. Shared deterministic core (`src/lib/brief`) between free and paid tiers makes the free artifact real and the paid upgrade legible. Scroll reveals animate transform only, never opacity, so contrast audits and reduced-motion stay clean.
+
+**Verification.** 94 vitest + 11 planner tests, lint/typecheck/build green, Playwright QA at 360/390/768/1349 with zero overflow, heading or labelling issues, Lighthouse mobile ≈ 90-92 perf / 96-100 a11y / 96 BP / 100 SEO. Open follow-ups: gates 1-10 (merchant of record, terms, storage, email, store, portal), availability endpoint wiring (n8n), team licence.
 
 ### [2026-10-11] Sovereign Digital Product Forge, Visual Workspace Studio L99 & Multi-Brand Funnel Engine E2E Ship
 
