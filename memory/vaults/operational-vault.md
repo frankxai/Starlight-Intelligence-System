@@ -63,6 +63,17 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 
 ## Entries
 
+### [2026-10-21] Starlight Technology shop 2.2 — live lab embed, embeddable cards, original machine portraits, lead storage
+
+**Repo:** `frankxai/starlight-technology`, same branch and draft PR #45 (head `3698131`, main merged in); production still on `main`.
+
+**Decision.** No vendor press photographs on the shop: Apple and Samsung press terms exclude promotional or commercial reuse and no licence could be verified from the build environment. Cards carry eight original shaded vector portraits drawn from published dimensions, captioned "Original illustration · not a photograph"; decision pages show a credited Creative Commons photograph of the exact model where one exists (main's liquid-surface release, starlight-technology#50, merged into the branch the same day) and the matching portrait otherwise. Lead capture gets real storage without a database: one private Vercel Blob object per availability request, fail-closed to the email path when no store is linked.
+
+**Shipped.** Real Source-to-Brief Lab inside `/shop` (chunk deferred until the section nears the viewport; Lighthouse mobile stays at 90). Embeddable cards at `/shop/embed/[slug]` (no script, `frame-ancestors *`, noindex) driven by the same checkout resolver, with live preview and copy snippet on product pages. `/api/shop/catalog` (`starlight.shop.catalog/v1`). Availability store module with Blob and endpoint sinks, operator export (JSON/CSV) behind a constant-time admin token, privacy page naming store, region and deletion rule.
+
+**Patterns confirmed.** An embed is only honest if it reads the same record as the page: render the card from the catalogue and the resolver, never from copied strings. Defer heavy client tools on marketing routes with an intersection gate plus an explicit load button; dynamic import alone still ships the chunk at hydration. Provisioning that the API refuses (Blob store creation returned 403) is written down as the one manual step on the PR rather than faked in code.
+
+**Verification.** 106 vitest across 14 files, lint/typecheck/build green, Playwright 19 routes × 4 widths clean, embed link targets and copy flow checked, Lighthouse `/shop` 90/100/96/100. Open: Frank to create the private Blob store (fra1) and set `SHOP_ADMIN_TOKEN`; fulfilment gates 1-10 unchanged.
 ### [2026-10-16] Starlight Technology shop v2 — flagship edition, free lab, fail-closed checkout
 
 **Repo:** `frankxai/starlight-technology`, branch `claude/starlight-shop-production-wl99xc` (draft PR, preview-first; production stays on `main`).
