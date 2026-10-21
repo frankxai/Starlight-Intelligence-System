@@ -1,0 +1,50 @@
+{
+  "scope": {
+    "projectId": "example-project",
+    "tenantId": "example-tenant",
+    "brandId": "example-brand",
+    "environment": "local"
+  },
+  "objective": "Carry a reviewable result between specialists.",
+  "nextAction": "Review the original and choose the next specialist.",
+  "jobs": [
+    {
+      "id": "example-job",
+      "capability": "architecture",
+      "summary": "Synthetic architecture draft; no implementation result is asserted."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "example-draft",
+      "jobId": "example-job",
+      "name": "draft.md",
+      "mediaType": "text/markdown",
+      "source": {
+        "host": "local",
+        "uri": "urn:starlight:example:draft",
+        "revision": "example-1",
+        "rights": "owned",
+        "visibility": "private",
+        "exportAllowed": true
+      },
+      "file": "draft.md"
+    }
+  ],
+  "checks": [
+    {
+      "id": "usefulness-review",
+      "status": "not-run",
+      "method": "Have the intended reader inspect the real original.",
+      "artifactIds": [
+        "example-draft"
+      ],
+      "evidenceArtifactIds": []
+    }
+  ],
+  "cost": {
+    "currency": "EUR",
+    "amountMinor": null,
+    "basis": "unknown"
+  }
+}
