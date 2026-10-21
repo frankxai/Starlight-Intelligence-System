@@ -65,9 +65,9 @@ Operational note: Higgsfield MCP returned `OAuth authorization required` for `ba
 
 ### [2026-10-21] Starlight Technology shop 2.2 — live lab embed, embeddable cards, original machine portraits, lead storage
 
-**Repo:** `frankxai/starlight-technology`, same branch and draft PR #45 (head `1855c9b`); production still on `main`.
+**Repo:** `frankxai/starlight-technology`, same branch and draft PR #45 (head `3698131`, main merged in); production still on `main`.
 
-**Decision.** No vendor photographs on the shop: Apple and Samsung press terms exclude promotional or commercial reuse and no licence could be verified from the build environment, so the eight hardware records carry original shaded vector portraits drawn from published dimensions, captioned "Original illustration · not a photograph". Lead capture gets real storage without a database: one private Vercel Blob object per availability request, fail-closed to the email path when no store is linked.
+**Decision.** No vendor press photographs on the shop: Apple and Samsung press terms exclude promotional or commercial reuse and no licence could be verified from the build environment. Cards carry eight original shaded vector portraits drawn from published dimensions, captioned "Original illustration · not a photograph"; decision pages show a credited Creative Commons photograph of the exact model where one exists (main's liquid-surface release, starlight-technology#50, merged into the branch the same day) and the matching portrait otherwise. Lead capture gets real storage without a database: one private Vercel Blob object per availability request, fail-closed to the email path when no store is linked.
 
 **Shipped.** Real Source-to-Brief Lab inside `/shop` (chunk deferred until the section nears the viewport; Lighthouse mobile stays at 90). Embeddable cards at `/shop/embed/[slug]` (no script, `frame-ancestors *`, noindex) driven by the same checkout resolver, with live preview and copy snippet on product pages. `/api/shop/catalog` (`starlight.shop.catalog/v1`). Availability store module with Blob and endpoint sinks, operator export (JSON/CSV) behind a constant-time admin token, privacy page naming store, region and deletion rule.
 
