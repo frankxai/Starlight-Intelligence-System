@@ -211,7 +211,7 @@
     "changeset": "changeset",
     "version:packages": "changeset version",
     "release:packages": "node scripts/publish-npm-ecosystem.mjs",
-    "test:ecosystem-handoff": "node --test foundry/ecosystem/handoff.test.mjs"
+    "test:ecosystem-handoff": "node --test foundry/ecosystem/*.test.mjs"
   },
   "files": [
     "dist/",
