@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": "22.x || 24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run test:vault-fetch && node scripts/check-metrics-contract.mjs && node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && node scripts/check-deploy-contract.mjs && next build",
