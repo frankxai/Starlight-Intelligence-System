@@ -1,0 +1,214 @@
+{
+  "schemaVersion": "1.0.0",
+  "campaignId": "synthetic-scholarevolve-demo",
+  "evidenceMode": "synthetic",
+  "splits": {
+    "evolution": [
+      "e0"
+    ],
+    "validation": [
+      "v0",
+      "v1",
+      "v2",
+      "v3",
+      "v4",
+      "v5",
+      "v6",
+      "v7",
+      "v8",
+      "v9",
+      "v10",
+      "v11",
+      "v12",
+      "v13",
+      "v14",
+      "v15",
+      "v16",
+      "v17",
+      "v18",
+      "v19",
+      "v20",
+      "v21",
+      "v22",
+      "v23"
+    ],
+    "test": [
+      "t0"
+    ]
+  },
+  "budget": {
+    "maxSelectedPerModule": 4,
+    "maxEvaluatedCandidates": 8,
+    "maxCrossoverSuggestions": 5,
+    "maxMeanCostUsd": 0.05,
+    "maxMeanLatencyMs": 100
+  },
+  "selection": {
+    "alpha": 0.1,
+    "bootstrapSamples": 2000,
+    "seed": 42,
+    "minValidationTasks": 20,
+    "minMeanGain": 0.01,
+    "maxTaskRegression": 0.1
+  },
+  "papers": [
+    {
+      "id": "scholarevolve",
+      "title": "Learning from Research: Toward Lifelong Agent Harness Evolution",
+      "url": "https://arxiv.org/abs/2609.40169v1",
+      "publishedAt": "2026-09-30",
+      "abstract": "ScholarEvolve organizes the harness evolution directions into functional modules and uses topic modeling to identify distinct improvement strategies for each module."
+    }
+  ],
+  "blueprints": [
+    {
+      "id": "context-blueprint",
+      "module": "context",
+      "primaryTopic": "context-selection",
+      "paperId": "scholarevolve",
+      "evidenceExcerpt": "functional modules",
+      "mechanism": "Generate a context module candidate and compare it against a frozen baseline.",
+      "adaptation": "Synthetic example only. A real implementation must preserve policy and mandatory task constraints.",
+      "interface": "compose(policy, history, evidence, skills, budget) -> messages",
+      "termination": "Stop when the context budget is allocated; never drop mandatory policy.",
+      "alreadyPresent": false,
+      "screeningRationale": "Demonstrates supplied topic screening; does not claim a missing mechanism in the live harness."
+    }
+  ],
+  "champion": {
+    "id": "baseline",
+    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "backbone": "synthetic-fixed-model",
+    "protocolSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "artifactSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "artifactSourceTaskIds": [
+      "e0"
+    ],
+    "validation": [
+      {"taskId": "v0", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v0", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v1", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v1", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v2", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v2", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v3", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v3", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v4", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v4", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v5", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v5", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v6", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v6", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v7", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v7", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v8", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v8", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v9", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v9", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v10", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v10", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v11", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v11", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v12", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v12", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v13", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v13", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v14", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v14", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v15", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v15", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v16", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v16", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v17", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v17", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v18", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v18", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v19", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v19", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v20", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v20", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v21", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v21", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v22", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v22", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v23", "trialId": "r0", "reward": 0, "costUsd": 0.01, "latencyMs": 20},
+      {"taskId": "v23", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20}
+    ]
+  },
+  "candidates": [
+    {
+      "id": "context-a",
+      "revision": "dddddddddddddddddddddddddddddddddddddddd",
+      "backbone": "synthetic-fixed-model",
+      "protocolSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "artifactSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "artifactSourceTaskIds": [
+        "e0"
+      ],
+      "validation": [
+        {"taskId": "v0", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v0", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v1", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v1", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v2", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v2", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v3", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v3", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v4", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v4", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v5", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v5", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v6", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v6", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v7", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v7", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v8", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v8", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v9", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v9", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v10", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v10", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v11", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v11", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v12", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v12", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v13", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v13", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v14", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v14", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v15", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v15", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v16", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v16", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v17", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v17", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v18", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v18", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v19", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v19", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v20", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v20", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v21", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v21", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v22", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v22", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v23", "trialId": "r0", "reward": 1, "costUsd": 0.01, "latencyMs": 20},
+        {"taskId": "v23", "trialId": "r1", "reward": 1, "costUsd": 0.01, "latencyMs": 20}
+      ],
+      "blueprintIds": [
+        "context-blueprint"
+      ],
+      "health": {
+        "importable": true,
+        "interfaceCompatible": true,
+        "artifactReloadable": true,
+        "validAction": true
+      },
+      "hardGates": {
+        "security": true,
+        "permissions": true,
+        "requiredTests": true
+      }
+    }
+  ]
+}

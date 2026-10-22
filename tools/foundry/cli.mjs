@@ -2,8 +2,8 @@
 
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compilePackage } from "./lib/compile.mjs";
 import { proposeEvolution } from "./lib/evolve.mjs";
+import { proposeResearchEvolution } from "./lib/research-evolution.mjs";
 import { buildCapabilityGraph, resolveCapabilities } from "./lib/graph.mjs";
 import { readJson, writeJson } from "./lib/io.mjs";
 import {
@@ -13,9 +13,6 @@ import {
   loadContractRegistry,
   validateValue,
 } from "./lib/schema.mjs";
-import { provePackage } from "./lib/prove.mjs";
-import { validateAgentPluginPackage } from "./lib/upstream-conformance.mjs";
-import { validateOpenAIPluginPackage } from "./lib/openai-preflight.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -49,11 +46,12 @@ Usage:
   node tools/foundry/cli.mjs forge --envelope <json> --pack <json> --out <dir> [--graph <json>] [--force]
   node tools/foundry/cli.mjs prove <package-dir> [--out <json>] [--evidence <json>] [--execute-commands]
   node tools/foundry/cli.mjs evolve <evidence-receipt.json> --out <json>
+  node tools/foundry/cli.mjs evolve-research <research-campaign.json> --out <json>
 
 Contracts:
   task-envelope, skill-pack, agent-pack, swarm-pack, vertical-pack,
   plugin-pack, taste-profile, evidence-receipt, capability-graph,
-  foundry-manifest
+  foundry-manifest, research-campaign
 
 Safety:
   Command tests never execute unless --execute-commands is present and the
@@ -79,6 +77,7 @@ async function main() {
   }
 
   if (command === "conformance") {
+    const { validateAgentPluginPackage } = await import("./lib/upstream-conformance.mjs");
     const packageDirectory = args[0];
     if (!packageDirectory) throw new Error("conformance requires an Agent Plugin package directory");
     const result = validateAgentPluginPackage(resolve(packageDirectory));
@@ -90,6 +89,7 @@ async function main() {
   }
 
   if (command === "preflight-openai") {
+    const { validateOpenAIPluginPackage } = await import("./lib/openai-preflight.mjs");
     const packageDirectory = args[0];
     if (!packageDirectory) throw new Error("preflight-openai requires an OpenAI plugin package directory");
     const result = validateOpenAIPluginPackage(resolve(packageDirectory));
@@ -124,6 +124,7 @@ async function main() {
   }
 
   if (command === "forge") {
+    const { compilePackage } = await import("./lib/compile.mjs");
     const envelope = readJson(resolve(requireOption(args, "--envelope")));
     const pack = readJson(resolve(requireOption(args, "--pack")));
     const output = resolve(requireOption(args, "--out"));
@@ -144,6 +145,7 @@ async function main() {
   }
 
   if (command === "prove") {
+    const { provePackage } = await import("./lib/prove.mjs");
     const packageDirectory = args[0];
     if (!packageDirectory) throw new Error("prove requires a package directory");
     const result = provePackage({
@@ -155,6 +157,14 @@ async function main() {
     });
     printJson({ output: result.output, status: result.receipt.status, summary: result.receipt.summary });
     if (["revise", "rejected"].includes(result.receipt.status)) process.exitCode = 1;
+    return;
+  }
+
+  if (command === "evolve-research") {
+    const campaignPath = args[0];
+    if (!campaignPath) throw new Error("evolve-research requires a Research Campaign JSON file");
+    const result = proposeResearchEvolution({ campaignPath, output: requireOption(args, "--out"), registry });
+    printJson({ output: result.output, status: result.report.status, apply: false });
     return;
   }
 

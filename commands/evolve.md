@@ -30,3 +30,19 @@ node tools/foundry/cli.mjs evolve <evidence-receipt.json> --out <evolution-propo
 4. Security and drift patches require approval.
 5. Re-run the same failing test after patching; do not move the goalpost.
 6. Write durable learning only after the new receipt passes.
+
+## Research-guided experiments
+
+For paper-derived harness candidates, use the companion offline selection command:
+
+```bash
+node tools/foundry/cli.mjs evolve-research <research-campaign.json> --out <research-report.json>
+```
+
+The campaign supplies paper provenance, screened mechanism blueprints, disjoint
+evolution/validation/test task IDs, frozen artifact provenance, and paired validation
+measurements. The report can suggest a candidate for independent review, always with
+`apply: false`. It does not replace `/prove` or grant promotion authority.
+
+See [the research evolution guide](../docs/foundry/research-evolution.md) for the
+contract, synthetic example, statistical limits, and remaining runtime work.

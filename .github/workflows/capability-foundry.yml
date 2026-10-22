@@ -12,6 +12,7 @@ on:
       - ".agents/plugins/marketplace.json"
       - "scripts/sync-foundry-plugin.mjs"
       - "test/v92-foundry.test.ts"
+      - "test/research-evolution.test.mjs"
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
@@ -27,6 +28,7 @@ on:
       - ".agents/plugins/marketplace.json"
       - "scripts/sync-foundry-plugin.mjs"
       - "test/v92-foundry.test.ts"
+      - "test/research-evolution.test.mjs"
       - "test/foundry-conformance.test.ts"
       - "package.json"
       - "package-lock.json"
@@ -56,6 +58,8 @@ jobs:
           node-version: "24"
       - name: Verify public-checkout isolation and compiler
         run: node foundry/agent-ontology/tests/portable.test.mjs
+      - name: Verify research evolution with synthetic evidence
+        run: node --test test/research-evolution.test.mjs
 
   contracts-and-compiler:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false

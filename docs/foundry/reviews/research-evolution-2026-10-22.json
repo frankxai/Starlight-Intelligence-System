@@ -1,0 +1,132 @@
+{
+  "receiptVersion": "1.0.0",
+  "state": "draft-candidate",
+  "verifiedOn": "2026-10-22",
+  "baseCommit": "e036722345a5ca1347dc12d12c5067295403348c",
+  "nodeVersion": "v24.19.0",
+  "source": {
+    "paper": "https://arxiv.org/abs/2609.40169v1",
+    "officialRepository": "https://github.com/UCSB-NLP-Chang/ScholarEvolve",
+    "officialCodeState": "empty repository checked via GitHub API and public page on 2026-10-22",
+    "implementation": "original operational Foundry adaptation; no upstream code copied"
+  },
+  "subjects": [
+    {
+      "path": ".github/workflows/capability-foundry.yml",
+      "sha256": "2be08439044931cb25db6e0ebd26d93913fb4363e12e3db00398fbef6b6d139a"
+    },
+    {
+      "path": "commands/evolve.md",
+      "sha256": "92907859e2d066be8097717841f21d206773a80204099848c68c783cb0965a11"
+    },
+    {
+      "path": "docs/foundry/research-evolution.md",
+      "sha256": "6554b17bfb9dfce4d44644f1ecbe5c596a5e25cf217ad19c1309a4edfa0926b8"
+    },
+    {
+      "path": "foundry/contracts/research-campaign.schema.json",
+      "sha256": "70a8c5c5b049dab2555637a90dcc9ea777ff49a3e8513a68894a84c9184846e4"
+    },
+    {
+      "path": "foundry/examples/research-evolution.campaign.json",
+      "sha256": "1df66db72865ddc1b0913e22aed14e540f265850ef8a29aaeaddecfeddf2da0d"
+    },
+    {
+      "path": "memory/vaults/technical-vault.md",
+      "sha256": "3b89a7fddcd1e72d1d505f9c4fb79eb0c06514d78e27a27ea55b41c787f3f56c"
+    },
+    {
+      "path": "src/infra/infra.test.ts",
+      "sha256": "73ae0e3d686f4847af4aadf189fb08272f74b49167429ac64f1c70d9ba0165ba"
+    },
+    {
+      "path": "test/research-evolution.test.mjs",
+      "sha256": "3362932a42fd19eb9d912e3c0e8e385f3e38cdade86bf7e96952c4109a5bb01f"
+    },
+    {
+      "path": "test/sovereign-durability.test.ts",
+      "sha256": "4d2fb4a97c6db7c21e4851c75a286d56c8f2f4a771a51589bb19c1706fdf82a8"
+    },
+    {
+      "path": "test/v75.test.ts",
+      "sha256": "db6f80b38c89cce6d7a185d3a2e037a17bd0657382c26e4eca33ca81bcd43b8c"
+    },
+    {
+      "path": "tools/foundry/cli.mjs",
+      "sha256": "6df6c9500291cf108a7de73775e4b2207aa98e5950eb58c5986f50a2a48db6a5"
+    },
+    {
+      "path": "tools/foundry/lib/research-evolution.mjs",
+      "sha256": "f7991552b2b509c53957c4853a594a0727b7aba88d67f5e414f465cead138807"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node --test test/research-evolution.test.mjs",
+      "exitCode": 0,
+      "passed": 41,
+      "logSha256": "d4bd5ba7d0340644b1de6d725706ceb82b0b4beee975c55204b2d6653dbc8171"
+    },
+    {
+      "command": "npm run test:foundry",
+      "exitCode": 0,
+      "passed": 55,
+      "logSha256": "55957ff38c4035aa7ccc986dba822721b59ff054d21353da0d20b6d385434632"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "reportedNodeTestPasses": 1514,
+      "reportedNodeTestSkipped": 1,
+      "trackDEvalPasses": 34,
+      "trackDEvalTodos": 7,
+      "logSha256": "b31aaffa0d9f3f024191019519bf80f7006133caefb945dbf197c5175640739b"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "logSha256": "5ddf43e34169c24bf39e8e9680585b739e3668877fbb58cb626a3cd948fd8c23"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "logSha256": "efc98e1b6a080e9c2722f249ad2d0faf16737cecc9b6f19192f539bf155343ab"
+    },
+    {
+      "command": "node foundry/agent-ontology/tests/portable.test.mjs",
+      "exitCode": 0,
+      "detail": "276 records, 7 identity layers, no home scan"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "independentReview": {
+    "reviewer": "separate read-only review agent",
+    "verdict": "no remaining blockers for a draft PR",
+    "fixesVerified": [
+      "exclusive output creation preserves source aliases",
+      "synthetic candidates cannot be recommended",
+      "example abstract excerpt tied to source",
+      "cost snapshot test uses local fetch mock",
+      "durability fallback tests use local error and HTTP 503 mocks",
+      "Dependabot test parses YAML rather than requiring quotes"
+    ]
+  },
+  "validationPrerequisites": [
+    "Built root dist before running legacy MCP quality tests.",
+    "Replaced two legacy outbound test requests after automatic review rejected api.anthropic.com and node2.irys.xyz calls. No authorization to transmit was requested; tests now use in-process mocks.",
+    "Corrected legacy Dependabot YAML assertion without modifying configuration or the github-actions ecosystem requirement."
+  ],
+  "limitations": [
+    "Research measurements, source revisions, health flags and artifact digests are supplied and unattested.",
+    "No real harness mutation, benchmark reproduction or measured user-task improvement established.",
+    "No paper retrieval, taxonomy model, coding agent, benchmark runner, schedule or deployment implemented.",
+    "Seven existing Track D eval TODOs and one existing skipped test remain."
+  ],
+  "apply": false,
+  "merged": false,
+  "deployed": false,
+  "rollback": "Revert this operational candidate or stop invoking evolve-research; runtime and existing champion were not changed."
+}
