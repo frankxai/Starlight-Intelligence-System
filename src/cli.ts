@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { runTerminalCli } from "./terminal-cli.js";
+import { runVerifyReceipt } from "./verify-receipt.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -158,6 +159,7 @@ Commands:
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
+  starlight verify-receipt <file> --public-key <key> Verify a run receipt DSSE envelope
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -1833,6 +1835,12 @@ async function main(): Promise<void> {
     case "score":
       cmdScore(asString(values["acos-path"]));
       break;
+
+    case "verify-receipt": {
+      const exitCode = runVerifyReceipt(process.argv.slice(3));
+      process.exitCode = exitCode;
+      break;
+    }
 
     case "vault": {
       const action = positionals[1];

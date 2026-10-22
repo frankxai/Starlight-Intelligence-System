@@ -71,7 +71,30 @@ The result is `{ ok, status: "signed", receiptId, keyid, receipt, envelope }` wh
 
 `sis.receipt.list` returns recent receipts, newest first, with `receiptId`, `kind`, `keyid`, `verdict`, `runKind`, `issuedAt`, `costEur`, and `subjectName`.
 
-## Verify
+## Verifying a receipt
+
+To verify a receipt standalone from the command line:
+
+```bash
+npx tsx src/verify-receipt.ts <file.json> --public-key <public-key.pem>
+# or
+starlight verify-receipt <file.json> --public-key <public-key.pem>
+```
+
+Exit codes:
+- `0`: Success. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues.
+- `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, or structural defects in the receipt payload.
+- `2`: Invalid input. Missing or unreadable input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
+
+Exit `1` also covers a key file that is readable but is not a usable Ed25519 public key. The command only reads files; it never writes or signs. The keys you pass with `--public-key` are the whole trust root: a receipt is accepted only when one of them produced a verifying signature and the receipt names that key as its issuer.
+
+What the verifier does NOT check:
+- Maker differs from checker: whether the actor that accepted the work is the same harness that made it (`decisions` against `run.host`). A receipt can verify and still record a maker approving its own work. That is a policy check for the caller.
+- Real provider cost: it checks that `totals.costEur` is not below the stage sum, not that any figure matches a provider bill.
+- Genuine checker output: it checks signature, structure and that evidence entries carry a sha256. It does not fetch the evidence or confirm the hash matches it.
+- Who the key belongs to: a valid signature proves a trusted key signed these bytes, not that the contents are true (see "The rule").
+
+The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs`. They use fixed TEST KEYS that protect nothing; only the public halves are committed.
 
 Locally, over MCP:
 
@@ -82,7 +105,7 @@ Locally, over MCP:
 
 With `trust_ledger: true` the server also trusts every `*.pub` file under `SIS_TRUSTED_KEYS_DIR`. The result is `{ ok: true, verified, keyid, reasons, receipt }`; `verified: false` means the check ran and the receipt failed it; errors are reported separately. In code, `verifyRunReceipt(envelope, [publicKeyPem])` from `src/run-receipt.ts` does the same with no I/O.
 
-There is no public verifier for run receipts yet. `https://starlightintelligence.ai/verify` checks only SIS's own SIP receipt, and `/api/v1/receipts/verify` does not exist. Until a public verifier ships, verify with `sis.receipt.verify` or `verifyRunReceipt` and the issuer's public key.
+There is no public verifier for run receipts yet. `https://starlightintelligence.ai/verify` checks only SIS's own SIP receipt, and `/api/v1/receipts/verify` does not exist. Until a public verifier ships, verify with `starlight verify-receipt` or `sis.receipt.verify` or `verifyRunReceipt` and the issuer's public key.
 
 ## The rule
 
