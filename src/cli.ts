@@ -1707,7 +1707,15 @@ async function main(): Promise<void> {
     return;
   }
   // verify-receipt owns its whole argument list, including --help, so it runs before the parent parser.
-  if (terminalArgs[0] === "verify-receipt") {
+  // Parent-level help flags or `--` in front of it would hand the line to the parent help handler,
+  // which exits 0 without verifying anything, so that form is refused.
+  const firstOperand = terminalArgs.findIndex((a) => a !== "--help" && a !== "-h" && a !== "--");
+  if (terminalArgs[firstOperand] === "verify-receipt") {
+    if (firstOperand > 0) {
+      console.error("Put verify-receipt first: starlight verify-receipt <file> --public-key <key>");
+      process.exitCode = 2;
+      return;
+    }
     process.exitCode = runVerifyReceipt(terminalArgs.slice(1));
     return;
   }

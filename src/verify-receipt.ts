@@ -20,7 +20,7 @@
  */
 
 import { createPublicKey } from "node:crypto";
-import { closeSync, fstatSync, openSync, readSync } from "node:fs";
+import { closeSync, constants, fstatSync, openSync, readSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -102,8 +102,18 @@ export function encodingProblems(envelope: unknown): string[] {
   return problems;
 }
 
+/** Most trusted keys one run will read, and the most bytes all key files may total. */
+export const MAX_PUBLIC_KEYS = 8;
+export const MAX_KEY_BYTES_TOTAL = MAX_INPUT_BYTES;
+
 function readBounded(path: string, label: string): string {
-  const fd = openSync(path, "r");
+  // Look at the path before opening it: opening a FIFO with no writer would block forever.
+  // stat follows symlinks, so a link to a regular file still works. The fstat below stays, because
+  // the path can change between this check and the open.
+  if (!statSync(path).isFile()) throw new Error(`${label} is not a regular file`);
+  // O_NONBLOCK (POSIX only; absent on Windows) keeps open() from blocking if the path was swapped
+  // for a FIFO after the check.
+  const fd = openSync(path, constants.O_RDONLY | (constants.O_NONBLOCK ?? 0));
   try {
     const info = fstatSync(fd);
     if (!info.isFile()) throw new Error(`${label} is not a regular file`);
@@ -155,7 +165,7 @@ export function runVerifyReceipt(args: string[]): number {
 Usage: verify-receipt <file.json> --public-key <file>
 
 Options:
-  --public-key <file>   Path to trusted Ed25519 public key PEM (can be specified multiple times)
+  --public-key <file>   Path to trusted Ed25519 public key PEM (up to ${MAX_PUBLIC_KEYS} times, 1 MiB in total)
   --help, -h            Show this help message
 `);
     return 0;
@@ -172,6 +182,11 @@ Options:
 
   if (!envelopePath || parsed.positionals.length !== 1 || keyPathList.length === 0) {
     console.error("Usage: verify-receipt <file.json> --public-key <file>");
+    return 2;
+  }
+
+  if (keyPathList.length > MAX_PUBLIC_KEYS) {
+    console.error(`Too many --public-key flags: ${keyPathList.length} given, at most ${MAX_PUBLIC_KEYS} are read`);
     return 2;
   }
 
@@ -192,9 +207,12 @@ Options:
   }
 
   const trustedKeys: string[] = [];
+  let keyBytes = 0;
   for (const kp of keyPathList) {
     try {
       const keyPem = readBounded(kp, `public key file "${kp}"`);
+      keyBytes += Buffer.byteLength(keyPem, "utf-8");
+      if (keyBytes > MAX_KEY_BYTES_TOTAL) throw new Error(`public key files total more than ${MAX_KEY_BYTES_TOTAL} bytes`);
       trustedKeys.push(keyPem);
     } catch (err: unknown) {
       console.error(`Error reading ${err instanceof Error ? err.message : String(err)}`);

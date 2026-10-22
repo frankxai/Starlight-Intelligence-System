@@ -7,6 +7,10 @@
  * With no --out it writes the tracked folder. The test generates into a temp dir with --out and
  * compares, so running the tests never touches the checkout.
  *
+ * Test-only developer tool. It trusts its --out directory: it refuses a symlinked --out and
+ * symlinked or hard-linked targets inside it, but it does not confine a symlinked ancestor of
+ * --out. Do not point it at a directory an untrusted party can write to.
+ *
  * TEST KEYS ONLY. The two Ed25519 keys below are derived from fixed public strings so the
  * fixtures are reproducible byte for byte (Ed25519 signing is deterministic). They protect
  * nothing, are committed on purpose, and must never be trusted anywhere outside these tests.
@@ -16,9 +20,9 @@
  * to reject it for the structural reason being tested, not because the signature is bad.
  * The exceptions are the three faults that are about the signature itself.
  */
-import { createHash, createPrivateKey, createPublicKey, sign } from "node:crypto";
-import { lstatSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { createHash, createPrivateKey, createPublicKey, randomBytes, sign } from "node:crypto";
+import { lstatSync, mkdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { PAYLOAD_TYPE, RUN_RECEIPT_PREDICATE_TYPE, STATEMENT_TYPE, keyIdOf, pae } from "../src/run-receipt.js";
@@ -118,7 +122,12 @@ fixtures["wrong-signing-key"] = signed(baseReceipt(B, "wrongkey"), B);
   fixtures["evidence-missing-sha256"] = signed(r);
 }
 
-/** Refuse to write through a symlink: writeFileSync would follow it and truncate whatever it points at. */
+/**
+ * Write through an exclusively created staging file in the same directory, then rename over the
+ * target. The rename replaces a directory entry and never writes through one, so a symlink or a
+ * hard link planted at the target cannot redirect the write (there is no lstat-then-write gap).
+ * Existing symlink and hard-linked targets are still refused up front so the problem is visible.
+ */
 function safeWrite(path, data) {
   let info = null;
   try { info = lstatSync(path); } catch (err) { if (err.code !== "ENOENT") throw err; }
@@ -126,7 +135,18 @@ function safeWrite(path, data) {
     console.error(`refusing to write through a symlink: ${path}`);
     process.exit(1);
   }
-  writeFileSync(path, data);
+  if (info && info.isFile() && info.nlink > 1) {
+    console.error(`refusing to replace a hard-linked file: ${path}`);
+    process.exit(1);
+  }
+  const staging = join(dirname(path), `.${basename(path)}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`);
+  try {
+    writeFileSync(staging, data, { flag: "wx" });
+    renameSync(staging, path);
+  } catch (err) {
+    try { unlinkSync(staging); } catch { /* staging file was never created or is already gone */ }
+    throw err;
+  }
 }
 
 try {

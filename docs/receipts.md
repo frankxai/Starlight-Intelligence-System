@@ -82,7 +82,7 @@ starlight verify-receipt <file.json> --public-key <public-key.pem>
 ```
 
 Exit codes:
-- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `--help` or `-h` as the entire command line (also through `starlight verify-receipt`), which prints usage and checks nothing. `--help` together with any other argument exits `2`, so help never reads as a verification.
+- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `starlight verify-receipt --help` (or `-h`), or the standalone command with `--help` or `-h` as its entire argument list; it prints usage and checks nothing. `--help` together with any other argument exits `2`. A help flag or `--` placed before the subcommand (`starlight --help verify-receipt ...`) is refused with exit `2` as well, so a help screen is never mistaken for a verification.
 - `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, structural defects in the receipt payload, an encoding the verifier will not forgive (below), or a trusted key it refuses (below).
 - `2`: Invalid input. Missing, unreadable or oversized input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
 
@@ -90,7 +90,7 @@ Exit `1` also covers a key file that is readable but is not a usable Ed25519 pub
 
 Guards the command adds on top of `verifyRunReceipt`:
 - **Strict encodings.** `payload` and every `sig` must be a string in standard base64 (padding required) or base64url (padding optional), with no stray characters, no mixed alphabets and no non-zero trailing bits. Node's decoder forgives all of those, so the command checks first. A `sig` that is an array or a number is rejected, not coerced.
-- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). The file is opened once and read at most 1 MiB plus one byte. A larger file, a directory, or a device or pipe exits `2`.
+- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). The path is checked first, then opened non-blocking where the platform supports it, then checked again on the open descriptor, and read at most 1 MiB plus one byte. A larger file, a directory, a device, or a named pipe exits `2`. Up to 8 `--public-key` flags are accepted and their files may total at most 1 MiB; more exits `2`.
 - **Signature entries.** Every entry in `signatures` must be an object with a string `keyid` and a strict-base64 string `sig`. One bad entry is a rejection (exit `1`) even when another entry carries a valid signature.
 - **Small-order keys.** A trusted key that is a small-order Ed25519 point (the identity and the other seven canonical points, plus their sign-bit and non-canonical aliases) is refused with exit `1`, because signatures under such a key can be forged for any message.
 
@@ -104,7 +104,7 @@ Known limits:
 - `src/run-receipt.ts` (`verifyRunReceipt`, the MCP `sis.receipt.verify` path and `trust_ledger`) still accepts a small-order public key as a trusted key. Depending on the Node and OpenSSL build, a trivial signature under the identity key then verifies for any edit (it does on Node 22.23 with OpenSSL 3.5.8, and not on Node 24.21). Only `starlight verify-receipt` refuses such keys. Fixing the shared code is a separate protocol PR.
 - The command trusts exactly the keys you give it and does not check who they belong to.
 
-The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs [--out <dir>]`. They use fixed TEST KEYS that protect nothing; only the public halves are committed. The test regenerates into a temp directory and compares, so running it never changes the checkout.
+The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs [--out <dir>]`. They use fixed TEST KEYS that protect nothing; only the public halves are committed. The test regenerates into a temp directory and compares, so running it never changes the checkout. The generator is a test-only developer tool: it writes through a staging file and a rename, refuses symlinked and hard-linked targets, and trusts its `--out` directory (a symlinked ancestor of `--out` is not detected), so do not point it at a directory an untrusted party can write to.
 
 Locally, over MCP:
 

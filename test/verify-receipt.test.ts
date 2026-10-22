@@ -10,12 +10,12 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash, createPublicKey } from "node:crypto";
-import { mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { linkSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PAYLOAD_TYPE, keyIdOf, verifyRunReceipt } from "../src/run-receipt.js";
-import { MAX_INPUT_BYTES, isStrictBase64, runVerifyReceipt } from "../src/verify-receipt.js";
+import { MAX_INPUT_BYTES, MAX_PUBLIC_KEYS, isSmallOrderEd25519Key, isStrictBase64, runVerifyReceipt } from "../src/verify-receipt.js";
 
 const REPO_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 const FIXTURES_DIR = join(REPO_ROOT, "test", "fixtures", "run-receipt");
@@ -190,6 +190,21 @@ describe("verify-receipt: through the real starlight CLI (subprocess)", () => {
     const r = cli(["--write", "--help"]);
     assert.equal(r.status, 2, r.stdout + r.stderr);
   });
+  // Parent-level help flags or `--` in front of the subcommand must not reach the parent help handler.
+  const rawCli = (args: string[]) =>
+    spawnSync(process.execPath, ["--import", "tsx", "src/cli.ts", ...args], { cwd: REPO_ROOT, encoding: "utf8", timeout: 120_000 });
+  for (const lead of [["--help"], ["-h"], ["--"], ["--help", "--"]]) {
+    it(`starlight ${lead.join(" ")} verify-receipt <missing file> exits 2 and does not print parent usage`, () => {
+      const r = rawCli([...lead, "verify-receipt", "definitely-missing.json"]);
+      assert.equal(r.status, 2, r.stdout + r.stderr);
+      assert.doesNotMatch(r.stdout, /Commands:|Usage: starlight/);
+      assert.match(r.stderr, /Put verify-receipt first/);
+    });
+  }
+  it("starlight --help verify-receipt with a valid receipt and key still exits 2, never 0", () => {
+    const r = rawCli(["--help", "verify-receipt", fixture("valid"), "--public-key", PUBKEY]);
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+  });
   it("verify-receipt verifies a valid receipt and rejects a tampered one with the right exit codes", () => {
     assert.equal(cli([fixture("valid"), "--public-key", PUBKEY]).status, 0);
     const bad = cli([fixture("tampered-subject-digest"), "--public-key", PUBKEY]);
@@ -262,6 +277,41 @@ describe("verify-receipt: non-regular files", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("verify-receipt: named pipes and key limits", () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "verify-receipt-fifo-"));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("a named pipe with no writer is refused with exit 2 instead of blocking (POSIX only)", { skip: process.platform === "win32" }, () => {
+    const fifo = join(dir, "pipe.json");
+    assert.equal(spawnSync("mkfifo", [fifo]).status, 0);
+    assert.equal(runVerifyReceipt([fifo, "--public-key", PUBKEY]), 2);
+    assert.match(text(), /not a regular file/);
+  });
+  it("a public key that is a named pipe with no writer is refused with exit 2 (POSIX only)", { skip: process.platform === "win32" }, () => {
+    const fifo = join(dir, "pipe.pem");
+    assert.equal(spawnSync("mkfifo", [fifo]).status, 0);
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", fifo]), 2);
+  });
+  it("exactly the maximum number of --public-key flags is accepted", () => {
+    const keys = Array.from({ length: MAX_PUBLIC_KEYS }, () => ["--public-key", PUBKEY]).flat();
+    assert.equal(runVerifyReceipt([fixture("valid"), ...keys]), 0);
+  });
+  it("one more than the maximum number of --public-key flags exits 2 before any file is read", () => {
+    const keys = Array.from({ length: MAX_PUBLIC_KEYS + 1 }, () => ["--public-key", PUBKEY]).flat();
+    assert.equal(runVerifyReceipt(["definitely-missing.json", ...keys]), 2);
+    assert.match(text(), /Too many --public-key flags/);
+  });
+  it("key files that are each under the limit but total more than it exit 2 with a total-size message", () => {
+    const big = join(dir, "big.pem");
+    writeFileSync(big, "x".repeat(Math.floor(MAX_INPUT_BYTES * 0.6)));
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", big, "--public-key", big]), 2);
+    assert.match(text(), /total more than/);
   });
 });
 
@@ -420,17 +470,34 @@ describe("verify-receipt: small-order trusted keys", () => {
     assert.match(text(), /small-order Ed25519 point/);
   });
 
-  for (const hex of [
+  const ALL_SMALL_ORDER = [
+    "0100000000000000000000000000000000000000000000000000000000000000",
     "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
     "0000000000000000000000000000000000000000000000000000000000000000",
+    "0000000000000000000000000000000000000000000000000000000000000080",
     "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a",
+    "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa",
     "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05",
-  ]) {
-    it(`refuses small-order point ${hex.slice(0, 8)}...`, () => {
+    "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85",
+    "0100000000000000000000000000000000000000000000000000000000000080",
+    "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "edffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "eeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  ];
+
+  it("the list under test has 14 distinct encodings", () => {
+    assert.equal(new Set(ALL_SMALL_ORDER).size, 14);
+  });
+  for (const hex of ALL_SMALL_ORDER) {
+    it(`refuses small-order point ${hex.slice(0, 8)}...${hex.slice(-4)} as a small-order key (not merely as unusable)`, () => {
+      const pem = pemOf(Buffer.from(hex, "hex"));
+      assert.equal(isSmallOrderEd25519Key(pem), true, "the guard itself must recognise this encoding");
       const keyFile = join(dir, "k.pem");
-      writeFileSync(keyFile, pemOf(Buffer.from(hex, "hex")));
+      writeFileSync(keyFile, pem);
       assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", keyFile]), 1);
-      assert.match(text(), /small-order Ed25519 point|trusted key is unusable/);
+      assert.match(text(), /small-order Ed25519 point/);
     });
   }
 
@@ -482,6 +549,27 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
     }
   });
 
+  it("the generator refuses to replace a hard-linked file and leaves the other name alone", (t) => {
+    const out = mkdtempSync(join(tmpdir(), "verify-receipt-hardlink-"));
+    const victim = join(out, "victim.txt");
+    try {
+      writeFileSync(victim, "do not touch");
+      try {
+        linkSync(victim, join(out, "pubkey.pem"));
+      } catch {
+        t.skip("this account cannot create hard links");
+        return;
+      }
+      const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs", "--out", out], { cwd: REPO_ROOT, encoding: "utf8" });
+      assert.equal(run.status, 1, run.stdout + run.stderr);
+      assert.match(run.stderr, /hard-linked/);
+      assert.equal(readFileSync(victim, "utf8"), "do not touch");
+      assert.equal(readdirSync(out).filter((n) => n.endsWith(".tmp")).length, 0, "no staging file may be left behind");
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
+  });
+
   it("fixtures regenerate byte for byte from tools/gen-run-receipt-fixtures.mjs, without writing into the checkout", () => {
     const before = digestOfDir();
     const out = mkdtempSync(join(tmpdir(), "verify-receipt-regen-"));
@@ -490,7 +578,7 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
       assert.equal(run.status, 0, run.stderr);
       const norm = (path: string) => readFileSync(path, "utf8").replace(/\r\n/g, "\n");
       const committed = readdirSync(FIXTURES_DIR).sort();
-      assert.deepEqual(readdirSync(out).sort(), committed, "generator and committed fixtures list different files");
+      assert.deepEqual(readdirSync(out).sort(), committed, "generator and committed fixtures list different files (a leftover .tmp staging file would show here)");
       for (const f of committed) assert.equal(norm(join(out, f)), norm(join(FIXTURES_DIR, f)), `${f} differs from generator output`);
       assert.equal(digestOfDir(), before, "the test must not modify the tracked fixtures");
     } finally {
