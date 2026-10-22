@@ -313,3 +313,12 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 **Truth boundary:** Structural validity is only `contract-valid`. Source, deploy, integration, security, and rollback checks remain independently evidenced. Hermes and n8n are optional planned adapters until their own source and evidence exist.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+### [2026-10-22] Research-guided harness experiment candidate
+
+**Category:** operational-tooling / evaluation-pattern
+**Source:** ScholarEvolve arXiv:2609.40169v1; `docs/foundry/research-evolution.md`
+
+Added an offline `evolve-research` companion to the existing Foundry evolution path. It allocates supplied mechanisms across five modules, pairs task/trial results, checks frozen-artifact source splits, and proposes review candidates using task-level bootstrap gains with within-batch correction, cost/latency limits and hard gates. Unmeasured crossover remains an experiment suggestion. Synthetic inputs cannot recommend a candidate; supplied evidence remains unattested and every report has `apply: false`.
+
+Validation: 41 new tests, 55 existing Foundry tests, portable checkout isolation, root build, type checking and the full `npm test` command passed locally; seven pre-existing Track D eval TODOs remain. Independent review cleared the draft after output-alias preservation and synthetic-label fixes. Broad validation also repaired two legacy tests to mock outbound requests and a YAML assertion to check parsed semantics. The official upstream repository was empty when checked. Paper retrieval, isolated coding, real benchmark runs and production integration remain unimplemented. This records a branch candidate, not a merged or operating capability.

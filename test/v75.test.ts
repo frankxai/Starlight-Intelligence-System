@@ -30,6 +30,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { parse as parseYaml } from "yaml";
 import { existsSync, readFileSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -266,7 +267,9 @@ describe("v7.5.1 Block 7 — OpenClaw v7.5 audit remediation", () => {
     const path = join(REPO_ROOT, ".github", "dependabot.yml");
     assert.ok(existsSync(path), "dependabot.yml missing");
     const content = readFileSync(path, "utf8");
-    assert.match(content, /package-ecosystem:\s*"github-actions"/, "dependabot missing github-actions ecosystem");
+    const config = parseYaml(content) as { updates?: Array<{ "package-ecosystem"?: string }> };
+    assert.ok(config.updates?.some((entry) => entry["package-ecosystem"] === "github-actions"),
+      "dependabot missing github-actions ecosystem");
   });
 
   // HIGH-6: real-instance MEMORY.md files contain no template placeholders

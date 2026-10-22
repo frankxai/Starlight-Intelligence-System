@@ -454,18 +454,28 @@ We ensure benevolent human value persistence across all autonomous agent tiers.
     );
   });
 
-  it("gracefully falls back to offline calculation when live transport fetch throws or returns non-200", async () => {
+  it("gracefully falls back when locally mocked transport fetch throws or returns non-200", async (t) => {
+    let attempts = 0;
+    t.mock.method(globalThis, "fetch", async () => {
+      attempts += 1;
+      if (attempts === 1) throw new Error("synthetic network failure");
+      return new Response("synthetic upstream refusal", { status: 503 });
+    });
     const origKey = process.env.IRYS_PRIVATE_KEY;
     process.env.IRYS_PRIVATE_KEY = "invalid-key-for-network-failure-test";
 
     try {
-      const result = await SovereignStorageDispatcher.dispatchSnapshot(sampleItems, {
-        provider: "irys-arweave",
-      });
-      assert.ok(result.receipt);
-      assert.ok(result.upload);
-      assert.equal(result.upload.provider, "irys-arweave");
-      assert.ok(result.upload.contentIdentifier.startsWith("ar://"));
+      for (let i = 0; i < 2; i += 1) {
+        const result = await SovereignStorageDispatcher.dispatchSnapshot(sampleItems, {
+          provider: "irys-arweave",
+        });
+        assert.ok(result.receipt);
+        assert.ok(result.upload);
+        assert.equal(result.upload.isLive, false);
+        assert.equal(result.upload.provider, "irys-arweave");
+        assert.ok(result.upload.contentIdentifier.startsWith("ar://"));
+      }
+      assert.equal(attempts, 2);
     } finally {
       if (origKey) {
         process.env.IRYS_PRIVATE_KEY = origKey;

@@ -181,10 +181,9 @@ describe("runDailySnapshot (orchestrator)", () => {
     });
   });
 
-  it("writes snapshots when secrets present (mocked fetchers via env)", async () => {
-    // This test exercises the snapshot-write path indirectly via the orchestrator's
-    // own fetchers using globalThis.fetch — covered by the per-fetcher tests above.
-    // The orchestrator is exercised end-to-end in the smoke script (scripts/cost-smoke.ts).
+  it("writes snapshots when secrets present using local mocked responses", async (t) => {
+    // Keep fake credentials inside the process. The test context restores fetch.
+    t.mock.method(globalThis, "fetch", mockFetch({ total: 4.23, data: [{ cost_usd: 2.15 }] }));
     await withTempRepo(async (root) => {
       const secrets = new EnvSecretsClient({
         VERCEL_API_TOKEN: "test",
@@ -192,10 +191,14 @@ describe("runDailySnapshot (orchestrator)", () => {
         ANTHROPIC_ORG_ID: "test",
       });
       const results = await runDailySnapshot(root, secrets, "2026-05-10");
-      // These will fail because we can't reach real APIs from the test env,
-      // but the result-shape assertion still holds.
       assert.equal(results.length, 2);
-      assert.ok(results.every((r) => r.source === "vercel" || r.source === "anthropic"));
+      assert.deepEqual(results.map((r) => r.source).sort(), ["anthropic", "vercel"]);
+      assert.ok(results.every((r) => r.status === "ok" && r.log_path && existsSync(r.log_path)));
+      assert.equal(results.find((r) => r.source === "vercel")?.cost_usd, 4.23);
+      assert.equal(results.find((r) => r.source === "anthropic")?.cost_usd, 2.15);
+      const snapshots = readFileSync(results[0].log_path!, "utf8").trim().split("\n").map((line) => JSON.parse(line));
+      assert.equal(snapshots.length, 2);
+      assert.ok(snapshots.every((snapshot) => snapshot.period === "2026-05-10"));
     });
   });
 });

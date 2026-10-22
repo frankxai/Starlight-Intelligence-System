@@ -1,0 +1,511 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/foundry/research-campaign.schema.json",
+  "title": "Research campaign supplied-evidence contract",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "campaignId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+      "maxLength": 128
+    },
+    "evidenceMode": {
+      "enum": [
+        "synthetic",
+        "measured"
+      ]
+    },
+    "splits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evolution": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 10000,
+          "uniqueItems": true
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 2,
+          "maxItems": 2000,
+          "uniqueItems": true
+        },
+        "test": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 10000,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "evolution",
+        "validation",
+        "test"
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxSelectedPerModule": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "maxEvaluatedCandidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "maxCrossoverSuggestions": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "maxMeanCostUsd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "maxMeanLatencyMs": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400000
+        }
+      },
+      "required": [
+        "maxSelectedPerModule",
+        "maxEvaluatedCandidates",
+        "maxCrossoverSuggestions",
+        "maxMeanCostUsd",
+        "maxMeanLatencyMs"
+      ]
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alpha": {
+          "type": "number",
+          "minimum": 0.01,
+          "maximum": 0.2
+        },
+        "bootstrapSamples": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 10000
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "minValidationTasks": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 2000
+        },
+        "minMeanGain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maxTaskRegression": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "alpha",
+        "bootstrapSamples",
+        "seed",
+        "minValidationTasks",
+        "minMeanGain",
+        "maxTaskRegression"
+      ]
+    },
+    "papers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/paper"
+      },
+      "minItems": 0,
+      "maxItems": 200
+    },
+    "blueprints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blueprint"
+      },
+      "minItems": 0,
+      "maxItems": 200
+    },
+    "champion": {
+      "$ref": "#/$defs/champion"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidate"
+      },
+      "minItems": 0,
+      "maxItems": 64
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "campaignId",
+    "evidenceMode",
+    "splits",
+    "budget",
+    "selection",
+    "papers",
+    "blueprints",
+    "champion",
+    "candidates"
+  ],
+  "$defs": {
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "trialId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "reward": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "costUsd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "latencyMs": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400000
+        }
+      },
+      "required": [
+        "taskId",
+        "trialId",
+        "reward",
+        "costUsd",
+        "latencyMs"
+      ]
+    },
+    "champion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "backbone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "protocolSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactSourceTaskIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 0,
+          "maxItems": 10000,
+          "uniqueItems": true
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/row"
+          },
+          "minItems": 2,
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "backbone",
+        "protocolSha256",
+        "artifactSha256",
+        "artifactSourceTaskIds",
+        "validation"
+      ]
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "backbone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "protocolSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifactSourceTaskIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 0,
+          "maxItems": 10000,
+          "uniqueItems": true
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/row"
+          },
+          "minItems": 2,
+          "maxItems": 10000
+        },
+        "blueprintIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "health": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "importable": {
+              "type": "boolean"
+            },
+            "interfaceCompatible": {
+              "type": "boolean"
+            },
+            "artifactReloadable": {
+              "type": "boolean"
+            },
+            "validAction": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "importable",
+            "interfaceCompatible",
+            "artifactReloadable",
+            "validAction"
+          ]
+        },
+        "hardGates": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "security": {
+              "type": "boolean"
+            },
+            "permissions": {
+              "type": "boolean"
+            },
+            "requiredTests": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "security",
+            "permissions",
+            "requiredTests"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "backbone",
+        "protocolSha256",
+        "artifactSha256",
+        "artifactSourceTaskIds",
+        "validation",
+        "blueprintIds",
+        "health",
+        "hardGates"
+      ]
+    },
+    "blueprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "module": {
+          "enum": [
+            "tools",
+            "context",
+            "skills",
+            "memory",
+            "workflow"
+          ]
+        },
+        "primaryTopic": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "paperId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "evidenceExcerpt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "mechanism": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "adaptation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "interface": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "termination": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "alreadyPresent": {
+          "type": "boolean"
+        },
+        "screeningRationale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        }
+      },
+      "required": [
+        "id",
+        "module",
+        "primaryTopic",
+        "paperId",
+        "evidenceExcerpt",
+        "mechanism",
+        "adaptation",
+        "interface",
+        "termination",
+        "alreadyPresent",
+        "screeningRationale"
+      ]
+    },
+    "paper": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://[^\\s]+$",
+          "maxLength": 2000
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "abstract": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "publishedAt",
+        "abstract"
+      ]
+    }
+  }
+}
