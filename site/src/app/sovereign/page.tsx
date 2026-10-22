@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MerkleProofExplorer } from "@/components/sovereign/MerkleProofExplorer";
-import { VMCPTokenCalculator } from "@/components/sovereign/VMCPTokenCalculator";
-import { RobotFleetContinuityExplorer } from "@/components/sovereign/RobotFleetContinuityExplorer";
 
 export const metadata: Metadata = {
-  title: "Sovereign Fleet Substrate — Starlight Intelligence",
+  title: "Sovereign Substrate — Starlight Intelligence",
   description:
-    "One person, one attested fleet. Complete sovereign substrate unifying autonomous agent swarms and physical robot fleets with 3-tier durability, Starlight Queen orchestration, and zero cloud vendor lock-in.",
+    "What the sovereign substrate in the open Starlight repository does today: append-only vaults on your disk, Merkle snapshot receipts, client-side envelope encryption and fail-closed gates. Remote anchoring and robotics are experimental and unproven.",
   alternates: { canonical: "/sovereign" },
 };
 
@@ -29,21 +27,21 @@ export default function SovereignPage() {
             </span>
           </h1>
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed mb-10">
-            A unified cognitive substrate orchestrating autonomous software swarms and embodied robot fleets.
-            Local-first, mathematically auditable, and anchored to decentralized permanence.
+            The local-first layer under the agents one person runs: append-only vaults on your own disk,
+            snapshot receipts you can check, and gates that fail closed. Open source under MIT.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href="#interactive"
               className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#060609] hover:bg-slate-200 transition-all shadow-lg shadow-white/10"
             >
-              Explore Interactive Substrate
+              Check a proof in your browser
             </Link>
             <Link
-              href="/pricing"
+              href="/protocol"
               className="rounded-full border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-medium text-white hover:bg-white/[0.08] transition-all"
             >
-              Sovereign Plus ($29/mo)
+              Read the protocol
             </Link>
           </div>
         </div>
@@ -54,16 +52,14 @@ export default function SovereignPage() {
         <div className="mx-auto max-w-6xl px-6 space-y-12">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
-              Interactive Sovereign Verifiers
+              Check an inclusion proof
             </h2>
             <p className="text-sm text-slate-400">
-              Test the mathematical guarantees and token economics running live in your browser.
+              The hashing runs locally with Web Crypto. Nothing on this page is sent anywhere.
             </p>
           </div>
 
           <MerkleProofExplorer />
-          <RobotFleetContinuityExplorer />
-          <VMCPTokenCalculator />
         </div>
       </section>
 
@@ -72,10 +68,10 @@ export default function SovereignPage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
-              Engineered Across Four Invariant Layers
+              Four layers, and how far each one has been proven
             </h2>
             <p className="text-sm text-slate-400">
-              From local SQLite FTS5 files to physical motor actuators, every layer adheres to strict fail-closed safety.
+              Each card says what the open repository does today and what is still experimental.
             </p>
           </div>
 
@@ -87,20 +83,25 @@ export default function SovereignPage() {
                   01
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">3-Tier Storage Durability</h3>
-                  <span className="text-xs font-mono text-slate-400">Local · Cloud · Arweave / IPFS</span>
+                  <h3 className="text-lg font-semibold text-white">Storage and snapshot receipts</h3>
+                  <span className="text-xs font-mono text-slate-400">Local first · remote anchors experimental</span>
                 </div>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                Local-first append-only JSONL files indexed in SQLite FTS5. Periodic snapshots produce deterministic
-                SHA-256 Merkle roots with selective disclosure inclusion proofs, permanently anchored to Arweave or IPFS.
+                Vaults are append-only JSONL files on your disk. A snapshot produces a deterministic SHA-256 Merkle
+                root and a receipt you can re-verify against the items. Transports for Arweave (via Irys) and IPFS
+                (via Pinata) are written, but no public anchor has been published; without provider keys they
+                return a local receipt only.
               </p>
               <ul className="text-xs font-mono text-slate-400 space-y-2">
                 <li className="flex items-center gap-2 text-violet-300">
-                  <span>✓</span> O(log N) Zero-Knowledge inclusion verification
+                  <span>✓</span> Inclusion proofs in O(log N) hashes
                 </li>
                 <li className="flex items-center gap-2 text-violet-300">
                   <span>✓</span> Client-side AES-256-GCM envelope encryption
+                </li>
+                <li className="flex items-center gap-2 text-slate-400">
+                  <span>○</span> Remote anchoring: code and tests only
                 </li>
               </ul>
             </div>
@@ -112,20 +113,21 @@ export default function SovereignPage() {
                   02
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Robot Fleet Continuity Kernel</h3>
-                  <span className="text-xs font-mono text-slate-400">ROS2 · Zenoh · Actuation Safety</span>
+                  <h3 className="text-lg font-semibold text-white">Robotics continuity kernel</h3>
+                  <span className="text-xs font-mono text-slate-400">Experimental · simulated actuators only</span>
                 </div>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                Treats embodied robots as physical extensions of the multi-agent cognitive mesh. Ray-casting spatial
-                hazard zones prevent collisions, while trapezoid velocity profilers eliminate actuator jerk.
+                A research module that models hazard zones, velocity limits and heartbeat timeouts for actuators,
+                and formats ROS2/Zenoh-style messages. It has been tested against simulated actuators and a mock
+                Zenoh router. No physical robot has run it.
               </p>
               <ul className="text-xs font-mono text-slate-400 space-y-2">
                 <li className="flex items-center gap-2 text-cyan-300">
-                  <span>✓</span> Fail-closed emergency stop on sensor hazard breaches
+                  <span>✓</span> Fail-closed stop in simulated hazard tests
                 </li>
-                <li className="flex items-center gap-2 text-cyan-300">
-                  <span>✓</span> Standard ROS2/Zenoh Twist & Pose message formatting
+                <li className="flex items-center gap-2 text-slate-400">
+                  <span>○</span> Hardware: not tested
                 </li>
               </ul>
             </div>
@@ -183,30 +185,31 @@ export default function SovereignPage() {
         </div>
       </section>
 
-      {/* Immersion & Tiers Section */}
+      {/* Run it yourself */}
       <section className="py-20">
         <div className="mx-auto max-w-5xl px-6">
           <div className="rounded-3xl border border-white/[0.1] bg-gradient-to-b from-white/[0.04] to-transparent p-8 sm:p-12 text-center">
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white mb-4">
-              Solo Founder 1-Day Immersion
+              Run the tests yourself
             </h2>
             <p className="text-slate-300 max-w-2xl mx-auto mb-8 text-sm sm:text-base">
-              A private, high-bandwidth intensive session where Frank architectures your complete sovereign fleet:
-              custom memory vaults, Starlight Queen autonomic gates, robot continuity, and self-hosted MCP mesh.
+              The snapshot, encryption and robotics modules live in <code className="font-mono text-slate-200">src/durability</code> and{" "}
+              <code className="font-mono text-slate-200">src/robotics</code>, with their tests beside them. Clone the
+              repository and check every claim on this page against the code.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/pricing"
-                className="w-full sm:w-auto rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#060609] hover:bg-slate-200 transition-all"
-              >
-                Book Immersion ($2,500)
-              </Link>
-              <Link
                 href="https://github.com/frankxai/Starlight-Intelligence-System"
                 target="_blank"
+                className="w-full sm:w-auto rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#060609] hover:bg-slate-200 transition-all"
+              >
+                Inspect the source on GitHub
+              </Link>
+              <Link
+                href="/download"
                 className="w-full sm:w-auto rounded-full border border-white/20 bg-white/[0.04] px-8 py-3.5 text-sm font-medium text-white hover:bg-white/[0.08] transition-all"
               >
-                Inspect Source on GitHub
+                Install Starlight
               </Link>
             </div>
           </div>

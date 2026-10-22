@@ -13,11 +13,12 @@ interface ProofStep {
   position: "left" | "right";
 }
 
+// Sample atoms for the demo only; they are not read from any real vault.
 const DEFAULT_ATOMS: Atom[] = [
-  { id: "atom-1", vault: "strategic", content: "Sovereign single-operator fleet substrate" },
-  { id: "atom-2", vault: "horizon", content: "Durable blockchain permanence on Arweave & IPFS" },
-  { id: "atom-3", vault: "technical", content: "Robot continuity kernel with ROS2 / Zenoh wire" },
-  { id: "atom-4", vault: "operational", content: "Starlight Queen fail-closed autonomic sweep" },
+  { id: "atom-1", vault: "strategic", content: "Ship the waitlist before the checkout" },
+  { id: "atom-2", vault: "horizon", content: "Memory stays as plain files on the operator's disk" },
+  { id: "atom-3", vault: "technical", content: "Prefer pnpm; never npm install unless the lockfile forces it" },
+  { id: "atom-4", vault: "operational", content: "Money paths fail closed" },
 ];
 
 async function computeSha256(message: string): Promise<string> {
@@ -111,15 +112,16 @@ export function MerkleProofExplorer() {
         <div>
           <h3 className="text-lg font-semibold text-white flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            Interactive Zero-Knowledge Merkle Proof Explorer
+            Merkle inclusion proof
           </h3>
           <p className="text-xs text-slate-400">
-            Verify individual memory atoms in O(log N) without disclosing your private vault contents.
+            Prove one atom belongs to a snapshot in O(log N) hashes. The other atoms are represented by their
+            hashes, not their contents. Sample data only.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <span className="rounded-full bg-violet-500/10 border border-violet-500/20 px-3 py-1 text-xs font-mono text-violet-300">
-            SIP-Anchor-v1.1
+            SHA-256 · Web Crypto
           </span>
           <span
             className={`rounded-full px-3 py-1 text-xs font-mono font-medium ${
@@ -164,7 +166,7 @@ export function MerkleProofExplorer() {
         <div className="space-y-4 rounded-xl border border-white/[0.06] bg-black/40 p-4">
           <div>
             <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
-              Public Merkle Root (On-Chain State Anchor)
+              Merkle root (the value a snapshot receipt records)
             </span>
             <div className="rounded-lg bg-black/60 p-2.5 font-mono text-xs text-emerald-300 break-all border border-emerald-500/20">
               {calculating ? "Computing..." : merkleRoot}
@@ -198,7 +200,7 @@ export function MerkleProofExplorer() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              Zero-Knowledge Pass
+              Path recomputes to the root
             </span>
           </div>
         </div>
