@@ -20,7 +20,7 @@
  */
 
 import { createPublicKey } from "node:crypto";
-import { readFileSync, statSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -90,20 +90,37 @@ export function encodingProblems(envelope: unknown): string[] {
   if (typeof env.payload === "string" && !isStrictBase64(env.payload)) problems.push("payload is not strict base64 or base64url");
   if (Array.isArray(env.signatures)) {
     env.signatures.forEach((sig, i) => {
-      if (typeof sig !== "object" || sig === null || Array.isArray(sig)) return;
-      if (!isStrictBase64((sig as Record<string, unknown>).sig)) problems.push(`signature ${i} sig is not a strict base64 string`);
+      if (typeof sig !== "object" || sig === null || Array.isArray(sig)) {
+        problems.push(`signature ${i} is not an object`);
+        return;
+      }
+      const entry = sig as Record<string, unknown>;
+      if (typeof entry.keyid !== "string") problems.push(`signature ${i} keyid is not a string`);
+      if (!isStrictBase64(entry.sig)) problems.push(`signature ${i} sig is not a strict base64 string`);
     });
   }
   return problems;
 }
 
 function readBounded(path: string, label: string): string {
-  const info = statSync(path);
-  if (!info.isFile()) throw new Error(`${label} is not a regular file`);
-  if (info.size > MAX_INPUT_BYTES) throw new Error(`${label} is ${info.size} bytes, over the ${MAX_INPUT_BYTES} byte limit`);
-  const bytes = readFileSync(path);
-  if (bytes.length > MAX_INPUT_BYTES) throw new Error(`${label} grew past the ${MAX_INPUT_BYTES} byte limit while reading`);
-  return bytes.toString("utf-8");
+  const fd = openSync(path, "r");
+  try {
+    const info = fstatSync(fd);
+    if (!info.isFile()) throw new Error(`${label} is not a regular file`);
+    if (info.size > MAX_INPUT_BYTES) throw new Error(`${label} is ${info.size} bytes, over the ${MAX_INPUT_BYTES} byte limit`);
+    // Never read more than limit + 1 bytes, even if the file grows while it is being read.
+    const buffer = Buffer.alloc(MAX_INPUT_BYTES + 1);
+    let total = 0;
+    while (total < buffer.length) {
+      const n = readSync(fd, buffer, total, buffer.length - total, null);
+      if (n === 0) break;
+      total += n;
+    }
+    if (total > MAX_INPUT_BYTES) throw new Error(`${label} grew past the ${MAX_INPUT_BYTES} byte limit while reading`);
+    return buffer.subarray(0, total).toString("utf-8");
+  } finally {
+    closeSync(fd);
+  }
 }
 
 export interface VerifyReceiptCliOptions {
@@ -129,7 +146,8 @@ export function runVerifyReceipt(args: string[]): number {
   }
 
   if (parsed.values.help) {
-    if (parsed.positionals.length > 0 || Object.keys(parsed.values).some((k) => k !== "help")) {
+    // Help exits 0 only as the whole command line: exactly ["--help"] or ["-h"].
+    if (args.length !== 1 || (args[0] !== "--help" && args[0] !== "-h")) {
       console.error("--help cannot be combined with other arguments");
       return 2;
     }

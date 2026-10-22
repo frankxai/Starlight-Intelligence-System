@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash, createPublicKey } from "node:crypto";
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -165,6 +165,104 @@ describe("verify-receipt: --help", () => {
   it("with only a key flag exits 2", () => {
     assert.equal(runVerifyReceipt(["--help", "--public-key", PUBKEY]), 2);
   });
+  for (const args of [["--help", "--help"], ["-hh"], ["--help", "--"], ["-h", "--help"], ["-h", "-h"], ["--help", "--"], ["--", "--help"]]) {
+    it(`${JSON.stringify(args)} exits 2: only the exact argument list ["--help"] or ["-h"] is help`, () => {
+      assert.equal(runVerifyReceipt(args), 2);
+    });
+  }
+});
+
+describe("verify-receipt: through the real starlight CLI (subprocess)", () => {
+  const cli = (args: string[]) =>
+    spawnSync(process.execPath, ["--import", "tsx", "src/cli.ts", "verify-receipt", ...args], { cwd: REPO_ROOT, encoding: "utf8", timeout: 120_000 });
+
+  it("verify-receipt --help exits 0", () => {
+    const r = cli(["--help"]);
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /Usage: verify-receipt/);
+  });
+  it("verify-receipt <missing file> --help exits 2, not 0 (the parent help handler does not run first)", () => {
+    const r = cli(["definitely-missing.json", "--help"]);
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.doesNotMatch(r.stdout, /Usage: starlight|Commands:/);
+  });
+  it("verify-receipt --write --help exits 2", () => {
+    const r = cli(["--write", "--help"]);
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+  });
+  it("verify-receipt verifies a valid receipt and rejects a tampered one with the right exit codes", () => {
+    assert.equal(cli([fixture("valid"), "--public-key", PUBKEY]).status, 0);
+    const bad = cli([fixture("tampered-subject-digest"), "--public-key", PUBKEY]);
+    assert.equal(bad.status, 1);
+    assert.match(bad.stdout, /subject digest does not match/);
+  });
+});
+
+describe("verify-receipt: bad entries in signatures", () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "verify-receipt-sigs-"));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  /** The valid envelope with an extra entry appended after the genuine signature. */
+  const withExtraEntry = (entry: unknown) => {
+    const env = JSON.parse(readFileSync(fixture("valid"), "utf8"));
+    env.signatures.push(entry);
+    const p = join(dir, "env.json");
+    writeFileSync(p, JSON.stringify(env));
+    return p;
+  };
+  const validSig = () => JSON.parse(readFileSync(fixture("valid"), "utf8")).signatures[0];
+
+  it("sanity: the genuine signature alone passes", () => {
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", PUBKEY]), 0);
+  });
+  for (const [label, entry, reason] of [
+    ["null", null, /signature 1 is not an object/],
+    ["a number", 7, /signature 1 is not an object/],
+    ["a string", "sig", /signature 1 is not an object/],
+    ["an array", [], /signature 1 is not an object/],
+  ] as Array<[string, unknown, RegExp]>) {
+    it(`${label} next to a valid signature is rejected with exit 1`, () => {
+      assert.equal(runVerifyReceipt([withExtraEntry(entry), "--public-key", PUBKEY]), 1);
+      assert.match(text(), reason);
+      assert.doesNotMatch(text(), /^PASS/m);
+    });
+  }
+  it("a numeric keyid next to a valid signature is rejected with exit 1", () => {
+    assert.equal(runVerifyReceipt([withExtraEntry({ keyid: 5, sig: validSig().sig }), "--public-key", PUBKEY]), 1);
+    assert.match(text(), /signature 1 keyid is not a string/);
+  });
+  it("a missing keyid next to a valid signature is rejected with exit 1", () => {
+    assert.equal(runVerifyReceipt([withExtraEntry({ sig: validSig().sig }), "--public-key", PUBKEY]), 1);
+    assert.match(text(), /signature 1 keyid is not a string/);
+  });
+});
+
+describe("verify-receipt: non-regular files", () => {
+  it("a directory is refused with exit 2", () => {
+    const dir = mkdtempSync(join(tmpdir(), "verify-receipt-dir-"));
+    try {
+      assert.equal(runVerifyReceipt([dir, "--public-key", PUBKEY]), 2);
+      assert.match(text(), /not a regular file/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+  it("an endless device is refused without being read (POSIX only)", { skip: process.platform === "win32" }, () => {
+    assert.equal(runVerifyReceipt(["/dev/zero", "--public-key", PUBKEY]), 2);
+    assert.match(text(), /not a regular file/);
+  });
+  it("a public key that is a directory is refused with exit 2", () => {
+    const dir = mkdtempSync(join(tmpdir(), "verify-receipt-keydir-"));
+    try {
+      assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", dir]), 2);
+      assert.match(text(), /not a regular file/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("verify-receipt: size limit", () => {
@@ -299,8 +397,14 @@ describe("verify-receipt: small-order trusted keys", () => {
     // Node 22.23 (OpenSSL 3.5.8) verifies the trivial signature; Node 24.21 rejects it. Record
     // that the shared verifier gives a boolean either way, and require the CLI to refuse in both.
     const f = forged();
-    assert.equal(typeof verifyRunReceipt(f.envelope, [f.pem]).ok, "boolean");
+    const shared = verifyRunReceipt(f.envelope, [f.pem]);
+    // Two explicit outcomes only: this build rejects the forgery with a stated reason, or it is a
+    // build that accepts it. Either way the CLI must refuse, and must not print PASS.
+    if (shared.ok === false) assert.ok(shared.reasons && shared.reasons.length > 0, "a rejection from the shared verifier must carry a reason");
+    else assert.equal(shared.ok, true);
     assert.equal(runVerifyReceipt([f.envFile, "--public-key", f.keyFile]), 1);
+    assert.match(text(), /small-order Ed25519 point/);
+    assert.doesNotMatch(text(), /^PASS/m);
   });
 
   it("the CLI REFUSES the identity key and exits 1 with the reason", () => {
@@ -356,6 +460,26 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
     }
     assert.match(readFileSync(PUBKEY, "utf8"), /BEGIN PUBLIC KEY/);
     assert.match(readFileSync(OTHER_PUBKEY, "utf8"), /BEGIN PUBLIC KEY/);
+  });
+
+  it("the generator refuses to write through a symlink and leaves the target alone", (t) => {
+    const out = mkdtempSync(join(tmpdir(), "verify-receipt-symlink-"));
+    const victim = join(out, "victim.txt");
+    try {
+      writeFileSync(victim, "do not touch");
+      try {
+        symlinkSync(victim, join(out, "pubkey.pem"));
+      } catch {
+        t.skip("this account cannot create symlinks");
+        return;
+      }
+      const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs", "--out", out], { cwd: REPO_ROOT, encoding: "utf8" });
+      assert.equal(run.status, 1, run.stdout + run.stderr);
+      assert.match(run.stderr, /refusing to write through a symlink/);
+      assert.equal(readFileSync(victim, "utf8"), "do not touch");
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
   });
 
   it("fixtures regenerate byte for byte from tools/gen-run-receipt-fixtures.mjs, without writing into the checkout", () => {

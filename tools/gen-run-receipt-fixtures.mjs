@@ -17,7 +17,7 @@
  * The exceptions are the three faults that are about the signature itself.
  */
 import { createHash, createPrivateKey, createPublicKey, sign } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { lstatSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -118,8 +118,27 @@ fixtures["wrong-signing-key"] = signed(baseReceipt(B, "wrongkey"), B);
   fixtures["evidence-missing-sha256"] = signed(r);
 }
 
+/** Refuse to write through a symlink: writeFileSync would follow it and truncate whatever it points at. */
+function safeWrite(path, data) {
+  let info = null;
+  try { info = lstatSync(path); } catch (err) { if (err.code !== "ENOENT") throw err; }
+  if (info && info.isSymbolicLink()) {
+    console.error(`refusing to write through a symlink: ${path}`);
+    process.exit(1);
+  }
+  writeFileSync(path, data);
+}
+
+try {
+  if (lstatSync(OUT).isSymbolicLink()) {
+    console.error(`refusing to write into a symlinked directory: ${OUT}`);
+    process.exit(1);
+  }
+} catch (err) {
+  if (err.code !== "ENOENT") throw err;
+}
 mkdirSync(OUT, { recursive: true });
-for (const [name, env] of Object.entries(fixtures)) writeFileSync(join(OUT, `${name}.envelope.json`), JSON.stringify(env, null, 2) + "\n");
-writeFileSync(join(OUT, "pubkey.pem"), A.pem);
-writeFileSync(join(OUT, "other-pubkey.pem"), B.pem);
+for (const [name, env] of Object.entries(fixtures)) safeWrite(join(OUT, `${name}.envelope.json`), JSON.stringify(env, null, 2) + "\n");
+safeWrite(join(OUT, "pubkey.pem"), A.pem);
+safeWrite(join(OUT, "other-pubkey.pem"), B.pem);
 console.log(`wrote ${Object.keys(fixtures).length} envelopes and 2 public keys to ${OUT}`);

@@ -1706,6 +1706,11 @@ async function main(): Promise<void> {
     process.exitCode = result.exitCode;
     return;
   }
+  // verify-receipt owns its whole argument list, including --help, so it runs before the parent parser.
+  if (terminalArgs[0] === "verify-receipt") {
+    process.exitCode = runVerifyReceipt(terminalArgs.slice(1));
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
@@ -1835,12 +1840,6 @@ async function main(): Promise<void> {
     case "score":
       cmdScore(asString(values["acos-path"]));
       break;
-
-    case "verify-receipt": {
-      const exitCode = runVerifyReceipt(process.argv.slice(3));
-      process.exitCode = exitCode;
-      break;
-    }
 
     case "vault": {
       const action = positionals[1];

@@ -82,7 +82,7 @@ starlight verify-receipt <file.json> --public-key <public-key.pem>
 ```
 
 Exit codes:
-- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `--help` given on its own, which prints usage and checks nothing. `--help` together with any other argument exits `2`, so help never reads as a verification.
+- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `--help` or `-h` as the entire command line (also through `starlight verify-receipt`), which prints usage and checks nothing. `--help` together with any other argument exits `2`, so help never reads as a verification.
 - `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, structural defects in the receipt payload, an encoding the verifier will not forgive (below), or a trusted key it refuses (below).
 - `2`: Invalid input. Missing, unreadable or oversized input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
 
@@ -90,7 +90,8 @@ Exit `1` also covers a key file that is readable but is not a usable Ed25519 pub
 
 Guards the command adds on top of `verifyRunReceipt`:
 - **Strict encodings.** `payload` and every `sig` must be a string in standard base64 (padding required) or base64url (padding optional), with no stray characters, no mixed alphabets and no non-zero trailing bits. Node's decoder forgives all of those, so the command checks first. A `sig` that is an array or a number is rejected, not coerced.
-- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). A larger file, or a directory, exits `2`.
+- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). The file is opened once and read at most 1 MiB plus one byte. A larger file, a directory, or a device or pipe exits `2`.
+- **Signature entries.** Every entry in `signatures` must be an object with a string `keyid` and a strict-base64 string `sig`. One bad entry is a rejection (exit `1`) even when another entry carries a valid signature.
 - **Small-order keys.** A trusted key that is a small-order Ed25519 point (the identity and the other seven canonical points, plus their sign-bit and non-canonical aliases) is refused with exit `1`, because signatures under such a key can be forged for any message.
 
 What the verifier does NOT check:
