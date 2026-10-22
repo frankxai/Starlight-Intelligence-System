@@ -145,9 +145,7 @@ describe("verify-receipt: argument and file errors exit 2", () => {
 describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => {
   const digestOfDir = () => {
     const h = createHash("sha256");
-    for (const f of readdirSync(FIXTURES_DIR).sort()) h.update(f).update(readFileSync(join(FIXTURES_DIR, f), "utf8").replace(/
-/g, "
-"));
+    for (const f of readdirSync(FIXTURES_DIR).sort()) h.update(f).update(readFileSync(join(FIXTURES_DIR, f), "utf8").replace(/\r\n/g, "\n"));
     return h.digest("hex");
   };
 
