@@ -9,12 +9,13 @@
 import { afterEach, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createPublicKey } from "node:crypto";
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runVerifyReceipt } from "../src/verify-receipt.js";
+import { PAYLOAD_TYPE, keyIdOf, verifyRunReceipt } from "../src/run-receipt.js";
+import { MAX_INPUT_BYTES, isStrictBase64, runVerifyReceipt } from "../src/verify-receipt.js";
 
 const REPO_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 const FIXTURES_DIR = join(REPO_ROOT, "test", "fixtures", "run-receipt");
@@ -142,6 +143,198 @@ describe("verify-receipt: argument and file errors exit 2", () => {
   });
 });
 
+describe("verify-receipt: --help", () => {
+  it("alone prints usage and exits 0", () => {
+    assert.equal(runVerifyReceipt(["--help"]), 0);
+    assert.match(text(), /Usage: verify-receipt/);
+    assert.doesNotMatch(text(), /^PASS/m);
+  });
+  it("-h alone exits 0", () => {
+    assert.equal(runVerifyReceipt(["-h"]), 0);
+  });
+  it("with a missing envelope file exits 2, not 0", () => {
+    assert.equal(runVerifyReceipt(["--help", "non-existent-file.json", "--public-key", PUBKEY]), 2);
+  });
+  it("with two envelopes exits 2", () => {
+    assert.equal(runVerifyReceipt(["--help", fixture("valid"), fixture("valid")]), 2);
+  });
+  it("with a valid receipt and key exits 2, so help can never read as verified", () => {
+    assert.equal(runVerifyReceipt(["--help", fixture("valid"), "--public-key", PUBKEY]), 2);
+    assert.doesNotMatch(text(), /^PASS/m);
+  });
+  it("with only a key flag exits 2", () => {
+    assert.equal(runVerifyReceipt(["--help", "--public-key", PUBKEY]), 2);
+  });
+});
+
+describe("verify-receipt: size limit", () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "verify-receipt-size-"));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  /** The valid envelope followed by spaces so the file is exactly `bytes` long. */
+  const paddedEnvelope = (bytes: number) => {
+    const body = readFileSync(fixture("valid"), "utf8").trimEnd();
+    const p = join(dir, `env-${bytes}.json`);
+    writeFileSync(p, body + " ".repeat(bytes - Buffer.byteLength(body)));
+    return p;
+  };
+  const paddedKey = (bytes: number) => {
+    const pem = readFileSync(PUBKEY, "utf8");
+    const p = join(dir, `key-${bytes}.pem`);
+    writeFileSync(p, pem + " ".repeat(bytes - Buffer.byteLength(pem)));
+    return p;
+  };
+
+  it("an envelope exactly at the limit is still verified", () => {
+    assert.equal(runVerifyReceipt([paddedEnvelope(MAX_INPUT_BYTES), "--public-key", PUBKEY]), 0);
+  });
+  it("an envelope one byte over the limit exits 2 with a size message", () => {
+    assert.equal(runVerifyReceipt([paddedEnvelope(MAX_INPUT_BYTES + 1), "--public-key", PUBKEY]), 2);
+    assert.match(text(), /over the 1048576 byte limit/);
+  });
+  it("a public key file just under the limit is still read and verifies", () => {
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", paddedKey(MAX_INPUT_BYTES - 1)]), 0);
+  });
+  it("a public key file one byte over the limit exits 2 with a size message", () => {
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", paddedKey(MAX_INPUT_BYTES + 1)]), 2);
+    assert.match(text(), /over the 1048576 byte limit/);
+  });
+  it("a directory is not read", () => {
+    assert.equal(runVerifyReceipt([dir, "--public-key", PUBKEY]), 2);
+    assert.match(text(), /not a regular file/);
+  });
+});
+
+describe("verify-receipt: strict encodings", () => {
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "verify-receipt-enc-"));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  const envelopeFile = (edit: (env: any) => void) => {
+    const env = JSON.parse(readFileSync(fixture("valid"), "utf8"));
+    edit(env);
+    const p = join(dir, "env.json");
+    writeFileSync(p, JSON.stringify(env));
+    return p;
+  };
+
+  it("sanity: an unmodified copy of the valid envelope passes", () => {
+    assert.equal(runVerifyReceipt([envelopeFile(() => {}), "--public-key", PUBKEY]), 0);
+  });
+  it("sig as an array is rejected, not coerced to a string", () => {
+    const p = envelopeFile((env) => { env.signatures[0].sig = [env.signatures[0].sig]; });
+    assert.equal(runVerifyReceipt([p, "--public-key", PUBKEY]), 1);
+    assert.match(text(), /signature 0 sig is not a strict base64 string/);
+  });
+  it("sig as a number is rejected", () => {
+    const p = envelopeFile((env) => { env.signatures[0].sig = 42; });
+    assert.equal(runVerifyReceipt([p, "--public-key", PUBKEY]), 1);
+    assert.match(text(), /signature 0 sig is not a strict base64 string/);
+  });
+  it("trailing junk after the signature is rejected", () => {
+    const p = envelopeFile((env) => { env.signatures[0].sig += "!@#$"; });
+    assert.equal(runVerifyReceipt([p, "--public-key", PUBKEY]), 1);
+    assert.match(text(), /signature 0 sig is not a strict base64 string/);
+  });
+  it("trailing junk after the payload is rejected", () => {
+    const p = envelopeFile((env) => { env.payload += "!!"; });
+    assert.equal(runVerifyReceipt([p, "--public-key", PUBKEY]), 1);
+    assert.match(text(), /payload is not strict base64/);
+  });
+  it("whitespace inside the payload is rejected", () => {
+    const p = envelopeFile((env) => { env.payload = env.payload.slice(0, 8) + "\n" + env.payload.slice(8); });
+    assert.equal(runVerifyReceipt([p, "--public-key", PUBKEY]), 1);
+    assert.match(text(), /payload is not strict base64/);
+  });
+
+  for (const [value, ok] of [
+    ["YQ==", true], ["YWI=", true], ["YWJj", true], ["YW_-", true], ["YQ", true],
+    ["", false], ["Y", false], ["YR==", false], ["YQ=", false], ["Y+/=", false], ["YQ==!", false], ["a-b+", false], ["a b=", false],
+  ] as Array<[string, boolean]>) {
+    it(`isStrictBase64(${JSON.stringify(value)}) is ${ok}`, () => assert.equal(isStrictBase64(value), ok));
+  }
+  it("isStrictBase64 rejects non-strings", () => {
+    for (const v of [undefined, null, 42, ["YQ=="], {}]) assert.equal(isStrictBase64(v), false);
+  });
+});
+
+describe("verify-receipt: small-order trusted keys", () => {
+  const SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
+  const pemOf = (raw: Buffer) =>
+    `-----BEGIN PUBLIC KEY-----\n${Buffer.concat([SPKI_PREFIX, raw]).toString("base64")}\n-----END PUBLIC KEY-----\n`;
+  const IDENTITY = Buffer.from("01" + "00".repeat(31), "hex");
+  // With A = identity, any (R, S) with R = [S]B verifies for every message. S = 1 gives R = B.
+  const BASE_POINT = Buffer.from("58" + "66".repeat(31), "hex");
+  const TRIVIAL_SIG = Buffer.concat([BASE_POINT, Buffer.from("01" + "00".repeat(31), "hex")]);
+
+  let dir: string;
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "verify-receipt-so-"));
+  });
+  afterEach(() => rmSync(dir, { recursive: true, force: true }));
+
+  /** The valid fixture's statement, re-issued under the identity key's id, edited, trivially "signed". */
+  function forged() {
+    const pem = pemOf(IDENTITY);
+    const keyid = keyIdOf(createPublicKey(pem));
+    const env = JSON.parse(readFileSync(fixture("valid"), "utf8"));
+    const statement = JSON.parse(Buffer.from(env.payload, "base64").toString("utf8"));
+    statement.predicate.issuer.keyid = keyid;
+    statement.predicate.totals.costEur = 123.456; // an edit nobody signed
+    const payload = Buffer.from(JSON.stringify(statement), "utf8");
+    const envelope = { payloadType: PAYLOAD_TYPE, payload: payload.toString("base64"), signatures: [{ keyid, sig: TRIVIAL_SIG.toString("base64") }] };
+    const keyFile = join(dir, "identity.pem");
+    const envFile = join(dir, "forged.json");
+    writeFileSync(keyFile, pem);
+    writeFileSync(envFile, JSON.stringify(envelope));
+    return { pem, envelope, keyFile, envFile };
+  }
+
+  it("the guard does not depend on the runtime: the shared verifier's answer for this forgery varies by Node/OpenSSL build", () => {
+    // Node 22.23 (OpenSSL 3.5.8) verifies the trivial signature; Node 24.21 rejects it. Record
+    // that the shared verifier gives a boolean either way, and require the CLI to refuse in both.
+    const f = forged();
+    assert.equal(typeof verifyRunReceipt(f.envelope, [f.pem]).ok, "boolean");
+    assert.equal(runVerifyReceipt([f.envFile, "--public-key", f.keyFile]), 1);
+  });
+
+  it("the CLI REFUSES the identity key and exits 1 with the reason", () => {
+    const f = forged();
+    assert.equal(runVerifyReceipt([f.envFile, "--public-key", f.keyFile]), 1);
+    assert.match(text(), /small-order Ed25519 point/);
+    assert.doesNotMatch(text(), /^PASS/m);
+  });
+
+  it("the CLI refuses the identity key even when a good key is trusted alongside it", () => {
+    const f = forged();
+    assert.equal(runVerifyReceipt([f.envFile, "--public-key", PUBKEY, "--public-key", f.keyFile]), 1);
+    assert.match(text(), /small-order Ed25519 point/);
+  });
+
+  for (const hex of [
+    "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a",
+    "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05",
+  ]) {
+    it(`refuses small-order point ${hex.slice(0, 8)}...`, () => {
+      const keyFile = join(dir, "k.pem");
+      writeFileSync(keyFile, pemOf(Buffer.from(hex, "hex")));
+      assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", keyFile]), 1);
+      assert.match(text(), /small-order Ed25519 point|trusted key is unusable/);
+    });
+  }
+
+  it("does not refuse an ordinary key", () => {
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", PUBKEY]), 0);
+  });
+});
+
 describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => {
   const digestOfDir = () => {
     const h = createHash("sha256");
@@ -165,10 +358,19 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
     assert.match(readFileSync(OTHER_PUBKEY, "utf8"), /BEGIN PUBLIC KEY/);
   });
 
-  it("fixtures regenerate byte for byte from tools/gen-run-receipt-fixtures.mjs", () => {
+  it("fixtures regenerate byte for byte from tools/gen-run-receipt-fixtures.mjs, without writing into the checkout", () => {
     const before = digestOfDir();
-    const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs"], { cwd: REPO_ROOT, encoding: "utf8" });
-    assert.equal(run.status, 0, run.stderr);
-    assert.equal(digestOfDir(), before, "committed fixtures differ from generator output");
+    const out = mkdtempSync(join(tmpdir(), "verify-receipt-regen-"));
+    try {
+      const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs", "--out", out], { cwd: REPO_ROOT, encoding: "utf8" });
+      assert.equal(run.status, 0, run.stderr);
+      const norm = (path: string) => readFileSync(path, "utf8").replace(/\r\n/g, "\n");
+      const committed = readdirSync(FIXTURES_DIR).sort();
+      assert.deepEqual(readdirSync(out).sort(), committed, "generator and committed fixtures list different files");
+      for (const f of committed) assert.equal(norm(join(out, f)), norm(join(FIXTURES_DIR, f)), `${f} differs from generator output`);
+      assert.equal(digestOfDir(), before, "the test must not modify the tracked fixtures");
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
   });
 });

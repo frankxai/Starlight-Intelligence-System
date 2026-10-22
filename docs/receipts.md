@@ -82,11 +82,16 @@ starlight verify-receipt <file.json> --public-key <public-key.pem>
 ```
 
 Exit codes:
-- `0`: Success. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues.
-- `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, or structural defects in the receipt payload.
-- `2`: Invalid input. Missing or unreadable input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
+- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `--help` given on its own, which prints usage and checks nothing. `--help` together with any other argument exits `2`, so help never reads as a verification.
+- `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, structural defects in the receipt payload, an encoding the verifier will not forgive (below), or a trusted key it refuses (below).
+- `2`: Invalid input. Missing, unreadable or oversized input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
 
 Exit `1` also covers a key file that is readable but is not a usable Ed25519 public key. The command only reads files; it never writes or signs. The keys you pass with `--public-key` are the whole trust root: a receipt is accepted only when one of them produced a verifying signature and the receipt names that key as its issuer.
+
+Guards the command adds on top of `verifyRunReceipt`:
+- **Strict encodings.** `payload` and every `sig` must be a string in standard base64 (padding required) or base64url (padding optional), with no stray characters, no mixed alphabets and no non-zero trailing bits. Node's decoder forgives all of those, so the command checks first. A `sig` that is an array or a number is rejected, not coerced.
+- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). A larger file, or a directory, exits `2`.
+- **Small-order keys.** A trusted key that is a small-order Ed25519 point (the identity and the other seven canonical points, plus their sign-bit and non-canonical aliases) is refused with exit `1`, because signatures under such a key can be forged for any message.
 
 What the verifier does NOT check:
 - Maker differs from checker: whether the actor that accepted the work is the same harness that made it (`decisions` against `run.host`). A receipt can verify and still record a maker approving its own work. That is a policy check for the caller.
@@ -94,7 +99,11 @@ What the verifier does NOT check:
 - Genuine checker output: it checks signature, structure and that evidence entries carry a sha256. It does not fetch the evidence or confirm the hash matches it.
 - Who the key belongs to: a valid signature proves a trusted key signed these bytes, not that the contents are true (see "The rule").
 
-The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs`. They use fixed TEST KEYS that protect nothing; only the public halves are committed.
+Known limits:
+- `src/run-receipt.ts` (`verifyRunReceipt`, the MCP `sis.receipt.verify` path and `trust_ledger`) still accepts a small-order public key as a trusted key. Depending on the Node and OpenSSL build, a trivial signature under the identity key then verifies for any edit (it does on Node 22.23 with OpenSSL 3.5.8, and not on Node 24.21). Only `starlight verify-receipt` refuses such keys. Fixing the shared code is a separate protocol PR.
+- The command trusts exactly the keys you give it and does not check who they belong to.
+
+The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs [--out <dir>]`. They use fixed TEST KEYS that protect nothing; only the public halves are committed. The test regenerates into a temp directory and compares, so running it never changes the checkout.
 
 Locally, over MCP:
 

@@ -2,7 +2,10 @@
 /**
  * Regenerates test/fixtures/run-receipt/* for test/verify-receipt.test.ts.
  *
- *   node --import tsx tools/gen-run-receipt-fixtures.mjs
+ *   node --import tsx tools/gen-run-receipt-fixtures.mjs [--out <dir>]
+ *
+ * With no --out it writes the tracked folder. The test generates into a temp dir with --out and
+ * compares, so running the tests never touches the checkout.
  *
  * TEST KEYS ONLY. The two Ed25519 keys below are derived from fixed public strings so the
  * fixtures are reproducible byte for byte (Ed25519 signing is deterministic). They protect
@@ -17,9 +20,11 @@ import { createHash, createPrivateKey, createPublicKey, sign } from "node:crypto
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseArgs } from "node:util";
 import { PAYLOAD_TYPE, RUN_RECEIPT_PREDICATE_TYPE, STATEMENT_TYPE, keyIdOf, pae } from "../src/run-receipt.js";
 
-const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "test", "fixtures", "run-receipt");
+const { values: cli } = parseArgs({ options: { out: { type: "string" } }, strict: true });
+const OUT = cli.out ?? join(dirname(fileURLToPath(import.meta.url)), "..", "test", "fixtures", "run-receipt");
 const PKCS8_ED25519_PREFIX = Buffer.from("302e020100300506032b657004220420", "hex");
 
 function testKey(label) {
