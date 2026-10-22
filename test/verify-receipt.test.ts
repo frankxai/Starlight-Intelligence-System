@@ -616,6 +616,20 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
     }
   });
 
+  it("a write failure after the exclusive open removes the staging file this run created", () => {
+    const out = mkdtempSync(join(tmpdir(), "verify-receipt-enospc-"));
+    try {
+      const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs", "--out", out], {
+        cwd: REPO_ROOT, encoding: "utf8", env: { ...process.env, GEN_FIXTURES_FAIL_WRITE: "1" },
+      });
+      assert.notEqual(run.status, 0, "a write failure must fail the run");
+      assert.match(run.stderr, /simulated write failure|ENOSPC/);
+      assert.deepEqual(readdirSync(out), [], "the staging file this run created must be removed");
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
+  });
+
   it("fixtures regenerate byte for byte from tools/gen-run-receipt-fixtures.mjs, without writing into the checkout", () => {
     const before = digestOfDir();
     const out = mkdtempSync(join(tmpdir(), "verify-receipt-regen-"));

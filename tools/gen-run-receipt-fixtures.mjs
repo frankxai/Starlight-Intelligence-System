@@ -21,7 +21,7 @@
  * The exceptions are the three faults that are about the signature itself.
  */
 import { createHash, createPrivateKey, createPublicKey, randomBytes, sign } from "node:crypto";
-import { lstatSync, mkdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { closeSync, lstatSync, mkdirSync, openSync, renameSync, unlinkSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -142,12 +142,22 @@ function safeWrite(path, data) {
   // GEN_FIXTURES_STAGING_SUFFIX fixes the staging name so a test can force a collision. Test use only.
   const suffix = process.env.GEN_FIXTURES_STAGING_SUFFIX ?? `${process.pid}.${randomBytes(6).toString("hex")}`;
   const staging = join(dirname(path), `.${basename(path)}.${suffix}.tmp`);
+  let fd = null;
   let created = false;
   try {
-    writeFileSync(staging, data, { flag: "wx" });
+    // Exclusive create: this either makes the file (and we own it from this line on) or throws EEXIST.
+    fd = openSync(staging, "wx");
     created = true;
+    // GEN_FIXTURES_FAIL_WRITE simulates a write failure after the open succeeded (for example ENOSPC). Test use only.
+    if (process.env.GEN_FIXTURES_FAIL_WRITE) throw Object.assign(new Error("simulated write failure"), { code: "ENOSPC" });
+    const bytes = Buffer.from(data);
+    let offset = 0;
+    while (offset < bytes.length) offset += writeSync(fd, bytes, offset);
+    closeSync(fd);
+    fd = null;
     renameSync(staging, path);
   } catch (err) {
+    if (fd !== null) { try { closeSync(fd); } catch { /* already closed */ } }
     // Only remove a staging file this run created. On EEXIST the file belongs to someone else.
     if (created) { try { unlinkSync(staging); } catch { /* already gone */ } }
     throw err;
