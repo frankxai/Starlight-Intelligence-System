@@ -106,7 +106,7 @@ export function encodingProblems(envelope: unknown): string[] {
 export const MAX_PUBLIC_KEYS = 8;
 export const MAX_KEY_BYTES_TOTAL = MAX_INPUT_BYTES;
 
-function readBounded(path: string, label: string): string {
+function readBounded(path: string, label: string): { text: string; bytes: number } {
   // Look at the path before opening it: opening a FIFO with no writer would block forever.
   // stat follows symlinks, so a link to a regular file still works. The fstat below stays, because
   // the path can change between this check and the open.
@@ -127,7 +127,8 @@ function readBounded(path: string, label: string): string {
       total += n;
     }
     if (total > MAX_INPUT_BYTES) throw new Error(`${label} grew past the ${MAX_INPUT_BYTES} byte limit while reading`);
-    return buffer.subarray(0, total).toString("utf-8");
+    // bytes is what was read from disk; text can differ in length after UTF-8 replacement of invalid bytes.
+    return { text: buffer.subarray(0, total).toString("utf-8"), bytes: total };
   } finally {
     closeSync(fd);
   }
@@ -192,7 +193,7 @@ Options:
 
   let envelopeContent: string;
   try {
-    envelopeContent = readBounded(envelopePath, `envelope file "${envelopePath}"`);
+    envelopeContent = readBounded(envelopePath, `envelope file "${envelopePath}"`).text;
   } catch (err: unknown) {
     console.error(`Error reading ${err instanceof Error ? err.message : String(err)}`);
     return 2;
@@ -210,8 +211,9 @@ Options:
   let keyBytes = 0;
   for (const kp of keyPathList) {
     try {
-      const keyPem = readBounded(kp, `public key file "${kp}"`);
-      keyBytes += Buffer.byteLength(keyPem, "utf-8");
+      const keyFile = readBounded(kp, `public key file "${kp}"`);
+      const keyPem = keyFile.text;
+      keyBytes += keyFile.bytes;
       if (keyBytes > MAX_KEY_BYTES_TOTAL) throw new Error(`public key files total more than ${MAX_KEY_BYTES_TOTAL} bytes`);
       trustedKeys.push(keyPem);
     } catch (err: unknown) {

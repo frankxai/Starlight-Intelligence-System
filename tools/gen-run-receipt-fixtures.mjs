@@ -139,12 +139,17 @@ function safeWrite(path, data) {
     console.error(`refusing to replace a hard-linked file: ${path}`);
     process.exit(1);
   }
-  const staging = join(dirname(path), `.${basename(path)}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`);
+  // GEN_FIXTURES_STAGING_SUFFIX fixes the staging name so a test can force a collision. Test use only.
+  const suffix = process.env.GEN_FIXTURES_STAGING_SUFFIX ?? `${process.pid}.${randomBytes(6).toString("hex")}`;
+  const staging = join(dirname(path), `.${basename(path)}.${suffix}.tmp`);
+  let created = false;
   try {
     writeFileSync(staging, data, { flag: "wx" });
+    created = true;
     renameSync(staging, path);
   } catch (err) {
-    try { unlinkSync(staging); } catch { /* staging file was never created or is already gone */ }
+    // Only remove a staging file this run created. On EEXIST the file belongs to someone else.
+    if (created) { try { unlinkSync(staging); } catch { /* already gone */ } }
     throw err;
   }
 }

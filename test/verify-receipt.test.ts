@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash, createPublicKey } from "node:crypto";
-import { linkSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { linkSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -205,6 +205,21 @@ describe("verify-receipt: through the real starlight CLI (subprocess)", () => {
     const r = rawCli(["--help", "verify-receipt", fixture("valid"), "--public-key", PUBKEY]);
     assert.equal(r.status, 2, r.stdout + r.stderr);
   });
+  // Flag shapes the first-token guard cannot see: they reach the parent parser, which must refuse
+  // verify-receipt as the first operand before its help handler runs.
+  for (const lead of [["-hh"], ["--help=true"], ["--json", "--help"], ["--json"], ["--help", "--json"]]) {
+    it(`starlight ${lead.join(" ")} verify-receipt <missing file> exits 2 and does not print parent usage`, () => {
+      const r = rawCli([...lead, "verify-receipt", "definitely-missing.json"]);
+      assert.equal(r.status, 2, r.stdout + r.stderr);
+      assert.doesNotMatch(r.stdout, /Commands:|Usage: starlight/);
+      assert.match(r.stderr, /Put verify-receipt first/);
+    });
+  }
+  it("a flag value that happens to be spelled verify-receipt is not mistaken for the subcommand", () => {
+    const r = rawCli(["--output", "verify-receipt", "version"]);
+    assert.doesNotMatch(r.stderr, /Put verify-receipt first/);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+  });
   it("verify-receipt verifies a valid receipt and rejects a tampered one with the right exit codes", () => {
     assert.equal(cli([fixture("valid"), "--public-key", PUBKEY]).status, 0);
     const bad = cli([fixture("tampered-subject-digest"), "--public-key", PUBKEY]);
@@ -349,6 +364,21 @@ describe("verify-receipt: size limit", () => {
   it("a public key file one byte over the limit exits 2 with a size message", () => {
     assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", paddedKey(MAX_INPUT_BYTES + 1)]), 2);
     assert.match(text(), /over the 1048576 byte limit/);
+  });
+  it("a key file of exactly the limit that ends in invalid UTF-8 bytes is counted by its real size, not its re-encoded text", () => {
+    const pem = readFileSync(PUBKEY);
+    const p = join(dir, "key-0xff.pem");
+    writeFileSync(p, Buffer.concat([pem, Buffer.alloc(MAX_INPUT_BYTES - pem.length, 0xff)]));
+    assert.equal(statSync(p).size, MAX_INPUT_BYTES);
+    const code = runVerifyReceipt([fixture("valid"), "--public-key", p]);
+    assert.doesNotMatch(text(), /total more than|over the 1048576 byte limit/, "must not be treated as oversize");
+    assert.notEqual(code, 2, text());
+  });
+  it("two key files whose real sizes add up past the limit still exit 2", () => {
+    const half = join(dir, "half.pem");
+    writeFileSync(half, Buffer.concat([readFileSync(PUBKEY), Buffer.alloc(MAX_INPUT_BYTES / 2, 0xff)]));
+    assert.equal(runVerifyReceipt([fixture("valid"), "--public-key", half, "--public-key", half]), 2);
+    assert.match(text(), /total more than 1048576 bytes/);
   });
   it("a directory is not read", () => {
     assert.equal(runVerifyReceipt([dir, "--public-key", PUBKEY]), 2);
@@ -565,6 +595,22 @@ describe("verify-receipt: read-only, key hygiene, reproducible fixtures", () => 
       assert.match(run.stderr, /hard-linked/);
       assert.equal(readFileSync(victim, "utf8"), "do not touch");
       assert.equal(readdirSync(out).filter((n) => n.endsWith(".tmp")).length, 0, "no staging file may be left behind");
+    } finally {
+      rmSync(out, { recursive: true, force: true });
+    }
+  });
+
+  it("a pre-existing staging file is not deleted by the generator when the exclusive write collides with it", () => {
+    const out = mkdtempSync(join(tmpdir(), "verify-receipt-collide-"));
+    try {
+      const suffix = "forced";
+      const owned = readdirSync(FIXTURES_DIR).map((f) => join(out, `.${f}.${suffix}.tmp`));
+      for (const f of owned) writeFileSync(f, "not the generator's file");
+      const run = spawnSync(process.execPath, ["--import", "tsx", "tools/gen-run-receipt-fixtures.mjs", "--out", out], {
+        cwd: REPO_ROOT, encoding: "utf8", env: { ...process.env, GEN_FIXTURES_STAGING_SUFFIX: suffix },
+      });
+      assert.notEqual(run.status, 0, "a staging collision must fail the run");
+      for (const f of owned) assert.equal(readFileSync(f, "utf8"), "not the generator's file", `${f} was deleted or changed`);
     } finally {
       rmSync(out, { recursive: true, force: true });
     }
