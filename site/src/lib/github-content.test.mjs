@@ -180,3 +180,64 @@ test("fails closed on a non-retryable authorization response", async () => {
   assert.equal(calls, 1);
   assert.equal(errors.length, 1);
 });
+
+test("falls back to the raw CDN when the contents API rate-limits", async () => {
+  const urls = [];
+  const { logger, warnings, errors } = recordingLogger();
+
+  const content = await fetchGitHubTextFile("owner/repo", "vault.jsonl", {
+    fetchImpl: async (url, init) => {
+      urls.push(String(url));
+      assert.equal(init.next.revalidate, 3600);
+      if (String(url).startsWith("https://api.github.com/")) {
+        return new Response(null, { status: 403 });
+      }
+      return new Response("from-raw", { status: 200 });
+    },
+    retryDelayMs: 0,
+    logger,
+  });
+
+  assert.equal(content, "from-raw");
+  assert.deepEqual(urls, [
+    "https://api.github.com/repos/owner/repo/contents/vault.jsonl",
+    "https://raw.githubusercontent.com/owner/repo/HEAD/vault.jsonl",
+  ]);
+  assert.equal(warnings.length, 1);
+  assert.equal(errors.length, 0);
+});
+
+test("still fails closed when the API rate-limits and the raw CDN has no file", async () => {
+  let calls = 0;
+  const { logger, errors } = recordingLogger();
+
+  await assert.rejects(
+    fetchGitHubTextFile("owner/repo", "vault.jsonl", {
+      fetchImpl: async (url) => {
+        calls += 1;
+        return String(url).startsWith("https://api.github.com/")
+          ? new Response(null, { status: 403 })
+          : new Response(null, { status: 404 });
+      },
+      retryDelayMs: 0,
+      logger,
+    }),
+    /returned 403/,
+  );
+
+  assert.equal(calls, 2);
+  assert.equal(errors.length, 1);
+});
+
+test("sends an Authorization header only when a token is provided", async () => {
+  const seen = [];
+  const fetchImpl = async (_url, init) => {
+    seen.push(init.headers.Authorization);
+    return encodedResponse("ok");
+  };
+
+  await fetchGitHubTextFile("owner/repo", "a.jsonl", { fetchImpl });
+  await fetchGitHubTextFile("owner/repo", "a.jsonl", { fetchImpl, token: "t" });
+
+  assert.deepEqual(seen, [undefined, "Bearer t"]);
+});
