@@ -7,6 +7,7 @@ interface ValidationError { code?: string; keyword?: string; }
 interface ValidationError { code?: string; keyword?: string; }
 interface ValidationError { code?: string; keyword?: string; }
 interface ValidationError { code?: string; keyword?: string; }
+interface ValidationError { code?: string; keyword?: string; }
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
@@ -201,7 +202,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     manifest.skills = "./skills";
     const result = validateAgentPluginValue({ kind: "plugin", value: manifest });
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && ((typeof error === "object" && error !== null && "keyword" in error) ? (error as ValidationError).keyword : undefined) === "additionalProperties"));
+    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && (typeof error === "object" && error !== null && "keyword" in error ? (error as ValidationError).keyword : undefined) === "additionalProperties"));
   });
 
   it("accepts streamable HTTP and rejects a non-standard MCP transport", () => {
@@ -220,7 +221,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     invalid.mcpServers.creator.type = "http";
     const result = validateAgentPluginValue({ kind: "mcp", value: invalid });
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && ((typeof error === "object" && error !== null && "keyword" in error) ? (error as ValidationError).keyword : undefined) === "oneOf"));
+    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && (typeof error === "object" && error !== null && "keyword" in error ? (error as ValidationError).keyword : undefined) === "oneOf"));
   });
 
   it("fails closed when a vendored schema is missing or has drifted", () => {
@@ -479,7 +480,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       assert.equal(result.status, "fail");
       const check = result.checks.find((entry: { id: string }) => entry.id === "submission-profile-contract");
       assert.equal(check?.status, "fail");
-      assert.ok(check?.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && error.code === "ENUM"));
+      assert.ok(check?.errors?.some((error: ValidationError | string) => (typeof error === "object" && error !== null && "code" in error ? (error as ValidationError).code : undefined) === "ENUM"));
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -544,7 +545,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       "SUBMISSION_EVIDENCE_GATE",
       "ATTESTATION_VERIFIER_REQUIRED",
     ]) {
-      assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && error.code === code), code);
+      assert.ok(result.errors.some((error: ValidationError) => (typeof error === "object" && error !== null && "code" in error ? (error as ValidationError).code : undefined) === code), code);
     }
   });
 
@@ -572,7 +573,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
     const result = validateValue(forged, contract, registry);
     assert.equal(result.valid, false);
     assert.ok(
-      result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && error.code === "ATTESTATION_VERIFIER_REQUIRED"),
+      result.errors.some((error: ValidationError) => (typeof error === "object" && error !== null && "code" in error ? (error as ValidationError).code : undefined) === "ATTESTATION_VERIFIER_REQUIRED"),
       JSON.stringify(result.errors),
     );
   });
@@ -585,6 +586,6 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
     profile.experience.reviewRecordingRequired = true;
     const result = validateValue(profile, contract, registry);
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && error.code === "CONST"));
+    assert.ok(result.errors.some((error: ValidationError) => (typeof error === "object" && error !== null && "code" in error ? (error as ValidationError).code : undefined) === "CONST"));
   });
 });
