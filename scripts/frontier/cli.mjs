@@ -15,7 +15,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  validateLedger, projectUpstreams, migrateV1, ingest, watchReleases, buildReport, serialize,
+  validateLedger, projectUpstreams, migrateV1, ingest, watchReleases, buildReport, serialize, ISO_DATE,
 } from "./lib.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -30,7 +30,7 @@ const opt = (name, fallback) => {
   return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : fallback;
 };
 const today = opt("today", new Date().toISOString().slice(0, 10));
-if (!/^\d{4}-\d{2}-\d{2}$/.test(today) || Number.isNaN(Date.parse(`${today}T00:00:00Z`))) {
+if (!ISO_DATE.test(today)) {
   console.error(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(today)}`);
   process.exit(2);
 }

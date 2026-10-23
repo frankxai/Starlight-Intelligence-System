@@ -39,6 +39,10 @@ export const UPSTREAM_CLASSES = ["standards", "runtime_dependency", "reference_h
 export const UPSTREAM_ADOPTIONS = ["candidate", "conformance", "lab", "pattern", "shadow"];
 // Predicates that feed a curated register projection. Only humans may change them.
 export const REGISTER_PREDICATES = ["track"];
+// Predicates that would impersonate record fields or decisions in reports; claims may not use them.
+export const RESERVED_PREDICATES = ["adoption", "state", "registers", "register", "primitive", "security_notes", "owner", "repository", "url", "verified_at", "class", "kind", "decided_by", "decision", "decision_ref", "id"];
+// Only claims at least this strong refresh a record's freshness (provenance.last_verified).
+const FRESHNESS_EVIDENCE = ["primary_observed", "internal"];
 
 const SOURCE_KEYS = ["id", "kind", "trust", "title", "url", "publisher", "published_at", "retrieved_at", "content_sha256", "license"];
 const RECORD_KEYS = ["id", "kind", "class", "title", "url", "owner", "summary", "mechanism", "primitive", "security_notes", "license", "registers", "tags", "adoption", "proposals", "provenance", "links", "claims"];
@@ -48,7 +52,15 @@ const PROVENANCE_KEYS = ["first_seen", "last_verified", "source_ids", "verified_
 const RECORD_TEXT = ["title", "owner", "summary", "mechanism", "primitive", "security_notes", "license"];
 const SOURCE_TEXT = ["title", "publisher", "license"];
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_DATE_SHAPE = /^\d{4}-\d{2}-\d{2}$/;
+/** Shape plus calendar validity (rejects 2026-02-31). */
+export const ISO_DATE = {
+  test: (v) => {
+    if (typeof v !== "string" || !ISO_DATE_SHAPE.test(v)) return false;
+    const d = new Date(`${v}T00:00:00Z`);
+    return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v;
+  },
+};
 const ID = /^[a-z0-9][a-z0-9-]*$/;
 const CLAIM_ID = /^[a-z0-9][a-z0-9-]*--[a-z][a-z0-9_]*--[0-9a-f]{8}$/;
 const PREDICATE = /^[a-z][a-z0-9_]*$/;
@@ -533,6 +545,17 @@ function pick(obj, fields) {
   return out;
 }
 
+/** Throws if `after` changed any pre-existing record's adoption/identity or the curated register projection. */
+export function assertIngestInvariants(before, after) {
+  const snapAfter = snapshotProtected(after);
+  for (const [id, snap] of snapshotProtected(before)) {
+    if (snapAfter.get(id) !== snap) throw new Error(`ingest invariant violated: existing record ${id} adoption or identity changed`);
+  }
+  if (before.registers?.upstreams && stableStringify(projectUpstreams(after)) !== stableStringify(projectUpstreams(before))) {
+    throw new Error("ingest invariant violated: the curated upstream register projection would change");
+  }
+}
+
 function snapshotProtected(ledger) {
   return new Map(ledger.records.map((r) => [r.id, stableStringify({ adoption: r.adoption, registers: r.registers ?? [], url: r.url, owner: r.owner, primitive: r.primitive ?? null, security_notes: r.security_notes ?? null, class: r.class })]));
 }
@@ -548,8 +571,8 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
   if (!ID.test(batchId ?? "")) throw new Error("batchId must match id pattern");
   if (!ISO_DATE.test(today ?? "")) throw new Error("today must be an ISO date");
   const ledger = clone(ledgerIn);
-  const protectedBefore = snapshotProtected(ledgerIn);
-  const registerBefore = ledgerIn.registers?.upstreams ? stableStringify(projectUpstreams(ledgerIn)) : null;
+  const prior = ledgerIn.batches.find((b) => b.id === batchId);
+  if (prior && prior.by !== by) throw new Error(`batch id ${batchId} already belongs to ${prior.by}; use a new batch id`);
   const changes = [];
   const rejected = [];
   const sourceAlias = new Map();
@@ -574,6 +597,8 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       if (!canon) { rejected.push({ item: raw, reason: "source url must be https without credentials" }); continue; }
       if (!SOURCE_KINDS.includes(s.kind) || !SOURCE_TRUST.includes(s.trust)) { rejected.push({ item: raw, reason: "source kind/trust not allowed" }); continue; }
       const existing = sourceByCanon.get(canon);
+      const idOwner = s.id ? ledger.sources.find((x) => x.id === s.id) : undefined;
+      if (idOwner && canonicalUrl(idOwner.url) !== canon) { rejected.push({ item: raw, reason: `source id ${s.id} already belongs to a different url` }); continue; }
       if (existing) {
         if (s.id) sourceAlias.set(s.id, existing.id);
         if (s.content_sha256 && HEX64.test(s.content_sha256) && s.content_sha256 !== existing.content_sha256) {
@@ -583,7 +608,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
         }
         continue;
       }
-      const id = ID.test(s.id ?? "") && !knownSource(s.id) ? s.id : `src-${sha256(canon).slice(0, 12)}`;
+      const id = ID.test(s.id ?? "") ? s.id : `src-${sha256(canon).slice(0, 12)}`;
       if (s.id) sourceAlias.set(s.id, id);
       const source = {
         id, kind: s.kind, trust: s.trust, title: s.title ?? canon, url: s.url, publisher: s.publisher ?? new URL(canon).hostname,
@@ -621,10 +646,8 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
           changes.push({ type: "adoption_proposed", id: existing.id, from: existing.adoption.state, to: explicit });
           touched = true;
         }
-        if (touched) {
-          existing.provenance.last_verified = today;
-          changes.push({ type: "record_updated", id: existing.id });
-        }
+        // Linking or proposing is not verification: freshness is unchanged.
+        if (touched) changes.push({ type: "record_updated", id: existing.id });
         continue;
       }
       let id = ID.test(r.id ?? "") ? r.id : slugify(r.title ?? canon);
@@ -653,6 +676,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       const record = recordById.get(c.record_id);
       if (!record) { rejected.push({ item: raw, reason: `unknown record ${c.record_id}` }); continue; }
       if (!PREDICATE.test(c.predicate ?? "") || typeof c.value !== "string" || !c.value) { rejected.push({ item: raw, reason: "invalid predicate or value" }); continue; }
+      if (RESERVED_PREDICATES.includes(c.predicate)) { rejected.push({ item: raw, reason: `predicate ${c.predicate} is reserved` }); continue; }
       if ((record.registers ?? []).length && REGISTER_PREDICATES.includes(c.predicate)) {
         rejected.push({ item: raw, reason: `${c.predicate} feeds a curated register; only a human decision may change it` });
         continue;
@@ -665,10 +689,12 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       const current = record.claims.filter((x) => x.predicate === c.predicate && isCurrent(x));
       const same = current.find((x) => x.value === c.value);
       if (same) {
-        let touched = same.last_verified !== today;
-        same.last_verified = today;
+        const strong = FRESHNESS_EVIDENCE.includes(c.evidence_class);
+        let touched = false;
+        if (strong && same.last_verified !== today) { same.last_verified = today; touched = true; }
         for (const sid of sourceIds) if (!same.source_ids.includes(sid)) { same.source_ids.push(sid); touched = true; }
-        if (touched) { record.provenance.last_verified = today; changes.push({ type: "claim_reconfirmed", id: same.id }); }
+        if (strong) record.provenance.last_verified = today;
+        if (touched) changes.push({ type: "claim_reconfirmed", id: same.id });
         continue;
       }
       const id = claimId(record.id, c.predicate, c.value, validFrom);
@@ -689,7 +715,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
         }
       }
       record.claims.push(claim);
-      record.provenance.last_verified = today;
+      if (FRESHNESS_EVIDENCE.includes(claim.evidence_class)) record.provenance.last_verified = today;
       changes.push({ type: "claim_added", id });
       if (conflicts.length) {
         const kid = `k-${sha256([id, ...conflicts].sort().join("|")).slice(0, 10)}`;
@@ -717,21 +743,15 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
   }
 
   // Defence in depth: automated ingestion must not alter existing adoption/identity or the curated register.
-  const protectedAfter = snapshotProtected(ledger);
-  for (const [id, snap] of protectedBefore) {
-    if (protectedAfter.get(id) !== snap) throw new Error(`ingest invariant violated: existing record ${id} adoption or identity changed`);
-  }
-  if (registerBefore !== null && stableStringify(projectUpstreams(ledger)) !== registerBefore) {
-    throw new Error("ingest invariant violated: the curated upstream register projection would change");
-  }
+  assertIngestInvariants(ledgerIn, ledger);
 
   if (changes.length) {
     ledger.updated_at = today > ledger.updated_at ? today : ledger.updated_at;
     const counts = changes.reduce((acc, ch) => ({ ...acc, [ch.type]: (acc[ch.type] ?? 0) + 1 }), {});
-    const prior = ledger.batches.find((b) => b.id === batchId);
-    if (prior) {
-      prior.ingested_at = today;
-      prior.counts = Object.fromEntries([...new Set([...Object.keys(prior.counts ?? {}), ...Object.keys(counts)])].map((k) => [k, (prior.counts?.[k] ?? 0) + (counts[k] ?? 0)]));
+    const existingBatch = ledger.batches.find((b) => b.id === batchId);
+    if (existingBatch) {
+      existingBatch.last_ingested_at = today;
+      existingBatch.counts = Object.fromEntries([...new Set([...Object.keys(existingBatch.counts ?? {}), ...Object.keys(counts)])].map((k) => [k, (existingBatch.counts?.[k] ?? 0) + (counts[k] ?? 0)]));
     } else ledger.batches.push({ id: batchId, ingested_at: today, by, input: `batch:${batchId}`, counts });
   }
   return { ledger, changes, rejected };

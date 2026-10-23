@@ -9,7 +9,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   canonicalUrl, githubSlug, migrateV1, projectUpstreams, validateLedger, ingest, watchReleases, buildReport,
-  deepEqual, clone, currentValue, cleanText, looksLikeInstruction, serialize,
+  deepEqual, clone, currentValue, cleanText, looksLikeInstruction, serialize, assertIngestInvariants, ISO_DATE,
 } from "../scripts/frontier/lib.mjs";
 import { rankRepos, categorize, flagsFor } from "../scripts/frontier/universe.mjs";
 
@@ -384,5 +384,54 @@ describe("checker findings (independent verification, 2026-10-23)", () => {
     assert.throws(() => execFileSync(process.execPath, [join(ROOT, "scripts/frontier/cli.mjs"), "ingest", join(dir, "batch.jsonl"), "--batch", "f15", "--today", TODAY, "--write"], { env, stdio: "pipe" }));
     assert.equal(readFileSync(join(dir, "ledger.json"), "utf8"), before);
     assert.throws(() => execFileSync(process.execPath, [join(ROOT, "scripts/frontier/cli.mjs"), "check", "--today", "garbage"], { env, stdio: "pipe" }));
+  });
+});
+
+describe("re-verification findings (independent re-check of 8de2bf6)", () => {
+  const atk = { type: "source", id: "atk", kind: "web_page", trust: "secondary", title: "x", url: "https://attacker.example/x", retrieved_at: "2027-06-01" };
+  it("N1: weak claims and link-only touches do not refresh freshness, so staleness cannot be laundered", () => {
+    const later = "2027-06-01";
+    const before = validateLedger(base(), { today: later }).stale.length;
+    const batch = [atk, ...base().records.map((r) => ({ type: "claim", record_id: r.id, predicate: "note", value: "fresh", evidence_class: "inferred", confidence: "low", source_ids: ["atk"], valid_from: later })),
+      ...base().records.map((r) => ({ type: "record", kind: r.kind, class: r.class, title: r.title, url: r.url, source_ids: ["atk"], links: { tasks: ["x"] } }))];
+    const { ledger } = ingest(base(), batch, { batchId: "n1", today: later });
+    assert.equal(before, 18);
+    assert.equal(validateLedger(ledger, { today: later }).stale.length, 18);
+    const strong = ingest(base(), [{ type: "claim", record_id: "mem0", predicate: "latest_release", value: "v9", evidence_class: "primary_observed", confidence: "high", source_ids: ["gh-mem0ai-mem0"], valid_from: later }], { batchId: "n1b", today: later }).ledger;
+    assert.equal(strong.records.find((r) => r.id === "mem0").provenance.last_verified, later);
+  });
+  it("N2: impossible calendar dates are rejected", () => {
+    assert.equal(ISO_DATE.test("2026-02-31"), false);
+    assert.equal(ISO_DATE.test("2026-09-99"), false);
+    assert.equal(ISO_DATE.test("2028-02-29"), true);
+    const l = clone(base());
+    l.records[0].claims[0].valid_from = "2026-02-31";
+    assert.ok(validateLedger(l).errors.some((e) => e.includes("valid_from")));
+    assert.throws(() => execFileSync(process.execPath, [join(ROOT, "scripts/frontier/cli.mjs"), "check", "--today", "2026-02-31"], { stdio: "pipe" }));
+  });
+  it("N3: a candidate source reusing an existing id with another url is rejected, not silently re-pointed", () => {
+    const { ledger, rejected } = ingest(base(), [{ ...atk, id: "gh-affaan-m-ecc" }, { type: "claim", record_id: "ecc", predicate: "latest_release", value: "v-evil", evidence_class: "primary_observed", confidence: "high", source_ids: ["gh-affaan-m-ecc"], valid_from: "2026-10-20" }], { batchId: "n3", today: TODAY });
+    assert.ok(rejected.some((r) => r.reason.includes("already belongs to a different url")));
+    const claim = ledger.records.find((r) => r.id === "ecc").claims.find((c) => c.predicate === "latest_release");
+    assert.deepEqual(claim.source_ids, ["gh-affaan-m-ecc"]);
+    assert.ok(!ledger.sources.some((s) => s.url.includes("attacker")));
+  });
+  it("N4: a batch id owned by another process cannot be reused to rewrite the audit trail", () => {
+    assert.throws(() => ingest(base(), [], { batchId: "migrate-v1-upstreams", today: TODAY }), /already belongs/);
+  });
+  it("N5: reserved predicates that impersonate record fields are rejected", () => {
+    const { rejected } = ingest(base(), ["adoption", "owner", "repository", "verified_at", "class", "state"].map((p) => ({ type: "claim", record_id: "ecc", predicate: p, value: "evil", evidence_class: "primary_observed", confidence: "high", source_ids: ["gh-affaan-m-ecc"], valid_from: "2026-10-20" })), { batchId: "n5", today: TODAY });
+    assert.equal(rejected.length, 6);
+  });
+  it("N6: each runtime invariant fires independently", () => {
+    const before = base();
+    const adoptionChanged = clone(before);
+    adoptionChanged.records.find((r) => r.id === "langgraph").adoption.state = "watch";
+    adoptionChanged.records.find((r) => r.id === "langgraph").registers = ["upstreams"];
+    assert.throws(() => assertIngestInvariants(before, adoptionChanged), /adoption or identity/);
+    const newRecordInRegister = clone(before);
+    newRecordInRegister.records.push({ ...clone(before.records[1]), id: "intruder", url: "https://github.com/x/intruder" });
+    assert.throws(() => assertIngestInvariants(before, newRecordInRegister), /register projection/);
+    assert.doesNotThrow(() => assertIngestInvariants(before, clone(before)));
   });
 });
