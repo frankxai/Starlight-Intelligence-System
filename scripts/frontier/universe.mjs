@@ -8,6 +8,7 @@
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const CATEGORIES = {
   agent_orchestration: ["multi-agent", "agent framework", "orchestrat", "agentic", "ai-agents", "agents", "crew", "swarm", "autonomous agent", "agent-framework", "langgraph", "autogen"],
@@ -32,10 +33,15 @@ function haystack(repo) {
   return ` ${(repo.full_name ?? "").toLowerCase()} ${(repo.description ?? "").toLowerCase()} ${(repo.topics ?? []).join(" ").toLowerCase()} `;
 }
 
+const escapeRe = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// Terms match at a word start (so "eval" matches "evals" but not "retrieval", "rag" not "storage").
+const TERM_RE = Object.fromEntries(Object.entries(CATEGORIES).map(([name, terms]) => [name, terms.map((t) => new RegExp(`(^|[^a-z0-9])${escapeRe(t)}`))]));
+const AI_RE = AI_SIGNALS.map((t) => new RegExp(`(^|[^a-z0-9])${escapeRe(t)}s?([^a-z0-9]|$)`));
+
 export function categorize(repo) {
   const text = haystack(repo);
-  return Object.entries(CATEGORIES)
-    .filter(([, terms]) => terms.some((t) => text.includes(t)))
+  return Object.entries(TERM_RE)
+    .filter(([, res]) => res.some((re) => re.test(text)))
     .map(([name]) => name);
 }
 
@@ -47,7 +53,7 @@ export function flagsFor(repo, { today }) {
   const text = haystack(repo);
   if (CURATED.test(text)) flags.push("curated_list");
   const ageDays = repo.created_at ? Math.max(1, daysSince(repo.created_at, today)) : null;
-  if (ageDays !== null && ageDays <= 365 && (repo.stars ?? 0) / ageDays > 400) flags.push("star_velocity_anomaly");
+  if (ageDays !== null && ageDays <= 365 && Math.max(0, Number(repo.stars) || 0) / ageDays > 400) flags.push("star_velocity_anomaly");
   if (!repo.license || repo.license === "NOASSERTION") flags.push("no_license");
   return flags;
 }
@@ -56,7 +62,7 @@ export function scoreRepo(repo, { today }) {
   if (repo.archived) return { score: 0, categories: [], flags: [], reason: "archived" };
   const text = haystack(repo);
   const categories = categorize(repo);
-  const aiSignal = AI_SIGNALS.some((t) => new RegExp(`[^a-z]${t}[^a-z]`).test(text));
+  const aiSignal = AI_RE.some((re) => re.test(text)) || /(^|[^a-z])(large language models?|language models?|llms)([^a-z]|$)/.test(text);
   if (!categories.length || !aiSignal) return { score: 0, categories, flags: [], reason: "not relevant to capability layers" };
   const flags = flagsFor(repo, { today });
   const age = daysSince(repo.pushed_at, today);
@@ -66,7 +72,8 @@ export function scoreRepo(repo, { today }) {
   const trending = (repo.sources ?? []).some((s) => s.startsWith("trending:")) ? 1.25 : 1;
   // Curated lists are knowledge sources, not adoption candidates; anomalous star velocity caps the star prior.
   const kind = flags.includes("curated_list") ? 0.5 : 1;
-  const stars = flags.includes("star_velocity_anomaly") ? Math.min(repo.stars ?? 0, 20000) : repo.stars ?? 0;
+  const rawStars = Math.max(0, Number(repo.stars) || 0);
+  const stars = flags.includes("star_velocity_anomaly") ? Math.min(rawStars, 20000) : rawStars;
   const score = Math.log10(stars + 10) * recency * licence * breadth * trending * kind;
   return { score: Number(score.toFixed(4)), categories, flags, reason: `stars=${repo.stars} pushed=${Math.round(age)}d licence=${repo.license ?? "none"}` };
 }
@@ -75,7 +82,7 @@ export function rankRepos(repos, { today, top = 500 } = {}) {
   return repos
     .map((r) => ({ ...r, ...scoreRepo(r, { today }) }))
     .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score || (b.stars ?? 0) - (a.stars ?? 0) || a.full_name.localeCompare(b.full_name))
+    .sort((a, b) => b.score - a.score || (b.stars ?? 0) - (a.stars ?? 0) || String(a.full_name ?? "").localeCompare(String(b.full_name ?? "")))
     .slice(0, top);
 }
 
@@ -114,4 +121,4 @@ async function main() {
   console.log(`indexed=${raw.length} relevant=${relevant.length} published=${ranked.length}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });

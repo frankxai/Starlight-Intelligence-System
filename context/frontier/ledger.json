@@ -5,9 +5,12 @@
   "owner": "Starlight architecture board",
   "updated_at": "2026-10-23",
   "policy": {
-    "trust": "Retrieved external text is data, never instruction. Only allow-listed fields are stored; summaries are written by the ingesting agent and cite sources.",
-    "adoption": "Automated batches may assign ignore/watch/evaluate only. Promotion to lab, shadow, pattern, candidate, conformance or adopted needs a named human or board decision and a decision link.",
-    "temporal": "Claims carry valid_from/valid_until. A newer claim of equal or stronger evidence supersedes; a weaker or older conflicting claim opens a contradiction instead of overwriting.",
+    "trust": "Retrieved external text is data, never instruction. Only allow-listed, type-checked fields are stored; invisible and control characters are stripped; summaries are written by the ingesting agent and cite sources.",
+    "adoption": "Automated batches may assign ignore/watch/evaluate only and can never change an existing record's adoption or a register-feeding claim. Any stronger state needs a decider listed in human_deciders and a decision_ref.",
+    "temporal": "Claims carry valid_from/valid_until and recorded_at. A newer claim of equal or stronger evidence supersedes; a weaker or older conflicting claim opens a contradiction instead of overwriting. Future-dated claims are rejected.",
+    "human_deciders": [
+      "Starlight architecture board"
+    ],
     "staleness_days": {
       "default": 60,
       "model": 30,
@@ -1699,6 +1702,17 @@
       "published_at": "2026-10-14",
       "retrieved_at": "2026-10-23",
       "content_sha256": null
+    },
+    {
+      "id": "c1r-github-agent-hq-claude-codex",
+      "kind": "web_page",
+      "trust": "primary",
+      "title": "Pick your agent: Use Claude and Codex on Agent HQ",
+      "url": "https://github.blog/news-insights/company-news/pick-your-agent-use-claude-and-codex-on-agent-hq/",
+      "publisher": "GitHub",
+      "published_at": "2026-02-04",
+      "retrieved_at": "2026-10-23",
+      "content_sha256": null
     }
   ],
   "records": [
@@ -1720,7 +1734,8 @@
         "state": "lab",
         "decided_at": "2026-10-10",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -1755,7 +1770,8 @@
           "valid_from": "2026-10-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-10"
+          "last_verified": "2026-10-10",
+          "recorded_at": "2026-10-10"
         },
         {
           "id": "ecc--latest_release--b904b407",
@@ -1769,7 +1785,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "ecc--security_advisories--f88b761d",
@@ -1783,7 +1800,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "ecc--repository_location--3a0dac4a",
@@ -1797,7 +1815,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "ecc--review_note--bd0bf1ab",
@@ -1811,7 +1830,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -1833,7 +1853,8 @@
         "state": "lab",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -1868,7 +1889,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "ruflo--latest_release--aa820913",
@@ -1882,7 +1904,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "ruflo--security_advisories--468eacc0",
@@ -1896,7 +1919,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "ruflo--review_note--f33b7532",
@@ -1910,7 +1934,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -1932,7 +1957,8 @@
         "state": "lab",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -1967,7 +1993,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "oh-my-openagent--latest_release--422e9fb0",
@@ -1981,7 +2008,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "oh-my-openagent--security_advisories--4619b034",
@@ -1995,7 +2023,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "oh-my-openagent--maintenance_status--07433bd5",
@@ -2009,7 +2038,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "oh-my-openagent--review_note--b0b26c64",
@@ -2023,7 +2053,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2045,7 +2076,8 @@
         "state": "lab",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2080,7 +2112,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "omnigent--latest_release--3bcf5ef0",
@@ -2094,7 +2127,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "omnigent--security_advisories--39548f04",
@@ -2108,7 +2142,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "omnigent--maintenance_status--4e021847",
@@ -2122,7 +2157,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "omnigent--review_note--ff0031fe",
@@ -2136,7 +2172,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2158,7 +2195,8 @@
         "state": "conformance",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Conformance tests; do not fork)"
+        "rationale": "Migrated from v1 upstream register (Conformance tests; do not fork)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2193,7 +2231,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "openai-agent-standards--repository_location--73b8025f",
@@ -2207,7 +2246,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "openai-agent-standards--review_note--4af5587e",
@@ -2221,7 +2261,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2243,7 +2284,8 @@
         "state": "candidate",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2278,7 +2320,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "openai-agents-sdk--latest_release--ce28ad79",
@@ -2292,7 +2335,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "openai-agents-sdk--maintenance_status--d6f29055",
@@ -2306,7 +2350,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "openai-agents-sdk--review_note--ac145c76",
@@ -2320,7 +2365,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2342,7 +2388,8 @@
         "state": "candidate",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2377,7 +2424,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "pydantic-ai-harness--latest_release--16030d94",
@@ -2391,7 +2439,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "pydantic-ai-harness--maintenance_status--3c7ff998",
@@ -2405,7 +2454,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "pydantic-ai-harness--review_note--e008078b",
@@ -2419,7 +2469,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2441,7 +2492,8 @@
         "state": "candidate",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [
         {
@@ -2484,7 +2536,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "mastra-agent-controller--latest_release--3adb568a",
@@ -2498,7 +2551,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mastra-agent-controller--security_advisories--0728f3f9",
@@ -2512,7 +2566,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mastra-agent-controller--maintenance_status--7befb3f8",
@@ -2526,7 +2581,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mastra-agent-controller--review_note--5a595ff3",
@@ -2540,7 +2596,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2562,7 +2619,8 @@
         "state": "candidate",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2597,7 +2655,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "langgraph--latest_release--d32012bc",
@@ -2611,7 +2670,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "langgraph--security_advisories--6711cc42",
@@ -2625,7 +2685,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "langgraph--review_note--50c8739c",
@@ -2639,7 +2700,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2661,7 +2723,8 @@
         "state": "shadow",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2696,7 +2759,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "graphiti--latest_release--001eba23",
@@ -2710,7 +2774,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "graphiti--maintenance_status--a0ae7300",
@@ -2724,7 +2789,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "graphiti--review_note--45ea580c",
@@ -2738,7 +2804,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2760,7 +2827,8 @@
         "state": "pattern",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2795,7 +2863,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "letta-code--latest_release--8570bf2e",
@@ -2809,7 +2878,8 @@
           "valid_from": "2026-10-22",
           "valid_until": "2026-10-23",
           "superseded_by": "letta-code--latest_release--cb2c51b4",
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "letta-code--archived--e2dde712",
@@ -2823,7 +2893,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "letta-code--license--26c183ca",
@@ -2837,7 +2908,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "letta-code--latest_release--cb2c51b4",
@@ -2851,7 +2923,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "letta-code--maintenance_status--348d5dc3",
@@ -2865,7 +2938,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "letta-code--review_note--327fe9cc",
@@ -2879,7 +2953,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -2901,7 +2976,8 @@
         "state": "shadow",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -2936,7 +3012,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "hindsight--latest_release--d0d52ea7",
@@ -2950,7 +3027,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "hindsight--security_advisories--8621d3ed",
@@ -2964,7 +3042,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "hindsight--maintenance_status--856b76af",
@@ -2978,7 +3057,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "hindsight--review_note--b10409ab",
@@ -2992,7 +3072,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3014,7 +3095,8 @@
         "state": "shadow",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3049,7 +3131,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "mem0--latest_release--7abbc64b",
@@ -3063,7 +3146,8 @@
           "valid_from": "2026-09-25",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mem0--security_advisories--f1a84bd5",
@@ -3077,7 +3161,8 @@
           "valid_from": "2026-09-25",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mem0--maintenance_status--357211c2",
@@ -3091,7 +3176,8 @@
           "valid_from": "2026-09-25",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mem0--review_note--cc870a70",
@@ -3105,7 +3191,8 @@
           "valid_from": "2026-09-25",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3127,7 +3214,8 @@
         "state": "shadow",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3162,7 +3250,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "cognee--latest_release--044c4070",
@@ -3176,7 +3265,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "cognee--security_advisories--a19dff60",
@@ -3190,7 +3280,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "cognee--maintenance_status--cebc4d0c",
@@ -3204,7 +3295,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "cognee--review_note--8dbd768e",
@@ -3218,7 +3310,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3240,7 +3333,8 @@
         "state": "shadow",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3275,7 +3369,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "mempalace--latest_release--47478cc0",
@@ -3289,7 +3384,8 @@
           "valid_from": "2026-10-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mempalace--security_advisories--00601284",
@@ -3303,7 +3399,8 @@
           "valid_from": "2026-10-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mempalace--review_note--2766e153",
@@ -3317,7 +3414,8 @@
           "valid_from": "2026-10-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3339,7 +3437,8 @@
         "state": "pattern",
         "decided_at": "2026-08-12",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3374,7 +3473,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-08-12"
+          "last_verified": "2026-08-12",
+          "recorded_at": "2026-08-12"
         },
         {
           "id": "memp--maintenance_status--9783351b",
@@ -3388,7 +3488,8 @@
           "valid_from": "2026-01-30",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "memp--review_note--164d6e0b",
@@ -3402,7 +3503,8 @@
           "valid_from": "2026-01-30",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3424,7 +3526,8 @@
         "state": "conformance",
         "decided_at": "2026-10-10",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3459,7 +3562,8 @@
           "valid_from": "2026-10-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-10"
+          "last_verified": "2026-10-10",
+          "recorded_at": "2026-10-10"
         }
       ]
     },
@@ -3481,7 +3585,8 @@
         "state": "candidate",
         "decided_at": "2026-10-10",
         "decided_by": "Starlight architecture board",
-        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)",
+        "decision_ref": "context/empire/upstreams.json v1 register (audit cutoff 2026-08-12)"
       },
       "proposals": [],
       "provenance": {
@@ -3516,7 +3621,8 @@
           "valid_from": "2026-10-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-10"
+          "last_verified": "2026-10-10",
+          "recorded_at": "2026-10-10"
         },
         {
           "id": "agentic-music-producer-os--archived--e2dde712",
@@ -3530,7 +3636,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ]
     },
@@ -3593,7 +3700,8 @@
           "valid_from": "2026-07-28",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mcp-spec-2026-07-28--auth_registration--19f0a5f8",
@@ -3607,7 +3715,8 @@
           "valid_from": "2026-07-28",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "mcp-spec-2026-07-28--session_model--8a00ccfb",
@@ -3621,7 +3730,8 @@
           "valid_from": "2026-07-28",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -3687,7 +3797,8 @@
           "valid_from": "2026-08-31",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "vercel-ai-gateway-budgets--byok_budget_coverage--ffe8c823",
@@ -3701,7 +3812,23 @@
           "valid_from": "2026-08-31",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "vercel-ai-gateway-budgets--byok_budget_coverage--bd682465",
+          "predicate": "byok_budget_coverage",
+          "value": "BYOK spend metered separately and cannot be capped by Gateway budgets; failed BYOK requests reportedly retry on Vercel credits (third-party guide)",
+          "evidence_class": "secondary",
+          "confidence": "medium",
+          "source_ids": [
+            "c1-vercel-ai-gateway-budgets-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -3760,7 +3887,8 @@
           "valid_from": "2026-10-19",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -3824,7 +3952,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -3888,7 +4017,8 @@
           "valid_from": "2026-07-27",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -3955,7 +4085,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4014,7 +4145,8 @@
           "valid_from": "2026-09-30",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "cloudflare-containers-sandbox-sdk-1--median_startup_ms--bd02e7e6",
@@ -4028,7 +4160,8 @@
           "valid_from": "2026-09-30",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4088,7 +4221,8 @@
           "valid_from": "2026-10-09",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "vercel-deployment-retention-30d--retention_default--c0bc0350",
@@ -4102,7 +4236,23 @@
           "valid_from": "2026-10-09",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "vercel-deployment-retention-30d--retention_exemptions--378e924f",
+          "predicate": "retention_exemptions",
+          "value": "Reviewer-reported, not verified by orchestrator: production-aliased deployments and the latest 20 Ready production and latest 10 created deployments are exempt; deleted deployments have a 30-day Recently Deleted recovery window",
+          "evidence_class": "secondary",
+          "confidence": "low",
+          "source_ids": [
+            "c1-vercel-deployment-retention-30d-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4161,7 +4311,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4226,7 +4377,8 @@
           "valid_from": "2026-07-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4285,7 +4437,8 @@
           "valid_from": "2026-09-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4350,7 +4503,8 @@
           "valid_from": "2026-07-27",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4415,7 +4569,8 @@
           "valid_from": "2026-10-18",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4473,7 +4628,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4537,7 +4693,8 @@
           "valid_from": "2026-08-04",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4595,7 +4752,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4653,7 +4811,8 @@
           "valid_from": "2026-09-30",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4711,7 +4870,8 @@
           "valid_from": "2026-09-24",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4768,7 +4928,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4827,7 +4988,8 @@
           "valid_from": "2026-09-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4884,7 +5046,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -4943,7 +5106,8 @@
           "valid_from": "2026-10-06",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5001,7 +5165,8 @@
           "valid_from": "2026-09-24",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5059,7 +5224,8 @@
           "valid_from": "2026-08-17",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5117,7 +5283,8 @@
           "valid_from": "2026-10-07",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5174,7 +5341,8 @@
           "valid_from": "2026-10-02",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5232,7 +5400,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5290,7 +5459,8 @@
           "valid_from": "2026-09-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5348,7 +5518,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5407,7 +5578,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5466,7 +5638,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5524,7 +5697,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5581,7 +5755,8 @@
           "valid_from": "2026-09-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5638,7 +5813,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5696,7 +5872,8 @@
           "valid_from": "2026-10-23",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5753,7 +5930,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5810,7 +5988,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5868,7 +6047,8 @@
           "valid_from": "2026-08-12",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5926,7 +6106,8 @@
           "valid_from": "2026-08-02",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -5983,7 +6164,8 @@
           "valid_from": "2026-10-17",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6048,7 +6230,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6107,7 +6290,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "arxiv-2610-27655-multi-agent-user-serving--team_vs_single_gain--75f51587",
@@ -6121,7 +6305,23 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "arxiv-2610-27655-multi-agent-user-serving--validity_limit--5d4fc00f",
+          "predicate": "validity_limit",
+          "value": "Customer-service dialogue only (tau2-bench airline/retail/telecom); paper reports an unmet validity bar (planner never saw tool schemas); two-author preprint posted 2026-10-20",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "c1-arxiv-2610-27655-multi-agent-user-serving-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6179,7 +6379,8 @@
           "valid_from": "2026-06-25",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6237,7 +6438,8 @@
           "valid_from": "2026-07-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6296,7 +6498,8 @@
           "valid_from": "2026-10-13",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6362,7 +6565,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6427,7 +6631,8 @@
           "valid_from": "2026-06-05",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6485,7 +6690,8 @@
           "valid_from": "2026-10-19",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6543,7 +6749,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "arxiv-2610-29869-compaction-laundering--laundering_rate_flattening_harnesses--2a9dff14",
@@ -6557,7 +6764,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6614,7 +6822,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6673,7 +6882,8 @@
           "valid_from": "2026-10-20",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6732,7 +6942,8 @@
           "valid_from": "2026-10-16",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6790,7 +7001,8 @@
           "valid_from": "2026-07-27",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6847,7 +7059,8 @@
           "valid_from": "2026-09-08",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6912,7 +7125,8 @@
           "valid_from": "2026-07-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -6969,7 +7183,23 @@
           "valid_from": "2026-10-07",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "swe-bench-terminal-bench-integrity-2026--attribution_correction--b15cd18c",
+          "predicate": "attribution_correction",
+          "value": "99.4% public vs 81.6% private figures are SWE-Bench Pro V2 (Scale) for Claude Opus 5; attributing the gap to contamination is an inference",
+          "evidence_class": "secondary",
+          "confidence": "medium",
+          "source_ids": [
+            "c1-swe-bench-terminal-bench-integrity-2026-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7034,7 +7264,8 @@
           "valid_from": "2026-10-19",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7091,7 +7322,8 @@
           "valid_from": "2026-09-29",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7156,7 +7388,8 @@
           "valid_from": "2026-09-18",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7222,7 +7455,8 @@
           "valid_from": "2026-06-26",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7286,7 +7520,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7343,7 +7578,8 @@
           "valid_from": "2026-10-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7408,7 +7644,8 @@
           "valid_from": "2026-10-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7472,7 +7709,8 @@
           "valid_from": "2026-07-08",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7531,7 +7769,8 @@
           "valid_from": "2026-08-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7588,7 +7827,8 @@
           "valid_from": "2026-09-29",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7646,7 +7886,8 @@
           "valid_from": "2026-09-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7704,7 +7945,8 @@
           "valid_from": "2026-09-11",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7762,7 +8004,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7825,7 +8068,23 @@
           "valid_from": "2026-10-14",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "claude-managed-agents-2026q3--data_policy--9d0b8088",
+          "predicate": "data_policy",
+          "value": "Not eligible for zero data retention; session runtime billed at $0.08/hour; ships workflows and outcome-evaluation spans",
+          "evidence_class": "secondary",
+          "confidence": "medium",
+          "source_ids": [
+            "c1-claude-managed-agents-2026q3-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7891,7 +8150,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "aaif-agent-skills-open-responses--aaif_project_count--031ef6b7",
@@ -7905,7 +8165,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -7963,7 +8224,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "deepseek-v4-1-flash--model_id_aliasing--1fc5a071",
@@ -7977,7 +8239,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "deepseek-v4-1-flash--beats_v4_pro--034a41a0",
@@ -7991,7 +8254,8 @@
           "valid_from": "2026-09-10",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8057,7 +8321,8 @@
           "valid_from": "2026-08-27",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8117,7 +8382,8 @@
           "valid_from": "2026-09-01",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8182,7 +8448,8 @@
           "valid_from": "2026-10-07",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "claude-5-5-pricing-caching--terminal_bench_4_sonnet_5_5--2a3a73dd",
@@ -8196,7 +8463,8 @@
           "valid_from": "2026-10-07",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8262,7 +8530,8 @@
           "valid_from": "2026-10-22",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8321,7 +8590,8 @@
           "valid_from": "2026-10-13",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8387,7 +8657,8 @@
           "valid_from": "2026-08-26",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8445,7 +8716,8 @@
           "valid_from": "2026-07-27",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8503,7 +8775,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8563,7 +8836,8 @@
           "valid_from": "2026-10-15",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8628,7 +8902,8 @@
           "valid_from": "2026-10-03",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "thinkingbox-benchmark--gpt_6_astra_score--b920fc09",
@@ -8642,7 +8917,8 @@
           "valid_from": "2026-10-03",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         },
         {
           "id": "thinkingbox-benchmark--gpt_5_4_score--092c9f1b",
@@ -8656,7 +8932,23 @@
           "valid_from": "2026-10-03",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        },
+        {
+          "id": "thinkingbox-benchmark--independent_review--bcd75d60",
+          "predicate": "independent_review",
+          "value": "Critical reviewer could not confirm the GPT-6 Astra below GPT-5.4 result; treat as single-source",
+          "evidence_class": "secondary",
+          "confidence": "low",
+          "source_ids": [
+            "c1-thinkingbox-benchmark-0"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8713,7 +9005,8 @@
           "valid_from": "2026-09-24",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8770,7 +9063,8 @@
           "valid_from": "2026-08-26",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8827,7 +9121,8 @@
           "valid_from": "2026-10-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8885,7 +9180,8 @@
           "valid_from": "2026-10-06",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
@@ -8942,15 +9238,87 @@
           "valid_from": "2026-09-21",
           "valid_until": null,
           "superseded_by": null,
-          "last_verified": "2026-10-23"
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
         }
       ],
       "tags": [
         "quasar"
       ]
+    },
+    {
+      "id": "github-agent-hq",
+      "kind": "product",
+      "class": "agent_system",
+      "title": "GitHub Agent HQ / Mission Control (Copilot, Claude, Codex side by side)",
+      "url": "https://github.blog/news-insights/company-news/pick-your-agent-use-claude-and-codex-on-agent-hq/",
+      "owner": "frontier-cycle1/critical-review",
+      "summary": "Cross-vendor coding agents run inside GitHub and VS Code with shared repository context; one task can be assigned to several agents to compare results; org-wide agent controls, audit logs and metrics.",
+      "mechanism": "Copilot Pro+/Enterprise users assign issues or PRs to Copilot, Claude or Codex (public preview since 2026-02-04); sessions run asynchronously, produce draft PRs and logs, and consume premium requests. Cross-vendor direction for repository work is already a platform feature.",
+      "license": "proprietary",
+      "registers": [],
+      "adoption": {
+        "state": "watch",
+        "decided_at": "2026-10-23",
+        "decided_by": "ingest:cycle1-review-2026-10-23",
+        "rationale": "Critical review: invalidates the claim that cross-vendor direction is an open seam for repository work; Starlight's wedge must be non-repo founder work, continuity and audience."
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-10-23",
+        "last_verified": "2026-10-23",
+        "source_ids": [
+          "c1r-github-agent-hq-claude-codex"
+        ],
+        "verified_by": "ingest:cycle1-review-2026-10-23"
+      },
+      "links": {
+        "products": [
+          "starlight-platform"
+        ],
+        "repositories": [],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": [
+          "orchestration"
+        ]
+      },
+      "claims": [
+        {
+          "id": "github-agent-hq--release_status--e8431544",
+          "predicate": "release_status",
+          "value": "public preview (Copilot Pro+ and Enterprise), each session one premium request",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "c1r-github-agent-hq-claude-codex"
+          ],
+          "valid_from": "2026-02-04",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23",
+          "recorded_at": "2026-10-23"
+        }
+      ],
+      "tags": [
+        "competitor",
+        "critical-review"
+      ]
     }
   ],
-  "contradictions": [],
+  "contradictions": [
+    {
+      "id": "k-4a6861de06",
+      "status": "open",
+      "claim_ids": [
+        "vercel-ai-gateway-budgets--byok_budget_coverage--ffe8c823",
+        "vercel-ai-gateway-budgets--byok_budget_coverage--bd682465"
+      ],
+      "detected_at": "2026-10-23",
+      "description": "Conflicting current values for vercel-ai-gateway-budgets.byok_budget_coverage",
+      "resolution": null
+    }
+  ],
   "batches": [
     {
       "id": "migrate-v1-upstreams",
@@ -8984,6 +9352,28 @@
         "record_updated": 1,
         "claim_added": 153,
         "claim_superseded": 1
+      }
+    },
+    {
+      "id": "cycle1-review-2026-10-23",
+      "ingested_at": "2026-10-23",
+      "by": "ingest:cycle1-review-2026-10-23",
+      "input": "batch:cycle1-review-2026-10-23",
+      "counts": {
+        "source_added": 1,
+        "record_added": 1,
+        "claim_added": 7,
+        "contradiction_opened": 1
+      }
+    },
+    {
+      "id": "schema-hardening-2026-10-23",
+      "ingested_at": "2026-10-23",
+      "by": "migration (checker findings F1-F15)",
+      "input": "in-place",
+      "counts": {
+        "decision_refs_added": 18,
+        "recorded_at_added": 182
       }
     }
   ]

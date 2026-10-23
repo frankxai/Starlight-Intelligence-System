@@ -40,11 +40,13 @@ Batch: one ingestion run, with counts — the audit trail of how knowledge enter
 
 ## Rules the code enforces
 
-- **External text is data.** Ingestion keeps only allow-listed fields, strips control and bidi characters, caps length and flags instruction-like text. Nothing in a source is executed or obeyed.
-- **No self-promotion.** Automated deciders (`ingest:*`, `agent:*`) may assign only `ignore`, `watch` or `evaluate`. Anything stronger becomes a *proposal* that a named owner must accept.
+- **External text is data.** Ingestion keeps only allow-listed, type-checked fields; strips control, bidi, zero-width and Unicode tag characters; caps length; and flags instruction-like text. Unknown fields fail validation. Nothing in a source is executed or obeyed.
+- **No self-promotion.** Automated deciders may assign only `ignore`, `watch` or `evaluate`, and only to new records. Anything stronger needs a decider in `policy.human_deciders` plus a `decision_ref`; agent recommendations become *proposals*, recorded once while pending.
+- **The register is human-only.** Claims on register-feeding predicates (`track`) are rejected from automated batches, and ingestion refuses any merge that would change the upstream projection.
+- **No future-dated claims**, and every claim records when it entered the ledger (`recorded_at`); reports key "what changed" on that.
 - **No silent overwrites.** A newer claim of equal or stronger evidence supersedes the old one, which is kept with its validity window. A weaker or older conflicting claim opens a contradiction.
 - **Provenance or nothing.** Records and claims must cite at least one known source; unknown references fail validation.
-- **One source of truth.** The v1 register is a projection. Edit the ledger, then run `npm run frontier:project`.
+- **One source of truth.** The v1 register is a byte-exact projection. Edit the ledger, then run `npm run frontier:project`.
 - **Idempotent ingestion.** Re-running a batch changes nothing.
 
 ## Commands

@@ -15,7 +15,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  validateLedger, projectUpstreams, migrateV1, ingest, watchReleases, buildReport, deepEqual,
+  validateLedger, projectUpstreams, migrateV1, ingest, watchReleases, buildReport, serialize,
 } from "./lib.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -30,22 +30,26 @@ const opt = (name, fallback) => {
   return i >= 0 && args[i + 1] && !args[i + 1].startsWith("--") ? args[i + 1] : fallback;
 };
 const today = opt("today", new Date().toISOString().slice(0, 10));
+if (!/^\d{4}-\d{2}-\d{2}$/.test(today) || Number.isNaN(Date.parse(`${today}T00:00:00Z`))) {
+  console.error(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(today)}`);
+  process.exit(2);
+}
 
 const readJson = async (p) => JSON.parse(await readFile(p, "utf8"));
 const writeJson = async (p, v) => {
   await mkdir(dirname(p), { recursive: true });
-  await writeFile(p, `${JSON.stringify(v, null, 2)}\n`);
+  await writeFile(p, serialize(v));
 };
 const readJsonl = async (p) =>
   (await readFile(p, "utf8"))
     .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith("//"))
-    .map((l, i) => {
+    .map((l, i) => ({ l: l.trim(), n: i + 1 }))
+    .filter(({ l }) => l && !l.startsWith("//"))
+    .map(({ l, n }) => {
       try {
         return JSON.parse(l);
       } catch {
-        throw new Error(`${p}:${i + 1} is not valid JSON`);
+        throw new Error(`${p}:${n} is not valid JSON`);
       }
     });
 
@@ -67,16 +71,19 @@ async function githubObserver() {
     };
     const meta = await get("");
     if (!meta) return null;
-    let rel = await get("/releases/latest");
+    const rel = await get("/releases/latest");
     let tag = rel?.tag_name ?? null;
-    let published = rel?.published_at?.slice(0, 10) ?? null;
+    const published = rel?.published_at?.slice(0, 10) ?? null;
     let htmlUrl = rel?.html_url ?? null;
+    let tagSource = tag ? "release" : null;
     if (!tag) {
+      // GitHub does not guarantee tag order; the lib records this fallback as secondary/low confidence.
       const tags = await get("/tags?per_page=1");
       tag = tags?.[0]?.name ?? null;
+      tagSource = tag ? "tags" : null;
       htmlUrl = tag ? `https://github.com/${owner}/${repo}/releases/tag/${encodeURIComponent(tag)}` : null;
     }
-    return { tag, published_at: published, html_url: htmlUrl, archived: Boolean(meta.archived), license: meta.license?.spdx_id ?? null };
+    return { tag, tag_source: tagSource, published_at: published, html_url: htmlUrl, archived: Boolean(meta.archived), license: meta.license?.spdx_id ?? null };
   };
 }
 
@@ -87,10 +94,9 @@ async function main() {
       const { errors, warnings, stale } = validateLedger(ledger, { today });
       let drift = false;
       if (ledger.registers?.upstreams) {
-        const projected = projectUpstreams(ledger);
-        const onDisk = await readJson(UPSTREAMS);
-        drift = !deepEqual(projected, onDisk);
-        if (drift) errors.push("context/empire/upstreams.json drifted from the ledger projection; run `node scripts/frontier/cli.mjs project --write`");
+        // Byte-level comparison: the register must be exactly the generated serialisation.
+        drift = serialize(projectUpstreams(ledger)) !== (await readFile(UPSTREAMS, "utf8"));
+        if (drift) errors.push("context/empire/upstreams.json differs from the ledger projection; run `node scripts/frontier/cli.mjs project --write`");
       }
       for (const w of warnings) console.warn(`warn: ${w}`);
       for (const s of stale) console.warn(`stale: ${s.id} last verified ${s.last_verified} (${s.age_days}d > ${s.limit_days}d)`);
@@ -114,7 +120,14 @@ async function main() {
       const batchId = opt("batch");
       if (!file || !batchId) throw new Error("usage: ingest <batch.jsonl> --batch <id>");
       const before = await readJson(LEDGER);
-      const { ledger, changes, rejected } = ingest(before, await readJsonl(resolve(file)), { batchId, today });
+      let result;
+      try {
+        result = ingest(before, await readJsonl(resolve(file)), { batchId, today });
+      } catch (e) {
+        console.error(`Ingest refused; nothing written: ${e.message}`);
+        process.exit(1);
+      }
+      const { ledger, changes, rejected } = result;
       const { errors } = validateLedger(ledger, { today });
       for (const r of rejected) console.warn(`rejected: ${r.reason}: ${JSON.stringify(r.item).slice(0, 160)}`);
       console.log(`ingest ${batchId}: ${summarize(changes)}; rejected=${rejected.length}`);
@@ -129,12 +142,18 @@ async function main() {
     case "watch": {
       const before = await readJson(LEDGER);
       const ids = opt("ids") ? opt("ids").split(",") : undefined;
-      const limit = Number(opt("limit", "Infinity"));
-      const { candidates, errors: obsErrors, checked } = await watchReleases(before, await githubObserver(), { today, limit, ids });
-      const { ledger, changes, rejected } = ingest(before, candidates, { batchId: `watch-${today}`, today, by: `agent:watch-${today}` });
+      const limit = opt("limit") === undefined ? Infinity : Number(opt("limit"));
+      if (!(limit > 0)) throw new Error("--limit must be a positive number");
+      const { candidates, errors: obsErrors, checked, aborted } = await watchReleases(before, await githubObserver(), { today, limit, ids });
+      const runId = `watch-${new Date().toISOString().replace(/[-:]/g, "").slice(0, 13).toLowerCase()}`;
+      const { ledger, changes, rejected } = ingest(before, candidates, { batchId: runId, today, by: `agent:${runId}` });
       for (const e of obsErrors) console.warn(`observe failed: ${e.id}: ${e.error}`);
       for (const r of rejected) console.warn(`rejected: ${r.reason}`);
-      console.log(`watch checked=${checked}: ${summarize(changes)}`);
+      console.log(`watch checked=${checked} failed=${obsErrors.length}${aborted ? " ABORTED (rate limited)" : ""}: ${summarize(changes)}`);
+      if (checked > 0 && obsErrors.length === checked) {
+        console.error("Every observation failed; nothing written.");
+        process.exit(1);
+      }
       const { errors } = validateLedger(ledger, { today });
       if (errors.length) {
         for (const e of errors) console.error(`- ${e}`);

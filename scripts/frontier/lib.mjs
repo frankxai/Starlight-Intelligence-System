@@ -6,7 +6,8 @@
 // The ledger links Research -> Sources -> Records -> Claims -> Decisions ->
 // Products/Repositories/Tasks with provenance, temporal validity, confidence,
 // contradictions and adoption state. Retrieved external text is DATA: it is
-// sanitised, allow-listed and never interpreted as instructions.
+// sanitised, type-checked, allow-listed and never interpreted as instructions.
+// Automated batches can never change adoption state or the curated register.
 
 import { createHash } from "node:crypto";
 
@@ -23,7 +24,7 @@ export const ADOPTION_STATES = [
   "ignore", "watch", "evaluate", "lab", "shadow", "pattern", "candidate", "conformance", "adopted",
   "rejected", "retired",
 ];
-// States an automated ingestion batch may assign. Anything else needs a named decision owner.
+// States an automated ingestion batch may assign. Anything else needs a named human decider and a decision reference.
 export const INGEST_STATES = ["ignore", "watch", "evaluate"];
 export const EVIDENCE_CLASSES = ["primary_observed", "internal", "secondary", "vendor_claim", "inferred"];
 export const EVIDENCE_RANK = { primary_observed: 4, internal: 3, secondary: 2, vendor_claim: 2, inferred: 1 };
@@ -36,6 +37,16 @@ export const CONTRADICTION_STATUS = ["open", "resolved"];
 export const LINK_KEYS = ["products", "repositories", "decisions", "tasks", "capabilities"];
 export const UPSTREAM_CLASSES = ["standards", "runtime_dependency", "reference_harness", "memory_provider"];
 export const UPSTREAM_ADOPTIONS = ["candidate", "conformance", "lab", "pattern", "shadow"];
+// Predicates that feed a curated register projection. Only humans may change them.
+export const REGISTER_PREDICATES = ["track"];
+
+const SOURCE_KEYS = ["id", "kind", "trust", "title", "url", "publisher", "published_at", "retrieved_at", "content_sha256", "license"];
+const RECORD_KEYS = ["id", "kind", "class", "title", "url", "owner", "summary", "mechanism", "primitive", "security_notes", "license", "registers", "tags", "adoption", "proposals", "provenance", "links", "claims"];
+const CLAIM_KEYS = ["id", "predicate", "value", "evidence_class", "confidence", "source_ids", "valid_from", "valid_until", "superseded_by", "last_verified", "recorded_at"];
+const ADOPTION_KEYS = ["state", "decided_at", "decided_by", "rationale", "decision_ref"];
+const PROVENANCE_KEYS = ["first_seen", "last_verified", "source_ids", "verified_by"];
+const RECORD_TEXT = ["title", "owner", "summary", "mechanism", "primitive", "security_notes", "license"];
+const SOURCE_TEXT = ["title", "publisher", "license"];
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -43,8 +54,13 @@ const CLAIM_ID = /^[a-z0-9][a-z0-9-]*--[a-z][a-z0-9_]*--[0-9a-f]{8}$/;
 const PREDICATE = /^[a-z][a-z0-9_]*$/;
 const HEX64 = /^[0-9a-f]{64}$/;
 const MAX_TEXT = 2000;
+// Invisible or control characters: C0/C1 controls, format characters (bidi, zero-width, soft hyphen, BOM),
+// line/paragraph separators and Unicode tag characters. Tab, CR and LF are allowed.
+const CONTROL_G = /(?![\t\n\r])[\p{Cc}\p{Cf}\u2028\u2029\u{E0000}-\u{E007F}]/gu;
+const CONTROL = /(?![\t\n\r])[\p{Cc}\p{Cf}\u2028\u2029\u{E0000}-\u{E007F}]/u;
 // Heuristic only: flags text that reads like an instruction to an agent. Never auto-acts.
-const INSTRUCTION_LIKE = /(ignore (all |any )?(previous|prior) instructions|disregard (the|all) (above|previous)|you must now|system prompt|run the following command|exfiltrat)/i;
+const INSTRUCTION_LIKE = /\b(ignore|disregard|forget|override)\b.{0,40}\b(previous|prior|above|earlier|preceding|all|any)\b.{0,24}\b(instructions?|prompts?|rules|messages?|guidance|directions?)\b|\byou must now\b|\bsystem prompt\b|\bnew instructions?\s*:|\brun the following (command|code)\b|\bexfiltrat/;
+const RESERVED_GITHUB_OWNERS = new Set(["orgs", "settings", "topics", "marketplace", "apps", "features", "sponsors", "collections", "explore", "notifications", "login", "about", "pricing", "enterprise", "search"]);
 
 // ---------------------------------------------------------------- utilities
 
@@ -68,7 +84,12 @@ export function deepEqual(a, b) {
   return stableStringify(a) === stableStringify(b);
 }
 
-/** Canonical URL used for de-duplication across sources and records. */
+/** Exact on-disk serialisation used for every generated JSON file. */
+export function serialize(value) {
+  return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+/** Canonical URL used for de-duplication. Returns null for non-http(s) URLs or URLs carrying credentials. */
 export function canonicalUrl(raw) {
   let url;
   try {
@@ -76,33 +97,36 @@ export function canonicalUrl(raw) {
   } catch {
     return null;
   }
-  if (url.protocol === "http:") url.protocol = "https:";
-  if (url.protocol !== "https:") return null;
+  if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+  if (url.username || url.password) return null;
+  url.protocol = "https:";
   url.hash = "";
-  url.hostname = url.hostname.toLowerCase().replace(/^www\./, "");
+  url.port = "";
+  url.hostname = url.hostname.toLowerCase().replace(/\.$/, "").replace(/^www\./, "");
   for (const key of [...url.searchParams.keys()]) {
-    if (/^utm_/i.test(key) || ["ref", "ref_src", "source", "fbclid", "gclid"].includes(key.toLowerCase())) {
-      url.searchParams.delete(key);
-    }
+    if (/^utm_/i.test(key) || ["ref_src", "fbclid", "gclid", "mc_cid", "mc_eid"].includes(key.toLowerCase())) url.searchParams.delete(key);
   }
   url.searchParams.sort();
-  let path = url.pathname.replace(/\/+$/, "").replace(/\.git$/, "");
+  let path = url.pathname.replace(/%7e/gi, "~").replace(/\/{2,}/g, "/").replace(/\/+$/, "");
   if (url.hostname === "github.com") {
     const parts = path.split("/");
-    // owner/repo are case-insensitive on GitHub; deeper paths are not.
+    // owner/repo are case-insensitive on GitHub; deeper paths are not. ".git" is stripped only at repo root.
     for (let i = 1; i <= 2 && i < parts.length; i++) parts[i] = parts[i].toLowerCase();
+    if (parts.length === 3) parts[2] = parts[2].replace(/\.git$/, "");
     path = parts.join("/");
   }
   url.pathname = path || "/";
   const out = url.toString();
-  return out.endsWith("/") && url.pathname === "/" && !url.search ? out.slice(0, -1) : out;
+  return url.pathname === "/" && !url.search && out.endsWith("/") ? out.slice(0, -1) : out;
 }
 
+/** {owner, repo} only for a GitHub repository root URL; deep links and non-repository paths return null. */
 export function githubSlug(raw) {
   const canon = canonicalUrl(raw);
   if (!canon) return null;
-  const m = /^https:\/\/github\.com\/([^/]+)\/([^/?#]+)/.exec(canon);
-  return m ? { owner: m[1], repo: m[2] } : null;
+  const m = /^https:\/\/github\.com\/([^/?#]+)\/([^/?#]+)$/.exec(canon);
+  if (!m || RESERVED_GITHUB_OWNERS.has(m[1])) return null;
+  return { owner: m[1], repo: m[2] };
 }
 
 export function slugify(text) {
@@ -117,17 +141,26 @@ function daysBetween(fromIso, toIso) {
   return Math.floor((Date.parse(`${toIso}T00:00:00Z`) - Date.parse(`${fromIso}T00:00:00Z`)) / 86_400_000);
 }
 
-/** Strip control characters and cap length. External text never keeps executable shape. */
+/** Strip invisible/control characters and cap length. External text never keeps a hidden channel. */
 export function cleanText(value, max = MAX_TEXT) {
   if (value === undefined || value === null) return value;
-  return String(value)
-    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u202a-\u202e\u2066-\u2069]/g, "")
-    .trim()
-    .slice(0, max);
+  return String(value).normalize("NFC").replace(CONTROL_G, "").trim().slice(0, max);
+}
+
+/** True when text reads like an instruction to an agent, after removing invisible characters and folding case. */
+export function looksLikeInstruction(text) {
+  if (typeof text !== "string") return false;
+  return INSTRUCTION_LIKE.test(text.normalize("NFKC").replace(CONTROL_G, "").replace(/\s+/g, " ").toLowerCase());
 }
 
 function isCurrent(claim) {
   return claim.valid_until === null && claim.superseded_by === null;
+}
+
+function isHumanDecider(ledger, decidedBy) {
+  const who = String(decidedBy ?? "").trim().toLowerCase();
+  if (!who || /^(ingest|agent|bot|watch)[:\-]/.test(who)) return false;
+  return (ledger.policy?.human_deciders ?? []).some((h) => String(h).trim().toLowerCase() === who);
 }
 
 // --------------------------------------------------------------- validation
@@ -148,16 +181,27 @@ export function validateLedger(ledger, { today } = {}) {
   for (const f of ["ledger_id", "owner"]) if (typeof ledger[f] !== "string" || !ledger[f].trim()) err(`${f} must be a non-empty string`);
   if (!ISO_DATE.test(ledger.updated_at ?? "")) err("updated_at must be an ISO date");
   if (!ledger.policy || typeof ledger.policy !== "object") err("policy must be an object");
+  else if (!Array.isArray(ledger.policy.human_deciders) || ledger.policy.human_deciders.length === 0) err("policy.human_deciders must list at least one named human or board decider");
   for (const arr of ["sources", "records", "contradictions", "batches"]) {
     if (!Array.isArray(ledger[arr])) err(`${arr} must be an array`);
   }
   if (errors.length) return { errors, warnings, stale };
 
   const scanText = (label, value) => {
-    if (typeof value !== "string") return;
+    if (value === undefined || value === null) return;
+    if (typeof value !== "string") return err(`${label}: must be a string or null`);
     if (value.length > MAX_TEXT) err(`${label}: text exceeds ${MAX_TEXT} characters`);
-    if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u202a-\u202e\u2066-\u2069]/.test(value)) err(`${label}: contains control or bidi characters`);
-    if (INSTRUCTION_LIKE.test(value)) warn(`${label}: instruction-like text stored as data; review provenance`);
+    if (CONTROL.test(value)) err(`${label}: contains control, invisible or tag characters`);
+    if (looksLikeInstruction(value)) warn(`${label}: instruction-like text stored as data; review provenance`);
+  };
+  const onlyKeys = (label, obj, allowed) => {
+    for (const k of Object.keys(obj ?? {})) if (!allowed.includes(k)) err(`${label}: unknown field ${k}`);
+  };
+  const httpsUrl = (label, raw) => {
+    if (typeof raw !== "string" || !raw.startsWith("https://")) { err(`${label}: url must use https`); return null; }
+    const canon = canonicalUrl(raw);
+    if (!canon) err(`${label}: url must be a valid https URL without credentials`);
+    return canon;
   };
 
   // Sources
@@ -165,6 +209,7 @@ export function validateLedger(ledger, { today } = {}) {
   const sourceCanon = new Map();
   for (const [i, s] of ledger.sources.entries()) {
     const label = `source ${s?.id ?? i}`;
+    onlyKeys(label, s, SOURCE_KEYS);
     if (!ID.test(s?.id ?? "")) err(`${label}: id must match ${ID}`);
     if (sourceIds.has(s.id)) err(`${label}: duplicate id`);
     sourceIds.add(s.id);
@@ -173,11 +218,10 @@ export function validateLedger(ledger, { today } = {}) {
     if (!ISO_DATE.test(s.retrieved_at ?? "")) err(`${label}: retrieved_at must be an ISO date`);
     if (s.published_at != null && !ISO_DATE.test(s.published_at)) err(`${label}: published_at must be an ISO date or null`);
     if (s.content_sha256 != null && !HEX64.test(s.content_sha256)) err(`${label}: content_sha256 must be 64 hex chars`);
-    const canon = canonicalUrl(s.url);
-    if (!canon) err(`${label}: url must be a valid https URL`);
-    else if (sourceCanon.has(canon)) err(`${label}: duplicate canonical url with ${sourceCanon.get(canon)}`);
-    else sourceCanon.set(canon, s.id);
-    scanText(`${label}.title`, s.title);
+    const canon = httpsUrl(label, s.url);
+    if (canon && sourceCanon.has(canon)) err(`${label}: duplicate canonical url with ${sourceCanon.get(canon)}`);
+    else if (canon) sourceCanon.set(canon, s.id);
+    for (const f of SOURCE_TEXT) scanText(`${label}.${f}`, s[f]);
   }
 
   // Records and claims
@@ -187,26 +231,29 @@ export function validateLedger(ledger, { today } = {}) {
   const staleDays = ledger.policy.staleness_days ?? {};
   for (const [i, r] of ledger.records.entries()) {
     const label = `record ${r?.id ?? i}`;
+    onlyKeys(label, r, RECORD_KEYS);
     if (!ID.test(r?.id ?? "")) err(`${label}: id must match ${ID}`);
     if (recordIds.has(r.id)) err(`${label}: duplicate id`);
     recordIds.add(r.id);
     if (!RECORD_KINDS.includes(r.kind)) err(`${label}: unsupported kind ${r.kind}`);
     if (!RECORD_CLASSES.includes(r.class)) err(`${label}: unsupported class ${r.class}`);
     for (const f of ["title", "owner"]) if (typeof r[f] !== "string" || !r[f].trim()) err(`${label}: ${f} must be a non-empty string`);
-    const canon = canonicalUrl(r.url);
-    if (!canon) err(`${label}: url must be a valid https URL`);
-    else if (recordCanon.has(canon)) err(`${label}: duplicate canonical url with ${recordCanon.get(canon)}`);
-    else recordCanon.set(canon, r.id);
-    for (const f of ["title", "summary", "mechanism", "primitive", "security_notes", "license"]) scanText(`${label}.${f}`, r[f]);
+    const canon = httpsUrl(label, r.url);
+    if (canon && recordCanon.has(canon)) err(`${label}: duplicate canonical url with ${recordCanon.get(canon)}`);
+    else if (canon) recordCanon.set(canon, r.id);
+    for (const f of RECORD_TEXT) scanText(`${label}.${f}`, r[f]);
+    for (const f of ["registers", "tags"]) if (r[f] !== undefined && (!Array.isArray(r[f]) || r[f].some((v) => typeof v !== "string"))) err(`${label}: ${f} must be an array of strings`);
 
     const a = r.adoption ?? {};
+    onlyKeys(`${label}.adoption`, a, ADOPTION_KEYS);
     if (!ADOPTION_STATES.includes(a.state)) err(`${label}: unsupported adoption state ${a.state}`);
     if (!ISO_DATE.test(a.decided_at ?? "")) err(`${label}: adoption.decided_at must be an ISO date`);
     if (typeof a.decided_by !== "string" || !a.decided_by.trim()) err(`${label}: adoption.decided_by required`);
     if (typeof a.rationale !== "string" || !a.rationale.trim()) err(`${label}: adoption.rationale required`);
     scanText(`${label}.adoption.rationale`, a.rationale);
-    if (/^(ingest|agent):/.test(a.decided_by ?? "") && !INGEST_STATES.includes(a.state)) {
-      err(`${label}: automated decider ${a.decided_by} may not assign adoption state ${a.state}`);
+    if (!INGEST_STATES.includes(a.state)) {
+      if (!isHumanDecider(ledger, a.decided_by)) err(`${label}: adoption state ${a.state} requires a decider listed in policy.human_deciders (got ${JSON.stringify(a.decided_by)})`);
+      if (typeof a.decision_ref !== "string" || !a.decision_ref.trim()) err(`${label}: adoption state ${a.state} requires adoption.decision_ref`);
     }
     if (r.class === "reference_harness" && !["lab", "watch", "ignore", "rejected", "retired"].includes(a.state)) {
       err(`${label}: reference harnesses must remain lab-only`);
@@ -221,6 +268,7 @@ export function validateLedger(ledger, { today } = {}) {
     }
 
     const prov = r.provenance ?? {};
+    onlyKeys(`${label}.provenance`, prov, PROVENANCE_KEYS);
     if (!ISO_DATE.test(prov.first_seen ?? "")) err(`${label}: provenance.first_seen must be an ISO date`);
     if (!ISO_DATE.test(prov.last_verified ?? "")) err(`${label}: provenance.last_verified must be an ISO date`);
     if (!Array.isArray(prov.source_ids) || prov.source_ids.length === 0) err(`${label}: provenance.source_ids must be non-empty`);
@@ -230,12 +278,13 @@ export function validateLedger(ledger, { today } = {}) {
     for (const k of Object.keys(links)) {
       if (!LINK_KEYS.includes(k)) err(`${label}: unsupported link key ${k}`);
       else if (!Array.isArray(links[k]) || links[k].some((v) => typeof v !== "string")) err(`${label}: links.${k} must be an array of strings`);
+      else links[k].forEach((v, j) => scanText(`${label}.links.${k}[${j}]`, v));
     }
 
     if ((r.registers ?? []).includes("upstreams")) {
       if (!UPSTREAM_CLASSES.includes(r.class)) err(`${label}: upstream register requires class in ${UPSTREAM_CLASSES.join("/")}`);
       if (!UPSTREAM_ADOPTIONS.includes(a.state)) err(`${label}: upstream register requires adoption in ${UPSTREAM_ADOPTIONS.join("/")}`);
-      if (!githubSlug(r.url)) err(`${label}: upstream register requires a github.com repository url`);
+      if (!githubSlug(r.url)) err(`${label}: upstream register requires a github.com repository root url`);
       for (const f of ["primitive", "security_notes"]) if (typeof r[f] !== "string" || !r[f].trim()) err(`${label}: upstream register requires ${f}`);
       const tracks = (r.claims ?? []).filter((c) => c.predicate === "track" && isCurrent(c));
       if (tracks.length !== 1) err(`${label}: upstream register requires exactly one current track claim`);
@@ -243,6 +292,7 @@ export function validateLedger(ledger, { today } = {}) {
 
     for (const [j, c] of (r.claims ?? []).entries()) {
       const cl = `${label} claim ${c?.id ?? j}`;
+      onlyKeys(cl, c, CLAIM_KEYS);
       if (!CLAIM_ID.test(c?.id ?? "")) err(`${cl}: id must match <record>--<predicate>--<hash8>`);
       else if (!c.id.startsWith(`${r.id}--${c.predicate}--`)) err(`${cl}: id must be prefixed by record and predicate`);
       if (claimIndex.has(c.id)) err(`${cl}: duplicate claim id`);
@@ -255,7 +305,9 @@ export function validateLedger(ledger, { today } = {}) {
       if (!Array.isArray(c.source_ids) || c.source_ids.length === 0) err(`${cl}: source_ids must be non-empty`);
       for (const sid of c.source_ids ?? []) if (!sourceIds.has(sid)) err(`${cl}: unknown source ${sid}`);
       if (!ISO_DATE.test(c.valid_from ?? "")) err(`${cl}: valid_from must be an ISO date`);
+      else if (c.valid_from > ledger.updated_at) err(`${cl}: valid_from ${c.valid_from} is after ledger updated_at ${ledger.updated_at}`);
       if (!ISO_DATE.test(c.last_verified ?? "")) err(`${cl}: last_verified must be an ISO date`);
+      if (!ISO_DATE.test(c.recorded_at ?? "")) err(`${cl}: recorded_at must be an ISO date`);
       if (c.valid_until !== null && !ISO_DATE.test(c.valid_until ?? "")) err(`${cl}: valid_until must be null or an ISO date`);
       if (c.valid_until && c.valid_until < c.valid_from) err(`${cl}: valid_until precedes valid_from`);
       if (c.superseded_by !== null && typeof c.superseded_by !== "string") err(`${cl}: superseded_by must be null or a claim id`);
@@ -268,7 +320,7 @@ export function validateLedger(ledger, { today } = {}) {
     }
   }
 
-  // Supersession references and current-claim uniqueness
+  // Contradictions, supersession references and current-claim uniqueness
   const contradictionClaims = new Set();
   const contradictionIds = new Set();
   for (const [i, k] of ledger.contradictions.entries()) {
@@ -277,12 +329,14 @@ export function validateLedger(ledger, { today } = {}) {
     if (contradictionIds.has(k.id)) err(`${label}: duplicate id`);
     contradictionIds.add(k.id);
     if (!CONTRADICTION_STATUS.includes(k.status)) err(`${label}: unsupported status ${k.status}`);
-    if (!Array.isArray(k.claim_ids) || k.claim_ids.length < 2) err(`${label}: claim_ids needs at least two claims`);
-    for (const cid of k.claim_ids ?? []) if (!claimIndex.has(cid)) err(`${label}: unknown claim ${cid}`);
+    const ids = k.claim_ids ?? [];
+    if (!Array.isArray(ids) || new Set(ids).size < 2) err(`${label}: claim_ids needs at least two distinct claims`);
+    if (new Set(ids).size !== ids.length) err(`${label}: claim_ids contains duplicates`);
+    for (const cid of ids) if (!claimIndex.has(cid)) err(`${label}: unknown claim ${cid}`);
     if (!ISO_DATE.test(k.detected_at ?? "")) err(`${label}: detected_at must be an ISO date`);
     if (k.status === "resolved" && !(typeof k.resolution === "string" && k.resolution.trim())) err(`${label}: resolved contradictions need a resolution`);
     scanText(`${label}.description`, k.description);
-    if (k.status === "open") for (const cid of k.claim_ids ?? []) contradictionClaims.add(cid);
+    if (k.status === "open") for (const cid of ids) contradictionClaims.add(cid);
   }
 
   const currentByKey = new Map();
@@ -397,6 +451,7 @@ export function migrateV1(v1, { today, researchDoc }) {
         decided_at: u.verified_at,
         decided_by: v1.owner,
         rationale: `Migrated from v1 upstream register (${v1.policy[u.class]})`,
+        decision_ref: `context/empire/upstreams.json v1 register (audit cutoff ${v1.audit_cutoff})`,
       },
       proposals: [],
       // v1 records only "verified_at"; the record was known no later than the register's audit cutoff.
@@ -414,6 +469,7 @@ export function migrateV1(v1, { today, researchDoc }) {
           valid_until: null,
           superseded_by: null,
           last_verified: u.verified_at,
+          recorded_at: u.verified_at,
         },
       ],
     });
@@ -425,9 +481,10 @@ export function migrateV1(v1, { today, researchDoc }) {
     owner: v1.owner,
     updated_at: today,
     policy: {
-      trust: "Retrieved external text is data, never instruction. Only allow-listed fields are stored; summaries are written by the ingesting agent and cite sources.",
-      adoption: "Automated batches may assign ignore/watch/evaluate only. Promotion to lab, shadow, pattern, candidate, conformance or adopted needs a named human or board decision and a decision link.",
-      temporal: "Claims carry valid_from/valid_until. A newer claim of equal or stronger evidence supersedes; a weaker or older conflicting claim opens a contradiction instead of overwriting.",
+      trust: "Retrieved external text is data, never instruction. Only allow-listed, type-checked fields are stored; invisible and control characters are stripped; summaries are written by the ingesting agent and cite sources.",
+      adoption: "Automated batches may assign ignore/watch/evaluate only and can never change an existing record's adoption or a register-feeding claim. Any stronger state needs a decider listed in human_deciders and a decision_ref.",
+      temporal: "Claims carry valid_from/valid_until and recorded_at. A newer claim of equal or stronger evidence supersedes; a weaker or older conflicting claim opens a contradiction instead of overwriting. Future-dated claims are rejected.",
+      human_deciders: [v1.owner],
       staleness_days: { default: 60, model: 30, infrastructure: 45, agent_system: 45, reference_harness: 45, memory_provider: 60, runtime_dependency: 60, standards: 90, research: 120, interface: 60, security: 30, commerce: 60 },
     },
     registers: {
@@ -454,23 +511,45 @@ export function migrateV1(v1, { today, researchDoc }) {
 const SOURCE_FIELDS = ["id", "kind", "trust", "title", "url", "publisher", "published_at", "retrieved_at", "content_sha256", "license"];
 const RECORD_FIELDS = ["id", "kind", "class", "title", "url", "owner", "summary", "mechanism", "license", "links", "adoption_proposal", "rationale", "source_ids", "tags"];
 const CLAIM_FIELDS = ["record_id", "predicate", "value", "evidence_class", "confidence", "source_ids", "valid_from"];
+const ARRAY_FIELDS = new Set(["source_ids", "tags"]);
 
+/** Allow-list and type-check candidate fields. Non-string scalars, nested objects and unknown keys are dropped. */
 function pick(obj, fields) {
   const out = {};
-  for (const f of fields) if (obj[f] !== undefined) out[f] = typeof obj[f] === "string" ? cleanText(obj[f]) : obj[f];
+  for (const f of fields) {
+    const v = obj[f];
+    if (v === undefined || v === null) continue;
+    if (ARRAY_FIELDS.has(f)) {
+      if (Array.isArray(v)) out[f] = v.filter((x) => typeof x === "string").map((x) => cleanText(x, 200)).filter(Boolean);
+    } else if (f === "links") {
+      if (v && typeof v === "object" && !Array.isArray(v)) {
+        out.links = {};
+        for (const k of LINK_KEYS) if (Array.isArray(v[k])) out.links[k] = v[k].filter((x) => typeof x === "string").map((x) => cleanText(x, 200)).filter(Boolean);
+      }
+    } else if (typeof v === "string") {
+      out[f] = cleanText(v);
+    }
+  }
   return out;
+}
+
+function snapshotProtected(ledger) {
+  return new Map(ledger.records.map((r) => [r.id, stableStringify({ adoption: r.adoption, registers: r.registers ?? [], url: r.url, owner: r.owner, primitive: r.primitive ?? null, security_notes: r.security_notes ?? null, class: r.class })]));
 }
 
 /**
  * Merge a batch of candidate items into the ledger.
  * Candidate shapes: {type:"source",...} | {type:"record",...} | {type:"claim",...}.
  * Returns { ledger, changes, rejected } and never mutates the input ledger.
- * Re-ingesting the same batch is idempotent.
+ * Re-ingesting the same batch is idempotent. Throws if a merge would alter any existing
+ * record's adoption/identity or the curated register projection (defence in depth).
  */
 export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${batchId}` }) {
   if (!ID.test(batchId ?? "")) throw new Error("batchId must match id pattern");
   if (!ISO_DATE.test(today ?? "")) throw new Error("today must be an ISO date");
   const ledger = clone(ledgerIn);
+  const protectedBefore = snapshotProtected(ledgerIn);
+  const registerBefore = ledgerIn.registers?.upstreams ? stableStringify(projectUpstreams(ledgerIn)) : null;
   const changes = [];
   const rejected = [];
   const sourceAlias = new Map();
@@ -480,23 +559,24 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
   const resolveSources = (ids) => [...new Set((ids ?? []).map((id) => sourceAlias.get(id) ?? id))];
   const knownSource = (id) => ledger.sources.some((s) => s.id === id);
 
-  const ordered = [
-    ...candidates.filter((c) => c?.type === "source"),
-    ...candidates.filter((c) => c?.type === "record"),
-    ...candidates.filter((c) => c?.type === "claim"),
-  ];
   for (const c of candidates) if (!["source", "record", "claim"].includes(c?.type)) rejected.push({ item: c, reason: "unknown candidate type" });
+  // Claims are merged oldest-first so history ingested newest-first still supersedes in order.
+  const claims = candidates.filter((c) => c?.type === "claim")
+    .map((c, i) => ({ c, i }))
+    .sort((a, b) => String(a.c.valid_from ?? today).localeCompare(String(b.c.valid_from ?? today)) || a.i - b.i)
+    .map(({ c }) => c);
+  const ordered = [...candidates.filter((c) => c?.type === "source"), ...candidates.filter((c) => c?.type === "record"), ...claims];
 
   for (const raw of ordered) {
     if (raw.type === "source") {
       const s = pick(raw, SOURCE_FIELDS);
-      const canon = canonicalUrl(s.url);
-      if (!canon) { rejected.push({ item: raw, reason: "source url must be https" }); continue; }
+      const canon = typeof s.url === "string" && s.url.startsWith("https://") ? canonicalUrl(s.url) : null;
+      if (!canon) { rejected.push({ item: raw, reason: "source url must be https without credentials" }); continue; }
       if (!SOURCE_KINDS.includes(s.kind) || !SOURCE_TRUST.includes(s.trust)) { rejected.push({ item: raw, reason: "source kind/trust not allowed" }); continue; }
       const existing = sourceByCanon.get(canon);
       if (existing) {
         if (s.id) sourceAlias.set(s.id, existing.id);
-        if (s.content_sha256 && s.content_sha256 !== existing.content_sha256) {
+        if (s.content_sha256 && HEX64.test(s.content_sha256) && s.content_sha256 !== existing.content_sha256) {
           existing.content_sha256 = s.content_sha256;
           existing.retrieved_at = today;
           changes.push({ type: "source_updated", id: existing.id });
@@ -507,7 +587,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       if (s.id) sourceAlias.set(s.id, id);
       const source = {
         id, kind: s.kind, trust: s.trust, title: s.title ?? canon, url: s.url, publisher: s.publisher ?? new URL(canon).hostname,
-        published_at: ISO_DATE.test(s.published_at ?? "") ? s.published_at : null, retrieved_at: ISO_DATE.test(s.retrieved_at ?? "") ? s.retrieved_at : today,
+        published_at: ISO_DATE.test(s.published_at ?? "") ? s.published_at : null, retrieved_at: ISO_DATE.test(s.retrieved_at ?? "") && s.retrieved_at <= today ? s.retrieved_at : today,
         content_sha256: HEX64.test(s.content_sha256 ?? "") ? s.content_sha256 : null,
       };
       if (s.license) source.license = s.license;
@@ -516,26 +596,29 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       changes.push({ type: "source_added", id });
     } else if (raw.type === "record") {
       const r = pick(raw, RECORD_FIELDS);
-      const canon = canonicalUrl(r.url);
-      if (!canon) { rejected.push({ item: raw, reason: "record url must be https" }); continue; }
+      const canon = typeof r.url === "string" && r.url.startsWith("https://") ? canonicalUrl(r.url) : null;
+      if (!canon) { rejected.push({ item: raw, reason: "record url must be https without credentials" }); continue; }
       if (!RECORD_KINDS.includes(r.kind) || !RECORD_CLASSES.includes(r.class)) { rejected.push({ item: raw, reason: "record kind/class not allowed" }); continue; }
       const sourceIds = resolveSources(r.source_ids).filter(knownSource);
       if (sourceIds.length === 0) { rejected.push({ item: raw, reason: "record needs at least one known source" }); continue; }
-      const existing = recordByCanon.get(canon) ?? (r.id ? recordById.get(r.id) : undefined);
-      const proposal = r.adoption_proposal && ADOPTION_STATES.includes(r.adoption_proposal) ? r.adoption_proposal : "watch";
+      const existing = recordByCanon.get(canon);
+      if (!existing && r.id && recordById.has(r.id)) { rejected.push({ item: raw, reason: `record id ${r.id} already belongs to a different url` }); continue; }
+      const explicit = ADOPTION_STATES.includes(r.adoption_proposal) ? r.adoption_proposal : null;
       if (existing) {
         let touched = false;
         for (const sid of sourceIds) if (!existing.provenance.source_ids.includes(sid)) { existing.provenance.source_ids.push(sid); touched = true; }
         for (const k of LINK_KEYS) {
           for (const v of r.links?.[k] ?? []) {
             existing.links[k] = existing.links[k] ?? [];
-            if (typeof v === "string" && !existing.links[k].includes(cleanText(v, 200))) { existing.links[k].push(cleanText(v, 200)); touched = true; }
+            if (!existing.links[k].includes(v)) { existing.links[k].push(v); touched = true; }
           }
         }
-        if (proposal !== existing.adoption.state && !(existing.proposals ?? []).some((p) => p.proposed_state === proposal && p.by === by)) {
+        // Proposals are recorded only when explicitly requested, and never duplicated while pending.
+        const pending = (existing.proposals ?? []).some((p) => p.proposed_state === explicit);
+        if (explicit && explicit !== existing.adoption.state && !pending) {
           existing.proposals = existing.proposals ?? [];
-          existing.proposals.push({ proposed_state: proposal, by, at: today, rationale: r.rationale ?? "No rationale supplied" });
-          changes.push({ type: "adoption_proposed", id: existing.id, from: existing.adoption.state, to: proposal });
+          existing.proposals.push({ proposed_state: explicit, by, at: today, rationale: r.rationale ?? "No rationale supplied" });
+          changes.push({ type: "adoption_proposed", id: existing.id, from: existing.adoption.state, to: explicit });
           touched = true;
         }
         if (touched) {
@@ -546,6 +629,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       }
       let id = ID.test(r.id ?? "") ? r.id : slugify(r.title ?? canon);
       while (recordById.has(id)) id = `${id}-${sha256(canon).slice(0, 4)}`;
+      const proposal = explicit ?? "watch";
       let state = INGEST_STATES.includes(proposal) ? proposal : "watch";
       // Policy-constrained classes cannot enter "evaluate" automatically; keep the proposal for a human.
       if (state === "evaluate" && ["reference_harness", "memory_provider"].includes(r.class)) state = "watch";
@@ -555,14 +639,13 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
         adoption: { state, decided_at: today, decided_by: by, rationale: r.rationale ?? "Ingested for tracking; no adoption decision made" },
         proposals: state === proposal ? [] : [{ proposed_state: proposal, by, at: today, rationale: r.rationale ?? "No rationale supplied" }],
         provenance: { first_seen: today, last_verified: today, source_ids: sourceIds, verified_by: by },
-        links: Object.fromEntries(LINK_KEYS.map((k) => [k, (r.links?.[k] ?? []).filter((v) => typeof v === "string").map((v) => cleanText(v, 200))])),
+        links: Object.fromEntries(LINK_KEYS.map((k) => [k, r.links?.[k] ?? []])),
         claims: [],
       };
-      if (Array.isArray(r.tags)) record.tags = r.tags.filter((t) => typeof t === "string").map((t) => cleanText(t, 60)).slice(0, 12);
+      if (r.tags?.length) record.tags = r.tags.map((t) => cleanText(t, 60)).slice(0, 12);
       ledger.records.push(record);
       recordById.set(id, record);
       recordByCanon.set(canon, record);
-      if (r.id && r.id !== id) recordById.set(r.id, record);
       changes.push({ type: "record_added", id, state });
       if (state !== proposal) changes.push({ type: "adoption_proposed", id, from: state, to: proposal });
     } else {
@@ -570,10 +653,15 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       const record = recordById.get(c.record_id);
       if (!record) { rejected.push({ item: raw, reason: `unknown record ${c.record_id}` }); continue; }
       if (!PREDICATE.test(c.predicate ?? "") || typeof c.value !== "string" || !c.value) { rejected.push({ item: raw, reason: "invalid predicate or value" }); continue; }
+      if ((record.registers ?? []).length && REGISTER_PREDICATES.includes(c.predicate)) {
+        rejected.push({ item: raw, reason: `${c.predicate} feeds a curated register; only a human decision may change it` });
+        continue;
+      }
       if (!EVIDENCE_CLASSES.includes(c.evidence_class) || !CONFIDENCE.includes(c.confidence)) { rejected.push({ item: raw, reason: "invalid evidence_class or confidence" }); continue; }
       const sourceIds = resolveSources(c.source_ids).filter(knownSource);
       if (sourceIds.length === 0) { rejected.push({ item: raw, reason: "claim needs at least one known source" }); continue; }
       const validFrom = ISO_DATE.test(c.valid_from ?? "") ? c.valid_from : today;
+      if (validFrom > today) { rejected.push({ item: raw, reason: `valid_from ${validFrom} is in the future` }); continue; }
       const current = record.claims.filter((x) => x.predicate === c.predicate && isCurrent(x));
       const same = current.find((x) => x.value === c.value);
       if (same) {
@@ -587,7 +675,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
       if (record.claims.some((x) => x.id === id)) continue; // historical duplicate; idempotent
       const claim = {
         id, predicate: c.predicate, value: c.value, evidence_class: c.evidence_class, confidence: c.confidence,
-        source_ids: sourceIds, valid_from: validFrom, valid_until: null, superseded_by: null, last_verified: today,
+        source_ids: sourceIds, valid_from: validFrom, valid_until: null, superseded_by: null, last_verified: today, recorded_at: today,
       };
       const conflicts = [];
       for (const old of current) {
@@ -607,7 +695,7 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
         const kid = `k-${sha256([id, ...conflicts].sort().join("|")).slice(0, 10)}`;
         if (!ledger.contradictions.some((k) => k.id === kid)) {
           ledger.contradictions.push({
-            id: kid, status: "open", claim_ids: [...conflicts, id], detected_at: today,
+            id: kid, status: "open", claim_ids: [...new Set([...conflicts, id])], detected_at: today,
             description: `Conflicting current values for ${record.id}.${c.predicate}`, resolution: null,
           });
           changes.push({ type: "contradiction_opened", id: kid });
@@ -616,12 +704,35 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
     }
   }
 
+  // Close contradictions whose claims are no longer in conflict (at most one still current).
+  const claimById = new Map(ledger.records.flatMap((r) => r.claims.map((c) => [c.id, c])));
+  for (const k of ledger.contradictions) {
+    if (k.status !== "open") continue;
+    const live = k.claim_ids.filter((id) => claimById.get(id) && isCurrent(claimById.get(id)));
+    if (live.length < 2) {
+      k.status = "resolved";
+      k.resolution = `Auto-resolved on ${today}: ${live.length ? `only ${live[0]} remains current` : "all claims superseded"}`;
+      changes.push({ type: "contradiction_resolved", id: k.id });
+    }
+  }
+
+  // Defence in depth: automated ingestion must not alter existing adoption/identity or the curated register.
+  const protectedAfter = snapshotProtected(ledger);
+  for (const [id, snap] of protectedBefore) {
+    if (protectedAfter.get(id) !== snap) throw new Error(`ingest invariant violated: existing record ${id} adoption or identity changed`);
+  }
+  if (registerBefore !== null && stableStringify(projectUpstreams(ledger)) !== registerBefore) {
+    throw new Error("ingest invariant violated: the curated upstream register projection would change");
+  }
+
   if (changes.length) {
-    ledger.updated_at = today;
+    ledger.updated_at = today > ledger.updated_at ? today : ledger.updated_at;
     const counts = changes.reduce((acc, ch) => ({ ...acc, [ch.type]: (acc[ch.type] ?? 0) + 1 }), {});
     const prior = ledger.batches.find((b) => b.id === batchId);
-    if (prior) Object.assign(prior, { ingested_at: today, counts });
-    else ledger.batches.push({ id: batchId, ingested_at: today, by, input: `batch:${batchId}`, counts });
+    if (prior) {
+      prior.ingested_at = today;
+      prior.counts = Object.fromEntries([...new Set([...Object.keys(prior.counts ?? {}), ...Object.keys(counts)])].map((k) => [k, (prior.counts?.[k] ?? 0) + (counts[k] ?? 0)]));
+    } else ledger.batches.push({ id: batchId, ingested_at: today, by, input: `batch:${batchId}`, counts });
   }
   return { ledger, changes, rejected };
 }
@@ -630,30 +741,42 @@ export function ingest(ledgerIn, candidates, { batchId, today, by = `ingest:${ba
 
 /**
  * Turn observed upstream release metadata into ingestion candidates.
- * `observe` is an async (owner, repo) => {tag, published_at, html_url, archived, license} | null.
+ * `observe` is an async (owner, repo) => {tag, tag_source, published_at, html_url, archived, license} | null.
+ * Stops early after `maxRateLimited` consecutive rate-limit errors.
  */
-export async function watchReleases(ledger, observe, { today, limit = Infinity, ids } = {}) {
+export async function watchReleases(ledger, observe, { today, limit = Infinity, ids, maxRateLimited = 3 } = {}) {
   const candidates = [];
   const errors = [];
+  let consecutiveLimited = 0;
+  let aborted = false;
+  let checked = 0;
   const targets = ledger.records.filter((r) => (ids ? ids.includes(r.id) : r.kind === "repository" || (r.registers ?? []).includes("upstreams")) && githubSlug(r.url));
   for (const r of targets.slice(0, limit)) {
+    if (consecutiveLimited >= maxRateLimited) { aborted = true; break; }
     const { owner, repo } = githubSlug(r.url);
+    checked++;
     let obs;
     try {
       obs = await observe(owner, repo);
+      consecutiveLimited = 0;
     } catch (e) {
-      errors.push({ id: r.id, error: String(e?.message ?? e) });
+      const msg = String(e?.message ?? e);
+      if (/\b(403|429)\b|rate limit/i.test(msg)) consecutiveLimited++;
+      errors.push({ id: r.id, error: msg });
       continue;
     }
-    if (!obs) continue;
-    const srcId = `rel-${slugify(`${owner}-${repo}`)}-${slugify(obs.tag ?? "head")}`.slice(0, 80);
+    if (!obs) { errors.push({ id: r.id, error: "repository not found (404)" }); continue; }
+    const tagKey = obs.tag ? `${slugify(obs.tag)}-${sha256(obs.tag).slice(0, 6)}` : "head";
+    const srcId = `rel-${slugify(`${owner}-${repo}`).slice(0, 50)}-${tagKey}`.slice(0, 90).replace(/-+$/, "");
     const url = obs.html_url ?? `https://github.com/${owner}/${repo}/releases`;
-    candidates.push({ type: "source", id: srcId, kind: "github_release", trust: "primary", title: `${owner}/${repo} ${obs.tag ?? ""}`.trim(), url, publisher: "github.com", published_at: obs.published_at ?? null, retrieved_at: today });
-    if (obs.tag) candidates.push({ type: "claim", record_id: r.id, predicate: "latest_release", value: obs.tag, evidence_class: "primary_observed", confidence: "high", source_ids: [srcId], valid_from: obs.published_at ?? today });
+    const fromTags = obs.tag_source === "tags";
+    candidates.push({ type: "source", id: srcId, kind: "github_release", trust: fromTags ? "secondary" : "primary", title: `${owner}/${repo} ${obs.tag ?? ""}`.trim(), url, publisher: "github.com", published_at: obs.published_at ?? null, retrieved_at: today });
+    // A tag fallback is observed but may not be the newest tag, so it is recorded as secondary and low confidence.
+    if (obs.tag) candidates.push({ type: "claim", record_id: r.id, predicate: "latest_release", value: obs.tag, evidence_class: fromTags ? "secondary" : "primary_observed", confidence: fromTags ? "low" : "high", source_ids: [srcId], valid_from: obs.published_at && obs.published_at <= today ? obs.published_at : today });
     if (typeof obs.archived === "boolean") candidates.push({ type: "claim", record_id: r.id, predicate: "archived", value: String(obs.archived), evidence_class: "primary_observed", confidence: "high", source_ids: [srcId], valid_from: today });
-    if (obs.license) candidates.push({ type: "claim", record_id: r.id, predicate: "license", value: obs.license, evidence_class: "primary_observed", confidence: "high", source_ids: [srcId], valid_from: today });
+    if (obs.license && obs.license !== "NOASSERTION") candidates.push({ type: "claim", record_id: r.id, predicate: "license", value: obs.license, evidence_class: "primary_observed", confidence: "high", source_ids: [srcId], valid_from: today });
   }
-  return { candidates, errors, checked: Math.min(targets.length, limit) };
+  return { candidates, errors, checked, aborted };
 }
 
 // ----------------------------------------------------------------- reporting
@@ -673,13 +796,14 @@ export function buildReport(ledger, { today, since }) {
   lines.push(`Ledger \`${ledger.ledger_id}\` v${ledger.schema_version}, updated ${ledger.updated_at}. ${recs.length} records, ${ledger.sources.length} sources, ${recs.reduce((n, r) => n + r.claims.length, 0)} claims, ${ledger.contradictions.filter((k) => k.status === "open").length} open contradictions.`, "");
   lines.push(`Validation: ${errors.length} errors, ${warnings.length} warnings.`, "");
 
+  // `since` is the previous audit date and is exclusive; changes are keyed on when knowledge was recorded.
   lines.push(`## What changed since ${since}`, "");
   const changed = [];
   for (const r of recs) {
-    // `since` is the previous audit date: knowledge recorded on that date is not a change after it.
-    if (r.provenance.first_seen > since) changed.push(`- **New:** \`${r.id}\` (${r.class}, ${r.adoption.state}) — ${r.title}`);
+    const isNew = r.provenance.first_seen > since;
+    if (isNew) changed.push(`- **New:** \`${r.id}\` (${r.class}, ${r.adoption.state}) — ${r.title}`);
     for (const c of r.claims) {
-      if (c.valid_from > since && r.provenance.first_seen <= since) changed.push(`- **${c.predicate}** for \`${r.id}\`: ${c.value} (${c.evidence_class}, ${c.confidence})`);
+      if (!isNew && c.recorded_at > since && isCurrent(c)) changed.push(`- **${c.predicate}** for \`${r.id}\`: ${c.value} (${c.evidence_class}, ${c.confidence}; valid from ${c.valid_from})`);
       if (c.superseded_by && c.valid_until > since) changed.push(`- Superseded \`${r.id}\`.${c.predicate}: ${c.value} → see \`${c.superseded_by}\``);
     }
   }

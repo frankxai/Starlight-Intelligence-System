@@ -13,8 +13,8 @@ On 2026-10-23 the register was 72 days old: 14 of 18 entries exceeded a 45–60 
 1. **Canonical ledger.** `context/frontier/ledger.json` (schema 2.0.0) records Sources → Records → Claims with evidence class, confidence, `valid_from`/`valid_until`, supersession, contradictions, adoption state with decider and rationale, pending proposals, and links to products, repositories, decisions, tasks and capabilities.
 2. **v1 becomes a projection.** `context/empire/upstreams.json` is generated from ledger records marked `registers: ["upstreams"]`. The migration is lossless (byte-identical projection). CI fails on drift. Existing consumers and `validate-upstreams.mjs` are unchanged.
 3. **Ingestion is incremental and idempotent.** JSONL batches are de-duplicated by canonical URL, merged with provenance, and logged as batches. Re-running a batch is a no-op.
-4. **Agents cannot promote adoption.** Automated deciders may assign only `ignore`, `watch` or `evaluate`; stronger states become proposals awaiting a named owner. v1 policy is preserved: reference harnesses stay lab-only, memory providers stay shadow/pattern-only.
-5. **External text is data.** Only allow-listed fields are stored; control and bidi characters are stripped; instruction-like text is flagged for review.
+4. **Agents cannot promote adoption or touch the register.** Automated deciders may assign only `ignore`, `watch` or `evaluate`. Stronger states need a decider listed in `policy.human_deciders` and a `decision_ref`; agent recommendations become proposals. Ingestion rejects claims on register-feeding predicates (`track`) and throws if a merge would alter any existing record's adoption or identity, or the register projection. v1 policy is preserved: reference harnesses stay lab-only, memory providers stay shadow/pattern-only.
+5. **External text is data.** Only allow-listed, type-checked fields are stored. Control, bidi, zero-width, soft-hyphen, BOM, separator and Unicode tag characters are stripped. Unknown fields fail validation. Instruction-like text, including obfuscated variants, is flagged for review.
 6. **No new infrastructure.** Plain JSON in Git, zero-dependency Node (≥18) scripts and a zero-dependency CI workflow modelled on `protocol.yml`. No database, graph service or vendor memory product is introduced.
 7. **Recurring execution is proposed, not enabled.** The release watch (`frontier:watch`) runs on demand. A weekly schedule requires an owner decision on cadence, token and who reviews the resulting PRs.
 
@@ -34,4 +34,7 @@ On 2026-10-23 the register was 72 days old: 14 of 18 entries exceeded a 45–60 
 
 ## Verification
 
-`node --test test/frontier-ledger.test.mjs` (lossless migration, drift detection, de-duplication, idempotent ingestion, adoption authority, policy classes, untrusted text, supersession, contradictions, staleness, offline release watch, deterministic report, CLI gates, universe ranking). Seven targeted mutants of the core library were each killed by at least one test.
+An independent verifier first returned **FAIL**: projection, tests and validation held, but two high-severity holes existed (an automated `track` claim could repoint the register; promotion of existing records was untested) along with sanitiser, decision-policy, drift-check and temporal gaps. All fifteen findings were fixed, each with a regression test, and the ledger data was migrated in place (decision references, `recorded_at`, human-decider allowlist) without changing the register bytes.
+
+
+`node --test test/frontier-ledger.test.mjs` (lossless migration, drift detection, de-duplication, idempotent ingestion, adoption authority, policy classes, untrusted text, supersession, contradictions, staleness, offline release watch, deterministic report, CLI gates, universe ranking). 37 tests pass. Twenty targeted mutants of the library and CLI — including the four that survived the verifier's own mutation run — are each killed by at least one test.
