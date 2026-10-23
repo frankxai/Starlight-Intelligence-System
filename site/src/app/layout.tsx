@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StarlightTrail } from "@/components/StarlightTrail";
 import { GalaxyWash } from "@/components/cinematic/GalaxyField";
+import { VercelAnalytics } from "@/components/VercelAnalytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -129,6 +130,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
+        <VercelAnalytics />
       </body>
     </html>
   );
