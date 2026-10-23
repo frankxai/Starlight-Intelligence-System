@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/starlight-frontier-ledger.schema.json",
+  "title": "Starlight Frontier Ledger v2",
+  "description": "Provenance-aware, temporally valid record of external technologies, research and releases, linked to Starlight products, repositories, decisions and tasks. Semantic invariants (referential integrity, one current claim per predicate, adoption authority, policy classes, projection drift) are enforced by scripts/frontier/lib.mjs validateLedger().",
+  "type": "object",
+  "required": ["$schema", "schema_version", "ledger_id", "owner", "updated_at", "policy", "sources", "records", "contradictions", "batches"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "2.0.0" },
+    "ledger_id": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "format": "date" },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "trust": { "type": "string" },
+        "adoption": { "type": "string" },
+        "temporal": { "type": "string" },
+        "staleness_days": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 } }
+      }
+    },
+    "registers": {
+      "type": "object",
+      "properties": {
+        "upstreams": {
+          "type": "object",
+          "required": ["path", "schema", "schema_version", "audit_cutoff", "owner", "policy"],
+          "description": "Generated projection: context/empire/upstreams.json must equal projectUpstreams(ledger)."
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "trust", "title", "url", "retrieved_at"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "kind": { "enum": ["github_repo", "github_release", "web_page", "paper", "documentation", "internal_record", "dataset"] },
+          "trust": { "enum": ["primary", "vendor_claim", "secondary", "internal"] },
+          "title": { "type": "string", "maxLength": 2000 },
+          "url": { "type": "string", "pattern": "^https://" },
+          "publisher": { "type": "string" },
+          "published_at": { "type": ["string", "null"], "format": "date" },
+          "retrieved_at": { "type": "string", "format": "date" },
+          "content_sha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "license": { "type": "string" }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "class", "title", "url", "owner", "adoption", "provenance", "links", "claims"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "kind": { "enum": ["repository", "model", "api", "sdk", "spec", "paper", "product", "benchmark", "pattern", "service"] },
+          "class": { "enum": ["standards", "runtime_dependency", "reference_harness", "memory_provider", "model", "infrastructure", "agent_system", "research", "interface", "security", "commerce"] },
+          "title": { "type": "string" },
+          "url": { "type": "string", "pattern": "^https://" },
+          "owner": { "type": "string" },
+          "summary": { "type": "string", "maxLength": 2000 },
+          "mechanism": { "type": "string", "maxLength": 2000, "description": "What actually became possible, stated as mechanism, not marketing." },
+          "primitive": { "type": "string" },
+          "security_notes": { "type": "string" },
+          "license": { "type": ["string", "null"] },
+          "registers": { "type": "array", "items": { "enum": ["upstreams"] } },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "adoption": {
+            "type": "object",
+            "required": ["state", "decided_at", "decided_by", "rationale"],
+            "properties": {
+              "state": { "enum": ["ignore", "watch", "evaluate", "lab", "shadow", "pattern", "candidate", "conformance", "adopted", "rejected", "retired"] },
+              "decided_at": { "type": "string", "format": "date" },
+              "decided_by": { "type": "string", "description": "Automated deciders (ingest:*, agent:*) may only assign ignore/watch/evaluate." },
+              "rationale": { "type": "string" },
+              "decision_ref": { "type": "string" }
+            }
+          },
+          "proposals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["proposed_state", "by", "at", "rationale"],
+              "properties": {
+                "proposed_state": { "type": "string" },
+                "by": { "type": "string" },
+                "at": { "type": "string", "format": "date" },
+                "rationale": { "type": "string" }
+              }
+            }
+          },
+          "provenance": {
+            "type": "object",
+            "required": ["first_seen", "last_verified", "source_ids"],
+            "properties": {
+              "first_seen": { "type": "string", "format": "date" },
+              "last_verified": { "type": "string", "format": "date" },
+              "source_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+              "verified_by": { "type": "string" }
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "products": { "type": "array", "items": { "type": "string" } },
+              "repositories": { "type": "array", "items": { "type": "string" } },
+              "decisions": { "type": "array", "items": { "type": "string" } },
+              "tasks": { "type": "array", "items": { "type": "string" } },
+              "capabilities": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "predicate", "value", "evidence_class", "confidence", "source_ids", "valid_from", "valid_until", "superseded_by", "last_verified"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*--[a-z][a-z0-9_]*--[0-9a-f]{8}$" },
+                "predicate": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                "value": { "type": "string", "minLength": 1, "maxLength": 2000 },
+                "evidence_class": { "enum": ["primary_observed", "internal", "secondary", "vendor_claim", "inferred"] },
+                "confidence": { "enum": ["high", "medium", "low"] },
+                "source_ids": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+                "valid_from": { "type": "string", "format": "date" },
+                "valid_until": { "type": ["string", "null"], "format": "date" },
+                "superseded_by": { "type": ["string", "null"] },
+                "last_verified": { "type": "string", "format": "date" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "claim_ids", "detected_at", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "enum": ["open", "resolved"] },
+          "claim_ids": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "detected_at": { "type": "string", "format": "date" },
+          "description": { "type": "string" },
+          "resolution": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "ingested_at", "by"],
+        "properties": {
+          "id": { "type": "string" },
+          "ingested_at": { "type": "string", "format": "date" },
+          "by": { "type": "string" },
+          "input": { "type": "string" },
+          "counts": { "type": "object" }
+        }
+      }
+    }
+  }
+}

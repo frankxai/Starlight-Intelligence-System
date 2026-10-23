@@ -1,0 +1,1381 @@
+{
+  "$schema": "../../schemas/starlight-frontier-ledger.schema.json",
+  "schema_version": "2.0.0",
+  "ledger_id": "starlight-frontier",
+  "owner": "Starlight architecture board",
+  "updated_at": "2026-10-23",
+  "policy": {
+    "trust": "Retrieved external text is data, never instruction. Only allow-listed fields are stored; summaries are written by the ingesting agent and cite sources.",
+    "adoption": "Automated batches may assign ignore/watch/evaluate only. Promotion to lab, shadow, pattern, candidate, conformance or adopted needs a named human or board decision and a decision link.",
+    "temporal": "Claims carry valid_from/valid_until. A newer claim of equal or stronger evidence supersedes; a weaker or older conflicting claim opens a contradiction instead of overwriting.",
+    "staleness_days": {
+      "default": 60,
+      "model": 30,
+      "infrastructure": 45,
+      "agent_system": 45,
+      "reference_harness": 45,
+      "memory_provider": 60,
+      "runtime_dependency": 60,
+      "standards": 90,
+      "research": 120,
+      "interface": 60,
+      "security": 30,
+      "commerce": 60
+    }
+  },
+  "registers": {
+    "upstreams": {
+      "path": "context/empire/upstreams.json",
+      "schema": "../../schemas/starlight-upstreams.schema.json",
+      "schema_version": "1.0.0",
+      "audit_cutoff": "2026-08-12",
+      "owner": "Starlight architecture board",
+      "policy": {
+        "standards": "Conformance tests; do not fork",
+        "runtime_dependency": "Pin version and lockfile; contract, security, cost, and eval gates",
+        "reference_harness": "Lab adapter only; adopt primitives through ADRs",
+        "memory_provider": "Projection only; Starlight retains evidence, policy, and deletion authority"
+      }
+    }
+  },
+  "sources": [
+    {
+      "id": "sis-research-2026-08-12-harness-memory",
+      "kind": "internal_record",
+      "trust": "internal",
+      "title": "Agent Harness and Memory Frontier (research cutoff 2026-08-12)",
+      "url": "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/docs/research/2026-08-12-agent-harness-memory-frontier.md",
+      "publisher": "Starlight-Intelligence-System",
+      "published_at": "2026-08-12",
+      "retrieved_at": "2026-10-23",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-affaan-m-ecc",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-10-10",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-ruvnet-ruflo",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-code-yeongyu-oh-my-openagent",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "code-yeongyu/oh-my-openagent",
+      "url": "https://github.com/code-yeongyu/oh-my-openagent",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-omnigent-ai-omnigent",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "omnigent-ai/omnigent",
+      "url": "https://github.com/omnigent-ai/omnigent",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-openai-agents-md",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "openai/agents.md",
+      "url": "https://github.com/openai/agents.md",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-openai-openai-agents-js",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "openai/openai-agents-js",
+      "url": "https://github.com/openai/openai-agents-js",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-pydantic-pydantic-ai",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "pydantic/pydantic-ai",
+      "url": "https://github.com/pydantic/pydantic-ai",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-mastra-ai-mastra",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "mastra-ai/mastra",
+      "url": "https://github.com/mastra-ai/mastra",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-langchain-ai-langgraph",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "langchain-ai/langgraph",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-getzep-graphiti",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "getzep/graphiti",
+      "url": "https://github.com/getzep/graphiti",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-letta-ai-letta-code",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "letta-ai/letta-code",
+      "url": "https://github.com/letta-ai/letta-code",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-vectorize-io-hindsight",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "vectorize-io/hindsight",
+      "url": "https://github.com/vectorize-io/hindsight",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-mem0ai-mem0",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "mem0ai/mem0",
+      "url": "https://github.com/mem0ai/mem0",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-topoteretes-cognee",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "topoteretes/cognee",
+      "url": "https://github.com/topoteretes/cognee",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-mempalace-mempalace",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "MemPalace/mempalace",
+      "url": "https://github.com/MemPalace/mempalace",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-zjunlp-memp",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "zjunlp/MemP",
+      "url": "https://github.com/zjunlp/MemP",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-08-12",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-frankxai-music-intelligence-os",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "frankxai/music-intelligence-os",
+      "url": "https://github.com/frankxai/music-intelligence-os",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-10-10",
+      "content_sha256": null
+    },
+    {
+      "id": "gh-frankxai-agentic-music-producer-os",
+      "kind": "github_repo",
+      "trust": "primary",
+      "title": "frankxai/agentic-music-producer-os",
+      "url": "https://github.com/frankxai/agentic-music-producer-os",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-10-10",
+      "content_sha256": null
+    },
+    {
+      "id": "rel-letta-ai-letta-code-v0-34-21",
+      "kind": "github_release",
+      "trust": "primary",
+      "title": "letta-ai/letta-code v0.34.21",
+      "url": "https://github.com/letta-ai/letta-code/releases/tag/v0.34.21",
+      "publisher": "github.com",
+      "published_at": "2026-10-22",
+      "retrieved_at": "2026-10-23",
+      "content_sha256": null
+    },
+    {
+      "id": "rel-frankxai-agentic-music-producer-os-head",
+      "kind": "github_release",
+      "trust": "primary",
+      "title": "frankxai/agentic-music-producer-os",
+      "url": "https://github.com/frankxai/agentic-music-producer-os/releases",
+      "publisher": "github.com",
+      "published_at": null,
+      "retrieved_at": "2026-10-23",
+      "content_sha256": null
+    }
+  ],
+  "records": [
+    {
+      "id": "ecc",
+      "kind": "repository",
+      "class": "reference_harness",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "owner": "starlight-agent-lab",
+      "summary": "Reviewed core profile plus workflow-quality, agentic-patterns, and security. Vendored in claude-code-config. Eight procedures re-expressed in claude-skills-library.",
+      "primitive": "Reviewed core profile plus workflow-quality, agentic-patterns, and security. Vendored in claude-code-config. Eight procedures re-expressed in claude-skills-library.",
+      "security_notes": "MIT. Lab watch only. No full profile, no observe hook, no second orchestrator. Hermes guard is watch, not earned.",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "lab",
+        "decided_at": "2026-10-10",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-10-10",
+        "last_verified": "2026-10-10",
+        "source_ids": [
+          "gh-affaan-m-ecc",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "ecc--track--a0a13e0e",
+          "predicate": "track",
+          "value": "4eb71d92a39cab44ad40ac9d8a6a5ccb4029d6c2",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-affaan-m-ecc",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-10-10",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-10"
+        }
+      ]
+    },
+    {
+      "id": "ruflo",
+      "kind": "repository",
+      "class": "reference_harness",
+      "title": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "owner": "starlight-agent-lab",
+      "summary": "optional plugins, authorization receipts, budgets, telemetry, poisoning defense, doctor/migrations",
+      "primitive": "optional plugins, authorization receipts, budgets, telemetry, poisoning defense, doctor/migrations",
+      "security_notes": "No wholesale import; regression-test concurrent memory writes and reject unpinned launches",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "lab",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-ruvnet-ruflo",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "ruflo--track--cffd6e1a",
+          "predicate": "track",
+          "value": "v3.38.0",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-ruvnet-ruflo",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "oh-my-openagent",
+      "kind": "repository",
+      "class": "reference_harness",
+      "title": "code-yeongyu/oh-my-openagent",
+      "url": "https://github.com/code-yeongyu/oh-my-openagent",
+      "owner": "starlight-agent-lab",
+      "summary": "planner-reviewer-executor separation, routing, hash-anchored edits, LSP/AST checks, completion events",
+      "primitive": "planner-reviewer-executor separation, routing, hash-anchored edits, LSP/AST checks, completion events",
+      "security_notes": "Pin stable; no unbounded loops, shared writers, or default telemetry",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "lab",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-code-yeongyu-oh-my-openagent",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "oh-my-openagent--track--bda3f885",
+          "predicate": "track",
+          "value": "stable v4.19.4; lab v5.0.0-beta.6",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-code-yeongyu-oh-my-openagent",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "omnigent",
+      "kind": "repository",
+      "class": "reference_harness",
+      "title": "omnigent-ai/omnigent",
+      "url": "https://github.com/omnigent-ai/omnigent",
+      "owner": "starlight-agent-lab",
+      "summary": "common runner, capability catalog, policies, budgets, isolated runners, session routing",
+      "primitive": "common runner, capability catalog, policies, budgets, isolated runners, session routing",
+      "security_notes": "Retain explicit approval authority; upstream remains 0.x",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "lab",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Lab adapter only; adopt primitives through ADRs)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-omnigent-ai-omnigent",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "omnigent--track--623beb91",
+          "predicate": "track",
+          "value": "v0.9.0",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-omnigent-ai-omnigent",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "openai-agent-standards",
+      "kind": "spec",
+      "class": "standards",
+      "title": "openai/agents.md",
+      "url": "https://github.com/openai/agents.md",
+      "owner": "Starlight-Intelligence-System",
+      "summary": "AGENTS.md and Agent Skills portability",
+      "primitive": "AGENTS.md and Agent Skills portability",
+      "security_notes": "Keep entry-point instructions small; repo documentation remains source of truth",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "conformance",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Conformance tests; do not fork)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-openai-agents-md",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "openai-agent-standards--track--805c484b",
+          "predicate": "track",
+          "value": "official specification and Codex documentation",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-openai-agents-md",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "openai-agents-sdk",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "openai/openai-agents-js",
+      "url": "https://github.com/openai/openai-agents-js",
+      "owner": "starlight-swarm",
+      "summary": "agent loop, tools, handoffs, sessions, guardrails, tracing, sandbox workspaces",
+      "primitive": "agent loop, tools, handoffs, sessions, guardrails, tracing, sandbox workspaces",
+      "security_notes": "Conversation state and workspace snapshots are not durable Starlight memory",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "candidate",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-openai-openai-agents-js",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "openai-agents-sdk--track--b8ec93af",
+          "predicate": "track",
+          "value": "evaluate pinned release before adapter promotion",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-openai-openai-agents-js",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "pydantic-ai-harness",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "pydantic/pydantic-ai",
+      "url": "https://github.com/pydantic/pydantic-ai",
+      "owner": "starlight-evals",
+      "summary": "capabilities, CAS/idempotency, budgets, durable Python workers",
+      "primitive": "capabilities, CAS/idempotency, budgets, durable Python workers",
+      "security_notes": "0.x harness API; model-authored capabilities remain untrusted",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "candidate",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-pydantic-pydantic-ai",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "pydantic-ai-harness--track--f04d0fe4",
+          "predicate": "track",
+          "value": "harness v0.18.1",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-pydantic-pydantic-ai",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "mastra-agent-controller",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "mastra-ai/mastra",
+      "url": "https://github.com/mastra-ai/mastra",
+      "owner": "starlight-command-center",
+      "summary": "sessions, modes, approvals, steer/interrupt/queue, channels, events, subagents, workspaces",
+      "primitive": "sessions, modes, approvals, steer/interrupt/queue, channels, events, subagents, workspaces",
+      "security_notes": "Do not adopt beta schemas as canonical Starlight contracts",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "candidate",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-mastra-ai-mastra",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "mastra-agent-controller--track--ce3ded18",
+          "predicate": "track",
+          "value": "beta; pin exact package during evaluation",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-mastra-ai-mastra",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "langgraph",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "langchain-ai/langgraph",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "owner": "starlight-swarm",
+      "summary": "checkpoints, interrupts, replay, time travel, human-in-the-loop",
+      "primitive": "checkpoints, interrupts, replay, time travel, human-in-the-loop",
+      "security_notes": "Workflow layer only; durable-wrap non-idempotent effects",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "candidate",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-langchain-ai-langgraph",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "langgraph--track--69f29c8b",
+          "predicate": "track",
+          "value": "pin only where deterministic durable workflows are required",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-langchain-ai-langgraph",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "graphiti",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "getzep/graphiti",
+      "url": "https://github.com/getzep/graphiti",
+      "owner": "starlight-memory",
+      "summary": "bitemporal claims, invalidation, episode provenance, hybrid graph retrieval",
+      "primitive": "bitemporal claims, invalidation, episode provenance, hybrid graph retrieval",
+      "security_notes": "Enforce authorization before provider access; group_id is not a tenant boundary; older filters had Cypher injection",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "shadow",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-getzep-graphiti",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "graphiti--track--a550f8a6",
+          "predicate": "track",
+          "value": "v0.29.3; core security floor 0.28.2; MCP floor 1.0.2",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-getzep-graphiti",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "letta-code",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "letta-ai/letta-code",
+      "url": "https://github.com/letta-ai/letta-code",
+      "owner": "starlight-memory",
+      "summary": "Git MemFS, pinned versus on-demand memory, agent-private guard, dreaming, doctor",
+      "primitive": "Git MemFS, pinned versus on-demand memory, agent-private guard, dreaming, doctor",
+      "security_notes": "Track Letta Code, not legacy letta-ai/letta; use one consolidator for shared rewrites",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "pattern",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-10-23",
+        "source_ids": [
+          "gh-letta-ai-letta-code",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "letta-code--track--ce763175",
+          "predicate": "track",
+          "value": "v0.30.19",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-letta-ai-letta-code",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        },
+        {
+          "id": "letta-code--latest_release--8570bf2e",
+          "predicate": "latest_release",
+          "value": "v0.34.21",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "rel-letta-ai-letta-code-v0-34-21"
+          ],
+          "valid_from": "2026-10-22",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23"
+        },
+        {
+          "id": "letta-code--archived--e2dde712",
+          "predicate": "archived",
+          "value": "false",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "rel-letta-ai-letta-code-v0-34-21"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23"
+        },
+        {
+          "id": "letta-code--license--26c183ca",
+          "predicate": "license",
+          "value": "Apache-2.0",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "rel-letta-ai-letta-code-v0-34-21"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23"
+        }
+      ]
+    },
+    {
+      "id": "hindsight",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "vectorize-io/hindsight",
+      "url": "https://github.com/vectorize-io/hindsight",
+      "owner": "starlight-memory",
+      "summary": "separate evidence, experience, entity summary, and belief networks",
+      "primitive": "separate evidence, experience, entity summary, and belief networks",
+      "security_notes": "Application authentication and authorization remain mandatory",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "shadow",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-vectorize-io-hindsight",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "hindsight--track--f1520d66",
+          "predicate": "track",
+          "value": "pin immutable revision for shadow evaluation",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-vectorize-io-hindsight",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "mem0",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "mem0ai/mem0",
+      "url": "https://github.com/mem0ai/mem0",
+      "owner": "starlight-memory",
+      "summary": "ADD-only extraction, entity-assisted hybrid search, temporal ranking, expiry, decay",
+      "primitive": "ADD-only extraction, entity-assisted hybrid search, temporal ranking, expiry, decay",
+      "security_notes": "OSS v3 migration removes graph drivers despite inconsistent overview documentation",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "shadow",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-mem0ai-mem0",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "mem0--track--b05aa66f",
+          "predicate": "track",
+          "value": "v3 API; contract-test OSS and Platform separately",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-mem0ai-mem0",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "cognee",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "topoteretes/cognee",
+      "url": "https://github.com/topoteretes/cognee",
+      "owner": "starlight-memory",
+      "summary": "remember-recall-improve promotion lifecycle",
+      "primitive": "remember-recall-improve promotion lifecycle",
+      "security_notes": "Test concurrent improve, partial failure, stale-lock reclamation, and recovery",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "shadow",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-topoteretes-cognee",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "cognee--track--ac714eec",
+          "predicate": "track",
+          "value": "v1.4.2",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-topoteretes-cognee",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "mempalace",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "MemPalace/mempalace",
+      "url": "https://github.com/MemPalace/mempalace",
+      "owner": "starlight-memory",
+      "summary": "verbatim-first local evidence and raw-recall baseline",
+      "primitive": "verbatim-first local evidence and raw-recall baseline",
+      "security_notes": "Retrieval recall is not answer accuracy; hierarchy is metadata scoping; verify RBAC and deletion",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "shadow",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-mempalace-mempalace",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "mempalace--track--a653aaa7",
+          "predicate": "track",
+          "value": "release or immutable image digest; never floating develop",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-mempalace-mempalace",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "memp",
+      "kind": "repository",
+      "class": "memory_provider",
+      "title": "zjunlp/MemP",
+      "url": "https://github.com/zjunlp/MemP",
+      "owner": "starlight-agent-skills",
+      "summary": "versioned procedural-memory extraction, correction, and deprecation",
+      "primitive": "versioned procedural-memory extraction, correction, and deprecation",
+      "security_notes": "Never promote learned procedures without repeated success, tests, provenance, and review",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "pattern",
+        "decided_at": "2026-08-12",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Projection only; Starlight retains evidence, policy, and deletion authority)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-08-12",
+        "last_verified": "2026-08-12",
+        "source_ids": [
+          "gh-zjunlp-memp",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "memp--track--9b6492a5",
+          "predicate": "track",
+          "value": "research reference",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-zjunlp-memp",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-08-12",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-08-12"
+        }
+      ]
+    },
+    {
+      "id": "music-intelligence-os",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "frankxai/music-intelligence-os",
+      "url": "https://github.com/frankxai/music-intelligence-os",
+      "owner": "Starlight-Intelligence-System",
+      "summary": "October operated studio core engine and studio workflow runtime",
+      "primitive": "October operated studio core engine and studio workflow runtime",
+      "security_notes": "Retain label policies and Notion bindings in SIS; point studio execution to operated core without runtime duplication",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "conformance",
+        "decided_at": "2026-10-10",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-10-10",
+        "last_verified": "2026-10-10",
+        "source_ids": [
+          "gh-frankxai-music-intelligence-os",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "music-intelligence-os--track--ac7ce0dd",
+          "predicate": "track",
+          "value": "PR #4 October operated studio source",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-frankxai-music-intelligence-os",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-10-10",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-10"
+        }
+      ]
+    },
+    {
+      "id": "agentic-music-producer-os",
+      "kind": "repository",
+      "class": "runtime_dependency",
+      "title": "frankxai/agentic-music-producer-os",
+      "url": "https://github.com/frankxai/agentic-music-producer-os",
+      "owner": "Starlight-Intelligence-System",
+      "summary": "portable execution and customer distribution runtime",
+      "primitive": "portable execution and customer distribution runtime",
+      "security_notes": "Retain registries and canon in SIS; delegate portable distribution execution without runtime duplication",
+      "license": null,
+      "registers": [
+        "upstreams"
+      ],
+      "adoption": {
+        "state": "candidate",
+        "decided_at": "2026-10-10",
+        "decided_by": "Starlight architecture board",
+        "rationale": "Migrated from v1 upstream register (Pin version and lockfile; contract, security, cost, and eval gates)"
+      },
+      "proposals": [],
+      "provenance": {
+        "first_seen": "2026-10-10",
+        "last_verified": "2026-10-23",
+        "source_ids": [
+          "gh-frankxai-agentic-music-producer-os",
+          "sis-research-2026-08-12-harness-memory"
+        ],
+        "verified_by": "Starlight architecture board"
+      },
+      "links": {
+        "products": [],
+        "repositories": [
+          "frankxai/Starlight-Intelligence-System"
+        ],
+        "decisions": [],
+        "tasks": [],
+        "capabilities": []
+      },
+      "claims": [
+        {
+          "id": "agentic-music-producer-os--track--86c491f5",
+          "predicate": "track",
+          "value": "October distribution core",
+          "evidence_class": "internal",
+          "confidence": "high",
+          "source_ids": [
+            "gh-frankxai-agentic-music-producer-os",
+            "sis-research-2026-08-12-harness-memory"
+          ],
+          "valid_from": "2026-10-10",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-10"
+        },
+        {
+          "id": "agentic-music-producer-os--archived--e2dde712",
+          "predicate": "archived",
+          "value": "false",
+          "evidence_class": "primary_observed",
+          "confidence": "high",
+          "source_ids": [
+            "rel-frankxai-agentic-music-producer-os-head"
+          ],
+          "valid_from": "2026-10-23",
+          "valid_until": null,
+          "superseded_by": null,
+          "last_verified": "2026-10-23"
+        }
+      ]
+    }
+  ],
+  "contradictions": [],
+  "batches": [
+    {
+      "id": "migrate-v1-upstreams",
+      "ingested_at": "2026-10-23",
+      "by": "migrateV1",
+      "input": "context/empire/upstreams.json",
+      "counts": {
+        "records": 18,
+        "sources": 19
+      }
+    },
+    {
+      "id": "watch-2026-10-23",
+      "ingested_at": "2026-10-23",
+      "by": "agent:watch-2026-10-23",
+      "input": "batch:watch-2026-10-23",
+      "counts": {
+        "source_added": 2,
+        "claim_added": 4
+      }
+    }
+  ]
+}
