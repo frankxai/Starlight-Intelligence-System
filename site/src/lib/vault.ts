@@ -165,6 +165,9 @@ async function fetchGitHubFile(
 ): Promise<string | null> {
   return fetchGitHubTextFile(repo, path, {
     token: process.env.GITHUB_TOKEN,
+    // Registry entries are public by contract. A stale or rate-limited token
+    // must not make those same public bytes unavailable.
+    allowUnauthenticatedFallback: true,
   });
 }
 
