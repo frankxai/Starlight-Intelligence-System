@@ -19,6 +19,7 @@ It exists so that future agents and people can answer four questions without res
 | `context/frontier/reports/*.md` | Generated digests (`frontier:report`). |
 | `context/frontier/universe/` | Ranked GitHub discovery index (metadata only) and its manifest. |
 | `schemas/starlight-frontier-ledger.schema.json` | Structural schema. Semantic rules live in `scripts/frontier/lib.mjs`. |
+| `context/frontier/ci/frontier-ledger.workflow.yml` | Proposed zero-dependency CI gate. **Move to `.github/workflows/frontier-ledger.yml`** — the authoring integration lacks workflow-write permission, so a maintainer must place it. |
 
 ## Model
 

@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-10-23",
+  "method": "GitHub search metadata only (no cloning): AI topic sweeps (stars>=300, pushed>=2026-04-01) plus a global stars-descending sweep, then relevance ranking by capability layer, recency, licence and stars. Stars are a weak prior, not a quality signal.",
+  "indexed_repositories": 7385,
+  "relevant_repositories": 4815,
+  "ranked_published": 500,
+  "discovery_sources": {
+    "topic": 11007,
+    "global": 1999
+  },
+  "relevant_per_category": {
+    "agent_orchestration": 2725,
+    "coding_agents": 1821,
+    "mcp_tools": 1356,
+    "memory_context": 1018,
+    "sandbox_security": 387,
+    "model_routing_inference": 531,
+    "multimodal_creative": 399,
+    "models_open_weights": 151,
+    "durable_execution": 568,
+    "browser_computer_use": 204,
+    "knowledge_research": 201,
+    "generative_ui_design": 198,
+    "evals_observability": 653
+  },
+  "limits": "Unauthenticated GitHub search returns at most 1,000 results per query at 10 requests/minute; coverage is bounded by crawl time. Not a full top-100k census.",
+  "relevant_flags": {
+    "star_velocity_anomaly": 24,
+    "no_license": 854,
+    "curated_list": 402
+  }
+}

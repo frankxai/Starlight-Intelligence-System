@@ -399,7 +399,8 @@ export function migrateV1(v1, { today, researchDoc }) {
         rationale: `Migrated from v1 upstream register (${v1.policy[u.class]})`,
       },
       proposals: [],
-      provenance: { first_seen: u.verified_at, last_verified: u.verified_at, source_ids: sourceIds, verified_by: v1.owner },
+      // v1 records only "verified_at"; the record was known no later than the register's audit cutoff.
+      provenance: { first_seen: u.verified_at < v1.audit_cutoff ? u.verified_at : v1.audit_cutoff, last_verified: u.verified_at, source_ids: sourceIds, verified_by: v1.owner },
       links: { products: [], repositories: ["frankxai/Starlight-Intelligence-System"], decisions: [], tasks: [], capabilities: [] },
       claims: [
         {
@@ -675,10 +676,11 @@ export function buildReport(ledger, { today, since }) {
   lines.push(`## What changed since ${since}`, "");
   const changed = [];
   for (const r of recs) {
-    if (r.provenance.first_seen >= since) changed.push(`- **New:** \`${r.id}\` (${r.class}, ${r.adoption.state}) — ${r.title}`);
+    // `since` is the previous audit date: knowledge recorded on that date is not a change after it.
+    if (r.provenance.first_seen > since) changed.push(`- **New:** \`${r.id}\` (${r.class}, ${r.adoption.state}) — ${r.title}`);
     for (const c of r.claims) {
-      if (c.valid_from >= since && r.provenance.first_seen < since) changed.push(`- **${c.predicate}** for \`${r.id}\`: ${c.value} (${c.evidence_class}, ${c.confidence})`);
-      if (c.superseded_by && c.valid_until >= since) changed.push(`- Superseded \`${r.id}\`.${c.predicate}: ${c.value} → see \`${c.superseded_by}\``);
+      if (c.valid_from > since && r.provenance.first_seen <= since) changed.push(`- **${c.predicate}** for \`${r.id}\`: ${c.value} (${c.evidence_class}, ${c.confidence})`);
+      if (c.superseded_by && c.valid_until > since) changed.push(`- Superseded \`${r.id}\`.${c.predicate}: ${c.value} → see \`${c.superseded_by}\``);
     }
   }
   lines.push(...(changed.length ? changed : ["- No changes."]), "");

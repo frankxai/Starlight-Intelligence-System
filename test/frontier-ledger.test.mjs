@@ -199,6 +199,12 @@ describe("report", () => {
     assert.ok(a.includes("`paper-r`"));
     assert.ok(a.includes("→ **adopted**"));
   });
+  it("treats the since date as exclusive so knowledge from the previous audit is not reported as new", () => {
+    const md = buildReport(base(), { today: TODAY, since: "2026-08-12" });
+    const section = md.split("## What changed since 2026-08-12")[1].split("## ")[0];
+    assert.ok(!section.includes("**New:**"), "records known at the previous audit are not new");
+    assert.ok(section.includes("**track** for `ecc`"), "ECC was re-verified on 2026-10-10, after the audit, so its track is a change");
+  });
 });
 
 describe("CLI gates", () => {
