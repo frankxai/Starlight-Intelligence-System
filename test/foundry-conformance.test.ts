@@ -1,13 +1,5 @@
 interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
 import { describe, it } from "node:test";
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
-interface ValidationError { code?: string; keyword?: string; }
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
@@ -81,7 +73,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
       [claude.version, claude.integrity],
     );
     for (const validator of [lock.openai.codexLoader, lock.claude.strictValidator]) {
-      for (const expected of Object.values(validator.platformPackages) as [string, { package: string }][]) {
+      for (const expected of Object.values(validator.platformPackages) as { package: string; version: string; integrity: string }[]) {
         const actual = nativeLock.packages[`node_modules/${expected.package}`];
         assert.deepEqual(
           [actual?.version, actual?.integrity],
@@ -90,7 +82,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
         );
       }
     }
-    for (const [name, expected] of Object.entries(lock.openai.rules.implementation) as [string, { package: string }][]) {
+    for (const [name, expected] of Object.entries(lock.openai.rules.implementation) as [string, { version: string; integrity: string }][]) {
       const actual = npmLock.packages[`node_modules/${name}`];
       assert.deepEqual([actual?.version, actual?.integrity], [expected.version, expected.integrity], name);
     }
