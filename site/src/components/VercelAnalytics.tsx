@@ -1,10 +1,10 @@
 "use client";
 
-import { Analytics } from "@vercel/analytics/react";
-import { usePathname } from "next/navigation";
+import { Analytics } from "@vercel/analytics/next";
 
 // Privacy: strip query strings and hashes from every event URL before it
-// leaves the browser, and report the bare pathname as route/path.
+// leaves the browser. The Next.js integration reports the bare pathname as
+// path and the framework route pattern (e.g. /path/[stage]) as route.
 function withoutUrlDetails<T extends { url: string }>(event: T): T | null {
   try {
     const url = new URL(event.url);
@@ -17,6 +17,5 @@ function withoutUrlDetails<T extends { url: string }>(event: T): T | null {
 }
 
 export function VercelAnalytics() {
-  const path = usePathname() || "/";
-  return <Analytics framework="next" route={path} path={path} beforeSend={withoutUrlDetails} />;
+  return <Analytics beforeSend={withoutUrlDetails} />;
 }
