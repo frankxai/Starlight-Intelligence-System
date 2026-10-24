@@ -320,22 +320,23 @@ describe("evaluation input checks and cost constraints", () => {
     assert.match(unknown.issues.join(" "), /invalid actor\/action\/executed-node input/);
   });
 
-  it("rejects non-finite route totals", () => {
-    const infiniteCostGraph = {
+  it("rejects non-finite route totals caused by overflow", () => {
+    const overflowGraph = {
       ...diamond,
       nodes: [
-        { ...diamond.nodes[0], costUnits: Infinity },
-        ...diamond.nodes.slice(1),
+        { ...diamond.nodes[0], costUnits: Number.MAX_VALUE },
+        { ...diamond.nodes[1], costUnits: Number.MAX_VALUE },
+        ...diamond.nodes.slice(2),
       ]
     };
-    const result = evaluateLoopGraph(infiniteCostGraph, {
+    const result = evaluateLoopGraph(overflowGraph, {
       facts: {},
       actorId: "agent:hermes",
       turnsUsed: 0,
       costUsed: 0,
     });
     assert.equal(result.ok, false);
-    assert.match(result.issues.join(" "), /costUnits must be a finite non-negative number/);
+    assert.match(result.issues.join(" "), /non-finite route cost/);
   });
 
   it("allows costs exactly at the limit and rejects costs above the limit", () => {
