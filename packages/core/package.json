@@ -23,7 +23,8 @@
     "./schemas/cost-record": "./schemas/cost-record.schema.json",
     "./schemas/eval-result": "./schemas/eval-result.schema.json",
     "./schemas/vault-loop-entry": "./schemas/vault-loop-entry.schema.json",
-    "./schemas/work-graph-event": "./schemas/work-graph-event.schema.json"
+    "./schemas/work-graph-event": "./schemas/work-graph-event.schema.json",
+    "./schemas/session-state": "./schemas/session-state.schema.json"
   },
   "license": "MIT",
   "repository": {
