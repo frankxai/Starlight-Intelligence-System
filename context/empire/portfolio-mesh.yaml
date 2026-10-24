@@ -17,7 +17,7 @@
 
 version: 0.2.0
 generated_by: scripts/mesh-generate.mjs
-generated_at: "2026-10-12"
+generated_at: "2026-10-24"
 curated_source: context/empire/mesh.curated.json
 maintainer: Starlight-Intelligence-System/context/empire/
 

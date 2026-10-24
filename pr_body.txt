@@ -5,6 +5,7 @@ Class: docs
   - Fix `starlight init` back to `node dist/cli.js init` so it uses the local build output without a global installation dependency in `README.md`.
 - Generated .env.example with variables extracted from codebase and docs.
 - Added `!.env.example` in `.gitignore`.
+- Updated mesh checked files with `npm run mesh:generate`.
 
 Verified changes by running the updated commands locally:
 - `node dist/cli.js init --vaults` passes (or prints valid usage).
