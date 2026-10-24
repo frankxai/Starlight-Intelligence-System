@@ -259,3 +259,104 @@ describe("effort-scale, capacity, shared gist", () => {
     assert.match(result.issues.join(" "), /shared-gist missing for executed node scan-b/);
   });
 });
+
+describe("additional invalid executed input types", () => {
+  it("rejects executed parameter if it is an object or string instead of array", () => {
+    const objResult = evaluateLoopGraph(diamond, {
+      facts: {},
+      actorId: "agent:hermes",
+      turnsUsed: 0,
+      costUsed: 0,
+      // @ts-expect-error forcing malformed input
+      executed: { "node": true }
+    });
+    assert.equal(objResult.ok, false);
+    assert.match(objResult.issues.join(" "), /invalid evaluation input/);
+
+    const stringResult = evaluateLoopGraph(diamond, {
+      facts: {},
+      actorId: "agent:hermes",
+      turnsUsed: 0,
+      costUsed: 0,
+      // @ts-expect-error forcing malformed input
+      executed: "some-node"
+    });
+    assert.equal(stringResult.ok, false);
+    assert.match(stringResult.issues.join(" "), /invalid evaluation input/);
+  });
+});
+
+describe("evaluation input checks and cost constraints", () => {
+  it("rejects malformed evaluation inputs", () => {
+    const result = evaluateLoopGraph(diamond, {
+      facts: {},
+      actorId: "   ",
+      turnsUsed: 0,
+      costUsed: 0,
+    });
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join(" "), /invalid actor\/action\/executed-node input/);
+  });
+
+  it("rejects duplicate or unknown executed nodes", () => {
+    const duplicate = evaluateLoopGraph(diamond, {
+      facts: {},
+      actorId: "agent:hermes",
+      turnsUsed: 0,
+      costUsed: 0,
+      executed: ["scan-a", "scan-a"],
+    });
+    assert.equal(duplicate.ok, false);
+    assert.match(duplicate.issues.join(" "), /invalid actor\/action\/executed-node input/);
+
+    const unknown = evaluateLoopGraph(diamond, {
+      facts: {},
+      actorId: "agent:hermes",
+      turnsUsed: 0,
+      costUsed: 0,
+      executed: ["unknown-node"],
+    });
+    assert.equal(unknown.ok, false);
+    assert.match(unknown.issues.join(" "), /invalid actor\/action\/executed-node input/);
+  });
+
+  it("rejects non-finite route totals caused by overflow", () => {
+    const overflowGraph = {
+      ...diamond,
+      nodes: [
+        { ...diamond.nodes[0], costUnits: Number.MAX_VALUE },
+        { ...diamond.nodes[1], costUnits: Number.MAX_VALUE },
+        ...diamond.nodes.slice(2),
+      ]
+    };
+    const result = evaluateLoopGraph(overflowGraph, {
+      facts: {},
+      actorId: "agent:hermes",
+      turnsUsed: 0,
+      costUsed: 0,
+    });
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join(" "), /non-finite route cost/);
+  });
+
+  it("allows costs exactly at the limit and rejects costs above the limit", () => {
+    const exactlyAtLimit = evaluateLoopGraph(diamond, {
+      facts: { writebacks: ["scan-a", "scan-b", "reduce", "synthesize", "verify"] },
+      actorId: "agent:hermes",
+      verifierActorId: "agent:checker",
+      turnsUsed: 0,
+      costUsed: 9,
+    });
+    assert.equal(exactlyAtLimit.ok, true);
+
+    const slightlyAboveLimit = evaluateLoopGraph(diamond, {
+      facts: { writebacks: ["scan-a", "scan-b", "reduce", "synthesize", "verify"] },
+      actorId: "agent:hermes",
+      verifierActorId: "agent:checker",
+      turnsUsed: 0,
+      costUsed: 10,
+    });
+    assert.equal(slightlyAboveLimit.ok, false);
+    assert.match(slightlyAboveLimit.issues.join(" "), /prospective cost overrun/);
+  });
+});

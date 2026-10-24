@@ -1,7 +1,7 @@
 {
   "schemaVersion": "starlight.specialist-catalog.v1",
   "projection": "operational; original profiles and Foundry ontology IDs remain authoritative for their existing consumers",
-  "sourceDigest": "aae45b8094369a2d4b45f0a97bd06b332ca846bcf1c2de756b2bbb4938eebab5",
+  "sourceDigest": "7ebf01d3a4fd4d82bbca7ba864ee5851c5a00b3ad6f74ffeb6919aa1ff737974",
   "count": 151,
   "naming": {
     "default": "descriptive-role",
@@ -1016,7 +1016,7 @@
     },
     {
       "path": "src/loop-graph.ts",
-      "sha256": "e0ac67beed3faadc1ba27de3209d69ce73297423a469b238bf82dc84efccbff4"
+      "sha256": "74f00cac2aea439c8f032970e18f605dd80d54a84abf93b698adcca1483b4330"
     },
     {
       "path": "src/work-graph.ts",

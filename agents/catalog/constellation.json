@@ -1,6 +1,6 @@
 {
   "schemaVersion": "starlight.specialist-constellation.v1",
-  "sourceDigest": "aae45b8094369a2d4b45f0a97bd06b332ca846bcf1c2de756b2bbb4938eebab5",
+  "sourceDigest": "7ebf01d3a4fd4d82bbca7ba864ee5851c5a00b3ad6f74ffeb6919aa1ff737974",
   "kind": "discovery-and-policy-projection",
   "execution": "No scheduler, delegation authority, runtime activation, or data access is created by an edge. Use the existing loop and work graph contracts.",
   "nodes": [
