@@ -1,0 +1,16 @@
+Class: docs
+
+- Fixed broken commands in README.md, AGENTS.md, CLAUDE.md.
+  - Fix `export-specialist.mjs <id>` to `export-specialist.mjs <stable-id|profile-name>` so it actually works.
+  - Fix `starlight init` back to `node dist/cli.js init` so it uses the local build output without a global installation dependency in `README.md`.
+- Generated .env.example with variables extracted from codebase and docs.
+- Added `!.env.example` in `.gitignore`.
+
+Verified changes by running the updated commands locally:
+- `node dist/cli.js init --vaults` passes (or prints valid usage).
+- `node scripts/export-specialist.mjs starlight-navigator --print` parses the config successfully.
+- `node scripts/validate-public-vault.mjs` outputs "Public vault registry + template valid."
+- `npm run agents:harness-check` outputs "SIS agent harness check passed".
+
+Pre-existing failures:
+I deliberately left `npm test` test suite failures alone as fixing unit test regressions (like the `v9.2 Foundry portable plugin compiler` failures) is outside the scope of fixing documentation commands.
