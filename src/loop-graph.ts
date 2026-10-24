@@ -383,7 +383,7 @@ export function evaluateLoopGraph(graph: LoopGraph, input: LoopEvaluationInput):
   if (typeof input.actorId !== "string" || !input.actorId.trim() ||
     (input.verifierActorId !== undefined && (typeof input.verifierActorId !== "string" || !input.verifierActorId.trim())) ||
     (input.proposedAction !== undefined && (typeof input.proposedAction !== "string" || !input.proposedAction.trim())) ||
-    (input.executed !== undefined && (new Set(input.executed).size !== input.executed.length ||
+    (input.executed !== undefined && (!Array.isArray(input.executed) || new Set(input.executed).size !== input.executed.length ||
       input.executed.some((id) => !compiled.nodes.some((node) => node.id === id))))) {
     return { ok: false, halted: false, route: [], costUnits: 0, issues: ["invalid actor/action/executed-node input"] };
   }
