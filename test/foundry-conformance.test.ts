@@ -330,7 +330,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const nestedResult = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(nestedResult.status, "fail");
-      const structure = nestedResult.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skills-structure");
+      const structure = nestedResult.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: string[] }) => check.id === "skills-structure");
       assert.equal(structure?.status, "fail");
       assert.ok(structure?.errors.some((error: string) => error.includes("not an immediate")));
     } finally {
