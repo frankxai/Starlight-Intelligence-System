@@ -121,6 +121,7 @@ export function compileLoopGraph(graph: LoopGraph): CompiledLoopGraph {
     typeof e.contract !== "string" || (e.when !== undefined && (!e.when || typeof e.when.field !== "string" ||
       typeof e.when.equals !== "string")))) return invalid("invalid edge");
   if (graph.schema !== "starlight.loop-graph.v1") issues.push("schema must be starlight.loop-graph.v1");
+  if (!["maker", "checker", "system", "orchestrator"].includes(graph.executorRole)) issues.push("unknown executor role");
   if (graph.executorRole === graph.supervisorRole) issues.push("executor and supervisor roles must differ");
   if (graph.supervisorRole !== "checker") issues.push("supervisorRole must be checker");
   if (!Number.isSafeInteger(graph.brakes.maxTurns) || graph.brakes.maxTurns <= 0) issues.push("maxTurns must be a positive integer");
@@ -379,12 +380,22 @@ export function evaluateLoopGraph(graph: LoopGraph, input: LoopEvaluationInput):
     !Number.isFinite(input.costUsed) || input.costUsed < 0) {
     return { ok: false, halted: false, route: [], costUnits: 0, issues: ["invalid evaluation input"] };
   }
+  if (typeof input.actorId !== "string" || !input.actorId.trim() ||
+    (input.verifierActorId !== undefined && (typeof input.verifierActorId !== "string" || !input.verifierActorId.trim())) ||
+    (input.proposedAction !== undefined && (typeof input.proposedAction !== "string" || !input.proposedAction.trim())) ||
+    (input.executed !== undefined && (new Set(input.executed).size !== input.executed.length ||
+      input.executed.some((id) => !compiled.nodes.some((node) => node.id === id))))) {
+    return { ok: false, halted: false, route: [], costUnits: 0, issues: ["invalid actor/action/executed-node input"] };
+  }
   const issues = [...compiled.issues];
   const haltReason = compiled.ok ? brakeHalt(graph, input) : undefined;
   const route = haltReason || !compiled.ok ? [] : routeGraph(graph, input.facts);
   if (compiled.ok && !haltReason && route.length === 0) issues.push("route has no unique matching branch or default");
   const indexedNodes = nodeById(graph);
   const costUnits = route.reduce((sum, id) => sum + (indexedNodes.get(id)?.costUnits ?? 0), 0);
+
+  if (!Number.isFinite(costUnits)) issues.push("non-finite route cost");
+  else if (input.costUsed + costUnits > graph.brakes.maxCostUnits) issues.push("prospective cost overrun");
 
   if (input.verifierActorId && input.verifierActorId === input.actorId) {
     issues.push("supervisor must differ from executor; same-actor verification is rejected");
