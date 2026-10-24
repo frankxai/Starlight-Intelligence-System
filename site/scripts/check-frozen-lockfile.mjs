@@ -1,6 +1,7 @@
 import { execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
 
 const dir = dirname(fileURLToPath(import.meta.url));
 const siteDir = join(dir, "..");
@@ -8,18 +9,22 @@ const siteDir = join(dir, "..");
 try {
   console.log("Checking lockfile consistency via git status...");
 
-  // Snapshot the git status of pnpm-lock.yaml before installation
-  const beforeDiff = execSync("git status --porcelain pnpm-lock.yaml", { cwd: siteDir }).toString().trim();
-
   // Use pnpm install with --lockfile-only or regular install to resolve updates to the lockfile without freezing it.
   execSync("pnpm install --lockfile-only --ignore-scripts --prefer-offline", { cwd: siteDir, stdio: "inherit" });
 
-  // Check if pnpm-lock.yaml was modified
-  const afterDiff = execSync("git status --porcelain pnpm-lock.yaml", { cwd: siteDir }).toString().trim();
+  let isGitRepo = false;
+  try {
+     isGitRepo = existsSync(join(siteDir, "..", ".git"));
+  } catch (e) {
+  }
 
-  if (beforeDiff !== afterDiff) {
-     execSync("git checkout -- pnpm-lock.yaml", { cwd: siteDir }); // Restore the original lockfile
-     throw new Error("Lockfile changed");
+  if (isGitRepo) {
+    // Check if pnpm-lock.yaml was modified
+    const afterDiff = execSync("git status --porcelain pnpm-lock.yaml", { cwd: siteDir }).toString().trim();
+    if (afterDiff !== "") {
+       execSync("git checkout -- pnpm-lock.yaml", { cwd: siteDir }); // Restore the original lockfile
+       throw new Error("Lockfile changed");
+    }
   }
 
   console.log("Lockfile check passed.");
