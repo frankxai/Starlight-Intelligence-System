@@ -32,7 +32,7 @@ const CONTRACTS = join(ROOT, "foundry", "contracts");
 const EXAMPLES = join(ROOT, "foundry", "examples");
 const registry = loadContractRegistry(CONTRACTS);
 
-function json<T = Record<string, unknown>>(path: string): T {
+function json(path: string) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
@@ -124,7 +124,7 @@ function openaiListing(overrides: Record<string, unknown> = {}) {
 }
 
 function validPlatformReceipt() {
-  const receipt: Record<string, unknown> = {
+  const receipt = {
     $schema: "https://starlightintelligence.org/schemas/foundry/platform-release-receipt.schema.json",
     schemaVersion: "1.0.0",
     receiptId: "release-openai-001",
@@ -272,7 +272,7 @@ describe("v9.2 Foundry contracts", () => {
       registry,
     );
     assert.equal(result.valid, true, JSON.stringify(result.errors));
-    const ids = registryValue.surfaces.map((surface: { id: string }) => surface.id);
+    const ids = registryValue.surfaces.map((surface: { id: string, surface?: string, adapterTier?: string }) => surface.id);
     assert.equal(new Set(ids).size, ids.length);
     const receiptContract = getContract(registry, "platform-release-receipt") as { properties: { host: { properties: { registryId: { enum: string[] } } } }; oneOf: { properties: { host: { properties: { registryId: { const: string }, surface: { const: string } } }, adapter: { properties: { tier: { const: string } } } } }[] };
     const receiptHostIds = receiptContract.properties.host.properties.registryId.enum;
@@ -282,7 +282,7 @@ describe("v9.2 Foundry contracts", () => {
       surface: branch.properties.host.properties.surface.const,
       adapterTier: branch.properties.adapter.properties.tier.const,
     }));
-    const registryBindings = registryValue.surfaces.map((surface: { id: string }) => ({
+    const registryBindings = registryValue.surfaces.map((surface: { id: string, surface: string, adapterTier: string }) => ({
       id: surface.id,
       surface: surface.surface,
       adapterTier: surface.adapterTier,
@@ -314,7 +314,7 @@ describe("v9.2 Foundry contracts", () => {
 
   it("fails closed on unsupported, blocked, unowned, unevidenced, or unattested platform claims", () => {
     const contract = getContract(registry, "platform-release-receipt");
-    const receipt: Record<string, unknown> = validPlatformReceipt();
+    const receipt = validPlatformReceipt();
     const receiptValidation = validateValue(receipt, contract, registry);
     assert.equal(receiptValidation.valid, true, JSON.stringify(receiptValidation.errors));
 
@@ -850,7 +850,7 @@ describe("v9.2 Foundry compilation and proof", () => {
         }
         throw error;
       }
-      const sourceGraph: Record<string, unknown> = structuredClone(buildCapabilityGraph(ROOT));
+      const sourceGraph = structuredClone(buildCapabilityGraph(ROOT));
       sourceGraph.nodes.find(
         (node: { kind?: string; id?: string; path?: string }) => node.id === "skill:foundry/skill-forge",
       ).path = "linked-parent/skill-forge/SKILL.md";
