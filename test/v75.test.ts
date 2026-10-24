@@ -266,7 +266,7 @@ describe("v7.5.1 Block 7 — OpenClaw v7.5 audit remediation", () => {
     const path = join(REPO_ROOT, ".github", "dependabot.yml");
     assert.ok(existsSync(path), "dependabot.yml missing");
     const content = readFileSync(path, "utf8");
-    assert.match(content, /package-ecosystem:\s*"github-actions"/, "dependabot missing github-actions ecosystem");
+    assert.match(content, /package-ecosystem:\s*["']?github-actions["']?\s*$/m, "dependabot missing github-actions ecosystem");
   });
 
   // HIGH-6: real-instance MEMORY.md files contain no template placeholders
