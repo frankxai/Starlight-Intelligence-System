@@ -12,4 +12,4 @@ permissions:
 
 jobs:
   editorial-contract:
-    uses: frankxai/starlight-design-intelligence/.github/workflows/editorial-contract.yml@50ae34c7ac06e6c083f277ca96c3bde8f0a39b43
+    uses: Starlight-Intelligence/starlight-design-intelligence/.github/workflows/editorial-contract.yml@cbc5091ce58d21947ae70bfffcd80c9e53ee1967
