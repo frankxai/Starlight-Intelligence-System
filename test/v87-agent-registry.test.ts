@@ -130,11 +130,11 @@ describe("v8.7 agent-count symmetry — doc surfaces publish the derived count",
     );
   });
 
-  it(`README.md claims agents`, () => {
+  it(`README.md does not contain hardcoded 151 agents`, () => {
     const text = readDoc("README.md");
     assert.ok(
-      text.includes(`agents`),
-      `README.md does not contain "agents" — update the operational-layer agent-count claim to the derived count (${N})`
+      text.includes(`The current **agents**`) && !text.includes(`151 agents`),
+      `README.md should not hardcode agent count`
     );
   });
 
