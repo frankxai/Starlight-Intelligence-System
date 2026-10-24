@@ -50,7 +50,11 @@ function validate(
   if (schema.type) {
     const actual = Array.isArray(instance) ? "array" : typeof instance;
     const normalised = actual === "object" && instance === null ? "null" : actual;
-    if (normalised !== schema.type) {
+
+    // In JSON schema, 'integer' is a subtype of 'number'. In JS, both are 'number'.
+    const typesMatch = normalised === schema.type || (schema.type === "integer" && typeof instance === "number" && Number.isInteger(instance));
+
+    if (!typesMatch) {
       errors.push({ path, message: `expected ${schema.type}, got ${normalised}` });
       return errors;
     }
@@ -183,6 +187,35 @@ const VALID: Record<string, Record<string, unknown>> = {
     permissions: [],
     licenseTier: "free",
     manifestSha: SHA256,
+  },
+  "session-state": {
+    schemaVersion: "1.0.0",
+    sessionId: "sess_1",
+    harness: "claude-code",
+    updatedAt: NOW,
+    repository: {
+      repo: "my-repo",
+      branch: "main",
+      unpushedCount: 1,
+      changedCount: 3,
+    },
+    contextUse: 0.85,
+    limits: [
+      {
+        window: "daily",
+        resetTime: NOW,
+        remaining: 500,
+      }
+    ],
+    forecast: {
+      pace: "steady",
+      estimatedCost: 1.25,
+    },
+    needsHuman: {
+      flag: false,
+      reason: "",
+    },
+    peerAgents: ["agent-1", "agent-2"],
   },
   permission: {
     id: "perm_1",

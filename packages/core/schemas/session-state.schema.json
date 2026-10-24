@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlight.dev/schemas/session-state.v1.schema.json",
+  "title": "Session State v1",
+  "description": "A small, versioned, local-only session-state document that a writer refreshes atomically and optional consumers read. Local only, no prompts or transcripts or secrets.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sessionId",
+    "harness",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "harness": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "unpushedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "changedCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "contextUse": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "window": {
+            "type": "string"
+          },
+          "resetTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "remaining": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "forecast": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pace": {
+          "type": "string"
+        },
+        "estimatedCost": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "needsHuman": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "flag": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "peerAgents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
