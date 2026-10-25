@@ -52,71 +52,14 @@ if (-not (Test-Path $configPath)) {
 }
 
 # 3. Claude Code hooks
-if (-not $SkipHooks) {
-    $settingsPath = Join-Path $HOME '.claude\settings.json'
-    if (-not (Test-Path $settingsPath)) {
-        Write-Warning "[SKIP] Claude settings.json not found at $settingsPath. Skipping hook registration."
-    } else {
-        $startHookCmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$($CockpitRoot.Replace('\','/') -replace '/+', '/')/hooks/claude-session-start.ps1`""
-        $stopHookCmd  = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$($CockpitRoot.Replace('\','/') -replace '/+', '/')/hooks/claude-session-stop.ps1`""
-
-        $settingsRaw = Get-Content -Path $settingsPath -Raw -Encoding utf8
-        $settings = $settingsRaw | ConvertFrom-Json
-
-        if (-not $settings.hooks) {
-            $settings | Add-Member -NotePropertyName 'hooks' -NotePropertyValue ([PSCustomObject]@{}) -Force
-        }
-
-        function Add-HookIfMissing {
-            param([object]$HooksRoot, [string]$EventName, [string]$CommandText)
-            if (-not $HooksRoot.$EventName) {
-                $HooksRoot | Add-Member -NotePropertyName $EventName -NotePropertyValue @() -Force
-            }
-            $existing = $HooksRoot.$EventName
-            $alreadyPresent = $false
-            foreach ($entry in $existing) {
-                if ($entry.hooks) {
-                    foreach ($h in $entry.hooks) {
-                        if ($h.command -and $h.command -eq $CommandText) { $alreadyPresent = $true; break }
-                    }
-                }
-                if ($alreadyPresent) { break }
-            }
-            if ($alreadyPresent) {
-                Write-Host "[OK] $EventName hook already present" -ForegroundColor DarkGray
-                return $false
-            }
-            $newEntry = [PSCustomObject]@{
-                hooks = @([PSCustomObject]@{
-                    type    = 'command'
-                    command = $CommandText
-                    timeout = 5000
-                })
-            }
-            $HooksRoot.$EventName = @($existing) + $newEntry
-            Write-Host "[OK] added $EventName hook" -ForegroundColor Green
-            return $true
-        }
-
-        $changed = $false
-        $changed = (Add-HookIfMissing -HooksRoot $settings.hooks -EventName 'SessionStart' -CommandText $startHookCmd) -or $changed
-        $changed = (Add-HookIfMissing -HooksRoot $settings.hooks -EventName 'Stop' -CommandText $stopHookCmd) -or $changed
-
-        if ($changed) {
-            if ($WhatIf) {
-                Write-Host "[WHATIF] would update $settingsPath" -ForegroundColor Yellow
-            } else {
-                $backup = "$settingsPath.bak-$(Get-Date -Format 'yyyyMMddHHmmss')"
-                Copy-Item -Path $settingsPath -Destination $backup
-                Write-Host "[OK] backed up settings.json to $backup" -ForegroundColor DarkGray
-                $settings | ConvertTo-Json -Depth 16 | Set-Content -Path $settingsPath -Encoding utf8
-                Write-Host "[OK] settings.json updated" -ForegroundColor Green
-            }
-        }
-    }
-} else {
-    Write-Host "[SKIP] hook registration skipped per -SkipHooks" -ForegroundColor DarkGray
-}
+# Global SessionStart and Stop stay the Python telemetry hooks:
+#   C:/Python313/python.exe -I -B C:/Users/frank/.claude/hooks/session-boot.py
+#   C:/Python313/python.exe -I -B C:/Users/frank/.claude/hooks/session-stop.py
+# cockpit/hooks/claude-session-*.ps1 call [Console]::In.ReadToEnd(). Grok keeps
+# that pipe open, so the read deadlocks, and powershell.exe cold start exceeds
+# the 2 second global hook budget. Capture with `arc snapshot` instead.
+Write-Host "[OK] global hooks left on session-boot.py and session-stop.py" -ForegroundColor DarkGray
+Write-Host "[SKIP] cockpit PowerShell hooks are not registered" -ForegroundColor DarkGray
 
 # 4. Task Scheduler triggers
 if (-not $SkipScheduler) {
