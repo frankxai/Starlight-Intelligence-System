@@ -138,3 +138,66 @@ describe('regression: no phantom MCP servers', () => {
     assert.equal(json.includes('subagent-telemetry'), false);
   });
 });
+
+import { filterAndSort, estimateTokens, truncateToFit } from './utils.js';
+
+describe('adapters/utils', () => {
+  describe('filterAndSort', () => {
+    const utilsEntries: VaultEntry[] = [
+      { id: '1', vault: 'strategic', content: 'c', createdAt: '2023-01-01', confidence: 'low' },
+      { id: '2', vault: 'technical', content: 'c', createdAt: '2023-01-02', confidence: 'high' },
+      { id: '3', vault: 'strategic', content: 'c', createdAt: '2023-01-03', confidence: 'medium' },
+      { id: '4', vault: 'technical', content: 'c', createdAt: '2023-01-04', confidence: 'verified' },
+      { id: '5', vault: 'creative', content: 'c', createdAt: '2023-01-05', confidence: 'high' },
+      { id: '6', vault: 'creative', content: 'c', createdAt: '2023-01-01', confidence: 'high' },
+      { id: '7', vault: 'wisdom', content: 'c', createdAt: '2023-01-01' },
+    ];
+
+    it('filters by vault type', () => {
+      const filtered = filterAndSort(utilsEntries, ['strategic']);
+      assert.equal(filtered.length, 2);
+      assert.deepEqual(filtered.map(e => e.id).sort(), ['1', '3'].sort());
+    });
+
+    it('returns all if vaults is undefined or empty', () => {
+      assert.equal(filterAndSort(utilsEntries).length, utilsEntries.length);
+      assert.equal(filterAndSort(utilsEntries, []).length, utilsEntries.length);
+    });
+
+    it('sorts by confidence descending, then recency descending', () => {
+      const sorted = filterAndSort(utilsEntries);
+      const expectedIds = ['4', '5', '2', '6', '3', '1', '7'];
+      assert.deepEqual(sorted.map(e => e.id), expectedIds);
+    });
+  });
+
+  describe('estimateTokens', () => {
+    it('estimates 1 token per 4 chars (ceil)', () => {
+      assert.equal(estimateTokens('1234'), 1);
+      assert.equal(estimateTokens('12345'), 2);
+      assert.equal(estimateTokens(''), 0);
+    });
+  });
+
+  describe('truncateToFit', () => {
+    it('returns original if length <= maxChars', () => {
+      assert.equal(truncateToFit('1234', 1), '1234');
+      assert.equal(truncateToFit('123', 1), '123');
+    });
+
+    it('truncates at maxChars if no newline', () => {
+      const res = truncateToFit('12345', 1);
+      assert.equal(res, '1234\n\n*[truncated — token limit reached]*');
+    });
+
+    it('cuts at last complete line if newline is present within budget', () => {
+      const res = truncateToFit('12\n456', 1);
+      assert.equal(res, '12\n\n*[truncated — token limit reached]*');
+    });
+
+    it('falls back to cutting at budget if no newline within budget', () => {
+        const res = truncateToFit('1234\n', 1);
+        assert.equal(res, '1234\n\n*[truncated — token limit reached]*');
+    });
+  });
+});
