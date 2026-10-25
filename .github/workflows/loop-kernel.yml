@@ -10,6 +10,15 @@ on:
     paths:
       - ".github/workflows/loop-kernel.yml"
       - "src/loop-*.ts"
+      - "src/agents.ts"
+      - "src/types.ts"
+      - "agents/**"
+      - "skills/**"
+      - "scripts/build-specialist-catalog.mjs"
+      - "scripts/export-specialist.mjs"
+      - "scripts/link-public-specialists.mjs"
+      - "test/specialist-*.test.*"
+      - "test/public-specialist-lineage.test.mjs"
       - "src/instruction-compiler.ts"
       - "src/work-graph*.ts"
       - "src/index.ts"
@@ -25,6 +34,15 @@ on:
     paths:
       - ".github/workflows/loop-kernel.yml"
       - "src/loop-*.ts"
+      - "src/agents.ts"
+      - "src/types.ts"
+      - "agents/**"
+      - "skills/**"
+      - "scripts/build-specialist-catalog.mjs"
+      - "scripts/export-specialist.mjs"
+      - "scripts/link-public-specialists.mjs"
+      - "test/specialist-*.test.*"
+      - "test/public-specialist-lineage.test.mjs"
       - "src/instruction-compiler.ts"
       - "src/work-graph*.ts"
       - "src/index.ts"
@@ -67,6 +85,12 @@ jobs:
 
       - name: Loop kernel tests
         run: npm run test:work-graph
+
+      - name: Specialist contract and identity checks
+        run: |
+          node scripts/build-specialist-catalog.mjs --check
+          node --test test/specialist-catalog.test.mjs test/public-specialist-lineage.test.mjs
+          node --import tsx --test test/specialist-agent-loader.test.ts
 
       - name: Build
         run: npm run build
