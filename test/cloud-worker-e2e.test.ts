@@ -530,7 +530,29 @@ describe('Wave 2 Substrate Modernization: A2A Card, Stateless HTTP MCP, Cost Rou
     );
     assert.equal(reacquired.status, 'acquired');
   });
+
+  it('Wave 3: folds ArcaneaClaw 5 engines & 35 skills into Agent SDK subagents with Doctrine 0 human gates', async () => {
+    const { CLAW_SUBAGENTS, routeMaestroEvent, buildExecutionPlan } = await import(
+      '../services/starlight-cloud-worker/src/agents/claw-subagents.js'
+    );
+    assert.deepEqual(Object.keys(CLAW_SUBAGENTS).sort(), ['forge', 'herald', 'media', 'scout', 'scribe']);
+    const totalSkills = Object.values(CLAW_SUBAGENTS).reduce((sum, s) => sum + s.skills.length, 0);
+    assert.equal(totalSkills, 35);
+
+    const targets = routeMaestroEvent({
+      eventType: 'intel_brief_ready',
+      sourceClaw: 'scout',
+      payload: {},
+      createdAt: new Date().toISOString(),
+    });
+    assert.deepEqual(targets.map((t) => t.role).sort(), ['herald', 'scribe']);
+
+    const forgePlan = buildExecutionPlan('forge');
+    const mintStep = forgePlan.steps.find((s) => s.skill === 'nft-mint-batch');
+    assert.equal(mintStep?.mode, 'human_gate_required');
+  });
 });
+
 
 
 
