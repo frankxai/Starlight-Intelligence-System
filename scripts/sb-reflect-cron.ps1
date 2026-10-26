@@ -61,6 +61,7 @@ Write ONLY inside _meta/, patterns/, people/, decisions/, ideas/. NEVER touch A 
 & claude -p $prompt --permission-mode acceptEdits --model claude-sonnet-5 2>&1 | Out-File -Append -Encoding utf8 $Log
 $code = $LASTEXITCODE
 # Wrapper owns the commit (targeted paths only - never -A, never .obsidian).
-& git add _meta patterns people decisions ideas 2>&1 | Out-File -Append -Encoding utf8 $Log
-& git commit -m "nightly SB reflect + curate (autonomous 02:30)" 2>&1 | Out-File -Append -Encoding utf8 $Log
+& git -c core.safecrlf=false add _meta patterns people decisions ideas 2>&1 | Out-File -Append -Encoding utf8 $Log
+& git -c core.safecrlf=false commit -m "nightly SB reflect + curate (autonomous 02:30)" 2>&1 | Out-File -Append -Encoding utf8 $Log
 "=== $(Get-Date -Format o) END (claude exit $code) ===" | Out-File -Append -Encoding utf8 $Log
+exit $code
