@@ -1,6 +1,7 @@
 /**
  * Starlight Managed Cloud & Service Mesh — Cloudflare Edge Worker
- * High-velocity sovereign memory API, Virtual MCP router, and 3D Visual Palace
+ * High-velocity sovereign memory API, Stateless Streamable HTTP vMCP router,
+ * A2A Agent Card discovery, cost-aware AI gateway, and 3D Visual Palace.
  * 
  * Built on SIP v1.1.1
  */
@@ -11,6 +12,8 @@ import { EdgeVirtualMcpRouter } from './vmcp.js';
 import { UniversalVectorRouter } from './providers/universal-vector.js';
 import { DualTelemetryDispatcher } from './telemetry/dual-dispatcher.js';
 import { UnifiedAiGateway, type ChatCompletionRequest } from './llm/ai-gateway.js';
+import { buildCloudWorkerAgentCard } from './agent-card.js';
+import { StatelessMcpHttpHandler } from './mcp-http.js';
 import type { 
   MemoryAtom, 
   IngestionRequest, 
@@ -23,6 +26,11 @@ import type {
   TenantContext
 } from './types.js';
 
+export type IdentityMembershipVerifier = (
+  token: string,
+  requestedTenant: string | null
+) => Promise<TenantContext | null> | TenantContext | null;
+
 export interface Env {
   ENVIRONMENT?: string;
   STARLIGHT_VECTORS?: any; // Cloudflare Vectorize binding
@@ -30,9 +38,10 @@ export interface Env {
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
   DEFAULT_HALF_LIFE_DAYS?: string;
+  STARLIGHT_IDENTITY_VERIFIER?: IdentityMembershipVerifier;
 }
 
-// In-memory fallback tenant store for edge execution and automated tests
+// Explicit no-binding component mode stores (never used to mask D1/KV errors when bindings exist)
 const MEMORY_INDEX = new Map<string, MemoryAtom[]>();
 const ACTIVE_LEASES = new Map<string, SwarmLeaseResponse>();
 const VMCP_ROUTER = new EdgeVirtualMcpRouter();
@@ -41,13 +50,14 @@ export class StarlightCloudWorker {
   private static readonly CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Starlight-Tenant, X-Starlight-Signature',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Starlight-Tenant, X-Starlight-Signature, Mcp-Session-Id',
     'Content-Type': 'application/json',
   };
 
   public static async handleRequest(request: Request, env: Env = {}): Promise<Response> {
     const url = new URL(request.url);
     const method = request.method.toUpperCase();
+    const verifierConfigured = typeof env?.STARLIGHT_IDENTITY_VERIFIER === 'function';
 
     // 1. Handle CORS preflight
     if (method === 'OPTIONS') {
@@ -61,11 +71,15 @@ export class StarlightCloudWorker {
         service: 'starlight-cloud-worker',
         version: '0.3.0-edge',
         attestation: 'Built on SIP v1.1.1',
+        mcpTransport: 'streamable-http',
+        mcpSpecVersion: StatelessMcpHttpHandler.PROTOCOL_VERSION,
         edgeRegion: request.headers.get('cf-ipcountry') || 'global-edge',
         timestamp: new Date().toISOString(),
         protectedApi: {
-          status: 'unavailable',
-          reason: 'identity_membership_verifier_missing',
+          status: verifierConfigured ? 'available' : 'unavailable',
+          reason: verifierConfigured
+            ? 'verified_identity_authority_bound'
+            : 'identity_membership_verifier_missing',
         },
         bindings: {
           vectorize: !!env.STARLIGHT_VECTORS,
@@ -73,6 +87,15 @@ export class StarlightCloudWorker {
           kv: !!env.STARLIGHT_KV,
         }
       }, null, 2), { status: 200, headers: this.CORS_HEADERS });
+    }
+
+    // 2b. A2A Protocol Agent Card Discovery (Public)
+    if ((url.pathname === '/.well-known/agent.json' || url.pathname === '/v1/agent-card') && method === 'GET') {
+      const card = buildCloudWorkerAgentCard(url.origin, verifierConfigured);
+      return new Response(JSON.stringify(card, null, 2), {
+        status: 200,
+        headers: this.CORS_HEADERS,
+      });
     }
 
     // 3. 3D Visual Memory Palace Web Surface
@@ -92,7 +115,8 @@ export class StarlightCloudWorker {
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    const tenant = this.resolveTenant();
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+    const tenant = await this.resolveTenant(token, request.headers.get('X-Starlight-Tenant'), env);
     if (!tenant) {
       return new Response(JSON.stringify({
         error: 'Service Unavailable',
@@ -119,7 +143,7 @@ export class StarlightCloudWorker {
       // 7. Route Unified AI Gateway & Semantic Cache: POST /v1/chat/completions
       if ((url.pathname === '/v1/chat/completions' || url.pathname === '/chat/completions') && method === 'POST') {
         const body = (await request.json()) as ChatCompletionRequest;
-        const tenantMemories = (MEMORY_INDEX.get(tenant.tenantId) || []).slice(-5).map(m => m.content);
+        const tenantMemories = await this.getRecentTenantMemories(tenant, env, 5);
         const completion = await UnifiedAiGateway.complete(body, env, request.headers, tenantMemories);
 
         DualTelemetryDispatcher.dispatch({
@@ -128,45 +152,65 @@ export class StarlightCloudWorker {
           userId: tenant.tenantId,
           input: body.messages,
           output: completion.choices[0]?.message?.content,
-          metadata: { model: completion.model, cached: completion.cached },
+          metadata: {
+            model: completion.model,
+            cached: completion.cached,
+            routing: completion.routing,
+          },
         }, env, request.headers);
 
         return new Response(JSON.stringify(completion, null, 2), { status: 200, headers: this.CORS_HEADERS });
       }
 
-      // 7. Route vMCP Synthesis: POST /v1/vmcp/synthesize
+      // 8. Route vMCP Synthesis: POST /v1/vmcp/synthesize
       if (url.pathname === '/v1/vmcp/synthesize' && method === 'POST') {
         const body = (await request.json()) as VmcpRequest;
         const result = VMCP_ROUTER.synthesize(body);
         return new Response(JSON.stringify(result, null, 2), { status: 200, headers: this.CORS_HEADERS });
       }
 
-      // 8. Route Swarm Worktree Lease: POST /v1/swarm/lease/acquire
+      // 9. Route Swarm Worktree Lease: POST /v1/swarm/lease/acquire
       if (url.pathname === '/v1/swarm/lease/acquire' && method === 'POST') {
         const body = (await request.json()) as SwarmLeaseRequest;
-        const result = this.handleLeaseAcquire(tenant, body);
+        const result = await this.handleLeaseAcquire(tenant, body, env);
         return new Response(JSON.stringify(result, null, 2), { 
           status: result.status === 'acquired' ? 200 : 409, 
           headers: this.CORS_HEADERS 
         });
       }
 
-      // 9. Route Swarm Worktree Lease Release: POST /v1/swarm/lease/release
+      // 10. Route Swarm Worktree Lease Release: POST /v1/swarm/lease/release
       if (url.pathname === '/v1/swarm/lease/release' && method === 'POST') {
         const { leaseId } = (await request.json()) as { leaseId: string };
-        ACTIVE_LEASES.delete(leaseId);
+        await this.handleLeaseRelease(tenant, leaseId, env);
         return new Response(JSON.stringify({ success: true, status: 'released', released: leaseId }), { status: 200, headers: this.CORS_HEADERS });
       }
 
-      // 10. Route Model Context Protocol (MCP) SSE Transport Handshake
+      // 11. Route Stateless Streamable HTTP MCP Transport (MCP 2026-07-28 spec)
+      if ((url.pathname === '/v1/mcp' || url.pathname === '/v1/mcp/messages') && method === 'POST') {
+        return await StatelessMcpHttpHandler.handlePost(
+          request,
+          tenant,
+          VMCP_ROUTER,
+          {
+            onAppend: (req) => this.handleAppend(tenant, req, env),
+            onQuery: (req) => this.handleQuery(tenant, req, env, request.headers),
+          },
+          this.CORS_HEADERS
+        );
+      }
+
+      // 12. Legacy MCP SSE Transport Handshake (deprecated in favor of POST /v1/mcp)
       if (url.pathname === '/v1/mcp/sse' && method === 'GET') {
-        return new Response(`event: endpoint\ndata: /v1/mcp/messages?sessionId=${tenant.tenantId}\n\n`, {
+        return new Response(`event: endpoint\ndata: /v1/mcp?sessionId=${tenant.tenantId}\n\n`, {
           status: 200,
           headers: {
             ...this.CORS_HEADERS,
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
+            'Deprecation': 'true',
+            'Link': '</v1/mcp>; rel="successor-version"',
           },
         });
       }
@@ -184,12 +228,40 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(): TenantContext | null {
-    // No verified identity/membership authority is wired into this worker.
-    // Contain every protected route until a reviewed verifier is integrated.
+  private static async resolveTenant(
+    token?: string,
+    requestedTenant?: string | null,
+    env?: Env
+  ): Promise<TenantContext | null> {
+    // Only resolve a tenant when an explicit, reviewed identity/membership verifier is wired.
     // Token shape, caller-selected tenants and asserted Access headers are not
     // authentication, membership, entitlement or quota evidence.
+    if (typeof env?.STARLIGHT_IDENTITY_VERIFIER === 'function' && token) {
+      return await env.STARLIGHT_IDENTITY_VERIFIER(token, requestedTenant ?? null);
+    }
     return null;
+  }
+
+  private static async getRecentTenantMemories(
+    tenant: TenantContext,
+    env: Env,
+    limit: number = 5
+  ): Promise<string[]> {
+    if (env?.STARLIGHT_DB) {
+      try {
+        const d1Result = await env.STARLIGHT_DB.prepare(
+          `SELECT content FROM memory_atoms WHERE tenant_id = ? ORDER BY created_at DESC LIMIT ?`
+        ).bind(tenant.tenantId, limit).all();
+        if (Array.isArray(d1Result?.results)) {
+          return d1Result.results.map((r: any) => String(r.content || '')).filter(Boolean);
+        }
+      } catch {
+        return [];
+      }
+      return [];
+    }
+
+    return (MEMORY_INDEX.get(tenant.tenantId) || []).slice(-limit).map((m) => m.content);
   }
 
   private static async handleAppend(
@@ -245,7 +317,7 @@ export class StarlightCloudWorker {
     }
 
     // Do not expose a configured write before its affirmative acknowledgement.
-    // With no D1 binding this remains the existing non-durable component mode.
+    // With no D1 binding this remains the explicit non-durable component mode.
     let tenantList = MEMORY_INDEX.get(tenant.tenantId);
     if (!tenantList) {
       tenantList = [];
@@ -285,24 +357,24 @@ export class StarlightCloudWorker {
     const queryTerms = req.query.toLowerCase().split(/\s+/).filter(Boolean);
     let candidates: MemoryAtom[] = [];
 
-    // 1. Fetch from Edge D1 SQLite if bound
+    // 1. Fetch from Edge D1 SQLite when bound (never silently fall back to isolate memory on D1 error)
     if (env?.STARLIGHT_DB) {
+      let sql = `SELECT * FROM memory_atoms WHERE tenant_id = ?`;
+      const params: any[] = [tenant.tenantId];
+
+      if (req.tier) {
+        sql += ` AND tier = ?`;
+        params.push(req.tier);
+      }
+      if (req.namespace) {
+        sql += ` AND namespace = ?`;
+        params.push(req.namespace);
+      }
+      sql += ` ORDER BY created_at DESC LIMIT 100`;
+
       try {
-        let sql = `SELECT * FROM memory_atoms WHERE tenant_id = ?`;
-        const params: any[] = [tenant.tenantId];
-
-        if (req.tier) {
-          sql += ` AND tier = ?`;
-          params.push(req.tier);
-        }
-        if (req.namespace) {
-          sql += ` AND namespace = ?`;
-          params.push(req.namespace);
-        }
-        sql += ` ORDER BY created_at DESC LIMIT 100`;
-
         const d1Result = await env.STARLIGHT_DB.prepare(sql).bind(...params).all();
-        if (d1Result.results && d1Result.results.length > 0) {
+        if (d1Result?.results && d1Result.results.length > 0) {
           candidates = d1Result.results.map((r: any) => ({
             id: r.id,
             tenantId: r.tenant_id,
@@ -317,13 +389,11 @@ export class StarlightCloudWorker {
             halfLifeDays: r.half_life_days || 90,
           }));
         }
-      } catch (err) {
-        console.error('[STARLIGHT:D1] Query error, falling back to memory index:', err);
+      } catch {
+        throw new Error('Memory query failed.');
       }
-    }
-
-    // 2. Fallback to in-memory index
-    if (candidates.length === 0) {
+    } else {
+      // 2. Explicit no-binding component mode only
       const atoms = MEMORY_INDEX.get(tenant.tenantId) || [];
       candidates = atoms.filter(a => {
         if (req.tier && a.tier !== req.tier) return false;
@@ -332,7 +402,7 @@ export class StarlightCloudWorker {
       });
     }
 
-    // Simulate vector similarity + text matching
+    // Vector similarity + text matching
     const vectorMatches: Array<{ atom: MemoryAtom; score: number }> = [];
     const textMatches: Array<{ atom: MemoryAtom; score: number }> = [];
 
@@ -345,7 +415,6 @@ export class StarlightCloudWorker {
 
       if (matchCount > 0 || queryTerms.length === 0) {
         const textScore = queryTerms.length > 0 ? matchCount / queryTerms.length : 0.5;
-        // Vector cosine simulation based on token overlap + recency
         const vectorScore = Math.min(0.98, textScore * 0.8 + 0.2);
 
         vectorMatches.push({ atom, score: vectorScore });
@@ -380,10 +449,127 @@ export class StarlightCloudWorker {
     };
   }
 
-  private static handleLeaseAcquire(tenant: TenantContext, req: SwarmLeaseRequest): SwarmLeaseResponse {
-    // Check conflicts
+  private static async handleLeaseAcquire(
+    tenant: TenantContext,
+    req: SwarmLeaseRequest,
+    env: Env = {}
+  ): Promise<SwarmLeaseResponse> {
+    const now = new Date().toISOString();
+    const ttl = req.ttlSeconds || 120;
+    const expiresAt = new Date(Date.now() + ttl * 1000).toISOString();
+
+    // 1. Durable D1 Lease Arbitration when STARLIGHT_DB is bound
+    if (env?.STARLIGHT_DB) {
+      try {
+        const activeRows = await env.STARLIGHT_DB.prepare(
+          `SELECT lease_id, agent_id, worktree, paths_json, acquired_at, expires_at FROM swarm_leases WHERE tenant_id = ? AND expires_at > ?`
+        ).bind(tenant.tenantId, now).all();
+
+        for (const row of activeRows?.results || []) {
+          const existingPaths: string[] = row.paths_json ? JSON.parse(row.paths_json) : [];
+          for (const p of req.paths) {
+            if (existingPaths.includes(p) && row.agent_id !== req.agentId) {
+              return {
+                leaseId: `conflict_${Date.now()}`,
+                agentId: req.agentId,
+                worktree: req.worktree,
+                paths: req.paths,
+                acquiredAt: now,
+                expiresAt: now,
+                status: 'conflict',
+                conflictWith: row.agent_id,
+                storageBackend: 'd1',
+              };
+            }
+          }
+        }
+
+        const leaseId = `lease_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        const persisted = await env.STARLIGHT_DB.prepare(`
+          INSERT INTO swarm_leases (lease_id, tenant_id, agent_id, worktree, paths_json, acquired_at, expires_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          leaseId,
+          tenant.tenantId,
+          req.agentId,
+          req.worktree,
+          JSON.stringify(req.paths),
+          now,
+          expiresAt
+        ).run();
+
+        if (persisted?.success !== true) {
+          throw new Error('Lease persistence failed.');
+        }
+
+        const lease: SwarmLeaseResponse = {
+          leaseId,
+          agentId: req.agentId,
+          worktree: req.worktree,
+          paths: req.paths,
+          acquiredAt: now,
+          expiresAt,
+          status: 'acquired',
+          storageBackend: 'd1',
+        };
+
+        if (env?.STARLIGHT_KV) {
+          await env.STARLIGHT_KV.put(`lease:${tenant.tenantId}:${leaseId}`, JSON.stringify(lease), {
+            expirationTtl: ttl,
+          }).catch(() => {});
+        }
+
+        return lease;
+      } catch {
+        throw new Error('Lease persistence failed.');
+      }
+    }
+
+    // 2. Durable KV Lease Arbitration when STARLIGHT_KV is bound (without D1)
+    if (env?.STARLIGHT_KV) {
+      const indexKey = `leases_index:${tenant.tenantId}`;
+      const rawIndex = await env.STARLIGHT_KV.get(indexKey);
+      const currentLeases: SwarmLeaseResponse[] = rawIndex ? JSON.parse(rawIndex) : [];
+      const validLeases = currentLeases.filter((l) => l.expiresAt > now);
+
+      for (const lease of validLeases) {
+        for (const p of req.paths) {
+          if (lease.paths.includes(p) && lease.agentId !== req.agentId) {
+            return {
+              leaseId: `conflict_${Date.now()}`,
+              agentId: req.agentId,
+              worktree: req.worktree,
+              paths: req.paths,
+              acquiredAt: now,
+              expiresAt: now,
+              status: 'conflict',
+              conflictWith: lease.agentId,
+              storageBackend: 'kv',
+            };
+          }
+        }
+      }
+
+      const leaseId = `lease_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const lease: SwarmLeaseResponse = {
+        leaseId,
+        agentId: req.agentId,
+        worktree: req.worktree,
+        paths: req.paths,
+        acquiredAt: now,
+        expiresAt,
+        status: 'acquired',
+        storageBackend: 'kv',
+      };
+
+      validLeases.push(lease);
+      await env.STARLIGHT_KV.put(indexKey, JSON.stringify(validLeases), { expirationTtl: Math.max(ttl, 3600) });
+      await env.STARLIGHT_KV.put(`lease:${tenant.tenantId}:${leaseId}`, JSON.stringify(lease), { expirationTtl: ttl });
+      return lease;
+    }
+
+    // 3. Explicit no-binding component mode
     for (const lease of ACTIVE_LEASES.values()) {
-      const now = new Date().toISOString();
       if (lease.expiresAt > now) {
         for (const p of req.paths) {
           if (lease.paths.includes(p) && lease.agentId !== req.agentId) {
@@ -396,6 +582,7 @@ export class StarlightCloudWorker {
               expiresAt: now,
               status: 'conflict',
               conflictWith: lease.agentId,
+              storageBackend: 'memory-component',
             };
           }
         }
@@ -403,22 +590,47 @@ export class StarlightCloudWorker {
     }
 
     const leaseId = `lease_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    const acquiredAt = new Date().toISOString();
-    const ttl = req.ttlSeconds || 120;
-    const expiresAt = new Date(Date.now() + ttl * 1000).toISOString();
-
     const lease: SwarmLeaseResponse = {
       leaseId,
       agentId: req.agentId,
       worktree: req.worktree,
       paths: req.paths,
-      acquiredAt,
+      acquiredAt: now,
       expiresAt,
       status: 'acquired',
+      storageBackend: 'memory-component',
     };
 
     ACTIVE_LEASES.set(leaseId, lease);
     return lease;
+  }
+
+  private static async handleLeaseRelease(
+    tenant: TenantContext,
+    leaseId: string,
+    env: Env = {}
+  ): Promise<void> {
+    if (env?.STARLIGHT_DB) {
+      await env.STARLIGHT_DB.prepare(
+        `DELETE FROM swarm_leases WHERE tenant_id = ? AND lease_id = ?`
+      ).bind(tenant.tenantId, leaseId).run();
+    }
+    if (env?.STARLIGHT_KV) {
+      if (typeof env.STARLIGHT_KV.delete === 'function') {
+        await env.STARLIGHT_KV.delete(`lease:${tenant.tenantId}:${leaseId}`);
+      }
+      if (typeof env.STARLIGHT_KV.get === 'function' && typeof env.STARLIGHT_KV.put === 'function') {
+        const indexKey = `leases_index:${tenant.tenantId}`;
+        const rawIndex = await env.STARLIGHT_KV.get(indexKey);
+        if (rawIndex) {
+          const filtered = (JSON.parse(rawIndex) as SwarmLeaseResponse[]).filter((l) => l.leaseId !== leaseId);
+          await env.STARLIGHT_KV.put(indexKey, JSON.stringify(filtered), { expirationTtl: 3600 });
+        }
+      }
+    }
+    if (!env?.STARLIGHT_DB && !env?.STARLIGHT_KV) {
+      ACTIVE_LEASES.delete(leaseId);
+    }
   }
 
   private static getPalaceHtml(): string {
@@ -557,24 +769,23 @@ export class StarlightCloudWorker {
 }
 
 export class SwarmCoordinator {
-  private state: any;
-  private env: Env;
+  private static readonly UNAVAILABLE_BODY = JSON.stringify({
+    error: 'Service Unavailable',
+    code: 'swarm_coordinator_unavailable',
+    message: 'Swarm coordination unavailable: verified identity and durable lease arbitration are not configured.',
+  });
 
-  constructor(state: any, env: Env) {
-    this.state = state;
-    this.env = env;
-  }
+  private static readonly UNAVAILABLE_HEADERS = {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+  };
+
+  constructor(_state: unknown, _env: unknown) {}
 
   async fetch(_request: Request): Promise<Response> {
-    // The direct Durable Object surface has no verified caller or durable
-    // lease arbitration. Do not manufacture an acquired lease or active state.
-    return new Response(JSON.stringify({
-      error: 'Service Unavailable',
-      code: 'swarm_coordinator_unavailable',
-      message: 'Swarm coordination unavailable: verified identity and durable lease arbitration are not configured.',
-    }), {
+    return new Response(SwarmCoordinator.UNAVAILABLE_BODY, {
       status: 503,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      headers: SwarmCoordinator.UNAVAILABLE_HEADERS,
     });
   }
 }

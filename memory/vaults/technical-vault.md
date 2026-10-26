@@ -313,3 +313,16 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 **Truth boundary:** Structural validity is only `contract-valid`. Source, deploy, integration, security, and rollback checks remain independently evidenced. Hermes and n8n are optional planned adapters until their own source and evidence exist.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-10-26] Edge Substrate Wave 2: Stateless HTTP MCP, A2A 1.0 Agent Cards, and Durable D1/KV Lease Arbitration
+
+**Category:** architecture-contract / edge-substrate
+**Confidence:** 0.99
+**Source:** `services/starlight-cloud-worker/src/{mcp-http,agent-card,index}.ts`, `tools/fleet-ingress/src/index.ts`, `test/cloud-worker-e2e.test.ts`
+**Related:** `services/starlight-cloud-worker/migrations/0001_init_memory_atoms.sql`, `services/starlight-cloud-worker/src/llm/ai-gateway.ts`
+
+**Decision:** Expose MCP `2026-07-28` Stateless Streamable HTTP (`POST /v1/mcp`) alongside legacy `/v1/mcp/sse`, publish A2A 1.0 Agent Cards at `/.well-known/agent.json` and `/v1/agent-card` across edge workers, and persist swarm leases in D1 (`swarm_leases`) or KV (`STARLIGHT_KV`) when bindings are present while preserving PR #461 fail-closed coordinator ingress (`503 protected_api_unavailable` until a verified identity/membership authority is bound).
+
+**Built on SIP — Starlight Intelligence Protocol**

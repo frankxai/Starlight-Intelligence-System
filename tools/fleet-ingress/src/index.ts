@@ -2,8 +2,9 @@
  * Starlight Fleet Ingress Router — Cloudflare Worker
  *
  * Receives GitHub webhooks across Frank's multi-brand estate (~80+ repos),
- * verifies HMAC-SHA256 signatures, deduplicates payloads, and triggers
- * scale-to-zero Google Cloud Run Jobs runners with task-specific container overrides.
+ * verifies HMAC-SHA256 signatures, deduplicates payloads, triggers
+ * scale-to-zero Google Cloud Run Jobs runners with task-specific container overrides,
+ * and exposes an A2A 1.0 Agent Card at /.well-known/agent.json.
  *
  * Latency budget: <15ms edge routing, $0.00 idle cost.
  *
@@ -30,6 +31,75 @@ export interface WebhookEventMeta {
   installationId?: number;
 }
 
+export interface FleetIngressReadiness {
+  githubWebhookSecretConfigured: boolean;
+  gcpDispatchConfigured: boolean;
+}
+
+export function getReadiness(env: Env = {}): FleetIngressReadiness {
+  return {
+    githubWebhookSecretConfigured: Boolean(env.GITHUB_WEBHOOK_SECRET),
+    gcpDispatchConfigured: Boolean(
+      env.GCP_PROJECT_ID &&
+        env.GCP_REGION &&
+        env.CLOUD_RUN_JOB &&
+        env.GCP_SERVICE_ACCOUNT_TOKEN
+    ),
+  };
+}
+
+export function buildFleetIngressAgentCard(origin: string, env: Env = {}): Record<string, unknown> {
+  const baseUrl = origin.replace(/\/+$/, '');
+  const readiness = getReadiness(env);
+
+  return {
+    schemaVersion: '1.0.0',
+    name: 'Starlight Fleet Ingress & Webhook Dispatcher',
+    description:
+      'Cloudflare Edge ingress router that verifies GitHub HMAC-SHA256 webhook signatures across the Starlight multi-org estate and dispatches scale-to-zero Google Cloud Run Jobs runners.',
+    url: baseUrl,
+    version: '0.2.0-edge',
+    protocol: 'SIP-1.1.1',
+    attestation: 'Built on SIP v1.1.1',
+    provider: {
+      organization: 'Starlight Intelligence Systems',
+      url: 'https://starlightintelligence.org',
+    },
+    capabilities: {
+      streaming: false,
+      pushNotifications: true,
+      stateTransitionHistory: false,
+      webhookVerification: 'hmac-sha256',
+      computeTarget: 'google-cloud-run-jobs',
+    },
+    readiness,
+    authentication: {
+      schemes: ['GitHub-HMAC-SHA256', 'Bearer'],
+      webhookHeader: 'X-Hub-Signature-256',
+    },
+    defaultInputModes: ['application/json'],
+    defaultOutputModes: ['application/json'],
+    skills: [
+      {
+        id: 'github-webhook-verification',
+        name: 'GitHub Webhook HMAC-SHA256 Verification & Normalization',
+        description:
+          'Validates X-Hub-Signature-256 via Web Crypto API and extracts normalized repository, commit SHA, PR number, and git ref metadata.',
+        tags: ['github', 'webhook', 'hmac-sha256', 'security'],
+        examples: ['POST /webhook (X-GitHub-Event: pull_request, X-Hub-Signature-256: sha256=...)'],
+      },
+      {
+        id: 'cloud-run-runner-dispatch',
+        name: 'Scale-to-Zero Cloud Run Job Dispatcher',
+        description:
+          'Dispatches Google Cloud Run Jobs with per-event container environment overrides (REPO, TRIGGER_EVENT, COMMIT_SHA, PR_NUMBER, GIT_REF, CALLBACK_URL).',
+        tags: ['cloud-run', 'ci-cd', 'ephemeral-runner', 'fleet'],
+        examples: ['POST /v1/github/events'],
+      },
+    ],
+  };
+}
+
 /**
  * Verify GitHub HMAC-SHA256 signature using standard Web Crypto API.
  */
@@ -42,6 +112,9 @@ export async function verifySignature(
     return false;
   }
   const signatureHex = signatureHeader.slice(7);
+  if (!/^[0-9a-fA-F]{64}$/.test(signatureHex)) {
+    return false;
+  }
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secret);
   const cryptoKey = await crypto.subtle.importKey(
@@ -153,122 +226,133 @@ export function buildCloudRunExecutionPayload(
 
 export async function handleRequest(request: Request, env: Env = {}): Promise<Response> {
   const url = new URL(request.url);
+  const method = request.method.toUpperCase();
 
-    // Health probe
-    if (url.pathname === '/health' || url.pathname === '/v1/health') {
-      return new Response(
-        JSON.stringify({
-          status: 'healthy',
-          substrate: 'starlight-fleet-ingress',
-          timestamp: new Date().toISOString(),
-          protocol: 'SIP-1.1.1',
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    // Webhook receiver endpoint
-    if (request.method === 'POST' && (url.pathname === '/webhook' || url.pathname === '/v1/github/events')) {
-      const signature = request.headers.get('x-hub-signature-256');
-      const eventType = request.headers.get('x-github-event') || 'ping';
-      const rawBody = await request.text();
-
-      // Verify HMAC if secret is configured
-      if (env.GITHUB_WEBHOOK_SECRET) {
-        const isValid = await verifySignature(rawBody, signature, env.GITHUB_WEBHOOK_SECRET);
-        if (!isValid) {
-          return new Response(JSON.stringify({ error: 'invalid_signature' }), {
-            status: 401,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
+  // Health probe
+  if (url.pathname === '/health' || url.pathname === '/v1/health') {
+    return new Response(
+      JSON.stringify({
+        status: 'healthy',
+        substrate: 'starlight-fleet-ingress',
+        version: '0.2.0-edge',
+        timestamp: new Date().toISOString(),
+        protocol: 'SIP-1.1.1',
+        readiness: getReadiness(env),
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
       }
+    );
+  }
 
-      let payload: Record<string, any> = {};
-      try {
-        payload = JSON.parse(rawBody);
-      } catch (err) {
-        return new Response(JSON.stringify({ error: 'malformed_json' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      if (eventType === 'ping') {
-        return new Response(JSON.stringify({ ok: true, pong: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      const meta = extractEventMetadata(eventType, payload);
-      if (!meta) {
-        return new Response(JSON.stringify({ ok: true, skipped: 'untracked_event' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      const needsRunner = shouldDispatchRunner(meta);
-      if (!needsRunner) {
-        return new Response(JSON.stringify({ ok: true, skipped: 'no_runner_action_needed', meta }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      // If GCP credentials exist, dispatch directly to Google Cloud Run Jobs REST API
-      let gcpDispatchResult: Record<string, any> = { queued: true };
-      if (env.GCP_PROJECT_ID && env.GCP_REGION && env.CLOUD_RUN_JOB && env.GCP_SERVICE_ACCOUNT_TOKEN) {
-        const callbackUrl = `${url.origin}/v1/runner/callback`;
-        const execPayload = buildCloudRunExecutionPayload(meta, callbackUrl);
-        const gcpEndpoint = `https://run.googleapis.com/v2/projects/${env.GCP_PROJECT_ID}/locations/${env.GCP_REGION}/jobs/${env.CLOUD_RUN_JOB}:run`;
-
-        try {
-          const gcpRes = await fetch(gcpEndpoint, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${env.GCP_SERVICE_ACCOUNT_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(execPayload),
-          });
-
-          gcpDispatchResult = {
-            dispatched: gcpRes.ok,
-            status: gcpRes.status,
-            body: await gcpRes.json().catch(() => ({})),
-          };
-        } catch (dispatchErr: any) {
-          gcpDispatchResult = {
-            dispatched: false,
-            error: dispatchErr.message,
-          };
-        }
-      }
-
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          event: meta.event,
-          repo: meta.repo,
-          runnerRequired: true,
-          gcp: gcpDispatchResult,
-        }),
-        {
-          status: 202,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    return new Response(JSON.stringify({ error: 'not_found' }), {
-      status: 404,
+  // A2A Protocol Agent Card Discovery
+  if ((url.pathname === '/.well-known/agent.json' || url.pathname === '/v1/agent-card') && method === 'GET') {
+    return new Response(JSON.stringify(buildFleetIngressAgentCard(url.origin, env), null, 2), {
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+
+  // Webhook receiver endpoint
+  if (method === 'POST' && (url.pathname === '/webhook' || url.pathname === '/v1/github/events')) {
+    const signature = request.headers.get('x-hub-signature-256');
+    const eventType = request.headers.get('x-github-event') || 'ping';
+    const rawBody = await request.text();
+
+    // Verify HMAC if secret is configured
+    if (env.GITHUB_WEBHOOK_SECRET) {
+      const isValid = await verifySignature(rawBody, signature, env.GITHUB_WEBHOOK_SECRET);
+      if (!isValid) {
+        return new Response(JSON.stringify({ error: 'invalid_signature' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    let payload: Record<string, any> = {};
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      return new Response(JSON.stringify({ error: 'malformed_json' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (eventType === 'ping') {
+      return new Response(JSON.stringify({ ok: true, pong: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const meta = extractEventMetadata(eventType, payload);
+    if (!meta) {
+      return new Response(JSON.stringify({ ok: true, skipped: 'untracked_event' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const needsRunner = shouldDispatchRunner(meta);
+    if (!needsRunner) {
+      return new Response(JSON.stringify({ ok: true, skipped: 'no_runner_action_needed', meta }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // If GCP credentials exist, dispatch directly to Google Cloud Run Jobs REST API
+    let gcpDispatchResult: Record<string, any> = { queued: true };
+    if (env.GCP_PROJECT_ID && env.GCP_REGION && env.CLOUD_RUN_JOB && env.GCP_SERVICE_ACCOUNT_TOKEN) {
+      const callbackUrl = `${url.origin}/v1/runner/callback`;
+      const execPayload = buildCloudRunExecutionPayload(meta, callbackUrl);
+      const gcpEndpoint = `https://run.googleapis.com/v2/projects/${env.GCP_PROJECT_ID}/locations/${env.GCP_REGION}/jobs/${env.CLOUD_RUN_JOB}:run`;
+
+      try {
+        const gcpRes = await fetch(gcpEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.GCP_SERVICE_ACCOUNT_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(execPayload),
+        });
+
+        gcpDispatchResult = {
+          dispatched: gcpRes.ok,
+          status: gcpRes.status,
+          body: await gcpRes.json().catch(() => ({})),
+        };
+      } catch (dispatchErr: any) {
+        gcpDispatchResult = {
+          dispatched: false,
+          error: dispatchErr.message,
+        };
+      }
+    }
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        event: meta.event,
+        repo: meta.repo,
+        runnerRequired: true,
+        gcp: gcpDispatchResult,
+      }),
+      {
+        status: 202,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
+  return new Response(JSON.stringify({ error: 'not_found' }), {
+    status: 404,
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 export default {

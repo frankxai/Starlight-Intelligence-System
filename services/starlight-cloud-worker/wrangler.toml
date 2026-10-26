@@ -16,6 +16,7 @@ index_name = "starlight-memories-768"
 binding = "STARLIGHT_DB"
 database_name = "starlight-production-db"
 database_id = "175513dc-1a47-4ba3-961f-78c54603af16"
+migrations_dir = "migrations"
 
 [[kv_namespaces]]
 binding = "STARLIGHT_KV"

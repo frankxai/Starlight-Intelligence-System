@@ -84,6 +84,21 @@ export interface SessionAddBody {
   items: SessionItem[];
 }
 
+export interface ThreadContextUpdateBody {
+  sectionKey?: import('./thread-context.js').ThreadContextSection;
+  items?: string[];
+  mode?: 'append' | 'replace';
+  importPacket?: {
+    harness: import('./thread-context.js').SupportedMemoryHarness;
+    rawText: string;
+  };
+}
+
+export interface ThreadPromoteLearningsBody {
+  learningIds?: string[];
+  source?: string;
+}
+
 // ── Route table ─────────────────────────────────────────────
 
 export interface ParsedRoute {
@@ -96,6 +111,9 @@ export interface ParsedRoute {
     | 'session.addItems'
     | 'session.pop'
     | 'session.clear'
+    | 'thread.getContext'
+    | 'thread.updateContext'
+    | 'thread.promoteLearnings'
     | 'not.found';
   /** Extracted path params. */
   params: Record<string, string>;
@@ -136,6 +154,19 @@ export function parseRoute(method: string, path: string): ParsedRoute {
     return { kind: 'session.clear', params: { id: sessionDeleteMatch[1]! } };
   }
 
+  // ThreadContext routes: /v1/threads/:id/context  or  POST /v1/threads/:id/learnings/promote
+  const threadContextMatch = path.match(/^\/v1\/threads\/([^/]+)\/context$/);
+  if (threadContextMatch) {
+    const id = threadContextMatch[1]!;
+    if (m === 'GET') return { kind: 'thread.getContext', params: { id } };
+    if (m === 'POST') return { kind: 'thread.updateContext', params: { id } };
+  }
+
+  const threadPromoteMatch = path.match(/^\/v1\/threads\/([^/]+)\/learnings\/promote$/);
+  if (threadPromoteMatch && m === 'POST') {
+    return { kind: 'thread.promoteLearnings', params: { id: threadPromoteMatch[1]! } };
+  }
+
   return { kind: 'not.found', params: {} };
 }
 
@@ -148,3 +179,25 @@ export function ok(status: number, body: unknown): GatewaySuccessResponse {
 export function err(status: number, error: string): GatewayErrorResponse {
   return { ok: false, status, error };
 }
+
+// ── ThreadContext, Trajectory Distillation & Cross-Harness Importer ─────────
+
+export {
+  THREAD_CONTEXT_SECTIONS,
+  createThreadContext,
+  upsertThreadContextSection,
+  serializeThreadContextMarkdown,
+  parseThreadContextMarkdown,
+  classifyTrajectoryVault,
+  extractTrajectoryLearnings,
+  buildVaultPromotionRecord,
+  importHarnessMemoryPacket,
+  type ThreadContextSection,
+  type ThreadContextDocument,
+  type SuggestedLearning,
+  type VaultPromotionRecord,
+  type SupportedMemoryHarness,
+  type HarnessMemoryPacketInput,
+  type HarnessMemoryImportResult,
+} from './thread-context.js';
+

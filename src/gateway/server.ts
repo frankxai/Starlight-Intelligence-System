@@ -27,11 +27,21 @@ import {
   parseRoute,
   ok,
   err,
+  createThreadContext,
+  upsertThreadContextSection,
+  serializeThreadContextMarkdown,
+  parseThreadContextMarkdown,
+  extractTrajectoryLearnings,
+  buildVaultPromotionRecord,
+  importHarnessMemoryPacket,
   type GatewayRequest,
   type GatewayResponse,
   type MemoryAddBody,
   type MemorySearchBody,
   type SessionAddBody,
+  type ThreadContextUpdateBody,
+  type ThreadPromoteLearningsBody,
+  type ThreadContextDocument,
 } from './protocol.js';
 
 // ── SisGatewayCore ──────────────────────────────────────────
@@ -44,6 +54,7 @@ export interface GatewayCoreOptions {
 export class SisGatewayCore {
   private readonly vault: VaultMemory;
   private readonly sessions: SessionStore;
+  private readonly threadContexts: Map<string, ThreadContextDocument> = new Map();
 
   constructor(opts: GatewayCoreOptions) {
     this.vault = new VaultMemory({
@@ -98,6 +109,32 @@ export class SisGatewayCore {
           const sessionId = route.params['id']!;
           const harness = req.auth?.harness ?? 'default';
           return this.handleSessionClear(harness, sessionId);
+        }
+
+        case 'thread.getContext': {
+          const threadId = route.params['id']!;
+          const harness = req.auth?.harness ?? 'default';
+          return this.handleThreadGetContext(harness, threadId);
+        }
+
+        case 'thread.updateContext': {
+          const threadId = route.params['id']!;
+          const harness = req.auth?.harness ?? 'default';
+          return this.handleThreadUpdateContext(
+            harness,
+            threadId,
+            req.body as ThreadContextUpdateBody | undefined,
+          );
+        }
+
+        case 'thread.promoteLearnings': {
+          const threadId = route.params['id']!;
+          const harness = req.auth?.harness ?? 'default';
+          return this.handleThreadPromoteLearnings(
+            harness,
+            threadId,
+            req.body as ThreadPromoteLearningsBody | undefined,
+          );
         }
 
         case 'not.found':
@@ -225,6 +262,141 @@ export class SisGatewayCore {
     } catch (e) {
       return err(400, e instanceof Error ? e.message : String(e));
     }
+  }
+
+  // ── ThreadContext & Trajectory Learning handlers ────────────
+
+  private async getOrLoadThreadContext(
+    harness: string,
+    threadId: string,
+  ): Promise<ThreadContextDocument> {
+    const key = `${harness}:${threadId}`;
+    const cached = this.threadContexts.get(key);
+    if (cached) return cached;
+
+    try {
+      const items = await this.sessions.getItems(harness, threadId, 50);
+      for (let i = items.length - 1; i >= 0; i--) {
+        const item = items[i]!;
+        if (item.meta && item.meta['kind'] === 'thread-context.v1' && item.content) {
+          const parsed = parseThreadContextMarkdown(item.content, threadId, harness);
+          this.threadContexts.set(key, parsed);
+          return parsed;
+        }
+      }
+    } catch {
+      // Fallback to new context
+    }
+
+    const fresh = createThreadContext(threadId, harness);
+    this.threadContexts.set(key, fresh);
+    return fresh;
+  }
+
+  private async persistThreadContext(
+    harness: string,
+    threadId: string,
+    context: ThreadContextDocument,
+  ): Promise<string> {
+    const key = `${harness}:${threadId}`;
+    this.threadContexts.set(key, context);
+    const markdown = serializeThreadContextMarkdown(context);
+    await this.sessions.addItems(harness, threadId, [
+      {
+        content: markdown,
+        meta: {
+          kind: 'thread-context.v1',
+          updatedAt: context.updatedAt,
+        },
+      },
+    ]);
+    return markdown;
+  }
+
+  private async handleThreadGetContext(
+    harness: string,
+    threadId: string,
+  ): Promise<GatewayResponse> {
+    const context = await this.getOrLoadThreadContext(harness, threadId);
+    const markdown = serializeThreadContextMarkdown(context);
+    const learnings = extractTrajectoryLearnings(context);
+    return ok(200, { ok: true, context, markdown, learnings });
+  }
+
+  private async handleThreadUpdateContext(
+    harness: string,
+    threadId: string,
+    body: ThreadContextUpdateBody | undefined,
+  ): Promise<GatewayResponse> {
+    if (!body || typeof body !== 'object') {
+      return err(400, 'Request body is required for thread context update');
+    }
+
+    let current = await this.getOrLoadThreadContext(harness, threadId);
+
+    if (body.importPacket && typeof body.importPacket === 'object') {
+      const { harness: sourceHarness, rawText } = body.importPacket;
+      if (typeof sourceHarness !== 'string' || typeof rawText !== 'string') {
+        return err(400, 'importPacket requires harness and rawText strings');
+      }
+      const imported = importHarnessMemoryPacket(sourceHarness, rawText, {
+        sessionId: threadId,
+      });
+      for (const sectionKey of Object.keys(imported.document.sections) as Array<
+        keyof typeof imported.document.sections
+      >) {
+        const items = imported.document.sections[sectionKey];
+        if (items.length > 0) {
+          current = upsertThreadContextSection(current, sectionKey, items, 'append');
+        }
+      }
+    } else if (body.sectionKey && Array.isArray(body.items)) {
+      current = upsertThreadContextSection(
+        current,
+        body.sectionKey,
+        body.items.map(String),
+        body.mode ?? 'append',
+      );
+    } else {
+      return err(400, 'Provide either { sectionKey, items, mode? } or { importPacket }');
+    }
+
+    const markdown = await this.persistThreadContext(harness, threadId, current);
+    const learnings = extractTrajectoryLearnings(current);
+    return ok(200, { ok: true, context: current, markdown, learnings });
+  }
+
+  private async handleThreadPromoteLearnings(
+    harness: string,
+    threadId: string,
+    body: ThreadPromoteLearningsBody | undefined,
+  ): Promise<GatewayResponse> {
+    const context = await this.getOrLoadThreadContext(harness, threadId);
+    const allLearnings = extractTrajectoryLearnings(context);
+    const filterIds =
+      body && Array.isArray(body.learningIds) && body.learningIds.length > 0
+        ? new Set(body.learningIds.map(String))
+        : null;
+    const selected = filterIds
+      ? allLearnings.filter((l) => filterIds.has(l.id))
+      : allLearnings;
+
+    const entries = [];
+    const reviewerSource = body?.source ?? `${harness}:${threadId}`;
+    for (const learning of selected) {
+      const record = buildVaultPromotionRecord(learning, reviewerSource);
+      if (!record || !record.content) continue;
+      const entry = this.vault.rememberInVault(
+        record.content,
+        record.vault,
+        record.tags,
+        record.confidence,
+        record.reviewerId,
+      );
+      entries.push({ learningId: learning.id, vault: record.vault, entry });
+    }
+
+    return ok(200, { ok: true, promotedCount: entries.length, entries });
   }
 }
 
