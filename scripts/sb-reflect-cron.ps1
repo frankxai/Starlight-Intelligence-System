@@ -39,9 +39,13 @@ if (-not $env:ANTHROPIC_API_KEY) {
         }
     }
 }
+# No key is required: the claude CLI uses its own login. Skip only if the CLI itself cannot answer.
 if (-not $env:ANTHROPIC_API_KEY) {
-    "=== $(Get-Date -Format o) SKIP — no ANTHROPIC_API_KEY (OAuth expired in headless cron; add key to ~/.secrets/.env.master or run: claude setup-token) ===" | Out-File -Append -Encoding utf8 $Log
-    exit 1
+    $probe = (& claude -p 'reply with: ok' 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $probe -notmatch 'ok') {
+        "=== $(Get-Date -Format o) SKIP - claude CLI not authenticated (run: claude setup-token) ===" | Out-File -Append -Encoding utf8 $Log
+        exit 1
+    }
 }
 
 $prompt = @'
