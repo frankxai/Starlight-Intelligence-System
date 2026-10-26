@@ -148,3 +148,25 @@ export function ok(status: number, body: unknown): GatewaySuccessResponse {
 export function err(status: number, error: string): GatewayErrorResponse {
   return { ok: false, status, error };
 }
+
+// ── ThreadContext, Trajectory Distillation & Cross-Harness Importer ─────────
+
+export {
+  THREAD_CONTEXT_SECTIONS,
+  createThreadContext,
+  upsertThreadContextSection,
+  serializeThreadContextMarkdown,
+  parseThreadContextMarkdown,
+  classifyTrajectoryVault,
+  extractTrajectoryLearnings,
+  buildVaultPromotionRecord,
+  importHarnessMemoryPacket,
+  type ThreadContextSection,
+  type ThreadContextDocument,
+  type SuggestedLearning,
+  type VaultPromotionRecord,
+  type SupportedMemoryHarness,
+  type HarnessMemoryPacketInput,
+  type HarnessMemoryImportResult,
+} from './thread-context.js';
+
