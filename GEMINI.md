@@ -19,7 +19,7 @@ Brand: **Starlight Intelligence Systems** (`sis`)
 - Keep public labels in sentence case.
 - Run the changed-copy editorial audit before release.
 
-Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/3d6fc8fdd38b5db69a16db1078e30d454e891af1/brand-packs/sis/COPY.md (proposal preview; refresh after reviewed merge)
+Pinned source: https://github.com/Starlight-Intelligence/starlight-design-intelligence/blob/851a11be31a0640df64baabcf2b1fc1afb9ce849/brand-packs/sis/COPY.md
 <!-- STARLIGHT-EDITORIAL:END -->
 
 
