@@ -103,6 +103,56 @@ Phase 4, hosted tier decision (after week 12)
 4. Pricing stance for a future hosted tier: operation-metered or flat.
 5. Whether to create a GitHub Project board from section 7.
 
+## 10. Absorb, build, or skip
+
+| Capability | Decision | Why |
+| --- | --- | --- |
+| Index and full-text search | Built (starlight-atlas) | FTS5 is enough for a vault of this size; the BM25-first idea from hippo-memory fits our no-cloud-embeddings rule. |
+| MCP interface | Adopt the standard | Built on the official SDK, five read-only tools, stdio and HTTP. |
+| Memory extraction with add, update, delete, no-op decisions (Mem0 style) | Absorb the technique into distill and connect | It must run behind the VERIFY gate, so we cannot take their pipeline whole. |
+| Temporal graph database (Zep, Graphiti) | Skip the database, absorb validity windows | A graph server is heavy for one person. SIS already has `validUntil`. |
+| Layered summaries L0, L1, L2 (OpenViking) | Absorb | Cheap, and it cuts what agents read. |
+| Retain, recall, reflect vocabulary (Hindsight) | Align names | Our REFLECT already does the third. Shared words help newcomers. |
+| Two-command plugin install, presets, demos | Copy the pattern | This is what drove stars for the Obsidian-plus-Claude repos. |
+| Rich editor or note app | Skip | Obsidian is the editor. Stay compatible with a plain folder. |
+| Hosted vector search | Skip for now | Vault rule: embeddings stay local. |
+
+## 11. Moat, stated honestly
+
+Not moats: search, MCP, a graph view, a dashboard. Others ship these free.
+
+Moats, in order of strength:
+1. Verified synthesis with receipts. A claim is written only with citations, lens framing and an independent review on the exact commit. That is trust, and trust is slow to copy.
+2. A living public proof. Frank's own vault, reflection runs and rejected candidates, shown monthly. A competitor cannot fake years of real use.
+3. Exit-free by design. Markdown and git are the source; every hosted piece is a rebuildable index. This lowers the cost of trying us and raises the cost of leaving a competitor that locks data in.
+4. Estate integration. The same notes feed agents, playbooks and SIS vaults across two machines.
+5. Contributed presets, playbooks and eval packs, once a community exists.
+
+## 12. What we productize
+
+| Offer | For | Price idea (proposed, not decided) |
+| --- | --- | --- |
+| Second Brain Kit | Any builder | Free, MIT if the licence decision is yes |
+| Atlas Personal | One person who wants a hosted private view and MCP endpoint | Flat monthly, one vault |
+| Atlas for Teams | A small team sharing a vault with roles and review receipts | Per seat, billed through Polar as merchant of record |
+| Verified Reflections | People who want the weekly reflection with attestation without running it | Subscription |
+| Estate engagement | Custom builds | Existing offer, now with the Kit as the starting point |
+
+## 13. This week (Mon 2026-10-26 to Sun 2026-11-01)
+
+State at the start of this section: the Atlas package exists and passes 19 tests (search, links, five read-only MCP tools over stdio and HTTP, Access JWT check). It has not been deployed and the Worker config has not been validated with wrangler.
+
+| Day | Outcome | Needs Frank |
+| --- | --- | --- |
+| Mon | Project board created. Atlas core, MCP and API built and tested. Reflect task enabled; first run 01:30 Tuesday. | Decide where the Atlas repo lives. Review receipts on #500, #501, #505, #506. |
+| Tue | Atlas repo live. Kit plugin skeleton passes `claude plugin validate`. `/sb setup` creates a vault folder. Reflect log checked. | Approve repo. |
+| Wed | Atlas web app v0 (graph, search, today, stale queue), visual QA at three widths. Worker deployed to a preview URL. | Create the D1 database, Access application and service token (about ten minutes). |
+| Thu | Fact class, lint stage and L0/L1 summaries merged. MCP over HTTP verified from the second machine with a service token. | Merge after receipts. |
+| Fri | Two dogfood runs of install, save, find, recorded. Eval method written and run on Frank's vault. | Pick the testers. |
+| Sat to Sun | First teardown drafted. Hosted-tier questions listed for the Phase 4 decision. | Approve any post. |
+
+Rule for the week: nothing counts as done until a test, a run or a screenshot shows it. GitHub Actions minutes are exhausted, so checks run locally and the output is pasted into the PR.
+
 ## Sources
 
 - GitHub topic searches and READMEs, 2026-10-26: claude-obsidian, obsidian-mind, obsidian-second-brain, llm-wiki-agent, OpenViking, Hindsight, Honcho, hippo-memory, okf-agent-memory, OpenKnowledge, Quartz, Mem0.
