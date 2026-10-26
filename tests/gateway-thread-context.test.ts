@@ -16,6 +16,10 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { SisGatewayCore } from '../src/gateway/server.js';
 import {
   THREAD_CONTEXT_SECTIONS,
   createThreadContext,
@@ -298,5 +302,103 @@ Never commit .env or secret credentials to git.
     assert.equal(cursorResult.harness, 'cursor');
     assert.equal(cursorResult.sourceFileKind, '.cursorrules');
     assert.equal(cursorResult.promotionCandidates.length, 2);
+  });
+});
+
+describe('SisGatewayCore HTTP routes — /v1/threads/:id/context & learnings/promote', () => {
+  it('supports GET/POST /v1/threads/:id/context and POST /v1/threads/:id/learnings/promote', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'sis-gateway-thread-ctx-'));
+    try {
+      const core = new SisGatewayCore({ storageRoot: tempDir });
+
+      // 1. GET initial empty context
+      const getRes = await core.handle({
+        method: 'GET',
+        path: '/v1/threads/thread-alpha/context',
+        auth: { harness: 'antigravity', includePrivate: false },
+      });
+      assert.equal(getRes.ok, true);
+      if (getRes.ok) {
+        const body = getRes.body as {
+          ok: boolean;
+          context: { sessionId: string };
+          learnings: unknown[];
+        };
+        assert.equal(body.ok, true);
+        assert.equal(body.context.sessionId, 'thread-alpha');
+        assert.equal(body.learnings.length, 0);
+      }
+
+      // 2. POST section update with both public and [private] rules
+      const updateRes = await core.handle({
+        method: 'POST',
+        path: '/v1/threads/thread-alpha/context',
+        auth: { harness: 'antigravity', includePrivate: false },
+        body: {
+          sectionKey: 'constraints',
+          items: [
+            'Always run npx tsc --noEmit and test suites before committing',
+            '[private] Do not promote internal operator token paths to public vaults',
+          ],
+          mode: 'append',
+        },
+      });
+      assert.equal(updateRes.ok, true);
+      if (updateRes.ok) {
+        const body = updateRes.body as {
+          ok: boolean;
+          learnings: Array<{ id: string; isPrivate: boolean }>;
+        };
+        assert.equal(body.learnings.length, 2);
+      }
+
+      // 3. POST cross-harness importPacket
+      const importRes = await core.handle({
+        method: 'POST',
+        path: '/v1/threads/thread-alpha/context',
+        auth: { harness: 'antigravity', includePrivate: false },
+        body: {
+          importPacket: {
+            harness: 'openclaw',
+            rawText: '## Guardrails\n- Fail closed on money: stage only, human executes spend',
+          },
+        },
+      });
+      assert.equal(importRes.ok, true);
+
+      // 4. POST /v1/threads/:id/learnings/promote — drops [private] item and promotes 2 public items
+      const promoteRes = await core.handle({
+        method: 'POST',
+        path: '/v1/threads/thread-alpha/learnings/promote',
+        auth: { harness: 'antigravity', includePrivate: false },
+        body: { source: 'test-reviewer' },
+      });
+      assert.equal(promoteRes.ok, true);
+      if (promoteRes.ok) {
+        const body = promoteRes.body as {
+          ok: boolean;
+          promotedCount: number;
+          entries: Array<{ vault: string }>;
+        };
+        assert.equal(body.ok, true);
+        assert.equal(body.promotedCount, 2);
+      }
+    } finally {
+      try {
+        rmSync(tempDir, { recursive: true, force: true });
+      } catch {
+        // Ignore Windows SQLite file lock cleanup race in temp dir
+      }
+    }
+  });
+
+  it('collects local OS state and serves cockpit/starlight-os-local.html over 127.0.0.1', async () => {
+    const { collectLocalOsState } = await import('../tools/serve-local-os.mjs');
+    const state = collectLocalOsState();
+    assert.equal(state.ok, true);
+    assert.equal(state.transport, 'loopback-html5-zero-cloudflare');
+    assert.ok(state.sis.agentCount >= 150);
+    assert.ok(state.sis.skillRuleCount >= 80);
+    assert.equal(state.sis.vaults.length, 6);
   });
 });

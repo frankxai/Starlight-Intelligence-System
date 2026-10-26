@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Starlight Agentic AI OS · Sovereign Localhost Command Center</title>
+  <style>
+    :root {
+      --bg: #070913;
+      --bg-panel: rgba(15, 20, 38, 0.86);
+      --bg-card: rgba(22, 29, 54, 0.72);
+      --border: rgba(125, 211, 252, 0.16);
+      --border-strong: rgba(125, 211, 252, 0.38);
+      --cyan: #67e8f9;
+      --teal: #5eead4;
+      --gold: #e5c158;
+      --purple: #c084fc;
+      --rose: #fb7185;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 15% 15%, rgba(103, 232, 249, 0.08), transparent 40%),
+                  radial-gradient(circle at 85% 80%, rgba(192, 132, 252, 0.08), transparent 40%),
+                  var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+    .shell { max-width: 1440px; margin: 0 auto; padding: 28px 24px 64px; }
+    header {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: var(--mono); font-size: 12px; color: var(--cyan);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    h1 { font-size: clamp(22px, 2.6vw, 32px); font-weight: 700; letter-spacing: -0.02em; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .badge {
+      font-family: var(--mono); font-size: 12px; padding: 5px 10px;
+      border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--teal);
+    }
+    .tabs {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+    }
+    .tab-btn {
+      font-family: var(--sans); font-size: 13px; font-weight: 600;
+      padding: 9px 16px; border-radius: 10px; cursor: pointer;
+      background: var(--bg-card); color: var(--muted); border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      color: var(--text); border-color: var(--border-strong);
+      background: rgba(103, 232, 249, 0.12);
+    }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card {
+      background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px;
+    }
+    .card h2 { font-size: 16px; margin-bottom: 6px; color: var(--text); }
+    .card h3 { font-size: 14px; margin-bottom: 6px; color: var(--cyan); font-family: var(--mono); }
+    .stat-val { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--teal); }
+    .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .pill {
+      display: inline-block; font-family: var(--mono); font-size: 11px;
+      padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04); color: var(--gold); margin-right: 6px;
+    }
+    .list { list-style: none; margin-top: 10px; }
+    .list li {
+      padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 13px; display: flex; justify-content: space-between; gap: 12px;
+    }
+    .list li:last-child { border-bottom: none; }
+    textarea, select, input {
+      width: 100%; background: rgba(7, 9, 19, 0.9); color: var(--text);
+      border: 1px solid var(--border); border-radius: 8px; padding: 10px;
+      font-family: var(--mono); font-size: 12px; margin-top: 8px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(94, 234, 212, 0.14); color: var(--teal);
+      border: 1px solid var(--border-strong); border-radius: 8px;
+      padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 10px;
+    }
+    .btn:hover { background: rgba(94, 234, 212, 0.24); }
+    .hidden { display: none !important; }
+    code { font-family: var(--mono); font-size: 12px; color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">Starlight Intelligence System v8.5.2 · Built on SIP</p>
+        <h1>Agentic AI OS · Sovereign Localhost Command Center</h1>
+      </div>
+      <div class="badge-row">
+        <span class="badge" id="transport-badge">127.0.0.1 · Zero Cloudflare Required</span>
+        <span class="badge">151 Agents · 89 Skill Rules · 6 Vaults</span>
+        <span class="badge">187 Curated OS Projects · 24 Awesome Repos</span>
+      </div>
+    </header>
+
+    <div class="grid-4">
+      <div class="card">
+        <p class="eyebrow">SIS Kernel &amp; Registry</p>
+        <div class="stat-val" id="stat-agents">151</div>
+        <div class="stat-sub">Named agents verified (`v8.7` symmetry + `0` exempt skills)</div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Semantic Memory Substrate</p>
+        <div class="stat-val" id="stat-vaults">6 Vaults</div>
+        <div class="stat-sub">SQLite FTS5 + 9-Section ThreadContext + `[private]` Veil</div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Awesome Agentic Atlas</p>
+        <div class="stat-val" id="stat-awesome">187 + 24</div>
+        <div class="stat-sub">187 classified projects (`A–F + S`) + 24 Awesome estate repos</div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Local Visual Surfaces</p>
+        <div class="stat-val">6 Surfaces</div>
+        <div class="stat-sub">Pure HTML5 / ESM / Vite / Loopback (`:4317`, `:3001`, `:9223`)</div>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="tab-quality">1. OS Quality &amp; Health Audit</button>
+      <button class="tab-btn" data-tab="tab-awesome">2. Awesome Radar &amp; Save-to-Install Pipeline</button>
+      <button class="tab-btn" data-tab="tab-thread">3. 9-Section Thread Context &amp; Vault Promoter</button>
+      <button class="tab-btn" data-tab="tab-surfaces">4. HTML5 Localhost / Vite / Zero-Cloudflare Stack</button>
+      <button class="tab-btn" data-tab="tab-connections">5. Ecosystem &amp; MCP Connections Matrix</button>
+    </nav>
+
+    <!-- TAB 1: OS QUALITY -->
+    <section id="tab-quality" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2>Measured Agentic AI OS Quality (Verified Live)</h2>
+          <ul class="list">
+            <li><span><strong>Starlight-Intelligence-System (`v8.5.2`)</strong></span><span class="pill">PASS · 151 Agents / 89 Rules</span></li>
+            <li><span><strong>SIS Memory Gateway (`src/gateway/`)</strong></span><span class="pill">PASS · 33/33 Tests + 0 tsc errors</span></li>
+            <li><span><strong>Cockpit Continuity (`cockpit/`)</strong></span><span class="pill">PASS · 82/82 Smoke Tests</span></li>
+            <li><span><strong>Empire Registry (`agentic-ops/registry/`)</strong></span><span class="pill">PASS · 28 YAML Collections</span></li>
+            <li><span><strong>Awesome Agent OS (`awesome-agent-operating-systems`)</strong></span><span class="pill">PASS · 187 Projects / 259 Nodes</span></li>
+            <li><span><strong>Starlight Console Preview (`starlightintelligence.ai`)</strong></span><span class="pill">PASS · 77/77 Tests + 0 Ref Leaks</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Identified Gaps &amp; How This Surface Solves Them</h2>
+          <ul class="list">
+            <li><span><strong>Legacy ACOS Repo Drift</strong>: `agentic-creator-os` &amp; `agentic-operating-system-standard` sit on pre-reboot checkpoints (`09139fe`).</span><code>Canonical SSOT = starlight-agent-config + SIS</code></li>
+            <li><span><strong>Awesome Funnel Stubs</strong>: 19 domain `awesome-*` repos had 60-line stubs (`2026-07-16` audit).</span><code>Rebuild via awesome-repo-control-plane T0→T2</code></li>
+            <li><span><strong>6 Scattered Cockpits</strong>: Atlas, Cockpit Control, Queen Vision, Console 3D, Hermes, Console Preview.</span><code>Unified here on 127.0.0.1:4317</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: AWESOME RADAR & SAVE-TO-INSTALL PIPELINE -->
+    <section id="tab-awesome" class="tab-panel hidden">
+      <div class="grid-2">
+        <div class="card">
+          <h2>4-Stage Save → Validate → Absorb → Install Pipeline</h2>
+          <ul class="list">
+            <li><span><strong>Stage 1 · Track &amp; Classify (`awesome-agent-operating-systems`)</strong><br/>Add external repo to `data/catalog-seed.json` with Class `A–F` or `S` and priority (`adopt-core`, `pilot`, `absorb`, `watch`). Run `python scripts/refresh_catalog.py`.</span><span class="pill">T0 Structural</span></li>
+            <li><span><strong>Stage 2 · Security &amp; License Gate (`awesome-repo-control-plane`)</strong><br/>Harvest signals via `scripts/pulse_catalog.py`. Quarantine untrusted hubs (`ClawHub` default quarantine). Store review in `registry/catalog/entries/`.</span><span class="pill">T1 Reviewed</span></li>
+            <li><span><strong>Stage 3 · Reference Shelf or Sandbox Pilot</strong><br/>Save upstream reference cold to `~/.claude/ecc-reference/` or run loopback sandbox test with receipt in `validation/evidence/`.</span><span class="pill">T2 Tested</span></li>
+            <li><span><strong>Stage 4 · Compile to Skill &amp; Project Across 5 Harnesses</strong><br/>Distill pattern into `starlight-agent-config/core/skills/<skill>/SKILL.md` + `SIS/skills/skill-rules.json` → auto-projected to Claude, Codex, Gemini/AGY, Grok, Hermes.</span><span class="pill">Installed</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Curated Frontier Projects (`awesome-agent-operating-systems`)</h2>
+          <ul class="list" id="awesome-project-list">
+            <li><span><strong>NousResearch/hermes-agent</strong> · Class E Runtime</span><span class="pill">adopt-core</span></li>
+            <li><span><strong>code-yeongyu/oh-my-openagent</strong> · Class B Meta-Harness</span><span class="pill">absorb-pattern</span></li>
+            <li><span><strong>ruvnet/ruflo</strong> · Class B Swarm Role Packs</span><span class="pill">absorb-pattern</span></li>
+            <li><span><strong>paperclipai/paperclip</strong> · Class C Org Control Plane</span><span class="pill">gated-pilot</span></li>
+            <li><span><strong>openclaw/openclaw</strong> · Class E Personal Runtime</span><span class="pill">benchmark + importer</span></li>
+            <li><span><strong>lobehub/lobehub</strong> · Class C Operator UI</span><span class="pill">evaluate-ui</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 9-SECTION THREAD CONTEXT & VAULT PROMOTER -->
+    <section id="tab-thread" class="tab-panel hidden">
+      <div class="grid-2">
+        <div class="card">
+          <h2>9-Section Thread Context Working Memory (`starlight.thread-context.v1`)</h2>
+          <label for="section-select" class="stat-sub">Select Section (`numbers_and_values` .. `plan_context`):</label>
+          <select id="section-select">
+            <option value="constraints">constraints (Guardrails &amp; Boundaries)</option>
+            <option value="corrections">corrections (Fixes &amp; Anti-Slop Rules)</option>
+            <option value="numbers_and_values">numbers_and_values (Metrics, Ports, Caps)</option>
+            <option value="decisions">decisions (Locked Architecture Choices)</option>
+            <option value="key_entities">key_entities (Repos, Agents, Services)</option>
+            <option value="plan_overview">plan_overview (Mission &amp; Outcome)</option>
+            <option value="plan_tasks">plan_tasks (Checklist Items)</option>
+            <option value="plan_context">plan_context (Worktree &amp; Branch State)</option>
+            <option value="notes">notes (General Working Observations)</option>
+          </select>
+          <textarea id="section-input" rows="4" placeholder="Enter rule or observation (use [private] prefix to test Veil scrubbing)...">Always run npx tsc --noEmit and test suites before committing to an agent branch.
+Fail closed on money: stage only, human executes spend.
+[private] Local loopback bearer token stays in gateway.token only.</textarea>
+          <button class="btn" id="btn-distill">Distill Trajectory Learnings &amp; Scrub [private]</button>
+        </div>
+        <div class="card">
+          <h2>Distilled Vault Promotion Queue (`PROMOTION_QUEUE`)</h2>
+          <p class="stat-sub">Items tagged `[private]` are automatically scrubbed and dropped before vault promotion:</p>
+          <ul class="list" id="learning-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HTML5 LOCALHOST / VITE / ZERO-CLOUDFLARE STACK -->
+    <section id="tab-surfaces" class="tab-panel hidden">
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Pure HTML5 + Node Loopback (`127.0.0.1:4317`)</h3>
+          <p class="stat-sub">Zero build step, zero Cloudflare, zero framework bloat. Runs via `node tools/serve-local-os.mjs` on `127.0.0.1:4317`.</p>
+          <ul class="list">
+            <li><span><strong>Starlight OS Command Center</strong></span><code>cockpit/starlight-os-local.html</code></li>
+            <li><span><strong>Agentic Atlas (`187` OS projects)</strong></span><code>awesome-agent-operating-systems/sites/atlas/index.html</code></li>
+            <li><span><strong>Cockpit Control Center</strong></span><code>cockpit/agent-control-center.html</code></li>
+            <li><span><strong>Queen Swarms Vision (L99)</strong></span><code>site/queen-vision.html</code></li>
+            <li><span><strong>Hermes Genius Cockpit</strong></span><code>hermes-cockpit/dashboard.html</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>2. Vite + ESM Workbench (`localhost:5173` / Static Dist)</h3>
+          <p class="stat-sub">Sub-50ms HMR during development, compiles to pure static ES modules (`public/console-preview/`) that run offline or on any static host.</p>
+          <ul class="list">
+            <li><span><strong>Founder Console Preview</strong></span><code>starlightintelligence.ai/lib/missions/console-preview/</code></li>
+            <li><span><strong>2D/3D Force-Graph Substrate</strong></span><code>Starlight-Intelligence-System/console/ (:3001)</code></li>
+            <li><span><strong>Desktop Shell Option</strong></span><code>Tauri v2 WebView2 wrapper (8 MB binary, no Electron RAM bloat)</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>3. Void Cloudflare (100% Sovereign Network Options)</h3>
+          <p class="stat-sub">How to run across your machines (C940, Mobile, Remotes) without Cloudflare Workers, Pages, or Tunnels:</p>
+          <ul class="list">
+            <li><span><strong>Local Machine Only</strong></span><code>Bind strictly to 127.0.0.1 (Loopback + Bearer token)</code></li>
+            <li><span><strong>Private Mesh (Recommended)</strong></span><code>Tailscale / WireGuard mesh between Frank machines</code></li>
+            <li><span><strong>P2P Vault Sync</strong></span><code>Syncthing append-only JSONL + local SQLite FTS5 rebuild</code></li>
+            <li><span><strong>Optional Cloud E2EE</strong></span><code>StarlightCloudConnector (AES-256-GCM client-side encryption)</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: ECOSYSTEM & MCP CONNECTIONS MATRIX -->
+    <section id="tab-connections" class="tab-panel hidden">
+      <div class="grid-3">
+        <div class="card">
+          <h3>Memory &amp; State Bridges</h3>
+          <ul class="list">
+            <li><span><strong>SIS Memory Gateway</strong></span><code>127.0.0.1 /v1/memory &amp; /v1/threads</code></li>
+            <li><span><strong>6 Semantic Vaults</strong></span><code>memory/vaults/*.md + SQLite FTS5</code></li>
+            <li><span><strong>Cross-Harness Importer</strong></span><code>OpenClaw · Claude Code · Hyperagent · Cursor</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Execution &amp; Browser Bridges</h3>
+          <ul class="list">
+            <li><span><strong>CDP Browser Multiplexer Hub</strong></span><code>http://localhost:9223/wsEndpoint</code></li>
+            <li><span><strong>Cockpit Continuity (`arc`)</strong></span><code>cockpit/mcp/server.js (WT/tmux/Zellij)</code></li>
+            <li><span><strong>Queen File Queue</strong></span><code>starlight/queen/{inbox,running,reports}</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Governance &amp; Safety Bridges</h3>
+          <ul class="list">
+            <li><span><strong>Ownership &amp; Commit Gate</strong></span><code>starlight-ops claim / gate</code></li>
+            <li><span><strong>Cross-Provider PR Gate</strong></span><code>starlight/tools/pr-gate.mjs</code></li>
+            <li><span><strong>Empire Registry (28 YAMLs)</strong></span><code>agentic-ops/registry/</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    // Tab switching
+    const buttons = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => b.classList.remove('active'));
+        panels.forEach((p) => p.classList.add('hidden'));
+        btn.classList.add('active');
+        const target = document.getElementById(btn.dataset.tab);
+        if (target) target.classList.remove('hidden');
+      });
+    });
+
+    // Client-side Trajectory Learning Distiller & [private] Veil Scrubber
+    function classifyVault(text) {
+      const lower = text.toLowerCase();
+      if (/money|spend|pricing|refund|fail closed|governance/.test(lower)) return 'strategic ◆';
+      if (/voice|copy|sentence case|editorial|brand/.test(lower)) return 'creative ✦';
+      if (/tsc|test|ci|build|lint|sqlite|schema/.test(lower)) return 'technical ⬡';
+      if (/worktree|branch|lane|handover|daemon/.test(lower)) return 'operational ▸';
+      if (/principle|wisdom|philosophy/.test(lower)) return 'wisdom ◎';
+      return 'operational ▸';
+    }
+
+    function renderDistilledLearnings() {
+      const raw = document.getElementById('section-input').value || '';
+      const list = document.getElementById('learning-list');
+      list.innerHTML = '';
+      const lines = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      for (const line of lines) {
+        const isPrivate = /\[\s*private\s*\]|privacy:(?!public|shareable)/i.test(line);
+        const cleaned = line.replace(/\[\s*private\s*\]/gi, '').trim();
+        const li = document.createElement('li');
+        if (isPrivate) {
+          li.innerHTML = `<span><del>${cleaned}</del></span><span class="pill" style="color:var(--rose)">DROPPED ([private] Veil)</span>`;
+        } else {
+          const vault = classifyVault(cleaned);
+          li.innerHTML = `<span>${cleaned}</span><span class="pill">PROMOTE → ${vault}</span>`;
+        }
+        list.appendChild(li);
+      }
+    }
+
+    document.getElementById('btn-distill').addEventListener('click', renderDistilledLearnings);
+    renderDistilledLearnings();
+
+    // Hydrate from local loopback server (/api/os-state) if running via tools/serve-local-os.mjs
+    fetch('/api/os-state')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data || !data.ok) return;
+        document.getElementById('transport-badge').textContent = 'LIVE Loopback · 127.0.0.1 · Zero Cloudflare';
+        document.getElementById('stat-agents').textContent = String(data.sis.agentCount);
+        document.getElementById('stat-awesome').textContent = `${data.awesome.curatedProjectsCount} + ${data.awesome.estateAwesomeReposCount}`;
+        if (Array.isArray(data.awesome.sampleProjects) && data.awesome.sampleProjects.length > 0) {
+          const ul = document.getElementById('awesome-project-list');
+          ul.innerHTML = data.awesome.sampleProjects.slice(0, 8).map((p) =>
+            `<li><span><strong>${p.repo}</strong> · ${p.category}</span><span class="pill">${p.priority}</span></li>`
+          ).join('');
+        }
+      })
+      .catch(() => {
+        // Standalone file:// mode — uses embedded verified snapshot
+      });
+  </script>
+</body>
+</html>
