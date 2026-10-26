@@ -6,6 +6,7 @@ import worker, {
   extractEventMetadata,
   shouldDispatchRunner,
   buildCloudRunExecutionPayload,
+  buildFleetIngressAgentCard,
 } from '../src/index.ts';
 import crypto from 'node:crypto';
 
@@ -37,6 +38,9 @@ test('verifySignature rejects tampered body or invalid secret', async () => {
 
   const missingPrefixValid = await verifySignature(body, 'invalid_prefix', TEST_SECRET);
   assert.equal(missingPrefixValid, false, 'signature without sha256= prefix must fail');
+
+  const malformedHexValid = await verifySignature(body, 'sha256=not_a_64_char_hex', TEST_SECRET);
+  assert.equal(malformedHexValid, false, 'non-64-char hex must fail');
 });
 
 test('extractEventMetadata accurately parses pull_request and push events', () => {
@@ -112,13 +116,38 @@ test('buildCloudRunExecutionPayload constructs correct container environment ove
   assert.equal(envs.CALLBACK_URL, 'https://ingress.starlight.workers.dev/callback');
 });
 
-test('worker fetch handles /health and verifies webhook requests', async () => {
+test('worker fetch handles /health, /.well-known/agent.json, and verifies webhook requests', async () => {
   const healthReq = new Request('https://ingress.starlight.local/health');
   const healthRes = await handleRequest(healthReq, {});
   assert.equal(healthRes.status, 200);
   const healthJson = await healthRes.json();
   assert.equal(healthJson.status, 'healthy');
   assert.equal(healthJson.protocol, 'SIP-1.1.1');
+  assert.deepEqual(healthJson.readiness, {
+    githubWebhookSecretConfigured: false,
+    gcpDispatchConfigured: false,
+  });
+
+  // A2A Agent Card discovery
+  const cardReq = new Request('https://ingress.starlight.local/.well-known/agent.json');
+  const cardRes = await handleRequest(cardReq, {
+    GITHUB_WEBHOOK_SECRET: 'configured-secret',
+    GCP_PROJECT_ID: 'starlight-intelligence-estate',
+    GCP_REGION: 'europe-west4',
+    CLOUD_RUN_JOB: 'starlight-runner-job',
+    GCP_SERVICE_ACCOUNT_TOKEN: 'configured-token',
+  });
+  assert.equal(cardRes.status, 200);
+  const cardJson = await cardRes.json();
+  assert.equal(cardJson.schemaVersion, '1.0.0');
+  assert.equal(cardJson.protocol, 'SIP-1.1.1');
+  assert.equal(cardJson.skills.length, 2);
+  assert.deepEqual(cardJson.readiness, {
+    githubWebhookSecretConfigured: true,
+    gcpDispatchConfigured: true,
+  });
+  assert.equal(JSON.stringify(cardJson).includes('configured-secret'), false);
+  assert.equal(JSON.stringify(cardJson).includes('configured-token'), false);
 
   // Ping request
   const pingBody = JSON.stringify({ zen: 'Keep it logically awesome.' });

@@ -310,4 +310,227 @@ describe('Direct SwarmCoordinator containment (synthetic requests)', () => {
   });
 });
 
+import { UnifiedAiGateway } from '../services/starlight-cloud-worker/src/llm/ai-gateway.js';
+
+describe('Wave 2 Substrate Modernization: A2A Card, Stateless HTTP MCP, Cost Routing & Durable Leases', () => {
+  it('serves A2A 1.0 Agent Card at /.well-known/agent.json and /v1/agent-card', async () => {
+    for (const path of ['/.well-known/agent.json', '/v1/agent-card']) {
+      const res = await StarlightCloudWorker.handleRequest(new Request(`${BASE_URL}${path}`));
+      assert.equal(res.status, 200);
+      const card = (await res.json()) as any;
+      assert.equal(card.schemaVersion, '1.0.0');
+      assert.equal(card.protocol, 'SIP-1.1.1');
+      assert.equal(card.capabilities.mcpTransport, 'streamable-http');
+      assert.equal(card.capabilities.mcpSpecVersion, '2026-07-28');
+      assert.equal(card.authentication.protectedApiStatus, 'unavailable');
+      assert.ok(Array.isArray(card.skills));
+      assert.equal(card.skills.length, 6);
+    }
+  });
+
+  it('classifies LLM prompt complexity into mechanical, balanced, and deep_reasoning tiers', () => {
+    const mechanical = UnifiedAiGateway.classifyComplexity([
+      { role: 'user', content: 'Format this JSON date string.' },
+    ]);
+    assert.equal(mechanical.complexityTier, 'mechanical');
+
+    const balanced = UnifiedAiGateway.classifyComplexity([
+      { role: 'user', content: 'Please implement and refactor this TypeScript endpoint and add a unit test.' },
+    ]);
+    assert.equal(balanced.complexityTier, 'balanced');
+
+    const deep = UnifiedAiGateway.classifyComplexity(
+      [
+        {
+          role: 'user',
+          content:
+            'Perform a formal security audit and architecture trade-off analysis for distributed consensus and multi-agent orchestration substrate.',
+        },
+      ],
+      'starlight-auto',
+      { ANTHROPIC_API_KEY: 'sk-ant-synthetic' }
+    );
+    assert.equal(deep.complexityTier, 'deep_reasoning');
+    assert.equal(deep.selectedProvider, 'anthropic');
+    assert.equal(deep.selectedModel, 'claude-opus-4-7');
+  });
+
+  it('supports Stateless Streamable HTTP MCP (POST /v1/mcp) when verified identity authority is bound', async () => {
+    const verifiedEnv: Env = {
+      STARLIGHT_IDENTITY_VERIFIER: async (token, reqTenant) => {
+        if (token === 'verified-edge-token') {
+          return {
+            tenantId: reqTenant || 'tenant_verified',
+            orgName: 'Verified Org',
+            plan: 'enterprise',
+            quotaRemaining: 1000,
+            byovEnabled: true,
+          };
+        }
+        return null;
+      },
+    };
+
+    // 1. initialize
+    const initRes = await StarlightCloudWorker.handleRequest(
+      new Request(`${BASE_URL}/v1/mcp`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer verified-edge-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} }),
+      }),
+      verifiedEnv
+    );
+    assert.equal(initRes.status, 200);
+    assert.equal(initRes.headers.get('Mcp-Protocol-Version'), '2026-07-28');
+    assert.ok(initRes.headers.get('Mcp-Session-Id'));
+    const initBody = (await initRes.json()) as any;
+    assert.equal(initBody.result.protocolVersion, '2026-07-28');
+    assert.equal(initBody.result.serverInfo.transport, 'streamable-http');
+
+    // 2. notifications/initialized -> 202 Accepted
+    const notifRes = await StarlightCloudWorker.handleRequest(
+      new Request(`${BASE_URL}/v1/mcp`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer verified-edge-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }),
+      }),
+      verifiedEnv
+    );
+    assert.equal(notifRes.status, 202);
+
+    // 3. tools/list
+    const listRes = await StarlightCloudWorker.handleRequest(
+      new Request(`${BASE_URL}/v1/mcp`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer verified-edge-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'tools/list',
+          params: { activeIntent: 'memory vault search' },
+        }),
+      }),
+      verifiedEnv
+    );
+    assert.equal(listRes.status, 200);
+    const listBody = (await listRes.json()) as any;
+    assert.ok(listBody.result.tools.some((t: any) => t.name === 'vault_query'));
+
+    // 4. tools/call (vault_append + vault_query)
+    const appendRes = await StarlightCloudWorker.handleRequest(
+      new Request(`${BASE_URL}/v1/mcp`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer verified-edge-token',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 3,
+          method: 'tools/call',
+          params: {
+            name: 'vault_append',
+            arguments: {
+              content: 'Stateless Streamable HTTP MCP verified with sk-1234567890abcdefghijklmnop secret scrubbing',
+              tier: 'technical',
+            },
+          },
+        }),
+      }),
+      verifiedEnv
+    );
+    assert.equal(appendRes.status, 200);
+    const appendBody = (await appendRes.json()) as any;
+    const appendPayload = JSON.parse(appendBody.result.content[0].text);
+    assert.equal(appendPayload.success, true);
+    assert.equal(appendPayload.piiScrubbed, true);
+  });
+
+  it('rejects D1 query failures instead of silently falling back to isolate memory when STARLIGHT_DB is bound', async () => {
+    const actor = tenant();
+    await component.handleAppend(actor, { content: 'cached acknowledgement in component memory' }, {});
+    assert.equal(await cachedCount(actor), 1);
+
+    await assert.rejects(
+      component.handleQuery(
+        actor,
+        { query: 'acknowledgement' },
+        {
+          STARLIGHT_DB: {
+            prepare() {
+              return {
+                bind() {
+                  return {
+                    async all() {
+                      throw new Error('D1 connection lost');
+                    },
+                  };
+                },
+              };
+            },
+          },
+        }
+      ),
+      { message: 'Memory query failed.' }
+    );
+  });
+
+  it('arbitrates swarm worktree leases via durable KV and D1 backends', async () => {
+    const leaseComponent = StarlightCloudWorker as unknown as {
+      handleLeaseAcquire(tenant: TenantContext, req: any, env: Env): Promise<any>;
+      handleLeaseRelease(tenant: TenantContext, leaseId: string, env: Env): Promise<void>;
+    };
+    const actor = tenant();
+    const kvStore = new Map<string, string>();
+    const kvEnv: Env = {
+      STARLIGHT_KV: {
+        async get(k: string) {
+          return kvStore.get(k) ?? null;
+        },
+        async put(k: string, v: string) {
+          kvStore.set(k, v);
+        },
+        async delete(k: string) {
+          kvStore.delete(k);
+        },
+      },
+    };
+
+    const acquired = await leaseComponent.handleLeaseAcquire(
+      actor,
+      { agentId: 'agent-1', worktree: 'wt-1', paths: ['src/index.ts'] },
+      kvEnv
+    );
+    assert.equal(acquired.status, 'acquired');
+    assert.equal(acquired.storageBackend, 'kv');
+
+    const conflict = await leaseComponent.handleLeaseAcquire(
+      actor,
+      { agentId: 'agent-2', worktree: 'wt-2', paths: ['src/index.ts'] },
+      kvEnv
+    );
+    assert.equal(conflict.status, 'conflict');
+    assert.equal(conflict.conflictWith, 'agent-1');
+
+    await leaseComponent.handleLeaseRelease(actor, acquired.leaseId, kvEnv);
+
+    const reacquired = await leaseComponent.handleLeaseAcquire(
+      actor,
+      { agentId: 'agent-2', worktree: 'wt-2', paths: ['src/index.ts'] },
+      kvEnv
+    );
+    assert.equal(reacquired.status, 'acquired');
+  });
+});
+
+
 

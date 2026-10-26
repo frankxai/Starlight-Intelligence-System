@@ -116,6 +116,7 @@ export interface SwarmLeaseResponse {
   expiresAt: string;
   status: 'acquired' | 'conflict';
   conflictWith?: string;
+  storageBackend?: 'd1' | 'kv' | 'memory-component';
 }
 
 export interface TenantContext {
@@ -124,4 +125,54 @@ export interface TenantContext {
   plan: 'solo' | 'studio' | 'enterprise';
   quotaRemaining: number;
   byovEnabled: boolean;
+}
+
+export type TaskComplexityTier = 'mechanical' | 'balanced' | 'deep_reasoning';
+
+export interface CostRoutingDecision {
+  complexityTier: TaskComplexityTier;
+  selectedModel: string;
+  selectedProvider: 'workers-ai' | 'anthropic' | 'openai' | 'edge-sim';
+  estimatedInputTokens: number;
+  estimatedCostUsd: number;
+  rationale: string;
+}
+
+export interface A2AAgentSkill {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  examples?: string[];
+}
+
+export interface A2AAgentCard {
+  schemaVersion: '1.0.0';
+  name: string;
+  description: string;
+  url: string;
+  version: string;
+  protocol: string;
+  attestation: string;
+  provider: {
+    organization: string;
+    url: string;
+  };
+  capabilities: {
+    streaming: boolean;
+    pushNotifications: boolean;
+    stateTransitionHistory: boolean;
+    mcpTransport: 'streamable-http';
+    mcpEndpoint: string;
+    mcpSpecVersion: string;
+    epistemicVaults: number;
+  };
+  authentication: {
+    schemes: string[];
+    protectedApiStatus: 'available' | 'unavailable';
+    reason: string;
+  };
+  defaultInputModes: string[];
+  defaultOutputModes: string[];
+  skills: A2AAgentSkill[];
 }
