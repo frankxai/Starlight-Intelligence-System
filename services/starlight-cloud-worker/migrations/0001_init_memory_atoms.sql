@@ -23,3 +23,16 @@ CREATE INDEX IF NOT EXISTS idx_memory_atoms_tenant_created
 
 CREATE INDEX IF NOT EXISTS idx_memory_atoms_tenant_tier_ns
   ON memory_atoms (tenant_id, tier, namespace, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS swarm_leases (
+  lease_key TEXT PRIMARY KEY,
+  lease_token TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  agent_id TEXT NOT NULL,
+  expires_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_swarm_leases_tenant_expires
+  ON swarm_leases (tenant_id, expires_at);
+
