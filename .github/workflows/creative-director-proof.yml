@@ -48,7 +48,7 @@ jobs:
         with:
           name: creative-ui-proof
           path: creative-ui-proof
-          retention-days: 14
+          retention-days: 3
   visual-baseline:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -70,4 +70,4 @@ jobs:
         with:
           name: creative-reference-proof
           path: creative-reference-proof
-          retention-days: 14
+          retention-days: 3

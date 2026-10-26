@@ -52,4 +52,4 @@ jobs:
           path: |
             estate-guard-report.md
             .claude/ci/estate-guard/last-scan.json
-          retention-days: 30
+          retention-days: 3
