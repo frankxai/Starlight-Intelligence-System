@@ -84,6 +84,13 @@ export default function DownloadPage() {
         </div>
       </section>
 
+      <div className="border-b border-white/[0.06] px-6 py-6">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+          <p className="max-w-xl text-sm leading-7 text-slate-300">Start with the job you want to finish. Find a workflow, product workbook or local system starter.</p>
+          <Link href="/kits" className="inline-flex min-h-11 items-center gap-2 rounded border border-cyan-400/30 px-4 py-2 text-sm text-cyan-300 hover:bg-cyan-400/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">Explore free builder kits <ArrowRight className="h-4 w-4" /></Link>
+        </div>
+      </div>
+
       <PluginAdoption />
 
       {/* 2. Flagship Core Downloads (Bento Grid Section) */}
