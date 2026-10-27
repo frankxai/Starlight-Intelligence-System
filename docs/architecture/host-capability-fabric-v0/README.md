@@ -32,3 +32,13 @@ The first command must be run on the **actual Yoga Book**, the second on the **a
 - Does not mirror Syncthing state or publish local inventory to GitHub.
 
 See `docs/architecture/HOST-CAPABILITY-FABRIC.md` for architecture, placement model, real execution boundaries, security, future API tool contracts and staged acceptance.
+
+## Report selection and enrollment
+
+The reconciler evaluates every report claiming a reviewed machine ID. An eligible report has a valid timestamp, is no more than 30 seconds ahead or 120 seconds old, uses the supported observation schema, matches an expected hostname, and receives exactly `true` from the external `verifyEnvelope(report, machine)` callback. The newest eligible report wins. A newer unauthenticated report cannot shadow it. If none is eligible, the newest candidate supplies the existing stale, invalid, identity mismatch, or unverified diagnostic. A missing verifier or a verifier exception never establishes identity.
+
+Suspended, revoked, and retired machines report `not_enrolled`, with their lifecycle in the reason, and never call the verifier. Proposed machines may report observations, but remain unverified and require `authenticated_device_enrollment` even when an envelope is accepted. An omitted lifecycle retains enrolled behavior for existing callers. Every result keeps `canDispatch: false`.
+
+Observation snapshots require the boolean `skillsTruncated` field so callers can distinguish a complete skill scan from a capped scan.
+
+Revision: Codex, 2026-10-27, PR #510 follow-up v1. Sources: the two fleet tools, host observation and machine registry schemas, and their tests. Review state: local regression verification; independent follow-up review pending.

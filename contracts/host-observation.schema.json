@@ -4,7 +4,7 @@
   "title": "Starlight Read-Only Host Scout Observation",
   "description": "Local unsigned observation; the server MUST NOT interpret any field as execution authority.",
   "type": "object",
-  "required": ["schemaVersion", "observedAt", "host", "resources", "harnesses", "skills", "mcpServers", "plugins", "projectPackages", "sessions", "cloudSessions", "permission", "privacy", "observationSha256"],
+  "required": ["schemaVersion", "observedAt", "host", "resources", "harnesses", "skills", "skillsTruncated", "mcpServers", "plugins", "projectPackages", "sessions", "cloudSessions", "permission", "privacy", "observationSha256"],
   "properties": {
     "schemaVersion": {"const": "starlight.host-observation.v0"},
     "observedAt": {"type": "string", "format": "date-time"},
@@ -21,6 +21,7 @@
     "resources": {"type": "object"},
     "harnesses": {"type": "array", "items": {"type": "object"}},
     "skills": {"type": "array", "items": {"type": "object"}},
+    "skillsTruncated": {"type": "boolean"},
     "mcpServers": {"type": "array", "items": {"type": "object"}},
     "plugins": {"type": "array", "items": {"type": "object"}},
     "projectPackages": {"type": "array", "items": {"type": "object"}},

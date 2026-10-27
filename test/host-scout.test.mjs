@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, renameSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, renameSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { collectHostSnapshot, findBinaries, SCHEMA_VERSION } from '../tools/fleet/host-scout.mjs';
@@ -23,6 +23,26 @@ function fixture(callback) {
     return callback({home,projectRoot,bin,dir});
   } finally {rmSync(dir, { recursive: true, force: true });}
 }
+
+test('collected snapshot satisfies schema required keys, types and constants', () => fixture(({home,projectRoot,bin}) => {
+  const schema = JSON.parse(readFileSync(new URL('../contracts/host-observation.schema.json', import.meta.url), 'utf8'));
+  const snapshot = collectHostSnapshot({machineId:'test-laptop',home,projectRoot,pathEnv:bin});
+  function check(value, contract, path = 'snapshot') {
+    if (Object.hasOwn(contract, 'const')) assert.deepEqual(value, contract.const, path);
+    if (contract.type) {
+      const type = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
+      assert.ok([].concat(contract.type).includes(type), `${path}: expected ${contract.type}, got ${type}`);
+    }
+    for (const key of contract.required || []) assert.ok(Object.hasOwn(value, key), `${path}.${key} is required`);
+    for (const [key, property] of Object.entries(contract.properties || {})) {
+      if (Object.hasOwn(value, key)) check(value[key], property, `${path}.${key}`);
+    }
+    if (contract.items && Array.isArray(value)) value.forEach((item, index) => check(item, contract.items, `${path}[${index}]`));
+  }
+  assert.ok(schema.required.includes('skillsTruncated'));
+  assert.equal(schema.properties.skillsTruncated.type, 'boolean');
+  check(snapshot, schema);
+}));
 
 test('snapshot reports observed installations without claiming auth, sessions or dispatch', () => fixture(({home,projectRoot,bin}) => {
   const snapshot = collectHostSnapshot({machineId:'test-laptop', home,projectRoot,pathEnv:bin,platform:'linux',now:'2026-10-27T08:00:00.000Z'});
