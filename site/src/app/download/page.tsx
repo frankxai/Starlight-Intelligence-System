@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { BrainHero } from "@/components/BrainHero";
+import { PluginAdoption } from "@/components/PluginAdoption";
 import {
   Download,
   Terminal as TerminalIcon,
@@ -83,6 +84,8 @@ export default function DownloadPage() {
         </div>
       </section>
 
+      <PluginAdoption />
+
       {/* 2. Flagship Core Downloads (Bento Grid Section) */}
       <section className="relative px-6 py-20 border-b border-white/[0.04]">
         <div className="mx-auto max-w-5xl">
@@ -158,7 +161,7 @@ export default function DownloadPage() {
                 </span>
                 <h3 className="mt-4 text-2xl font-bold text-white tracking-tight">Codex Plugin Starter</h3>
                 <p className="mt-2.5 text-xs text-slate-400 leading-relaxed">
-                  Prerelease bundle containing 4 developer plugins for enterprise AI Center of Excellence, health safety, prompt testing, and audio frequency automation.
+                  Four local skill guides covering enterprise AI planning, health safety, prompt evaluation and music workflows. This is a Codex prerelease bundle.
                 </p>
                 <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/[0.05] pt-4">
                   <span className="text-[11px] text-slate-500 font-mono truncate max-w-[150px]" title={PLUGIN_STARTER_SHA256}>
@@ -188,7 +191,7 @@ export default function DownloadPage() {
               <p className="text-[11px] font-medium normal-case tracking-wider text-slate-500 font-mono">02 / Swarm Modules</p>
               <h2 className="mt-2 text-3xl font-bold text-white tracking-tight">Intelligence Wrapper Kits</h2>
               <p className="mt-2 text-slate-400 text-sm font-light">
-                Six public-ready wrappers for orchestrating command, revenue, system builds, world engines, and products.
+                Six downloadable skill guides for planning work, shaping products and developing creative projects in your own Codex environment.
               </p>
             </div>
             <Link
@@ -208,7 +211,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/26.jpg",
                 icon: Cpu,
                 color: "text-cyan-400 border-cyan-500/10 hover:border-cyan-500/30",
-                desc: "Orchestrate executive decisions and harness system overrides.",
+                desc: "Structure priorities, decision notes and a bounded execution brief.",
               },
               {
                 title: "Revenue Engine Kit",
@@ -216,7 +219,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/12.jpg",
                 icon: Coins,
                 color: "text-emerald-400 border-emerald-500/10 hover:border-emerald-500/30",
-                desc: "Manage value computational paths and transaction ledgers.",
+                desc: "Draft an offer, pricing choices and a plan for testing demand.",
               },
               {
                 title: "Starlight System Module",
@@ -224,7 +227,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/68.jpg",
                 icon: Layers,
                 color: "text-violet-400 border-violet-500/10 hover:border-violet-500/30",
-                desc: "Manage workspace meshes, naming doctrines, and schemas.",
+                desc: "Plan memory, evaluation and release evidence for your system.",
               },
               {
                 title: "Arcanea World Engine",
@@ -232,7 +235,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/45.jpg",
                 icon: Workflow,
                 color: "text-rose-400 border-rose-500/10 hover:border-rose-500/30",
-                desc: "Generative creative writing pipelines and worldbuilding swarms.",
+                desc: "Develop a world brief, character notes and a creative production plan.",
               },
               {
                 title: "Enterprise AI Kit",
@@ -240,7 +243,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/78.jpg",
                 icon: ShieldCheck,
                 color: "text-blue-400 border-blue-500/10 hover:border-blue-500/30",
-                desc: "Production model orchestration, security gates, and benchmarks.",
+                desc: "Prepare AI readiness, governance and implementation planning briefs.",
               },
               {
                 title: "Creator Product Kit",
@@ -248,7 +251,7 @@ export default function DownloadPage() {
                 img: "/assets/visuals/queen-premium/84.jpg",
                 icon: Sparkles,
                 color: "text-amber-400 border-amber-500/10 hover:border-amber-500/30",
-                desc: "Packaging templates and visual monetization engines.",
+                desc: "Shape a creator product, its package and a practical launch plan.",
               },
             ].map((kit) => {
               const Icon = kit.icon;
