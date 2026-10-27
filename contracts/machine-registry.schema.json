@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.ai/schemas/fleet-machine-registry-v0.json",
+  "title": "Starlight Reviewed Machine Registry",
+  "description": "Review-controlled device identity and routing scope, not observed uptime or run permission.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceRevision", "machines"],
+  "properties": {
+    "schemaVersion": {"const": "starlight.machine-registry.v0"},
+    "sourceRevision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "machines": {
+      "type": "array", "minItems": 1, "maxItems": 10000,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "ownerId", "expectedHostnames", "lifecycle", "trustZone"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"},
+          "ownerId": {"type": "string", "minLength": 1, "maxLength": 128},
+          "expectedHostnames": {"type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 255}},
+          "lifecycle": {"enum": ["proposed", "enrolled", "suspended", "revoked", "retired"]},
+          "trustZone": {"enum": ["personal", "team", "customer", "isolated-runner"]},
+          "publicKeyFingerprint": {"type": ["string", "null"], "maxLength": 256},
+          "allowedRepositoryIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "maxLength": 180}},
+          "notes": {"type": "string", "maxLength": 300}
+        }
+      }
+    }
+  }
+}
