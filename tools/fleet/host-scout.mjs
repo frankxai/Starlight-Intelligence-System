@@ -8,7 +8,7 @@
  * No secrets, config values, or raw transcripts are returned.
  */
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, readFileSync, readdirSync, statfsSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync, statSync, statfsSync } from 'node:fs';
 import { homedir, hostname, platform as osPlatform, arch as osArch, freemem, totalmem, cpus } from 'node:os';
 import { basename, delimiter, extname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -77,18 +77,24 @@ function scanSkills(home, project, includePaths = false) {
     ['codex', 'project', join(project, '.codex', 'skills')],
   ];
   const result = [];
+  let truncated = false;
   for (const [harness, scope, root] of roots) {
-    if (!isRealDirectory(root)) continue;
-    for (const dirName of limitedEntries(root, MAX_SKILLS)) {
-      if (result.length >= MAX_SKILLS) break;
+    // Follow only the root: shared skills roots may be Windows junctions.
+    // Entries and SKILL.md files retain lstat checks so their links are never followed.
+    try { if (!statSync(root).isDirectory()) continue; } catch { continue; }
+    const entries = limitedEntries(root, MAX_SKILLS + 1);
+    if (entries.length > MAX_SKILLS) truncated = true;
+    for (const dirName of entries.slice(0, MAX_SKILLS)) {
+      if (result.length >= MAX_SKILLS) return { skills: result, truncated: true };
       if (!stableName(dirName)) continue;
+      if (!isRealDirectory(join(root, dirName))) continue;
       const skillFile = join(root, dirName, 'SKILL.md');
       const body = safeRead(skillFile);
       if (body === null) continue;
       result.push({ id: dirName, harness, scope, state: 'manifest_present_unloaded', sha256: hash(body), source: includePaths ? skillFile : `${harness}:${scope}` });
     }
   }
-  return result;
+  return { skills: result, truncated };
 }
 
 function scanMcp(home, project, includePaths = false) {
@@ -157,13 +163,15 @@ export function collectHostSnapshot({ machineId = null, projectRoot = process.cw
   if (machineId !== null && !MACHINE_RE.test(machineId)) throw new Error('invalid machine id');
   if (!Number.isFinite(Date.parse(now))) throw new Error('invalid timestamp');
   const project = resolve(projectRoot);
+  const { skills, truncated: skillsTruncated } = scanSkills(home, project, includePaths);
   const data = {
     schemaVersion: SCHEMA_VERSION,
     observedAt: now,
     host: { claimedMachineId: machineId, osHostname: hostname(), platform, arch: osArch(), identity: 'locally_observed_not_attested', peerConnectivity: 'unknown' },
     resources: resourceSnapshot(project),
     harnesses: findBinaries({pathEnv, platform, includePaths}),
-    skills: scanSkills(home, project, includePaths),
+    skills,
+    skillsTruncated,
     mcpServers: scanMcp(home, project, includePaths),
     plugins: scanPlugins(home, includePaths),
     projectPackages: scanPackages(project, includePaths),

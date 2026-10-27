@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, renameSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { collectHostSnapshot, findBinaries, SCHEMA_VERSION } from '../tools/fleet/host-scout.mjs';
@@ -34,6 +34,7 @@ test('snapshot reports observed installations without claiming auth, sessions or
   assert.equal(snapshot.permission.remoteDispatch,'not_authorized');
   assert.equal(snapshot.sessions.state,'not_scanned');
   assert.equal(snapshot.skills[0].state,'manifest_present_unloaded');
+  assert.equal(snapshot.skillsTruncated,false);
   assert.equal(snapshot.mcpServers.length,3);
   assert.deepEqual(snapshot.projectPackages.map(x=>x.id),['@example/private-lib','react','typescript']);
   const serialized=JSON.stringify(snapshot);
@@ -50,12 +51,64 @@ test('id validation fails closed and path disclosure is explicitly optional', ()
   assert.ok(detailed.skills[0].source.includes('SKILL.md'));
 }));
 
-test('symlinked SKILL.md is not followed or hashed', () => fixture(({home,projectRoot,bin,dir}) => {
+test('symlinked SKILL.md is not followed or hashed', (t) => fixture(({home,projectRoot,bin}) => {
   const extra = join(home,'.agents','skills','link-skill');
   mkdirSync(extra,{recursive:true});
-  symlinkSync(join(home,'.claude','skills','frontend-design','SKILL.md'),join(extra,'SKILL.md'));
+  try {
+    symlinkSync(join(home,'.claude','skills','frontend-design','SKILL.md'),join(extra,'SKILL.md'));
+  } catch (error) {
+    if (error.code !== 'EPERM' && error.code !== 'EACCES') throw error;
+    t.skip(`File symlink creation is not permitted (${error.code}); symlink privilege is required on Windows`);
+    return;
+  }
   const result=collectHostSnapshot({home,projectRoot,pathEnv:bin});
   assert.equal(result.skills.some(x=>x.id==='link-skill'),false);
+}));
+
+test('skills root junction or symlink is followed', () => fixture(({home,projectRoot,bin,dir}) => {
+  const root = join(home,'.claude','skills');
+  const target = join(dir,'shared-skills');
+  renameSync(root,target);
+  symlinkSync(target,root,process.platform === 'win32' ? 'junction' : 'dir');
+  const result = collectHostSnapshot({home,projectRoot,pathEnv:bin});
+  assert.equal(result.skills.length,1);
+  assert.equal(result.skills[0].id,'frontend-design');
+  assert.equal(result.skills[0].harness,'claude');
+  assert.equal(result.skills[0].scope,'user');
+  assert.equal(result.skillsTruncated,false);
+}));
+
+test('skill entry junction or symlink is not followed', () => fixture(({home,projectRoot,bin}) => {
+  const root = join(home,'.claude','skills');
+  symlinkSync(join(root,'frontend-design'),join(root,'linked-entry'),process.platform === 'win32' ? 'junction' : 'dir');
+  const result = collectHostSnapshot({home,projectRoot,pathEnv:bin});
+  assert.equal(result.skills.some(x=>x.id==='linked-entry'),false);
+}));
+
+test('skill cap reports truncation within a root and across roots', () => fixture(({home,projectRoot,bin}) => {
+  const root = join(home,'.claude','skills');
+  for (let i = 0; i < 249; i++) {
+    const skill = join(root,`skill-${i}`);
+    mkdirSync(skill);
+    writeFileSync(join(skill,'SKILL.md'),'bounded fixture');
+  }
+  const complete = collectHostSnapshot({home,projectRoot,pathEnv:bin});
+  assert.equal(complete.skills.length,250);
+  assert.equal(complete.skillsTruncated,false);
+
+  const later = join(home,'.codex','skills','later-skill');
+  mkdirSync(later,{recursive:true});
+  writeFileSync(join(later,'SKILL.md'),'later root');
+  const crossRoot = collectHostSnapshot({home,projectRoot,pathEnv:bin});
+  assert.equal(crossRoot.skills.length,250);
+  assert.equal(crossRoot.skillsTruncated,true);
+
+  rmSync(later,{recursive:true});
+  mkdirSync(join(root,'overflow'));
+  writeFileSync(join(root,'overflow','SKILL.md'),'overflow');
+  const withinRoot = collectHostSnapshot({home,projectRoot,pathEnv:bin});
+  assert.equal(withinRoot.skills.length,250);
+  assert.equal(withinRoot.skillsTruncated,true);
 }));
 
 test('binary scan never starts a process and reports no inferred versions', () => fixture(({bin})=> {
