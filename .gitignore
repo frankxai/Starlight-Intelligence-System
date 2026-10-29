@@ -137,3 +137,6 @@ tools/arena/out/
 
 # agent-hygiene pack — diverged copies set aside by install.sh
 .claude/skills/.replaced/
+
+# gen-memory-graph.mjs output carries vault excerpts; only --redact output may be published
+memory/graph/memory-graph.json
