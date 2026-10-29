@@ -48,6 +48,22 @@ interface Atom {
 
 `memory/` is the user's curated vault — explicit corpus delivery by virtue of being maintained. Not guessing.
 
+## Capabilities
+
+- Walks the `vault` corpus during `/sis-forge` Phase 1 and clusters recurring topics.
+- Emits ≤200 weighted JSONL atoms matching `tools/sis-forge/atom-schema.ts`.
+- Degrades gracefully: partial output marked `degraded:true` on timeout, empty output when the corpus is empty.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| All six vaults | Read-only (corpus input where in scope) |
+
+Extractors write only to the `<atom-output-path>` they are given, never to vaults.
+
 ---
 
 **Built on SIP** — Source command: /sis-forge Phase 1 extractor
