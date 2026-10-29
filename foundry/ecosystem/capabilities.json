@@ -1,0 +1,212 @@
+[
+  {
+    "id": "architecture",
+    "title": "AI Architect",
+    "job": "Turn a broad idea into owned layers, decisions and a working journey.",
+    "steps": [
+      "Bind the beneficiary, accepted outcome, existing repositories, measured machines and an explicit capital ceiling; unknown is a real value.",
+      "Compare the current stack, one simpler option and one bounded frontier experiment using dated primary sources. Keep one owner per durable workflow.",
+      "Compile the architecture pack, build in the existing product owner, and compare the same acceptance task before and after. Carry the source pack and actual test output."
+    ],
+    "outputs": [
+      "project.json and linked Markdown/ADR/Mermaid",
+      "implementation source reference",
+      "acceptance evidence and unresolved decisions"
+    ],
+    "quality": [
+      "Can a different builder execute the handoff without guessing?",
+      "Do cost, residency and permissions survive every fallback?",
+      "Does the useful customer journey actually run?"
+    ],
+    "native": "Use scripts/architect.py and its existing manifest/schema. The suite handoff wraps the original pack; it does not replace it."
+  },
+  {
+    "id": "agent-design",
+    "title": "Agent Designer",
+    "job": "Make an existing specialist measurably better at a bounded job.",
+    "steps": [
+      "Demonstrate the gap using the current agent and a frozen task. Prefer improving an existing agent plus skill composition before adding an identity.",
+      "Define read/write scope, tool grants, input/output contracts, termination, recovery and shared parent budget. Keep personality separate from authority.",
+      "Run the native contract and gate checks. Test a useful result, a denied tool, wrong tenant and exhausted budget. Keep baseline/candidate outputs for independent review."
+    ],
+    "outputs": [
+      "agent/skill design contract and activation prompt",
+      "baseline and candidate artifacts",
+      "native validator and adversarial evidence"
+    ],
+    "quality": [
+      "Does the proposed agent add a distinct capability?",
+      "Does a denied action remain denied after delegation?",
+      "Does the candidate improve accepted output per unit of cost?"
+    ],
+    "native": "Use the bundled design-contract schema and scripts/contract.mjs plus gate.mjs. A local gate is not a hosted sandbox."
+  },
+  {
+    "id": "plugin-release",
+    "title": "Plugin Forge",
+    "job": "Release a coherent suite with inspectable compatibility and rollback.",
+    "steps": [
+      "Read the current release and preserve identity, scopes, app bindings and presentation. Map each specialist to a useful adoption task and its required host capabilities.",
+      "Run task fixtures, denied-input cases, two reproducible archives and clean extraction. Separate schema, native loader and actual host task results.",
+      "Save a guarded private update, read it back, compare changed bytes and report exact release IDs. Prepare public source, license, quickstart and rollback in the existing owning repositories."
+    ],
+    "outputs": [
+      "reproducible package and changed-file source",
+      "capability/host/evidence matrix",
+      "release receipt and adoption example"
+    ],
+    "quality": [
+      "Can a fresh adopter run the example with documented prerequisites?",
+      "Are old app bindings and scopes preserved?",
+      "Can the previous source revision be restored?"
+    ],
+    "native": "Retain forge.py and official Plugin Creator update tooling. This handoff CLI neither saves plugins nor installs them."
+  },
+  {
+    "id": "memory",
+    "title": "Memory",
+    "job": "Carry exact project context between specialists and hosts.",
+    "steps": [
+      "Resolve the existing owner record and its revision. Keep the user's exact words, interpretation, source and expiry separate.",
+      "Bind tenant, brand, project and environment before retrieval or export. Preserve conflicts and predecessor references instead of overwriting an earlier verdict.",
+      "Use an admitted writer when available. Otherwise save a private pending handoff, verify original hashes, and demonstrate reopen on the destination. Do not label a handoff a canonical memory commit."
+    ],
+    "outputs": [
+      "scoped context and original corrections",
+      "source/decision/conflict references",
+      "reopen evidence and pending writer state"
+    ],
+    "quality": [
+      "Was the same original wording recovered?",
+      "Did another brand's private record stay outside the handoff?",
+      "Can a reader distinguish accepted memory from a proposal?"
+    ],
+    "native": "Keep existing capture/resume/provision contracts. The generated starlight.memory.v1 is a manual platform projection, not local_core admission."
+  },
+  {
+    "id": "marketing",
+    "title": "Marketing",
+    "job": "Turn demonstrated product behavior into a measurable offer and launch.",
+    "steps": [
+      "Select one to three bundled modules for the actual bottleneck: product-marketing/customer-research for fit, offers/pricing for the offer, launch/content-strategy for distribution, analytics/attribution for learning.",
+      "Bind every capability claim to a current artifact or demonstrated journey. Separate proposed pricing, target customers and targets from actual paid demand.",
+      "Produce a coherent page, teaching article, email and channel draft with a defined qualification event. Feed actual cohort observations back into one named experiment; keep unknown attribution unknown."
+    ],
+    "outputs": [
+      "offer and claim-to-evidence ledger",
+      "channel drafts with one qualified next action",
+      "event/cohort definition and learning plan"
+    ],
+    "quality": [
+      "Can the reader try the claimed behavior?",
+      "Does every commercial promise have an owner and evidence?",
+      "Does measurement distinguish a visit, accepted artifact, repeat use and payment?"
+    ],
+    "native": "Keep upstream licenses and pinned module provenance. Use GenCreator launch.json for compiled launch output; the existing platform factory owns app-local execution."
+  },
+  {
+    "id": "creative-production",
+    "title": "GenCreator",
+    "job": "Produce a finished edition and a source-backed launch around it.",
+    "steps": [
+      "Resume existing CreatorPack and mission IDs; bind source rights, audience, medium and acceptance criteria. Keep the original and editing history.",
+      "Use existing commission, edition, operations and launch engines. Compare meaningful directions for the medium, render the actual result, inspect it at intended sizes and repair defects.",
+      "Compile launch drafts, preserve the exact digest, and obtain destination-specific review for publication. Carry the original edition, review evidence and launch packet into the suite handoff."
+    ],
+    "outputs": [
+      "editable production source and rendered edition",
+      "review and provenance evidence",
+      "launch.json and compiled unconfirmed launch packet"
+    ],
+    "quality": [
+      "Is the real artifact usable outside the launch story?",
+      "Does the edition preserve source rights and authorship?",
+      "Did the launch claim only what the edition demonstrates?"
+    ],
+    "native": "Use the existing local production and launch CLIs. Never self-confirm a launch digest or infer publishing permission from an integrity check."
+  },
+  {
+    "id": "music",
+    "title": "Music Studio",
+    "job": "Move a music idea through craft, listening and a recoverable catalog decision.",
+    "steps": [
+      "Bind the work, artist-owned catalog, album world, exact prompt and desired audible result. Retrieve craft from Songcraft without copying private canon into a reusable package.",
+      "Keep prompt preparation, audio generation, blind listening and winner capture distinct. Give the critic actual audio; use score-first artifacts when that is the commission.",
+      "Preserve exact approved wording, lyrics, work/revision and listener verdict. Carry authorized original audio or a permitted reference, known rights and release-readiness gaps."
+    ],
+    "outputs": [
+      "exact creative prompt or score",
+      "audio/reference and listening observation",
+      "catalog/winner decision with source revision"
+    ],
+    "quality": [
+      "Was the audio actually heard?",
+      "Is the approved prompt byte-for-byte recoverable?",
+      "Are composition, recording and distribution rights known?"
+    ],
+    "native": "Keep Songcraft and the configured music core as their existing authorities. An offline handoff does not render audio or establish a listening result."
+  },
+  {
+    "id": "atlas",
+    "title": "Atlas",
+    "job": "Make private project progress inspectable without duplicating its source.",
+    "steps": [
+      "Retrieve the exact existing record and source revision; inspect retrieval coverage and timestamps before relying on a frontier brief.",
+      "Link source-owned decisions, artifacts, PRs and receipts into the existing project record. Use the actual update tool with its expected record version; reconcile a conflict before retrying.",
+      "Show one coherent project view: current useful result, evidence, gaps, responsible owner and next action. Keep a private draft when release authority or evidence is absent."
+    ],
+    "outputs": [
+      "versioned private project projection",
+      "source and artifact links",
+      "decision/release state with next action"
+    ],
+    "quality": [
+      "Does every projected claim point back to its owner?",
+      "Did an update preserve the existing record identity?",
+      "Are preview, deployed and customer-validated states distinct?"
+    ],
+    "native": "Discover current Atlas tool schemas and use their native records. This envelope is attached evidence, not an Atlas API request body."
+  },
+  {
+    "id": "workflow",
+    "title": "n8n workflows",
+    "job": "Connect an inspected automation to a concrete platform outcome.",
+    "steps": [
+      "Search for an existing workflow, inspect its current inputs, source revision, tools and side effects, and choose one durable owner.",
+      "Prepare a native execution request only after its actual authorization and resource bounds are known. Define idempotency, cancellation, retries, reconciliation and operator recovery.",
+      "Test the dry path and denied inputs. Execute only an authorized inspected workflow through the real tool and preserve the actual execution receipt; uncertain submission must be reconciled before retry."
+    ],
+    "outputs": [
+      "inspected workflow binding and revision",
+      "dry-run/denied-input evidence",
+      "native execution reference or explicit not-executed state"
+    ],
+    "quality": [
+      "Can a retry duplicate a paid or public side effect?",
+      "Does the tool's actual schema match the prepared request?",
+      "Is there one owner for durable state and recovery?"
+    ],
+    "native": "The handoff carries a workflow plan or receipt as data. It never activates n8n or replaces workflow approval."
+  },
+  {
+    "id": "coaching",
+    "title": "FrankX AI Coach",
+    "job": "Help a person adopt one useful workflow and learn from the result.",
+    "steps": [
+      "Choose a real recurring task and record a baseline: accepted result, elapsed time, errors and review effort. Work with tools the person already has.",
+      "Run a bounded experiment with a clear artifact and recovery path. Explain the decisions in ordinary language, then give the learner a variation that tests understanding.",
+      "Compare the same task and record the person's actual observation. Promote a useful method into a reusable skill only when repetition warrants it; preserve private practice receipts."
+    ],
+    "outputs": [
+      "baseline task and bounded experiment",
+      "working artifact and learner variation",
+      "observed outcome and next practice"
+    ],
+    "quality": [
+      "Could the person complete the variation independently?",
+      "Was the comparison made on the same task?",
+      "Are time savings observed rather than promised?"
+    ],
+    "native": "Keep the coach's existing private practice format. This handoff provides portability, not a learning credential or automatic recurring follow-up."
+  }
+]

@@ -500,3 +500,8 @@ reuse, hostile filesystem mutation and other implementations ignoring the guard
 remain outside this cooperative protocol. The separate JSONL append lock also
 remains intact after an interrupted writer; automatic orphan-lock cleanup is not
 implemented here. Exact-revision review and hosted recovery checks remain required.
+
+
+## Carry specialist work into your next session
+
+The [operational handoff adapter](foundry/ecosystem/README.md) carries authorized original files, source hashes and scoped specialist contributions, with an import for the existing Memory Studio format. Run the local example without dependencies or an API key. See the [integration guide](docs/guides/starlight-specialist-integration.md) for native platform boundaries, evaluation and adoption. Transport verification does not establish hosted execution or customer results.
