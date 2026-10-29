@@ -45,15 +45,19 @@ async function authorize(record: TenantRecord, url: URL, request: Request, ledge
   return state !== null && ledger.consumeOAuthState(await sha256Hex(state));
 }
 
-async function rememberOAuthState(response: Response, ledger: Ledger): Promise<void> {
+// Returns false when the response holds an auth URL whose state could not be registered;
+// handing that URL to the user would only lead to a refused callback.
+async function rememberOAuthState(response: Response, ledger: Ledger): Promise<boolean> {
+  let state: string | null;
   try {
     const body = (await response.clone().json()) as { authUrl?: unknown };
-    if (typeof body.authUrl !== 'string') return;
-    const state = oauthStateFrom(new URL(body.authUrl));
-    if (state) await ledger.addOAuthState(await sha256Hex(state), Date.now() + OAUTH_STATE_TTL_MS);
+    if (typeof body.authUrl !== 'string') return true;
+    state = oauthStateFrom(new URL(body.authUrl));
   } catch {
-    // Not an auth hand-off; the connection simply cannot complete its callback.
+    return true; // not an auth hand-off
   }
+  if (!state) return false;
+  return ledger.addOAuthState(await sha256Hex(state), Date.now() + OAUTH_STATE_TTL_MS).catch(() => false);
 }
 
 export async function handleRequest(request: Request, env: Env): Promise<Response> {
@@ -80,21 +84,28 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
   // The platform token stops here; tenant code never sees it.
   const forwarded = new Request(request);
   forwarded.headers.delete('authorization');
+  // Nothing ran when get() throws or the script is missing, so the reservation comes back.
+  const reserved = admission.reserveMicroUsd;
+  const refund = () => ledger.release(reserved).catch(() => {});
+  const notDeployed = (error: unknown) => error instanceof Error && error.message.startsWith('Worker not found');
+  let worker;
+  try {
+    worker = env.DISPATCHER.get(scriptNameFor(tenantId), { props: { tenantId } }, { limits: admission.limits });
+  } catch (error) {
+    await refund();
+    return notDeployed(error) ? json(404, { error: 'tenant_not_deployed' }) : json(502, { error: 'tenant_worker_failed' });
+  }
   let response: Response;
   try {
-    const worker = env.DISPATCHER.get(scriptNameFor(tenantId), { props: { tenantId } }, { limits: admission.limits });
     response = await worker.fetch(forwarded);
   } catch (error) {
-    if (error instanceof Error && error.message.startsWith('Worker not found')) {
-      // Nothing ran, so nothing to charge.
-      await ledger.release(admission.reserveMicroUsd).catch(() => {});
-      return json(404, { error: 'tenant_not_deployed' });
-    }
-    return json(502, { error: 'tenant_worker_failed' });
+    if (!notDeployed(error)) return json(502, { error: 'tenant_worker_failed' });
+    await refund();
+    return json(404, { error: 'tenant_not_deployed' });
   }
 
-  if (request.method === 'POST' && url.pathname === MCP_SERVERS_PATH && response.ok) {
-    await rememberOAuthState(response, ledger);
+  if (request.method === 'POST' && url.pathname === MCP_SERVERS_PATH && response.ok && !(await rememberOAuthState(response, ledger))) {
+    return json(429, { error: 'oauth_registration_failed' });
   }
   return response;
 }

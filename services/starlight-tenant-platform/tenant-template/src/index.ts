@@ -13,6 +13,7 @@ export class TenantAgent extends Agent<Env> {
   static options = { sendIdentityOnConnect: false };
 
   async onRequest(request: Request): Promise<Response> {
+    if (await this.ctx.storage.get('purged')) return Response.json({ error: 'tenant_deleted' }, { status: 410 });
     const url = new URL(request.url);
     if (request.method === 'POST' && url.pathname === '/mcp/servers') {
       const { name, serverUrl } = (await request.json()) as { name?: string; serverUrl?: string };
@@ -30,6 +31,7 @@ export class TenantAgent extends Agent<Env> {
   async purge(): Promise<void> {
     await this.ctx.storage.deleteAlarm();
     await this.ctx.storage.deleteAll();
+    await this.ctx.storage.put('purged', true);
   }
 }
 

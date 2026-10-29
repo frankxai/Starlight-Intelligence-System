@@ -12,6 +12,7 @@ interface Bindings {
 }
 
 const MAX_PENDING_OAUTH = 20;
+const USED_STATE_MEMORY_MS = 24 * 60 * 60 * 1000;
 
 const monthStart =(now = new Date()) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
@@ -37,11 +38,12 @@ export class TenantLedger extends DurableObject {
   }
 
   async addOAuthState(stateHash: string, expiresAt: number): Promise<boolean> {
-    const pending = await this.ctx.storage.list<number>({ prefix: 'oauth:' });
     const now = Date.now();
-    const expired = [...pending].filter(([, at]) => at <= now).map(([key]) => key);
-    if (expired.length) await this.ctx.storage.delete(expired);
-    if (pending.size - expired.length >= MAX_PENDING_OAUTH) return false;
+    const pending = await this.dropExpired('oauth:', now);
+    await this.dropExpired('oauth-used:', now);
+    // A state that was already spent never becomes valid again.
+    if (await this.ctx.storage.get('oauth-used:' + stateHash)) return false;
+    if (pending >= MAX_PENDING_OAUTH) return false;
     await this.ctx.storage.put('oauth:' + stateHash, expiresAt);
     return true;
   }
@@ -51,7 +53,16 @@ export class TenantLedger extends DurableObject {
     const expiresAt = await this.ctx.storage.get<number>(key);
     if (expiresAt === undefined) return false;
     await this.ctx.storage.delete(key);
+    await this.ctx.storage.put('oauth-used:' + stateHash, Date.now() + USED_STATE_MEMORY_MS);
     return expiresAt > Date.now();
+  }
+
+  // Deletes entries under the prefix whose expiry has passed; returns how many remain.
+  private async dropExpired(prefix: string, now: number): Promise<number> {
+    const entries = await this.ctx.storage.list<number>({ prefix });
+    const expired = [...entries].filter(([, at]) => at <= now).map(([key]) => key);
+    if (expired.length) await this.ctx.storage.delete(expired);
+    return entries.size - expired.length;
   }
 
   async create(record: TenantRecord): Promise<boolean> {

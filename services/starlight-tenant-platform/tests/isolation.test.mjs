@@ -9,7 +9,7 @@ import { OAUTH_CALLBACK_PATH as DISPATCH_CALLBACK } from '../dispatcher/src/core
 const DOMAIN = 'tenants.example.invalid';
 const TOKENS = { acme: 'token-acme-fixture', globex: 'token-globex-fixture' };
 
-async function fixture({ ledgerThrows = false, states = {}, spent = {}, tenantResponse = null, getThrows = null } = {}) {
+async function fixture({ ledgerThrows = false, states = {}, spent = {}, tenantResponse = null, getThrows = null, registerOk = true } = {}) {
   const ledgers = {};
   for (const id of Object.keys(TOKENS)) {
     const record = { tenantId: id, state: states[id] ?? 'active', plan: 'team', capMicroUsd: 1_000, tokenHash: await sha256Hex(TOKENS[id]) };
@@ -19,7 +19,7 @@ async function fixture({ ledgerThrows = false, states = {}, spent = {}, tenantRe
       usage,
       pending,
       async release(micro) { usage.spentMicroUsd -= micro; },
-      async addOAuthState(hash, at) { pending.set(hash, at); return true; },
+      async addOAuthState(hash, at) { if (!registerOk) return false; pending.set(hash, at); return true; },
       async consumeOAuthState(hash) { const at = pending.get(hash); pending.delete(hash); return at !== undefined && at > Date.now(); },
       async read() { if (ledgerThrows) throw new Error('ledger down'); return { record, usage: { ...usage } }; },
       async reserve(micro) { if (usage.spentMicroUsd + micro > record.capMicroUsd) return false; usage.spentMicroUsd += micro; return true; },
@@ -141,10 +141,20 @@ test('a tenant Worker that is not deployed costs nothing', async () => {
   assert.equal(ledgers.acme.usage.spentMicroUsd, 0);
 });
 
-test('a synchronous dispatch error still returns a response', async () => {
-  const { env } = await fixture({ getThrows: 'binding exploded' });
+test('a synchronous dispatch error returns 502 and refunds the reservation', async () => {
+  const { env, ledgers } = await fixture({ getThrows: 'binding exploded' });
   const res = await handleRequest(req(`acme.${DOMAIN}`, '/', bearer('acme')), env);
   assert.equal(res.status, 502);
+  assert.equal(ledgers.acme.usage.spentMicroUsd, 0);
+});
+
+test('an auth URL whose state cannot be registered is not handed to the user', async () => {
+  const authUrl = 'https://mcp.example.com/authorize?state=srv1:nonce-9';
+  const { env } = await fixture({ registerOk: false, tenantResponse: () => Response.json({ state: 'authenticating', authUrl }) });
+  const start = new Request(`https://acme.${DOMAIN}/mcp/servers`, { method: 'POST', headers: bearer('acme'), body: '{}' });
+  const res = await handleRequest(start, env);
+  assert.equal(res.status, 429);
+  assert.equal(JSON.stringify(await res.json()).includes('nonce-9'), false);
 });
 
 test('tenant Worker takes identity and purge only from dispatcher props', () => {

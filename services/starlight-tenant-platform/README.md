@@ -55,9 +55,13 @@ Model tokens are the tenant's own key.
   time beyond 30 s per call (pending I/O can hold an object up to 15 minutes) and Durable
   Object storage are not yet read back from Cloudflare's analytics, so real cost can run past
   the recorded spend. Next step: a daily job that reads per-script usage and charges the gap.
-- **Script removal on delete.** Delete wipes the tenant agent's storage (OAuth tokens
-  included) before marking the tenant deleted. Removing the `tenant--<id>` script itself needs
-  the Cloudflare API and is a manual step for now.
+- **Script removal on delete.** Delete suspends the tenant, wipes the agent's storage (OAuth
+  tokens included), leaves a tombstone, then marks the tenant deleted. A call admitted just
+  before the suspension can still write after the wipe. Removing the `tenant--<id>` script
+  (which takes its Durable Objects with it) closes that gap; it needs the Cloudflare API and
+  is a manual step for now.
+- **Ledger Durable Object tests.** OAuth state expiry, single use and replay refusal live in
+  `TenantLedger` and are covered only by the workerd run above, which has not happened yet.
 - **Activation.** Tenants stay `pending_payment` until a verified payment webhook moves them to
   `active`. That path touches money and is Frank's to approve.
 - **Real-runtime test.** The tests run the platform logic in Node. A `vitest-pool-workers`

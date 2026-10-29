@@ -9,7 +9,7 @@ function env(token = 'admin-fixture', purgeOk = true) {
   return {
     store,
     purged,
-    async purgeTenant(id) { if (purgeOk) purged.push(id); return purgeOk; },
+    async purgeTenant(id) { if (purgeOk) purged.push([id, store[id].state]); return purgeOk; },
     PLATFORM_ADMIN_TOKEN: token,
     DEFAULT_CAP_MICRO_USD: '5000000',
     adminLedgerFor: (id) => ({
@@ -40,7 +40,7 @@ test('export omits the token hash; delete wipes agent storage first and is final
   const exported = await (await call(e, 'GET', '/tenants/acme/export')).json();
   assert.equal('tokenHash' in exported.record, false);
   assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 200);
-  assert.deepEqual(e.purged, ['acme']);
+  assert.deepEqual(e.purged, [['acme', 'pending_payment']]);
   assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 409);
 });
 
@@ -49,6 +49,15 @@ test('a failed purge leaves the tenant undeleted so delete can be retried', asyn
   await call(e, 'POST', '/tenants/acme');
   assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 502);
   assert.equal(e.store.acme.state, 'pending_payment');
+});
+
+test('an active tenant is suspended before its storage is wiped', async () => {
+  const e = env();
+  await call(e, 'POST', '/tenants/acme');
+  e.store.acme = { ...e.store.acme, state: 'active' };
+  assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 200);
+  assert.deepEqual(e.purged, [['acme', 'suspended']]);
+  assert.equal(e.store.acme.state, 'deleted');
 });
 
 test('purge treats a never-uploaded Worker as already clean and anything else as failure', async () => {

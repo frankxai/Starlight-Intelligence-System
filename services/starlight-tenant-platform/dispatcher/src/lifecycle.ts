@@ -68,7 +68,10 @@ export async function handleLifecycle(request: Request, env: LifecycleEnv): Prom
 
   if (request.method === 'DELETE' && !match[2]) {
     if (!canTransition(record.state, 'deleted')) return json(409, { error: 'already_deleted' });
-    // Credentials go first; the record is only marked deleted once they are gone.
+    // Stop new admissions, then wipe credentials, then mark deleted. A call admitted before
+    // the suspension can still write after the wipe; the agent's tombstone refuses its own
+    // later requests, and removing the tenant--<id> script removes whatever is left.
+    if (record.state === 'active') await ledger.setState('suspended');
     if (!(await env.purgeTenant(tenantId))) return json(502, { error: 'purge_failed' });
     await ledger.setState('deleted');
     // Removing the tenant--<id> script needs the Cloudflare API and stays a manual step.
