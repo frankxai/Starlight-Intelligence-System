@@ -157,6 +157,14 @@ test('an auth URL whose state cannot be registered is not handed to the user', a
   assert.equal(JSON.stringify(await res.json()).includes('nonce-9'), false);
 });
 
+test('an auth URL that is malformed or carries no state is not handed to the user', async () => {
+  for (const authUrl of ['not a url', 'https://mcp.example.com/authorize', 42]) {
+    const { env } = await fixture({ tenantResponse: () => Response.json({ state: 'authenticating', authUrl }) });
+    const start = new Request(`https://acme.${DOMAIN}/mcp/servers`, { method: 'POST', headers: bearer('acme'), body: '{}' });
+    assert.equal((await handleRequest(start, env)).status, 429, String(authUrl));
+  }
+});
+
 test('tenant Worker takes identity and purge only from dispatcher props', () => {
   assert.equal(agentNameFor({ tenantId: 'acme' }), 'acme');
   for (const props of [undefined, null, {}, { tenantId: '' }, { tenantId: 7 }]) {

@@ -48,13 +48,18 @@ async function authorize(record: TenantRecord, url: URL, request: Request, ledge
 // Returns false when the response holds an auth URL whose state could not be registered;
 // handing that URL to the user would only lead to a refused callback.
 async function rememberOAuthState(response: Response, ledger: Ledger): Promise<boolean> {
-  let state: string | null;
+  let authUrl: unknown;
   try {
-    const body = (await response.clone().json()) as { authUrl?: unknown };
-    if (typeof body.authUrl !== 'string') return true;
-    state = oauthStateFrom(new URL(body.authUrl));
+    authUrl = ((await response.clone().json()) as { authUrl?: unknown }).authUrl;
   } catch {
-    return true; // not an auth hand-off
+    return true; // not JSON, so not an auth hand-off
+  }
+  if (authUrl === undefined) return true;
+  let state: string | null = null;
+  try {
+    if (typeof authUrl === 'string') state = oauthStateFrom(new URL(authUrl));
+  } catch {
+    // An auth URL that does not parse cannot complete a callback.
   }
   if (!state) return false;
   return ledger.addOAuthState(await sha256Hex(state), Date.now() + OAUTH_STATE_TTL_MS).catch(() => false);
