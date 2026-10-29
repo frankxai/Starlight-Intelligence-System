@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-29",
   "compatibility_flags": ["nodejs_compat"],
+  // Tracing records timing and routing only. This agent makes no model calls, so there is no
+  // message or tool payload to store. Lower head_sampling_rate to 0.05 once traffic is real.
+  "observability": { "traces": { "enabled": true, "head_sampling_rate": 1 } },
   "durable_objects": {
     "bindings": [{ "name": "TenantAgent", "class_name": "TenantAgent" }]
   },
