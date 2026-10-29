@@ -1,0 +1,53 @@
+# Frontier Ledger v2: zero-dependency gate. The ledger is canonical; the v1
+# upstream register is a generated projection and must not drift.
+# A scheduled release watch is intentionally NOT enabled here; recurring runs
+# need an explicit owner decision (see docs/architecture/ADR-2026-10-23-frontier-ledger-v2.md).
+name: Frontier Ledger
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/frontier-ledger.yml"
+      - "context/frontier/**"
+      - "context/empire/upstreams.json"
+      - "schemas/starlight-frontier-ledger.schema.json"
+      - "scripts/frontier/**"
+      - "scripts/validate-upstreams.mjs"
+      - "test/frontier-ledger.test.mjs"
+  push:
+    branches: [main]
+    paths:
+      - "context/frontier/**"
+      - "context/empire/upstreams.json"
+      - "scripts/frontier/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontier-ledger-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ledger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node: ["18", "22"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Ledger tests
+        run: node --test test/frontier-ledger.test.mjs
+      - name: Ledger check and projection drift
+        run: node scripts/frontier/cli.mjs check
+      - name: v1 register validator (unchanged contract)
+        run: node scripts/validate-upstreams.mjs
