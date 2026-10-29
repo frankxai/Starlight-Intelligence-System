@@ -130,11 +130,11 @@ describe("v8.7 agent-count symmetry — doc surfaces publish the derived count",
     );
   });
 
-  it(`README.md claims ${N} agents`, () => {
+  it(`README.md delegates agent count to metrics.json`, () => {
     const text = readDoc("README.md");
     assert.ok(
-      text.includes(`${N} agents`),
-      `README.md does not contain "${N} agents" — update the operational-layer agent-count claim to the derived count (${N})`,
+      text.includes(`metrics/current.json`) && !/[0-9]+\s+agents/i.test(text),
+      `README.md should not hardcode agent count and must link to metrics/current.json`
     );
   });
 
