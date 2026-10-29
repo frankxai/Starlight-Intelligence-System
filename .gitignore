@@ -74,6 +74,7 @@ memory/.dreaming-state.json
 .env.*
 .env.local
 *.pem
+!test/fixtures/run-receipt/*.pem
 *.key
 
 # OS shell-junk

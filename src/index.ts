@@ -598,6 +598,7 @@ export {
   verdictFromStages,
   verifyRunReceipt,
 } from './run-receipt.js';
+export { runVerifyReceipt } from './verify-receipt.js';
 export {
   compactShareParam,
   MAX_INFLATED_BYTES,

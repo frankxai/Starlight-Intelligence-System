@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { runTerminalCli } from "./terminal-cli.js";
+import { runVerifyReceipt } from "./verify-receipt.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -158,6 +159,7 @@ Commands:
   vault get <key>                 Get a memory entry by ID
   vault set <key> <value>         Store a memory entry
   vault search <query>            Search memories
+  starlight verify-receipt <file> --public-key <key> Verify a run receipt DSSE envelope
   orchestrate <intent>            Run an orchestration (prints JSON result)
   stats                           Show system statistics
   version                         Print version
@@ -1704,6 +1706,13 @@ async function main(): Promise<void> {
     process.exitCode = result.exitCode;
     return;
   }
+  // verify-receipt owns its whole argument list, including --help, so it runs before the parent parser.
+  // Any parent flag in front of it is refused after parsing (see below), because the parent help handler
+  // would otherwise print usage and exit 0 without verifying anything.
+  if (terminalArgs[0] === "verify-receipt") {
+    process.exitCode = runVerifyReceipt(terminalArgs.slice(1));
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
@@ -1752,6 +1761,14 @@ async function main(): Promise<void> {
     typeof v === "string" ? v : undefined;
 
   const command = positionals[0];
+
+  // positionals[0] is the first real operand after the parent parser has consumed flags and their values,
+  // so `--output verify-receipt version` still runs `version` while `-hh verify-receipt x` is refused.
+  if (command === "verify-receipt") {
+    console.error("Put verify-receipt first: starlight verify-receipt <file> --public-key <key>");
+    process.exitCode = 2;
+    return;
+  }
 
   if (values.help || !command) {
     printUsage();
