@@ -39,6 +39,19 @@ Starlight is two things in one repository:
 The current **151 agents** and all other fast-moving counts are dated in [`metrics/current.json`](metrics/current.json) and enforced by both the agent harness and site build.\n\nUse just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
 
+## Product Split
+
+1. **SIP** — public contract (MIT), no canon, no pricing. [Read the spec](SIP.md).
+2. **SIS** — open reference (self-host).
+3. **Runtime / Observatory** — operator product (managed or self-host+SLA).
+4. **GenCreator** — human SKU this quarter.
+
+**Technical Scope:**
+- We implement MCP + A2A + optional x402. We do not invent an L1.
+- Memory gateway evaluates existing stores (markdown vaults, Mem0, Graphiti). We do not replace them this week.
+
+*Related to Federation issues [#143–#158](https://github.com/frankxai/Starlight-Intelligence-System/issues?q=is%3Aissue+label%3Afederation). Do not open a token or chain research repo.*
+
 ## Purpose
 
 Starlight Intelligence System (SIS) is the **sovereign AI substrate** for memory, orchestration, skills, governance, and evals across Claude Code, Codex, Cursor, Gemini, and Antigravity. Dual-layer: **SIP substrate** you can adopt/fork, plus this repo's **reference operational build** (vaults, MCP, agents).
