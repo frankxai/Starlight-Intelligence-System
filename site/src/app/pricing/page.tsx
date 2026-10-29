@@ -5,12 +5,12 @@ import { BrainHero } from "@/components/BrainHero";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Starlight Intelligence is free and open source forever. Buy a lifetime supporter license to fund the work, or commission a done-for-you sovereign agent estate. Local-first. Forkable. No lock-in.",
+    "Starlight Intelligence is free and open source forever. A voluntary supporter license funds the work. Local-first. Forkable. No lock-in.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Pricing — Starlight Intelligence",
     description:
-      "Free and open source forever. Support the work with a lifetime license, go Pro for hosted features, or commission an Estate Factory build.",
+      "Free and open source forever. Support the work with a voluntary lifetime license.",
     type: "article",
     images: [
       {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing — Starlight Intelligence",
     description:
-      "Free and open source forever. Support the work, go Pro, or commission an Estate.",
+      "Free and open source forever. Support the work if it earns its place.",
     images: ["/opengraph-image"],
   },
 };
@@ -37,9 +37,6 @@ export const metadata: Metadata = {
 // ---------------------------------------------------------------------------
 const SUPPORT_INDIVIDUAL_URL = "https://github.com/sponsors/frankxai"; // TODO: Stripe Payment Link ($29 one-time)
 const SUPPORT_TEAM_URL = "https://github.com/sponsors/frankxai"; // TODO: Stripe Payment Link ($129/yr)
-const PRO_WAITLIST_URL =
-  "https://github.com/frankxai/Starlight-Intelligence-System/discussions"; // TODO: waitlist form
-const ESTATE_CONTACT_URL = "mailto:hello@starlightintelligence.org?subject=Estate%20Factory%20commission";
 
 function Check() {
   return (
@@ -111,7 +108,7 @@ const SUPPORTER_TIERS: Tier[] = [
       "Everything in Supporter",
       "Org badge + logo on the site",
       "Private support channel",
-      "Early access to Pro betas",
+      "Early access to new releases",
       "Adoption guidance for SIP in your repos",
     ],
     cta: "Support as a team",
@@ -119,71 +116,6 @@ const SUPPORTER_TIERS: Tier[] = [
     accentText: "text-cyan-300",
     accentBorder: "border-cyan-500/[0.25]",
     accentBg: "bg-cyan-500/[0.05]",
-  },
-];
-
-const IMMERSION_URL = "mailto:hello@starlightintelligence.org?subject=Solo%20Founder%20Immersion%20Ticket";
-
-const COMMERCIAL: Tier[] = [
-  {
-    eyebrow: "Modular Kernel Subscription",
-    name: "Sovereign Plus Packs",
-    price: "$29",
-    cadence: "per month · self-serve",
-    blurb:
-      "Subscription modular packs for sovereign builders who adapt fast. Private package updates, enhanced human gates, and durability extensions.",
-    features: [
-      "Durable Blockchain Vault Pack (Arweave/IPFS Merkle anchoring)",
-      "Starlight Queen Autonomic Engine (dreaming loops & fail-closed gates)",
-      "Robot Fleet Continuity Bridge (ROS2 & Zenoh actuator overlay)",
-      "Thin observability hooks (Langfuse EU & OpenRouter routing)",
-      "Private npm & GitHub releases with verified SIP attestation",
-    ],
-    cta: "Subscribe to Modular Packs",
-    href: PRO_WAITLIST_URL,
-    accentText: "text-fuchsia-300",
-    accentBorder: "border-fuchsia-500/[0.22]",
-    accentBg: "bg-fuchsia-500/[0.04]",
-  },
-  {
-    eyebrow: "Productized 1-Day Immersion",
-    name: "One Person, One Attested Fleet",
-    price: "$997",
-    cadence: "self-paced · $2,497 live cohort",
-    blurb:
-      "Go from solo builder to commanding a 100-agent sovereign estate in one intensive day. No enterprise handholding, pure self-serve leverage.",
-    features: [
-      "Complete 4-layer blueprint + 144-agent registry composition",
-      "Full local-first memory palace setup & dreaming loop wiring",
-      "Thin infrastructure checklist (local vs cloud vs robot nodes)",
-      "Fail-closed safety gates & cryptographic run receipts",
-      "Lifetime access to session recordings + community harness updates",
-    ],
-    cta: "Get Immersion Access",
-    href: IMMERSION_URL,
-    accentText: "text-cyan-300",
-    accentBorder: "border-cyan-500/[0.22]",
-    accentBg: "bg-cyan-500/[0.04]",
-  },
-  {
-    eyebrow: "Done-for-you · high-touch",
-    name: "Estate Factory",
-    price: "from $25k",
-    cadence: "commission + steward retainer",
-    blurb:
-      "We commission your sovereign agent estate end-to-end — governed, attested, and yours. The Trinity-grade build.",
-    features: [
-      "Genius excavation + 4-layer blueprint",
-      "Full estate build, Pilot → Standing",
-      "Governed, verify-gated delivery (no executor touches main)",
-      "Ongoing steward retainer",
-      "80% template reuse — your edge, not boilerplate",
-    ],
-    cta: "Book a commission",
-    href: ESTATE_CONTACT_URL,
-    accentText: "text-emerald-300",
-    accentBorder: "border-emerald-500/[0.22]",
-    accentBg: "bg-emerald-500/[0.04]",
   },
 ];
 
@@ -245,16 +177,12 @@ const FAQ: { q: string; a: string }[] = [
     a: "Because sustainable open source needs funding to stay healthy. If Starlight saves you time and you can afford it, a one-time $29 keeps the protocol independent, maintained, and not beholden to a VC exit. Pay it forward.",
   },
   {
-    q: "What is the difference between Supporter and Pro?",
-    a: "Supporter is a voluntary thank-you for the free, local-first software you already run. Pro is a real product: hosted vault sync, managed governed runners, SSO — the multiplayer and marginal-cost features that only make sense as a service. Pro never gates your local memory.",
+    q: "Is there a paid plan, pack or consulting offer?",
+    a: "No. There is no hosted plan, no paid pack and no done-for-you engagement on sale. The durability, anchoring and robotics modules described on the Sovereign page are in the open repository; remote anchoring and robotics are experimental.",
   },
   {
-    q: "Do I get locked in if I go Pro or commission an Estate?",
-    a: "No. Sovereignty is a protocol-level guarantee (SIP §5.6 Exit). Vaults are plain, human-readable JSONL on your disk. You can export everything and walk away at any tier — that clause is non-negotiable, even for us.",
-  },
-  {
-    q: "What is the Estate Factory?",
-    a: "A done-for-you engagement where we design and build your sovereign agent estate end-to-end — governed, attested, and fully yours — then support it on a steward retainer. It is bespoke forward-deployed delivery, not a SaaS plan.",
+    q: "Do I get locked in?",
+    a: "No. Sovereignty is a protocol-level guarantee (SIP §5.6 Exit). Vaults are plain, human-readable JSONL on your disk. You can export everything and walk away at any time — that clause is non-negotiable, even for us.",
   },
 ];
 
@@ -311,32 +239,8 @@ export default function PricingPage() {
             ))}
           </div>
           <p className="mt-6 text-center text-[12px] text-slate-500">
-            Voluntary. No feature gating. Modeled conversion is ~1–5% of active
-            users — every license genuinely funds the work.
+            Voluntary. No feature gating. Every license funds the work.
           </p>
-        </div>
-      </section>
-
-      {/* Commercial / bigger */}
-      <section className="relative border-b border-white/[0.08]">
-        <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
-          <div className="mb-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-fuchsia-300">
-              Modular Packs & Immersions
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-fraunces)] text-[28px] font-semibold text-white md:text-[34px]">
-              Sovereign packs, immersions, or custom estates.
-            </h2>
-            <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-slate-400">
-              The supporter license keeps the lights on. These are the productized
-              leverage layers for solopreneurs who command their own attested fleets.
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {COMMERCIAL.map((t) => (
-              <TierCard key={t.name} tier={t} />
-            ))}
-          </div>
         </div>
       </section>
 
