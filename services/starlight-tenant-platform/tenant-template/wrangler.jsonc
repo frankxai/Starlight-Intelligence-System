@@ -1,0 +1,12 @@
+{
+  // Uploaded once per tenant into the starlight-tenants dispatch namespace as
+  // "tenant--<tenantId>" (see dispatcher/src/core.ts scriptNameFor).
+  "name": "tenant--template",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [{ "name": "TenantAgent", "class_name": "TenantAgent" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TenantAgent"] }]
+}
