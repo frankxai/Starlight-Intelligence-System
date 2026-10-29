@@ -6,7 +6,7 @@ writers:
 - navigator
 - prime
 readers: all
-last_consolidated: '2026-05-11'
+last_consolidated: '2026-10-14'
 ---
 
 # Strategic Vault
@@ -482,6 +482,25 @@ Core framework components implemented:
 **Receipt:** unsigned draft `rcpt_1790034118905_5c0d1383`, subject sha256 `d849a34cb9a1d5bf852494b383c66d505f653de7bfbabaa6e0d87bf2b57970d2`; no signing key on the authoring machine.
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
+
+
+---
+
+### [2026-10-24] Three-Tier CI Runner Routing & Autonomous Envelope Governance (`A0`–`A3`)
+
+**Confidence:** 1.0
+**Source:** Live GitHub v2 Billing & Org Runner-Group Audit (`org-runner-policy-inventory-2026-10-24.json`) + E2E Controller (`tools/autonomous-ops/e2e-controller.mjs`)
+**Related:** `agentic-ops/fleet/reports/pr-review-disposition-2026-10-24.json`, `agentic-ops/ops/sessions/2026-10-21-ci-runner-qualified-cutover.md`
+
+**Decision:**
+1. **Deterministic Three-Tier Runner Topology:**
+   - **Public Repositories (`arcanea-ai-app`, `frankx.ai-vercel-website`, `Starlight-Intelligence-System`):** Route to standard `github-hosted` runners (`$0.00` net cost; unlimited public minutes).
+   - **Organization Private Repositories (`Starlight-Intelligence/*`, `Arcanea-Labs/*`, `FrankX-AI/*`, `Life-Commons/*`, `Agentic-Income/*`):** Route to **Blacksmith** org runner groups / `blacksmith-2vcpu-ubuntu-2404` scale sets (already provisioned across 8 of 10 orgs). Close personal Railway toggle drafts on org-transferred repos (`starlight-command-center#78`).
+   - **Personal Private Repositories (`frankxai/gencreator.ai`):** Route admitted heavy jobs to disposable JIT **Railway** runners (`repository_id == '1227327898'`, `private == true`, `fork == false`), keeping Cloudflare Containers (`railway-ci-runners#25`) disabled until C3 wake isolation and single-provider fencing are proven.
+2. **Enforceable Autonomy Envelopes (`A0_HALT` to `A3_FULL_AUTONOMY`):**
+   - Cost and memory telemetry directly govern agent autonomy via `tools/autonomous-ops/e2e-controller.mjs`. At `84.5%` GitHub Actions budget utilization (`$84.50 / $100.00`), the estate operates in **`A2_BOUNDED_PR`** (draft PRs, local verification, and zero-minute patches; no unguarded private CI loops).
+3. **Typed JSON Receipts Over Prose Walls:**
+   - Every autonomous mission emits a `<= 4096`-byte SHA-256-sealed JSON receipt (`schemaVersion: "1.0.0"`) into `agentic-ops/fleet/receipts/`, replacing 64,000-character issue comment walls.
 
 ---
 

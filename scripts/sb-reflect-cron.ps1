@@ -39,9 +39,13 @@ if (-not $env:ANTHROPIC_API_KEY) {
         }
     }
 }
+# No key is required: the claude CLI uses its own login. Skip only if the CLI itself cannot answer.
 if (-not $env:ANTHROPIC_API_KEY) {
-    "=== $(Get-Date -Format o) SKIP — no ANTHROPIC_API_KEY (OAuth expired in headless cron; add key to ~/.secrets/.env.master or run: claude setup-token) ===" | Out-File -Append -Encoding utf8 $Log
-    exit 1
+    $probe = (& claude -p 'reply with: ok' 2>&1 | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $probe -notmatch 'ok') {
+        "=== $(Get-Date -Format o) SKIP - claude CLI not authenticated (run: claude setup-token) ===" | Out-File -Append -Encoding utf8 $Log
+        exit 1
+    }
 }
 
 $prompt = @'
@@ -57,6 +61,7 @@ Write ONLY inside _meta/, patterns/, people/, decisions/, ideas/. NEVER touch A 
 & claude -p $prompt --permission-mode acceptEdits --model claude-sonnet-5 2>&1 | Out-File -Append -Encoding utf8 $Log
 $code = $LASTEXITCODE
 # Wrapper owns the commit (targeted paths only - never -A, never .obsidian).
-& git add _meta patterns people decisions ideas 2>&1 | Out-File -Append -Encoding utf8 $Log
-& git commit -m "nightly SB reflect + curate (autonomous 02:30)" 2>&1 | Out-File -Append -Encoding utf8 $Log
+& git -c core.safecrlf=false add _meta patterns people decisions ideas 2>&1 | Out-File -Append -Encoding utf8 $Log
+& git -c core.safecrlf=false commit -m "nightly SB reflect + curate (autonomous 02:30)" 2>&1 | Out-File -Append -Encoding utf8 $Log
 "=== $(Get-Date -Format o) END (claude exit $code) ===" | Out-File -Append -Encoding utf8 $Log
+exit $code

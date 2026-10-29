@@ -44,30 +44,36 @@ Add-DoctorCheck -Name 'config.json present' -Hint 'Run: arc install' -Test {
     Test-Path (Join-Path (Get-CockpitHome) 'config.json')
 }
 
-Add-DoctorCheck -Name 'Claude SessionStart hook registered' -Hint 'Run: arc install' -Test {
+Add-DoctorCheck -Name 'Global SessionStart is session-boot.py' -Hint 'Keep the Python telemetry hook. Do not register cockpit PowerShell hooks.' -Test {
     $settingsPath = Join-Path $HOME '.claude\settings.json'
     if (-not (Test-Path $settingsPath)) { return $false }
     $s = Get-Content -Path $settingsPath -Raw | ConvertFrom-Json
-    $marker = $CockpitRoot.Replace('\','/') -replace '/+', '/'
+    $sawBoot = $false
+    $sawPowerShell = $false
     foreach ($entry in @($s.hooks.SessionStart)) {
-        foreach ($h in $entry.hooks) {
-            if ($h.command -and $h.command.Contains($marker)) { return $true }
+        foreach ($h in @($entry.hooks)) {
+            if (-not $h.command) { continue }
+            if ($h.command -match 'session-boot\.py') { $sawBoot = $true }
+            if ($h.command -match 'claude-session-start\.ps1|powershell\.exe') { $sawPowerShell = $true }
         }
     }
-    return $false
+    return ($sawBoot -and -not $sawPowerShell)
 }
 
-Add-DoctorCheck -Name 'Claude Stop hook registered' -Hint 'Run: arc install' -Test {
+Add-DoctorCheck -Name 'Global Stop is session-stop.py' -Hint 'Keep the Python telemetry hook. Do not register cockpit PowerShell hooks.' -Test {
     $settingsPath = Join-Path $HOME '.claude\settings.json'
     if (-not (Test-Path $settingsPath)) { return $false }
     $s = Get-Content -Path $settingsPath -Raw | ConvertFrom-Json
-    $marker = $CockpitRoot.Replace('\','/') -replace '/+', '/'
+    $sawStop = $false
+    $sawPowerShell = $false
     foreach ($entry in @($s.hooks.Stop)) {
-        foreach ($h in $entry.hooks) {
-            if ($h.command -and $h.command.Contains($marker)) { return $true }
+        foreach ($h in @($entry.hooks)) {
+            if (-not $h.command) { continue }
+            if ($h.command -match 'session-stop\.py') { $sawStop = $true }
+            if ($h.command -match 'claude-session-stop\.ps1|powershell\.exe') { $sawPowerShell = $true }
         }
     }
-    return $false
+    return ($sawStop -and -not $sawPowerShell)
 }
 
 Add-DoctorCheck -Name 'Periodic snapshot task registered' -Hint 'Run: arc install (or skip if undesired)' -Test {
@@ -96,12 +102,17 @@ Add-DoctorCheck -Name 'Weekly GC task registered' -Hint 'Run: arc install' -Test
     return $null
 }
 
-Add-DoctorCheck -Name 'PROFILE sources arc-cockpit.ps1' -Hint 'Run: arc install' -Test {
-    $p = $PROFILE.CurrentUserAllHosts
-    if (-not $p) { $p = $PROFILE }
-    if (-not (Test-Path $p)) { return $false }
-    $content = Get-Content -Path $p -Raw
-    return $content.Contains((Join-Path $CockpitRoot 'scripts\arc-cockpit.ps1'))
+Add-DoctorCheck -Name 'PROFILE sources arc-cockpit.ps1' -Hint 'Source arc-cockpit.ps1 after the Zellij aliases.' -Test {
+    $paths = @($PROFILE.CurrentUserAllHosts, $PROFILE.CurrentUserCurrentHost, $PROFILE) | Where-Object { $_ } | Select-Object -Unique
+    $literal = Join-Path $CockpitRoot 'scripts\arc-cockpit.ps1'
+    foreach ($p in $paths) {
+        if (-not (Test-Path -LiteralPath $p)) { continue }
+        $content = Get-Content -LiteralPath $p -Raw
+        if ($content.Contains($literal) -or $content.Contains('Starlight-Intelligence-System\cockpit\scripts\arc-cockpit.ps1') -or $content.Contains('Starlight-Intelligence-System/cockpit/scripts/arc-cockpit.ps1')) {
+            return $true
+        }
+    }
+    return $false
 }
 
 Add-DoctorCheck -Name 'manifest has recent activity' -Hint 'No sessions logged yet -- start a Claude tab' -Test {

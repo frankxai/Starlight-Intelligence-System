@@ -13,7 +13,7 @@
  * Built on SIP — Starlight Intelligence Protocol.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statfsSync, openSync, closeSync, unlinkSync, writeSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statfsSync, openSync, closeSync, unlinkSync, writeSync, realpathSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -225,7 +225,7 @@ function pidAlive(pid) {
   }
 }
 
-function isInflight(session, nowMs) {
+export function isInflight(session, nowMs) {
   if (!session || session.merged || session.quarantined) return false;
   const status = String(session.status || '').toLowerCase();
   const active = ['planning', 'in progress', 'queued', 'running'].some((name) => status.includes(name));
@@ -669,6 +669,17 @@ export async function runDaemon() {
 }
 
 // ── CLI Router ──────────────────────────────────────────────────
+function invokedAsCli() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(entry);
+  } catch {
+    return false;
+  }
+}
+
+if (invokedAsCli()) {
 const [,, cmd, arg1, ...rest] = process.argv;
 
 if (cmd === 'tick') {
@@ -724,4 +735,5 @@ Commands:
   dispatch <repo> "<desc>" [type]      Escape hatch. Send one task when disk and RAM are above the floor
   daemon                               One background loop. A second start exits
 `);
+}
 }
