@@ -1,7 +1,7 @@
 import { DurableObject } from 'cloudflare:workers';
-import type { TenantRecord, TenantState, Usage } from './core.ts';
+import { scriptNameFor, type TenantRecord, type TenantState, type Usage } from './core.ts';
 import { handleRequest, type DispatchNamespace } from './handler.ts';
-import { handleLifecycle } from './lifecycle.ts';
+import { handleLifecycle, purgeTenantStorage } from './lifecycle.ts';
 
 interface Bindings {
   PLATFORM_DOMAIN: string;
@@ -11,7 +11,9 @@ interface Bindings {
   TENANT_LEDGER: DurableObjectNamespace<TenantLedger>;
 }
 
-const monthStart = (now = new Date()) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+const MAX_PENDING_OAUTH = 20;
+
+const monthStart =(now = new Date()) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
 // One ledger per tenant, owned by the platform Worker. Tenant code has no binding to it.
 export class TenantLedger extends DurableObject {
@@ -27,6 +29,29 @@ export class TenantLedger extends DurableObject {
     if (usage.spentMicroUsd + microUsd > record.capMicroUsd) return false;
     await this.ctx.storage.put('usage', { ...usage, spentMicroUsd: usage.spentMicroUsd + microUsd });
     return true;
+  }
+
+  async release(microUsd: number): Promise<void> {
+    const usage = await this.currentUsage();
+    await this.ctx.storage.put('usage', { ...usage, spentMicroUsd: Math.max(0, usage.spentMicroUsd - microUsd) });
+  }
+
+  async addOAuthState(stateHash: string, expiresAt: number): Promise<boolean> {
+    const pending = await this.ctx.storage.list<number>({ prefix: 'oauth:' });
+    const now = Date.now();
+    const expired = [...pending].filter(([, at]) => at <= now).map(([key]) => key);
+    if (expired.length) await this.ctx.storage.delete(expired);
+    if (pending.size - expired.length >= MAX_PENDING_OAUTH) return false;
+    await this.ctx.storage.put('oauth:' + stateHash, expiresAt);
+    return true;
+  }
+
+  async consumeOAuthState(stateHash: string): Promise<boolean> {
+    const key = 'oauth:' + stateHash;
+    const expiresAt = await this.ctx.storage.get<number>(key);
+    if (expiresAt === undefined) return false;
+    await this.ctx.storage.delete(key);
+    return expiresAt > Date.now();
   }
 
   async create(record: TenantRecord): Promise<boolean> {
@@ -52,7 +77,9 @@ export default {
     const ledgerFor = (tenantId: string) => env.TENANT_LEDGER.get(env.TENANT_LEDGER.idFromName(tenantId));
     const host = new URL(request.url).hostname.toLowerCase();
     if (host === 'platform.' + env.PLATFORM_DOMAIN.toLowerCase()) {
-      return handleLifecycle(request, { ...env, adminLedgerFor: ledgerFor });
+      const purgeTenant = (tenantId: string) =>
+        purgeTenantStorage(() => env.DISPATCHER.get(scriptNameFor(tenantId), { props: { tenantId, purge: true } }));
+      return handleLifecycle(request, { ...env, adminLedgerFor: ledgerFor, purgeTenant });
     }
     return handleRequest(request, { ...env, ledgerFor });
   },

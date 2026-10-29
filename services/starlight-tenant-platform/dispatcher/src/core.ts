@@ -14,6 +14,14 @@ export interface TenantRecord {
 }
 
 export const OAUTH_CALLBACK_PATH = '/mcp-oauth-callback';
+export const MCP_SERVERS_PATH = '/mcp/servers';
+export const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+const MAX_OAUTH_STATE_LENGTH = 512;
+
+export function oauthStateFrom(url: URL): string | null {
+  const state = url.searchParams.get('state');
+  return state && state.length <= MAX_OAUTH_STATE_LENGTH ? state : null;
+}
 
 export async function sha256Hex(text: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -27,10 +35,7 @@ export function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-// The OAuth redirect comes from the tenant's browser without our bearer token; the
-// agent matches it to a pending connection by its state parameter instead.
-export async function callerAuthorized(record: TenantRecord, pathname: string, authorization: string | null): Promise<boolean> {
-  if (pathname === OAUTH_CALLBACK_PATH) return true;
+export async function callerAuthorized(record: TenantRecord, authorization: string | null): Promise<boolean> {
   const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : '';
   if (token === '') return false;
   return timingSafeEqual(await sha256Hex(token), record.tokenHash);
@@ -77,12 +82,26 @@ export function limitsFor(plan: Plan): InvocationLimits {
   }
 }
 
-// Worst-case platform cost of one invocation at the plan's limits, so the ledger can
-// reserve before the call and never overshoot the cap by more than one request.
+// Prices in micro-USD per unit, from developers.cloudflare.com read 2026-10-29.
+const PRICE = {
+  request: 0.3, // per Workers request; WfP bills the dispatch chain as one request
+  cpuMs: 0.02, // per CPU-ms, counted in every Worker of the chain
+  doRequest: 0.15, // per Durable Object request or RPC session
+  doGbSecond: 12.5, // per GB-s of Durable Object wall time at 128 MB
+};
+const DISPATCHER_CPU_ALLOWANCE_MS = 10;
+const DO_REQUESTS_PER_CALL = 3; // ledger read, ledger reserve, tenant agent
+// Wall time charged per call for the tenant agent. Time beyond this (pending I/O can hold
+// an object up to 15 minutes) is not yet reconciled; see README "Not done yet".
+export const AGENT_WALL_SECONDS_PER_CALL = 30;
+
+// Platform cost of one invocation at the plan's limits, reserved before the call so the
+// metered total never crosses the cap.
 export function worstCaseMicroUsd(limits: InvocationLimits): number {
-  const requestMicro = (0.3 / 1_000_000) * 2 * 1_000_000; // dispatcher + user Worker
-  const cpuMicro = (0.02 / 1_000_000) * limits.cpuMs * 1_000_000;
-  return Math.ceil(requestMicro + cpuMicro);
+  const cpu = (limits.cpuMs + DISPATCHER_CPU_ALLOWANCE_MS) * PRICE.cpuMs;
+  const doRequests = DO_REQUESTS_PER_CALL * PRICE.doRequest;
+  const doDuration = 0.125 * AGENT_WALL_SECONDS_PER_CALL * PRICE.doGbSecond;
+  return Math.ceil(PRICE.request + cpu + doRequests + doDuration);
 }
 
 export type Admission =
@@ -132,7 +151,7 @@ export interface CostInputs {
 // $0.02 per extra script; containers $0.000020 per vCPU-s and $0.0000025 per GiB-s.
 // Durable Object duration and storage are not modelled.
 export function estimateMonthlyUsd(i: CostInputs): { platform: number; perTenant: number; total: number } {
-  const requests = i.tenants * i.requestsPerTenant * 2;
+  const requests = i.tenants * i.requestsPerTenant;
   const cpuMs = requests * i.avgCpuMsPerRequest;
   const fixed = 5 + 25;
   const requestOverage = Math.max(0, requests - 20_000_000) / 1_000_000 * 0.3;

@@ -1,6 +1,6 @@
 import { WorkerEntrypoint } from 'cloudflare:workers';
 import { Agent, getAgentByName } from 'agents';
-import { agentNameFor, OAUTH_CALLBACK_PATH } from './identity.ts';
+import { agentNameFor, isPurge, OAUTH_CALLBACK_PATH } from './identity.ts';
 
 interface Env {
   TenantAgent: DurableObjectNamespace<TenantAgent>;
@@ -25,6 +25,12 @@ export class TenantAgent extends Agent<Env> {
     }
     return Response.json({ error: 'not_found' }, { status: 404 });
   }
+
+  // Deletes everything this agent stored, MCP OAuth tokens included.
+  async purge(): Promise<void> {
+    await this.ctx.storage.deleteAlarm();
+    await this.ctx.storage.deleteAll();
+  }
 }
 
 export default class TenantWorker extends WorkerEntrypoint<Env> {
@@ -37,6 +43,10 @@ export default class TenantWorker extends WorkerEntrypoint<Env> {
     }
     // The OAuth callback and every other route land on the same single instance.
     const agent = await getAgentByName(this.env.TenantAgent, name);
+    if (isPurge(this.ctx.props)) {
+      await agent.purge();
+      return Response.json({ purged: true });
+    }
     return agent.fetch(request);
   }
 }

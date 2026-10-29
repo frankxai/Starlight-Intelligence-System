@@ -10,6 +10,18 @@ export interface LifecycleEnv {
   PLATFORM_ADMIN_TOKEN?: string;
   DEFAULT_CAP_MICRO_USD: string;
   adminLedgerFor(tenantId: string): LedgerAdmin;
+  // Wipes the tenant agent's storage, including MCP OAuth tokens. True when nothing remains.
+  purgeTenant(tenantId: string): Promise<boolean>;
+}
+
+export async function purgeTenantStorage(getWorker: () => { fetch(request: Request): Promise<Response> }): Promise<boolean> {
+  try {
+    const response = await getWorker().fetch(new Request('https://purge.internal/', { method: 'POST' }));
+    return response.status === 200;
+  } catch (error) {
+    // A tenant whose Worker was never uploaded has no agent storage to wipe.
+    return error instanceof Error && error.message.startsWith('Worker not found');
+  }
 }
 
 const json = (status: number, body: unknown) => Response.json(body, { status });
@@ -56,8 +68,11 @@ export async function handleLifecycle(request: Request, env: LifecycleEnv): Prom
 
   if (request.method === 'DELETE' && !match[2]) {
     if (!canTransition(record.state, 'deleted')) return json(409, { error: 'already_deleted' });
+    // Credentials go first; the record is only marked deleted once they are gone.
+    if (!(await env.purgeTenant(tenantId))) return json(502, { error: 'purge_failed' });
     await ledger.setState('deleted');
-    return json(200, { tenantId, state: 'deleted' });
+    // Removing the tenant--<id> script needs the Cloudflare API and stays a manual step.
+    return json(200, { tenantId, state: 'deleted', scriptRemoval: 'pending' });
   }
 
   return json(405, { error: 'method_not_allowed' });

@@ -7,4 +7,9 @@ export function agentNameFor(props: unknown): string {
   return tenantId;
 }
 
+// Only the dispatcher's delete path sets this, through props; no request can.
+export function isPurge(props: unknown): boolean {
+  return (props as { purge?: unknown } | null)?.purge === true;
+}
+
 export const OAUTH_CALLBACK_PATH = 'mcp-oauth-callback';

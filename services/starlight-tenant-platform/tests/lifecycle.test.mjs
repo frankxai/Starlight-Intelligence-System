@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { handleLifecycle } from '../dispatcher/src/lifecycle.ts';
+import { handleLifecycle, purgeTenantStorage } from '../dispatcher/src/lifecycle.ts';
 import { canTransition, estimateMonthlyUsd, scriptNameFor, sha256Hex } from '../dispatcher/src/core.ts';
 
-function env(token = 'admin-fixture') {
+function env(token = 'admin-fixture', purgeOk = true) {
   const store = {};
+  const purged = [];
   return {
     store,
+    purged,
+    async purgeTenant(id) { if (purgeOk) purged.push(id); return purgeOk; },
     PLATFORM_ADMIN_TOKEN: token,
     DEFAULT_CAP_MICRO_USD: '5000000',
     adminLedgerFor: (id) => ({
@@ -31,13 +34,28 @@ test('signup creates an unpaid tenant and returns the token once, storing only i
   assert.equal((await call(e, 'POST', '/tenants/acme')).status, 409);
 });
 
-test('export omits the token hash; delete is final', async () => {
+test('export omits the token hash; delete wipes agent storage first and is final', async () => {
   const e = env();
   await call(e, 'POST', '/tenants/acme');
   const exported = await (await call(e, 'GET', '/tenants/acme/export')).json();
   assert.equal('tokenHash' in exported.record, false);
   assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 200);
+  assert.deepEqual(e.purged, ['acme']);
   assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 409);
+});
+
+test('a failed purge leaves the tenant undeleted so delete can be retried', async () => {
+  const e = env('admin-fixture', false);
+  await call(e, 'POST', '/tenants/acme');
+  assert.equal((await call(e, 'DELETE', '/tenants/acme')).status, 502);
+  assert.equal(e.store.acme.state, 'pending_payment');
+});
+
+test('purge treats a never-uploaded Worker as already clean and anything else as failure', async () => {
+  assert.equal(await purgeTenantStorage(() => { throw new Error('Worker not found: tenant--acme'); }), true);
+  assert.equal(await purgeTenantStorage(() => { throw new Error('boom'); }), false);
+  assert.equal(await purgeTenantStorage(() => ({ fetch: async () => new Response(null, { status: 500 }) })), false);
+  assert.equal(await purgeTenantStorage(() => ({ fetch: async () => Response.json({ purged: true }) })), true);
 });
 
 test('lifecycle refuses a wrong token, an unset token and invalid tenant ids', async () => {
