@@ -47,9 +47,10 @@ work is the verifier's job.
   Don't write through links inside a leased path.
 - **A lease cannot stop a stalled process from writing.** When a lease expires, the task can be
   claimed again, and the old worker's fence stops working for heartbeat, complete and release.
-  Workers must heartbeat and stop writing the moment the queue refuses their fence. Each task
-  lands on its own `agent/<harness>/<scope>` branch, so a late writer produces a conflict to
-  resolve, never a silent overwrite of `main`.
+  Workers must heartbeat and stop writing the moment the queue refuses their fence. The queue does
+  not enforce branch or worktree isolation: give each attempt its own `agent/<harness>/<scope>`
+  branch and worktree, as AGENTS.md §1 already requires. Two attempts writing in one checkout can
+  still overwrite each other.
 
 ## State machine
 
