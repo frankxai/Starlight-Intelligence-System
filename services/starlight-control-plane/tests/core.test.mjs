@@ -121,6 +121,10 @@ test('repo names differing only in case share one collision check', () => {
   assert.equal(core.claim(sql, claudeWorker, {}, T0 + 2).task.id, 'a');
   assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
   assert.equal(core.claim(sql, codexWorker, { repo: 'REPO' }, T0 + 2).task, null);
+  core.enqueue(sql, producer, task({ id: 'c', repo: 'repo.', paths: ['src/x'] }), T0 + 3, newId);
+  core.enqueue(sql, producer, task({ id: 'd', repo: 'repo. .', paths: ['src/x'] }), T0 + 3, newId);
+  assert.equal(core.claim(sql, codexWorker, {}, T0 + 4).task, null);
+  assert.equal(status(() => core.enqueue(sql, producer, task({ id: 'e', repo: '...' }), T0, newId)), 400);
 });
 
 test('task ids use the character set the routes accept', () => {

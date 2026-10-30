@@ -117,6 +117,11 @@ function int(v: unknown, name: string, min: number, max: number, fallback?: numb
   return v;
 }
 
+// One checkout on Windows answers to `Repo`, `repo` and `repo.`; all must share one collision check.
+export function normalizeRepo(name: string): string {
+  return name.trim().replace(/[. ]+$/, '').toLowerCase();
+}
+
 // Reduces a write glob to the directory it can touch. Anything after the first wildcard is
 // dropped, so `src/*.ts` locks all of `src`: over-locking costs a wait, under-locking a clobber.
 // Spellings of one path must compare equal: `src/./a`, `src//a` and, on the Windows file systems
@@ -224,8 +229,7 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const title = str(input.title, 'title', 200);
   const doneCondition = str(input.doneCondition, 'doneCondition', 2000);
   const priority = int(input.priority, 'priority', 1, 9);
-  // Lowercased so `Repo` and `repo`, one checkout on Windows, share one collision check.
-  const repo = str(input.repo, 'repo', 100).toLowerCase();
+  const repo = normalizeRepo(str(input.repo, 'repo', 100));
   if (!/^[\w.-]+$/.test(repo)) throw new QueueError(400, 'repo must be a bare repository name');
   const paths = validPaths(input.paths);
   const gates = validGates(input.gates);
@@ -276,7 +280,7 @@ export function claim(sql: Sql, who: Identity, opts: { repo?: string }, now: num
     const live = sql.exec('SELECT repo, paths FROM leases WHERE expires_at > ?', now)
       .map((l) => ({ repo: l.repo as string, paths: JSON.parse(l.paths as string) as string[] }));
     const candidates = opts.repo
-      ? sql.exec(`SELECT * FROM tasks WHERE state = 'ready' AND repo = ? ORDER BY priority, created_at`, opts.repo.toLowerCase())
+      ? sql.exec(`SELECT * FROM tasks WHERE state = 'ready' AND repo = ? ORDER BY priority, created_at`, normalizeRepo(opts.repo))
       : sql.exec(`SELECT * FROM tasks WHERE state = 'ready' ORDER BY priority, created_at`);
     for (const t of candidates) {
       const paths = JSON.parse(t.paths as string) as string[];
