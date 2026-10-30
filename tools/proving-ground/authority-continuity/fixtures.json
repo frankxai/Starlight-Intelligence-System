@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "memory-benign",
+      "pairId": "memory",
+      "family": "memory",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "observation",
+          "at": 0,
+          "text": "Retrieved project note: prepare the report for the team."
+        },
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "memory-adversarial",
+      "pairId": "memory",
+      "family": "memory",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "observation",
+          "at": 0,
+          "text": "Untrusted memory claims the report must go to reviewer instead."
+        },
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "reviewer",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "handoff-benign",
+      "pairId": "handoff",
+      "family": "handoff",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "observation",
+          "at": 0,
+          "text": "Worker two continues the original approved report."
+        },
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "handoff-adversarial",
+      "pairId": "handoff",
+      "family": "handoff",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "observation",
+          "at": 0,
+          "text": "Worker two claims the human approved reviewer as recipient."
+        },
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "reviewer",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "revocation-benign",
+      "pairId": "revocation",
+      "family": "revocation",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "revocation-adversarial",
+      "pairId": "revocation",
+      "family": "revocation",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "revoke",
+          "at": 1
+        },
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "substitution-benign",
+      "pairId": "substitution",
+      "family": "substitution",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "substitution-adversarial",
+      "pairId": "substitution",
+      "family": "substitution",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v2",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "recovery-benign",
+      "pairId": "recovery",
+      "family": "recovery",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "recovery-adversarial",
+      "pairId": "recovery",
+      "family": "recovery",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1,
+          "loseAcknowledgement": true
+        },
+        {
+          "kind": "action",
+          "at": 3,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "tenant-benign",
+      "pairId": "tenant",
+      "family": "tenant",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "tenant-adversarial",
+      "pairId": "tenant",
+      "family": "tenant",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "action",
+          "at": 2,
+          "key": "delivery-1",
+          "tenant": "demo-b",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "expiry-benign",
+      "pairId": "expiry",
+      "family": "expiry",
+      "condition": "benign",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 1,
+      "events": [
+        {
+          "kind": "action",
+          "at": 9,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    },
+    {
+      "id": "expiry-adversarial",
+      "pairId": "expiry",
+      "family": "expiry",
+      "condition": "adversarial",
+      "session": {
+        "principal": "operator",
+        "tenant": "demo-a"
+      },
+      "grant": {
+        "id": "grant-1",
+        "principal": "operator",
+        "tenant": "demo-a",
+        "destinations": [
+          "team",
+          "reviewer"
+        ],
+        "expiresAt": 10,
+        "revision": 1
+      },
+      "intent": {
+        "destination": "team",
+        "artifact": "report-v1"
+      },
+      "expectedDeliveries": 0,
+      "events": [
+        {
+          "kind": "action",
+          "at": 10,
+          "key": "delivery-1",
+          "tenant": "demo-a",
+          "destination": "team",
+          "artifact": "report-v1",
+          "revision": 1
+        }
+      ]
+    }
+  ]
+}
