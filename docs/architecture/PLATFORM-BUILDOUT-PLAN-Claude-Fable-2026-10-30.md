@@ -259,6 +259,33 @@ other two agents' receipts and says what to stop. It holds no deploy or merge au
 | F | Frontend: Vercel side Next 16 / React 19 / Tailwind 4 / shadcn / AI SDK generative UI; Cloudflare side Vite + Void + shadcn + Agents SDK React hooks; TypeScript 5.x `strict` with `exactOptionalPropertyTypes`, zod v4 as the one contract for API, MCP tool inputs and forms, generated Worker binding types; TS 7 (Go) when product repos pass its checks | advanced means fewer, stricter types shared across layers, not more libraries |
 | G | Off-laptop execution: every build, test and review in Cloudflare Sandbox, Vercel Sandbox, a Railway runner, a Claude cloud session or Codex cloud; the laptop runs the cockpit and reads | 289 MB free RAM today; commit charge, not RAM, is the ceiling |
 
+## 5b. The focus window collides with this plan, and only Frank resolves it
+
+`agentic-ops-hub` guardrail 7 (founder ruling, 2026-10-21, binding through 2026-11-20) allows agent PRs only in
+the spine repositories (`starlightintelligence.ai` cap 5, `frankx.ai-vercel-website` 5, `agenticincome` 3,
+`realityarchitect` 2, `Starlight-Intelligence-System` 3 under hold rules: security, bug fixes, the S4 gate and the
+draft-CI PR, `claude-skills-library` 3, `agentic-ops-hub` 3 drain only, `gencreator.ai` and `arcanea-ai-app` 2
+on hold). Everything else is read-only to agents, and no new repository or Vercel project may be created.
+
+Waves 1 and 2 as written would build in `Starlight-Intelligence-System` (gateway, tenant platform, decide
+Worker: not security or bug fixes), `eve-lab` (Frontman), `starlight-factory`, `starlight-kernel` and
+`starlight-command-center` (all read-only under the window). The ladder and stack rulings of 2026-10-22 ask for
+exactly that platform work. Two rulings, one day apart, point in different directions. The plan does not pick.
+
+Three ways Frank can resolve it, in the order the plan prefers:
+
+1. **Named carve-out.** Amend guardrail 7 to allow the platform paths by name: SIS
+   `services/starlight-platform-gateway/**`, `services/starlight-tenant-platform/**`,
+   `services/starlight-decide/**`; `eve-lab/agents/frontman/**`; `starlight-factory` S2–S3;
+   `starlight-command-center` `agent/claude/observatory-hosted`. Caps unchanged, pr-gate unchanged.
+2. **Branches only until 21 November.** Lanes build and push branches with cross-vendor review recorded in
+   commit trailers, no PRs; PRs open on 21 November. Wave 3 slips two weeks.
+3. **Keep the window as written.** Waves 1 and 2 become design and spec work (read-only), and the build starts
+   2026-11-21 with the same roster.
+
+Until Frank rules, every build lane below is conditional; Wave 0 is not, because it is drain work the window
+already asks for.
+
 ## 6. Session roster
 
 Rules that apply to every lane: one lane = one branch `agent/<harness>/<scope>` in its own worktree or
@@ -322,6 +349,7 @@ reading only.
 
 ## 8. Decisions that are Frank's, in order
 
+0. The focus-window collision (§5b): carve-out, branches-only, or hold the window. Every build lane waits on this.
 1. Usage: enable extra usage (cap €100) for the Claude lanes this week, or start Wave 1 after the
    2026-11-01 reset.
 2. Merge the reviewed set: `starlightintelligence.ai#172`, `#174`, `#175`; `starlight-kernel#1`.
