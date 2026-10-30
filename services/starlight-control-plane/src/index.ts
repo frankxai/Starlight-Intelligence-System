@@ -26,21 +26,22 @@ export class ControlPlane extends DurableObject<Env> {
 
   async run(op: Op, who: Identity, args: Record<string, unknown>) {
     const result = execute(this.sql, op, who, args, Date.now(), () => crypto.randomUUID());
-    await this.armAlarm();
+    this.armAlarm();
     return result;
   }
 
   async alarm() {
     sweep(this.sql, Date.now());
-    await this.armAlarm();
+    this.armAlarm();
   }
 
-  // Alarms do not repeat, and each wake costs money: arm one only for the next lease expiry.
-  private async armAlarm() {
+  // Alarms do not repeat, and each wake costs money: arm exactly one, for the next lease expiry.
+  // The minimum is read from the table and written with no await in between, so no other request
+  // can interleave and leave a later expiry in place of an earlier one.
+  private armAlarm() {
     const next = this.sql.exec('SELECT MIN(expires_at) AS next FROM leases')[0]?.next;
-    if (typeof next !== 'number') return;
-    const current = await this.ctx.storage.getAlarm();
-    if (current === null || current > next) await this.ctx.storage.setAlarm(next);
+    if (typeof next === 'number') void this.ctx.storage.setAlarm(next);
+    else void this.ctx.storage.deleteAlarm();
   }
 }
 

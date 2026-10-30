@@ -101,6 +101,25 @@ test('wildcards lock everything from the first wildcard directory down', () => {
   assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
 });
 
+test('different spellings of one path are the same path', () => {
+  for (const alias of ['src/./a', 'src//a', 'SRC/a', 'src\\a', './src/a/', 'src/a/.']) {
+    assert.equal(core.pathsOverlap([alias], ['src/a']), true, alias);
+  }
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'one', paths: ['src/a'] }), T0, newId);
+  core.enqueue(sql, producer, task({ id: 'two', paths: ['src//a'] }), T0 + 1, newId);
+  core.claim(sql, claudeWorker, {}, T0 + 2);
+  assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
+});
+
+test('task ids use the character set the routes accept', () => {
+  const sql = memorySql();
+  for (const bad of ['a/b', 'a b', 'a?b', '', 'x'.repeat(101)]) {
+    assert.equal(status(() => core.enqueue(sql, producer, task({ id: bad }), T0, newId)), 400, bad);
+  }
+  assert.equal(core.enqueue(sql, producer, task({ id: 'queen:2026-10-30.fix_nav-1' }), T0, newId).state, 'ready');
+});
+
 test('only the exact lease holder can act on a lease, never a lookalike credential', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);

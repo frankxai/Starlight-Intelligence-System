@@ -32,6 +32,7 @@ export const PROVIDERS = new Set([
 ]);
 
 export const LEASE_MS = 15 * 60 * 1000;
+export const TASK_ID = /^[\w.:-]{1,100}$/;
 const MAX_PATHS = 50;
 
 export class QueueError extends Error {
@@ -118,12 +119,13 @@ function int(v: unknown, name: string, min: number, max: number, fallback?: numb
 
 // Reduces a write glob to the directory it can touch. Anything after the first wildcard is
 // dropped, so `src/*.ts` locks all of `src`: over-locking costs a wait, under-locking a clobber.
+// Spellings of one path must compare equal: `src/./a`, `src//a` and, on the case-insensitive
+// file systems these worktrees live on, `SRC/a` all name `src/a`.
 export function normalizePath(p: string): string {
-  let n = p.replace(/\\/g, '/').replace(/^\.\//, '');
+  let n = p.replace(/\\/g, '/');
   const wild = n.search(/[*?[\]{}!]/);
   if (wild >= 0) n = n.slice(0, Math.max(0, n.lastIndexOf('/', wild)));
-  n = n.replace(/\/+$/, '');
-  return n === '.' ? '' : n;
+  return n.split('/').filter((s) => s !== '' && s !== '.').join('/').toLowerCase();
 }
 
 // Same semantics as tools/lane.mjs: a path owns itself and everything under it; '' owns the repo.
@@ -227,6 +229,8 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const maxMinutes = int(input.maxMinutes, 'maxMinutes', 1, 480, 60);
   const maxAttempts = int(input.maxAttempts, 'maxAttempts', 1, 10, 3);
   const id = input.id === undefined ? newId() : str(input.id, 'id', 100);
+  // Same character set the REST task routes accept, so every task stays reachable by id.
+  if (!TASK_ID.test(id)) throw new QueueError(400, 'id may use letters, digits, ".", ":", "_" and "-"');
   const fingerprint = JSON.stringify([who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts]);
 
   return sql.transaction(() => {

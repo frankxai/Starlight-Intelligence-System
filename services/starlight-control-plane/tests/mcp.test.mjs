@@ -47,7 +47,7 @@ test('legacy clients complete the initialize handshake', async () => {
 
 test('modern clients discover versions and send matching _meta', async () => {
   const { rpc } = await fixture();
-  const headers = { 'mcp-protocol-version': '2026-07-28' };
+  const headers = { 'mcp-protocol-version': '2026-07-28', 'mcp-method': 'server/discover' };
   const meta = { _meta: { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' } };
   const disc = await rpc('queen', 'server/discover', meta, headers);
   assert.deepEqual(disc.body.result.supportedVersions, ['2026-07-28', '2025-11-25', '2025-06-18']);
@@ -60,6 +60,36 @@ test('modern clients discover versions and send matching _meta', async () => {
   assert.equal(old.status, 400);
   assert.equal(old.body.error.code, -32022);
   assert.equal(old.body.error.data.requested, '1900-01-01');
+});
+
+test('modern requests must repeat version, method and tool name in matching headers', async () => {
+  const { rpc } = await fixture();
+  const meta = { 'io.modelcontextprotocol/protocolVersion': '2026-07-28' };
+  const call = (headers, params) => rpc('queen', 'tools/call', { name: 'queue_status', arguments: {}, _meta: meta, ...params }, headers);
+  const good = { 'mcp-protocol-version': '2026-07-28', 'mcp-method': 'tools/call', 'mcp-name': 'queue_status' };
+  assert.equal((await call(good)).status, 200);
+  for (const bad of [
+    { ...good, 'mcp-method': undefined },
+    { ...good, 'mcp-method': 'tools/list' },
+    { ...good, 'mcp-name': undefined },
+    { ...good, 'mcp-name': 'enqueue_task' },
+  ]) {
+    const headers = Object.fromEntries(Object.entries(bad).filter(([, v]) => v !== undefined));
+    const r = await call(headers);
+    assert.equal(r.status, 400);
+    assert.equal(r.body.error.code, -32020);
+  }
+  const headerOnly = await rpc('queen', 'tools/call', { name: 'queue_status', arguments: {} }, good);
+  assert.equal(headerOnly.status, 400);
+  const metaOnly = await rpc('queen', 'tools/call', { name: 'queue_status', arguments: {}, _meta: meta }, { 'mcp-method': 'tools/call', 'mcp-name': 'queue_status' });
+  assert.equal(metaOnly.status, 400);
+});
+
+test('browser origins are refused unless allow-listed', async () => {
+  const { raw } = await fixture();
+  const ping = { jsonrpc: '2.0', id: 1, method: 'ping' };
+  assert.equal((await raw('queen', ping, { origin: 'https://evil.example' })).status, 403);
+  assert.equal((await raw('queen', ping)).status, 200);
 });
 
 test('tools/list shows each identity only the tools its roles allow', async () => {

@@ -14,6 +14,8 @@ export interface QueueStub {
 export interface HandlerEnv {
   // JSON object: sha256(token) hex -> Identity. Set with `wrangler secret put AGENT_TOKENS`.
   AGENT_TOKENS?: string;
+  // Comma-separated browser origins allowed to call; empty means none.
+  ALLOWED_ORIGINS?: string;
 }
 
 const ROLES = new Set<Role>(['producer', 'worker', 'verifier', 'human']);
@@ -74,6 +76,14 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
   const url = new URL(request.url);
   const method = request.method.toUpperCase();
   if (url.pathname === '/health' && method === 'GET') return json(200, { ok: true });
+
+  // Agents call from servers and send no Origin. A browser always does, so an Origin that is not
+  // explicitly allowed is refused before the token is even read (MCP transport requirement).
+  const origin = request.headers.get('origin');
+  if (origin !== null) {
+    const allowed = (env.ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim()).filter(Boolean);
+    if (!allowed.includes(origin)) return json(403, { error: 'origin not allowed' });
+  }
 
   const who = await authenticate(request, env);
   if (!who) return json(401, { error: 'unauthorized' });

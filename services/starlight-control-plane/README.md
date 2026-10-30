@@ -75,7 +75,7 @@ A supplied `id` makes `enqueue` idempotent, so producers can retry safely.
 `POST /mcp` serves the same operations as MCP tools over Streamable HTTP (JSON responses, no
 sessions), behind the same bearer token. It answers both the stateless `2026-07-28` revision
 (`server/discover`, per-request `_meta`) and the `initialize` handshake of `2025-11-25` and
-`2025-06-18`. `tools/list` shows each identity only the tools its roles allow:
+`2025-06-18`. A `2026-07-28` request must carry matching `MCP-Protocol-Version`, `Mcp-Method` and (for `tools/call`) `Mcp-Name` headers plus `_meta` protocolVersion, or it gets 400. `tools/list` shows each identity only the tools its roles allow:
 `queue_status`, `get_task`, `enqueue_task`, `claim_task`, `heartbeat_task`, `complete_task`,
 `release_task`, `verify_task`, `approve_task`.
 
@@ -89,12 +89,13 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/handler.ts`: authentication and routing.
 - `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
 - `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
-- `tests/`: 36 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 40 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
 1. `wrangler secret put AGENT_TOKENS` with the identity table. Generate each token once, give it to one agent, and store only its SHA-256.
-2. `wrangler deploy` from this folder. `workers_dev` and preview URLs are off, so it needs a route on a domain you choose.
+2. Optional: `ALLOWED_ORIGINS`, a comma-separated list of browser origins. Agents send no `Origin`; any request that does, from an origin not on the list, gets 403.
+3. `wrangler deploy` from this folder. `workers_dev` and preview URLs are off, so it needs a route on a domain you choose.
 
 ## Next slices
 

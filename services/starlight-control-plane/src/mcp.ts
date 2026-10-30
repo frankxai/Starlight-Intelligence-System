@@ -10,6 +10,23 @@ export const LEGACY_VERSIONS = ['2025-11-25', '2025-06-18'];
 export const SUPPORTED_VERSIONS = [MODERN_VERSION, ...LEGACY_VERSIONS];
 const SERVER_INFO = { name: 'starlight-control-plane', version: '0.1.0' };
 const UNSUPPORTED_VERSION = -32022;
+const HEADER_MISMATCH = -32020;
+
+// 2026-07-28 requests repeat their version, method and tool name in headers so gateways can route
+// without parsing the body. If the two disagree, a gateway and this server could decide different
+// things about the same request, so any gap is a 400.
+function modernHeaderProblem(
+  request: Request, method: string, params: Record<string, unknown>, header: string | null, metaVersion: unknown,
+): string | null {
+  if (header !== MODERN_VERSION || metaVersion !== MODERN_VERSION) {
+    return 'MCP-Protocol-Version header and _meta protocolVersion must both be present and equal';
+  }
+  if (request.headers.get('mcp-method') !== method) return 'Mcp-Method header must match the request method';
+  if (method === 'tools/call' && request.headers.get('mcp-name') !== params.name) {
+    return 'Mcp-Name header must match the tool name';
+  }
+  return null;
+}
 
 const INSTRUCTIONS = 'The Starlight estate task queue. Workers claim_task, do the work, heartbeat_task while it '
   + 'runs, then complete_task with an evidence path (a PR, a receipt file). Verification must come from a '
@@ -103,8 +120,9 @@ export async function handleMcp(request: Request, who: Identity, stub: QueueStub
     return errorResult(id, UNSUPPORTED_VERSION, 'Unsupported protocol version', { supported: SUPPORTED_VERSIONS, requested: header }, 400);
   }
   const metaVersion = (params._meta as Record<string, unknown> | undefined)?.['io.modelcontextprotocol/protocolVersion'];
-  if (metaVersion !== undefined && metaVersion !== header) {
-    return errorResult(id, -32600, 'MCP-Protocol-Version header must match _meta protocolVersion', undefined, 400);
+  if (header === MODERN_VERSION || metaVersion !== undefined) {
+    const problem = modernHeaderProblem(request, msg.method, params, header, metaVersion);
+    if (problem) return errorResult(id, HEADER_MISMATCH, problem, undefined, 400);
   }
 
   switch (msg.method) {
