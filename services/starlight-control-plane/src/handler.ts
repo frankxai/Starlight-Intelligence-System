@@ -2,6 +2,7 @@
 // Durable Object. Kept free of Cloudflare imports so node --test can drive it with a fake stub.
 
 import type { Identity, Role } from './core.ts';
+import { handleMcp } from './mcp.ts';
 
 export type Op =
   | 'enqueue' | 'approve' | 'claim' | 'heartbeat' | 'complete' | 'release' | 'verify' | 'get' | 'status';
@@ -72,6 +73,14 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
 
   const who = await authenticate(request, env);
   if (!who) return json(401, { error: 'unauthorized' });
+
+  if (url.pathname === '/mcp') {
+    // No server-initiated stream is offered, so GET is refused as the transport allows.
+    if (method !== 'POST') return new Response(null, { status: 405, headers: { allow: 'POST' } });
+    const body = await readBody(request);
+    if (body instanceof Response) return body;
+    return handleMcp(request, who, stub, body);
+  }
 
   let op: Op | null = null;
   let args: Record<string, unknown> = {};

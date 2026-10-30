@@ -63,13 +63,26 @@ an identity `{ agentId, harness, provider, roles }`; roles are `producer`, `work
 
 A supplied `id` makes `enqueue` idempotent, so producers can retry safely.
 
+### MCP
+
+`POST /mcp` serves the same operations as MCP tools over Streamable HTTP (JSON responses, no
+sessions), behind the same bearer token. It answers both the stateless `2026-07-28` revision
+(`server/discover`, per-request `_meta`) and the `initialize` handshake of `2025-11-25` and
+`2025-06-18`. `tools/list` shows each identity only the tools its roles allow:
+`queue_status`, `get_task`, `enqueue_task`, `claim_task`, `heartbeat_task`, `complete_task`,
+`release_task`, `verify_task`, `approve_task`.
+
+Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai connectors
+(the route into cloud routines) expect OAuth, which is not built yet.
+
 ## Files
 
 - `src/core.ts`: the rules, over a two-method SQL interface. No Cloudflare imports.
 - `src/ops.ts`: one operation in, one `{status, body}` out.
 - `src/handler.ts`: authentication and routing.
+- `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
 - `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
-- `tests/`: 20 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 26 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
@@ -78,7 +91,7 @@ A supplied `id` makes `enqueue` idempotent, so producers can retry safely.
 
 ## Next slices
 
-1. **MCP adapter.** Serve the same `execute()` as a remote MCP server (Agents SDK `McpAgent`, Streamable HTTP, OAuth). claude.ai routines and managed agents reach tools through connectors, not raw egress, so this is how they join.
+1. **OAuth for the MCP endpoint** (`@cloudflare/workers-oauth-provider`), so claude.ai routines can attach it as a connector. They reach tools through connectors, not raw egress.
 2. **Bridge.** Make `starlight-bridge` `enqueue_task` write through to this queue, and give the queen a claim loop. The local queue becomes a cache.
 3. **Retire the in-memory lease API** in `starlight-cloud-worker` once agents claim here.
 4. **Read model.** Mirror events to D1 for the Observatory and the systems map; the Durable Object stays the only writer.
