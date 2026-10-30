@@ -337,6 +337,19 @@ the apex once two teams ship to it.
 Routing of each lane follows `AGENTS.md` §4: judgment to Fable or Opus, build to Sonnet or Codex, bulk
 mechanics to Codex exec, large-context scouting to Antigravity, review always to a different provider.
 
+## 6b. GitHub API budget (added 2026-10-30 from the migration session's measurement)
+
+Every agent shares one user token: 5,000 REST requests per hour, 2,155 used in one measured hour, and heavy
+GraphQL pages returned 502s. The Frontman's digests, the factory's PR polling and the Wave 0 triage would add to
+that bucket. Two rules for every lane that reads GitHub:
+
+- Use `scripts/ghx.mjs` (`frankxai/agentic-ops`, branch `agent/claude/ghx-rate-budget`, 8a6945c): conditional
+  GETs (repeat reads cost 0 requests, verified live), serial requests, GitHub's documented backoff, and refusal of
+  low-priority calls under 500 remaining. No raw `gh api` loops.
+- Agent traffic moves to a GitHub App with one installation per org: each installation has its own bucket
+  (5,000 base, up to 12,500 by repo and user count). The existing runner App is scoped to gencreator.ai with
+  Actions and Admin permissions and must not carry agent API calls. Creating the App is Frank's.
+
 ## 7. Guardrails that bind every lane
 
 Secrets env-ref only, gitleaks armed. Money paths fail closed; prices, checkout, payouts, spend are Frank's.
