@@ -120,7 +120,8 @@ export async function handleMcp(request: Request, who: Identity, stub: QueueStub
     return errorResult(id, UNSUPPORTED_VERSION, 'Unsupported protocol version', { supported: SUPPORTED_VERSIONS, requested: header }, 400);
   }
   const metaVersion = (params._meta as Record<string, unknown> | undefined)?.['io.modelcontextprotocol/protocolVersion'];
-  if (header === MODERN_VERSION || metaVersion !== undefined) {
+  // server/discover exists only in the modern revision, so it is held to the modern header rules.
+  if (header === MODERN_VERSION || metaVersion !== undefined || msg.method === 'server/discover') {
     const problem = modernHeaderProblem(request, msg.method, params, header, metaVersion);
     if (problem) return errorResult(id, HEADER_MISMATCH, problem, undefined, 400);
   }

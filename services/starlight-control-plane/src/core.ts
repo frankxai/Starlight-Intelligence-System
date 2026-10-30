@@ -119,13 +119,13 @@ function int(v: unknown, name: string, min: number, max: number, fallback?: numb
 
 // Reduces a write glob to the directory it can touch. Anything after the first wildcard is
 // dropped, so `src/*.ts` locks all of `src`: over-locking costs a wait, under-locking a clobber.
-// Spellings of one path must compare equal: `src/./a`, `src//a` and, on the case-insensitive
-// file systems these worktrees live on, `SRC/a` all name `src/a`.
+// Spellings of one path must compare equal: `src/./a`, `src//a` and, on the Windows file systems
+// these worktrees live on, `SRC/a` and `src/a.` (trailing dots and spaces are dropped) all name `src/a`.
 export function normalizePath(p: string): string {
   let n = p.replace(/\\/g, '/');
   const wild = n.search(/[*?[\]{}!]/);
   if (wild >= 0) n = n.slice(0, Math.max(0, n.lastIndexOf('/', wild)));
-  return n.split('/').filter((s) => s !== '' && s !== '.').join('/').toLowerCase();
+  return n.split('/').map((s) => s.replace(/[. ]+$/, '')).filter((s) => s !== '').join('/').toLowerCase();
 }
 
 // Same semantics as tools/lane.mjs: a path owns itself and everything under it; '' owns the repo.
@@ -222,7 +222,8 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const title = str(input.title, 'title', 200);
   const doneCondition = str(input.doneCondition, 'doneCondition', 2000);
   const priority = int(input.priority, 'priority', 1, 9);
-  const repo = str(input.repo, 'repo', 100);
+  // Lowercased so `Repo` and `repo`, one checkout on Windows, share one collision check.
+  const repo = str(input.repo, 'repo', 100).toLowerCase();
   if (!/^[\w.-]+$/.test(repo)) throw new QueueError(400, 'repo must be a bare repository name');
   const paths = validPaths(input.paths);
   const gates = validGates(input.gates);
@@ -230,7 +231,7 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const maxAttempts = int(input.maxAttempts, 'maxAttempts', 1, 10, 3);
   const id = input.id === undefined ? newId() : str(input.id, 'id', 100);
   // Same character set the REST task routes accept, so every task stays reachable by id.
-  if (!TASK_ID.test(id)) throw new QueueError(400, 'id may use letters, digits, ".", ":", "_" and "-"');
+  if (!TASK_ID.test(id) || /^\.+$/.test(id)) throw new QueueError(400, 'id may use letters, digits, ".", ":", "_" and "-"');
   const fingerprint = JSON.stringify([who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts]);
 
   return sql.transaction(() => {
@@ -273,7 +274,7 @@ export function claim(sql: Sql, who: Identity, opts: { repo?: string }, now: num
     const live = sql.exec('SELECT repo, paths FROM leases WHERE expires_at > ?', now)
       .map((l) => ({ repo: l.repo as string, paths: JSON.parse(l.paths as string) as string[] }));
     const candidates = opts.repo
-      ? sql.exec(`SELECT * FROM tasks WHERE state = 'ready' AND repo = ? ORDER BY priority, created_at`, opts.repo)
+      ? sql.exec(`SELECT * FROM tasks WHERE state = 'ready' AND repo = ? ORDER BY priority, created_at`, opts.repo.toLowerCase())
       : sql.exec(`SELECT * FROM tasks WHERE state = 'ready' ORDER BY priority, created_at`);
     for (const t of candidates) {
       const paths = JSON.parse(t.paths as string) as string[];

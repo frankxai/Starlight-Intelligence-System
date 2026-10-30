@@ -102,7 +102,7 @@ test('wildcards lock everything from the first wildcard directory down', () => {
 });
 
 test('different spellings of one path are the same path', () => {
-  for (const alias of ['src/./a', 'src//a', 'SRC/a', 'src\\a', './src/a/', 'src/a/.']) {
+  for (const alias of ['src/./a', 'src//a', 'SRC/a', 'src\\a', './src/a/', 'src/a/.', 'src/a.', 'src/a ', 'src. /a']) {
     assert.equal(core.pathsOverlap([alias], ['src/a']), true, alias);
   }
   const sql = memorySql();
@@ -112,9 +112,18 @@ test('different spellings of one path are the same path', () => {
   assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
 });
 
+test('repo names differing only in case share one collision check', () => {
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'a', repo: 'Repo', paths: ['src/x'] }), T0, newId);
+  core.enqueue(sql, producer, task({ id: 'b', repo: 'repo', paths: ['src/x'] }), T0 + 1, newId);
+  assert.equal(core.claim(sql, claudeWorker, {}, T0 + 2).task.id, 'a');
+  assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
+  assert.equal(core.claim(sql, codexWorker, { repo: 'REPO' }, T0 + 2).task, null);
+});
+
 test('task ids use the character set the routes accept', () => {
   const sql = memorySql();
-  for (const bad of ['a/b', 'a b', 'a?b', '', 'x'.repeat(101)]) {
+  for (const bad of ['a/b', 'a b', 'a?b', '', '.', '..', '...', 'x'.repeat(101)]) {
     assert.equal(status(() => core.enqueue(sql, producer, task({ id: bad }), T0, newId)), 400, bad);
   }
   assert.equal(core.enqueue(sql, producer, task({ id: 'queen:2026-10-30.fix_nav-1' }), T0, newId).state, 'ready');

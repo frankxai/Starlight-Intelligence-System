@@ -81,6 +81,7 @@ test('modern requests must repeat version, method and tool name in matching head
   }
   const headerOnly = await rpc('queen', 'tools/call', { name: 'queue_status', arguments: {} }, good);
   assert.equal(headerOnly.status, 400);
+  assert.equal((await rpc('queen', 'server/discover', {})).status, 400);
   const metaOnly = await rpc('queen', 'tools/call', { name: 'queue_status', arguments: {}, _meta: meta }, { 'mcp-method': 'tools/call', 'mcp-name': 'queue_status' });
   assert.equal(metaOnly.status, 400);
 });

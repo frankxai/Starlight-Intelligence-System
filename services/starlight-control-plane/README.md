@@ -89,7 +89,7 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/handler.ts`: authentication and routing.
 - `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
 - `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
-- `tests/`: 40 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 41 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
