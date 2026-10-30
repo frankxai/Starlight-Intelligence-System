@@ -1,7 +1,7 @@
 // HTTP surface. Authenticates the caller, then forwards one operation to the single queue
 // Durable Object. Kept free of Cloudflare imports so node --test can drive it with a fake stub.
 
-import type { Identity, Role } from './core.ts';
+import { PROVIDERS, type Identity, type Role } from './core.ts';
 import { handleMcp } from './mcp.ts';
 
 export type Op =
@@ -32,6 +32,7 @@ function isIdentity(v: unknown): v is Identity {
   if (!v || typeof v !== 'object') return false;
   const o = v as Record<string, unknown>;
   return ['agentId', 'harness', 'provider'].every((k) => typeof o[k] === 'string' && (o[k] as string).length > 0)
+    && PROVIDERS.has(o.provider as string)
     && Array.isArray(o.roles) && o.roles.length > 0 && o.roles.every((r) => ROLES.has(r as Role));
 }
 
@@ -46,6 +47,9 @@ export async function authenticate(request: Request, env: HandlerEnv): Promise<I
     // A malformed token table must lock everyone out, never fall open.
     return null;
   }
+  // Leases are held by agentId; two credentials sharing one would act on each other's work.
+  const ids = Object.values(table).map((v) => (v as Record<string, unknown>)?.agentId);
+  if (new Set(ids).size !== ids.length) return null;
   const who = table[await sha256Hex(match[1])];
   return isIdentity(who) ? who : null;
 }

@@ -37,11 +37,11 @@ const TOOLS: Record<string, ToolDef> = {
       priority: { type: 'integer', minimum: 1, maximum: 9, description: '1 is most urgent' },
       repo: { type: 'string', description: 'Bare repository name' },
       paths: { type: 'array', items: { type: 'string' }, description: 'Repo-relative paths the task will write' },
-      gates: { type: 'array', items: { type: 'string' }, description: 'money, publish, external-send, dns, secrets, credentials, destructive, legal, none' },
+      gates: { type: 'array', items: { type: 'string' }, minItems: 1, description: 'Every gate that applies: money, publish, external-send, dns, secrets, credentials, destructive, legal. Use ["none"] only when none apply.' },
       maxMinutes: { type: 'integer', minimum: 1, maximum: 480 },
       maxAttempts: { type: 'integer', minimum: 1, maximum: 10 },
     },
-    required: ['title', 'doneCondition', 'priority', 'repo', 'paths'],
+    required: ['title', 'doneCondition', 'priority', 'repo', 'paths', 'gates'],
   },
   claim_task: {
     op: 'claim', role: 'worker', description: 'Lease the most urgent ready task whose paths no live lease holds. Returns task: null when nothing fits.',

@@ -50,6 +50,22 @@ test('a malformed or missing token table locks everyone out', async () => {
   }
 });
 
+test('unknown provider spellings and shared agentIds lock the table', async () => {
+  const { stub } = await fixture();
+  const hash = await sha256Hex(TOKENS.queen);
+  const other = await sha256Hex(TOKENS.codex);
+  const tables = [
+    { [hash]: { ...IDENTITIES.queen, provider: 'OpenAI' } },
+    { [hash]: IDENTITIES.queen, [other]: { ...IDENTITIES.codex, agentId: 'queen' } },
+  ];
+  for (const t of tables) {
+    const res = await handleRequest(new Request('https://cp.example.invalid/v1/status', {
+      headers: { authorization: `Bearer ${TOKENS.queen}` },
+    }), { AGENT_TOKENS: JSON.stringify(t) }, stub);
+    assert.equal(res.status, 401);
+  }
+});
+
 test('the full loop over HTTP: enqueue, gate, claim, complete, cross-provider verify', async () => {
   const { call } = await fixture();
   let res = await call('queen', 'POST', '/v1/tasks', {
@@ -65,7 +81,7 @@ test('the full loop over HTTP: enqueue, gate, claim, complete, cross-provider ve
   res = await call('queen', 'POST', '/v1/tasks/claim', { repo: 'frankx' });
   assert.equal((await res.json()).task.id, 'stage-price');
   assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/heartbeat')).status, 200);
-  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/complete', { resultRef: 'pr#42' })).status, 200);
+  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/complete', { resultRef: 'https://github.com/frankxai/x/pull/1' })).status, 200);
   assert.equal((await call('codex', 'POST', '/v1/tasks/stage-price/verify', { verdict: 'pass' })).status, 200);
 
   res = await call('codex', 'GET', '/v1/tasks/stage-price');
@@ -77,10 +93,10 @@ test('the full loop over HTTP: enqueue, gate, claim, complete, cross-provider ve
 
 test('the URL id wins over an id smuggled in the body', async () => {
   const { call } = await fixture();
-  await call('queen', 'POST', '/v1/tasks', { id: 'a', title: 'a', doneCondition: 'd', priority: 5, repo: 'r', paths: ['x'] });
-  await call('queen', 'POST', '/v1/tasks', { id: 'b', title: 'b', doneCondition: 'd', priority: 5, repo: 'r', paths: ['y'] });
+  await call('queen', 'POST', '/v1/tasks', { id: 'a', title: 'a', doneCondition: 'd', priority: 5, repo: 'r', paths: ['x'], gates: ['none'] });
+  await call('queen', 'POST', '/v1/tasks', { id: 'b', title: 'b', doneCondition: 'd', priority: 5, repo: 'r', paths: ['y'], gates: ['none'] });
   await call('codex', 'POST', '/v1/tasks/claim', {});
-  const res = await call('codex', 'POST', '/v1/tasks/b/complete', { id: 'a', resultRef: 'r' });
+  const res = await call('codex', 'POST', '/v1/tasks/b/complete', { id: 'a', resultRef: 'receipts/r.md' });
   assert.equal(res.status, 409);
   assert.equal((await (await call('codex', 'GET', '/v1/tasks/a')).json()).state, 'leased');
 });

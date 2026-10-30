@@ -11,7 +11,7 @@ const BASE = 'https://cp.example.invalid';
 async function fixture() {
   const sql = memorySql();
   execute(sql, 'enqueue', { agentId: 'queen', harness: 'claude', provider: 'anthropic', roles: ['producer'] },
-    { id: 'a', title: 'a', doneCondition: 'd', priority: 4, repo: 'r', paths: ['x'] }, 1, () => 'unused');
+    { id: 'a', title: 'a', doneCondition: 'd', priority: 4, repo: 'r', paths: ['x'], gates: ['none'] }, 1, () => 'unused');
   const env = { AGENT_TOKENS: JSON.stringify({ [await sha256Hex(TOKEN)]: { agentId: 'hermes', harness: 'hermes', provider: 'xai', roles: ['worker'] } }) };
   let clock = 1_800_000_000_000;
   const stub = { run: async (op, who, args) => execute(sql, op, who, args, clock++, () => 'id') };

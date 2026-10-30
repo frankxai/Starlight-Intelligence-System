@@ -25,6 +25,12 @@ export const HUMAN_GATES = [
 ] as const;
 export const KNOWN_GATES = new Set<string>([...HUMAN_GATES, 'none']);
 
+// Maker != checker compares these, so free-form spellings ("OpenAI" vs "openai") are refused at
+// authentication instead of being trusted as different providers.
+export const PROVIDERS = new Set([
+  'anthropic', 'openai', 'google', 'xai', 'deepseek', 'mistral', 'meta', 'alibaba', 'moonshot', 'human',
+]);
+
 export const LEASE_MS = 15 * 60 * 1000;
 const MAX_PATHS = 50;
 
@@ -43,7 +49,7 @@ export interface EnqueueInput {
   priority: number;
   repo: string;
   paths: string[];
-  gates?: string[];
+  gates: string[];
   maxMinutes?: number;
   maxAttempts?: number;
 }
@@ -68,7 +74,8 @@ export function migrate(sql: Sql): void {
     maker_agent TEXT,
     maker_provider TEXT,
     result_ref TEXT,
-    verifier_agent TEXT
+    verifier_agent TEXT,
+    fingerprint TEXT NOT NULL
   )`);
   sql.exec(`CREATE INDEX IF NOT EXISTS tasks_ready ON tasks (state, priority, created_at)`);
   sql.exec(`CREATE TABLE IF NOT EXISTS leases (
@@ -109,9 +116,14 @@ function int(v: unknown, name: string, min: number, max: number, fallback?: numb
   return v;
 }
 
+// Reduces a write glob to the directory it can touch. Anything after the first wildcard is
+// dropped, so `src/*.ts` locks all of `src`: over-locking costs a wait, under-locking a clobber.
 export function normalizePath(p: string): string {
-  const n = p.replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/\*\*$/, '').replace(/\/+$/, '');
-  return n === '' || n === '**' || n === '.' ? '' : n;
+  let n = p.replace(/\\/g, '/').replace(/^\.\//, '');
+  const wild = n.search(/[*?[\]{}!]/);
+  if (wild >= 0) n = n.slice(0, Math.max(0, n.lastIndexOf('/', wild)));
+  n = n.replace(/\/+$/, '');
+  return n === '.' ? '' : n;
 }
 
 // Same semantics as tools/lane.mjs: a path owns itself and everything under it; '' owns the repo.
@@ -137,6 +149,50 @@ function validPaths(v: unknown): string[] {
   });
 }
 
+// Gates are mandatory so that "ungated" is a statement a producer makes, never a default.
+function validGates(v: unknown): string[] {
+  if (!Array.isArray(v) || v.length === 0) {
+    throw new QueueError(400, `gates is required: list the gates that apply, or ["none"]`);
+  }
+  const gates = v.map((g) => {
+    if (typeof g !== 'string' || !KNOWN_GATES.has(g)) throw new QueueError(400, `unknown gate ${String(g)}`);
+    return g;
+  });
+  if (gates.includes('none') && gates.length > 1) throw new QueueError(400, '"none" cannot be combined with other gates');
+  return [...new Set(gates)].sort();
+}
+
+// A producer can mislabel a task, so obvious money, publishing, send and secret work is held for
+// a human even when it is declared ungated. This catches carelessness; credentials scoped away
+// from workers are what stop a determined bypass.
+const TRIPWIRE_TEXT: [string, RegExp][] = [
+  ['money', /\b(price|pricing|checkout|billing|invoice|refund|payout|payment|stripe|polar|wallet|subscription)\b/i],
+  ['publish', /\b(npm publish|publish|release|deploy to prod|production deploy|--prod|go live|make public)\b/i],
+  ['external-send', /\b(send (an? |the |our |this )?(emails?|newsletters?|dms?|messages?|campaign)|newsletter|post to|tweet|linkedin|webhook)\b/i],
+  ['dns', /\b(dns|nameserver|cname|a record)\b/i],
+  ['secrets', /\b(secret|api key|token rotation|credential|password)\b/i],
+];
+const TRIPWIRE_PATHS: [string, RegExp][] = [
+  ['secrets', /(^|\/)\.env|(^|\/)secrets?(\/|$)|\.pem$|\.key$/i],
+  ['money', /(^|\/)(billing|checkout|payments?|pricing)(\/|$)/i],
+  ['publish', /(^|\/)\.github\/workflows(\/|$)|(^|\/)wrangler\.(toml|jsonc?)$|(^|\/)vercel\.json$/i],
+];
+
+export function tripwire(title: string, doneCondition: string, paths: string[]): string[] {
+  const hits = new Set<string>();
+  const text = `${title}\n${doneCondition}`;
+  for (const [gate, re] of TRIPWIRE_TEXT) if (re.test(text)) hits.add(gate);
+  for (const p of paths) for (const [gate, re] of TRIPWIRE_PATHS) if (re.test(p.replace(/\\/g, '/'))) hits.add(gate);
+  return [...hits].sort();
+}
+
+// Something a verifier can open: an https URL, a commit SHA, or a repo-relative file path.
+export function isEvidence(ref: string): boolean {
+  if (/^https:\/\/[^\s/]+\.[^\s/]+\/\S+$/.test(ref)) return true;
+  if (/^[0-9a-f]{7,40}$/i.test(ref)) return true;
+  return /^(?![a-zA-Z]:|\/)(?!.*\.\.)[\w.-]+(\/[\w.-]+)*\.[\w]{1,8}(#L?\d+)?$/.test(ref);
+}
+
 function event(sql: Sql, now: number, taskId: string, actor: string, kind: string, detail: object = {}): void {
   sql.exec(
     'INSERT INTO events (ts, task_id, actor, kind, detail) VALUES (?, ?, ?, ?, ?)',
@@ -152,7 +208,8 @@ function row(sql: Sql, id: string): Record<string, unknown> {
 
 function holderOf(sql: Sql, id: string, who: Identity, now: number): Record<string, unknown> {
   const lease = sql.exec('SELECT * FROM leases WHERE task_id = ?', id)[0];
-  if (!lease || lease.agent_id !== who.agentId || (lease.expires_at as number) <= now) {
+  const same = lease && lease.agent_id === who.agentId && lease.harness === who.harness && lease.provider === who.provider;
+  if (!lease || !same || (lease.expires_at as number) <= now) {
     throw new QueueError(409, `${who.agentId} does not hold a live lease on ${id}`);
   }
   return lease;
@@ -166,28 +223,31 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const repo = str(input.repo, 'repo', 100);
   if (!/^[\w.-]+$/.test(repo)) throw new QueueError(400, 'repo must be a bare repository name');
   const paths = validPaths(input.paths);
-  const gates = (input.gates ?? []).map((g) => {
-    if (!KNOWN_GATES.has(g)) throw new QueueError(400, `unknown gate ${g}`);
-    return g;
-  });
+  const gates = validGates(input.gates);
   const maxMinutes = int(input.maxMinutes, 'maxMinutes', 1, 480, 60);
   const maxAttempts = int(input.maxAttempts, 'maxAttempts', 1, 10, 3);
   const id = input.id === undefined ? newId() : str(input.id, 'id', 100);
+  const fingerprint = JSON.stringify([who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts]);
 
   return sql.transaction(() => {
-    // Producers retry on network errors; a supplied id makes enqueue idempotent.
-    const existing = sql.exec('SELECT id, state FROM tasks WHERE id = ?', id)[0];
-    if (existing) return { id, state: existing.state as TaskState, duplicate: true };
-    const held = gates.some((g) => (HUMAN_GATES as readonly string[]).includes(g));
-    const state: TaskState = held ? 'held' : 'ready';
+    // Producers retry on network errors; a supplied id makes enqueue idempotent, but only for the
+    // same task. A different task under a reused id must not be reported as accepted.
+    const existing = sql.exec('SELECT state, fingerprint FROM tasks WHERE id = ?', id)[0];
+    if (existing) {
+      if (existing.fingerprint !== fingerprint) throw new QueueError(409, `id ${id} already names a different task`);
+      return { id, state: existing.state as TaskState, duplicate: true };
+    }
+    const tripped = tripwire(title, doneCondition, paths);
+    const declared = gates.some((g) => (HUMAN_GATES as readonly string[]).includes(g));
+    const state: TaskState = declared || tripped.length > 0 ? 'held' : 'ready';
     sql.exec(
       `INSERT INTO tasks (id, title, done_condition, priority, repo, paths, gates, state, max_attempts,
-        max_minutes, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        max_minutes, created_by, created_at, updated_at, fingerprint) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       id, title, doneCondition, priority, repo, JSON.stringify(paths), JSON.stringify(gates), state,
-      maxAttempts, maxMinutes, who.agentId, now, now,
+      maxAttempts, maxMinutes, who.agentId, now, now, fingerprint,
     );
-    event(sql, now, id, who.agentId, 'enqueued', { state, gates });
-    return { id, state, duplicate: false };
+    event(sql, now, id, who.agentId, 'enqueued', { state, gates, tripwire: tripped });
+    return { id, state, duplicate: false, tripwire: tripped };
   });
 }
 
@@ -257,6 +317,7 @@ export function complete(sql: Sql, who: Identity, id: string, resultRef: unknown
     holderOf(sql, id, who, now);
     // No evidence, no completion (AGENTS.md §3).
     const ref = str(resultRef, 'resultRef', 500);
+    if (!isEvidence(ref)) throw new QueueError(400, 'resultRef must be an https URL, a commit SHA, or a repo-relative file path');
     sql.exec('DELETE FROM leases WHERE task_id = ?', id);
     sql.exec(
       `UPDATE tasks SET state = 'awaiting_verify', maker_agent = ?, maker_provider = ?, result_ref = ?,

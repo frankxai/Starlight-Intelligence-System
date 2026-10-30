@@ -13,7 +13,7 @@ const newId = () => `t${++n}`;
 const T0 = 1_800_000_000_000;
 
 function task(over = {}) {
-  return { title: 'Fix nav', doneCondition: 'nav renders on mobile', priority: 5, repo: 'frankx', paths: ['app/nav/**'], ...over };
+  return { title: 'Fix nav', doneCondition: 'nav renders on mobile', priority: 5, repo: 'frankx', paths: ['app/nav/**'], gates: ['none'], ...over };
 }
 
 function status(fn) {
@@ -47,13 +47,77 @@ test('only producers enqueue, only workers claim, only verifiers verify', () => 
   assert.equal(status(() => core.verify(sql, frank, 'a', 'pass', '', T0)), 403);
 });
 
-test('a supplied id makes enqueue idempotent', () => {
+test('a supplied id makes enqueue idempotent, but only for the same task', () => {
   const sql = memorySql();
   const first = core.enqueue(sql, producer, task({ id: 'same' }), T0, newId);
-  const second = core.enqueue(sql, producer, task({ id: 'same', title: 'changed' }), T0 + 1, newId);
+  const retry = core.enqueue(sql, producer, task({ id: 'same' }), T0 + 1, newId);
   assert.equal(first.duplicate, false);
-  assert.equal(second.duplicate, true);
+  assert.equal(retry.duplicate, true);
+  assert.equal(status(() => core.enqueue(sql, producer, task({ id: 'same', title: 'changed' }), T0 + 2, newId)), 409);
+  assert.equal(status(() => core.enqueue(sql, producer, task({ id: 'same', gates: ['money'] }), T0 + 2, newId)), 409);
+  const otherProducer = { ...producer, agentId: 'hermes-producer' };
+  assert.equal(status(() => core.enqueue(sql, otherProducer, task({ id: 'same' }), T0 + 2, newId)), 409);
   assert.equal(core.getTask(sql, 'same').title, 'Fix nav');
+});
+
+test('gates must be declared; "none" is a statement, not a default', () => {
+  const sql = memorySql();
+  assert.equal(status(() => core.enqueue(sql, producer, task({ gates: undefined }), T0, newId)), 400);
+  assert.equal(status(() => core.enqueue(sql, producer, task({ gates: [] }), T0, newId)), 400);
+  assert.equal(status(() => core.enqueue(sql, producer, task({ gates: ['none', 'money'] }), T0, newId)), 400);
+});
+
+test('the tripwire holds obvious money, publish, send and secret work declared as ungated', () => {
+  const sql = memorySql();
+  const cases = [
+    [{ id: 'm', title: 'Update pricing table' }, ['money']],
+    [{ id: 'p', title: 'npm publish 1.2.0', paths: ['pkg'] }, ['publish']],
+    [{ id: 's', doneCondition: 'send the newsletter to subscribers', paths: ['mail'] }, ['external-send']],
+    [{ id: 'e', paths: ['.env.production'] }, ['secrets']],
+    [{ id: 'w', paths: ['.github/workflows/deploy.yml'] }, ['publish']],
+    [{ id: 'c', paths: ['app/checkout/page.tsx'] }, ['money']],
+  ];
+  for (const [over, expected] of cases) {
+    const r = core.enqueue(sql, producer, task(over), T0, newId);
+    assert.equal(r.state, 'held', over.id);
+    assert.deepEqual(r.tripwire, expected, over.id);
+  }
+  assert.equal(core.enqueue(sql, producer, task({ id: 'ok', title: 'Fix nav spacing', paths: ['app/nav/x.tsx'] }), T0, newId).state, 'ready');
+});
+
+test('wildcards lock everything from the first wildcard directory down', () => {
+  assert.equal(core.normalizePath('src/*.ts'), 'src');
+  assert.equal(core.normalizePath('src/**/test.ts'), 'src');
+  assert.equal(core.normalizePath('*.md'), '');
+  assert.equal(core.normalizePath('app/{a,b}/x.ts'), 'app');
+  assert.equal(core.pathsOverlap(['src/*.ts'], ['src/a.ts']), true);
+  assert.equal(core.pathsOverlap(['src/*.ts'], ['src/deep/b.ts']), true);
+  assert.equal(core.pathsOverlap(['docs/*.md'], ['src/a.ts']), false);
+
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'glob', paths: ['src/*.ts'] }), T0, newId);
+  core.enqueue(sql, producer, task({ id: 'file', paths: ['src/a.ts'] }), T0 + 1, newId);
+  assert.equal(core.claim(sql, claudeWorker, {}, T0 + 2).task.id, 'glob');
+  assert.equal(core.claim(sql, codexWorker, {}, T0 + 2).task, null);
+});
+
+test('only the exact lease holder can act on a lease, never a lookalike credential', () => {
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
+  core.claim(sql, claudeWorker, {}, T0);
+  const sameIdOtherProvider = { ...codexWorker, agentId: 'claude-1' };
+  assert.equal(status(() => core.complete(sql, sameIdOtherProvider, 'a', 'receipts/a.md', T0 + 1)), 409);
+  assert.equal(status(() => core.heartbeat(sql, { ...claudeWorker, harness: 'hermes' }, 'a', T0 + 1)), 409);
+  assert.equal(status(() => core.release(sql, sameIdOtherProvider, 'a', '', T0 + 1)), 409);
+});
+
+test('evidence must be something a verifier can open', () => {
+  for (const ok of ['https://github.com/frankxai/x/pull/1', 'de62f7cc5', 'queen/reports/a.md', 'src/core.ts#L12']) {
+    assert.equal(core.isEvidence(ok), true, ok);
+  }
+  for (const bad of ['x', 'done', 'pr#1', 'http://example.com/a', '../secret.md', 'C:/x.md', '/etc/x.md', 'https://x']) {
+    assert.equal(core.isEvidence(bad), false, bad);
+  }
 });
 
 test('a human-gated task waits for a human approval before any worker can lease it', () => {
@@ -114,7 +178,7 @@ test('the verifier must come from a different provider than the maker', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
-  core.complete(sql, claudeWorker, 'a', 'pr#1', T0 + 1);
+  core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + 1);
   const otherClaude = { ...claudeWorker, agentId: 'claude-2' };
   assert.equal(status(() => core.verify(sql, otherClaude, 'a', 'pass', '', T0 + 2)), 403);
   assert.equal(status(() => core.verify(sql, codexWorker, 'a', 'maybe', '', T0 + 2)), 400);
@@ -130,7 +194,7 @@ test('a rejected task returns to the queue, and dies after maxAttempts', () => {
   core.enqueue(sql, producer, task({ id: 'a', maxAttempts: 2 }), T0, newId);
   for (const [i, expected] of [[1, 'ready'], [2, 'dead']]) {
     assert.equal(core.claim(sql, claudeWorker, {}, T0 + i * 10).task.attempt, i);
-    core.complete(sql, claudeWorker, 'a', 'pr#1', T0 + i * 10 + 1);
+    core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + i * 10 + 1);
     assert.equal(core.verify(sql, codexWorker, 'a', 'fail', 'tests red', T0 + i * 10 + 2).state, expected);
   }
   assert.equal(core.claim(sql, claudeWorker, {}, T0 + 100).task, null);
@@ -146,7 +210,7 @@ test('an expired lease returns the task to the queue and frees its paths', () =>
   const t = core.getTask(sql, 'a');
   assert.equal(t.state, 'ready');
   assert.equal(t.attempts, 1);
-  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', 'late', expiresAt + 1)), 409);
+  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', 'receipts/late.md', expiresAt + 1)), 409);
   assert.equal(core.claim(sql, codexWorker, {}, expiresAt + 1).task.id, 'a');
 });
 
