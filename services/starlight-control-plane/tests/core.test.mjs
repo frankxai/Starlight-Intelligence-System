@@ -32,7 +32,9 @@ test('rejects word priorities and other malformed envelopes', () => {
   assert.equal(status(() => core.enqueue(sql, producer, task({ priority: 2.5 }), T0, newId)), 400);
   assert.equal(status(() => core.enqueue(sql, producer, task({ doneCondition: '  ' }), T0, newId)), 400);
   assert.equal(status(() => core.enqueue(sql, producer, task({ paths: ['../etc'] }), T0, newId)), 400);
-  assert.equal(status(() => core.enqueue(sql, producer, task({ paths: ['C:/Users'] }), T0, newId)), 400);
+  for (const rooted of ['C:/Users', '\\src\\file.ts', '/src/file.ts', '\\\\host\\share\\x', 'C:x', 'src/a.ts:stream']) {
+    assert.equal(status(() => core.enqueue(sql, producer, task({ paths: [rooted] }), T0, newId)), 400, rooted);
+  }
   assert.equal(status(() => core.enqueue(sql, producer, task({ paths: [] }), T0, newId)), 400);
   assert.equal(status(() => core.enqueue(sql, producer, task({ repo: 'a/b' }), T0, newId)), 400);
   assert.equal(status(() => core.enqueue(sql, producer, task({ gates: ['yolo'] }), T0, newId)), 400);

@@ -144,7 +144,9 @@ function validPaths(v: unknown): string[] {
   }
   return v.map((p) => {
     const s = str(p, 'path', 300);
-    if (s.split(/[\\/]/).includes('..') || /^[a-zA-Z]:|^\//.test(s)) {
+    // Rooted on any platform (`/x`, `\x`, `C:x`, `\\host\x`) or carrying a `:` (Windows alternate
+    // data streams alias a file as `a.ts:stream`) would escape the repo-relative lease space.
+    if (s.split(/[\\/]/).includes('..') || /^[\\/]/.test(s) || s.includes(':')) {
       throw new QueueError(400, `path ${s} must be repo-relative`);
     }
     return s;
