@@ -103,37 +103,57 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
 - `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
 - `scripts/cp.mjs`: shell client. `scripts/mint-tokens.mjs`: token minting. `scripts/smoke.mjs`: post-deploy check.
-- `tests/`: 47 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 51 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
-Run these from this folder. Steps 2, 4 and 5 touch credentials, DNS and production, so they are
-yours; nothing here runs them for you.
+Steps 4 to 6 touch credentials, DNS and production, so they are yours; nothing here runs them for
+you. Commands are PowerShell, run from this folder. Keep every token file outside the repo:
+`mint-tokens.mjs` refuses to write raw tokens inside any git work tree.
 
-1. **List the agents.** Write `identities.json` outside the repo, one entry per credential:
+1. **List the agents.** Create `$HOME\.starlight\control-plane\identities.json`, one entry per credential:
    `[{ "agentId": "queen", "harness": "claude", "provider": "anthropic", "roles": ["producer", "worker"] }, ...]`.
-   Providers come from the fixed list in `src/core.ts`; give at least one verifier a different
+   Providers come from the fixed list in `src/core.ts`. Give at least one verifier a different
    provider than your workers, and give yourself `"provider": "human", "roles": ["human"]`.
 2. **Mint the tokens.**
-   `node scripts/mint-tokens.mjs identities.json --table agent-tokens.json --tokens new-tokens.json`.
-   It refuses to write raw tokens inside any git work tree or over an existing file.
+   ```powershell
+   $cp = "$HOME\.starlight\control-plane"
+   node scripts/mint-tokens.mjs "$cp\identities.json" --table "$cp\agent-tokens.json" --tokens "$cp\new-tokens.json"
+   ```
    `agent-tokens.json` holds only hashes; keep it, because a later run appends to it.
-   `new-tokens.json` holds the raw tokens: hand each to its agent, put them in Infisical, delete the file.
+   `new-tokens.json` holds the raw tokens and is created readable by your user alone (the script
+   checks the Windows ACL and deletes the file if it cannot). Hand each token to its agent, put
+   them in Infisical, then delete the file.
 3. **Check the bundle.** `wrangler deploy --dry-run --outdir dist` (about 31 KiB on 2026-10-30).
-4. **Set the secret.** `wrangler secret put AGENT_TOKENS < agent-tokens.json`. Every put replaces
-   the whole table: to revoke an agent, delete its entry from `agent-tokens.json` and put it again.
-   Optional: `wrangler secret put ALLOWED_ORIGINS` with a comma-separated list of browser origins.
-   Agents send no `Origin`; a request that does, from an origin not on the list, gets 403.
-5. **Deploy on a route.** `workers_dev` and preview URLs are off, so add a `routes` entry for a
-   hostname on a zone you own (for example `cp.<your-domain>`) to `wrangler.jsonc`, then `wrangler deploy`.
-6. **Smoke it.** `CONTROL_PLANE_URL=https://cp.<your-domain> CONTROL_PLANE_TOKEN=<any token> node scripts/smoke.mjs`.
-   Five read-only checks; exit 0 means up, refusing strangers, and answering REST and MCP.
+4. **Add a route and deploy.** `workers_dev` and preview URLs are off, so add
+   `"routes": [{ "pattern": "cp.<your-domain>", "custom_domain": true }]` to `wrangler.jsonc` for a
+   zone you own, then `wrangler deploy`. Until step 5 the Worker refuses every request, because it
+   has no token table: it fails closed.
+5. **Set the secret.** In Wrangler 4, `secret put` publishes a new Worker version at once, which
+   is why it comes after the route exists.
+   ```powershell
+   Get-Content "$cp\agent-tokens.json" -Raw | wrangler secret put AGENT_TOKENS
+   ```
+   Every put replaces the whole table. To revoke an agent, delete its entry from
+   `agent-tokens.json` and put it again. Optional: `wrangler secret put ALLOWED_ORIGINS` with a
+   comma-separated list of browser origins. Agents send no `Origin`; a request that does, from an
+   origin not on the list, gets 403.
+6. **Smoke it.** Read the token from the file, so it never lands in shell history:
+   ```powershell
+   $env:CONTROL_PLANE_URL = "https://cp.<your-domain>"
+   $env:CONTROL_PLANE_TOKEN = (Get-Content "$cp\new-tokens.json" -Raw | ConvertFrom-Json).'codex-1'
+   node scripts/smoke.mjs --expect claim_task,verify_task
+   ```
+   Six read-only checks: up, refusing a missing and an unknown token, accepting this one, and
+   answering MCP with the tools named in `--expect`. Run it once per role you minted.
 
 ### Try it locally first
 
 `wrangler dev` runs the Worker in workerd with a local SQLite Durable Object. Mint throwaway
-tokens into a temp folder, then:
-`wrangler dev --port 8799 --persist-to <temp>/state --var "AGENT_TOKENS:$(cat <temp>/agent-tokens.json)"`
+tokens into a temp folder, then start it with the table as a plain var (it holds only hashes):
+```powershell
+wrangler dev --port 8799 --persist-to "$env:TEMP\cp\state" --var "AGENT_TOKENS:$(Get-Content $env:TEMP\cp\agent-tokens.json -Raw)"
+```
 and point `smoke.mjs` and `cp.mjs` at `http://127.0.0.1:8799`.
 
 ## Next slices
@@ -144,7 +164,7 @@ and point `smoke.mjs` and `cp.mjs` at `http://127.0.0.1:8799`.
 4. **Read model.** Mirror events to D1 for the Observatory and the systems map; the Durable Object stays the only writer.
 
 Verified in workerd on 2026-10-30 (wrangler 4.152.0, `wrangler dev`, local SQLite Durable
-Object): the smoke check passed 5 of 5, and the full loop ran over `cp.mjs` (enqueue, claim,
+Object): the smoke check (then 5 checks) passed 5 of 5, and the full loop ran over `cp.mjs` (enqueue, claim,
 heartbeat, a wrong-agent heartbeat refused, complete, self-verify refused, cross-provider verify
 to `done`, a money-gated task held until the human approved it). Not verified yet: lease expiry
 firing through a real alarm (leases last 15 minutes), a production deploy, and a type-check
