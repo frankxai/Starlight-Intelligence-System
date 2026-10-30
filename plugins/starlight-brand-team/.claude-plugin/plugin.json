@@ -1,0 +1,9 @@
+{
+  "name": "starlight-brand-team",
+  "version": "0.1.0",
+  "description": "A portable personal-brand drafting and editorial review workflow using supplied sources.",
+  "author": {
+    "name": "Starlight Intelligence Systems"
+  },
+  "license": "MIT"
+}
