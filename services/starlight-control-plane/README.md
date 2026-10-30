@@ -5,7 +5,7 @@ Codex, Hermes, claude.ai routines, Claude managed agents, Cloudflare and Vercel 
 as a single SQLite-backed Durable Object, so leases, path collisions, human gates and
 maker ≠ checker are decided in one serialized place.
 
-Author: Claude (Opus 5.5), 2026-10-30. Review state: unreviewed draft, not deployed.
+Author: Claude (Opus 5.5), 2026-10-30. Review state: queue passed Codex review (round 7); deploy tooling under review; not deployed.
 
 ## Why
 
@@ -102,13 +102,39 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/handler.ts`: authentication and routing.
 - `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
 - `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
-- `tests/`: 43 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `scripts/cp.mjs`: shell client. `scripts/mint-tokens.mjs`: token minting. `scripts/smoke.mjs`: post-deploy check.
+- `tests/`: 47 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
-1. `wrangler secret put AGENT_TOKENS` with the identity table. Generate each token once, give it to one agent, and store only its SHA-256.
-2. Optional: `ALLOWED_ORIGINS`, a comma-separated list of browser origins. Agents send no `Origin`; any request that does, from an origin not on the list, gets 403.
-3. `wrangler deploy` from this folder. `workers_dev` and preview URLs are off, so it needs a route on a domain you choose.
+Run these from this folder. Steps 2, 4 and 5 touch credentials, DNS and production, so they are
+yours; nothing here runs them for you.
+
+1. **List the agents.** Write `identities.json` outside the repo, one entry per credential:
+   `[{ "agentId": "queen", "harness": "claude", "provider": "anthropic", "roles": ["producer", "worker"] }, ...]`.
+   Providers come from the fixed list in `src/core.ts`; give at least one verifier a different
+   provider than your workers, and give yourself `"provider": "human", "roles": ["human"]`.
+2. **Mint the tokens.**
+   `node scripts/mint-tokens.mjs identities.json --table agent-tokens.json --tokens new-tokens.json`.
+   It refuses to write raw tokens inside any git work tree or over an existing file.
+   `agent-tokens.json` holds only hashes; keep it, because a later run appends to it.
+   `new-tokens.json` holds the raw tokens: hand each to its agent, put them in Infisical, delete the file.
+3. **Check the bundle.** `wrangler deploy --dry-run --outdir dist` (about 31 KiB on 2026-10-30).
+4. **Set the secret.** `wrangler secret put AGENT_TOKENS < agent-tokens.json`. Every put replaces
+   the whole table: to revoke an agent, delete its entry from `agent-tokens.json` and put it again.
+   Optional: `wrangler secret put ALLOWED_ORIGINS` with a comma-separated list of browser origins.
+   Agents send no `Origin`; a request that does, from an origin not on the list, gets 403.
+5. **Deploy on a route.** `workers_dev` and preview URLs are off, so add a `routes` entry for a
+   hostname on a zone you own (for example `cp.<your-domain>`) to `wrangler.jsonc`, then `wrangler deploy`.
+6. **Smoke it.** `CONTROL_PLANE_URL=https://cp.<your-domain> CONTROL_PLANE_TOKEN=<any token> node scripts/smoke.mjs`.
+   Five read-only checks; exit 0 means up, refusing strangers, and answering REST and MCP.
+
+### Try it locally first
+
+`wrangler dev` runs the Worker in workerd with a local SQLite Durable Object. Mint throwaway
+tokens into a temp folder, then:
+`wrangler dev --port 8799 --persist-to <temp>/state --var "AGENT_TOKENS:$(cat <temp>/agent-tokens.json)"`
+and point `smoke.mjs` and `cp.mjs` at `http://127.0.0.1:8799`.
 
 ## Next slices
 
@@ -117,5 +143,9 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 3. **Retire the in-memory lease API** in `starlight-cloud-worker` once agents claim here.
 4. **Read model.** Mirror events to D1 for the Observatory and the systems map; the Durable Object stays the only writer.
 
-Not verified yet: a `workerd` run (vitest-pool-workers needs RAM the machine does not have today)
-and a type-check against `@cloudflare/workers-types`.
+Verified in workerd on 2026-10-30 (wrangler 4.152.0, `wrangler dev`, local SQLite Durable
+Object): the smoke check passed 5 of 5, and the full loop ran over `cp.mjs` (enqueue, claim,
+heartbeat, a wrong-agent heartbeat refused, complete, self-verify refused, cross-provider verify
+to `done`, a money-gated task held until the human approved it). Not verified yet: lease expiry
+firing through a real alarm (leases last 15 minutes), a production deploy, and a type-check
+against `@cloudflare/workers-types`.

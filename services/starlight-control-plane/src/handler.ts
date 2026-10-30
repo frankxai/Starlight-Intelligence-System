@@ -30,7 +30,7 @@ function json(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
 }
 
-function isIdentity(v: unknown): v is Identity {
+export function isIdentity(v: unknown): v is Identity {
   if (!v || typeof v !== 'object') return false;
   const o = v as Record<string, unknown>;
   return ['agentId', 'harness', 'provider'].every((k) => typeof o[k] === 'string' && (o[k] as string).length > 0)
