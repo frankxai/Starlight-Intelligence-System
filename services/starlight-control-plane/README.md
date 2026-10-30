@@ -117,7 +117,7 @@ you. Commands are PowerShell, run from this folder. Keep every token file outsid
    provider than your workers, and give yourself `"provider": "human", "roles": ["human"]`.
 2. **Mint the tokens.**
    ```powershell
-   $cp = "$HOME\.starlight\control-plane"
+   $cp = "$HOME\.starlight\control-plane"; New-Item -ItemType Directory -Force $cp | Out-Null
    node scripts/mint-tokens.mjs "$cp\identities.json" --table "$cp\agent-tokens.json" --tokens "$cp\new-tokens.json"
    ```
    `agent-tokens.json` holds only hashes; keep it, because a later run appends to it.
