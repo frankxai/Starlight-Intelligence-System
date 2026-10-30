@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { tmpdir, userInfo } from 'node:os';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { mint } from '../scripts/mint-tokens.mjs';
@@ -79,9 +79,14 @@ test('a table that is not an object of valid entries is refused before any token
 test('the raw-token file is readable by the current user alone', { skip: process.platform !== 'win32' }, async () => {
   const s = scratch([QUEEN]);
   await mint([s.ids, '--table', s.table, '--tokens', s.tokens]);
-  const aces = execFileSync('icacls', [s.tokens], { encoding: 'utf8' }).split(/\r?\n/).filter((l) => l.includes(':('));
-  assert.equal(aces.length, 1, aces.join('\n'));
-  assert.match(aces[0], new RegExp(userInfo().username, 'i'));
+  const ps = (command) => execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], {
+    encoding: 'utf8', env: { ...process.env, CP_FILE: s.tokens },
+  }).trim();
+  const sid = ps('[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value');
+  const aces = ps(`(Get-Acl -LiteralPath $env:CP_FILE).Access | ForEach-Object {
+    $_.IdentityReference.Translate([System.Security.Principal.SecurityIdentifier]).Value + '|' + $_.AccessControlType + '|' + $_.IsInherited }`)
+    .split(/\r?\n/).filter(Boolean);
+  assert.deepEqual(aces, [`${sid}|Allow|False`]);
 });
 
 test('smoke fails a token that lacks the tools its job needs', async () => {

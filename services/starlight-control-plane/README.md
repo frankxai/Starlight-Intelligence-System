@@ -5,7 +5,7 @@ Codex, Hermes, claude.ai routines, Claude managed agents, Cloudflare and Vercel 
 as a single SQLite-backed Durable Object, so leases, path collisions, human gates and
 maker ≠ checker are decided in one serialized place.
 
-Author: Claude (Opus 5.5), 2026-10-30. Review state: queue passed Codex review (round 7); deploy tooling under review; not deployed.
+Author: Claude (Opus 5.5), 2026-10-30. Review state: queue passed Codex review (round 7); deploy tooling passed Codex review (round 3, P2/P3 follow-ups fixed after); not deployed.
 
 ## Why
 

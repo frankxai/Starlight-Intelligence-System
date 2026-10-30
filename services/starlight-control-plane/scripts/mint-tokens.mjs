@@ -13,7 +13,7 @@
 import { execFileSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import {
-  closeSync, existsSync, fstatSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, writeSync,
+  closeSync, existsSync, fstatSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync,
 } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { isIdentity, sha256Hex } from '../src/handler.ts';
@@ -41,7 +41,14 @@ function insideGitTree(file) {
 // back by SID: one allow entry, for this account only.
 function createPrivate(file) {
   const fd = openSync(file, 'wx', 0o600);
-  const ino = fstatSync(fd, { bigint: true }).ino;
+  let ino;
+  try {
+    ino = fstatSync(fd, { bigint: true }).ino;
+  } catch (err) {
+    closeSync(fd);
+    rmSync(file, { force: true });
+    throw err;
+  }
   if (process.platform !== 'win32') return { fd, ino };
   try {
     const sid = ps('[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value');
@@ -117,12 +124,17 @@ export async function mint(argv, { newToken = () => `cp_${randomBytes(32).toStri
   try {
     writeFileSync(tableTmp, `${JSON.stringify(table)}\n`, { flag: 'wx' });
     created = createPrivate(tokensPath);
-    writeSync(created.fd, `${JSON.stringify(tokens, null, 2)}\n`);
+    // writeFileSync on a descriptor loops until every byte is written or throws, unlike writeSync.
+    writeFileSync(created.fd, `${JSON.stringify(tokens, null, 2)}\n`);
     closeSync(created.fd);
+    created.fd = undefined;
     renameSync(tableTmp, tablePath);
   } catch (err) {
     rmSync(tableTmp, { force: true });
-    if (created) removeIfOurs(tokensPath, created.ino);
+    if (created) {
+      if (created.fd !== undefined) closeSync(created.fd);
+      removeIfOurs(tokensPath, created.ino);
+    }
     throw err;
   }
   return { minted: Object.keys(tokens), tableEntries: Object.keys(table).length, table: tablePath, tokens: tokensPath };
