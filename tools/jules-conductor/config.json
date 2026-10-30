@@ -167,5 +167,14 @@
       "**/*credentials*",
       ".git/**"
     ]
+  },
+  "lifecycle": {
+    "state": "retiring",
+    "newSessionsAllowed": false,
+    "readOnlyAfter": "2026-11-11",
+    "shutdownDate": "2026-12-31",
+    "replacementAuthority": "frankxai/agentic-ops",
+    "replacementRouter": "control-plane/route_task.py",
+    "automaticFallback": false
   }
 }
