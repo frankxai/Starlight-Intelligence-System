@@ -1,0 +1,11 @@
+{
+  "name": "@starlight/control-plane",
+  "version": "0.1.0",
+  "description": "One cloud task queue for every Starlight agent: leases, path collisions, human gates and maker != checker in a single Durable Object",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "starlight-control-plane",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "traces": { "enabled": true, "head_sampling_rate": 1 } },
+  // AGENT_TOKENS is a secret: `wrangler secret put AGENT_TOKENS` with a JSON object mapping
+  // sha256(token) hex to { agentId, harness, provider, roles }. Never commit it.
+  "durable_objects": {
+    "bindings": [{ "name": "CONTROL_PLANE", "class_name": "ControlPlane" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ControlPlane"] }]
+}
