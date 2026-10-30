@@ -12,8 +12,9 @@
 
 import { execFileSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { userInfo } from 'node:os';
+import {
+  closeSync, existsSync, fstatSync, openSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, writeSync,
+} from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { isIdentity, sha256Hex } from '../src/handler.ts';
 
@@ -34,22 +35,42 @@ function insideGitTree(file) {
   }
 }
 
-// Creates the file empty and owner-only before any secret goes in. On Windows `mode` is ignored,
-// so inheritance is cut and the ACL is checked to hold the current user alone.
+// Creates the file empty and owner-only, and returns an open descriptor so the secret is written
+// to exactly the file that was checked, never to whatever the path names later. On Windows `mode`
+// is ignored, so inheritance is cut, the current account is granted by SID, and the ACL is read
+// back by SID: one allow entry, for this account only.
 function createPrivate(file) {
-  writeFileSync(file, '', { flag: 'wx', mode: 0o600 });
-  if (process.platform !== 'win32') return;
-  const user = userInfo().username;
+  const fd = openSync(file, 'wx', 0o600);
+  const ino = fstatSync(fd, { bigint: true }).ino;
+  if (process.platform !== 'win32') return { fd, ino };
   try {
-    execFileSync('icacls', [file, '/inheritance:r', '/grant:r', `${user}:F`], { stdio: 'pipe' });
-    const aces = execFileSync('icacls', [file], { encoding: 'utf8' })
-      .split(/\r?\n/).map((l) => l.replace(file, '').trim()).filter((l) => l.includes(':('));
-    if (aces.length !== 1 || !aces[0].toLowerCase().includes(user.toLowerCase())) {
-      throw new Error(`unexpected ACL: ${aces.join('; ')}`);
-    }
+    const sid = ps('[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value');
+    execFileSync('icacls', [file, '/inheritance:r', '/grant:r', `*${sid}:F`], { stdio: 'pipe' });
+    const aces = ps(`(Get-Acl -LiteralPath $env:CP_FILE).Access | ForEach-Object {
+      $_.IdentityReference.Translate([System.Security.Principal.SecurityIdentifier]).Value + '|' + $_.AccessControlType }`,
+    { CP_FILE: file }).split(/\r?\n/).filter(Boolean);
+    if (aces.length !== 1 || aces[0] !== `${sid}|Allow`) throw new Error(`unexpected ACL: ${aces.join('; ')}`);
+    if (statSync(file, { bigint: true }).ino !== ino) throw new Error('the path was replaced while its ACL was set');
+    return { fd, ino };
   } catch (err) {
-    rmSync(file, { force: true });
-    throw new Error(`could not make ${file} private to ${user}: ${err.message}`);
+    closeSync(fd);
+    removeIfOurs(file, ino);
+    throw new Error(`could not make ${file} private to the current user: ${err.message}`);
+  }
+}
+
+function ps(command, env = {}) {
+  return execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], {
+    encoding: 'utf8', env: { ...process.env, ...env },
+  }).trim();
+}
+
+// Deletes the file only if the path still names the one this run created.
+function removeIfOurs(file, ino) {
+  try {
+    if (statSync(file, { bigint: true }).ino === ino) rmSync(file, { force: true });
+  } catch {
+    // Already gone.
   }
 }
 
@@ -91,17 +112,17 @@ export async function mint(argv, { newToken = () => `cp_${randomBytes(32).toStri
 
   // Table goes to a temp file first, so a failure at any step leaves neither live tokens without a
   // saved table nor a table naming tokens nobody holds.
-  const tableTmp = `${tablePath}.${process.pid}.tmp`;
-  writeFileSync(tableTmp, `${JSON.stringify(table)}\n`, { flag: 'wx' });
-  let created = false;
+  const tableTmp = `${tablePath}.${randomBytes(6).toString('hex')}.tmp`;
+  let created;
   try {
-    createPrivate(tokensPath);
-    created = true;
-    writeFileSync(tokensPath, `${JSON.stringify(tokens, null, 2)}\n`);
+    writeFileSync(tableTmp, `${JSON.stringify(table)}\n`, { flag: 'wx' });
+    created = createPrivate(tokensPath);
+    writeSync(created.fd, `${JSON.stringify(tokens, null, 2)}\n`);
+    closeSync(created.fd);
     renameSync(tableTmp, tablePath);
   } catch (err) {
     rmSync(tableTmp, { force: true });
-    if (created) rmSync(tokensPath, { force: true });
+    if (created) removeIfOurs(tokensPath, created.ino);
     throw err;
   }
   return { minted: Object.keys(tokens), tableEntries: Object.keys(table).length, table: tablePath, tokens: tokensPath };

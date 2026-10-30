@@ -2,13 +2,11 @@
 // Post-deploy check: is the Worker up, does it refuse strangers, does a real token get in over
 // REST and MCP with the tools its job needs. Read-only; it never enqueues or claims.
 //
-//   CONTROL_PLANE_URL=https://... CONTROL_PLANE_TOKEN=... node scripts/smoke.mjs [--expect claim_task,verify_task]
-// --expect names tools this token must be offered; without it, the token must be offered at least
-// one tool that acts on the queue. Prints one line per check; exit 0 when all pass, 1 when any
+//   CONTROL_PLANE_URL=https://... CONTROL_PLANE_TOKEN=... node scripts/smoke.mjs --expect claim_task,verify_task
+// --expect (required) names the tools this token must be offered. Prints one line per check; exit 0 when all pass, 1 when any
 // fails, 2 on usage errors.
 
 const BASE_OK = /^(https:\/\/|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$)/;
-const READ_ONLY = new Set(['queue_status', 'get_task']);
 const STRANGER = `cp_smoke-not-a-real-token-${'0'.repeat(20)}`;
 
 export async function smoke(env = process.env, fetchImpl = fetch, argv = []) {
@@ -18,6 +16,9 @@ export async function smoke(env = process.env, fetchImpl = fetch, argv = []) {
   if (!BASE_OK.test(base)) return { code: 2, lines: ['CONTROL_PLANE_URL must be https (or http://localhost)'] };
   const i = argv.indexOf('--expect');
   const expect = i >= 0 ? (argv[i + 1] ?? '').split(',').filter(Boolean) : [];
+  // Every role is offered some write tool (a human gets approve_task), so only a named list can
+  // tell a worker token from a human one.
+  if (!expect.length) return { code: 2, lines: ['name the tools this token needs: --expect claim_task,verify_task'] };
 
   const call = (path, { bearer = token, method = 'GET', body, headers = {} } = {}) => fetchImpl(new URL(path, base), {
     method,
@@ -38,11 +39,11 @@ export async function smoke(env = process.env, fetchImpl = fetch, argv = []) {
       const res = await rpc('initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'smoke', version: '1' } });
       return res.status === 200 && Boolean((await res.json()).result?.protocolVersion);
     }],
-    [expect.length ? `MCP offers ${expect.join(', ')}` : 'MCP offers this token a tool that acts on the queue', async () => {
+    [`MCP offers ${expect.join(', ')}`, async () => {
       const res = await rpc('tools/list', {});
       if (res.status !== 200) return false;
       tools = ((await res.json()).result?.tools ?? []).map((t) => t.name);
-      return expect.length ? expect.every((t) => tools.includes(t)) : tools.some((t) => !READ_ONLY.has(t));
+      return expect.every((t) => tools.includes(t));
     }],
   ];
 

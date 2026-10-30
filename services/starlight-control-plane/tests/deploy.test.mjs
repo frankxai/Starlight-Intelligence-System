@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir, userInfo } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -36,9 +36,9 @@ test('minted tokens authenticate against the Worker and pass the smoke check', a
   assert.match(tokens.queen, /^cp_[A-Za-z0-9_-]{43}$/);
   assert.ok(!readFileSync(s.table, 'utf8').includes(tokens.queen), 'the table never holds a raw token');
 
-  const result = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: tokens['codex-1'] }, worker(s.table));
+  const result = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: tokens['codex-1'] }, worker(s.table), ['--expect', 'claim_task,verify_task']);
   assert.equal(result.code, 0, result.lines.join('\n'));
-  const stranger = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: 'cp_not-a-minted-token-000' }, worker(s.table));
+  const stranger = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: 'cp_not-a-minted-token-000' }, worker(s.table), ['--expect', 'claim_task']);
   assert.equal(stranger.code, 1);
   assert.ok(stranger.lines.includes('FAIL status accepts this token'));
 });
@@ -106,8 +106,23 @@ test('smoke fails when an unknown token gets in', async () => {
     }
     return real(url, { ...init, headers });
   };
-  const r = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: JSON.parse(readFileSync(s.tokens, 'utf8')).queen }, leaky);
+  const r = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: JSON.parse(readFileSync(s.tokens, 'utf8')).queen }, leaky, ['--expect', 'claim_task']);
   assert.ok(r.lines.includes('FAIL status refuses an unknown token'));
+});
+
+test('smoke refuses to run without a named tool list', async () => {
+  for (const argv of [[], ['--expect'], ['--expect', ',']]) {
+    const r = await smoke({ CONTROL_PLANE_URL: BASE, CONTROL_PLANE_TOKEN: 'x'.repeat(20) }, () => assert.fail('fetched'), argv);
+    assert.equal(r.code, 2);
+  }
+});
+
+test('a stale temp table from an earlier run never blocks minting', async () => {
+  const s = scratch([QUEEN]);
+  writeFileSync(`${s.table}.${process.pid}.tmp`, 'stale');
+  await mint([s.ids, '--table', s.table, '--tokens', s.tokens]);
+  assert.ok(existsSync(s.tokens));
+  assert.equal(readdirSync(s.dir).filter((f) => f.endsWith('.tmp')).length, 1, 'only the stale file remains');
 });
 
 test('smoke refuses plain http to a remote host before sending the token', async () => {
