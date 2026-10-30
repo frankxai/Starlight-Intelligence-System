@@ -3,14 +3,15 @@
 // tasks, plain scripts). Prints JSON; exit 0 on success, 1 on a refused call, 2 on usage errors.
 //
 //   CONTROL_PLANE_URL=https://... CONTROL_PLANE_TOKEN=... node scripts/cp.mjs claim [--repo r]
-//   node scripts/cp.mjs status | get <id> | heartbeat <id> | complete <id> <resultRef>
-//   node scripts/cp.mjs release <id> [reason] | verify <id> pass|fail [note] | approve <id>
+//   node scripts/cp.mjs status | get <id> | heartbeat <id> <fence> | complete <id> <fence> <resultRef>
+//   node scripts/cp.mjs release <id> <fence> [reason] | verify <id> pass|fail [note] | approve <id>
 //   node scripts/cp.mjs enqueue <task.json>
+// <fence> is the value claim printed. A refused heartbeat means the lease is gone: stop writing.
 
 import { readFileSync } from 'node:fs';
 
-const USAGE = 'usage: cp.mjs status | get <id> | claim [--repo r] | heartbeat <id> | complete <id> <resultRef> | '
-  + 'release <id> [reason] | verify <id> pass|fail [note] | approve <id> | enqueue <task.json>';
+const USAGE = 'usage: cp.mjs status | get <id> | claim [--repo r] | heartbeat <id> <fence> | complete <id> <fence> <resultRef> | '
+  + 'release <id> <fence> [reason] | verify <id> pass|fail [note] | approve <id> | enqueue <task.json>';
 
 export function buildRequest(argv) {
   const [cmd, ...rest] = argv;
@@ -29,9 +30,9 @@ export function buildRequest(argv) {
       const i = rest.indexOf('--repo');
       return { method: 'POST', path: '/v1/tasks/claim', body: i >= 0 && rest[i + 1] ? { repo: rest[i + 1] } : {} };
     }
-    case 'heartbeat': return task('heartbeat');
-    case 'complete': need(2); return task('complete', { resultRef: rest[1] });
-    case 'release': return task('release', rest[1] ? { reason: rest.slice(1).join(' ') } : {});
+    case 'heartbeat': need(2); return task('heartbeat', { fence: rest[1] });
+    case 'complete': need(3); return task('complete', { fence: rest[1], resultRef: rest[2] });
+    case 'release': need(2); return task('release', { fence: rest[1], ...(rest[2] ? { reason: rest.slice(2).join(' ') } : {}) });
     case 'verify': need(2); return task('verify', { verdict: rest[1], note: rest.slice(2).join(' ') });
     case 'approve': return task('approve');
     case 'enqueue': need(1); return { method: 'POST', path: '/v1/tasks', body: JSON.parse(readFileSync(rest[0], 'utf8')) };

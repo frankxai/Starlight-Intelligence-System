@@ -115,10 +115,12 @@ test('the whole loop runs over MCP tools, with the gates intact', async () => {
   assert.match(denied.content[0].text, /role human required/);
   await tool('frank', 'approve_task', { id: 'ship-copy' });
 
-  assert.equal((await tool('queen', 'claim_task', { repo: 'frankx' })).structuredContent.task.id, 'ship-copy');
-  const noEvidence = await tool('queen', 'complete_task', { id: 'ship-copy', resultRef: '' });
+  const claimed = (await tool('queen', 'claim_task', { repo: 'frankx' })).structuredContent;
+  assert.equal(claimed.task.id, 'ship-copy');
+  const { fence } = claimed;
+  const noEvidence = await tool('queen', 'complete_task', { id: 'ship-copy', fence, resultRef: '' });
   assert.equal(noEvidence.isError, true);
-  await tool('queen', 'complete_task', { id: 'ship-copy', resultRef: 'https://github.com/frankxai/x/pull/1' });
+  await tool('queen', 'complete_task', { id: 'ship-copy', fence, resultRef: 'https://github.com/frankxai/x/pull/1' });
   assert.equal((await tool('codex', 'verify_task', { id: 'ship-copy', verdict: 'pass' })).structuredContent.state, 'done');
   assert.equal((await tool('codex', 'get_task', { id: 'ship-copy' })).structuredContent.verifier_agent, 'codex-1');
 });

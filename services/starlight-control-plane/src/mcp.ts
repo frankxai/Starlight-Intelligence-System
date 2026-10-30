@@ -42,6 +42,7 @@ interface ToolDef {
 }
 
 const ID = { type: 'string', description: 'Task id' };
+const FENCE = { type: 'string', description: 'The fence returned by claim_task for this lease' };
 const TOOLS: Record<string, ToolDef> = {
   queue_status: { op: 'status', role: null, description: 'Counts by state and the live leases.', properties: {}, required: [] },
   get_task: { op: 'get', role: null, description: 'One task with its lease and full event log.', properties: { id: ID }, required: ['id'] },
@@ -64,14 +65,14 @@ const TOOLS: Record<string, ToolDef> = {
     op: 'claim', role: 'worker', description: 'Lease the most urgent ready task whose paths no live lease holds. Returns task: null when nothing fits.',
     properties: { repo: { type: 'string', description: 'Only claim from this repository' } }, required: [],
   },
-  heartbeat_task: { op: 'heartbeat', role: 'worker', description: 'Extend your lease, up to the task time box.', properties: { id: ID }, required: ['id'] },
+  heartbeat_task: { op: 'heartbeat', role: 'worker', description: 'Extend your lease, up to the task time box. A refusal means the lease is gone: stop writing.', properties: { id: ID, fence: FENCE }, required: ['id', 'fence'] },
   complete_task: {
     op: 'complete', role: 'worker', description: 'Hand finished work to verification. Needs an evidence path.',
-    properties: { id: ID, resultRef: { type: 'string', description: 'PR URL, commit, or receipt path' } }, required: ['id', 'resultRef'],
+    properties: { id: ID, fence: FENCE, resultRef: { type: 'string', description: 'PR URL, commit, or receipt path' } }, required: ['id', 'fence', 'resultRef'],
   },
   release_task: {
     op: 'release', role: 'worker', description: 'Give a task back. Counts as an attempt.',
-    properties: { id: ID, reason: { type: 'string' } }, required: ['id'],
+    properties: { id: ID, fence: FENCE, reason: { type: 'string' } }, required: ['id', 'fence'],
   },
   verify_task: {
     op: 'verify', role: 'verifier', description: 'Pass or fail completed work. You must be a different provider than the maker.',

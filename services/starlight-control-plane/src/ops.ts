@@ -17,9 +17,10 @@ export function execute(
       }
       case 'approve': return { status: 200, body: core.approve(sql, who, id, now) };
       case 'claim': return { status: 200, body: core.claim(sql, who, { repo: typeof args.repo === 'string' ? args.repo : undefined }, now) };
-      case 'heartbeat': return { status: 200, body: core.heartbeat(sql, who, id, now) };
-      case 'complete': return { status: 200, body: core.complete(sql, who, id, args.resultRef, now) };
-      case 'release': return { status: 200, body: core.release(sql, who, id, args.reason, now) };
+      // The fence is unguessable (crypto.randomUUID in claim) and returned only to the claimer.
+      case 'heartbeat': return { status: 200, body: core.heartbeat(sql, who, id, now, args.fence) };
+      case 'complete': return { status: 200, body: core.complete(sql, who, id, args.resultRef, now, args.fence) };
+      case 'release': return { status: 200, body: core.release(sql, who, id, args.reason, now, args.fence) };
       case 'verify': return { status: 200, body: core.verify(sql, who, id, args.verdict, args.note, now) };
       case 'get': return { status: 200, body: core.getTask(sql, id) };
       case 'status': return { status: 200, body: core.status(sql) };

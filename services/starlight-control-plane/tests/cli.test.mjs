@@ -25,8 +25,10 @@ test('a shell worker claims, heartbeats and completes through the CLI', async ()
   const claimed = await cli('claim', '--repo', 'r');
   assert.equal(claimed.code, 0);
   assert.equal(claimed.out.task.id, 'a');
-  assert.equal((await cli('heartbeat', 'a')).code, 0);
-  assert.equal((await cli('complete', 'a', 'receipts/a.md')).out.state, 'awaiting_verify');
+  const { fence } = claimed.out;
+  assert.equal((await cli('heartbeat', 'a', 'not-the-fence')).code, 1);
+  assert.equal((await cli('heartbeat', 'a', fence)).code, 0);
+  assert.equal((await cli('complete', 'a', fence, 'receipts/a.md')).out.state, 'awaiting_verify');
 });
 
 test('refusals exit 1, usage errors exit 2', async () => {

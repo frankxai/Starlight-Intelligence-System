@@ -10,6 +10,7 @@ const frank = { agentId: 'frank', harness: 'human', provider: 'human', roles: ['
 
 let n = 0;
 const newId = () => `t${++n}`;
+const fenceOf = (sql, id) => sql.exec('SELECT fence FROM leases WHERE task_id = ?', id)[0]?.fence;
 const T0 = 1_800_000_000_000;
 
 function task(over = {}) {
@@ -135,14 +136,41 @@ test('task ids use the character set the routes accept', () => {
   assert.equal(core.enqueue(sql, producer, task({ id: 'queen:2026-10-30.fix_nav-1' }), T0, newId).state, 'ready');
 });
 
+test('a stalled worker that loses its lease cannot touch the next attempt, even as the same agent', () => {
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'a', maxMinutes: 5 }), T0, newId);
+  const first = core.claim(sql, claudeWorker, {}, T0);
+  const second = core.claim(sql, claudeWorker, {}, T0 + 5 * 60_000);
+  assert.equal(second.task.id, 'a');
+  assert.notEqual(first.fence, second.fence);
+  const later = T0 + 5 * 60_000 + 1;
+  assert.equal(status(() => core.heartbeat(sql, claudeWorker, 'a', later, first.fence)), 409);
+  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', 'receipts/a.md', later, first.fence)), 409);
+  assert.equal(status(() => core.release(sql, claudeWorker, 'a', '', later, first.fence)), 409);
+  assert.equal(core.heartbeat(sql, claudeWorker, 'a', later, second.fence).id, 'a');
+});
+
+test('path segments must have one spelling per file', () => {
+  const sql = memorySql();
+  for (const bad of ['PROGRA~1/x', 'src/ report.txt', 'café/x', 'src/NUL.txt', 'CON/x', 'com1', 'src/ｆ.ts', 'a b/c']) {
+    assert.equal(status(() => core.enqueue(sql, producer, task({ paths: [bad] }), T0, newId)), 400, bad);
+  }
+  for (const bad of ['CON', 'nul', 'repo~1', 'café']) {
+    assert.equal(status(() => core.enqueue(sql, producer, task({ repo: bad }), T0, newId)), 400, bad);
+  }
+  ['src/**/*.ts', 'docs/{a,b}.md', 'app/@modal/page.tsx', 'lib/c++/x.h', 'console/x.ts'].forEach((ok, i) => {
+    assert.equal(status(() => core.enqueue(sql, producer, task({ id: `ok${i}`, paths: [ok] }), T0, newId)), 200, ok);
+  });
+});
+
 test('only the exact lease holder can act on a lease, never a lookalike credential', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
   const sameIdOtherProvider = { ...codexWorker, agentId: 'claude-1' };
-  assert.equal(status(() => core.complete(sql, sameIdOtherProvider, 'a', 'receipts/a.md', T0 + 1)), 409);
+  assert.equal(status(() => core.complete(sql, sameIdOtherProvider, 'a', 'receipts/a.md', T0 + 1, fenceOf(sql, 'a'))), 409);
   assert.equal(status(() => core.heartbeat(sql, { ...claudeWorker, harness: 'hermes' }, 'a', T0 + 1)), 409);
-  assert.equal(status(() => core.release(sql, sameIdOtherProvider, 'a', '', T0 + 1)), 409);
+  assert.equal(status(() => core.release(sql, sameIdOtherProvider, 'a', '', T0 + 1, fenceOf(sql, 'a'))), 409);
 });
 
 test('evidence must be something a verifier can open', () => {
@@ -198,10 +226,10 @@ test('completion needs the live lease holder and an evidence path', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
-  assert.equal(status(() => core.complete(sql, codexWorker, 'a', 'receipts/a.md', T0 + 1)), 409);
-  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', '', T0 + 1)), 400);
+  assert.equal(status(() => core.complete(sql, codexWorker, 'a', 'receipts/a.md', T0 + 1, fenceOf(sql, 'a'))), 409);
+  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', '', T0 + 1, fenceOf(sql, 'a'))), 400);
   assert.equal(core.getTask(sql, 'a').state, 'leased');
-  core.complete(sql, claudeWorker, 'a', 'receipts/a.md', T0 + 1);
+  core.complete(sql, claudeWorker, 'a', 'receipts/a.md', T0 + 1, fenceOf(sql, 'a'));
   const t = core.getTask(sql, 'a');
   assert.equal(t.state, 'awaiting_verify');
   assert.equal(t.lease, null);
@@ -212,7 +240,7 @@ test('the verifier must come from a different provider than the maker', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
-  core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + 1);
+  core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + 1, fenceOf(sql, 'a'));
   const otherClaude = { ...claudeWorker, agentId: 'claude-2' };
   assert.equal(status(() => core.verify(sql, otherClaude, 'a', 'pass', '', T0 + 2)), 403);
   assert.equal(status(() => core.verify(sql, codexWorker, 'a', 'maybe', '', T0 + 2)), 400);
@@ -228,7 +256,7 @@ test('a rejected task returns to the queue, and dies after maxAttempts', () => {
   core.enqueue(sql, producer, task({ id: 'a', maxAttempts: 2 }), T0, newId);
   for (const [i, expected] of [[1, 'ready'], [2, 'dead']]) {
     assert.equal(core.claim(sql, claudeWorker, {}, T0 + i * 10).task.attempt, i);
-    core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + i * 10 + 1);
+    core.complete(sql, claudeWorker, 'a', 'https://github.com/frankxai/x/pull/1', T0 + i * 10 + 1, fenceOf(sql, 'a'));
     assert.equal(core.verify(sql, codexWorker, 'a', 'fail', 'tests red', T0 + i * 10 + 2).state, expected);
   }
   assert.equal(core.claim(sql, claudeWorker, {}, T0 + 100).task, null);
@@ -244,7 +272,7 @@ test('an expired lease returns the task to the queue and frees its paths', () =>
   const t = core.getTask(sql, 'a');
   assert.equal(t.state, 'ready');
   assert.equal(t.attempts, 1);
-  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', 'receipts/late.md', expiresAt + 1)), 409);
+  assert.equal(status(() => core.complete(sql, claudeWorker, 'a', 'receipts/late.md', expiresAt + 1, fenceOf(sql, 'a'))), 409);
   assert.equal(core.claim(sql, codexWorker, {}, expiresAt + 1).task.id, 'a');
 });
 
@@ -259,16 +287,16 @@ test('heartbeats extend a lease only up to the task time box', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a', maxMinutes: 20 }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
-  assert.equal(core.heartbeat(sql, claudeWorker, 'a', T0 + 10 * 60_000).expiresAt, T0 + 20 * 60_000);
-  assert.equal(status(() => core.heartbeat(sql, codexWorker, 'a', T0 + 11 * 60_000)), 409);
-  assert.equal(status(() => core.heartbeat(sql, claudeWorker, 'a', T0 + 20 * 60_000)), 409);
+  assert.equal(core.heartbeat(sql, claudeWorker, 'a', T0 + 10 * 60_000, fenceOf(sql, 'a')).expiresAt, T0 + 20 * 60_000);
+  assert.equal(status(() => core.heartbeat(sql, codexWorker, 'a', T0 + 11 * 60_000, fenceOf(sql, 'a'))), 409);
+  assert.equal(status(() => core.heartbeat(sql, claudeWorker, 'a', T0 + 20 * 60_000, fenceOf(sql, 'a'))), 409);
 });
 
 test('release gives the task back and counts the attempt', () => {
   const sql = memorySql();
   core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
   core.claim(sql, claudeWorker, {}, T0);
-  assert.equal(core.release(sql, claudeWorker, 'a', 'out of RAM', T0 + 1).state, 'ready');
+  assert.equal(core.release(sql, claudeWorker, 'a', 'out of RAM', T0 + 1, fenceOf(sql, 'a')).state, 'ready');
   assert.equal(core.getTask(sql, 'a').events.at(-1).detail.reason, 'out of RAM');
 });
 

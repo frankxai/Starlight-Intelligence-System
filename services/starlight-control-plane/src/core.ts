@@ -86,7 +86,8 @@ export function migrate(sql: Sql): void {
     provider TEXT NOT NULL,
     repo TEXT NOT NULL,
     paths TEXT NOT NULL,
-    expires_at INTEGER NOT NULL
+    expires_at INTEGER NOT NULL,
+    fence TEXT NOT NULL
   )`);
   sql.exec(`CREATE TABLE IF NOT EXISTS events (
     seq INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -154,8 +155,25 @@ function validPaths(v: unknown): string[] {
     if (s.split(/[\\/]/).includes('..') || /^[\\/]/.test(s) || s.includes(':')) {
       throw new QueueError(400, `path ${s} must be repo-relative`);
     }
+    const literal = s.replace(/\\/g, '/');
+    const wild = literal.search(/[*?[\]{}!]/);
+    const parts = (wild >= 0 ? literal.slice(0, Math.max(0, literal.lastIndexOf('/', wild))) : literal).split('/');
+    for (const part of parts) {
+      if (part !== '' && !safeName(part)) {
+        throw new QueueError(400, `path segment "${part}" must be plain ASCII letters, digits, ".", "_", "-", "@" or "+", and not a Windows device name`);
+      }
+    }
     return s;
   });
+}
+
+// The lock compares names as strings, so only names with one spelling per file are admitted.
+// ASCII-only shuts out Unicode case and normalization aliases; no spaces or "~" shuts out leading
+// space trimming and 8.3 short names (PROGRA~1); device names (CON, NUL.txt) are not files at all.
+const SAFE_NAME = /^[A-Za-z0-9._@+-]+$/;
+const DEVICE_NAME = /^(con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³])(\.|$)/i;
+export function safeName(part: string): boolean {
+  return SAFE_NAME.test(part) && !DEVICE_NAME.test(part);
 }
 
 // Gates are mandatory so that "ungated" is a statement a producer makes, never a default.
@@ -215,10 +233,12 @@ function row(sql: Sql, id: string): Record<string, unknown> {
   return r;
 }
 
-function holderOf(sql: Sql, id: string, who: Identity, now: number): Record<string, unknown> {
+// The fence is minted per lease. A worker that stalls, loses its lease and wakes up again holds an
+// old fence, so it cannot heartbeat, complete or release the next attempt, even as the same agent.
+function holderOf(sql: Sql, id: string, who: Identity, now: number, fence: unknown): Record<string, unknown> {
   const lease = sql.exec('SELECT * FROM leases WHERE task_id = ?', id)[0];
   const same = lease && lease.agent_id === who.agentId && lease.harness === who.harness && lease.provider === who.provider;
-  if (!lease || !same || (lease.expires_at as number) <= now) {
+  if (!lease || !same || lease.fence !== fence || (lease.expires_at as number) <= now) {
     throw new QueueError(409, `${who.agentId} does not hold a live lease on ${id}`);
   }
   return lease;
@@ -230,7 +250,7 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const doneCondition = str(input.doneCondition, 'doneCondition', 2000);
   const priority = int(input.priority, 'priority', 1, 9);
   const repo = normalizeRepo(str(input.repo, 'repo', 100));
-  if (!/^[\w.-]+$/.test(repo)) throw new QueueError(400, 'repo must be a bare repository name');
+  if (!/^[\w.-]+$/.test(repo) || !safeName(repo)) throw new QueueError(400, 'repo must be a bare repository name');
   const paths = validPaths(input.paths);
   const gates = validGates(input.gates);
   const maxMinutes = int(input.maxMinutes, 'maxMinutes', 1, 480, 60);
@@ -273,7 +293,9 @@ export function approve(sql: Sql, who: Identity, id: string, now: number) {
   });
 }
 
-export function claim(sql: Sql, who: Identity, opts: { repo?: string }, now: number) {
+export function claim(
+  sql: Sql, who: Identity, opts: { repo?: string }, now: number, newFence: () => string = () => crypto.randomUUID(),
+) {
   requireRole(who, 'worker');
   return sql.transaction(() => {
     sweepLocked(sql, now);
@@ -287,9 +309,10 @@ export function claim(sql: Sql, who: Identity, opts: { repo?: string }, now: num
       if (live.some((l) => l.repo === t.repo && pathsOverlap(l.paths, paths))) continue;
       const leaseMs = Math.min(LEASE_MS, (t.max_minutes as number) * 60_000);
       const expiresAt = now + leaseMs;
+      const fence = newFence();
       sql.exec(
-        `INSERT INTO leases (task_id, agent_id, harness, provider, repo, paths, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        t.id, who.agentId, who.harness, who.provider, t.repo, t.paths, expiresAt,
+        `INSERT INTO leases (task_id, agent_id, harness, provider, repo, paths, expires_at, fence) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        t.id, who.agentId, who.harness, who.provider, t.repo, t.paths, expiresAt, fence,
       );
       sql.exec(`UPDATE tasks SET state = 'leased', updated_at = ? WHERE id = ?`, now, t.id);
       event(sql, now, t.id as string, who.agentId, 'leased', { expiresAt });
@@ -300,16 +323,17 @@ export function claim(sql: Sql, who: Identity, opts: { repo?: string }, now: num
           attempt: (t.attempts as number) + 1, maxMinutes: t.max_minutes as number,
         },
         expiresAt,
+        fence,
       };
     }
-    return { task: null, expiresAt: null };
+    return { task: null, expiresAt: null, fence: null };
   });
 }
 
-export function heartbeat(sql: Sql, who: Identity, id: string, now: number) {
+export function heartbeat(sql: Sql, who: Identity, id: string, now: number, fence: unknown) {
   return sql.transaction(() => {
     const t = row(sql, id);
-    holderOf(sql, id, who, now);
+    holderOf(sql, id, who, now, fence);
     // A lease may be renewed only until the task's own time box runs out.
     const leasedAt = sql.exec(
       `SELECT ts FROM events WHERE task_id = ? AND kind = 'leased' ORDER BY seq DESC LIMIT 1`, id,
@@ -322,10 +346,10 @@ export function heartbeat(sql: Sql, who: Identity, id: string, now: number) {
   });
 }
 
-export function complete(sql: Sql, who: Identity, id: string, resultRef: unknown, now: number) {
+export function complete(sql: Sql, who: Identity, id: string, resultRef: unknown, now: number, fence: unknown) {
   return sql.transaction(() => {
     row(sql, id);
-    holderOf(sql, id, who, now);
+    holderOf(sql, id, who, now, fence);
     // No evidence, no completion (AGENTS.md §3).
     const ref = str(resultRef, 'resultRef', 500);
     if (!isEvidence(ref)) throw new QueueError(400, 'resultRef must be an https URL, a commit SHA, or a repo-relative file path');
@@ -349,10 +373,10 @@ function retryOrDie(sql: Sql, t: Record<string, unknown>, now: number, actor: st
   return state;
 }
 
-export function release(sql: Sql, who: Identity, id: string, reason: unknown, now: number) {
+export function release(sql: Sql, who: Identity, id: string, reason: unknown, now: number, fence: unknown) {
   return sql.transaction(() => {
     const t = row(sql, id);
-    holderOf(sql, id, who, now);
+    holderOf(sql, id, who, now, fence);
     const state = retryOrDie(sql, t, now, who.agentId, 'released', { reason: typeof reason === 'string' ? reason.slice(0, 500) : '' });
     return { id, state };
   });

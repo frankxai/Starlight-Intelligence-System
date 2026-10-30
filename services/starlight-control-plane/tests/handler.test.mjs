@@ -79,9 +79,14 @@ test('the full loop over HTTP: enqueue, gate, claim, complete, cross-provider ve
   assert.equal((await call('frank', 'POST', '/v1/tasks/stage-price/approve')).status, 200);
 
   res = await call('queen', 'POST', '/v1/tasks/claim', { repo: 'frankx' });
-  assert.equal((await res.json()).task.id, 'stage-price');
-  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/heartbeat')).status, 200);
-  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/complete', { resultRef: 'https://github.com/frankxai/x/pull/1' })).status, 200);
+  const claimed = await res.json();
+  assert.equal(claimed.task.id, 'stage-price');
+  const { fence } = claimed;
+  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/heartbeat')).status, 409);
+  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/heartbeat', { fence })).status, 200);
+  assert.equal((await call('queen', 'POST', '/v1/tasks/stage-price/complete', { fence, resultRef: 'https://github.com/frankxai/x/pull/1' })).status, 200);
+  const shown = await (await call('codex', 'GET', '/v1/status')).json();
+  assert.ok(!JSON.stringify(shown).includes(fence), 'the fence is never shown to other agents');
   assert.equal((await call('codex', 'POST', '/v1/tasks/stage-price/verify', { verdict: 'pass' })).status, 200);
 
   res = await call('codex', 'GET', '/v1/tasks/stage-price');
