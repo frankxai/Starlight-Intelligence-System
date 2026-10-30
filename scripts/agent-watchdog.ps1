@@ -85,7 +85,8 @@ foreach ($item in $allCim) {
     }
 
     if ($name -in @('powershell.exe', 'pwsh.exe') -and $ArgumentList.Count -eq 0) {
-        $children = if ($childrenByParent.ContainsKey([int]$item.ProcessId)) { @($childrenByParent[[int]$item.ProcessId]) } else { @() }
+        # Windows PowerShell 5.1 throws "Argument types do not match" when @() wraps a List[object]; use ToArray().
+        $children = if ($childrenByParent.ContainsKey([int]$item.ProcessId)) { $childrenByParent[[int]$item.ProcessId].ToArray() } else { @() }
         $onlyConsoleChildren = @($children | Where-Object { $_.Name -ine 'conhost.exe' }).Count -eq 0
         $connections = @(Get-NetTCPConnection -OwningProcess $item.ProcessId -ErrorAction SilentlyContinue)
         if ($onlyConsoleChildren -and $connections.Count -eq 0) {
