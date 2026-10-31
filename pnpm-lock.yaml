@@ -97,6 +97,12 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
+  packages/playbooks:
+    devDependencies:
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
 packages:
 
   '@ai-sdk/gateway@4.0.108':
@@ -1379,3 +1385,4 @@ snapshots:
   yaml@2.9.0: {}
 
   zod@4.6.5: {}
+

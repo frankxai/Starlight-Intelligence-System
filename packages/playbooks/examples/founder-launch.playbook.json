@@ -1,0 +1,257 @@
+{
+  "schema": "starlight.playbook.v1",
+  "id": "founder-launch",
+  "version": "1.0.0",
+  "title": "Build your first editable launch kit",
+  "resources": [
+    {
+      "id": "draft-skill",
+      "kind": "skill",
+      "version": "1.0.0",
+      "sha256": "48d3868daf09f0376c994693f0047af84813225c62e89949cc39365a6efcfcf0",
+      "uri": "registry:example/founder/draft-skill"
+    },
+    {
+      "id": "draft-tool",
+      "kind": "tool",
+      "version": "1.0.0",
+      "sha256": "619f3253696e097933ea1fbd4b2a80dca8ecfa86cc4cf4ec67e7c09d28b73dc9",
+      "uri": "registry:example/founder/draft-tool"
+    },
+    {
+      "id": "document-schema",
+      "kind": "schema",
+      "version": "1.0.0",
+      "sha256": "e5f1d847cdc9bafbfd263e51d04fdf3fb8286fceb60b6e31d44efac07befef8f",
+      "uri": "registry:example/founder/document-schema"
+    },
+    {
+      "id": "founder-context",
+      "kind": "memory",
+      "version": "1.0.0",
+      "sha256": "34c707cf09ba87c6d9e6c5db646e67c746f00717bdc63da4ea5afcdd30297800",
+      "uri": "registry:example/founder/founder-context"
+    }
+  ],
+  "limits": {
+    "maxNodes": 24,
+    "maxParallel": 2,
+    "modelCalls": 0,
+    "toolCalls": 10
+  },
+  "flow": {
+    "kind": "sequence",
+    "id": "launch",
+    "steps": [
+      {
+        "kind": "task",
+        "id": "brief",
+        "bindings": {
+          "skill": "draft-skill",
+          "outputSchema": "document-schema",
+          "tools": [
+            "draft-tool"
+          ],
+          "memory": [
+            {
+              "resource": "founder-context",
+              "purpose": "founder-launch-drafting"
+            }
+          ]
+        },
+        "limits": {
+          "modelCalls": 0,
+          "toolCalls": 1
+        }
+      },
+      {
+        "kind": "parallel",
+        "id": "drafts",
+        "branches": [
+          {
+            "kind": "task",
+            "id": "offer",
+            "bindings": {
+              "skill": "draft-skill",
+              "outputSchema": "document-schema",
+              "tools": [
+                "draft-tool"
+              ],
+              "memory": [
+                {
+                  "resource": "founder-context",
+                  "purpose": "founder-launch-drafting"
+                }
+              ]
+            },
+            "limits": {
+              "modelCalls": 0,
+              "toolCalls": 1
+            }
+          },
+          {
+            "kind": "task",
+            "id": "landing",
+            "bindings": {
+              "skill": "draft-skill",
+              "outputSchema": "document-schema",
+              "tools": [
+                "draft-tool"
+              ],
+              "memory": [
+                {
+                  "resource": "founder-context",
+                  "purpose": "founder-launch-drafting"
+                }
+              ]
+            },
+            "limits": {
+              "modelCalls": 0,
+              "toolCalls": 1
+            }
+          }
+        ]
+      },
+      {
+        "kind": "router",
+        "id": "choose-channel",
+        "bindings": {
+          "skill": "draft-skill",
+          "outputSchema": "document-schema",
+          "tools": [
+            "draft-tool"
+          ],
+          "memory": [
+            {
+              "resource": "founder-context",
+              "purpose": "founder-launch-drafting"
+            }
+          ]
+        },
+        "limits": {
+          "modelCalls": 0,
+          "toolCalls": 1
+        },
+        "cases": [
+          {
+            "value": "web",
+            "flow": {
+              "kind": "task",
+              "id": "web-plan",
+              "bindings": {
+                "skill": "draft-skill",
+                "outputSchema": "document-schema",
+                "tools": [
+                  "draft-tool"
+                ],
+                "memory": [
+                  {
+                    "resource": "founder-context",
+                    "purpose": "founder-launch-drafting"
+                  }
+                ]
+              },
+              "limits": {
+                "modelCalls": 0,
+                "toolCalls": 1
+              }
+            }
+          },
+          {
+            "value": "community",
+            "flow": {
+              "kind": "task",
+              "id": "community-plan",
+              "bindings": {
+                "skill": "draft-skill",
+                "outputSchema": "document-schema",
+                "tools": [
+                  "draft-tool"
+                ],
+                "memory": [
+                  {
+                    "resource": "founder-context",
+                    "purpose": "founder-launch-drafting"
+                  }
+                ]
+              },
+              "limits": {
+                "modelCalls": 0,
+                "toolCalls": 1
+              }
+            }
+          }
+        ]
+      },
+      {
+        "kind": "task",
+        "id": "assemble",
+        "bindings": {
+          "skill": "draft-skill",
+          "outputSchema": "document-schema",
+          "tools": [
+            "draft-tool"
+          ],
+          "memory": [
+            {
+              "resource": "founder-context",
+              "purpose": "founder-launch-drafting"
+            }
+          ]
+        },
+        "limits": {
+          "modelCalls": 0,
+          "toolCalls": 1
+        }
+      },
+      {
+        "kind": "evaluator",
+        "id": "evaluate",
+        "bindings": {
+          "skill": "draft-skill",
+          "outputSchema": "document-schema",
+          "tools": [
+            "draft-tool"
+          ],
+          "memory": [
+            {
+              "resource": "founder-context",
+              "purpose": "founder-launch-drafting"
+            }
+          ]
+        },
+        "limits": {
+          "modelCalls": 0,
+          "toolCalls": 1
+        },
+        "subject": "assemble"
+      },
+      {
+        "kind": "approval",
+        "id": "approve-kit",
+        "subject": "assemble"
+      },
+      {
+        "kind": "task",
+        "id": "export",
+        "bindings": {
+          "skill": "draft-skill",
+          "outputSchema": "document-schema",
+          "tools": [
+            "draft-tool"
+          ],
+          "memory": [
+            {
+              "resource": "founder-context",
+              "purpose": "founder-launch-drafting"
+            }
+          ]
+        },
+        "limits": {
+          "modelCalls": 0,
+          "toolCalls": 1
+        }
+      }
+    ]
+  }
+}
