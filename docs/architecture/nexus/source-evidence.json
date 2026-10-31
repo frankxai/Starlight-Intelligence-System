@@ -1,0 +1,217 @@
+{
+  "schema": "starlight.nexus.source-evidence.v1",
+  "observed_on": "2026-10-31",
+  "state": "proposal",
+  "authority": {
+    "uri": "https://github.com/frankxai/agentic-ops/tree/61114141e8c25c0891bef028fbfa38e8e1257742/registry",
+    "revision": "61114141e8c25c0891bef028fbfa38e8e1257742",
+    "mode": "projection"
+  },
+  "scope": "Architecture projection for an existing SIS operational module; no new canonical registry, runtime grants or deployment.",
+  "source_refs": [
+    {
+      "id": "registry",
+      "uri": "https://github.com/frankxai/agentic-ops/blob/61114141e8c25c0891bef028fbfa38e8e1257742/registry/architecture_decisions.yaml",
+      "revision": "61114141e8c25c0891bef028fbfa38e8e1257742",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "sis-main",
+      "uri": "https://github.com/frankxai/Starlight-Intelligence-System/tree/7e4ca5b295e4c0097576045326762d278514e360",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "site-main",
+      "uri": "https://github.com/frankxai/starlightintelligence.ai/tree/3d4c45f5531de2753c90de24ba26fc339f4df9a8",
+      "revision": "3d4c45f5531de2753c90de24ba26fc339f4df9a8",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "nexus-draft",
+      "uri": "https://github.com/frankxai/Starlight-Intelligence-System/pull/476",
+      "revision": "fcfca3863decf0e67105128154b0449b90ccb54b",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "mission-runtime-draft",
+      "uri": "https://github.com/frankxai/starlightintelligence.ai/pull/238",
+      "revision": "94c3735165f6a27adf9656b80bb6a6b600694275",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "cloudflare-storage",
+      "uri": "https://developers.cloudflare.com/durable-objects/best-practices/access-durable-objects-storage/",
+      "revision": "documentation observed 2026-10-31; updated 2026-10-30",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "cloudflare-sqlite",
+      "uri": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
+      "revision": "documentation observed 2026-10-31",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "owner-direction",
+      "uri": "current owner request, 2026-10-31: Nexus local/cloud strategy and GitHub implementation",
+      "revision": "conversation request",
+      "checked_at": "2026-10-31",
+      "evidence": "user_reported"
+    }
+  ],
+  "instruction_evidence": [
+    {
+      "path": "AGENTS.md",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "99966be6368a23c2e6ad53ba3201642e3c192fe45ff67f6079365d9a60593c11"
+    },
+    {
+      "path": "CLAUDE.md",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "f7854eaf0d4917da09638f12700f704be1726cb38d08b21e60f514bd683b56e2"
+    },
+    {
+      "path": "CANON.md",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "66031bba25bfd481a3f3527b15e8fca1ef01b7edb540210ac38ab5afa1989d47"
+    },
+    {
+      "path": "LICENSE",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "fa67d4783e083ed4a530ea98c21db36ffacfc4a5f16c85b1d6b2e8d6ae666d57"
+    },
+    {
+      "path": "CREATOR.md",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "2b19daa0e49aa3ed4c81734a4cd63810562c22595c20af0fc7c5c6a47e703760"
+    },
+    {
+      "path": ".starlight/voice/context.md",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "sha256": "0bd2ba8b3c93a032c65b5dcedd4df2b6729a5dad2646705de3861b69cad760c3"
+    }
+  ],
+  "current_observations": [
+    {
+      "claim": "SwarmCoordinator and protected cloud-worker APIs are intentionally unavailable pending a verified identity/membership boundary.",
+      "source_id": "sis-main",
+      "path": "services/starlight-cloud-worker/src/index.ts",
+      "evidence_class": "observed"
+    },
+    {
+      "claim": "Nexus PR #476 was a draft with Notion authority assumptions; the current revision must reconcile them with reviewed GitHub Registry authority.",
+      "source_id": "nexus-draft",
+      "evidence_class": "observed"
+    },
+    {
+      "claim": "The current implementation task is internal durable lease arbitration; the exact test/release receipt is maintained by the integrating parent.",
+      "source_id": "owner-direction",
+      "evidence_class": "planned"
+    }
+  ],
+  "contract_mapping": [
+    {
+      "record": "Mission and admission",
+      "owner": "frankxai/starlightintelligence.ai/packages/platform-contract",
+      "rule": "Extend existing scoped ticket and mission identity; verify exact current schema before runtime integration."
+    },
+    {
+      "record": "Lease and fence",
+      "owner": "frankxai/Starlight-Intelligence-System/services/starlight-cloud-worker",
+      "rule": "Bind tenant, canonical resource, current executor, expiry, generation and immutable operation ID."
+    },
+    {
+      "record": "Reservation and settlement",
+      "owner": "frankxai/starlightintelligence.ai existing Supabase/Postgres contracts",
+      "rule": "One ledger authority; do not invent another wallet."
+    },
+    {
+      "record": "Node evidence",
+      "owner": "existing SIS fleet/harness source and Ops Registry execution-node authority",
+      "rule": "Observed capability is not a grant. Metadata collection never enables dispatch."
+    },
+    {
+      "record": "Context and artifact versions",
+      "owner": "existing source repositories and application artifact authority",
+      "rule": "Hash originals, retain provenance and authorize each resolution; rebuild search projections."
+    }
+  ],
+  "pending_pr_reconciliation": [
+    {
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "number": 476,
+      "disposition": "inspect exact head and reconcile; no automatic merge or closure"
+    },
+    {
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "number": 477,
+      "disposition": "inspect exact head and reconcile; no automatic merge or closure"
+    },
+    {
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "number": 510,
+      "disposition": "inspect exact head and reconcile; no automatic merge or closure"
+    },
+    {
+      "repository": "frankxai/Starlight-Intelligence-System",
+      "number": 518,
+      "disposition": "inspect exact head and reconcile; no automatic merge or closure"
+    },
+    {
+      "repository": "frankxai/agentic-ops",
+      "number": 395,
+      "disposition": "review architecture/credit allocation alongside current Registry; proposals are not account evidence"
+    },
+    {
+      "repository": "frankxai/agentic-ops",
+      "number": 389,
+      "disposition": "review architecture/credit allocation alongside current Registry; proposals are not account evidence"
+    }
+  ],
+  "unknowns": [
+    "Verified node identity and enrollment",
+    "Account credit balance, expiry and product coverage",
+    "Cloudflare entitlement and allowed processing regions for each workload",
+    "Per-accepted-mission cost and latency",
+    "Customer willingness to pay and repeat-use behavior",
+    "Hosted checkpoint restore and external sink fencing"
+  ],
+  "runtime_enforced": false,
+  "external_spend_added": false,
+  "deployed_by_this_pack": false,
+  "storage_exception": {
+    "decision_id": "private-checkpoint-storage-exception",
+    "status": "proposed",
+    "affected_repositories": [
+      "frankxai/Starlight-Intelligence-System",
+      "frankxai/starlightintelligence.ai",
+      "frankxai/agentic-ops"
+    ],
+    "web_media_policy": "architecture_media_fabric_v2 unchanged"
+  },
+  "pilot_hypothesis": {
+    "state": "proposed_not_measured",
+    "baseline": [
+      "manual handoff",
+      "existing coding harness plus persistent cloud workspace plus GitHub PR workflow"
+    ],
+    "commercial_shape": "fixed workspace subscription with separately funded compute",
+    "price_state": "unapproved_unmeasured",
+    "expansion_gate": {
+      "teams_total": 5,
+      "teams_meeting_repeat_use_minimum": 3,
+      "accepted_missions_per_team_per_week_minimum": 2,
+      "consecutive_weeks": 3,
+      "paid_renewals_minimum": 2,
+      "comparative_gate": "lower reconstruction and review time with no completion-quality degradation versus assembled baseline"
+    },
+    "stop_rule": "Stop breadth expansion and repair the workflow when any threshold is missed."
+  }
+}

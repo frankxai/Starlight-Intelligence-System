@@ -1,0 +1,30 @@
+{
+  "files": {
+    "00-brief.md": "3a0fda121d7f71eb54b9dcb510e26d042db49881d2fc1211233bf65028e4f896",
+    "01-estate.md": "471b5c6af7caebc286503c7f5cd64690efe3dd85eea6baaf1a4d82cc2a5a28c4",
+    "02-journey.md": "7a4d62b93b157d289081ba7311a30cb2124ef273dde311dfc844c11c417b74cd",
+    "03-architecture.md": "a0ae868eab58f38bde10591aaccac5f73167e13ffeb0955457fffff21099f597",
+    "04-data-model.md": "bd492fd2f96c604e2506f58c2c9482a9feb193109c98376e072473778a63b4b5",
+    "05-platform-decisions.md": "63d90b2b36d45016d01da372cef413f9041d0b0dd7f0b625c9e9835b5422cb34",
+    "06-economics.md": "2e396f01f1acd3e6b9185a12f2493834073d4ebed48a0fed9d0a64eaae30c927",
+    "07-routing.md": "357cebff000db8430318aad2c7c841575ac1dfbbbf19de5a1f0c397e6d2a10bb",
+    "08-delivery.md": "113c3d52ba579eeff7873e7d4f92657b83377d0fb9b3d26e6ffe6ba2653cfd70",
+    "09-evaluation.md": "34c0bf09e1bde35fe06c9171e5e3dba4e4599cfff0e47eee276676856e55d1f3",
+    "10-artifact-map.md": "2221b5b1eadb9fa99c18391a8805dc44c10047d5537c993d5a2a29fe61ffc8a1",
+    "11-registry-proposal.md": "13d6bbc76dec41cddac4982e09b63c0e0a589606f470413ac26f42fa3eb6938c",
+    "12-sources.md": "1bdf6c1902877d6545911dd6dcb16b9b851f20aaec5ee92461718ea1e24fafff",
+    "adr/0001.md": "efb1c9200cb1af9c70505f65bd1b9c839f90c69be1f4e60aae68a00e3abc3431",
+    "adr/0002.md": "30acf88b00db7fdc53b73452eb06af6f050f2d5c31adaf0b74d8078246e2e6c6",
+    "adr/0003.md": "fc7130e6c9b441fe9eff77b931261e3cc1bce778a008971830a1602c0c60d082",
+    "adr/0004.md": "6b2024834da09bfcaa76673b4aeee26cc547e9c28fc2f19f18f69ea1c6418d30",
+    "adr/0005.md": "1f7525b547f7f8d00120d6546850deb3aa75d9bc28d53fd2643accf48ec3d6fc",
+    "adr/0006.md": "92d44b5a8a43327772451b5d3b188f4342aa25694e448e79834d08d3220011b9",
+    "index.md": "39073a090a93702bbf3844540b5b6275825384a06a9bec5f421ae41eb56273d8"
+  },
+  "input_sha256": "ffd06d721d96a3e9ecb9523532e50ea550e643b98e76f47533507d595a2a10b3",
+  "kind": "offline-compiled",
+  "project_id": "nexus-mission-continuity",
+  "runtime_enforced": false,
+  "schema_version": "1.0.0",
+  "source_state": "proposed"
+}
