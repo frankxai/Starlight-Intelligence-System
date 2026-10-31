@@ -1,7 +1,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {validateWorkflow,compileWorkflow,affectedNodes,applyDraftPatch,nodeKeys,compileContext,stableJSON,cloneJSON,VERSION,NODE_TYPES} from "./kernel.mjs";
+import {validateWorkflow,compileWorkflow,affectedNodes,applyDraftPatch,nodeKeys,compileContext,stableJSON,cloneJSON,VERSION,NODE_TYPES,sha256,assessWorkflow} from "./kernel.mjs";
 const original=JSON.parse(readFileSync(new URL("./world-workflow.json",import.meta.url)));
 const creator=JSON.parse(readFileSync(new URL("./creator-workflow.json",import.meta.url)));
 const records=JSON.parse(readFileSync(new URL("./context-records.json",import.meta.url)));
@@ -102,4 +102,114 @@ test("JSON is bounded and rejects sparse or decorated arrays",()=>{
 });
 test("node identifiers match safe key serialization",()=>{
  const w=fresh();w.nodes[0].id="constructor";assert.throws(()=>validateWorkflow(w),/reserved/);
+});
+
+const acceptancePolicy={requiredNodeIds:["export"],allowedVerifierIds:["independent-checker"]};
+async function acceptedFixture(workflow=fresh()) {
+ const graph=validateWorkflow(workflow),keys=await nodeKeys(workflow);
+ const artifacts=await Promise.all(graph.order.map(async nodeId=>({nodeId,nodeKey:keys[nodeId],sha256:await sha256("fixture output:"+nodeId+keys[nodeId]),producerId:"maker"})));
+ const byId=new Map(artifacts.map(a=>[a.nodeId,a]));
+ const receipts=await Promise.all(graph.order.map(async nodeId=>({nodeId,nodeKey:keys[nodeId],artifactSha256:byId.get(nodeId).sha256,verifierId:"independent-checker",verdict:"accepted",evidenceDigest:await sha256("fixture evidence:"+nodeId),
+  inputDigests:Object.fromEntries(graph.incoming.get(nodeId).map(e=>[e.from,byId.get(e.from).sha256]))})));
+ return {artifacts,receipts};
+}
+test("current exact-subject evidence preserves a complete release without dispatch",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w),before=stableJSON(proof);
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.equal(a.releaseReady,true);assert.deepEqual(a.repairOrder,[]);assert.deepEqual(a.readyRepairNodes,[]);
+ assert.equal(a.preservedNodeIds.length,w.nodes.length);assert.equal(a.estimatedRepairMinor,0);
+ assert.equal(a.actualCostMinor,null);assert.equal(a.externalDispatchAuthorized,false);assert.equal(a.authority,"caller-supplied-evidence");
+ assert.match(a.assessmentDigest,/^sha256:[a-f0-9]{64}$/);assert.equal(stableJSON(proof),before);
+});
+test("a changed style rejects transitive old evidence and retains independent source and audio",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w),next=applyDraftPatch(w,{baseRevision:1,worldRevision:7,operations:[{kind:"replace-data",nodeId:"style",data:{lighting:"warm"}}]});
+ const a=await assessWorkflow(next.workflow,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.equal(a.releaseReady,false);assert.deepEqual(a.repairOrder,next.affected);
+ assert.deepEqual(a.readyRepairNodes,["style"]);
+ for(const id of ["source","world","story","audio"]) assert.ok(a.preservedNodeIds.includes(id));
+ assert.equal(a.nodes.find(n=>n.nodeId==="export").state,"stale-artifact");
+ assert.equal(a.estimatedRepairMinor,172);
+});
+test("same semantic key with changed artifact bytes invalidates its evidence and downstream release",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ proof.artifacts.find(a=>a.nodeId==="audio").sha256=await sha256("new audio bytes");
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.deepEqual(a.repairOrder,["audio","review","export"]);
+ assert.equal(a.nodes.find(n=>n.nodeId==="audio").state,"stale-receipt");
+ assert.equal(a.nodes.find(n=>n.nodeId==="review").state,"stale-receipt");
+ assert.equal(a.nodes.find(n=>n.nodeId==="export").state,"dependency-invalidated");
+ assert.deepEqual(a.readyRepairNodes,["audio"]);assert.equal(a.estimatedRepairMinor,0);
+});
+test("fresh audio acceptance advances the repair frontier only to its immediate consumer",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w),audio=proof.artifacts.find(a=>a.nodeId==="audio");
+ audio.sha256=await sha256("new audio bytes");proof.receipts.find(r=>r.nodeId==="audio").artifactSha256=audio.sha256;
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.deepEqual(a.repairOrder,["review","export"]);assert.deepEqual(a.readyRepairNodes,["review"]);
+ assert.ok(a.preservedNodeIds.includes("audio"));assert.equal(a.releaseReady,false);
+});
+test("repair scope contains only ancestors of the requested output",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ proof.receipts=proof.receipts.filter(r=>r.nodeId!=="image-a");
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,{...acceptancePolicy,requiredNodeIds:["image-a"]});
+ assert.deepEqual(a.repairOrder,["image-a"]);assert.deepEqual(a.readyRepairNodes,["image-a"]);
+ for(const id of ["image-b","audio","video","review","export"]) assert.ok(a.excludedNodeIds.includes(id));
+ assert.equal(a.estimatedRepairMinor,w.nodes.find(n=>n.id==="image-a").data.quoteMinor);
+});
+test("rejection, missing evidence and unknown verifier never become an accepted release",async()=>{
+ for(const reason of ["rejected","missing","untrusted","self"]) {
+  const w=fresh(),proof=await acceptedFixture(w),r=proof.receipts.find(r=>r.nodeId==="audio");
+  if(reason==="rejected")r.verdict="rejected";
+  if(reason==="missing")proof.receipts=proof.receipts.filter(item=>item.nodeId!=="audio");
+  if(reason==="untrusted")r.verifierId="unknown-checker";
+  if(reason==="self")r.verifierId="maker";
+  const a=await assessWorkflow(w,proof.artifacts,proof.receipts,{...acceptancePolicy,allowedVerifierIds:["independent-checker","maker"]});
+  assert.equal(a.releaseReady,false);
+  assert.equal(a.nodes.find(n=>n.nodeId==="audio").state,{"rejected":"rejected","missing":"missing-receipt","untrusted":"untrusted-verifier","self":"self-verification"}[reason]);
+  assert.deepEqual(a.readyRepairNodes,["audio"]);
+ }
+});
+test("missing manifests cannot be replaced by self-asserted receipt digests",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);proof.artifacts=proof.artifacts.filter(a=>a.nodeId!=="audio");
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.equal(a.nodes.find(n=>n.nodeId==="audio").state,"missing-artifact");assert.equal(a.releaseReady,false);
+});
+test("duplicate artifacts and receipts are rejected rather than resolved by array order",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ await assert.rejects(assessWorkflow(w,[...proof.artifacts,proof.artifacts[0]],proof.receipts,acceptancePolicy),/Duplicate artifact/);
+ await assert.rejects(assessWorkflow(w,proof.artifacts,[...proof.receipts,{...proof.receipts[0],verdict:"rejected"}],acceptancePolicy),/Duplicate receipt/);
+});
+test("acceptance validates exact bounded contracts and graph subjects",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ for(const change of [{nodeId:"unknown"},{artifactSha256:"not-a-digest"},{verdict:"verified"},{approved:true},{inputDigests:[]}]) {
+  const receipts=cloneJSON(proof.receipts);Object.assign(receipts[0],change);
+  await assert.rejects(assessWorkflow(w,proof.artifacts,receipts,acceptancePolicy));
+ }
+ for(const requiredNodeIds of [[],["unknown"],["export","export"]]) await assert.rejects(assessWorkflow(w,proof.artifacts,proof.receipts,{...acceptancePolicy,requiredNodeIds}));
+});
+test("input evidence must cover exactly the current direct artifact dependencies",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ proof.receipts.find(r=>r.nodeId==="review").inputDigests={};
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.equal(a.nodes.find(n=>n.nodeId==="review").state,"stale-receipt");
+ assert.deepEqual(a.readyRepairNodes,["review"]);assert.equal(a.releaseReady,false);
+});
+test("assessment is deterministic across evidence order, layout and verifier allowlist order",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w),policy={...acceptancePolicy,allowedVerifierIds:["independent-checker","backup"]};
+ const a=await assessWorkflow(w,proof.artifacts,proof.receipts,policy);w.nodes[0].position={x:9,y:4};
+ const b=await assessWorkflow(w,[...proof.artifacts].reverse(),[...proof.receipts].reverse(),{...policy,allowedVerifierIds:[...policy.allowedVerifierIds].reverse()});
+ assert.deepEqual(a,b);
+});
+test("creator voice edits preserve its source and require current evidence for every derived format",async()=>{
+ const proof=await acceptedFixture(creator),next=applyDraftPatch(creator,{baseRevision:creator.revision,worldRevision:creator.worldRevision,operations:[{kind:"replace-data",nodeId:"identity",data:{voice:"precise",rule:"Source-backed claims only."}}]});
+ const a=await assessWorkflow(next.workflow,proof.artifacts,proof.receipts,acceptancePolicy);
+ assert.deepEqual(a.repairOrder,next.affected);assert.deepEqual(a.readyRepairNodes,["identity"]);
+ assert.ok(a.preservedNodeIds.includes("source"));assert.equal(a.releaseReady,false);
+});
+test("caller edits during asynchronous hashing cannot change an admitted assessment snapshot",async()=>{
+ const w=fresh(),proof=await acceptedFixture(w);
+ const running=assessWorkflow(w,proof.artifacts,proof.receipts,acceptancePolicy);
+ w.nodes.find(n=>n.id==="style").data={lighting:"changed mid-assessment"};
+ proof.artifacts.find(a=>a.nodeId==="audio").sha256="sha256:"+"f".repeat(64);
+ proof.receipts.find(r=>r.nodeId==="source").verdict="rejected";
+ const a=await running;assert.equal(a.releaseReady,true);assert.deepEqual(a.repairOrder,[]);
 });

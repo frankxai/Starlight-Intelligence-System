@@ -160,6 +160,99 @@ export async function nodeKeys(workflow) {
   }
   return keys;
 }
+
+/**
+ * Assess current caller-supplied artifact/evidence manifests and plan bounded repairs.
+ * This checks bindings, not artifact bytes, signatures, verifier identity or execution.
+ */
+export async function assessWorkflow(workflow, artifacts, receipts, policy) {
+  // Snapshot before hashing so caller edits during an await cannot change this assessment.
+  workflow=cloneJSON(workflow);artifacts=cloneJSON(artifacts);receipts=cloneJSON(receipts);policy=cloneJSON(policy);
+  const graph=validateWorkflow(workflow),keys=await nodeKeys(workflow);
+  const exact=(value,fields,name)=>{
+    if (!value || typeof value!=="object" || Array.isArray(value)
+      || Object.keys(value).sort().join(",")!==fields.slice().sort().join(",")) fail("Invalid "+name);
+  };
+  const digest=(value,name)=>{
+    if (typeof value!=="string" || !/^sha256:[a-f0-9]{64}$/.test(value)) fail("Invalid "+name);
+  };
+  const ids=(value,name,required=false)=>{
+    if (!Array.isArray(value) || value.length>256 || (required && !value.length)
+      || new Set(value).size!==value.length) fail("Invalid "+name);
+    for (const id of value) identifier(id,name);
+  };
+  exact(policy,["requiredNodeIds","allowedVerifierIds"],"acceptance policy");
+  ids(policy.requiredNodeIds,"required node IDs",true);ids(policy.allowedVerifierIds,"verifier IDs");
+  if (!Array.isArray(artifacts) || artifacts.length>256 || !Array.isArray(receipts) || receipts.length>256) fail("Acceptance manifest limit");
+  const byArtifact=new Map(),byReceipt=new Map();
+  for (const artifact of artifacts) {
+    exact(artifact,["nodeId","nodeKey","sha256","producerId"],"artifact manifest");
+    identifier(artifact.nodeId,"artifact node");identifier(artifact.producerId,"artifact producer");
+    if (!graph.byId.has(artifact.nodeId)) fail("Unknown artifact node");
+    digest(artifact.nodeKey,"artifact node key");digest(artifact.sha256,"artifact digest");
+    if (byArtifact.has(artifact.nodeId)) fail("Duplicate artifact node");
+    byArtifact.set(artifact.nodeId,artifact);
+  }
+  for (const receipt of receipts) {
+    exact(receipt,["nodeId","nodeKey","artifactSha256","verifierId","verdict","evidenceDigest","inputDigests"],"acceptance receipt");
+    identifier(receipt.nodeId,"receipt node");identifier(receipt.verifierId,"receipt verifier");
+    if (!graph.byId.has(receipt.nodeId)) fail("Unknown receipt node");
+    digest(receipt.nodeKey,"receipt node key");digest(receipt.artifactSha256,"receipt artifact digest");digest(receipt.evidenceDigest,"evidence digest");
+    if (!["accepted","rejected"].includes(receipt.verdict)) fail("Invalid acceptance verdict");
+    if (!receipt.inputDigests || typeof receipt.inputDigests!=="object" || Array.isArray(receipt.inputDigests)
+      || Object.keys(receipt.inputDigests).length>256) fail("Invalid input digests");
+    for (const [id,value] of Object.entries(receipt.inputDigests)) {identifier(id,"input node");digest(value,"input digest");}
+    if (byReceipt.has(receipt.nodeId)) fail("Duplicate receipt node");
+    byReceipt.set(receipt.nodeId,receipt);
+  }
+  // Reverse traversal limits repair to the requested outputs and their prerequisites.
+  const needed=new Set(policy.requiredNodeIds),queue=[...needed];
+  for (let i=0;i<queue.length;i++) {
+    if (!graph.byId.has(queue[i])) fail("Unknown required node");
+    for (const edge of graph.incoming.get(queue[i])) if (!needed.has(edge.from)) {needed.add(edge.from);queue.push(edge.from);}
+  }
+  const nodes=[],byState=new Map();
+  for (const nodeId of graph.order.filter(id=>needed.has(id))) {
+    const artifact=byArtifact.get(nodeId),receipt=byReceipt.get(nodeId);
+    const parents=[...new Set(graph.incoming.get(nodeId).map(e=>e.from))].sort();
+    const blockedBy=parents.filter(id=>byState.get(id)!=="accepted");
+    const inputKeys=receipt?Object.keys(receipt.inputDigests).sort():[];
+    const inputsMatch=receipt && inputKeys.length===parents.length
+      && parents.every((id,index)=>inputKeys[index]===id && byArtifact.has(id)
+        && receipt.inputDigests[id]===byArtifact.get(id).sha256);
+    let state;
+    if (!artifact) state="missing-artifact";
+    else if (artifact.nodeKey!==keys[nodeId]) state="stale-artifact";
+    else if (!receipt) state="missing-receipt";
+    else if (receipt.nodeKey!==keys[nodeId] || receipt.artifactSha256!==artifact.sha256 || !inputsMatch) state="stale-receipt";
+    else if (!policy.allowedVerifierIds.includes(receipt.verifierId)) state="untrusted-verifier";
+    else if (receipt.verifierId===artifact.producerId) state="self-verification";
+    else if (receipt.verdict==="rejected") state="rejected";
+    else if (blockedBy.length) state="dependency-invalidated";
+    else state="accepted";
+    byState.set(nodeId,state);
+    nodes.push({nodeId,nodeKey:keys[nodeId],artifactSha256:artifact?.sha256??null,
+      producerId:artifact?.producerId??null,verifierId:receipt?.verifierId??null,
+      evidenceDigest:receipt?.evidenceDigest??null,state,blockedBy});
+  }
+  const repairOrder=nodes.filter(n=>n.state!=="accepted").map(n=>n.nodeId);
+  const readyRepairNodes=nodes.filter(n=>n.state!=="accepted" && !n.blockedBy.length).map(n=>n.nodeId);
+  let estimatedRepairMinor=0;
+  for (const id of repairOrder) if (NODE_TYPES[graph.byId.get(id).type].paid) {
+    estimatedRepairMinor+=graph.byId.get(id).data.quoteMinor;integer(estimatedRepairMinor,"Repair quote");
+  }
+  const assessment={schema:"starlight.acceptance-draft.v1",mode:"draft-only",
+    tenantId:workflow.tenantId,worldId:workflow.worldId,worldRevision:workflow.worldRevision,workflowRevision:workflow.revision,
+    requiredNodeIds:graph.order.filter(id=>policy.requiredNodeIds.includes(id)),
+    allowedVerifierIds:[...policy.allowedVerifierIds].sort(),
+    releaseReady:policy.requiredNodeIds.every(id=>byState.get(id)==="accepted"),
+    nodes,preservedNodeIds:nodes.filter(n=>n.state==="accepted").map(n=>n.nodeId),
+    repairOrder,readyRepairNodes,excludedNodeIds:graph.order.filter(id=>!needed.has(id)),
+    estimatedRepairMinor,currency:workflow.currency,actualCostMinor:null,
+    estimateBasis:"current fixture quotes for all paid nodes requiring repair; review and other costs excluded",
+    authority:"caller-supplied-evidence",externalDispatchAuthorized:false};
+  return {...assessment,assessmentDigest:await sha256(assessment)};
+}
 export function compileContext(records, scope) {
   stableJSON(records);stableJSON(scope);
   identifier(scope.tenantId,"context tenant");identifier(scope.worldId,"context world");integer(scope.worldRevision,"context revision",1);

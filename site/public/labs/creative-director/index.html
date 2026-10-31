@@ -201,6 +201,99 @@ async function nodeKeys(workflow) {
   }
   return keys;
 }
+
+/**
+ * Assess current caller-supplied artifact/evidence manifests and plan bounded repairs.
+ * This checks bindings, not artifact bytes, signatures, verifier identity or execution.
+ */
+async function assessWorkflow(workflow, artifacts, receipts, policy) {
+  // Snapshot before hashing so caller edits during an await cannot change this assessment.
+  workflow=cloneJSON(workflow);artifacts=cloneJSON(artifacts);receipts=cloneJSON(receipts);policy=cloneJSON(policy);
+  const graph=validateWorkflow(workflow),keys=await nodeKeys(workflow);
+  const exact=(value,fields,name)=>{
+    if (!value || typeof value!=="object" || Array.isArray(value)
+      || Object.keys(value).sort().join(",")!==fields.slice().sort().join(",")) fail("Invalid "+name);
+  };
+  const digest=(value,name)=>{
+    if (typeof value!=="string" || !/^sha256:[a-f0-9]{64}$/.test(value)) fail("Invalid "+name);
+  };
+  const ids=(value,name,required=false)=>{
+    if (!Array.isArray(value) || value.length>256 || (required && !value.length)
+      || new Set(value).size!==value.length) fail("Invalid "+name);
+    for (const id of value) identifier(id,name);
+  };
+  exact(policy,["requiredNodeIds","allowedVerifierIds"],"acceptance policy");
+  ids(policy.requiredNodeIds,"required node IDs",true);ids(policy.allowedVerifierIds,"verifier IDs");
+  if (!Array.isArray(artifacts) || artifacts.length>256 || !Array.isArray(receipts) || receipts.length>256) fail("Acceptance manifest limit");
+  const byArtifact=new Map(),byReceipt=new Map();
+  for (const artifact of artifacts) {
+    exact(artifact,["nodeId","nodeKey","sha256","producerId"],"artifact manifest");
+    identifier(artifact.nodeId,"artifact node");identifier(artifact.producerId,"artifact producer");
+    if (!graph.byId.has(artifact.nodeId)) fail("Unknown artifact node");
+    digest(artifact.nodeKey,"artifact node key");digest(artifact.sha256,"artifact digest");
+    if (byArtifact.has(artifact.nodeId)) fail("Duplicate artifact node");
+    byArtifact.set(artifact.nodeId,artifact);
+  }
+  for (const receipt of receipts) {
+    exact(receipt,["nodeId","nodeKey","artifactSha256","verifierId","verdict","evidenceDigest","inputDigests"],"acceptance receipt");
+    identifier(receipt.nodeId,"receipt node");identifier(receipt.verifierId,"receipt verifier");
+    if (!graph.byId.has(receipt.nodeId)) fail("Unknown receipt node");
+    digest(receipt.nodeKey,"receipt node key");digest(receipt.artifactSha256,"receipt artifact digest");digest(receipt.evidenceDigest,"evidence digest");
+    if (!["accepted","rejected"].includes(receipt.verdict)) fail("Invalid acceptance verdict");
+    if (!receipt.inputDigests || typeof receipt.inputDigests!=="object" || Array.isArray(receipt.inputDigests)
+      || Object.keys(receipt.inputDigests).length>256) fail("Invalid input digests");
+    for (const [id,value] of Object.entries(receipt.inputDigests)) {identifier(id,"input node");digest(value,"input digest");}
+    if (byReceipt.has(receipt.nodeId)) fail("Duplicate receipt node");
+    byReceipt.set(receipt.nodeId,receipt);
+  }
+  // Reverse traversal limits repair to the requested outputs and their prerequisites.
+  const needed=new Set(policy.requiredNodeIds),queue=[...needed];
+  for (let i=0;i<queue.length;i++) {
+    if (!graph.byId.has(queue[i])) fail("Unknown required node");
+    for (const edge of graph.incoming.get(queue[i])) if (!needed.has(edge.from)) {needed.add(edge.from);queue.push(edge.from);}
+  }
+  const nodes=[],byState=new Map();
+  for (const nodeId of graph.order.filter(id=>needed.has(id))) {
+    const artifact=byArtifact.get(nodeId),receipt=byReceipt.get(nodeId);
+    const parents=[...new Set(graph.incoming.get(nodeId).map(e=>e.from))].sort();
+    const blockedBy=parents.filter(id=>byState.get(id)!=="accepted");
+    const inputKeys=receipt?Object.keys(receipt.inputDigests).sort():[];
+    const inputsMatch=receipt && inputKeys.length===parents.length
+      && parents.every((id,index)=>inputKeys[index]===id && byArtifact.has(id)
+        && receipt.inputDigests[id]===byArtifact.get(id).sha256);
+    let state;
+    if (!artifact) state="missing-artifact";
+    else if (artifact.nodeKey!==keys[nodeId]) state="stale-artifact";
+    else if (!receipt) state="missing-receipt";
+    else if (receipt.nodeKey!==keys[nodeId] || receipt.artifactSha256!==artifact.sha256 || !inputsMatch) state="stale-receipt";
+    else if (!policy.allowedVerifierIds.includes(receipt.verifierId)) state="untrusted-verifier";
+    else if (receipt.verifierId===artifact.producerId) state="self-verification";
+    else if (receipt.verdict==="rejected") state="rejected";
+    else if (blockedBy.length) state="dependency-invalidated";
+    else state="accepted";
+    byState.set(nodeId,state);
+    nodes.push({nodeId,nodeKey:keys[nodeId],artifactSha256:artifact?.sha256??null,
+      producerId:artifact?.producerId??null,verifierId:receipt?.verifierId??null,
+      evidenceDigest:receipt?.evidenceDigest??null,state,blockedBy});
+  }
+  const repairOrder=nodes.filter(n=>n.state!=="accepted").map(n=>n.nodeId);
+  const readyRepairNodes=nodes.filter(n=>n.state!=="accepted" && !n.blockedBy.length).map(n=>n.nodeId);
+  let estimatedRepairMinor=0;
+  for (const id of repairOrder) if (NODE_TYPES[graph.byId.get(id).type].paid) {
+    estimatedRepairMinor+=graph.byId.get(id).data.quoteMinor;integer(estimatedRepairMinor,"Repair quote");
+  }
+  const assessment={schema:"starlight.acceptance-draft.v1",mode:"draft-only",
+    tenantId:workflow.tenantId,worldId:workflow.worldId,worldRevision:workflow.worldRevision,workflowRevision:workflow.revision,
+    requiredNodeIds:graph.order.filter(id=>policy.requiredNodeIds.includes(id)),
+    allowedVerifierIds:[...policy.allowedVerifierIds].sort(),
+    releaseReady:policy.requiredNodeIds.every(id=>byState.get(id)==="accepted"),
+    nodes,preservedNodeIds:nodes.filter(n=>n.state==="accepted").map(n=>n.nodeId),
+    repairOrder,readyRepairNodes,excludedNodeIds:graph.order.filter(id=>!needed.has(id)),
+    estimatedRepairMinor,currency:workflow.currency,actualCostMinor:null,
+    estimateBasis:"current fixture quotes for all paid nodes requiring repair; review and other costs excluded",
+    authority:"caller-supplied-evidence",externalDispatchAuthorized:false};
+  return {...assessment,assessmentDigest:await sha256(assessment)};
+}
 function compileContext(records, scope) {
   stableJSON(records);stableJSON(scope);
   identifier(scope.tenantId,"context tenant");identifier(scope.worldId,"context world");integer(scope.worldRevision,"context revision",1);
@@ -234,7 +327,7 @@ function compileContext(records, scope) {
     authority:"fixture-scope-only; production membership must be verified server-side"};
 }
 
-const CONFIG={"brand":"starlight","name":"Starlight","requiredIds":["law","mara"],"queryTerms":["coastal"],"details":{"source":"The permitted source for this draft.","context":"Example context at the pinned revision.","storyboard":"An editable scene or format outline.","visual":"A visual direction before media execution.","creatorformat":"An editable format bound to example voice and rights.","transform":"An editable text scaffold. No model runs in this lab.","review":"A pending review draft.","textreview":"A pending review of source, voice and proof gaps.","export":"A portable draft handoff.","compare":"Compare the proposed candidates.","select":"A candidate selection draft.","audio":"An approved-audio reference draft."},"kindLabels":{"source":"Source","context":"Context","storyboard":"Story","visual":"Direction","image":"Image request","compare":"Compare","select":"Select","video":"Scene request","audio":"Audio","review":"Review","textreview":"Review","export":"Export","creatorformat":"Format","transform":"Text"},"kernelDigest":"a305e3dff932c291d63a655533b0e623b4b894039845b8330e74421ab9238910","sourceRepository":"frankxai/Starlight-Intelligence-System","sourceRef":"ba5971e79eaff6d0991729d8d1081e156475a12c","initialMessage":"Example loaded. Edit, save and export a local draft."};
+const CONFIG={"brand":"starlight","name":"Starlight","requiredIds":["law","mara"],"queryTerms":["coastal"],"details":{"source":"The permitted source for this draft.","context":"Example context at the pinned revision.","storyboard":"An editable scene or format outline.","visual":"A visual direction before media execution.","creatorformat":"An editable format bound to example voice and rights.","transform":"An editable text scaffold. No model runs in this lab.","review":"A pending review draft.","textreview":"A pending review of source, voice and proof gaps.","export":"A portable draft handoff.","compare":"Compare the proposed candidates.","select":"A candidate selection draft.","audio":"An approved-audio reference draft."},"kindLabels":{"source":"Source","context":"Context","storyboard":"Story","visual":"Direction","image":"Image request","compare":"Compare","select":"Select","video":"Scene request","audio":"Audio","review":"Review","textreview":"Review","export":"Export","creatorformat":"Format","transform":"Text"},"kernelDigest":"1e426f0aa7e49249a123d99d208021aad10cd95276fb202d8596fa9564bd1fb5","sourceRepository":"frankxai/Starlight-Intelligence-System","sourceRef":"ba5971e79eaff6d0991729d8d1081e156475a12c","initialMessage":"Example loaded. Edit, save and export a local draft."};
 const INITIAL={"schema":"starlight.creative-draft.v1","tenantId":"demo-studio","worldId":"glass-tide","worldRevision":7,"revision":1,"currency":"USD","title":"The Glass Tide · coastal reveal","nodes":[{"id":"source","type":"source","label":"Creator brief","position":{"x":30,"y":30},"data":{"text":"Create a coastal city reveal. Preserve Mara's silver coat and the lighthouse silhouette."}},{"id":"world","type":"context","label":"World continuity","position":{"x":30,"y":245},"data":{"snapshot":"synthetic-world-r7","rule":"Light costs one memory.","character":"Mara","state":"accepted-fixture"}},{"id":"style","type":"context","label":"Visual identity","position":{"x":30,"y":460},"data":{"snapshot":"synthetic-style-r2","lighting":"cool coastal light","materials":"glass, limestone, silver"}},{"id":"story","type":"storyboard","label":"Storyboard","position":{"x":270,"y":30},"data":{"shots":1,"secondsPerShot":5,"instructionVersion":"fixture-1"}},{"id":"visual","type":"visual","label":"Visual brief","position":{"x":270,"y":245},"data":{"aspect":"16:9","referenceId":"synthetic-mara-ref"}},{"id":"image-a","type":"image","label":"Frame variation A","position":{"x":510,"y":30},"data":{"provider":"xai","model":"grok-imagine-image-2.0","quoteMinor":4,"currency":"USD","seed":101,"quoteState":"synthetic"}},{"id":"image-b","type":"image","label":"Frame variation B","position":{"x":510,"y":245},"data":{"provider":"gemini","model":"existing-image-lane","quoteMinor":8,"currency":"USD","seed":102,"quoteState":"synthetic"}},{"id":"compare","type":"compare","label":"Compare candidates","position":{"x":750,"y":30},"data":{"rubric":"identity, silhouette, rule, light"}},{"id":"select","type":"select","label":"Creator selection","position":{"x":750,"y":245},"data":{"decisionState":"pending"}},{"id":"audio","type":"audio","label":"Approved sound","position":{"x":750,"y":460},"data":{"assetId":"synthetic-ocean-bed","state":"approved-fixture"}},{"id":"video","type":"video","label":"Camera motion","position":{"x":990,"y":245},"data":{"provider":"higgsfield","model":"model-to-verify","quoteMinor":160,"currency":"USD","duration":5,"quoteState":"synthetic"}},{"id":"review","type":"review","label":"Continuity review","position":{"x":990,"y":30},"data":{"decisionState":"pending","checks":["identity","world-rule","rights","format"]}},{"id":"export","type":"export","label":"Release candidate","position":{"x":990,"y":460},"data":{"state":"draft","destination":"local-download"}}],"edges":[{"id":"source-story-brief","from":"source","output":"text","to":"story","input":"brief"},{"id":"world-story-world","from":"world","output":"context","to":"story","input":"world"},{"id":"story-visual-story","from":"story","output":"text","to":"visual","input":"story"},{"id":"world-visual-world","from":"world","output":"context","to":"visual","input":"world"},{"id":"style-visual-style","from":"style","output":"context","to":"visual","input":"style"},{"id":"visual-image-a-prompt","from":"visual","output":"prompt","to":"image-a","input":"prompt"},{"id":"visual-image-b-prompt","from":"visual","output":"prompt","to":"image-b","input":"prompt"},{"id":"image-a-compare-first","from":"image-a","output":"image","to":"compare","input":"first"},{"id":"image-b-compare-second","from":"image-b","output":"image","to":"compare","input":"second"},{"id":"compare-select-selection","from":"compare","output":"selection","to":"select","input":"selection"},{"id":"select-video-image","from":"select","output":"image","to":"video","input":"image"},{"id":"visual-video-prompt","from":"visual","output":"prompt","to":"video","input":"prompt"},{"id":"video-review-video","from":"video","output":"video","to":"review","input":"video"},{"id":"audio-review-audio","from":"audio","output":"audio","to":"review","input":"audio"},{"id":"world-review-world","from":"world","output":"context","to":"review","input":"world"},{"id":"review-export-release","from":"review","output":"release","to":"export","input":"release"}]};
 const CONTEXT_RECORDS=[{"id":"law","tenantId":"demo-studio","worldId":"glass-tide","worldRevision":7,"namespace":"Creative/canon","state":"accepted","visibility":"private","tokens":14,"text":"Light costs one memory. No free magic."},{"id":"mara","tenantId":"demo-studio","worldId":"glass-tide","worldRevision":7,"namespace":"Creative/characters","state":"accepted","visibility":"private","tokens":16,"text":"Mara wears a silver coat. Her lighthouse silhouette is fixed."},{"id":"coast","tenantId":"demo-studio","worldId":"glass-tide","worldRevision":7,"namespace":"Creative/locations","state":"source","visibility":"private","tokens":12,"text":"The coastal city has limestone terraces and glass tide gates."},{"id":"candidate","tenantId":"demo-studio","worldId":"glass-tide","worldRevision":7,"namespace":"Creative/canon","state":"proposal","visibility":"private","tokens":7,"text":"Maybe light can become free."},{"id":"other","tenantId":"another-tenant","worldId":"glass-tide","worldRevision":7,"namespace":"Creative/canon","state":"accepted","visibility":"private","tokens":5,"text":"Another customer's private source."}];
 const TEAM={"schema":"starlight.creative-team-brief.v1","status":"capability-routing-proposal","notEmployment":true,"notRuntimeRegistration":true,"common":["existing-admission-owner","single-supervisor-per-run","author-verifier-separation","human-accepted-canon"],"roles":[{"id":"director","task":"Compile one creator outcome into a typed draft graph","tools":["scoped-context-read","draft-proposal"],"denied":["provider-dispatch","canon-accept","publish"],"eval":"bounded graph; clear creative intent; minimum context"},{"id":"context-curator","task":"Select source spans, canon and rights at exact revision","tools":["scoped-context-read"],"denied":["cross-tenant-read","memory-promotion"],"eval":"required context retained; namespace and tenant denial"},{"id":"arcanea-worldbuilder","reuse":"existing arcanea worldbuilder/canon-guardian profiles","task":"World consistency, dramatic stakes and scene continuity","tools":["world-proof","canon-propose","story-draft"],"denied":["canon-decision","publish"],"eval":"source-linked world rules; character consistency; consequential scene"},{"id":"arcanea-art-director","reuse":"existing arcanean-art-director profile","task":"Visual brief and candidate critique","tools":["visual-draft","score-creation"],"denied":["spend-admission","unconsented-likeness"],"eval":"identity/style rubric; named creative decisions"},{"id":"gencreator-companion","reuse":"existing gencreator-companion profile and native AgentRuntime","task":"Source to creator mission and editable artifacts","tools":["get-pack","create-mission","compile-mission"],"denied":["autonomous-publication","billing"],"eval":"source fidelity; voice; useful edits; source rights"},{"id":"gencreator-voice-guardian","reuse":"existing voice-guardian profile","task":"Compare voice against accepted CreatorPack","tools":["artifact-read","review-proposal"],"denied":["pack-promotion","publish"],"eval":"specific grounded feedback and proof gaps"},{"id":"release-engineer","task":"Bind exact-head checks, artifacts and Vercel source receipt","tools":["branch-write","draft-pr","preview-deploy","test"],"denied":["unchecked-production-promotion","secret-print"],"eval":"actual checks, recovery, export integrity, independent visual proof"}]};

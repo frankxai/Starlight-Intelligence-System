@@ -24,6 +24,67 @@ The plan command prints a portable draft manifest with dependency waves, semanti
 
 The Glass Tide and creator examples are fictional. The world example is one five-second scene with two still candidates. Its provider model IDs, availability and quotes must be verified before an actual run. GenCreator's example is a local content mission, not a persisted CreatorPack.
 
+
+## Assess a revision and continue only the necessary work
+
+`assessWorkflow(workflow, artifacts, receipts, policy)` extends the existing graph
+and semantic keys with a deterministic assessment. Select release/output node IDs;
+the assessment visits their ancestors, preserves current accepted outputs, and
+lists the first repairable nodes plus the remaining repair order. It never dispatches.
+
+The host supplies a current artifact manifest and separate acceptance receipts:
+
+```js
+const artifacts = [{
+  nodeId: "audio", nodeKey: keys.audio, sha256: observedArtifactDigest,
+  producerId: "audio-maker"
+}];
+const receipts = [{
+  nodeId: "audio", nodeKey: keys.audio, artifactSha256: observedArtifactDigest,
+  verifierId: "audio-checker", verdict: "accepted",
+  evidenceDigest: observedReviewDigest, inputDigests: {}
+}];
+const assessment = await assessWorkflow(workflow, artifacts, receipts, {
+  requiredNodeIds: ["export"], allowedVerifierIds: ["audio-checker"]
+});
+```
+
+This partial example leaves all other required nodes unaccepted. Every required
+source, context, generation, review and export node needs its own current manifest
+and receipt. All digests use `sha256:` followed by 64 lowercase hex digits.
+`inputDigests` maps each direct predecessor node ID to the current artifact digest
+actually inspected by that node's verifier. It must cover exactly those predecessors.
+The verifier must be allowed by the supplied policy and different from the producer.
+
+A semantic edit invalidates the affected node keys and downstream evidence.
+Changed artifact bytes also invalidate a receipt even when its semantic key is
+unchanged; changed predecessor bytes invalidate consumers. A locally matching
+receipt cannot rescue a descendant whose prerequisite remains unaccepted.
+Duplicates are rejected, rather than choosing an arbitrary newest receipt.
+The caller must select a single current receipt per node before assessing.
+
+`preservedNodeIds` contains accepted prerequisites in the requested scope.
+`repairOrder` contains every unaccepted node in that scope; `readyRepairNodes`
+contains only those whose prerequisites are accepted. A repair may mean restoring
+an artifact, obtaining missing review, or regenerating output. These are planning
+results, not executable work authorizations. Unrelated graph branches appear in
+`excludedNodeIds`. Reassess after supplying new artifact and evidence manifests.
+
+`estimatedRepairMinor` sums current fixture generation quotes for paid nodes in
+the repair order. It excludes review and other costs, may overestimate when only
+review is needed, and is neither actual usage nor a spending reservation.
+`actualCostMinor` remains `null`. The assessment digest binds the requested
+revision, selected output scope, current subject digests, supplied identities,
+policy and result; no clock or provider call affects it.
+
+The host must read and hash actual artifact/evidence bytes, authenticate producers
+and verifiers, enforce tenancy/rights/permissions, and admit execution separately.
+This pure function only checks the supplied bindings. It verifies no signatures,
+artifact bytes or reviewer quality. `releaseReady:true` means the supplied evidence
+is internally consistent for the requested graph; it does not approve publication.
+The original typed graph remains the topology owner. This API adds no scheduler,
+router, storage service, generic work-graph format or production protocol.
+
 ## Product owners
 
 Starlight owns this pure reference. Arcanea owns worlds, canon and its application graph. GenCreator owns CreatorPack, voice, source permissions and its AgentRuntime. Browser labs generated from this source are inspectable draft projections and must not create a second product data plane.
