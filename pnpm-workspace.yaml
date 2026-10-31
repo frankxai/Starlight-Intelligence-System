@@ -2,6 +2,7 @@ packages:
   - packages/core
   - packages/ai-sdk-adapter
   - packages/mcp-server
+  - packages/playbooks
 
 autoInstallPeers: false
 
@@ -15,3 +16,4 @@ overrides:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
+
