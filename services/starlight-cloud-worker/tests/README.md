@@ -17,16 +17,19 @@ qualified agent-plane toolchain. It changes no production dependency. Install
 it in isolation and run the local runtime qualification:
 
 ```sh
-pnpm --dir services/starlight-cloud-worker/tests/runtime install --ignore-workspace --frozen-lockfile
+pnpm --dir services/starlight-cloud-worker/tests/runtime install --ignore-workspace --frozen-lockfile --ignore-scripts
 node services/starlight-cloud-worker/tests/qualify-lease-workerd.mjs
 ```
 
 An already installed copy can be selected by setting `NEXUS_MINIFLARE_PATH` to
 its absolute package directory. The script verifies both exact runtime versions;
-no machine-specific path is committed. This session reused that existing pinned
-installation. A separate offline install recognized the frozen lock and copied
-the packages, but exited unsuccessfully because pnpm's supply-chain check lacked
-cached workerd registry metadata. Clean installation is not claimed.
+no machine-specific path is committed. Qualification first reused that pinned
+installation. The final isolated frozen install passed with pnpm 11.25.0 and
+lifecycle scripts disabled; all six native scenarios then passed using the
+isolated package with no module-path override. Earlier offline installation lacked
+cached registry metadata, and the default online install rejected unapproved
+workerd lifecycle scripts. The documented command runs no install scripts and
+preserves supply-chain checks; no build approval or policy bypass was added.
 
 The fixture uses real local SQLite-backed Durable Object transactions. Six
 scenarios cover competing acquisitions, tenant/resource mismatch, stale owner

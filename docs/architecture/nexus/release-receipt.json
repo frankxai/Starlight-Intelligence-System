@@ -22,14 +22,14 @@
       "node": "24.22.1",
       "miniflare": "5.20261023.3-beta",
       "workerd": "1.20261023.1",
-      "installation": "reused pinned installed toolchain via NEXUS_MINIFLARE_PATH; clean install unverified"
+      "installation": "isolated frozen install passed with pnpm 11.25.0 and --ignore-scripts; native qualification passed without module-path override"
     },
     {
       "name": "existing cloud-worker component and containment suite",
       "source": "test/cloud-worker-e2e.test.ts",
       "passed": 50,
       "failed": 0,
-      "method": "esbuild 0.28.2 bundle to temporary ESM; node --test on Node 24.22.1; no source substitution"
+      "method": "node --import tsx --test test/cloud-worker-e2e.test.ts with locked installed dependencies; previous esbuild-bundled run also passed"
     },
     {
       "name": "strict typecheck of new core",
@@ -44,6 +44,17 @@
     {
       "name": "JSON, whitespace and changed-copy surface lint",
       "result": "pass"
+    },
+    {
+      "name": "plugin source conformance after checksum refresh",
+      "result": "pass",
+      "tests": 19,
+      "reason": "test script changes package.json; refreshed its two pinned source digests without changing validation policy"
+    },
+    {
+      "name": "root and isolated qualification frozen dependency installs",
+      "result": "pass with --ignore-scripts; supply-chain policies intact",
+      "pnpm": "11.25.0"
     }
   ],
   "independent_review": {
@@ -56,7 +67,6 @@
   "release_gates_pending": [
     "repository-wide checks on exact PR head",
     "trusted independent-provider exact-head merge review",
-    "clean toolchain installation from lock",
     "authenticated node enrollment and revocation",
     "product admission and ledger integration",
     "canonical resource mapping and atomic effect receiver fencing",
@@ -81,11 +91,12 @@
     "services/starlight-cloud-worker/src/swarm-lease-state.ts": "eb930a1771bdd288d826b5f89178dfe33b33f823e385e8ddaae0049e75c3ccaa",
     "test/swarm-lease-state.test.mjs": "c87c85ffb8887ef570dae580ed3a41276e97b57ef1516cdd2b346ca0e88dc2f5",
     "services/starlight-cloud-worker/tests/qualify-lease-workerd.mjs": "51681db38211edf46819602e72f37fa51dca5182758312af0188481b951b662f",
-    "services/starlight-cloud-worker/tests/README.md": "6a784898b659ac19faf4a13ab5802a403be5b38d24750927eb2496d354e496fc",
-    "services/starlight-cloud-worker/tests/runtime/package.json": "430c15b46b2289824bd688f79f5e5cf290ebf22b795fcbb0ad10eded6f88f8ac",
+    "services/starlight-cloud-worker/tests/README.md": "09b6d61de6968aea5cb73e9856962885e6cef2b4443ef93581069e29b10b4785",
+    "services/starlight-cloud-worker/tests/runtime/package.json": "f740afd60d59f60afef45496b5ca0244fb0685f5245be73197c1d89ecc01c60b",
     "services/starlight-cloud-worker/tests/runtime/pnpm-lock.yaml": "3b74207c02789225d582f8536b837962c303228af35bfc54d8a0d52d8b6d1980",
     "package.json": "903c387dfc7cb85cb99369c1e04411f62f967c91eeb57e50708d08cfe81b1357",
     "docs/architecture/nexus/NEXUS-ARD-RND-2026-10-21.md": "085d684e748ce7e95961bffdd56467b7d3456a9434cb00febab13f698db18c0e",
-    "docs/architecture/nexus/project.json": "643ba812e0607d758deebed34b65ad0b30cb87b2ebf15764fd67c7528b6b64d6"
+    "docs/architecture/nexus/project.json": "643ba812e0607d758deebed34b65ad0b30cb87b2ebf15764fd67c7528b6b64d6",
+    "foundry/validators/toolchain.lock.v1.json": "19c937e9ae46ea57b8b3643c905da4198abe19b806472988fa3e862019f40b96"
   }
 }
