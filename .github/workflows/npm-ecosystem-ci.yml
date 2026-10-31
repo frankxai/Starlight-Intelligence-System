@@ -66,7 +66,7 @@ jobs:
           name: npm-ecosystem-${{ github.sha }}
           path: artifacts/npm-ecosystem/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 3
 
   core-legacy-runtime:
     runs-on: ubuntu-latest

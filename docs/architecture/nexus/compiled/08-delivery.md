@@ -1,0 +1,7 @@
+# First executable slice
+
+Implement internal durable fenced lease arbitration at the existing services/starlight-cloud-worker SwarmCoordinator boundary: tenant/resource binding, operation idempotency, acquire/renew/release, generation fencing and restart recovery. Preserve HTTP 503 containment until identity, membership and admission are qualified. Exact implementation and test results belong in the parent release receipt.
+
+Next accepted outcome: Qualify the internal arbiter with independent review, then integrate verified node identity and current-request admission before an isolated local-to-cloud handoff rehearsal. Compare the same frozen repository missions against manual handoff and an assembled existing coding harness plus persistent cloud workspace plus GitHub PR workflow. After hosted and commercial qualification, test five teams; stop breadth expansion and repair the workflow if the proposed pilot gates are missed. No customer dispatch, pricing or cloud deployment is authorized by this projection.
+
+Implement in the current owning source. Preserve stable runtime and environment. One maker plus a distinct reviewer for release risk, with shared resource budget and bounded attempts. Run actual task and recovery/export fixtures. Report built, checked, saved, deployed and operating separately. Do not create a scheduler, provider session, subscription or production release from this pack alone.

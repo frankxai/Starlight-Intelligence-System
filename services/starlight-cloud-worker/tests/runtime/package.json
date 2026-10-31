@@ -1,0 +1,17 @@
+{
+  "name": "starlight-nexus-local-qualification",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "test": "node ../qualify-lease-workerd.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "miniflare": "5.20261023.3-beta",
+    "workerd": "1.20261023.1"
+  }
+}

@@ -4,12 +4,16 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
   "vars": {
     "GCP_REGION": "europe-west4",
     "CLOUD_RUN_JOB": "starlight-runner-job",
     "GCP_PROJECT_ID": "starlight-intelligence-estate"
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "redact_query_string": true
   }
 }
+

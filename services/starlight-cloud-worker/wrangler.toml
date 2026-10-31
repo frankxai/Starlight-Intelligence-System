@@ -2,6 +2,8 @@ name = "starlight-cloud-worker"
 main = "src/index.ts"
 compatibility_date = "2026-10-10"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+preview_urls = false
 
 [vars]
 ENVIRONMENT = "production"
@@ -32,3 +34,4 @@ new_sqlite_classes = ["SwarmCoordinator"]
 
 [ai]
 binding = "AI"
+

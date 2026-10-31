@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "task_id": "nexus-continuity-2026-10-31",
+  "studio_id": "studio_software",
+  "brand_id": "brand_starlight_intelligence",
+  "owner": "frankxai",
+  "classification": "existing_operational_reference_runtime_extension",
+  "objective": "Reconcile Nexus strategy and implement the internal durable lease boundary for local/cloud mission continuity.",
+  "buyer_job": "Continue a repository improvement across approved executors and receive an inspectable, tested PR.",
+  "value_plan": {
+    "usable_customer_output": "Reviewable architecture and reusable lease-arbitration source with reproducible tests; customer dispatch remains unavailable.",
+    "acceptance_event": "Internal lease semantics and runtime persistence qualify without reactivating contained APIs.",
+    "baseline_alternative": "Manual Git handoff and an assembled coding harness, persistent cloud workspace and GitHub PR workflow.",
+    "reused_assets": ["existing SIS cloud-worker service", "existing SwarmCoordinator boundary", "existing product mission/ledger contracts", "existing Nexus draft PR 476"],
+    "community_contribution": "Portable deterministic core, failure fixtures and local Cloudflare runtime qualification under existing repository license.",
+    "privacy_or_rights_boundary": "Synthetic tenant/node fixtures; no personal machine data, credentials or customer context.",
+    "evidence_state": "component_validation",
+    "accepted_customer_outcomes": null,
+    "cash_cost_actual": null,
+    "human_hours_actual": null,
+    "founder_hours_actual": null
+  },
+  "source_authority": {
+    "repository": "frankxai/agentic-ops",
+    "revision": "61114141e8c25c0891bef028fbfa38e8e1257742",
+    "implementation_repository": "frankxai/Starlight-Intelligence-System",
+    "implementation_base": "7e4ca5b295e4c0097576045326762d278514e360"
+  },
+  "target_channels": ["existing GitHub draft PR 476"],
+  "autonomy": {
+    "reversible_branch_work": "authorized_by_current_user_request",
+    "draft_pull_request_update": "authorized_by_current_user_request",
+    "production_activation": "not_performed"
+  },
+  "budget": {
+    "token_ceiling": 160000,
+    "verification_reserve_percent": 25,
+    "external_credit_or_cash_ceiling": 0,
+    "maximum_rounds": 3
+  },
+  "state_policy": "one_writer_per_worktree_then_parent_integration",
+  "conflict_owner": "root_integrator",
+  "acceptance": [
+    "Strict operation/state validation and immutable deadline-bounded replay",
+    "Tenant/resource binding and monotonic fence across current-state restart",
+    "Competing acquisition, stale renewal/release, write/commit failure and lost-response tests",
+    "Independent code review and actual local workerd transaction qualification",
+    "Existing protected HTTP and DO routes remain unavailable",
+    "Explicit distinction between component proof, hosted integration and paid customer outcome"
+  ],
+  "stop_conditions": [
+    "No deployment without qualified identity, node admission and effect receiver",
+    "No bypass of required review or CI",
+    "No new paid resource or changed spending limit",
+    "No new repository or canonical architecture record from this projection"
+  ]
+}
