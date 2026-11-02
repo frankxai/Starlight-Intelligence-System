@@ -24,6 +24,7 @@ const bundle = await build({
 async function runtime(t, { responder, bound = true, admission = policy() } = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'fleet-runtime-'));
   const attempts = [];
+  const outboundErrors = [];
   let instance;
   async function start() {
     const value = new Miniflare(convertV4MiniflareOptions({
@@ -45,6 +46,11 @@ async function runtime(t, { responder, bound = true, admission = policy() } = {}
       resourceTmpPath: path.join(dir, 'runtime'),
       unsafeDevRegistryPath: path.join(dir, 'registry'),
       outboundService: async request => {
+        // Record entry before validation. Miniflare turns handler exceptions
+        // into HTTP 500s, which the production boundary correctly sanitizes.
+        const attempt = { url: request.url, method: request.method };
+        attempts.push(attempt);
+        try {
         assert.equal(request.url,
           'https://run.googleapis.com/v2/projects/fixture-project/locations/europe-west4/jobs/fixture-job:run');
         assert.equal(request.method, 'POST');
@@ -54,8 +60,12 @@ async function runtime(t, { responder, bound = true, admission = policy() } = {}
         const variables = Object.fromEntries(body.overrides.containerOverrides[0].env.map(v => [v.name, v.value]));
         assert.equal(variables.STARLIGHT_COMMIT_SHA, 'a'.repeat(40));
         assert.equal(variables.STARLIGHT_REPO, 'fixture/example');
-        attempts.push(body);
+        attempt.body = body;
         return responder ? responder(request) : Response.json({ name: operation });
+        } catch (error) {
+          outboundErrors.push(String(error));
+          throw error;
+        }
       },
     }));
     // Assign before readiness so failed startup also has an owned cleanup path.
@@ -70,6 +80,7 @@ async function runtime(t, { responder, bound = true, admission = policy() } = {}
       assert.ok(path.basename(dir).startsWith('fleet-runtime-'));
       await rm(dir, { recursive: true, force: true });
     }
+    assert.deepEqual(outboundErrors, [], 'Outbound fixture assertions must not be hidden as sanitized 500s');
   });
   await start();
   return {
