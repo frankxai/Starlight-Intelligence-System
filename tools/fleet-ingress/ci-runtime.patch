@@ -1,0 +1,36 @@
+--- a/.github/workflows/fleet-ingress.yml
++++ b/.github/workflows/fleet-ingress.yml
+@@ -1,6 +1,7 @@
+ name: Fleet ingress contracts
+ on:
+   pull_request:
++    types: [opened, synchronize, reopened, ready_for_review]
+     paths:
+       - 'tools/fleet-ingress/**'
+       - 'tools/runner/runner-entrypoint.sh'
+@@ -29,3 +30,25 @@
+           node-version: '24'
+       - run: bash -n tools/runner/runner-entrypoint.sh
+       - run: node --experimental-strip-types --test tools/fleet-ingress/tests/*.test.mjs
++  runtime:
++    name: workerd SQLite journal
++    needs: contracts
++    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
++    runs-on: ubuntu-latest
++    timeout-minutes: 5
++    defaults:
++      run:
++        working-directory: tools/fleet-ingress
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
++        with:
++          persist-credentials: false
++      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
++        with:
++          node-version: '24'
++      - name: Install pinned runtime dependencies without lifecycle scripts
++        run: npm ci --ignore-scripts --workspaces=false --no-audit --no-fund
++      - name: Audit the dedicated runtime toolchain
++        run: npm audit --workspaces=false --audit-level=high
++      - name: Qualify actual Worker and SQLite journal
++        run: npm run test:runtime

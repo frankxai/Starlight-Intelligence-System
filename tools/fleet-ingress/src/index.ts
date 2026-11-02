@@ -292,7 +292,8 @@ export class FleetDelivery {
         });
         const prefix = `projects/${this.env.GCP_PROJECT_ID}/locations/${this.env.GCP_REGION}`;
         const response = await fetch(`https://run.googleapis.com/v2/${prefix}/jobs/${this.env.CLOUD_RUN_JOB}:run`, {
-          method: 'POST', redirect: 'error', signal: AbortSignal.timeout(5000),
+          // Workers supports manual/follow, not redirect:error. Non-2xx is held below.
+          method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(5000),
           headers: { Authorization: `Bearer ${this.env.GCP_SERVICE_ACCOUNT_TOKEN}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });

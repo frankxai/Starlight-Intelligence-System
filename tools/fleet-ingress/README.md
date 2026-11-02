@@ -2,8 +2,17 @@
 
 This candidate repairs the existing GitHub-to-Cloud-Run path. It is not a new task
 scheduler, a budget service, a NVIDIA runtime or a deployment authorization.
-The existing `wrangler.jsonc` remains unchanged: public subdomains and previews
-stay disabled and the new delivery binding is not activated by this change.
+The containment settings in `wrangler.jsonc` remain unchanged: public subdomains
+and previews stay disabled and the new delivery binding is not activated.
+Its production entry is now `src/worker.ts`, exposing only the default handler
+and journal class. Real workerd qualification reproduced a startup failure when
+the Node library's numeric `MAX_BODY_BYTES` export was used as an entry. The
+library/unit interfaces remain in `src/index.ts`; the runtime qualifier bundles
+the actual configured production entry.
+
+Qualification update by Codex, 2 November 2026: the pinned toolchain, source/CI
+evidence and remaining acceptance are recorded in
+[the runtime qualification receipt](Runtime-qualification-Codex-2026-11-02-v1.md).
 
 ## What changed
 
