@@ -14,7 +14,7 @@ for (const event of ['push', 'pull_request', 'workflow_job']) {
     assert.equal(JSON.stringify(result).includes('not-for-client'), false);
     const [url, options] = provider.mock.calls[0].arguments;
     assert.equal(url, 'https://run.googleapis.com/v2/projects/fixture-project/locations/europe-west4/jobs/fixture-job:run');
-    assert.equal(options.redirect, 'error'); assert.ok(options.signal);
+    assert.equal(options.redirect, 'manual'); assert.ok(options.signal);
     const body = JSON.parse(options.body);
     assert.equal(body.etag, 'fixture-etag'); assert.equal(body.overrides.taskCount, 1);
     assert.equal(body.overrides.timeout, '60s');

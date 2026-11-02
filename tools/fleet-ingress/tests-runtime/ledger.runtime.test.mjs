@@ -134,6 +134,17 @@ test('uncertain provider result stays held after workerd restart and is never re
   assert.equal(r.attempts.length, 1);
 });
 
+test('real Worker never follows a provider redirect and preserves its uncertain hold', { timeout: 60000 }, async t => {
+  const r = await runtime(t, { responder: () => new Response(null, {
+    status: 302, headers: { Location: 'https://outside.invalid/credential-sink' },
+  }) });
+  assert.equal((await r.invoke()).status, 502);
+  assert.equal(r.attempts.length, 1);
+  await r.restart();
+  assert.equal((await r.invoke()).status, 409);
+  assert.equal(r.attempts.length, 1);
+});
+
 test('real Worker refuses unsigned, fork and unlabelled input before any provider effect', { timeout: 60000 }, async t => {
   const r = await runtime(t);
   const unsigned = new Request('https://local.invalid/webhook', { method: 'POST', body: '{}' });

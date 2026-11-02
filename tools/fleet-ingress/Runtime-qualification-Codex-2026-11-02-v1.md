@@ -1,6 +1,6 @@
 # Fleet runtime qualification, Codex, 2 November 2026
 
-Author: Codex. Revision: 4. State: real startup failure reproduced and repaired;
+Author: Codex. Revision: 5. State: real startup and redirect failures reproduced and repaired;
 runtime rerun and independent review pending. Source base: PR527,
 `c5f223a7493d3bb4fd5a22698cb68ef529af308a`. This extends that existing repair;
 its author and original verification remain credited in the original PR.
@@ -18,6 +18,14 @@ unit suite. A dedicated production `src/worker.ts` now exports only the default
 handler and `FleetDelivery`; the committed Wrangler main points to it. Node's
 library/test imports stay unchanged. The qualifier still reads and bundles the
 actual configured entry, with no test-only override or skipped assertion.
+
+The next runtime exposes a second compatibility defect: Workers rejects
+`redirect: error` before sending a request. Cloudflare supports `manual` and
+`follow`; the correction uses `manual` and retains the existing non-2xx rejection
+and uncertain journal hold. A sixth real-runtime case returns a redirect, asserts
+exactly one fixture attempt, restarts and confirms replay remains held. Any call
+to the redirect destination fails the fixture and cannot be hidden as HTTP 500.
+Source: https://developers.cloudflare.com/workers/runtime-apis/request/.
 
 All outward provider calls terminate at an asserted in-process fixture. No
 Cloudflare API, Cloud Run execution, real credential, queue message or deployed
