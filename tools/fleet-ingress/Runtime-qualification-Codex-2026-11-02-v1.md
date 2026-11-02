@@ -1,7 +1,7 @@
 # Fleet runtime qualification, Codex, 2 November 2026
 
-Author: Codex. Revision: 3. State: qualifier and CI integrated; real runtime execution
-and independent review pending. Source base: PR527,
+Author: Codex. Revision: 4. State: real startup failure reproduced and repaired;
+runtime rerun and independent review pending. Source base: PR527,
 `c5f223a7493d3bb4fd5a22698cb68ef529af308a`. This extends that existing repair;
 its author and original verification remain credited in the original PR.
 
@@ -10,6 +10,14 @@ with SQLite-backed `FleetDelivery` storage. It checks concurrent replay,
 persistence across process restart, uncertain-result holds, real-runtime source
 denial and missing-binding refusal. A test-only entry wrapper is deliberately
 avoided because it could hide an invalid production module export.
+
+The first admitted runtime run, 41391881186 attempt 2 at e3a53ac, fails all five
+cases during actual workerd startup: `MAX_BODY_BYTES` is a numeric named export,
+which workerd cannot mount as an entry. This failure was invisible to Node's
+unit suite. A dedicated production `src/worker.ts` now exports only the default
+handler and `FleetDelivery`; the committed Wrangler main points to it. Node's
+library/test imports stay unchanged. The qualifier still reads and bundles the
+actual configured entry, with no test-only override or skipped assertion.
 
 All outward provider calls terminate at an asserted in-process fixture. No
 Cloudflare API, Cloud Run execution, real credential, queue message or deployed
@@ -20,6 +28,7 @@ The toolchain is pinned: Wrangler 4.156.1, Miniflare 5.20261101.0-beta and esbui
 0.28.2, with a dedicated npm lockfile. The Miniflare version matches this stable
 Wrangler release's dependency. Its v4-options compatibility converter is explicit.
 No application dependency, production binding, route, migration or secret changes.
+The production entry path changes as described above; no remote deployment occurs.
 
 Commands from this directory:
 
@@ -39,8 +48,8 @@ cases with zero failures/skips at `223b2f99b17746fbbaf2bac8be1f8c5e5c57221e`.
 Those provider/storage calls are doubles. The dedicated toolchain's npm audit
 reports zero advisories at observation; it does not audit the entire repository.
 
-Local native runtime/build work is machine-held. The new runtime suite has not
-yet run and has no PASS verdict. The prior workflow owner explicitly released its
+Local native runtime/build work is machine-held. The runtime suite now has a
+retained startup failure and no PASS verdict yet. The prior workflow owner explicitly released its
 lane at 05:00 UTC. After fresh routing and ownership checks, the runtime job is
 integrated into the existing workflow. CI must execute both source and runtime
 commands at the exact candidate before qualification is accepted. A startup
