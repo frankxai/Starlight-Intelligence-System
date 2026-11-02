@@ -1,6 +1,6 @@
 # Fleet runtime qualification, Codex, 2 November 2026
 
-Author: Codex. Revision: 2. State: qualifier implemented; real runtime execution
+Author: Codex. Revision: 3. State: qualifier and CI integrated; real runtime execution
 and independent review pending. Source base: PR527,
 `c5f223a7493d3bb4fd5a22698cb68ef529af308a`. This extends that existing repair;
 its author and original verification remain credited in the original PR.
@@ -40,17 +40,18 @@ Those provider/storage calls are doubles. The dedicated toolchain's npm audit
 reports zero advisories at observation; it does not audit the entire repository.
 
 Local native runtime/build work is machine-held. The new runtime suite has not
-yet run and has no PASS verdict. A peer owns the workflow write lane at preparation;
-the existing workflow remains untouched until ownership is free. Once admitted,
-CI must install the frozen dedicated dependencies and run both commands on the
-exact candidate. A startup failure is a genuine qualification failure to repair.
+yet run and has no PASS verdict. The prior workflow owner explicitly released its
+lane at 05:00 UTC. After fresh routing and ownership checks, the runtime job is
+integrated into the existing workflow. CI must execute both source and runtime
+commands at the exact candidate before qualification is accepted. A startup
+failure is a genuine qualification failure to repair.
 
-`ci-runtime.patch` is the concrete, unapplied workflow change. Its YAML structure
-and `git apply --check` pass against the preserved workflow. It adds a separate
+`ci-runtime.patch` preserves the prepared workflow change. Its YAML structure
+and `git apply --check` passed before application. It adds a separate
 five-minute, ready-for-review-gated runtime job, pinned read-only actions, frozen
 dependency installation without lifecycle scripts and a high-severity audit gate.
-Existing source checks remain. Apply only after the workflow owner is finished;
-the presence or applicability of this patch is not an executed runtime result.
+Existing source checks remain. The presence or applicability of this patch is
+not an executed runtime result. Prior preparation revisions remain in Git history.
 
 Restart tests establish the stated persistence scope. They do not certify abrupt
 provider termination, a production migration, Cloud Run etag semantics, image or
