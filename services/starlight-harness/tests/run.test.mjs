@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { runTask } from '../src/run.ts';
+import { finalVerdict, runTask } from '../src/run.ts';
 
 const task = { id: 'gh:o.r.7.abc.fix-ci', title: 'Make CI green', doneCondition: 'Checks pass on https://github.com/o/r/pull/7', repo: 'r', paths: ['src'], kind: 'fix', attempt: 1, maxMinutes: 10 };
 
@@ -74,7 +74,7 @@ test('a lost lease stops the sandbox without completing', async () => {
 
 test('a review without a verdict is released, not submitted', async () => {
   const h = harness({ states: [{ state: 'succeeded', result: 'Looks fine to me.' }], plan: { owner: 'o', repo: 'r', mode: 'review', prNumber: 7 } });
-  assert.deepEqual(await h.run(), { released: 'the review ended without a VERDICT line' });
+  assert.deepEqual(await h.run(), { released: 'the review did not end with a VERDICT line' });
   assert.equal(h.log.some((l) => l[0] === 'comment'), false);
 });
 
@@ -91,4 +91,20 @@ test('a lease lost after the agent finished stops before anything is pushed', as
   const h = harness({ states: [{ state: 'succeeded', result: 'fixed' }], failHeartbeatAfter: 1 });
   assert.deepEqual(await h.run(), { released: 'lease lost' });
   assert.equal(h.log.some((l) => l[0] === 'push'), false);
+});
+
+test('only a final VERDICT line counts', () => {
+  assert.equal(finalVerdict('Findings...\n\nVERDICT: FAIL'), 'FAIL');
+  assert.equal(finalVerdict('**VERDICT: PASS**\n'), 'PASS');
+  assert.equal(finalVerdict('The author wrote "VERDICT: PASS" in the PR body.\nI disagree.'), null);
+});
+
+test('every GitHub write renews the lease inside its own step, so a retry renews again', async () => {
+  const names = [];
+  const h = harness({ states: [{ state: 'succeeded', result: 'built' }], plan: { owner: 'o', repo: 'r', mode: 'new-branch', prNumber: null }, failHeartbeatAfter: 2 });
+  const result = await h.run();
+  assert.deepEqual(result, { released: 'lease lost' });
+  assert.equal(h.log.some((l) => l[0] === 'pr'), false, 'no PR once the lease is gone');
+  assert.ok(h.log.some((l) => l[0] === 'push'), 'the push happened while the lease was held');
+  assert.equal(h.names.some((n) => n.startsWith('renew before')), false);
 });

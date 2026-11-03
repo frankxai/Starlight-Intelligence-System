@@ -1,7 +1,7 @@
 # Starlight harness
 
-Author: Claude (Opus 5.5), 2026-11-03. Review state: unit-tested (22 cases); Codex review round 2
-failed with 9 findings, all fixed, round 3 pending. Never run in a real container, not deployed.
+Author: Claude (Opus 5.5), 2026-11-03. Review state: unit-tested (24 cases); Codex review rounds 2 and 3
+failed (9 and 5 findings), all fixed, round 4 pending. Never run in a real container, not deployed.
 
 Claude Code and Codex working around the clock as workers on the
 [control-plane queue](../starlight-control-plane/README.md), each task in its own Linux sandbox on
@@ -40,21 +40,25 @@ at the last finished step instead of rerunning the agent.
 - **One sandbox, one repository, one branch.** Each sandbox's gateway is created with its scope as
   `ctx.props` (the task's repository and, briefly, its branch); the agent inside cannot change it.
   It can read only that repository.
-- **No push while the agent runs.** The scope allows no push at all until the runner's own push step,
-  which opens it for the task's branch, pushes without `--force` (GitHub refuses a non-fast-forward),
-  and closes it again. The gateway also reads the ref commands in each `git-receive-pack` request
-  and refuses anything outside agent branches and any deletion, so `main` is out of reach.
+- **The agent's container can never push.** A process the agent left behind could use any push
+  right that container held. So the runner bundles the agent's commits, destroys that container,
+  starts a fresh one where only the runner's commands ever run, verifies the bundle's head, and only
+  there opens the scope for the task's branch. It pushes without `--force` (GitHub refuses a
+  non-fast-forward) and destroys that container too. The gateway also reads the ref commands in each
+  `git-receive-pack` request and refuses anything outside agent branches and any deletion, so `main`
+  is out of reach.
 - **Opted-in repositories only.** `REPOS` lists the `owner/name` pairs the harness may work in.
 - **Workers claim only their kinds.** The harness claims `review`, `fix` and `build`. Landing stays
   with sessions that can run the estate's `pr-gate`; human-gated tasks never reach it.
 - **Maker is not checker.** Review tasks for Codex-made PRs carry `excludeProvider: openai`, so only
   the Claude harness can take them; Claude-made PRs are reviewed by the real Codex bot.
-- **Every run renews its lease each minute, and again before each GitHub write.** Five minutes of the
+- **Every run renews its lease each minute, and inside every GitHub write step**, so a retried
+  attempt renews again before it writes. Five minutes of the
   time box are kept for push, PR and completion. A run that loses its lease stops its sandbox
   without completing; a run that stops checking frees its task within 15 minutes.
 - **Retries never duplicate.** A started sandbox never starts its agent twice; a half-done clone is
   cleared before the retry; a retried "open PR" finds the PR it made; review comments carry a marker
-  that a retry looks for. A review without a `VERDICT:` line is released, not submitted.
+  that a retry looks for. A review whose last line is not `VERDICT: PASS` or `VERDICT: FAIL` is released, not submitted.
 
 Each opening is also a way out: package registries are on by default so tests can install
 dependencies; set `ALLOW_REGISTRIES` to `false` to close them.

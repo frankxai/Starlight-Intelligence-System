@@ -15,6 +15,9 @@ const INACTIVITY_MS = 30 * 60 * 1000;
 const TASK_KEY = 'task';
 const BASE_KEY = 'base';
 const REPO_KEY = 'repo';
+const PUSHED_KEY = 'pushed';
+const BUNDLE_PATH = `${TASK_DIR}/out.bundle`;
+const MAX_BUNDLE_BYTES = 50 * 1024 * 1024;
 
 const CA = '/etc/cloudflare/certs/cloudflare-containers-ca.crt';
 // Outbound intercepts every HTTPS request, so its CA replaces the system trust store.
@@ -93,30 +96,61 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
     return this.status(harness);
   }
 
+  // The agent's container never gets push rights: a process it left behind could use them. The
+  // runner bundles the new commits, throws that container away, and pushes from a fresh container
+  // where only the runner's own commands have ever run.
   async commitAndPush(branch: string, message: string): Promise<string | null> {
+    const pushed = this.ctx.storage.kv.get(PUSHED_KEY) as string | undefined;
+    if (pushed) return pushed;
     const base = this.ctx.storage.kv.get(BASE_KEY) as string | undefined;
-    if (!base) throw new Error('no clone recorded for this sandbox');
+    if (!base || !this.container.running) throw new Error('the agent sandbox is gone; its work cannot be recovered');
+    const repo = this.repo();
+    const harness = this.harness ?? 'claude';
+
     await this.mustRun(['git', 'add', '-A'], REPO_DIR);
     if ((await this.run(['git', 'diff', '--cached', '--quiet'], REPO_DIR)).exitCode !== 0) {
       await this.mustRun(['git', 'commit', '-m', message], REPO_DIR, { ...TRUST, ...agentEnv('codex', this.vars('codex')) });
     }
     if ((await this.mustRun(['git', 'rev-list', '--count', `${base}..HEAD`], REPO_DIR)).trim() === '0') return null;
-    // Push rights exist only for this one command: the gateway is re-scoped to the task's branch,
-    // the runner pushes without --force (GitHub refuses a non-fast-forward), and the scope closes
-    // again whatever happens. While the agent ran, the sandbox could push nowhere.
-    await this.scope({ repo: this.repo(), pushBranch: branch });
+    const sha = (await this.mustRun(['git', 'rev-parse', 'HEAD'], REPO_DIR)).trim();
+    await this.mustRun(['git', 'bundle', 'create', BUNDLE_PATH, `${base}..HEAD`], REPO_DIR);
+    const bundle = new Uint8Array(await (await this.files.readFile(BUNDLE_PATH)).arrayBuffer());
+    if (bundle.byteLength > MAX_BUNDLE_BYTES) throw new Error(`the agent's commits are ${bundle.byteLength} bytes; the limit is ${MAX_BUNDLE_BYTES}`);
+
+    await this.container.destroy();
+    this.setup = undefined;
+    this.ctx.storage.kv.put(REPO_KEY, repo);
+    await this.start(harness);
     try {
-      await this.mustRun(['git', 'push', 'origin', `HEAD:refs/heads/${branch}`], REPO_DIR);
+      const work = '/workspace/push';
+      await this.mustRun(['rm', '-rf', work], '/workspace');
+      await this.mustRun(['git', 'init', '--quiet', work], '/workspace');
+      await this.mustRun(['git', 'remote', 'add', 'origin', `https://github.com/${repo}.git`], work);
+      // The bundle needs its base commit present; GitHub serves a reachable commit by SHA.
+      await this.mustRun(['git', 'fetch', '--quiet', '--depth', '1', 'origin', base], work);
+      await this.files.writeFile(`${work}/out.bundle`, bundle);
+      await this.mustRun(['git', 'bundle', 'verify', 'out.bundle'], work);
+      await this.mustRun(['git', 'fetch', '--quiet', 'out.bundle', 'HEAD'], work);
+      const fetched = (await this.mustRun(['git', 'rev-parse', 'FETCH_HEAD'], work)).trim();
+      if (fetched !== sha) throw new Error(`bundle head ${fetched} is not the agent's commit ${sha}`);
+      // Only now, in a container that never ran agent code, may the gateway accept a push, and
+      // only to this branch. No --force: GitHub refuses anything that is not a fast-forward.
+      await this.scope({ repo, pushBranch: branch });
+      await this.mustRun(['git', 'push', 'origin', `${sha}:refs/heads/${branch}`], work);
+      this.ctx.storage.kv.put(PUSHED_KEY, sha);
+      return sha;
     } finally {
-      await this.scope({ repo: this.repo(), pushBranch: null });
+      // Nothing more runs in this sandbox; destroying it is the surest way to close the push scope.
+      await this.container.destroy().catch(() => undefined);
+      this.setup = undefined;
     }
-    return (await this.mustRun(['git', 'rev-parse', 'HEAD'], REPO_DIR)).trim();
   }
 
   async destroy(): Promise<void> {
     this.ctx.storage.kv.delete(TASK_KEY);
     this.ctx.storage.kv.delete(BASE_KEY);
     this.ctx.storage.kv.delete(REPO_KEY);
+    this.ctx.storage.kv.delete(PUSHED_KEY);
     if (this.container.running) await this.container.destroy();
   }
 

@@ -51,7 +51,13 @@ const MAX_COMMENT = 60_000;
 // Minutes of the time box kept back for push, PR and completion, so the lease is still alive
 // when the results go out.
 export const FINALIZE_MINUTES = 5;
-const VERDICT = /VERDICT:\s*(PASS|FAIL)\b/;
+// The prompt asks for the verdict as the last line, so a quoted "VERDICT: PASS" earlier in the text
+// does not count.
+export function finalVerdict(text: string): 'PASS' | 'FAIL' | null {
+  const last = text.trim().split('\n').pop()?.trim() ?? '';
+  const m = /^\**VERDICT:\s*(PASS|FAIL)\**$/.exec(last);
+  return m ? (m[1] as 'PASS' | 'FAIL') : null;
+}
 
 export type RunResult = { done: string } | { released: string };
 
@@ -111,23 +117,24 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
   if (last.state === 'running') return release(`no result within ${checks} minutes`);
   if (last.state !== 'succeeded') return release(last.state === 'failed' ? `agent failed: ${last.error}` : `agent ${last.state}`);
   const summary = last.result;
-  if (plan.mode === 'review' && !VERDICT.test(summary)) return release('the review ended without a VERDICT line');
+  if (plan.mode === 'review' && !finalVerdict(summary)) return release('the review did not end with a VERDICT line');
 
-  // Each step that changes GitHub renews the lease first. If another worker owns the task now,
-  // this run stops instead of writing over its work.
-  const renewed = async (name: string) => step.do(`renew before ${name}`, async () => {
+  // Every step that changes GitHub renews the lease inside the same step, so a retried attempt
+  // renews again before it writes. If another worker owns the task now, the step writes nothing.
+  const LOST = { lost: true } as const;
+  const leased = async <T>(write: () => Promise<T>): Promise<T | typeof LOST> => {
     try {
       await queue.heartbeat(task.id, fence);
-      return true;
     } catch {
-      return false;
+      return LOST;
     }
-  });
+    return write();
+  };
+  const isLost = (r: unknown): r is typeof LOST => typeof r === 'object' && r !== null && (r as { lost?: unknown }).lost === true;
 
   let resultRef: string;
   if (plan.mode === 'review') {
-    if (!(await renewed('review'))) return stopLost();
-    resultRef = await step.do('post review', async () => {
+    const posted = await step.do('post review', () => leased(async () => {
       // GitHub has no idempotency key for comments; the marker lets a retried step find the one it posted.
       const marker = `<!-- starlight-harness:${task.id}:${task.attempt} -->`;
       const since = new Date(Date.now() - 6 * 3600_000).toISOString();
@@ -137,17 +144,20 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
       const url = await gh.comment(plan.owner, plan.repo, plan.prNumber!, `${header}${summary.slice(0, MAX_COMMENT)}\n\n${marker}`);
       if (!url) throw new Error('GitHub accepted the review comment but returned no URL');
       return url;
-    });
+    }));
+    if (isLost(posted)) return stopLost();
+    resultRef = posted;
   } else {
-    if (!(await renewed('push'))) return stopLost();
-    const sha = await step.do('push', () => sandbox.commitAndPush(setup.branch, `${task.title}\n\nQueue task ${task.id}, ${harness} in a Cloudflare sandbox.`));
+    const sha = await step.do('push', () => leased(() => sandbox.commitAndPush(setup.branch, `${task.title}\n\nQueue task ${task.id}, ${harness} in a Cloudflare sandbox.`)));
+    if (isLost(sha)) return stopLost();
     if (!sha) return release('the agent changed nothing');
     if (plan.mode === 'new-branch') {
-      if (!(await renewed('PR'))) return stopLost();
-      resultRef = await step.do('open draft PR', async () =>
+      const pr = await step.do('open draft PR', () => leased(async () =>
         // A retry after GitHub created the PR but before the step was recorded finds that PR.
         (await gh.findPullRequest(plan.owner, plan.repo, setup.branch)) ?? gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
-          `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`));
+          `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`)));
+      if (isLost(pr)) return stopLost();
+      resultRef = pr;
     } else {
       resultRef = `https://github.com/${plan.owner}/${plan.repo}/commit/${sha}`;
     }
