@@ -166,3 +166,12 @@ test('tasks created before kind and excludeProvider existed stay idempotent', ()
   core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW, newId);
   assert.equal(core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW + 1, newId).duplicate, true);
 });
+
+test('fingerprints written by earlier revisions still count as the same task', () => {
+  const sql = memorySql();
+  const legacy = { id: 'legacy-2', title: 'Old', doneCondition: 'Done', priority: 3, repo: 'kernel', paths: ['src'], gates: ['none'] };
+  const base = ['events', 'Old', 'Done', 3, 'kernel', ['src'], ['none'], 60, 3];
+  sql.exec(`INSERT INTO tasks (id, title, done_condition, priority, repo, paths, gates, state, max_attempts, max_minutes, created_by, created_at, updated_at, fingerprint)
+    VALUES ('legacy-2', 'Old', 'Done', 3, 'kernel', '["src"]', '["none"]', 'ready', 3, 60, 'events', 1, 1, ?)`, JSON.stringify([...base, null]));
+  assert.equal(core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW, newId).duplicate, true);
+});

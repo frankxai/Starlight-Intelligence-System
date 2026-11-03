@@ -54,3 +54,8 @@ test('prFiles follows every page and says when GitHub stopped listing', async ()
   const f = await few.prFiles('o', 'r', 5);
   assert.deepEqual([f.complete, f.files.length, f.files.at(-1)], [true, 101, 'b/last']);
 });
+
+test('a comment list too long to read is an error, never a silent "already posted"', async () => {
+  const flood = app((path) => path.endsWith('/comments') ? Array.from({ length: 100 }, () => ({ body: 'noise' })) : undefined);
+  await assert.rejects(flood.hasComment('o', 'r', 5, '<!-- m -->', '2026-11-03T00:00:00Z'), /cannot check for the marker/);
+});

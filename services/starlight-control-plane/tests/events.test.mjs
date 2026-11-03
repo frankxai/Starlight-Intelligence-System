@@ -19,6 +19,8 @@ test('makerFromBranch reads the estate branch prefixes', () => {
   assert.deepEqual(makerFromBranch('codex/fix'), { harness: 'codex', provider: 'openai' });
   assert.deepEqual(makerFromBranch('jules-123-thing'), { harness: 'jules', provider: 'google' });
   assert.deepEqual(makerFromBranch('agent/hermes/y'), { harness: 'hermes', provider: null });
+  assert.deepEqual(makerFromBranch('agent/cf-codex/gh-x'), { harness: 'cf-codex', provider: 'openai' });
+  assert.deepEqual(makerFromBranch('agent/cf-claude/gh-x'), { harness: 'cf-claude', provider: 'anthropic' });
   assert.equal(makerFromBranch('feature/human-work'), null);
   assert.equal(makerFromBranch(undefined), null);
 });
