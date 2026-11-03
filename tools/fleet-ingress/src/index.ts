@@ -576,6 +576,17 @@ export class WebhookDeduplicator {
 
     if (url.pathname === '/complete' || url.pathname === '/callback') {
       const existing = this.getRecord(deliveryId, nowMs);
+      const expectedStatus =
+        typeof body.expectedStatus === 'string' && body.expectedStatus.trim()
+          ? body.expectedStatus.trim()
+          : null;
+      if (expectedStatus && (!existing || existing.status !== expectedStatus)) {
+        return jsonResponse({
+          ok: true,
+          recorded: false,
+          preservedStatus: existing?.status ?? null,
+        });
+      }
       this.putRecord({
         deliveryId,
         eventType:
@@ -1004,6 +1015,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
               eventType: meta.event,
               repo: meta.repo,
               status: 'queued',
+              expectedStatus: 'in_flight',
             }),
           });
         }
@@ -1149,6 +1161,7 @@ export async function handleQueueBatch(
               eventType: payload.meta.event,
               repo: payload.meta.repo,
               status: 'queued',
+              expectedStatus: 'dispatching_consumer',
             }),
           })
           .catch(() => {});

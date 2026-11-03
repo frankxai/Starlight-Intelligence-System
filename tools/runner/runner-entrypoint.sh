@@ -28,14 +28,46 @@ fi
 WORKSPACE_DIR="/home/starlight/workspace"
 cd "$WORKSPACE_DIR"
 
-echo " Cloning repository: $REPO (ref: $REF)..."
+REPO_URL="https://github.com/${REPO}.git"
 if [ -n "$GITHUB_TOKEN" ]; then
-  git clone --depth 1 --branch "$REF" "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git" repo
-else
-  git clone --depth 1 --branch "$REF" "https://github.com/${REPO}.git" repo
+  REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git"
 fi
 
+echo " Cloning repository: $REPO (ref: $REF)..."
+case "$REF" in
+  refs/heads/*)
+    NORMALIZED_REF="${REF#refs/heads/}"
+    git clone --depth 1 --branch "$NORMALIZED_REF" "$REPO_URL" repo
+    ;;
+  refs/tags/*)
+    NORMALIZED_REF="${REF#refs/tags/}"
+    git clone --depth 1 --branch "$NORMALIZED_REF" "$REPO_URL" repo
+    ;;
+  refs/*)
+    git init repo
+    git -C repo remote add origin "$REPO_URL"
+    git -C repo fetch --depth 1 origin "$REF"
+    git -C repo checkout --detach FETCH_HEAD
+    ;;
+  *)
+    if printf '%s' "$REF" | grep -Eq '^[0-9a-fA-F]{40}$'; then
+      git init repo
+      git -C repo remote add origin "$REPO_URL"
+      git -C repo fetch --depth 1 origin "$REF"
+      git -C repo checkout --detach FETCH_HEAD
+    else
+      git clone --depth 1 --branch "$REF" "$REPO_URL" repo
+    fi
+    ;;
+esac
+
 cd repo
+
+if [ -n "${COMMIT_SHA:-}" ] && ! printf '%s' "$COMMIT_SHA" | grep -Eq '^0+$' && [ "$(git rev-parse HEAD)" != "$COMMIT_SHA" ]; then
+  echo " Pinning workspace to exact commit SHA: $COMMIT_SHA..."
+  git fetch --depth 1 origin "$COMMIT_SHA"
+  git checkout --detach "$COMMIT_SHA"
+fi
 
 echo " Configuring dependency cache..."
 if [ -d "/cache/pnpm" ] && [ -w "/cache/pnpm" ]; then

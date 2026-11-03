@@ -329,6 +329,53 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
     assert.equal(acked, 2);
     assert.equal(retried, 0);
     assert.equal(cloudRunLaunches, 1, 'consumer-side idempotency must prevent duplicate Cloud Run launches');
+
+    // Race test: consumer runs DURING producer send() before producer /complete('queued') executes, followed by redelivery
+    let raceLaunches = 0;
+    globalThis.fetch = async () => {
+      raceLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let racedMessage = null;
+    const racingQueueEnv = {
+      ...queueEnv,
+      FLEET_DISPATCH_QUEUE: {
+        async send(msg) {
+          racedMessage = msg;
+          // Consumer claims and dispatches BEFORE send() resolves back to producer!
+          await worker.queue(
+            {
+              queue: 'starlight-fleet-dispatch',
+              messages: [{ id: 'race-1', body: msg, ack() {}, retry() {} }],
+            },
+            queueEnv,
+          );
+        },
+      },
+    };
+    const racePushRes = await handleRequest(
+      new Request('https://ingress.starlight.local/v1/github/events', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'push',
+          'x-github-delivery': 'delivery-queue-race-2',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pushBody),
+        },
+        body: pushBody,
+      }),
+      racingQueueEnv,
+    );
+    assert.equal(racePushRes.status, 202);
+    assert.ok(racedMessage);
+    // Subsequent queue redelivery after producer finished must NOT launch a second Cloud Run job
+    await worker.queue(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [{ id: 'race-2', body: racedMessage, ack() {}, retry() {} }],
+      },
+      queueEnv,
+    );
+    assert.equal(raceLaunches, 1, 'producer must not revert consumer dispatched state back to queued');
   } finally {
     globalThis.fetch = originalFetch;
   }
