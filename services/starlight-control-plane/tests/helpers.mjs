@@ -1,5 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import * as core from '../src/core.ts';
+import { migrateOutbox } from '../src/outbox.ts';
 
 export function memorySql() {
   const db = new DatabaseSync(':memory:');
@@ -18,5 +19,6 @@ export function memorySql() {
     },
   };
   core.migrate(sql);
+  migrateOutbox(sql);
   return sql;
 }
