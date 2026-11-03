@@ -716,3 +716,36 @@ test('/v1/runner/callback verifies timestamped HMAC receipt and /mcp serves auth
   assert.equal(mcpJson.result.structuredContent.found, true);
   assert.equal(mcpJson.result.structuredContent.receipt.status, 'runner_succeeded');
 });
+
+test('production src/worker.ts entrypoint exports only default handler and WebhookDeduplicator DO class, and ALLOWED_REPO_OWNERS filters external orgs', async () => {
+  const prodEntry = await import('../src/worker.ts');
+  assert.deepEqual(
+    Object.keys(prodEntry).sort(),
+    ['WebhookDeduplicator', 'default'],
+    'workerd entrypoint must not export primitive constants',
+  );
+
+  const foreignPush = JSON.stringify({
+    ref: 'refs/heads/main',
+    after: '1'.repeat(40),
+    repository: { full_name: 'untrusted-org/some-repo' },
+    sender: { login: 'someone' },
+  });
+  const res = await handleRequest(
+    new Request('https://ingress.starlight.local/webhook', {
+      method: 'POST',
+      headers: {
+        'x-github-event': 'push',
+        'x-hub-signature-256': computeHmacSha256(TEST_SECRET, foreignPush),
+      },
+      body: foreignPush,
+    }),
+    {
+      GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+      ALLOWED_REPO_OWNERS: 'frankxai,Starlight-Intelligence',
+    },
+  );
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.skipped, 'untrusted_repository_owner');
+});

@@ -70,6 +70,7 @@ export interface Env {
   GCP_SERVICE_ACCOUNT_TOKEN?: string;
   INGRESS_AUTH_BEARER?: string;
   RUNNER_CALLBACK_SECRET?: string;
+  ALLOWED_REPO_OWNERS?: string;
   DISPATCH_MODE?: 'direct' | 'queue';
   DEDUPLICATOR?: DurableObjectNamespaceLike;
   FLEET_DISPATCH_QUEUE?: QueueBindingLike<FleetDispatchMessage>;
@@ -733,6 +734,7 @@ async function dispatchToCloudRun(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(execPayload),
+      redirect: 'manual',
       signal: AbortSignal.timeout(20_000),
     });
 
@@ -1063,6 +1065,18 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     const meta = extractEventMetadata(eventType, payload);
     if (!meta) {
       return jsonResponse({ ok: true, skipped: 'untracked_event' });
+    }
+
+    if (env.ALLOWED_REPO_OWNERS?.trim()) {
+      const allowedOwners = new Set(
+        env.ALLOWED_REPO_OWNERS.split(',')
+          .map((item) => item.trim().toLowerCase())
+          .filter(Boolean),
+      );
+      const repoOwner = meta.repo.split('/')[0]?.trim().toLowerCase() || '';
+      if (!repoOwner || !allowedOwners.has(repoOwner)) {
+        return jsonResponse({ ok: true, skipped: 'untrusted_repository_owner' });
+      }
     }
 
     const needsRunner = shouldDispatchRunner(meta);

@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "starlight-fleet-ingress",
-  "main": "src/index.ts",
+  "main": "src/worker.ts",
   "compatibility_date": "2026-10-26",
   "compatibility_flags": ["nodejs_compat"],
   "keep_names": true,
@@ -11,6 +11,7 @@
     "GCP_REGION": "europe-west4",
     "CLOUD_RUN_JOB": "starlight-runner-job",
     "GCP_PROJECT_ID": "starlight-intelligence-estate",
+    "ALLOWED_REPO_OWNERS": "frankxai,Starlight-Intelligence",
     "DISPATCH_MODE": "direct"
   },
   "durable_objects": {
@@ -42,6 +43,7 @@
         "GCP_REGION": "europe-west4",
         "CLOUD_RUN_JOB": "starlight-runner-job",
         "GCP_PROJECT_ID": "starlight-intelligence-estate",
+        "ALLOWED_REPO_OWNERS": "frankxai,Starlight-Intelligence",
         "DISPATCH_MODE": "queue"
       },
       "durable_objects": {
