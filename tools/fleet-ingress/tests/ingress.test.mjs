@@ -836,9 +836,18 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   const repoRoot = path.resolve(testDir, '..', '..', '..');
   const dockerfilePath = path.join(repoRoot, 'tools', 'runner', 'Dockerfile.runner');
   const entrypointPath = path.join(repoRoot, 'tools', 'runner', 'runner-entrypoint.sh');
+  const deployRunnerPath = path.join(repoRoot, 'tools', 'runner', 'deploy-runner.sh');
 
   const dockerfile = fs.readFileSync(dockerfilePath, 'utf8');
   const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
+  const deployRunner = fs.readFileSync(deployRunnerPath, 'utf8');
+
+  // 0. deploy-runner.sh must bind a dedicated zero-project-IAM service account (never default Compute Engine SA)
+  // and mount any GCS cache volume read-only
+  assert.match(deployRunner, /RUNNER_SA_NAME="\$\{RUNNER_SA_NAME:-starlight-runner-sandbox\}"/);
+  assert.match(deployRunner, /--service-account="\$RUNNER_SA"/);
+  assert.match(deployRunner, /mount-path=\/cache\/pnpm,readonly=true/);
+  assert.doesNotMatch(deployRunner, /roles\/editor|roles\/owner|roles\/storage\.objectAdmin/);
 
   // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, add starlight to starlight-sandbox supplementary group, and setgid 2750 on /work
   assert.doesNotMatch(
@@ -883,6 +892,9 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   assert.match(entrypoint, /chgrp\s+-R\s+"\$SANDBOX_GROUP"\s+"\$\{STAGE_ROOT\}\/source"/);
   assert.match(entrypoint, /kill\s+-9\s+-1/);
   assert.match(entrypoint, /verify_no_surviving_sandbox_processes/);
+  assert.match(entrypoint, /--ignore-scripts/);
+  assert.match(entrypoint, /unshare\s+-rn/);
+  assert.match(entrypoint, /ISOLATED_SANDBOX_CMD/);
   assert.doesNotMatch(
     entrypoint,
     /openssl\s+dgst[^\n]*-hmac/,
@@ -901,29 +913,67 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   const bashCheck = spawnSync(bashBin, ['--version'], { encoding: 'utf8' });
   if (bashCheck.status === 0) {
     const syntaxCheck = spawnSync(bashBin, ['-n', entrypointPath], { encoding: 'utf8' });
-    assert.equal(syntaxCheck.status, 0, `bash -n failed: ${syntaxCheck.stderr}`);
+    assert.equal(syntaxCheck.status, 0, `bash -n entrypoint failed: ${syntaxCheck.stderr}`);
+    const deploySyntaxCheck = spawnSync(bashBin, ['-n', deployRunnerPath], { encoding: 'utf8' });
+    assert.equal(deploySyntaxCheck.status, 0, `bash -n deploy-runner.sh failed: ${deploySyntaxCheck.stderr}`);
 
-    // Substitution-attack + real startup sequence execution proof:
-    // 1) Execute the ACTUAL runner-entrypoint.sh script with a poisoned PNPM_HOME/node prepended to PATH
-    //    and verify the startup sequence (set -eo pipefail, PATH lock, unset, banner, credential scrub)
-    //    completes without readonly/syntax errors and reaches the deterministic fail-closed checks!
+    // Substitution-attack + real startup sequence + live ambient metadata isolation execution proof:
     const tmpPoisonDir = fs.mkdtempSync(path.join(repoRoot, 'tools', 'fleet-ingress', '.tmp-pnpm-poison-'));
+    let mockSaEmail = 'starlight-runner-sandbox@starlight-estate.iam.gserviceaccount.com';
+    const metaServer = http.createServer((req, res) => {
+      if (req.headers['metadata-flavor'] !== 'Google') {
+        res.writeHead(403, { Connection: 'close' });
+        res.end('Missing Metadata-Flavor:Google');
+        return;
+      }
+      if (req.url?.endsWith('/email')) {
+        res.writeHead(200, { 'Content-Type': 'text/plain', Connection: 'close' });
+        res.end(mockSaEmail);
+        return;
+      }
+      if (req.url?.endsWith('/token')) {
+        res.writeHead(200, { 'Content-Type': 'application/json', Connection: 'close' });
+        res.end('{"access_token":"ya29.SECRET_AMBIENT_SA_TOKEN","token_type":"Bearer"}');
+        return;
+      }
+      res.writeHead(404, { Connection: 'close' });
+      res.end('not found');
+    });
+    await new Promise((resolve) => metaServer.listen(0, '127.0.0.1', resolve));
+
+    const runBashAsync = (args, envOverrides) =>
+      new Promise((resolve, reject) => {
+        const child = spawn(bashBin, args, {
+          env: { ...process.env, ...envOverrides },
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (d) => {
+          stdout += d.toString('utf8');
+        });
+        child.stderr.on('data', (d) => {
+          stderr += d.toString('utf8');
+        });
+        child.on('error', reject);
+        child.on('close', (status) => resolve({ status, stdout, stderr }));
+      });
+
     try {
+      const { port: metaPort } = metaServer.address();
+      const metaBaseUrl = `http://127.0.0.1:${metaPort}`;
       const markerFile = path.join(tmpPoisonDir, 'pwned.marker');
       const fakeNode = path.join(tmpPoisonDir, 'node');
       fs.writeFileSync(fakeNode, `#!/usr/bin/env bash\necho PWNED > "${markerFile.replace(/\\/g, '/')}"\nexit 0\n`, { mode: 0o755 });
       const poisonPath = `${tmpPoisonDir}${path.delimiter}${process.env.PATH || ''}`;
 
-      const startupNoRepo = spawnSync(bashBin, [entrypointPath], {
-        env: {
-          ...process.env,
-          PATH: poisonPath,
-          PNPM_HOME: tmpPoisonDir,
-          NODE_OPTIONS: '--require=/tmp/evil.js',
-          STARLIGHT_REPO: '',
-          REPO: '',
-        },
-        encoding: 'utf8',
+      const startupNoRepo = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        NODE_OPTIONS: '--require=/tmp/evil.js',
+        STARLIGHT_REPO: '',
+        REPO: '',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
       });
       assert.equal(startupNoRepo.status, 1);
       assert.match(
@@ -933,15 +983,29 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
       );
       assert.doesNotMatch(startupNoRepo.stderr, /readonly variable/i);
 
-      const startupMissingSandbox = spawnSync(bashBin, [entrypointPath], {
-        env: {
-          ...process.env,
-          PATH: poisonPath,
-          PNPM_HOME: tmpPoisonDir,
-          STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
-          STARLIGHT_SANDBOX_USER: 'nonexistent-starlight-sandbox-99999',
-        },
-        encoding: 'utf8',
+      // Execution Proof A: Real runner-entrypoint.sh refuses default privileged Compute Engine SA before cloning!
+      mockSaEmail = '9988776655-compute@developer.gserviceaccount.com';
+      const defaultSaRefusal = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
+      });
+      assert.equal(defaultSaRefusal.status, 1);
+      assert.match(
+        defaultSaRefusal.stderr,
+        /privileged default Compute Engine service account/,
+        `expected default Compute SA refusal, got stderr: ${defaultSaRefusal.stderr}`,
+      );
+
+      // Restore dedicated least-privilege SA and verify fail-closed sandbox user check
+      mockSaEmail = 'starlight-runner-sandbox@starlight-estate.iam.gserviceaccount.com';
+      const startupMissingSandbox = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+        STARLIGHT_SANDBOX_USER: 'nonexistent-starlight-sandbox-99999',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
       });
       assert.equal(startupMissingSandbox.status, 1);
       assert.match(
@@ -950,7 +1014,78 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
         `expected fail-closed sandbox check after startup, got stderr: ${startupMissingSandbox.stderr}`,
       );
       assert.equal(fs.existsSync(markerFile), false, 'poisoned node shim must never execute');
+
+      // Execution Proof B & C: Extract the exact active metadata-isolation preflight block from runner-entrypoint.sh
+      // and execute against our live mock metadata server under (B) porous vs (C) network-isolated sandbox wrappers!
+      const toBashPath = (p) =>
+        p
+          .replace(/\\/g, '/')
+          .replace(/^([A-Za-z]):/, (_, drive) => `/${drive.toLowerCase()}`);
+
+      const isoBlockMatch = entrypoint.match(
+        /(# Enforce mandatory network & GCP metadata-server isolation[\s\S]*?GCP metadata token endpoint remained reachable[\s\S]*?\nfi)/,
+      );
+      assert.ok(isoBlockMatch, 'expected metadata-isolation preflight block in runner-entrypoint.sh');
+      const isoBlock = isoBlockMatch[1];
+
+      const porousBinDir = path.join(tmpPoisonDir, 'porous-bin');
+      fs.mkdirSync(porousBinDir, { recursive: true });
+      // Porous `sandbox` shim passes commands straight through WITHOUT blocking metadata HTTP access
+      fs.writeFileSync(
+        path.join(porousBinDir, 'sandbox'),
+        '#!/usr/bin/env bash\nshift # do\nshift # --\nexec "$@"\n',
+        { mode: 0o755 },
+      );
+      const cmdRanMarker = toBashPath(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker'));
+      const porousProbe = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail; export PATH="$1:/usr/local/bin:/usr/bin:/bin:/mingw64/bin"; SANDBOX_EXEC=(/usr/bin/env); METADATA_BASE_URL="$2"; ${isoBlock}\ntouch "$3"`,
+          '_',
+          toBashPath(porousBinDir),
+          metaBaseUrl,
+          cmdRanMarker,
+        ],
+        {},
+      );
+      assert.equal(porousProbe.status, 1, `porous sandbox leaving metadata reachable must abort fail-closed: ${porousProbe.stderr}`);
+      assert.match(porousProbe.stderr, /GCP metadata token endpoint remained reachable/);
+      assert.equal(fs.existsSync(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker')), false, 'untrusted command must never run when metadata is reachable');
+
+      // Enforced `sandbox` shim blocks outbound connections to the metadata endpoint (simulating Cloud Run sandboxLauncher / unshare -rn)
+      const isolatedBinDir = path.join(tmpPoisonDir, 'isolated-bin');
+      const isolatedCurlDir = path.join(tmpPoisonDir, 'isolated-netns-bin');
+      fs.mkdirSync(isolatedBinDir, { recursive: true });
+      fs.mkdirSync(isolatedCurlDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(isolatedCurlDir, 'curl'),
+        '#!/usr/bin/env bash\necho "curl: (7) Failed to connect: Network is unreachable" >&2\nexit 7\n',
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
+        path.join(isolatedBinDir, 'sandbox'),
+        `#!/usr/bin/env bash\nshift # do\nshift # --\nexport PATH="${toBashPath(isolatedCurlDir)}:$PATH"\nexec "$@"\n`,
+        { mode: 0o755 },
+      );
+      const stolenTokenNativePath = path.join(tmpPoisonDir, 'stolen-token.txt');
+      const stolenTokenFile = toBashPath(stolenTokenNativePath);
+      const enforcedProbe = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail; export PATH="$1:/usr/local/bin:/usr/bin:/bin:/mingw64/bin"; SANDBOX_EXEC=(/usr/bin/env); METADATA_BASE_URL="$2"; ${isoBlock}\n` +
+            `"\${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'curl -fsS -H "Metadata-Flavor: Google" "$1/computeMetadata/v1/instance/service-accounts/default/token" > "$2" 2>/dev/null || true' _ "$METADATA_BASE_URL" "$3"`,
+          '_',
+          toBashPath(isolatedBinDir),
+          metaBaseUrl,
+          stolenTokenFile,
+        ],
+        {},
+      );
+      assert.equal(enforcedProbe.status, 0, `isolated sandbox preflight failed: ${enforcedProbe.stderr}`);
+      const stolenContent = fs.existsSync(stolenTokenNativePath) ? fs.readFileSync(stolenTokenNativePath, 'utf8') : '';
+      assert.equal(stolenContent, '', 'sandboxed repository command must retrieve zero ambient service-account token bytes');
     } finally {
+      await new Promise((resolve) => metaServer.close(resolve));
       fs.rmSync(tmpPoisonDir, { recursive: true, force: true });
     }
   }

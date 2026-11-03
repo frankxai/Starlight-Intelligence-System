@@ -19,7 +19,15 @@ set -eo pipefail
 # Lock supervisor PATH to root-owned system directories and scrub loader/runtime hooks
 # so sandbox-writable directories (e.g. /home/starlight-sandbox/.local/share/pnpm) can never hijack supervisor binaries.
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+case "$(uname -s 2>/dev/null || true)" in
+  MINGW*|MSYS*|CYGWIN*) export PATH="${PATH}:/mingw64/bin" ;;
+esac
 unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH BASH_ENV ENV CDPATH PNPM_HOME
+
+if ! command -v curl >/dev/null 2>&1; then
+  echo "Error: curl is required for metadata-isolation preflight checks; refusing execution." >&2
+  exit 1
+fi
 
 TRUSTED_NODE_BIN=""
 for candidate_node in /usr/bin/node /usr/local/bin/node; do
@@ -47,10 +55,18 @@ SANDBOX_USER="${STARLIGHT_SANDBOX_USER:-starlight-sandbox}"
 # Capture supervisor-only credentials into unexported shell variables and scrub exported env.
 LOCAL_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 LOCAL_CALLBACK_SECRET="${STARLIGHT_RUNNER_SECRET:-${RUNNER_CALLBACK_SECRET:-}}"
-unset GITHUB_TOKEN STARLIGHT_RUNNER_SECRET RUNNER_CALLBACK_SECRET GCP_SERVICE_ACCOUNT_TOKEN
+METADATA_BASE_URL="${STARLIGHT_METADATA_BASE_URL:-http://169.254.169.254}"
+unset GITHUB_TOKEN STARLIGHT_RUNNER_SECRET RUNNER_CALLBACK_SECRET GCP_SERVICE_ACCOUNT_TOKEN STARLIGHT_METADATA_BASE_URL
 
 if [ -z "$REPO" ]; then
   echo "Error: No repository specified. Pass via STARLIGHT_REPO env or argument 1." >&2
+  exit 1
+fi
+
+# Refuse execution if the Cloud Run Job was misconfigured with the privileged default Compute Engine SA.
+ATTACHED_SA_EMAIL="$(curl -fsS --connect-timeout 1 --max-time 2 -H "Metadata-Flavor: Google" "${METADATA_BASE_URL}/computeMetadata/v1/instance/service-accounts/default/email" 2>/dev/null | tr -d '\r\n' || true)"
+if printf '%s' "$ATTACHED_SA_EMAIL" | grep -Eq -- '-compute@developer\.gserviceaccount\.com$'; then
+  echo "Error: Runner is attached to privileged default Compute Engine service account ($ATTACHED_SA_EMAIL); refusing execution." >&2
   exit 1
 fi
 
@@ -87,6 +103,34 @@ fi
 # Preflight check that UID transition succeeds with a clean environment before cloning.
 if ! "${SANDBOX_EXEC[@]}" /bin/bash -c 'test "$(id -u)" = "$1"' _ "$SANDBOX_UID"; then
   echo "Error: Sandbox UID transition verification failed; refusing execution." >&2
+  exit 1
+fi
+
+# Enforce mandatory network & GCP metadata-server isolation for all untrusted code execution
+# (Cloud Run gVisor `sandbox do --` when `run.googleapis.com/sandboxLauncher` is enabled, or Linux `unshare -rn` network namespace).
+SANDBOX_ISOLATION_MODE=""
+ISOLATED_SANDBOX_CMD=()
+if command -v sandbox >/dev/null 2>&1 && "${SANDBOX_EXEC[@]}" sandbox do -- /bin/true >/dev/null 2>&1; then
+  SANDBOX_ISOLATION_MODE="cloud-run-sandbox"
+  ISOLATED_SANDBOX_CMD=("${SANDBOX_EXEC[@]}" sandbox do -- /usr/bin/env "NPM_CONFIG_UNSAFE_PERM=true")
+elif command -v unshare >/dev/null 2>&1 && "${SANDBOX_EXEC[@]}" unshare -rn /bin/true >/dev/null 2>&1; then
+  SANDBOX_ISOLATION_MODE="linux-netns"
+  ISOLATED_SANDBOX_CMD=("${SANDBOX_EXEC[@]}" unshare -rn /usr/bin/env "NPM_CONFIG_UNSAFE_PERM=true" /bin/bash -c 'ip link set lo up >/dev/null 2>&1 || true; exec "$@"' _)
+else
+  echo "Error: Neither Cloud Run sandboxLauncher ('sandbox') nor Linux network namespace ('unshare -rn') is available to block metadata/egress; refusing fail-open execution." >&2
+  exit 1
+fi
+
+# Active preflight proof: verify curl is present inside sandbox AND untrusted executor cannot reach GCP metadata token endpoints!
+if ! "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'command -v curl >/dev/null 2>&1'; then
+  echo "Error: curl unavailable inside isolated sandbox ($SANDBOX_ISOLATION_MODE); refusing unverifiable metadata guard." >&2
+  exit 1
+fi
+if "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c '
+  curl -fsS --connect-timeout 1 --max-time 2 -H "Metadata-Flavor: Google" "$1/computeMetadata/v1/instance/service-accounts/default/token" >/dev/null 2>&1 ||
+  curl -fsS --connect-timeout 1 --max-time 2 -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" >/dev/null 2>&1
+' _ "$METADATA_BASE_URL"; then
+  echo "Error: GCP metadata token endpoint remained reachable inside '$SANDBOX_ISOLATION_MODE'; refusing untrusted execution." >&2
   exit 1
 fi
 
@@ -214,40 +258,70 @@ SANDBOX_REPO="${SANDBOX_HOME}/workspace/repo"
   mkdir -p "$(dirname "$1")"
   cp -RPp "$2" "$1"
   chmod -R u+rwX "$1"
-  if [ -d "/cache/pnpm" ] && [ -w "/cache/pnpm" ]; then
+  if [ -d "/cache/pnpm/store" ] && [ ! -w "/cache/pnpm" ]; then
+    mkdir -p "$HOME/.local/share/pnpm/store/v3"
+    cp -Rn /cache/pnpm/store/* "$HOME/.local/share/pnpm/store/v3/" 2>/dev/null || true
+    pnpm config set store-dir "$HOME/.local/share/pnpm/store/v3"
+  elif [ -d "/cache/pnpm" ] && [ -w "/cache/pnpm" ]; then
     pnpm config set store-dir /cache/pnpm/store
   elif [ -d "$HOME/.local/share/pnpm/store/v3" ]; then
     pnpm config set store-dir "$HOME/.local/share/pnpm/store/v3"
   fi
 ' _ "$SANDBOX_REPO" "${STAGE_ROOT}/source"
 
-# Remove supervisor staging tree before running untrusted dependency lifecycle scripts.
+# Remove supervisor staging tree before running dependency downloads or untrusted scripts.
 rm -rf "${STAGE_ROOT}/source"
 
-echo " Installing dependencies inside isolated '$SANDBOX_USER' sandbox..."
+echo " Downloading dependencies with lifecycle scripts disabled (--ignore-scripts)..."
 INSTALL_START=$(date +%s)
 "${SANDBOX_EXEC[@]}" /bin/bash -c '
   set -eo pipefail
   cd "$1"
+  # Remove unsafe repo-level package-manager hooks (.pnpmfile.cjs, .npmrc, .yarnrc*) across workspace
+  # and reject any manifest/lockfile referencing cloud link-local/metadata endpoints before fetching tarballs.
+  find . \( -name ".npmrc" -o -name ".pnpmfile.cjs" -o -name "pnpmfile.cjs" -o -name ".yarnrc*" \) -type f -delete
+  if find . \( -name "package.json" -o -name "pnpm-lock.yaml" -o -name "package-lock.json" -o -name "npm-shrinkwrap.json" -o -name "pnpm-workspace.yaml" \) -type f -exec grep -InE "(169\.254\.|metadata\.google\.internal|fe80:)" {} + >/dev/null 2>&1; then
+    echo "Error: Refusing repository manifest referencing cloud metadata or link-local endpoints." >&2
+    exit 1
+  fi
+  export NPM_CONFIG_IGNORE_SCRIPTS=true
+  export NPM_CONFIG_USERCONFIG=/dev/null
+  export COREPACK_ENABLE_NETWORK=0
+  export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
   if [ -f "pnpm-lock.yaml" ]; then
-    pnpm install --frozen-lockfile --prefer-offline || pnpm install
+    pnpm install --frozen-lockfile --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true --prefer-offline || \
+      pnpm install --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true
   elif [ -f "package-lock.json" ]; then
-    npm ci --prefer-offline || npm install
+    npm ci --ignore-scripts --prefer-offline || npm install --ignore-scripts
   else
-    npm install
+    npm install --ignore-scripts
+  fi
+' _ "$SANDBOX_REPO"
+reap_sandbox_processes
+
+echo " Running package rebuild inside metadata/network-isolated sandbox ($SANDBOX_ISOLATION_MODE)..."
+"${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c '
+  set -eo pipefail
+  cd "$1"
+  export COREPACK_ENABLE_NETWORK=0
+  export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+  if [ -f "pnpm-lock.yaml" ]; then
+    pnpm rebuild
+  else
+    npm rebuild
   fi
 ' _ "$SANDBOX_REPO"
 reap_sandbox_processes
 INSTALL_DURATION=$(( $(date +%s) - INSTALL_START ))
-echo " Dependency install finished in ${INSTALL_DURATION}s"
+echo " Dependency install & isolated rebuild finished in ${INSTALL_DURATION}s"
 
-echo " Executing Verification Command inside '$SANDBOX_USER': $COMMAND"
+echo " Executing Verification Command inside metadata-isolated '$SANDBOX_USER' ($SANDBOX_ISOLATION_MODE): $COMMAND"
 TASK_TIMEOUT="${STARLIGHT_TIMEOUT:-300s}"
 START_TIME=$(date +%s)
 EXIT_CODE=0
 
-# Execute with process timeout protection inside the unprivileged sandbox identity
-if timeout -k 10s "$TASK_TIMEOUT" "${SANDBOX_EXEC[@]}" /bin/bash -c 'cd "$1" && eval "$2"' _ "$SANDBOX_REPO" "$COMMAND"; then
+# Execute with process timeout protection inside the network- and metadata-isolated sandbox
+if timeout -k 10s "$TASK_TIMEOUT" "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'cd "$1" && eval "$2"' _ "$SANDBOX_REPO" "$COMMAND"; then
   echo " Verification PASSED"
   STATUS="pass"
 else

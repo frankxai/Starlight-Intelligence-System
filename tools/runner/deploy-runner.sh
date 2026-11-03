@@ -38,27 +38,44 @@ gcloud builds submit . \
   --tag="$IMAGE_TAG" \
   --project="$PROJECT_ID"
 
-# 4. Optional Cloud Storage FUSE Persistent Volume for Zero-Network Dependency Caching
+# 4. Provision dedicated zero-project-IAM service account (never use default Compute Engine SA)
+RUNNER_SA_NAME="${RUNNER_SA_NAME:-starlight-runner-sandbox}"
+RUNNER_SA="${RUNNER_SERVICE_ACCOUNT:-${RUNNER_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}"
+if ! gcloud iam service-accounts describe "$RUNNER_SA" --project="$PROJECT_ID" >/dev/null 2>&1; then
+  echo " Creating least-privilege runner service account: $RUNNER_SA..."
+  gcloud iam service-accounts create "$RUNNER_SA_NAME" \
+    --display-name="Starlight Ephemeral Runner Sandbox (Zero Project IAM)" \
+    --description="Isolated Cloud Run Jobs identity with zero project-wide IAM roles" \
+    --project="$PROJECT_ID"
+fi
+
+# 5. Optional read-only Cloud Storage FUSE Volume for Dependency Seed Cache
 VOLUME_ARGS=()
 CACHE_BUCKET="${GCS_CACHE_BUCKET:-${PROJECT_ID}-starlight-runner-cache}"
 
 if gcloud storage buckets describe "gs://${CACHE_BUCKET}" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  echo " Attaching Cloud Storage cache volume from gs://${CACHE_BUCKET}..."
+  echo " Attaching read-only Cloud Storage cache volume from gs://${CACHE_BUCKET}..."
+  gcloud storage buckets add-iam-policy-binding "gs://${CACHE_BUCKET}" \
+    --member="serviceAccount:${RUNNER_SA}" \
+    --role="roles/storage.objectViewer" \
+    --project="$PROJECT_ID" >/dev/null
   VOLUME_ARGS+=(
     --add-volume="name=pnpm-cache,type=cloud-storage,bucket=${CACHE_BUCKET}"
-    --add-volume-mount="volume=pnpm-cache,mount-path=/cache/pnpm"
+    --add-volume-mount="volume=pnpm-cache,mount-path=/cache/pnpm,readonly=true"
   )
 else
   echo " Note: Persistent cache bucket gs://${CACHE_BUCKET} not detected. (Runner will use image-baked store)."
   echo " To enable persistent FUSE cache across runs: gcloud storage buckets create gs://${CACHE_BUCKET} --location=${REGION}"
 fi
 
-# 5. Create or Update Cloud Run Job
-echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs)..."
+# 6. Create or Update Cloud Run Job (Gen2 + dedicated least-privilege service account)
+echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs, SA=$RUNNER_SA)..."
 if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
   gcloud run jobs update "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
+    --service-account="$RUNNER_SA" \
+    --execution-environment=gen2 \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
@@ -69,6 +86,8 @@ else
   gcloud run jobs create "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
+    --service-account="$RUNNER_SA" \
+    --execution-environment=gen2 \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
