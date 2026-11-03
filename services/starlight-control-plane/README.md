@@ -5,7 +5,7 @@ Codex, Hermes, claude.ai routines, Claude managed agents, Cloudflare and Vercel 
 as a single SQLite-backed Durable Object, so leases, path collisions, human gates and
 maker ≠ checker are decided in one serialized place.
 
-Author: Claude (Opus 5.5), 2026-10-30. Review state: queue passed Codex review (round 7); deploy tooling passed Codex review (round 3, P2/P3 follow-ups fixed after); not deployed.
+Author: Claude (Opus 5.5), 2026-10-30; events and triggers 2026-11-03. Review state: queue passed Codex review (round 7); deploy tooling passed Codex review (round 3, P2/P3 follow-ups fixed after); not deployed.
 
 ## Why
 
@@ -101,9 +101,12 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/ops.ts`: one operation in, one `{status, body}` out.
 - `src/handler.ts`: authentication and routing.
 - `src/mcp.ts`: the MCP endpoint, one tool per queue operation.
-- `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry.
+- `src/index.ts`: the Worker and the `ControlPlane` Durable Object (one instance, `estate`), with one alarm armed for the next lease expiry or outbox retry, and the cron handler.
+- `src/events.ts`: GitHub event normalisation and the routing rules (pure).
+- `src/github.ts`: webhook signature check and the GitHub App client (App JWT, installation tokens).
+- `src/outbox.ts`: delivery dedupe, the outbox and its retrying drain.
 - `scripts/cp.mjs`: shell client. `scripts/mint-tokens.mjs`: token minting. `scripts/smoke.mjs`: post-deploy check.
-- `tests/`: 53 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 78 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
@@ -156,11 +159,49 @@ wrangler dev --port 8799 --persist-to "$env:TEMP\cp\state" --var "AGENT_TOKENS:$
 ```
 and point `smoke.mjs` and `cp.mjs` at `http://127.0.0.1:8799`.
 
+## GitHub events and agent triggers
+
+The control plane is also the estate's one GitHub App webhook. `POST /events/github` verifies the
+App signature, turns each event into a decision (`src/events.ts`), and records the delivery and its
+actions in one transaction. Remote actions go through an outbox that retries with backoff (30 s
+doubling to 1 h, eight attempts), because GitHub never redelivers a failed webhook by itself.
+
+| Event | Decision |
+|---|---|
+| PR opened, reopened, ready or pushed (not draft) on a non-OpenAI agent branch | comment `@codex review`, so the real Codex bot is the checker |
+| Same, on a `codex/` or `agent/codex/` branch | enqueue a review task that no `openai` worker can lease |
+| Codex review at the current head with P0-P2 findings or changes requested | enqueue a fix task, locked to the PR's changed files |
+| Codex passes the head, or the check suite goes green | look up live state; if checks and Codex both passed the head, enqueue a land task through `pr-gate`, leasable only by another provider than the maker |
+| Check suite fails or times out | enqueue a fix-CI task on the PR's files |
+| Issue labelled `agent:codex` / `agent:jules` / `agent:claude` or `agent:any` | `@codex` comment / `jules` label / queue task |
+| Every day 06:00 UTC | enqueue the `recurring` tasks from `ROUTING` (research, competitor reads, repo health) |
+
+Drafts, human branches, Dependabot, repos missing from `ROUTING.repos`, and the App's own events do
+nothing. Every task the router creates still passes the queue's gates and tripwire, so money,
+publishing, secrets and workflow edits wait for a human. `GET /v1/outbox` shows pending and failed
+actions.
+
+### Wiring it (Frank's steps; not done)
+
+1. **Create a GitHub App** on the owner account(s): webhook URL `https://cp.<your-domain>/events/github`,
+   a 32+ character webhook secret, permissions Pull requests and Issues read/write, Checks and
+   Contents read, events Pull request, Pull request review, Check suite, Issues. Install it on the
+   repos the router should act on.
+2. **Convert its key** (WebCrypto reads PKCS#8 only):
+   `openssl pkcs8 -topk8 -nocrypt -in app.private-key.pem -out app.pk8.pem`.
+3. **Secrets:** `wrangler secret put GITHUB_WEBHOOK_SECRET`, `GITHUB_APP_ID`, and
+   `Get-Content app.pk8.pem -Raw | wrangler secret put GITHUB_APP_PRIVATE_KEY`. Then delete both PEM files.
+4. **Routing:** in `wrangler.jsonc` `vars.ROUTING`, list the `owner/name` repos to opt in, set
+   `selfLogins` to the App's bot login (`<app-slug>[bot]`), and add `recurring` tasks. Deploy.
+5. **Retire the older routers** once deliveries show up here: point `frankxai-ci-wake`'s App at
+   this URL only if the Railway runner wake is added as a rule (it is not yet), and leave
+   `starlight-fleet-ingress` to its Cloud Run job role (Codex's draft PR #533).
+
 ## Next slices
 
 1. **OAuth for the MCP endpoint** (`@cloudflare/workers-oauth-provider`), so claude.ai routines can attach it as a connector. They reach tools through connectors, not raw egress.
 2. **Bridge.** Make `starlight-bridge` `enqueue_task` write through to this queue, and give the queen a claim loop. The local queue becomes a cache.
-3. **Retire the in-memory lease API** in `starlight-cloud-worker` once agents claim here.
+3. **Railway runner wake** as a rule here, so `frankxai-ci-wake` can retire. (The in-memory lease API in `starlight-cloud-worker` now answers 410 and points here.)
 4. **Read model.** Mirror events to D1 for the Observatory and the systems map; the Durable Object stays the only writer.
 
 Verified in workerd on 2026-10-30 (wrangler 4.152.0, `wrangler dev`, local SQLite Durable
