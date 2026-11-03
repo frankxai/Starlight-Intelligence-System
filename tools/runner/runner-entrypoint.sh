@@ -16,6 +16,19 @@
 
 set -eo pipefail
 
+# Lock supervisor PATH to root-owned system directories and scrub loader/runtime hooks
+# so sandbox-writable directories (e.g. /home/starlight-sandbox/.local/share/pnpm) can never hijack supervisor binaries.
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH BASH_ENV ENV SHELLOPTS CDPATH PNPM_HOME
+
+TRUSTED_NODE_BIN=""
+for candidate_node in /usr/bin/node /usr/local/bin/node; do
+  if [ -x "$candidate_node" ] && [ "$(stat -c '%u' "$candidate_node" 2>/dev/null || echo 0)" = "0" ]; then
+    TRUSTED_NODE_BIN="$candidate_node"
+    break
+  fi
+done
+
 echo "=========================================================="
 echo " Starlight Sovereign Runner — Initializing Scale-to-Zero Task"
 echo " Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
@@ -260,9 +273,14 @@ if [ -n "$CALLBACK_URL" ]; then
     CALLBACK_STATUS="succeeded"
   fi
 
-  # Sign and dispatch receipt inside Node.js reading LOCAL_CALLBACK_SECRET over stdin (fd 0)
+  if [ -z "$TRUSTED_NODE_BIN" ]; then
+    echo "Error: Trusted root-owned Node binary (/usr/bin/node or /usr/local/bin/node) not found; refusing callback signing." >&2
+    exit 1
+  fi
+
+  # Sign and dispatch receipt inside root-owned TRUSTED_NODE_BIN reading LOCAL_CALLBACK_SECRET over stdin (fd 0)
   # from bash builtin `printf` so the secret never appears in any process argv (/proc/<pid>/cmdline).
-  printf '%s' "$LOCAL_CALLBACK_SECRET" | node -e '
+  printf '%s' "$LOCAL_CALLBACK_SECRET" | "$TRUSTED_NODE_BIN" -e '
     const crypto = require("node:crypto");
     const fs = require("node:fs");
     const secret = fs.readFileSync(0, "utf8");

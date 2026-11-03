@@ -852,8 +852,29 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
     '/work must carry setgid 2750 with group starlight-sandbox',
   );
   assert.match(dockerfile, /^USER\s+starlight\s*$/m, 'container default USER must be starlight');
+  assert.doesNotMatch(
+    dockerfile,
+    /^ENV\s+PATH=.*starlight-sandbox/m,
+    'supervisor container ENV PATH must never prepend sandbox-writable PNPM_HOME',
+  );
+  assert.match(
+    dockerfile,
+    /^ENV\s+PATH="\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin"\s*$/m,
+    'supervisor container ENV PATH must be locked to root-owned system directories',
+  );
 
-  // 2. Entrypoint must assign sandbox group on staging, reap surviving sandbox processes, and never pass secrets in argv
+  // 2. Entrypoint must lock supervisor PATH, resolve root-owned TRUSTED_NODE_BIN, assign sandbox group on staging,
+  // reap surviving sandbox processes, and never pass secrets in argv
+  assert.match(
+    entrypoint,
+    /^export PATH="\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin"\s*$/m,
+  );
+  assert.match(entrypoint, /"\$TRUSTED_NODE_BIN"\s+-e\s+'/);
+  assert.doesNotMatch(
+    entrypoint,
+    /\|\s*node\s+-e\b/,
+    'callback signing must invoke root-owned $TRUSTED_NODE_BIN rather than bare PATH-resolved node',
+  );
   assert.match(entrypoint, /chgrp\s+-R\s+"\$SANDBOX_GROUP"\s+"\$\{STAGE_ROOT\}\/source"/);
   assert.match(entrypoint, /kill\s+-9\s+-1/);
   assert.match(entrypoint, /verify_no_surviving_sandbox_processes/);
@@ -869,18 +890,49 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   );
   assert.match(entrypoint, /GIT_CONFIG_VALUE_0="Authorization: Basic \$\{AUTH_B64\}"/);
 
-  // 3. Validate bash syntax of runner-entrypoint.sh when bash is installed
+  // 3. Validate bash syntax + poisoned PNPM_HOME/node substitution defense when bash is installed
   const gitBashWin = 'C:\\Program Files\\Git\\bin\\bash.exe';
   const bashBin = process.platform === 'win32' && fs.existsSync(gitBashWin) ? gitBashWin : 'bash';
   const bashCheck = spawnSync(bashBin, ['--version'], { encoding: 'utf8' });
   if (bashCheck.status === 0) {
     const syntaxCheck = spawnSync(bashBin, ['-n', entrypointPath], { encoding: 'utf8' });
     assert.equal(syntaxCheck.status, 0, `bash -n failed: ${syntaxCheck.stderr}`);
+
+    // Substitution-attack execution proof: place an executable `node` shim in a simulated sandbox PNPM_HOME
+    // prepended to PATH, run the supervisor's startup PATH reset + TRUSTED_NODE_BIN lookup, and prove the
+    // poisoned shim is stripped from PATH and never resolved!
+    const tmpPoisonDir = fs.mkdtempSync(path.join(repoRoot, 'tools', 'fleet-ingress', '.tmp-pnpm-poison-'));
+    try {
+      const markerFile = path.join(tmpPoisonDir, 'pwned.marker');
+      const fakeNode = path.join(tmpPoisonDir, 'node');
+      fs.writeFileSync(fakeNode, `#!/usr/bin/env bash\necho PWNED > "${markerFile.replace(/\\/g, '/')}"\nexit 0\n`, { mode: 0o755 });
+      const poisonPath = `${tmpPoisonDir}${path.delimiter}${process.env.PATH || ''}`;
+      const guardProbe = spawnSync(
+        bashBin,
+        [
+          '-c',
+          'export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"; unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH PNPM_HOME; resolved="$(command -v node 2>/dev/null || true)"; printf "%s" "$resolved"',
+        ],
+        {
+          env: { ...process.env, PATH: poisonPath, PNPM_HOME: tmpPoisonDir },
+          encoding: 'utf8',
+        },
+      );
+      assert.equal(guardProbe.status, 0);
+      assert.equal(
+        guardProbe.stdout.includes('.tmp-pnpm-poison-'),
+        false,
+        `poisoned PNPM_HOME remained on supervisor PATH: ${guardProbe.stdout}`,
+      );
+      assert.equal(fs.existsSync(markerFile), false, 'poisoned node shim must never execute');
+    } finally {
+      fs.rmSync(tmpPoisonDir, { recursive: true, force: true });
+    }
   }
 
   // 4. Execute the exact Node stdin HMAC callback signer against a live local HTTP listener
   // and prove: (a) process.argv excludes secret & signature, (b) /v1/runner/callback verifies the signature!
-  const signerMatch = entrypoint.match(/node -e '([\s\S]*?)' -- \\/);
+  const signerMatch = entrypoint.match(/"\$TRUSTED_NODE_BIN" -e '([\s\S]*?)' -- \\/);
   assert.ok(signerMatch, 'expected inline Node stdin callback signer in runner-entrypoint.sh');
   const signerScript = signerMatch[1];
 
