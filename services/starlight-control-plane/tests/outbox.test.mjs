@@ -15,8 +15,11 @@ function fakeApi(over = {}) {
   return {
     calls,
     comment: async (...a) => { calls.push(['comment', ...a]); },
+    hasComment: async () => false,
     addLabels: async (...a) => { calls.push(['label', ...a]); },
-    prFiles: async () => ['src/a.ts', 'src/b.ts', 'README.md'],
+    prFiles: async () => ({ files: ['src/a.ts', 'src/b.ts', 'README.md'], complete: true }),
+    issue: async () => ({ title: 'Add a search box', body: 'Put a search box on the docs page.', open: true }),
+    permission: async () => 'write',
     prState: async () => ({ headSha: 'd'.repeat(40), draft: false, open: true, branch: 'agent/claude/x', checksPassed: true, codexPassedHead: true }),
     ...over,
   };
@@ -55,7 +58,8 @@ test('drain performs remote actions and enqueues PR work on its changed files', 
     { type: 'enqueue_pr', owner: 'frankxai', repo: 'kernel', number: 1, task: { id: 'gh:x.fix', title: 'Fix it', doneCondition: 'Threads answered', priority: 2, repo: 'kernel', gates: ['none'] } },
   ], NOW, newId);
   assert.deepEqual(await drain(sql, api, ROUTING, NOW, newId), { done: 2, retried: 0, failed: 0 });
-  assert.deepEqual(api.calls[0], ['comment', 'frankxai', 'kernel', 1, '@codex review']);
+  assert.deepEqual(api.calls[0].slice(0, 4), ['comment', 'frankxai', 'kernel', 1]);
+  assert.match(api.calls[0][4], /^@codex review\n\n<!-- starlight-cp:00000000-0000-0000-0000-000000000001:\d+ -->$/);
   assert.deepEqual(core.getTask(sql, 'gh:x.fix').paths, ['src/a.ts', 'src/b.ts', 'README.md']);
   assert.equal(nextDue(sql), null);
 });
@@ -99,4 +103,66 @@ test('a task the queue refuses is recorded, not retried forever', () => {
   const bad = { type: 'enqueue', task: { ...enqueueAction.task, id: 'gh:bad', priority: 'high' } };
   const r = ingest(sql, DELIVERY, [bad], NOW, newId);
   assert.match(r.results[0].refused, /priority must be an integer/);
+});
+
+test('workers claim only the kinds they ask for', () => {
+  const sql = memorySql();
+  const producer = core.SYSTEM_PRODUCER;
+  core.enqueue(sql, producer, { id: 'land-1', title: 'Land it', doneCondition: 'Merged', priority: 1, repo: 'kernel', paths: ['.starlight/land/pr-1'], gates: ['none'], kind: 'land' }, NOW, newId);
+  core.enqueue(sql, producer, { id: 'fix-1', title: 'Fix it', doneCondition: 'Green', priority: 2, repo: 'kernel', paths: ['src'], gates: ['none'], kind: 'fix' }, NOW, newId);
+  const sandbox = { agentId: 'cf-claude', harness: 'cloudflare-sandbox', provider: 'anthropic', roles: ['worker'] };
+  assert.equal(core.claim(sql, sandbox, { kinds: ['fix', 'review'] }, NOW, () => 'f').task.id, 'fix-1');
+  assert.equal(core.claim(sql, sandbox, { kinds: ['fix', 'review'] }, NOW, () => 'g').task, null);
+  assert.throws(() => core.enqueue(sql, producer, { title: 'x', doneCondition: 'y', priority: 1, repo: 'kernel', paths: ['a'], gates: ['none'], kind: 'Bad Kind' }, NOW, newId), /kind must be/);
+});
+
+test('a comment that already went out before a crash is not posted again', async () => {
+  const sql = memorySql();
+  const api = fakeApi({ hasComment: async () => true });
+  ingest(sql, DELIVERY, [{ type: 'comment', owner: 'frankxai', repo: 'kernel', number: 1, body: '@codex review' }], NOW, newId);
+  assert.equal((await drain(sql, api, ROUTING, NOW, newId)).done, 1);
+  assert.equal(api.calls.length, 0);
+});
+
+test('an incomplete file list locks the whole repository', () => {
+  assert.deepEqual(lockPaths(['src/a.ts'], false), ['.']);
+});
+
+const dispatch = (label, sender = 'frankxai') => ({ type: 'dispatch_issue', owner: 'frankxai', repo: 'kernel', number: 3, label, sender });
+
+test('issue dispatch needs a sender who can write', async () => {
+  const sql = memorySql();
+  ingest(sql, DELIVERY, [dispatch('agent:claude', 'drive-by')], NOW, newId);
+  await drain(sql, fakeApi({ permission: async () => 'read' }), ROUTING, NOW, newId);
+  assert.deepEqual(core.status(sql).counts, {});
+});
+
+test('issue dispatch reads the body: sensitive asks become a held gate task, not agent work', async () => {
+  const sql = memorySql();
+  const api = fakeApi({ issue: async () => ({ title: 'Small fix', body: 'Also change the pricing on the checkout page.', open: true }) });
+  ingest(sql, DELIVERY, [dispatch('agent:codex')], NOW, newId);
+  await drain(sql, api, ROUTING, NOW, newId);
+  assert.equal(api.calls.length, 0, 'Codex is not asked');
+  const gate = core.getTask(sql, 'gh:frankxai.kernel.issue-3.gate');
+  assert.equal(gate.state, 'held');
+  assert.deepEqual(gate.gates, ['money']);
+});
+
+test('clean issue dispatch reaches Codex, Jules or the queue', async () => {
+  const sql = memorySql();
+  const api = fakeApi();
+  ingest(sql, DELIVERY, [dispatch('agent:codex'), dispatch('agent:jules'), dispatch('agent:claude')], NOW, newId);
+  await drain(sql, api, ROUTING, NOW, newId);
+  assert.match(api.calls[0][4], /^@codex Implement/);
+  assert.deepEqual(api.calls[1], ['label', 'frankxai', 'kernel', 3, ['jules']]);
+  const build = core.getTask(sql, 'gh:frankxai.kernel.issue-3.build');
+  assert.match(build.title, /Add a search box/);
+  assert.equal(build.kind, 'build');
+});
+
+test('tasks created before kind and excludeProvider existed stay idempotent', () => {
+  const sql = memorySql();
+  const legacy = { id: 'legacy-1', title: 'Old', doneCondition: 'Done', priority: 3, repo: 'kernel', paths: ['src'], gates: ['none'] };
+  core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW, newId);
+  assert.equal(core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW + 1, newId).duplicate, true);
 });

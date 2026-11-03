@@ -28,7 +28,7 @@ test('verifySignature accepts the real signature and nothing else', async () => 
 const ROUTING = JSON.stringify({ repos: ['frankxai/kernel'], codexBot: 'codex[bot]', selfLogins: ['me[bot]'] });
 const PAYLOAD = JSON.stringify({
   action: 'opened', repository: { full_name: 'frankxai/kernel' }, sender: { login: 'frankxai' },
-  pull_request: { number: 9, html_url: 'https://github.com/frankxai/kernel/pull/9', state: 'open', draft: false, head: { sha: 'a'.repeat(40), ref: 'agent/claude/z' } },
+  pull_request: { number: 9, html_url: 'https://github.com/frankxai/kernel/pull/9', state: 'open', draft: false, updated_at: new Date().toISOString(), head: { sha: 'a'.repeat(40), ref: 'agent/claude/z' } },
 });
 
 function harness() {
@@ -47,6 +47,13 @@ test('the webhook route acts once per delivery and refuses forged bodies', async
   assert.equal((await post(PAYLOAD, { 'x-hub-signature-256': await sign(PAYLOAD) })).status, 200);
   assert.equal((await post(PAYLOAD, { 'x-hub-signature-256': await sign('{}') })).status, 401);
   assert.equal((await post(PAYLOAD, { 'x-hub-signature-256': await sign(PAYLOAD), 'x-github-delivery': 'nope' })).status, 400);
+});
+
+test('a correctly signed but stale event is refused, closing the replay window', async () => {
+  const { post } = harness();
+  const old = PAYLOAD.replace(/"updated_at":"[^"]+"/, '"updated_at":"2026-01-01T00:00:00Z"');
+  const res = await post(old, { 'x-hub-signature-256': await sign(old) });
+  assert.equal((await res.json()).stale, true);
 });
 
 test('the webhook route is closed until routing and the secret are set', async () => {

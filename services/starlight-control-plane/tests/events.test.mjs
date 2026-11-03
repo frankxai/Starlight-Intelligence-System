@@ -8,8 +8,9 @@ const ROUTING = {
   selfLogins: ['starlight-control-plane[bot]'],
 };
 const repository = { full_name: 'frankxai/kernel' };
+const NOW_ISO = new Date().toISOString();
 const pr = (over = {}) => ({
-  number: 7, html_url: 'https://github.com/frankxai/kernel/pull/7', state: 'open', draft: false,
+  number: 7, html_url: 'https://github.com/frankxai/kernel/pull/7', state: 'open', draft: false, updated_at: NOW_ISO,
   head: { sha: 'a'.repeat(40), ref: 'agent/claude/x' }, ...over,
 });
 
@@ -56,7 +57,7 @@ test('codexAutoReview repos are not asked twice', () => {
 });
 
 const review = (state, body, commit = 'a'.repeat(40), login = 'chatgpt-codex-connector[bot]') => normalize('pull_request_review', {
-  action: 'submitted', repository, sender: { login }, pull_request: pr(), review: { state, body, commit_id: commit },
+  action: 'submitted', repository, sender: { login }, pull_request: pr(), review: { state, body, commit_id: commit, submitted_at: NOW_ISO },
 });
 
 test('Codex findings at the head become a fix task on the PR files', () => {
@@ -77,7 +78,7 @@ test('reviews of an old head, or by anyone but Codex, do nothing', () => {
 
 const suite = (conclusion, branch = 'agent/claude/x') => normalize('check_suite', {
   action: 'completed', repository, sender: { login: 'github-actions' },
-  check_suite: { conclusion, head_sha: 'a'.repeat(40), head_branch: branch, pull_requests: [{ number: 7 }] },
+  check_suite: { conclusion, head_sha: 'a'.repeat(40), head_branch: branch, pull_requests: [{ number: 7 }], updated_at: NOW_ISO },
 });
 
 test('red CI becomes a fix task; green asks for a land evaluation', () => {
@@ -89,18 +90,19 @@ test('red CI becomes a fix task; green asks for a land evaluation', () => {
 
 const labeled = (name) => normalize('issues', {
   action: 'labeled', repository, sender: { login: 'frankxai' }, label: { name },
-  issue: { number: 3, state: 'open', html_url: 'https://github.com/frankxai/kernel/issues/3' },
+  issue: { number: 3, state: 'open', html_url: 'https://github.com/frankxai/kernel/issues/3', updated_at: NOW_ISO },
 });
 
-test('issue labels dispatch Codex, Jules or the queue, and nothing else', () => {
-  const codex = plan(labeled('agent:codex'), ROUTING)[0];
-  assert.equal(codex.type, 'comment');
-  assert.match(codex.body, /^@codex /);
-  assert.deepEqual(plan(labeled('agent:jules'), ROUTING)[0], { type: 'label', owner: 'frankxai', repo: 'kernel', number: 3, labels: ['jules'] });
-  const build = plan(labeled('agent:claude'), ROUTING)[0];
-  assert.equal(build.type, 'enqueue');
-  assert.deepEqual(build.task.paths, ['.']);
+test('agent labels become one dispatch decided later against live GitHub; other labels do nothing', () => {
+  for (const name of ['agent:codex', 'agent:jules', 'agent:claude', 'agent:any']) {
+    assert.deepEqual(plan(labeled(name), ROUTING), [{ type: 'dispatch_issue', owner: 'frankxai', repo: 'kernel', number: 3, label: name, sender: 'frankxai' }]);
+  }
   assert.deepEqual(plan(labeled('bug'), ROUTING), []);
+});
+
+test('every signal carries when its subject last changed', () => {
+  assert.ok(Math.abs(labeled('agent:codex').at - Date.parse(NOW_ISO)) < 1);
+  assert.ok(Number.isFinite(suite('success').at));
 });
 
 test('recurring tasks carry the day in their id', () => {
