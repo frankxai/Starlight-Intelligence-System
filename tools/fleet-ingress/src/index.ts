@@ -15,6 +15,7 @@
 export const MAX_WEBHOOK_BYTES = 1_048_576; // 1 MiB ceiling on webhook payloads
 export const MAX_CALLBACK_BYTES = 65_536; // 64 KiB ceiling on runner receipts
 export const DEDUP_TTL_MS = 24 * 60 * 60 * 1000; // 24h idempotency window
+export const CONSUMER_DISPATCH_LEASE_MS = 30_000; // 30s expiring lease for queue consumer claims
 export const CALLBACK_SKEW_SECONDS = 60;
 
 export interface DurableObjectIdLike {
@@ -81,6 +82,8 @@ export interface WebhookEventMeta {
   ref?: string;
   sha?: string;
   prNumber?: number;
+  isFork?: boolean;
+  authorAssociation?: string;
   sender: string;
   installationId?: number;
 }
@@ -275,12 +278,25 @@ export function extractEventMetadata(
   let sha: string | undefined;
   let prNumber: number | undefined;
   let ref: string | undefined;
+  let isFork: boolean | undefined;
+  let authorAssociation: string | undefined;
   const action = payload.action;
 
   if (eventType === 'pull_request') {
     prNumber = payload.pull_request?.number;
     sha = payload.pull_request?.head?.sha;
     ref = payload.pull_request?.head?.ref;
+    const headRepoName = payload.pull_request?.head?.repo?.full_name;
+    const baseRepoName = payload.pull_request?.base?.repo?.full_name ?? repo;
+    isFork = Boolean(
+      payload.pull_request?.head?.repo?.fork === true ||
+        !headRepoName ||
+        headRepoName !== baseRepoName,
+    );
+    authorAssociation =
+      typeof payload.pull_request?.author_association === 'string'
+        ? payload.pull_request.author_association
+        : undefined;
   } else if (eventType === 'push') {
     sha = payload.after;
     ref = payload.ref;
@@ -298,17 +314,32 @@ export function extractEventMetadata(
     ref,
     sha,
     prNumber,
+    isFork,
+    authorAssociation,
     sender,
     installationId,
   };
 }
 
+const TRUSTED_PR_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
+
 /**
  * Determine if an event should spin up a scale-to-zero Cloud Run runner instance.
+ * Fails closed on external fork PRs and untrusted author associations so runner
+ * credentials never execute unreviewed third-party code.
  */
 export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
   if (meta.event === 'pull_request') {
-    return ['opened', 'synchronize', 'reopened'].includes(meta.action || '');
+    if (!['opened', 'synchronize', 'reopened'].includes(meta.action || '')) {
+      return false;
+    }
+    if (meta.isFork !== false) {
+      return false;
+    }
+    if (!meta.authorAssociation || !TRUSTED_PR_ASSOCIATIONS.has(meta.authorAssociation)) {
+      return false;
+    }
+    return true;
   }
   if (meta.event === 'push') {
     return meta.ref === 'refs/heads/main' || meta.ref?.startsWith('refs/tags/v') === true;
@@ -548,30 +579,56 @@ export class WebhookDeduplicator {
     }
 
     if (url.pathname === '/claim-dispatch') {
-      const existing = this.getRecord(deliveryId, nowMs);
+      const effectiveNowMs =
+        typeof body.nowMs === 'number' && Number.isFinite(body.nowMs) ? body.nowMs : nowMs;
+      const leaseMs =
+        typeof body.leaseMs === 'number' && body.leaseMs > 0
+          ? body.leaseMs
+          : CONSUMER_DISPATCH_LEASE_MS;
+      const existing = this.getRecord(deliveryId, effectiveNowMs);
+
       if (
         existing &&
-        (existing.status === 'dispatched' ||
-          existing.status === 'dispatching_consumer' ||
-          existing.status.startsWith('runner_'))
+        (existing.status === 'dispatched' || existing.status.startsWith('runner_'))
       ) {
         return jsonResponse({
           dispatchAllowed: false,
+          terminal: true,
           duplicate: true,
           status: existing.status,
         });
       }
+
+      if (existing && existing.status === 'dispatching_consumer') {
+        const elapsedMs = effectiveNowMs - existing.updatedMs;
+        if (elapsedMs < leaseMs) {
+          return jsonResponse({
+            dispatchAllowed: false,
+            terminal: false,
+            retryLater: true,
+            duplicate: false,
+            status: existing.status,
+            leaseRemainingMs: Math.max(1000, leaseMs - elapsedMs),
+          });
+        }
+      }
+
+      const recoveredStaleLease = existing?.status === 'dispatching_consumer';
       this.putRecord({
         deliveryId,
         eventType: typeof body.eventType === 'string' ? body.eventType : existing?.eventType ?? 'queued',
         repo: typeof body.repo === 'string' ? body.repo : existing?.repo ?? null,
         status: 'dispatching_consumer',
         detail: existing?.detail ?? null,
-        firstSeenMs: existing?.firstSeenMs ?? nowMs,
-        updatedMs: nowMs,
-        expiresAtMs: nowMs + ttlMs,
+        firstSeenMs: existing?.firstSeenMs ?? effectiveNowMs,
+        updatedMs: effectiveNowMs,
+        expiresAtMs: effectiveNowMs + ttlMs,
       });
-      return jsonResponse({ dispatchAllowed: true, duplicate: false });
+      return jsonResponse({
+        dispatchAllowed: true,
+        duplicate: false,
+        recoveredStaleLease,
+      });
     }
 
     if (url.pathname === '/complete' || url.pathname === '/callback') {
@@ -634,6 +691,7 @@ async function dispatchToCloudRun(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(execPayload),
+      signal: AbortSignal.timeout(20_000),
     });
 
     if (!gcpRes.ok) {
@@ -1096,6 +1154,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
 export async function handleQueueBatch(
   batch: MessageBatchLike<FleetDispatchMessage>,
   env: Env,
+  options: { nowMs?: number; leaseMs?: number } = {},
 ): Promise<void> {
   const stub = getDeduplicatorStub(env);
 
@@ -1115,15 +1174,34 @@ export async function handleQueueBatch(
             deliveryId: payload.deliveryId,
             eventType: payload.meta.event,
             repo: payload.meta.repo,
+            ...(typeof options.nowMs === 'number' ? { nowMs: options.nowMs } : {}),
+            ...(typeof options.leaseMs === 'number' ? { leaseMs: options.leaseMs } : {}),
           }),
         })
         .catch(() => null);
-      if (claimRes) {
-        const claimJson = (await claimRes.json().catch(() => ({}))) as Record<string, any>;
-        if (claimJson.dispatchAllowed === false) {
+
+      if (!claimRes || !claimRes.ok) {
+        message.retry({ delaySeconds: 15 });
+        continue;
+      }
+
+      const claimJson = (await claimRes.json().catch(() => null)) as Record<string, any> | null;
+      if (!claimJson) {
+        message.retry({ delaySeconds: 15 });
+        continue;
+      }
+
+      if (claimJson.dispatchAllowed === false) {
+        if (claimJson.terminal === true) {
           message.ack();
-          continue;
+        } else {
+          const delaySeconds = Math.max(
+            5,
+            Math.ceil(Number(claimJson.leaseRemainingMs ?? 15_000) / 1000),
+          );
+          message.retry({ delaySeconds });
         }
+        continue;
       }
     }
 

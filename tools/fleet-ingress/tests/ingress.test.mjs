@@ -116,12 +116,20 @@ test('verifySignature validates authentic GitHub webhook payload and rejects tam
   assert.equal(await verifySignature(body, 'invalid_prefix', TEST_SECRET), false);
 });
 
-test('extractEventMetadata and shouldDispatchRunner classify actionable CI events', () => {
+test('extractEventMetadata and shouldDispatchRunner classify actionable CI events and block untrusted fork PRs', () => {
   const prPayload = {
     action: 'opened',
     pull_request: {
       number: 42,
-      head: { sha: 'abcdef1234567890', ref: 'agent/jules/feature-x' },
+      author_association: 'OWNER',
+      head: {
+        sha: 'abcdef1234567890',
+        ref: 'agent/jules/feature-x',
+        repo: { full_name: 'frankxai/gencreator.ai', fork: false },
+      },
+      base: {
+        repo: { full_name: 'frankxai/gencreator.ai' },
+      },
     },
     repository: { full_name: 'frankxai/gencreator.ai' },
     sender: { login: 'frankxai' },
@@ -131,8 +139,31 @@ test('extractEventMetadata and shouldDispatchRunner classify actionable CI event
   assert.ok(meta);
   assert.equal(meta.repo, 'frankxai/gencreator.ai');
   assert.equal(meta.prNumber, 42);
+  assert.equal(meta.isFork, false);
   assert.equal(shouldDispatchRunner(meta), true);
   assert.equal(shouldDispatchRunner({ ...meta, action: 'closed' }), false);
+
+  // Fork PRs and untrusted external contributors MUST fail closed before privileged dispatch
+  const forkMeta = extractEventMetadata('pull_request', {
+    ...prPayload,
+    pull_request: {
+      ...prPayload.pull_request,
+      author_association: 'FIRST_TIME_CONTRIBUTOR',
+      head: {
+        sha: 'badcafe0000',
+        ref: 'main',
+        repo: { full_name: 'attacker/gencreator.ai', fork: true },
+      },
+    },
+  });
+  assert.ok(forkMeta);
+  assert.equal(forkMeta.isFork, true);
+  assert.equal(shouldDispatchRunner(forkMeta), false, 'fork PR must be blocked at ingress');
+  assert.equal(
+    shouldDispatchRunner({ ...meta, authorAssociation: 'CONTRIBUTOR' }),
+    false,
+    'non-collaborator PR must be blocked at ingress',
+  );
 
   const pushMeta = extractEventMetadata('push', {
     ref: 'refs/heads/main',
@@ -201,7 +232,18 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
 
   const prBody = JSON.stringify({
     action: 'opened',
-    pull_request: { number: 77, head: { sha: 'deadbeef', ref: 'agent/antigravity/cf' } },
+    pull_request: {
+      number: 77,
+      author_association: 'MEMBER',
+      head: {
+        sha: 'deadbeef',
+        ref: 'agent/antigravity/cf',
+        repo: { full_name: 'frankxai/Starlight-Intelligence-System', fork: false },
+      },
+      base: {
+        repo: { full_name: 'frankxai/Starlight-Intelligence-System' },
+      },
+    },
     repository: { full_name: 'frankxai/Starlight-Intelligence-System' },
     sender: { login: 'frankxai' },
   });
@@ -376,6 +418,166 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
       queueEnv,
     );
     assert.equal(raceLaunches, 1, 'producer must not revert consumer dispatched state back to queued');
+
+    // Lease recovery test 1: consumer terminates after /claim-dispatch before Cloud Run responds;
+    // redelivery during active lease retries (never acks), and redelivery after lease expiry recovers and dispatches!
+    const crashMsg = {
+      deliveryId: 'delivery-crash-lease-3',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    const stub = DEDUPLICATOR.get(DEDUPLICATOR.idFromName('estate-primary'));
+    const t0 = Date.now();
+    await stub.fetch('https://dedup.internal/claim-dispatch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        deliveryId: crashMsg.deliveryId,
+        eventType: crashMsg.meta.event,
+        repo: crashMsg.meta.repo,
+        nowMs: t0,
+        leaseMs: 30_000,
+      }),
+    });
+
+    let leaseAcked = 0;
+    let leaseRetried = 0;
+    let leaseLaunches = 0;
+    globalThis.fetch = async () => {
+      leaseLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+
+    // During active lease (t0 + 5s): must retry, NEVER ack and drop the task
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'crash-redeliver-active',
+            body: crashMsg,
+            ack() {
+              leaseAcked += 1;
+            },
+            retry() {
+              leaseRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 5_000, leaseMs: 30_000 },
+    );
+    assert.equal(leaseAcked, 0, 'active consumer lease must not ack redelivery before job completion');
+    assert.equal(leaseRetried, 1);
+    assert.equal(leaseLaunches, 0);
+
+    // After lease expires (t0 + 31s): recovers stale dispatching_consumer lease and dispatches once
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'crash-redeliver-expired',
+            body: crashMsg,
+            ack() {
+              leaseAcked += 1;
+            },
+            retry() {
+              leaseRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 31_000, leaseMs: 30_000 },
+    );
+    assert.equal(leaseAcked, 1);
+    assert.equal(leaseLaunches, 1, 'expired lease must recover and launch Cloud Run job');
+
+    // Lease recovery test 2: Cloud Run fails with 503 AND resetting DO status to queued throws a storage error;
+    // subsequent retry after lease expiry still recovers and dispatches!
+    const resetFailMsg = {
+      deliveryId: 'delivery-reset-fail-4',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    let failNextCloudRun = true;
+    let failCompleteWrite = true;
+    const flakyDedup = {
+      idFromName(name) {
+        return DEDUPLICATOR.idFromName(name);
+      },
+      get(id) {
+        const inner = DEDUPLICATOR.get(id);
+        return {
+          async fetch(input, init) {
+            const u = typeof input === 'string' ? input : input.url;
+            if (failCompleteWrite && u.endsWith('/complete')) {
+              failCompleteWrite = false;
+              throw new Error('simulated_do_reset_failure');
+            }
+            return inner.fetch(input, init);
+          },
+        };
+      },
+    };
+    let recoveredLaunches = 0;
+    globalThis.fetch = async () => {
+      if (failNextCloudRun) {
+        failNextCloudRun = false;
+        return new Response(JSON.stringify({ error: '503' }), { status: 503 });
+      }
+      recoveredLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let rfAcked = 0;
+    let rfRetried = 0;
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'rf-1',
+            body: resetFailMsg,
+            ack() {
+              rfAcked += 1;
+            },
+            retry() {
+              rfRetried += 1;
+            },
+          },
+        ],
+      },
+      { ...queueEnv, DEDUPLICATOR: flakyDedup },
+      { nowMs: t0 + 60_000, leaseMs: 30_000 },
+    );
+    assert.equal(rfAcked, 0);
+    assert.equal(rfRetried, 1);
+
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'rf-2',
+            body: resetFailMsg,
+            ack() {
+              rfAcked += 1;
+            },
+            retry() {
+              rfRetried += 1;
+            },
+          },
+        ],
+      },
+      { ...queueEnv, DEDUPLICATOR: flakyDedup },
+      { nowMs: t0 + 95_000, leaseMs: 30_000 },
+    );
+    assert.equal(rfAcked, 1);
+    assert.equal(recoveredLaunches, 1, 'failed reset write must still recover after lease expiry');
   } finally {
     globalThis.fetch = originalFetch;
   }
