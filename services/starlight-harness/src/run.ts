@@ -51,6 +51,26 @@ const MAX_COMMENT = 60_000;
 // Minutes of the time box kept back for push, PR and completion, so the lease is still alive
 // when the results go out.
 export const FINALIZE_MINUTES = 5;
+// A GitHub call aborts after 20 seconds, so one may start only while that much lease is left.
+const GITHUB_CALL_MS = 20_000;
+
+// Throws, so the step retries and renews the lease, when the next call could finish past it.
+export function before(deadline: number): void {
+  if (Date.now() + GITHUB_CALL_MS > deadline) throw new Error('the lease would expire during the next GitHub call');
+}
+
+// The marker search may page; it must not eat the time the write itself needs.
+export async function within<T>(deadline: number, work: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const stop = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error('the lease would expire before the check finished')), Math.max(0, deadline - GITHUB_CALL_MS - Date.now()));
+  });
+  try {
+    return await Promise.race([work, stop]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 const LEASE_MARGIN_MS = 30_000;
 const MIN_WRITE_MS = 60_000;
 // The prompt asks for the verdict as the last line, so a quoted "VERDICT: PASS" earlier in the text
@@ -141,12 +161,13 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
 
   let resultRef: string;
   if (plan.mode === 'review') {
-    const posted = await step.do('post review', () => leased(async () => {
+    const posted = await step.do('post review', () => leased(async (deadline) => {
       // GitHub has no idempotency key for comments; the marker lets a retried step find the one it posted.
       const marker = `<!-- starlight-harness:${task.id}:${task.attempt} -->`;
       const since = new Date(Date.now() - 6 * 3600_000).toISOString();
       const prUrl = `https://github.com/${plan.owner}/${plan.repo}/pull/${plan.prNumber}`;
-      if (await gh.hasComment(plan.owner, plan.repo, plan.prNumber!, marker, since)) return prUrl;
+      if (await within(deadline, gh.hasComment(plan.owner, plan.repo, plan.prNumber!, marker, since))) return prUrl;
+      before(deadline);
       const header = `Review by the Starlight ${harness} harness (Cloudflare sandbox) at ${setup.headSha}, for queue task \`${task.id}\`.\n\n`;
       const url = await gh.comment(plan.owner, plan.repo, plan.prNumber!, `${header}${summary.slice(0, MAX_COMMENT)}\n\n${marker}`);
       if (!url) throw new Error('GitHub accepted the review comment but returned no URL');
@@ -159,10 +180,14 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
     if (isLost(sha)) return stopLost();
     if (!sha) return release('the agent changed nothing');
     if (plan.mode === 'new-branch') {
-      const pr = await step.do('open draft PR', () => leased(async () =>
+      const pr = await step.do('open draft PR', () => leased(async (deadline) => {
         // A retry after GitHub created the PR but before the step was recorded finds that PR.
-        (await gh.findPullRequest(plan.owner, plan.repo, setup.branch)) ?? gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
-          `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`)));
+        const existing = await within(deadline, gh.findPullRequest(plan.owner, plan.repo, setup.branch));
+        if (existing) return existing;
+        before(deadline);
+        return gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
+          `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`);
+      }));
       if (isLost(pr)) return stopLost();
       resultRef = pr;
     } else {

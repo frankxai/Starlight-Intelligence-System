@@ -113,9 +113,16 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
   // is safe to retry: the stored bundle survives a crash, and pushing the same commit again is a
   // no-op for GitHub.
   async commitAndPush(branch: string, message: string, deadline: number): Promise<string | null> {
-    const pushed = this.ctx.storage.kv.get(PUSHED_KEY) as string | undefined;
-    if (pushed) return pushed;
     const repo = this.repo();
+    const pushed = this.ctx.storage.kv.get(PUSHED_KEY) as string | undefined;
+    if (pushed) {
+      // A crash after the push but before the cleanup below leaves the push container scoped.
+      if (this.container.running) {
+        await this.scope({ repo, pushBranch: null }).catch(() => undefined);
+        await this.container.destroy();
+      }
+      return pushed;
+    }
     const harness = this.harness ?? 'claude';
 
     let meta = this.ctx.storage.kv.get(BUNDLE_META_KEY) as BundleMeta | undefined;
@@ -150,6 +157,8 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
       // Only now, in a container that never ran agent code, may the gateway accept a push, and
       // only to this branch. No --force: GitHub refuses anything that is not a fast-forward.
       await this.scope({ repo, pushBranch: branch });
+      // Opening the scope takes time too; check again so the push never starts past the deadline.
+      if (deadline - Date.now() < 10_000) throw new Error('the lease ran short while opening the push scope');
       await this.mustRun(['timeout', '-k', '5', seconds(deadline - Date.now()), 'git', 'push', 'origin', `${meta.sha}:refs/heads/${branch}`], work);
       this.ctx.storage.kv.put(PUSHED_KEY, meta.sha);
       this.dropBundle();
