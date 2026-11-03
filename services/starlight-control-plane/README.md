@@ -106,7 +106,7 @@ Claude Code, Codex and Claude managed agents can send a bearer header. claude.ai
 - `src/github.ts`: webhook signature check and the GitHub App client (App JWT, installation tokens).
 - `src/outbox.ts`: delivery dedupe, the outbox and its retrying drain.
 - `scripts/cp.mjs`: shell client. `scripts/mint-tokens.mjs`: token minting. `scripts/smoke.mjs`: post-deploy check.
-- `tests/`: 78 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
+- `tests/`: 91 `node:test` cases against real SQL through `node:sqlite`. Run `node --test tests/*.test.mjs` (Node 24).
 
 ## Deploy (Frank's steps; not done)
 
@@ -173,11 +173,15 @@ doubling to 1 h, eight attempts), because GitHub never redelivers a failed webho
 | Codex review at the current head with P0-P2 findings or changes requested | enqueue a fix task, locked to the PR's changed files |
 | Codex passes the head, or the check suite goes green | look up live state; if checks and Codex both passed the head, enqueue a land task through `pr-gate`, leasable only by another provider than the maker |
 | Check suite fails or times out | enqueue a fix-CI task on the PR's files |
-| Issue labelled `agent:codex` / `agent:jules` / `agent:claude` or `agent:any` | `@codex` comment / `jules` label / queue task |
+| Issue labelled `agent:codex` / `agent:jules` / `agent:claude` or `agent:any` | checked live: the labeller must have write access, and the issue body passes the queue tripwire; then an `@codex` comment / `jules` label / build task. A body that mentions money, publishing, sends, DNS or secrets becomes a held `gate` task instead |
 | Every day 06:00 UTC | enqueue the `recurring` tasks from `ROUTING` (research, competitor reads, repo health) |
 
-Drafts, human branches, Dependabot, repos missing from `ROUTING.repos`, and the App's own events do
-nothing. Every task the router creates still passes the queue's gates and tripwire, so money,
+Drafts, human branches, Dependabot, repos missing from `ROUTING.repos`, the App's own events and
+events older than three days do nothing (delivery ids are kept seven days, so a replayed signed body
+finds no gap). Comments carry a marker naming their outbox row and a retry looks for it first, so a
+crash never posts twice. A land task needs GitHub's own `mergeable_state: clean`, every check run
+green, and no blocking Codex review across all pages. Every task has a `kind` (`review`, `fix`,
+`build`, `land`, `gate`, `research`, `general`), and workers claim only the kinds they can do. Every task the router creates still passes the queue's gates and tripwire, so money,
 publishing, secrets and workflow edits wait for a human. `GET /v1/outbox` shows pending and failed
 actions.
 
