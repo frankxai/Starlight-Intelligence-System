@@ -282,17 +282,19 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   if (!TASK_ID.test(id) || /^\.+$/.test(id)) throw new QueueError(400, 'id may use letters, digits, ".", ":", "_" and "-"');
   // The new fields join the fingerprint only when set, so a producer retrying a task it created
   // before they existed still gets the idempotent answer instead of a 409.
+  const base = [who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts];
   const fingerprint = JSON.stringify([
-    who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts,
-    ...(excludeProvider !== null ? [`exclude:${excludeProvider}`] : []), ...(kind !== 'general' ? [`kind:${kind}`] : []),
+    ...base, ...(excludeProvider !== null ? [`exclude:${excludeProvider}`] : []), ...(kind !== 'general' ? [`kind:${kind}`] : []),
   ]);
+  // Spellings written by earlier revisions of this branch, so their retries stay idempotent too.
+  const accepted = new Set([fingerprint, JSON.stringify([...base, excludeProvider]), JSON.stringify([...base, excludeProvider, kind])]);
 
   return sql.transaction(() => {
     // Producers retry on network errors; a supplied id makes enqueue idempotent, but only for the
     // same task. A different task under a reused id must not be reported as accepted.
     const existing = sql.exec('SELECT state, fingerprint FROM tasks WHERE id = ?', id)[0];
     if (existing) {
-      if (existing.fingerprint !== fingerprint) throw new QueueError(409, `id ${id} already names a different task`);
+      if (!accepted.has(existing.fingerprint as string)) throw new QueueError(409, `id ${id} already names a different task`);
       return { id, state: existing.state as TaskState, duplicate: true };
     }
     const tripped = tripwire(title, doneCondition, paths);

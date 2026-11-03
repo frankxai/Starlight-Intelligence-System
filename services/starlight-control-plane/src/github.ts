@@ -116,8 +116,9 @@ export class GithubApp implements GithubApi {
       if (batch.some((c) => (c.body ?? '').includes(marker))) return true;
       if (batch.length < 100) return false;
     }
-    // Could not see every comment; assume it went out rather than risk posting twice.
-    return true;
+    // Could not see every comment. Neither answer is safe, so the outbox retries and, after its last
+    // attempt, lists the action as failed for a human instead of guessing.
+    throw new Error(`more than ${MAX_PAGES * 100} comments since ${sinceIso} on #${number}; cannot check for the marker`);
   }
 
   async issue(owner: string, repo: string, number: number) {
@@ -132,6 +133,13 @@ export class GithubApp implements GithubApi {
 
   async defaultBranch(owner: string, repo: string): Promise<string> {
     return (await this.get<{ default_branch: string }>(owner, repo, `/repos/${owner}/${repo}`)).default_branch;
+  }
+
+  // The open PR whose head is this branch, so a retried "open PR" step finds the one it made.
+  async findPullRequest(owner: string, repo: string, head: string): Promise<string | null> {
+    const prs = await this.get<{ html_url: string }[]>(owner, repo,
+      `/repos/${owner}/${repo}/pulls?state=open&head=${encodeURIComponent(`${owner}:${head}`)}&per_page=1`);
+    return prs[0]?.html_url ?? null;
   }
 
   async openDraftPullRequest(owner: string, repo: string, head: string, base: string, title: string, body: string): Promise<string> {

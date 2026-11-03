@@ -68,6 +68,8 @@ export type Action =
 const HARNESS_PROVIDER: Record<string, string | null> = {
   claude: 'anthropic', codex: 'openai', chatgpt: 'openai', jules: 'google', gemini: 'google',
   antigravity: 'google', grok: 'xai', hermes: null, opencode: null, kilo: null,
+  // services/starlight-harness pushes as agent/cf-<harness>/...
+  'cf-claude': 'anthropic', 'cf-codex': 'openai',
 };
 
 export function makerFromBranch(branch: string | undefined): Maker | null {
