@@ -19,7 +19,7 @@ set -eo pipefail
 # Lock supervisor PATH to root-owned system directories and scrub loader/runtime hooks
 # so sandbox-writable directories (e.g. /home/starlight-sandbox/.local/share/pnpm) can never hijack supervisor binaries.
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH BASH_ENV ENV SHELLOPTS CDPATH PNPM_HOME
+unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH BASH_ENV ENV CDPATH PNPM_HOME
 
 TRUSTED_NODE_BIN=""
 for candidate_node in /usr/bin/node /usr/local/bin/node; do

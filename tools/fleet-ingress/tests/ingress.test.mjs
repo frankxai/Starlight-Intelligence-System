@@ -898,31 +898,51 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
     const syntaxCheck = spawnSync(bashBin, ['-n', entrypointPath], { encoding: 'utf8' });
     assert.equal(syntaxCheck.status, 0, `bash -n failed: ${syntaxCheck.stderr}`);
 
-    // Substitution-attack execution proof: place an executable `node` shim in a simulated sandbox PNPM_HOME
-    // prepended to PATH, run the supervisor's startup PATH reset + TRUSTED_NODE_BIN lookup, and prove the
-    // poisoned shim is stripped from PATH and never resolved!
+    // Substitution-attack + real startup sequence execution proof:
+    // 1) Execute the ACTUAL runner-entrypoint.sh script with a poisoned PNPM_HOME/node prepended to PATH
+    //    and verify the startup sequence (set -eo pipefail, PATH lock, unset, banner, credential scrub)
+    //    completes without readonly/syntax errors and reaches the deterministic fail-closed checks!
     const tmpPoisonDir = fs.mkdtempSync(path.join(repoRoot, 'tools', 'fleet-ingress', '.tmp-pnpm-poison-'));
     try {
       const markerFile = path.join(tmpPoisonDir, 'pwned.marker');
       const fakeNode = path.join(tmpPoisonDir, 'node');
       fs.writeFileSync(fakeNode, `#!/usr/bin/env bash\necho PWNED > "${markerFile.replace(/\\/g, '/')}"\nexit 0\n`, { mode: 0o755 });
       const poisonPath = `${tmpPoisonDir}${path.delimiter}${process.env.PATH || ''}`;
-      const guardProbe = spawnSync(
-        bashBin,
-        [
-          '-c',
-          'export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"; unset NODE_OPTIONS LD_PRELOAD LD_LIBRARY_PATH PNPM_HOME; resolved="$(command -v node 2>/dev/null || true)"; printf "%s" "$resolved"',
-        ],
-        {
-          env: { ...process.env, PATH: poisonPath, PNPM_HOME: tmpPoisonDir },
-          encoding: 'utf8',
+
+      const startupNoRepo = spawnSync(bashBin, [entrypointPath], {
+        env: {
+          ...process.env,
+          PATH: poisonPath,
+          PNPM_HOME: tmpPoisonDir,
+          NODE_OPTIONS: '--require=/tmp/evil.js',
+          STARLIGHT_REPO: '',
+          REPO: '',
         },
+        encoding: 'utf8',
+      });
+      assert.equal(startupNoRepo.status, 1);
+      assert.match(
+        startupNoRepo.stderr,
+        /Error: No repository specified/,
+        `expected runner-entrypoint.sh to execute startup sequence cleanly and reach repo validation, got stderr: ${startupNoRepo.stderr}`,
       );
-      assert.equal(guardProbe.status, 0);
-      assert.equal(
-        guardProbe.stdout.includes('.tmp-pnpm-poison-'),
-        false,
-        `poisoned PNPM_HOME remained on supervisor PATH: ${guardProbe.stdout}`,
+      assert.doesNotMatch(startupNoRepo.stderr, /readonly variable/i);
+
+      const startupMissingSandbox = spawnSync(bashBin, [entrypointPath], {
+        env: {
+          ...process.env,
+          PATH: poisonPath,
+          PNPM_HOME: tmpPoisonDir,
+          STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+          STARLIGHT_SANDBOX_USER: 'nonexistent-starlight-sandbox-99999',
+        },
+        encoding: 'utf8',
+      });
+      assert.equal(startupMissingSandbox.status, 1);
+      assert.match(
+        startupMissingSandbox.stderr,
+        /Isolated sandbox user 'nonexistent-starlight-sandbox-99999' does not exist/,
+        `expected fail-closed sandbox check after startup, got stderr: ${startupMissingSandbox.stderr}`,
       );
       assert.equal(fs.existsSync(markerFile), false, 'poisoned node shim must never execute');
     } finally {
