@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { runTask } from '../src/run.ts';
 
-const task = { id: 'gh:o.r.7.abc.fix-ci', title: 'Make CI green', doneCondition: 'Checks pass on https://github.com/o/r/pull/7', repo: 'r', paths: ['src'], kind: 'fix', attempt: 1, maxMinutes: 5 };
+const task = { id: 'gh:o.r.7.abc.fix-ci', title: 'Make CI green', doneCondition: 'Checks pass on https://github.com/o/r/pull/7', repo: 'r', paths: ['src'], kind: 'fix', attempt: 1, maxMinutes: 10 };
 
-function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan } = {}) {
+function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan, existingPr = null, commentPosted = false, failHeartbeatAfter = Infinity } = {}) {
+  let beats = 0;
   const log = [];
   const names = [];
   const step = {
@@ -22,11 +23,13 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
   const gh = {
     prState: async () => ({ branch: 'agent/claude/x', headSha: 'h'.repeat(40), open: prOpen }),
     defaultBranch: async () => 'main',
+    findPullRequest: async () => existingPr,
     openDraftPullRequest: async (o, r, head, base) => { log.push(['pr', head, base]); return 'https://github.com/o/r/pull/99'; },
     comment: async (o, r, n, body) => { log.push(['comment', n, body]); return 'https://github.com/o/r/pull/7#issuecomment-1'; },
+    hasComment: async () => commentPosted,
   };
   const queue = {
-    heartbeat: async () => { if (heartbeatFails) throw new Error('409'); },
+    heartbeat: async () => { if (heartbeatFails || ++beats > failHeartbeatAfter) throw new Error('409'); },
     complete: async (id, fence, ref) => { log.push(['complete', ref]); },
     release: async (id, fence, reason) => { log.push(['release', reason]); },
   };
@@ -67,4 +70,25 @@ test('a lost lease stops the sandbox without completing', async () => {
   assert.deepEqual(await h.run(), { released: 'lease lost' });
   assert.equal(h.log.some((l) => l[0] === 'complete'), false);
   assert.ok(h.log.some((l) => l[0] === 'destroy'));
+});
+
+test('a review without a verdict is released, not submitted', async () => {
+  const h = harness({ states: [{ state: 'succeeded', result: 'Looks fine to me.' }], plan: { owner: 'o', repo: 'r', mode: 'review', prNumber: 7 } });
+  assert.deepEqual(await h.run(), { released: 'the review ended without a VERDICT line' });
+  assert.equal(h.log.some((l) => l[0] === 'comment'), false);
+});
+
+test('retried GitHub writes find what the first attempt made', async () => {
+  const pr = harness({ states: [{ state: 'succeeded', result: 'built' }], plan: { owner: 'o', repo: 'r', mode: 'new-branch', prNumber: null }, existingPr: 'https://github.com/o/r/pull/42' });
+  assert.deepEqual(await pr.run(), { done: 'https://github.com/o/r/pull/42' });
+  assert.equal(pr.log.some((l) => l[0] === 'pr'), false);
+  const review = harness({ states: [{ state: 'succeeded', result: 'VERDICT: FAIL' }], plan: { owner: 'o', repo: 'r', mode: 'review', prNumber: 7 }, commentPosted: true });
+  await review.run();
+  assert.equal(review.log.some((l) => l[0] === 'comment'), false);
+});
+
+test('a lease lost after the agent finished stops before anything is pushed', async () => {
+  const h = harness({ states: [{ state: 'succeeded', result: 'fixed' }], failHeartbeatAfter: 1 });
+  assert.deepEqual(await h.run(), { released: 'lease lost' });
+  assert.equal(h.log.some((l) => l[0] === 'push'), false);
 });

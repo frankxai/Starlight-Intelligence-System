@@ -3,7 +3,9 @@ import test from 'node:test';
 import { buildPrompt, decide, newBranchName, planFor, pushedRefs } from '../src/policy.ts';
 import { harnessConfig, instanceId } from '../src/config.ts';
 
-const CTX = { gatewayAccount: 'acct', gatewayId: 'default', repos: ['frankxai/Kernel'], allowRegistries: true };
+const CTX = { gatewayAccount: 'acct', gatewayId: 'default', repos: ['frankxai/Kernel', 'frankxai/other'], allowRegistries: true };
+const READ = { repo: 'frankxai/Kernel', pushBranch: null };
+const PUSH = { repo: 'frankxai/Kernel', pushBranch: 'agent/cf-claude/x' };
 const task = (over = {}) => ({
   id: 'gh:frankxai.kernel.7.abc.fix-ci', title: 'Make CI green',
   doneCondition: 'Every check on https://github.com/frankxai/Kernel/pull/7 passes',
@@ -17,39 +19,41 @@ const push = (...refs) => new TextEncoder().encode(refs.map((r, i) =>
   pkt(`${'a'.repeat(40)} ${r.del ? '0'.repeat(40) : 'b'.repeat(40)} ${r.ref}${i === 0 ? '\0report-status' : ''}\n`)).join('') + '0000PACK....');
 
 test('the gateway is reachable only for this account, and only over HTTPS', () => {
-  assert.deepEqual(decide('POST', 'https://gateway.ai.cloudflare.com/v1/acct/default/anthropic/v1/messages', CTX), { allow: true, add: 'ai-gateway' });
-  assert.equal(decide('POST', 'https://gateway.ai.cloudflare.com/v1/other/default/anthropic', CTX).allow, false);
-  assert.equal(decide('POST', 'http://gateway.ai.cloudflare.com/v1/acct/default/anthropic', CTX).allow, false);
+  assert.deepEqual(decide('POST', 'https://gateway.ai.cloudflare.com/v1/acct/default/anthropic/v1/messages', CTX, READ), { allow: true, add: 'ai-gateway' });
+  assert.equal(decide('POST', 'https://gateway.ai.cloudflare.com/v1/other/default/anthropic', CTX, READ).allow, false);
+  assert.equal(decide('POST', 'http://gateway.ai.cloudflare.com/v1/acct/default/anthropic', CTX, READ).allow, false);
 });
 
 test('git reads work for opted-in repos only', () => {
-  assert.deepEqual(decide('GET', 'https://github.com/frankxai/kernel.git/info/refs?service=git-upload-pack', CTX), { allow: true, add: 'github' });
-  assert.deepEqual(decide('POST', 'https://github.com/frankxai/Kernel/git-upload-pack', CTX), { allow: true, add: 'github' });
-  assert.equal(decide('GET', 'https://github.com/someone/else.git/info/refs?service=git-upload-pack', CTX).allow, false);
-  assert.equal(decide('GET', 'https://github.com/frankxai/kernel/settings', CTX).allow, false);
+  assert.deepEqual(decide('GET', 'https://github.com/frankxai/kernel.git/info/refs?service=git-upload-pack', CTX, READ), { allow: true, add: 'github' });
+  assert.deepEqual(decide('POST', 'https://github.com/frankxai/Kernel/git-upload-pack', CTX, READ), { allow: true, add: 'github' });
+  assert.equal(decide('GET', 'https://github.com/someone/else.git/info/refs?service=git-upload-pack', CTX, READ).allow, false);
+  assert.equal(decide('GET', 'https://github.com/frankxai/kernel/settings', CTX, READ).allow, false);
 });
 
 test('pushes reach agent branches only, never main and never a deletion', () => {
   const url = 'https://github.com/frankxai/kernel.git/git-receive-pack';
-  assert.deepEqual(decide('POST', url, CTX, push({ ref: 'refs/heads/agent/cf-claude/x' })), { allow: true, add: 'github' });
-  assert.equal(decide('POST', url, CTX, push({ ref: 'refs/heads/main' })).allow, false);
-  assert.equal(decide('POST', url, CTX, push({ ref: 'refs/heads/agent/cf-claude/x' }, { ref: 'refs/heads/main' })).allow, false);
-  assert.equal(decide('POST', url, CTX, push({ ref: 'refs/heads/agent/old', del: true })).allow, false);
-  assert.equal(decide('POST', url, CTX, push({ ref: 'refs/tags/v1' })).allow, false);
-  assert.equal(decide('POST', url, CTX, new TextEncoder().encode('garbage')).allow, false);
-  assert.equal(decide('POST', url, CTX).allow, false);
+  assert.deepEqual(decide('POST', url, CTX, PUSH, push({ ref: 'refs/heads/agent/cf-claude/x' })), { allow: true, add: 'github' });
+  assert.equal(decide('POST', url, CTX, PUSH, push({ ref: 'refs/heads/main' })).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH, push({ ref: 'refs/heads/agent/cf-claude/x' }, { ref: 'refs/heads/main' })).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH, push({ ref: 'refs/heads/agent/old', del: true })).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH, push({ ref: 'refs/tags/v1' })).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH, new TextEncoder().encode('garbage')).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH).allow, false);
 });
 
 test('pushedRefs reads the command list and stops at the flush packet', () => {
-  assert.deepEqual(pushedRefs(push({ ref: 'refs/heads/codex/a' }, { ref: 'refs/heads/agent/b' })), { refs: ['refs/heads/codex/a', 'refs/heads/agent/b'], deletes: false });
+  const parsed = pushedRefs(push({ ref: 'refs/heads/codex/a' }, { ref: 'refs/heads/agent/b' }));
+  assert.deepEqual([parsed.refs, parsed.deletes], [['refs/heads/codex/a', 'refs/heads/agent/b'], false]);
+  assert.deepEqual(parsed.commands[0], { old: 'a'.repeat(40), new: 'b'.repeat(40), ref: 'refs/heads/codex/a' });
   assert.equal(pushedRefs(new TextEncoder().encode('00ffshort')), null);
 });
 
 test('registries allow downloads only, and can be switched off', () => {
-  assert.deepEqual(decide('GET', 'https://registry.npmjs.org/zod', CTX), { allow: true, add: 'none' });
-  assert.equal(decide('PUT', 'https://registry.npmjs.org/zod', CTX).allow, false);
-  assert.equal(decide('GET', 'https://registry.npmjs.org/zod', { ...CTX, allowRegistries: false }).allow, false);
-  assert.equal(decide('GET', 'https://example.com/', CTX).allow, false);
+  assert.deepEqual(decide('GET', 'https://registry.npmjs.org/zod', CTX, READ), { allow: true, add: 'none' });
+  assert.equal(decide('PUT', 'https://registry.npmjs.org/zod', CTX, READ).allow, false);
+  assert.equal(decide('GET', 'https://registry.npmjs.org/zod', { ...CTX, allowRegistries: false }, READ).allow, false);
+  assert.equal(decide('GET', 'https://example.com/', CTX, READ).allow, false);
 });
 
 test('planFor maps the bare queue repo back to its owner and reads the PR', () => {
@@ -80,4 +84,12 @@ test('harness config turns off malformed entries', () => {
   assert.deepEqual(harnessConfig('{'), {});
   const cfg = harnessConfig(JSON.stringify({ claude: { agentId: 'cf-claude', max: 2, kinds: ['fix'] }, codex: { agentId: 'cf-codex', max: 99, kinds: [] } }));
   assert.deepEqual(Object.keys(cfg), ['claude']);
+});
+
+test('a sandbox reaches only its own repository and pushes only its own branch, only when the runner opens the window', () => {
+  const url = 'https://github.com/frankxai/kernel.git/git-receive-pack';
+  assert.equal(decide('GET', 'https://github.com/frankxai/other.git/info/refs?service=git-upload-pack', CTX, READ).allow, false);
+  assert.equal(decide('POST', url, CTX, PUSH, push({ ref: 'refs/heads/agent/claude/someone-else' })).allow, false);
+  assert.equal(decide('POST', url, CTX, READ, push({ ref: 'refs/heads/agent/cf-claude/x' })).allow, false);
+  assert.equal(decide('GET', 'https://github.com/frankxai/kernel.git/info/refs?service=git-upload-pack', CTX, null).allow, false);
 });
