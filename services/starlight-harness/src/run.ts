@@ -30,6 +30,9 @@ export interface GithubCalls {
   openDraftPullRequest(owner: string, repo: string, head: string, base: string, title: string, body: string): Promise<string>;
   comment(owner: string, repo: string, number: number, body: string): Promise<string | void>;
   hasComment(owner: string, repo: string, number: number, marker: string, sinceIso: string): Promise<boolean>;
+  // Fetching or refreshing the installation token costs two requests; doing it inside the timed
+  // lookup leaves the write itself as one request within its 20-second timeout.
+  installationToken(owner: string, repo: string): Promise<string>;
 }
 
 export interface QueueCalls {
@@ -167,6 +170,7 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
       const since = new Date(Date.now() - 6 * 3600_000).toISOString();
       const prUrl = `https://github.com/${plan.owner}/${plan.repo}/pull/${plan.prNumber}`;
       if (await within(deadline, gh.hasComment(plan.owner, plan.repo, plan.prNumber!, marker, since))) return prUrl;
+      await within(deadline, gh.installationToken(plan.owner, plan.repo));
       before(deadline);
       const header = `Review by the Starlight ${harness} harness (Cloudflare sandbox) at ${setup.headSha}, for queue task \`${task.id}\`.\n\n`;
       const url = await gh.comment(plan.owner, plan.repo, plan.prNumber!, `${header}${summary.slice(0, MAX_COMMENT)}\n\n${marker}`);
@@ -184,6 +188,7 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
         // A retry after GitHub created the PR but before the step was recorded finds that PR.
         const existing = await within(deadline, gh.findPullRequest(plan.owner, plan.repo, setup.branch));
         if (existing) return existing;
+        await within(deadline, gh.installationToken(plan.owner, plan.repo));
         before(deadline);
         return gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
           `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`);

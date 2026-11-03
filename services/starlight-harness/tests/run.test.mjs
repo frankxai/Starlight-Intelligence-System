@@ -27,6 +27,7 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
     openDraftPullRequest: async (o, r, head, base) => { log.push(['pr', head, base]); return 'https://github.com/o/r/pull/99'; },
     comment: async (o, r, n, body) => { log.push(['comment', n, body]); return 'https://github.com/o/r/pull/7#issuecomment-1'; },
     hasComment: async () => commentPosted,
+    installationToken: async () => { log.push(['token']); return 'fixture'; },
   };
   const queue = {
     heartbeat: async () => {
@@ -118,4 +119,11 @@ test('too little lease left means no write at all', async () => {
   const h = harness({ states: [{ state: 'succeeded', result: 'fixed' }], leaseLeftMs: 45_000 });
   assert.deepEqual(await h.run(), { released: 'lease lost' });
   assert.equal(h.log.some((l) => l[0] === 'push'), false);
+});
+
+test('the installation token is ready before any GitHub write starts', async () => {
+  const h = harness({ states: [{ state: 'succeeded', result: 'built' }], plan: { owner: 'o', repo: 'r', mode: 'new-branch', prNumber: null } });
+  await h.run();
+  const kinds = h.log.map((l) => l[0]);
+  assert.ok(kinds.indexOf('token') < kinds.indexOf('pr'));
 });
