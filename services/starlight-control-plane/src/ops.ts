@@ -4,6 +4,7 @@
 import * as core from './core.ts';
 import type { Identity, Sql } from './core.ts';
 import type { Op } from './handler.ts';
+import { outboxStatus } from './outbox.ts';
 
 export function execute(
   sql: Sql, op: Op, who: Identity, args: Record<string, unknown>, now: number, newId: () => string,
@@ -24,6 +25,7 @@ export function execute(
       case 'verify': return { status: 200, body: core.verify(sql, who, id, args.verdict, args.note, now) };
       case 'get': return { status: 200, body: core.getTask(sql, id) };
       case 'status': return { status: 200, body: core.status(sql) };
+      case 'outbox': return { status: 200, body: outboxStatus(sql) };
     }
   } catch (err) {
     if (err instanceof core.QueueError) return { status: err.status, body: { error: err.message } };

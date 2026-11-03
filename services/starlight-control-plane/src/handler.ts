@@ -3,12 +3,15 @@
 
 import { PROVIDERS, type Identity, type Role } from './core.ts';
 import { handleMcp } from './mcp.ts';
+import { normalize, parseRouting, plan, type Action } from './events.ts';
+import { verifySignature } from './github.ts';
 
 export type Op =
-  | 'enqueue' | 'approve' | 'claim' | 'heartbeat' | 'complete' | 'release' | 'verify' | 'get' | 'status';
+  | 'enqueue' | 'approve' | 'claim' | 'heartbeat' | 'complete' | 'release' | 'verify' | 'get' | 'status' | 'outbox';
 
 export interface QueueStub {
   run(op: Op, who: Identity, args: Record<string, unknown>): Promise<{ status: number; body: unknown }>;
+  ingest(delivery: string, actions: Action[]): Promise<{ duplicate: boolean; results: unknown[] }>;
 }
 
 export interface HandlerEnv {
@@ -16,6 +19,66 @@ export interface HandlerEnv {
   AGENT_TOKENS?: string;
   // Comma-separated browser origins allowed to call; empty means none.
   ALLOWED_ORIGINS?: string;
+  // The GitHub App's webhook secret (32+ characters). Without it the event route refuses everything.
+  GITHUB_WEBHOOK_SECRET?: string;
+  // JSON Routing (src/events.ts): which repos the router acts on and who reviews whom.
+  ROUTING?: string;
+}
+
+const MAX_WEBHOOK_BYTES = 1024 * 1024;
+
+async function readRaw(request: Request, max: number): Promise<Uint8Array | null> {
+  if (Number(request.headers.get('content-length') ?? 0) > max) return null;
+  const reader = request.body?.getReader();
+  if (!reader) return new Uint8Array();
+  const parts: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > max) {
+      await reader.cancel();
+      return null;
+    }
+    parts.push(value);
+  }
+  const out = new Uint8Array(size);
+  let at = 0;
+  for (const p of parts) {
+    out.set(p, at);
+    at += p.byteLength;
+  }
+  return out;
+}
+
+// GitHub App webhook. The signature, not a bearer token, is the credential here, and the router
+// only ever enqueues as the system producer, so a forged event can do nothing a real one cannot.
+export async function handleGithubEvent(request: Request, env: HandlerEnv, stub: QueueStub): Promise<Response> {
+  const routing = parseRouting(env.ROUTING);
+  if (!routing || !env.GITHUB_WEBHOOK_SECRET || env.GITHUB_WEBHOOK_SECRET.length < 32) {
+    return json(503, { error: 'event routing is not configured' });
+  }
+  const raw = await readRaw(request, MAX_WEBHOOK_BYTES);
+  if (!raw) return json(413, { error: 'body too large' });
+  if (!(await verifySignature(raw, request.headers.get('x-hub-signature-256'), env.GITHUB_WEBHOOK_SECRET))) {
+    return json(401, { error: 'bad signature' });
+  }
+  const name = request.headers.get('x-github-event') ?? '';
+  if (name === 'ping') return json(200, { ok: true });
+  const delivery = request.headers.get('x-github-delivery') ?? '';
+  if (!/^[0-9a-f-]{36}$/i.test(delivery)) return json(400, { error: 'missing delivery id' });
+  let payload: Record<string, unknown>;
+  try {
+    payload = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(raw));
+  } catch {
+    return json(400, { error: 'body is not JSON' });
+  }
+  const signal = normalize(name, payload as Record<string, any>);
+  const actions = signal ? plan(signal, routing) : [];
+  if (actions.length === 0) return json(202, { ok: true, actions: 0 });
+  const result = await stub.ingest(delivery, actions);
+  return json(result.duplicate ? 200 : 202, { ok: true, duplicate: result.duplicate, actions: actions.length });
 }
 
 const ROLES = new Set<Role>(['producer', 'worker', 'verifier', 'human']);
@@ -76,6 +139,10 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
   const url = new URL(request.url);
   const method = request.method.toUpperCase();
   if (url.pathname === '/health' && method === 'GET') return json(200, { ok: true });
+  if (url.pathname === '/events/github') {
+    if (method !== 'POST') return new Response(null, { status: 405, headers: { allow: 'POST' } });
+    return handleGithubEvent(request, env, stub);
+  }
 
   // Agents call from servers and send no Origin. A browser always does, so an Origin that is not
   // explicitly allowed is refused before the token is even read (MCP transport requirement).
@@ -101,6 +168,7 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
   const taskPath = /^\/v1\/tasks\/([\w.:-]{1,100})(?:\/(\w+))?$/.exec(url.pathname);
 
   if (url.pathname === '/v1/status' && method === 'GET') op = 'status';
+  else if (url.pathname === '/v1/outbox' && method === 'GET') op = 'outbox';
   else if (url.pathname === '/v1/tasks' && method === 'POST') op = 'enqueue';
   else if (url.pathname === '/v1/tasks/claim' && method === 'POST') op = 'claim';
   else if (taskPath && !taskPath[2] && method === 'GET') {

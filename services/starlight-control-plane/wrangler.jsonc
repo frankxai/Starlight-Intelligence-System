@@ -6,8 +6,16 @@
   "workers_dev": false,
   "preview_urls": false,
   "observability": { "traces": { "enabled": true, "head_sampling_rate": 1 } },
+  // */10: outbox safety net (the alarm normally drains it). 06:00 UTC: recurring tasks.
+  "triggers": { "crons": ["*/10 * * * *", "0 6 * * *"] },
+  "vars": {
+    // Empty repos list = the router acts on nothing. Add owner/name pairs to opt a repo in.
+    // selfLogins must hold this App's bot login (<app-slug>[bot]) or its own labels re-trigger it.
+    "ROUTING": "{\"repos\":[],\"codexBot\":\"chatgpt-codex-connector[bot]\",\"selfLogins\":[\"starlight-control-plane[bot]\"],\"recurring\":[]}"
+  },
   // AGENT_TOKENS is a secret: `wrangler secret put AGENT_TOKENS` with a JSON object mapping
   // sha256(token) hex to { agentId, harness, provider, roles }. Never commit it.
+  // Also secrets: GITHUB_WEBHOOK_SECRET, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY (PKCS#8).
   "durable_objects": {
     "bindings": [{ "name": "CONTROL_PLANE", "class_name": "ControlPlane" }]
   },

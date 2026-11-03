@@ -1,18 +1,27 @@
 import { DurableObject } from 'cloudflare:workers';
-import { migrate, sweep, type Identity, type Sql } from './core.ts';
+import { enqueue, migrate, sweep, QueueError, SYSTEM_PRODUCER, type Identity, type Sql } from './core.ts';
+import { parseRouting, recurringTasks, type Action } from './events.ts';
+import { GithubApp, type GithubApi } from './github.ts';
 import { handleRequest, type HandlerEnv, type Op, type QueueStub } from './handler.ts';
 import { execute } from './ops.ts';
+import { drain, drainLocal, ingest, migrateOutbox, nextDue } from './outbox.ts';
 
 interface Env extends HandlerEnv {
   CONTROL_PLANE: DurableObjectNamespace<ControlPlane>;
+  GITHUB_APP_ID?: string;
+  // PKCS#8 PEM of the App's private key (see src/github.ts for the one-line conversion).
+  GITHUB_APP_PRIVATE_KEY?: string;
 }
 
 // The whole estate shares one queue so leases, path collisions and maker != checker are decided
 // in one serialized place. One object comfortably covers a few hundred tasks a day.
 const QUEUE_NAME = 'estate';
+const RECURRING_CRON = '0 6 * * *';
 
 export class ControlPlane extends DurableObject<Env> {
   private sql: Sql;
+  private github: GithubApi | null;
+  private draining = false;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -21,7 +30,13 @@ export class ControlPlane extends DurableObject<Env> {
       exec: (query, ...binds) => storage.sql.exec(query, ...binds).toArray() as Record<string, unknown>[],
       transaction: (fn) => storage.transactionSync(fn),
     };
-    ctx.blockConcurrencyWhile(async () => migrate(this.sql));
+    this.github = env.GITHUB_APP_ID && env.GITHUB_APP_PRIVATE_KEY
+      ? new GithubApp(env.GITHUB_APP_ID, env.GITHUB_APP_PRIVATE_KEY)
+      : null;
+    ctx.blockConcurrencyWhile(async () => {
+      migrate(this.sql);
+      migrateOutbox(this.sql);
+    });
   }
 
   async run(op: Op, who: Identity, args: Record<string, unknown>) {
@@ -30,25 +45,76 @@ export class ControlPlane extends DurableObject<Env> {
     return result;
   }
 
+  async ingest(delivery: string, actions: Action[]) {
+    const result = ingest(this.sql, delivery, actions, Date.now(), () => crypto.randomUUID());
+    if (!result.duplicate) this.ctx.waitUntil(this.drainOutbox());
+    this.armAlarm();
+    return result;
+  }
+
+  async daily() {
+    const routing = parseRouting(this.env.ROUTING);
+    if (!routing) return { enqueued: 0 };
+    let enqueued = 0;
+    for (const task of recurringTasks(routing, Date.now())) {
+      try {
+        if (!enqueue(this.sql, SYSTEM_PRODUCER, task, Date.now(), () => crypto.randomUUID()).duplicate) enqueued++;
+      } catch (err) {
+        if (!(err instanceof QueueError)) throw err;
+        console.warn('recurring task refused', { id: task.id, reason: err.message });
+      }
+    }
+    return { enqueued };
+  }
+
+  async drainOutbox() {
+    const routing = parseRouting(this.env.ROUTING);
+    if (this.draining) return { skipped: true };
+    // Without App credentials or routing, remote rows simply wait; nothing is lost or half-done.
+    if (!this.github || !routing) return { done: drainLocal(this.sql, Date.now(), () => crypto.randomUUID()).length, remote: 'waiting' };
+    this.draining = true;
+    try {
+      return await drain(this.sql, this.github, routing, Date.now(), () => crypto.randomUUID());
+    } finally {
+      this.draining = false;
+      this.armAlarm();
+    }
+  }
+
   async alarm() {
     sweep(this.sql, Date.now());
+    await this.drainOutbox();
     this.armAlarm();
   }
 
-  // Alarms do not repeat, and each wake costs money: arm exactly one, for the next lease expiry.
-  // The minimum is read from the table and written with no await in between, so no other request
-  // can interleave and leave a later expiry in place of an earlier one.
+  // Alarms do not repeat, and each wake costs money: arm exactly one, for whichever comes first,
+  // the next lease expiry or the next outbox retry. Read and written with no await in between.
   private armAlarm() {
-    const next = this.sql.exec('SELECT MIN(expires_at) AS next FROM leases')[0]?.next;
-    if (typeof next === 'number') void this.ctx.storage.setAlarm(next);
+    const lease = this.sql.exec('SELECT MIN(expires_at) AS next FROM leases')[0]?.next;
+    const due = nextDue(this.sql, this.github !== null);
+    const times = [lease, due].filter((t): t is number => typeof t === 'number');
+    if (times.length) void this.ctx.storage.setAlarm(Math.min(...times));
     else void this.ctx.storage.deleteAlarm();
   }
 }
 
+function queue(env: Env) {
+  return env.CONTROL_PLANE.get(env.CONTROL_PLANE.idFromName(QUEUE_NAME));
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const object = env.CONTROL_PLANE.get(env.CONTROL_PLANE.idFromName(QUEUE_NAME));
-    const stub: QueueStub = { run: (op, who, args) => object.run(op, who, args) };
+    const object = queue(env);
+    const stub: QueueStub = {
+      run: (op, who, args) => object.run(op, who, args),
+      ingest: (delivery, actions) => object.ingest(delivery, actions),
+    };
     return handleRequest(request, env, stub);
+  },
+  // Every 10 minutes is a safety net for the outbox (the alarm normally drains it); once a day
+  // the recurring research and health tasks are enqueued.
+  async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    const object = queue(env);
+    ctx.waitUntil(event.cron === RECURRING_CRON ? object.daily() : object.drainOutbox());
   },
 } satisfies ExportedHandler<Env>;

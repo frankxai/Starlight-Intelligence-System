@@ -31,6 +31,12 @@ export const PROVIDERS = new Set([
   'anthropic', 'openai', 'google', 'xai', 'deepseek', 'mistral', 'meta', 'alibaba', 'moonshot', 'human',
 ]);
 
+// The GitHub event router enqueues as this identity. It exists only inside the Worker: the token
+// table only admits providers listed in PROVIDERS, which 'system' is not, so no credential can act as the router.
+export const SYSTEM_PRODUCER: Identity = {
+  agentId: 'events', harness: 'cloudflare', provider: 'system', roles: ['producer'],
+};
+
 export const LEASE_MS = 15 * 60 * 1000;
 export const TASK_ID = /^[\w.:-]{1,100}$/;
 const MAX_PATHS = 50;
@@ -53,6 +59,9 @@ export interface EnqueueInput {
   gates: string[];
   maxMinutes?: number;
   maxAttempts?: number;
+  // A review must come from another model family than the author, so a worker of this provider
+  // never leases the task.
+  excludeProvider?: string;
 }
 
 export function migrate(sql: Sql): void {
@@ -79,6 +88,9 @@ export function migrate(sql: Sql): void {
     fingerprint TEXT NOT NULL
   )`);
   sql.exec(`CREATE INDEX IF NOT EXISTS tasks_ready ON tasks (state, priority, created_at)`);
+  // Added after the first deploy; ALTER is the only way to grow a live SQLite Durable Object.
+  const columns = sql.exec('PRAGMA table_info(tasks)').map((c) => c.name);
+  if (!columns.includes('exclude_provider')) sql.exec('ALTER TABLE tasks ADD COLUMN exclude_provider TEXT');
   sql.exec(`CREATE TABLE IF NOT EXISTS leases (
     task_id TEXT PRIMARY KEY,
     agent_id TEXT NOT NULL,
@@ -255,10 +267,14 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const gates = validGates(input.gates);
   const maxMinutes = int(input.maxMinutes, 'maxMinutes', 1, 480, 60);
   const maxAttempts = int(input.maxAttempts, 'maxAttempts', 1, 10, 3);
+  const excludeProvider = input.excludeProvider === undefined ? null : str(input.excludeProvider, 'excludeProvider', 20);
+  if (excludeProvider !== null && (!PROVIDERS.has(excludeProvider) || excludeProvider === 'human')) {
+    throw new QueueError(400, `excludeProvider must be a model provider: ${[...PROVIDERS].filter((p) => p !== 'human').join(', ')}`);
+  }
   const id = input.id === undefined ? newId() : str(input.id, 'id', 100);
   // Same character set the REST task routes accept, so every task stays reachable by id.
   if (!TASK_ID.test(id) || /^\.+$/.test(id)) throw new QueueError(400, 'id may use letters, digits, ".", ":", "_" and "-"');
-  const fingerprint = JSON.stringify([who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts]);
+  const fingerprint = JSON.stringify([who.agentId, title, doneCondition, priority, repo, paths, gates, maxMinutes, maxAttempts, excludeProvider]);
 
   return sql.transaction(() => {
     // Producers retry on network errors; a supplied id makes enqueue idempotent, but only for the
@@ -273,9 +289,9 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
     const state: TaskState = declared || tripped.length > 0 ? 'held' : 'ready';
     sql.exec(
       `INSERT INTO tasks (id, title, done_condition, priority, repo, paths, gates, state, max_attempts,
-        max_minutes, created_by, created_at, updated_at, fingerprint) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        max_minutes, created_by, created_at, updated_at, fingerprint, exclude_provider) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       id, title, doneCondition, priority, repo, JSON.stringify(paths), JSON.stringify(gates), state,
-      maxAttempts, maxMinutes, who.agentId, now, now, fingerprint,
+      maxAttempts, maxMinutes, who.agentId, now, now, fingerprint, excludeProvider,
     );
     event(sql, now, id, who.agentId, 'enqueued', { state, gates, tripwire: tripped });
     return { id, state, duplicate: false, tripwire: tripped };
@@ -305,6 +321,7 @@ export function claim(
       ? sql.exec(`SELECT * FROM tasks WHERE state = 'ready' AND repo = ? ORDER BY priority, created_at`, normalizeRepo(opts.repo))
       : sql.exec(`SELECT * FROM tasks WHERE state = 'ready' ORDER BY priority, created_at`);
     for (const t of candidates) {
+      if (t.exclude_provider === who.provider) continue;
       const paths = JSON.parse(t.paths as string) as string[];
       if (live.some((l) => l.repo === t.repo && pathsOverlap(l.paths, paths))) continue;
       const leaseMs = Math.min(LEASE_MS, (t.max_minutes as number) * 60_000);
@@ -321,6 +338,7 @@ export function claim(
           id: t.id as string, title: t.title as string, doneCondition: t.done_condition as string,
           priority: t.priority as number, repo: t.repo as string, paths, gates: JSON.parse(t.gates as string),
           attempt: (t.attempts as number) + 1, maxMinutes: t.max_minutes as number,
+          excludeProvider: (t.exclude_provider as string | null) ?? null,
         },
         expiresAt,
         fence,
