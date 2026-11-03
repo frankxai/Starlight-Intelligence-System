@@ -18,6 +18,17 @@ const REPO_KEY = 'repo';
 const PUSHED_KEY = 'pushed';
 const BUNDLE_PATH = `${TASK_DIR}/out.bundle`;
 const MAX_BUNDLE_BYTES = 50 * 1024 * 1024;
+// The agent's commits, kept in this object's storage before its container is destroyed, so a crash
+// at any later point can still push them. Stored in chunks well under the per-value limit.
+const BUNDLE_META_KEY = 'bundle-meta';
+const BUNDLE_CHUNK = 1024 * 1024;
+const bundleChunkKey = (i: number) => `bundle:${i}`;
+
+interface BundleMeta {
+  sha: string;
+  base: string;
+  chunks: number;
+}
 
 const CA = '/etc/cloudflare/certs/cloudflare-containers-ca.crt';
 // Outbound intercepts every HTTPS request, so its CA replaces the system trust store.
@@ -97,16 +108,65 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
   }
 
   // The agent's container never gets push rights: a process it left behind could use them. The
-  // runner bundles the new commits, throws that container away, and pushes from a fresh container
-  // where only the runner's own commands have ever run.
-  async commitAndPush(branch: string, message: string): Promise<string | null> {
+  // runner bundles the new commits into this object's storage, throws that container away, and
+  // pushes from a fresh container where only the runner's own commands have ever run. Every stage
+  // is safe to retry: the stored bundle survives a crash, and pushing the same commit again is a
+  // no-op for GitHub.
+  async commitAndPush(branch: string, message: string, deadline: number): Promise<string | null> {
     const pushed = this.ctx.storage.kv.get(PUSHED_KEY) as string | undefined;
     if (pushed) return pushed;
-    const base = this.ctx.storage.kv.get(BASE_KEY) as string | undefined;
-    if (!base || !this.container.running) throw new Error('the agent sandbox is gone; its work cannot be recovered');
     const repo = this.repo();
     const harness = this.harness ?? 'claude';
 
+    let meta = this.ctx.storage.kv.get(BUNDLE_META_KEY) as BundleMeta | undefined;
+    if (!meta) {
+      const saved = await this.saveAgentWork(message);
+      if (!saved) return null;
+      meta = saved;
+    }
+    const chunks: Uint8Array[] = [];
+    for (let i = 0; i < meta.chunks; i++) chunks.push(this.ctx.storage.kv.get(bundleChunkKey(i)) as Uint8Array);
+    const bundle = new Uint8Array(chunks.reduce((n, c) => n + c.byteLength, 0));
+    chunks.reduce((at, c) => (bundle.set(c, at), at + c.byteLength), 0);
+
+    if (this.container.running) await this.container.destroy();
+    this.setup = undefined;
+    await this.start(harness);
+    const seconds = (ms: number) => String(Math.max(1, Math.floor(ms / 1000)));
+    try {
+      const work = '/workspace/push';
+      await this.mustRun(['rm', '-rf', work], '/workspace');
+      await this.mustRun(['git', 'init', '--quiet', work], '/workspace');
+      await this.mustRun(['git', 'remote', 'add', 'origin', `https://github.com/${repo}.git`], work);
+      // The bundle needs its base commit present; GitHub serves a reachable commit by SHA.
+      await this.mustRun(['timeout', '-k', '5', seconds(deadline - Date.now()), 'git', 'fetch', '--quiet', '--depth', '1', 'origin', meta.base], work);
+      await this.files.writeFile(`${work}/out.bundle`, bundle);
+      await this.mustRun(['git', 'bundle', 'verify', 'out.bundle'], work);
+      await this.mustRun(['git', 'fetch', '--quiet', 'out.bundle', 'HEAD'], work);
+      const fetched = (await this.mustRun(['git', 'rev-parse', 'FETCH_HEAD'], work)).trim();
+      if (fetched !== meta.sha) throw new Error(`bundle head ${fetched} is not the agent's commit ${meta.sha}`);
+      // The push must finish while the lease is still ours; timeout kills it at the deadline.
+      if (deadline - Date.now() < 15_000) throw new Error('too little lease left to push safely');
+      // Only now, in a container that never ran agent code, may the gateway accept a push, and
+      // only to this branch. No --force: GitHub refuses anything that is not a fast-forward.
+      await this.scope({ repo, pushBranch: branch });
+      await this.mustRun(['timeout', '-k', '5', seconds(deadline - Date.now()), 'git', 'push', 'origin', `${meta.sha}:refs/heads/${branch}`], work);
+      this.ctx.storage.kv.put(PUSHED_KEY, meta.sha);
+      this.dropBundle();
+      return meta.sha;
+    } finally {
+      // Close the scope explicitly, then destroy the container. Either one alone ends push access;
+      // if both fail the error surfaces instead of leaving an open scope unnoticed.
+      const closed = await this.scope({ repo, pushBranch: null }).then(() => true, () => false);
+      const destroyed = await this.container.destroy().then(() => true, () => false);
+      this.setup = undefined;
+      if (!closed && !destroyed) throw new Error('could not close the push scope or stop the push container');
+    }
+  }
+
+  private async saveAgentWork(message: string): Promise<BundleMeta | null> {
+    const base = this.ctx.storage.kv.get(BASE_KEY) as string | undefined;
+    if (!base || !this.container.running) throw new Error('the agent sandbox is gone before its work was saved');
     await this.mustRun(['git', 'add', '-A'], REPO_DIR);
     if ((await this.run(['git', 'diff', '--cached', '--quiet'], REPO_DIR)).exitCode !== 0) {
       await this.mustRun(['git', 'commit', '-m', message], REPO_DIR, { ...TRUST, ...agentEnv('codex', this.vars('codex')) });
@@ -116,34 +176,18 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
     await this.mustRun(['git', 'bundle', 'create', BUNDLE_PATH, `${base}..HEAD`], REPO_DIR);
     const bundle = new Uint8Array(await (await this.files.readFile(BUNDLE_PATH)).arrayBuffer());
     if (bundle.byteLength > MAX_BUNDLE_BYTES) throw new Error(`the agent's commits are ${bundle.byteLength} bytes; the limit is ${MAX_BUNDLE_BYTES}`);
+    const meta: BundleMeta = { sha, base, chunks: Math.ceil(bundle.byteLength / BUNDLE_CHUNK) };
+    // Chunks first, the metadata last: a crash in between leaves no metadata, so the next attempt
+    // bundles again from the agent's container instead of reading half a bundle.
+    for (let i = 0; i < meta.chunks; i++) this.ctx.storage.kv.put(bundleChunkKey(i), bundle.slice(i * BUNDLE_CHUNK, (i + 1) * BUNDLE_CHUNK));
+    this.ctx.storage.kv.put(BUNDLE_META_KEY, meta);
+    return meta;
+  }
 
-    await this.container.destroy();
-    this.setup = undefined;
-    this.ctx.storage.kv.put(REPO_KEY, repo);
-    await this.start(harness);
-    try {
-      const work = '/workspace/push';
-      await this.mustRun(['rm', '-rf', work], '/workspace');
-      await this.mustRun(['git', 'init', '--quiet', work], '/workspace');
-      await this.mustRun(['git', 'remote', 'add', 'origin', `https://github.com/${repo}.git`], work);
-      // The bundle needs its base commit present; GitHub serves a reachable commit by SHA.
-      await this.mustRun(['git', 'fetch', '--quiet', '--depth', '1', 'origin', base], work);
-      await this.files.writeFile(`${work}/out.bundle`, bundle);
-      await this.mustRun(['git', 'bundle', 'verify', 'out.bundle'], work);
-      await this.mustRun(['git', 'fetch', '--quiet', 'out.bundle', 'HEAD'], work);
-      const fetched = (await this.mustRun(['git', 'rev-parse', 'FETCH_HEAD'], work)).trim();
-      if (fetched !== sha) throw new Error(`bundle head ${fetched} is not the agent's commit ${sha}`);
-      // Only now, in a container that never ran agent code, may the gateway accept a push, and
-      // only to this branch. No --force: GitHub refuses anything that is not a fast-forward.
-      await this.scope({ repo, pushBranch: branch });
-      await this.mustRun(['git', 'push', 'origin', `${sha}:refs/heads/${branch}`], work);
-      this.ctx.storage.kv.put(PUSHED_KEY, sha);
-      return sha;
-    } finally {
-      // Nothing more runs in this sandbox; destroying it is the surest way to close the push scope.
-      await this.container.destroy().catch(() => undefined);
-      this.setup = undefined;
-    }
+  private dropBundle(): void {
+    const meta = this.ctx.storage.kv.get(BUNDLE_META_KEY) as BundleMeta | undefined;
+    for (let i = 0; i < (meta?.chunks ?? 0); i++) this.ctx.storage.kv.delete(bundleChunkKey(i));
+    this.ctx.storage.kv.delete(BUNDLE_META_KEY);
   }
 
   async destroy(): Promise<void> {
@@ -151,6 +195,7 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
     this.ctx.storage.kv.delete(BASE_KEY);
     this.ctx.storage.kv.delete(REPO_KEY);
     this.ctx.storage.kv.delete(PUSHED_KEY);
+    this.dropBundle();
     if (this.container.running) await this.container.destroy();
   }
 

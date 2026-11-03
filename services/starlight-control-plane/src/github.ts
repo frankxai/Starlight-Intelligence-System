@@ -70,6 +70,8 @@ export class GithubApp implements GithubApi {
     const res = await this.fetcher(`${API}${path}`, {
       ...init,
       redirect: 'manual',
+      // Callers run inside leases and Workflow steps; a hung call must not outlive them.
+      signal: AbortSignal.timeout(20_000),
       headers: {
         accept: 'application/vnd.github+json',
         authorization: init.auth,

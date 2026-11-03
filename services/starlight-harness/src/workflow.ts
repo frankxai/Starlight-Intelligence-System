@@ -31,7 +31,7 @@ export class TaskRun extends WorkflowEntrypoint<WorkflowEnv, RunParams> {
       clone: (owner, repo, ref, newBranch) => sandbox.clone(owner, repo, ref, newBranch, p.harness),
       startTask: (harness, prompt) => sandbox.startTask(harness, prompt),
       readTask: (harness) => sandbox.readTask(harness),
-      commitAndPush: (branch, message) => sandbox.commitAndPush(branch, message),
+      commitAndPush: (branch, message, deadline) => sandbox.commitAndPush(branch, message, deadline),
       destroy: () => sandbox.destroy(),
     };
     const durable: Step = {

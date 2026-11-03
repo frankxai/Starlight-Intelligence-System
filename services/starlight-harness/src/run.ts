@@ -19,7 +19,7 @@ export interface SandboxApi {
   readTask(harness: Harness): Promise<SandboxState>;
   // Commits anything left uncommitted, pushes HEAD to the branch, returns the pushed SHA or null
   // when the agent changed nothing.
-  commitAndPush(branch: string, message: string): Promise<string | null>;
+  commitAndPush(branch: string, message: string, deadline: number): Promise<string | null>;
   destroy(): Promise<void>;
 }
 
@@ -33,7 +33,7 @@ export interface GithubCalls {
 }
 
 export interface QueueCalls {
-  heartbeat(id: string, fence: string): Promise<unknown>;
+  heartbeat(id: string, fence: string): Promise<{ expiresAt: number }>;
   complete(id: string, fence: string, resultRef: string): Promise<unknown>;
   release(id: string, fence: string, reason: string): Promise<unknown>;
 }
@@ -51,6 +51,8 @@ const MAX_COMMENT = 60_000;
 // Minutes of the time box kept back for push, PR and completion, so the lease is still alive
 // when the results go out.
 export const FINALIZE_MINUTES = 5;
+const LEASE_MARGIN_MS = 30_000;
+const MIN_WRITE_MS = 60_000;
 // The prompt asks for the verdict as the last line, so a quoted "VERDICT: PASS" earlier in the text
 // does not count.
 export function finalVerdict(text: string): 'PASS' | 'FAIL' | null {
@@ -121,14 +123,19 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
 
   // Every step that changes GitHub renews the lease inside the same step, so a retried attempt
   // renews again before it writes. If another worker owns the task now, the step writes nothing.
+  // The write gets a deadline well inside the renewed lease and must finish by it: the push is killed
+  // at the deadline and GitHub API calls time out after 20 seconds, so no write outlives the lease.
   const LOST = { lost: true } as const;
-  const leased = async <T>(write: () => Promise<T>): Promise<T | typeof LOST> => {
+  const leased = async <T>(write: (deadline: number) => Promise<T>): Promise<T | typeof LOST> => {
+    let expiresAt: number;
     try {
-      await queue.heartbeat(task.id, fence);
+      expiresAt = (await queue.heartbeat(task.id, fence)).expiresAt;
     } catch {
       return LOST;
     }
-    return write();
+    const deadline = expiresAt - LEASE_MARGIN_MS;
+    if (deadline - Date.now() < MIN_WRITE_MS) return LOST;
+    return write(deadline);
   };
   const isLost = (r: unknown): r is typeof LOST => typeof r === 'object' && r !== null && (r as { lost?: unknown }).lost === true;
 
@@ -148,7 +155,7 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
     if (isLost(posted)) return stopLost();
     resultRef = posted;
   } else {
-    const sha = await step.do('push', () => leased(() => sandbox.commitAndPush(setup.branch, `${task.title}\n\nQueue task ${task.id}, ${harness} in a Cloudflare sandbox.`)));
+    const sha = await step.do('push', () => leased((deadline) => sandbox.commitAndPush(setup.branch, `${task.title}\n\nQueue task ${task.id}, ${harness} in a Cloudflare sandbox.`, deadline)));
     if (isLost(sha)) return stopLost();
     if (!sha) return release('the agent changed nothing');
     if (plan.mode === 'new-branch') {
