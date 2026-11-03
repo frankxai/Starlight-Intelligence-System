@@ -8,7 +8,7 @@ export function Footer() {
       <div className="mx-auto max-w-[88rem]">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
           {/* Brand */}
-          <div className="sm:col-span-2 lg:col-span-4">
+          <div className="sm:col-span-2 lg:col-span-2">
             <Link
               href="/"
               aria-label="Starlight Intelligence — home"
@@ -43,7 +43,8 @@ export function Footer() {
           <div className="lg:col-span-2">
             <p className="text-[11px] font-medium tracking-wider text-slate-400">Connect</p>
             <nav className="mt-3 flex flex-col" aria-label="Connect navigation">
-              <FooterLink href="/brand">Brand identity</FooterLink>
+              <FooterLink href="/visuals/press-kit">Press & Brand Kit</FooterLink>
+              <FooterLink href="/brand">Identity Master (.ai)</FooterLink>
               {CONNECT_LINKS.map((l) => (
                 <FooterLink key={l.href} href={l.href} external={l.external}>
                   {l.label}

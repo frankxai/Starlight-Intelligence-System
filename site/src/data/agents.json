@@ -1,0 +1,1535 @@
+[
+  {
+    "id": "acoustic-sensor",
+    "title": "Acoustic Sensor",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Analyzes hydrophone audio files to flag vessel noise or whale calls.",
+    "mission": "Specialized intelligence for acoustic-sensor",
+    "file": "starlight-marine-acoustics.md",
+    "skills": []
+  },
+  {
+    "id": "agno-bridge",
+    "title": "Agno Bridge",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Bridges lightweight Python agents built on Agno framework.",
+    "mission": "Specialized intelligence for agno-bridge",
+    "file": "starlight-adapter-agno.md",
+    "skills": []
+  },
+  {
+    "id": "architect",
+    "title": "Architect",
+    "tier": "Leadership",
+    "domain": "infrastructure",
+    "voice": "Designs database schemas, directory layouts, and system boundaries.",
+    "mission": "Specialized intelligence for architect",
+    "file": "starlight-architect.md",
+    "skills": []
+  },
+  {
+    "id": "arxiv-scraper",
+    "title": "Arxiv Scraper",
+    "tier": "Research",
+    "domain": "research",
+    "voice": "Scrapes latest machine learning and science preprints from arXiv.",
+    "mission": "Specialized intelligence for arxiv-scraper",
+    "file": "starlight-research-arxiv.md",
+    "skills": []
+  },
+  {
+    "id": "asset-allocator",
+    "title": "Asset Allocator",
+    "tier": "Crypto",
+    "domain": "allocation",
+    "voice": "Rebalances digital asset allocations based on risk targets.",
+    "mission": "Specialized intelligence for asset-allocator",
+    "file": "starlight-crypto-allocation.md",
+    "skills": []
+  },
+  {
+    "id": "attestation-pinner",
+    "title": "Attestation Pinner",
+    "tier": "Research",
+    "domain": "publishing",
+    "voice": "Pins content hashes and SIP attestation blocks onto papers.",
+    "mission": "Specialized intelligence for attestation-pinner",
+    "file": "starlight-research-attest.md",
+    "skills": []
+  },
+  {
+    "id": "audience-builder",
+    "title": "Audience Builder",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Handles listener maps, subscriber newsletters, and Fan stay-reviews.",
+    "mission": "Specialized intelligence for audience-builder",
+    "file": "starlight-sound-audience.md",
+    "skills": []
+  },
+  {
+    "id": "audio-producer",
+    "title": "Audio Producer",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Drafts mixing and mastering configurations and logs vocal chains.",
+    "mission": "Specialized intelligence for audio-producer",
+    "file": "starlight-sound-production.md",
+    "skills": []
+  },
+  {
+    "id": "autogen-bridge",
+    "title": "Autogen Bridge",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Facilitates chat loops between AutoGen conversation nodes.",
+    "mission": "Specialized intelligence for autogen-bridge",
+    "file": "starlight-adapter-autogen.md",
+    "skills": []
+  },
+  {
+    "id": "backup-guard",
+    "title": "Backup Guard",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Runs automated database backups and validates target checksums.",
+    "mission": "Specialized intelligence for backup-guard",
+    "file": "starlight-ops-backup.md",
+    "skills": []
+  },
+  {
+    "id": "biomarker-analyst",
+    "title": "Biomarker Analyst",
+    "tier": "Longevity",
+    "domain": "longevity",
+    "voice": "Flags hormone, vitamin, and cardiovascular metrics from blood sheets.",
+    "mission": "Specialized intelligence for biomarker-analyst",
+    "file": "starlight-health-biomarkers.md",
+    "skills": []
+  },
+  {
+    "id": "biorxiv-scraper",
+    "title": "Biorxiv Scraper",
+    "tier": "Research",
+    "domain": "research",
+    "voice": "Downloads biology preprints and filters them by target tags.",
+    "mission": "Specialized intelligence for biorxiv-scraper",
+    "file": "starlight-research-biorxiv.md",
+    "skills": []
+  },
+  {
+    "id": "board-liaison",
+    "title": "Board Liaison",
+    "tier": "Legal",
+    "domain": "governance",
+    "voice": "Prepares compliance checklists before substrate board hearings.",
+    "mission": "Specialized intelligence for board-liaison",
+    "file": "starlight-legal-liaison.md",
+    "skills": []
+  },
+  {
+    "id": "brand-is",
+    "title": "Brand Is",
+    "tier": "Universal",
+    "domain": "layer-3",
+    "voice": "Maintains visual assets, font alignments, and brand kits.",
+    "mission": "Specialized intelligence for brand-is",
+    "file": "starlight-brand-is.md",
+    "skills": []
+  },
+  {
+    "id": "builder-elder",
+    "title": "Builder Elder",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Evaluates proposals for cost, execution speed, and simplicity.",
+    "mission": "Specialized intelligence for builder-elder",
+    "file": "council/builder-elder.md",
+    "skills": []
+  },
+  {
+    "id": "business",
+    "title": "Business",
+    "tier": "Universal IS",
+    "domain": "entity-architecture",
+    "voice": "Organizes entity, revenue, and tax-aware structure.",
+    "mission": "Specialized intelligence for business",
+    "file": "starlight-business.md",
+    "skills": []
+  },
+  {
+    "id": "caio",
+    "title": "Caio",
+    "tier": "Executive",
+    "domain": "agent-fleet-economics-and-model-policy",
+    "voice": "Owns the substrate. Prices cognition.",
+    "mission": "Specialized intelligence for caio",
+    "file": "executive/starlight-caio.md",
+    "skills": []
+  },
+  {
+    "id": "catalog-mint",
+    "title": "Catalog Mint",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Registers ISRCs, compiles metadata sheets, and handles deplatforming.",
+    "mission": "Specialized intelligence for catalog-mint",
+    "file": "starlight-sound-catalog.md",
+    "skills": []
+  },
+  {
+    "id": "cdn-warden",
+    "title": "Cdn Warden",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Configures Cloudflare caching rules and mitigates DDoS attempts.",
+    "mission": "Specialized intelligence for cdn-warden",
+    "file": "starlight-ops-cdn.md",
+    "skills": []
+  },
+  {
+    "id": "ceo",
+    "title": "Ceo",
+    "tier": "Executive",
+    "domain": "capital-and-attention-allocation",
+    "voice": "Allocates the scarcest resource. Kills things.",
+    "mission": "Specialized intelligence for ceo",
+    "file": "executive/starlight-ceo.md",
+    "skills": []
+  },
+  {
+    "id": "cfo",
+    "title": "Cfo",
+    "tier": "Executive",
+    "domain": "runway-pricing-and-capital-gates",
+    "voice": "Fail closed. Says the number or says there is no number.",
+    "mission": "Specialized intelligence for cfo",
+    "file": "executive/starlight-cfo.md",
+    "skills": []
+  },
+  {
+    "id": "chief-of-staff",
+    "title": "Chief Of Staff",
+    "tier": "Executive",
+    "domain": "intent-to-agenda-translation",
+    "voice": "Turns one sentence from Frank into the six decisions it implies.",
+    "mission": "Specialized intelligence for chief-of-staff",
+    "file": "executive/starlight-chief-of-staff.md",
+    "skills": []
+  },
+  {
+    "id": "cluster-tuner",
+    "title": "Cluster Tuner",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Tunes Kubernetes node configurations and memory allocations.",
+    "mission": "Specialized intelligence for cluster-tuner",
+    "file": "starlight-ops-cluster.md",
+    "skills": []
+  },
+  {
+    "id": "cmo",
+    "title": "Cmo",
+    "tier": "Executive",
+    "domain": "demand-brand-register-and-distribution",
+    "voice": "Owns the register. Refuses the claim you cannot prove.",
+    "mission": "Specialized intelligence for cmo",
+    "file": "executive/starlight-cmo.md",
+    "skills": []
+  },
+  {
+    "id": "coastal-sentinel",
+    "title": "Coastal Sentinel",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Scans satellite views to flag coastal erosion and reef bleaching.",
+    "mission": "Specialized intelligence for coastal-sentinel",
+    "file": "starlight-marine-coastal.md",
+    "skills": []
+  },
+  {
+    "id": "code-is",
+    "title": "Code Is",
+    "tier": "Universal IS",
+    "domain": "layer-7",
+    "voice": "Coordinates local workspace automation and MCP tool development.",
+    "mission": "Specialized intelligence for code-is",
+    "file": "starlight-code-is.md",
+    "skills": []
+  },
+  {
+    "id": "composer",
+    "title": "Composer",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Designs arrangements, drafts scores, and formats demo files.",
+    "mission": "Specialized intelligence for composer",
+    "file": "starlight-sound-composition.md",
+    "skills": []
+  },
+  {
+    "id": "concierge",
+    "title": "Concierge",
+    "tier": "Front-Door",
+    "domain": "intake",
+    "voice": "Handles first-time user intake and routes vague requests.",
+    "mission": "Specialized intelligence for concierge",
+    "file": "starlight-concierge.md",
+    "skills": []
+  },
+  {
+    "id": "contract-reviewer",
+    "title": "Contract Reviewer",
+    "tier": "Legal",
+    "domain": "legal",
+    "voice": "Highlights liability terms, terminations, and intellectual rights.",
+    "mission": "Specialized intelligence for contract-reviewer",
+    "file": "starlight-legal-contracts.md",
+    "skills": []
+  },
+  {
+    "id": "coo",
+    "title": "Coo",
+    "tier": "Executive",
+    "domain": "loop-health-and-durable-delivery",
+    "voice": "A run that commits nothing did not happen.",
+    "mission": "Specialized intelligence for coo",
+    "file": "executive/starlight-coo.md",
+    "skills": []
+  },
+  {
+    "id": "cost-optimization",
+    "title": "Cost Optimization",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Audits cloud monthly usage and cleans orphaned storage blocks.",
+    "mission": "Specialized intelligence for cost-optimization",
+    "file": "starlight-ops-cost.md",
+    "skills": []
+  },
+  {
+    "id": "creator-is",
+    "title": "Creator Is",
+    "tier": "Universal IS",
+    "domain": "layer-5",
+    "voice": "Formulates content calendars, newsletters, and creative pipeline gates.",
+    "mission": "Specialized intelligence for creator-is",
+    "file": "starlight-creator-is.md",
+    "skills": []
+  },
+  {
+    "id": "crewai-orchestrator",
+    "title": "Crewai Orchestrator",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Formats goal prompts to invoke CrewAI role-playing agents.",
+    "mission": "Specialized intelligence for crewai-orchestrator",
+    "file": "starlight-adapter-crewai.md",
+    "skills": []
+  },
+  {
+    "id": "cto",
+    "title": "Cto",
+    "tier": "Executive",
+    "domain": "build-buy-repo-topology-and-platform-debt",
+    "voice": "Fewer moving parts. Deletes before it adds.",
+    "mission": "Specialized intelligence for cto",
+    "file": "executive/starlight-cto.md",
+    "skills": []
+  },
+  {
+    "id": "culture-architect",
+    "title": "Culture Architect",
+    "tier": "People",
+    "domain": "rituals",
+    "voice": "Structures company-wide values and schedules onboarding checkpoints.",
+    "mission": "Specialized intelligence for culture-architect",
+    "file": "starlight-culture.md",
+    "skills": []
+  },
+  {
+    "id": "curriculum-designer",
+    "title": "Curriculum Designer",
+    "tier": "People",
+    "domain": "training",
+    "voice": "Designs outcome-backed courses and measures skill transfer rates.",
+    "mission": "Specialized intelligence for curriculum-designer",
+    "file": "starlight-training.md",
+    "skills": []
+  },
+  {
+    "id": "custody-custodian",
+    "title": "Custody Custodian",
+    "tier": "Crypto",
+    "domain": "sovereignty",
+    "voice": "Audits multi-sig wallet layouts, key paths, and cold storage locations.",
+    "mission": "Specialized intelligence for custody-custodian",
+    "file": "starlight-crypto-custody.md",
+    "skills": []
+  },
+  {
+    "id": "defi-auditor",
+    "title": "Defi Auditor",
+    "tier": "Crypto",
+    "domain": "defi",
+    "voice": "Inspects lending pool ratios, yield pools, and arbitrage logs.",
+    "mission": "Specialized intelligence for defi-auditor",
+    "file": "starlight-crypto-defi.md",
+    "skills": []
+  },
+  {
+    "id": "deploy-overseer",
+    "title": "Deploy Overseer",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Manages Vercel, Railway, and Cloudflare Workers deploy pipelines.",
+    "mission": "Specialized intelligence for deploy-overseer",
+    "file": "starlight-ops-deploy.md",
+    "skills": []
+  },
+  {
+    "id": "dietary-synthesizer",
+    "title": "Dietary Synthesizer",
+    "tier": "Longevity",
+    "domain": "rhythm",
+    "voice": "Logs caloric intakes, macronutrient profiles, and glucose metrics.",
+    "mission": "Specialized intelligence for dietary-synthesizer",
+    "file": "starlight-health-diet.md",
+    "skills": []
+  },
+  {
+    "id": "dify-sync",
+    "title": "Dify Sync",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Exports workflow structures and prompts to Dify visual engines.",
+    "mission": "Specialized intelligence for dify-sync",
+    "file": "starlight-adapter-dify.md",
+    "skills": []
+  },
+  {
+    "id": "distro-router",
+    "title": "Distro Router",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Delivers master stems to streaming services and compiles link trees.",
+    "mission": "Specialized intelligence for distro-router",
+    "file": "music-distributor.md",
+    "skills": []
+  },
+  {
+    "id": "dive-planner",
+    "title": "Dive Planner",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Compiles tide tables, current speeds, and dive safety checklists.",
+    "mission": "Specialized intelligence for dive-planner",
+    "file": "starlight-marine-dive.md",
+    "skills": []
+  },
+  {
+    "id": "divine-neutral-witness",
+    "title": "Divine Neutral Witness",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Silence, truth, and non-attached observation.",
+    "mission": "Specialized intelligence for divine-neutral-witness",
+    "file": "council/divine-neutral-witness.md",
+    "skills": []
+  },
+  {
+    "id": "downlink-router",
+    "title": "Downlink Router",
+    "tier": "Space",
+    "domain": "cosmos",
+    "voice": "Coordinates data dumps with ground stations and verifies hash keys.",
+    "mission": "Specialized intelligence for downlink-router",
+    "file": "starlight-space-downlink.md",
+    "skills": []
+  },
+  {
+    "id": "elder-father",
+    "title": "Elder Father",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Evaluates proposals for discipline, liability, and long-term legacy.",
+    "mission": "Specialized intelligence for elder-father",
+    "file": "council/elder-father.md",
+    "skills": []
+  },
+  {
+    "id": "elder-mother",
+    "title": "Elder Mother",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Evaluates proposals for team health, relations, and beauty.",
+    "mission": "Specialized intelligence for elder-mother",
+    "file": "council/elder-mother.md",
+    "skills": []
+  },
+  {
+    "id": "embodiment",
+    "title": "Embodiment",
+    "tier": "Universal IS",
+    "domain": "body-substrate",
+    "voice": "Grounded, direct, empirical athlete-architect.",
+    "mission": "Specialized intelligence for embodiment",
+    "file": "starlight-embodiment.md",
+    "skills": []
+  },
+  {
+    "id": "energy-buyer",
+    "title": "Energy Buyer",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "buyer",
+    "voice": "Evaluates utility agreements and recommends grid sell-back paths.",
+    "mission": "Translate the kWh + LCOE + interconnection-complexity stack into a decision the homeowner or small-business owner can actually make. The agent that refuses to ship \"guaranteed savings\" framing and refuses to compare quotes without normalizing for kWh, warranty, and ownership.",
+    "file": "starlight-energy-buyer.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/buyer-journey.md"
+    ]
+  },
+  {
+    "id": "energy-cost",
+    "title": "Energy Cost",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "cost",
+    "voice": "Calculates solar ROI, tax exemptions, and utility tariff plans.",
+    "mission": "Produce honest financial outcomes for energy projects. The agent that refuses to ship a payback chart without sensitivity bands, refuses to compare lease-vs-buy without naming the lock-in cost, and refuses to model net metering without flagging the rate-design risk.",
+    "file": "starlight-energy-cost.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/cost-modeling.md"
+    ]
+  },
+  {
+    "id": "energy-grid",
+    "title": "Energy Grid",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "grid",
+    "voice": "Synchronizes with municipal virtual power plant (VPP) events.",
+    "mission": "Get the system from \"permitted and installed\" to \"interconnected and exporting.\" The agent that knows the IEEE 1547 ride-through requirements, the VDE-AR-N 4105 German equivalents, and the specific NEM-3.0 export-rate math — and can navigate them faster than the AHJ can review the application.",
+    "file": "starlight-energy-grid.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/grid-integration.md"
+    ]
+  },
+  {
+    "id": "energy-installer",
+    "title": "Energy Installer",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "installer",
+    "voice": "Creates installation layouts, bill of materials, and permit files.",
+    "mission": "Run the install business with the discipline of a software shop. The agent that designs lead intake forms, site-survey protocols, permit-coordination workflows, and commissioning checklists — the operational tier that makes the difference between a 12-week install timeline and a 24-week one.",
+    "file": "starlight-energy-installer.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/installer-workflow.md"
+    ]
+  },
+  {
+    "id": "energy-operations",
+    "title": "Energy Operations",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "operations",
+    "voice": "Logs panel generation, flags low efficiency, and triggers repairs.",
+    "mission": "Keep installed systems performing for 25 years. The agent that designs the alerting thresholds, fault-triage runbooks, and warranty-claim workflows that turn a fleet of installs into a managed asset rather than a forgotten install base.",
+    "file": "starlight-energy-operations.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/operations-monitoring.md"
+    ]
+  },
+  {
+    "id": "energy-recovery",
+    "title": "Energy Recovery",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "recovery",
+    "voice": "Manages grid blackout alerts, battery backups, and local routing.",
+    "mission": "Keep the system functional when the world around it fails. The agent that designs the \"what happens when the installer goes out of business\" runbook, the \"monitoring service shut down and the data is locked in their cloud\" migration, and the \"grid down for 5 days during a hurricane\" protocol.",
+    "file": "starlight-energy-recovery.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/recovery-protocol.md"
+    ]
+  },
+  {
+    "id": "energy-sizing",
+    "title": "Energy Sizing",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "domain": "sizing",
+    "voice": "Calculates panel setups, battery cells, and heat pump outputs.",
+    "mission": "Translate energy load profiles into correctly-sized PV / battery / thermal / EV-charger component specs. The agent that prevents the two most common solo-installer mistakes — undersizing (system can't carry the load) and oversizing (capital wasted on capacity that never gets used).",
+    "file": "starlight-energy-sizing.md",
+    "skills": [
+      "verticals/energy-intelligence/SUB-SYSTEMS.md",
+      "skills/energy-intelligence/sizing-architecture.md"
+    ]
+  },
+  {
+    "id": "envoy",
+    "title": "Envoy",
+    "tier": "Front-Door",
+    "domain": "handoff",
+    "voice": "Facilitates zero-terminal artifact delivery for non-technical users.",
+    "mission": "Specialized intelligence for envoy",
+    "file": "starlight-envoy.md",
+    "skills": []
+  },
+  {
+    "id": "europe-pmc-fetcher",
+    "title": "Europe Pmc Fetcher",
+    "tier": "Research",
+    "domain": "research",
+    "voice": "Queries PubMed IDs and formats citation link trees.",
+    "mission": "Specialized intelligence for europe-pmc-fetcher",
+    "file": "starlight-research-pmc.md",
+    "skills": []
+  },
+  {
+    "id": "evaluator",
+    "title": "Evaluator",
+    "tier": "Specialist",
+    "domain": "benchmarks",
+    "voice": "Runs model arena tests and rates compliance against standards.",
+    "mission": "Specialized intelligence for evaluator",
+    "file": "starlight-evaluator.md",
+    "skills": []
+  },
+  {
+    "id": "external-extractor",
+    "title": "External Extractor",
+    "tier": "Core",
+    "domain": "parsing",
+    "voice": "Integrates Notion, Drive, and Google Keep entries via MCP.",
+    "mission": "Specialized intelligence for external-extractor",
+    "file": "sis-extractor-external.md",
+    "skills": []
+  },
+  {
+    "id": "family-is",
+    "title": "Family Is",
+    "tier": "Universal",
+    "domain": "layer-9",
+    "voice": "Updates kinship trees, manages private estate files, and schedules rituals.",
+    "mission": "Specialized intelligence for family-is",
+    "file": "starlight-family-is.md",
+    "skills": []
+  },
+  {
+    "id": "future-self-at-90",
+    "title": "Future Self At 90",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Focuses on long-horizon life fulfillment and value commitments.",
+    "mission": "Specialized intelligence for future-self-at-90",
+    "file": "council/future-self-at-90.md",
+    "skills": []
+  },
+  {
+    "id": "gdpr-auditor",
+    "title": "Gdpr Auditor",
+    "tier": "Legal",
+    "domain": "compliance",
+    "voice": "Audits user data storage structures, consent forms, and cookie APIs.",
+    "mission": "Specialized intelligence for gdpr-auditor",
+    "file": "starlight-legal-gdpr.md",
+    "skills": []
+  },
+  {
+    "id": "genius",
+    "title": "Genius",
+    "tier": "Excavation",
+    "domain": "excavation",
+    "voice": "Analyzes personal corpus to extract voice signatures and frameworks.",
+    "mission": "Specialized intelligence for genius",
+    "file": "starlight-genius.md",
+    "skills": []
+  },
+  {
+    "id": "hardware-monitor",
+    "title": "Hardware Monitor",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Tracks local CPU temperatures, fan speeds, and NVMe disk health.",
+    "mission": "Specialized intelligence for hardware-monitor",
+    "file": "starlight-ops-hardware.md",
+    "skills": []
+  },
+  {
+    "id": "health-is",
+    "title": "Health Is",
+    "tier": "Universal",
+    "domain": "rhythm",
+    "voice": "Monitors nutrition plans, sleep logs, and physical exercises.",
+    "mission": "Specialized intelligence for health-is",
+    "file": "starlight-health-is.md",
+    "skills": []
+  },
+  {
+    "id": "hermes",
+    "title": "Hermes",
+    "tier": "Specialist",
+    "domain": "retrieval",
+    "voice": "Conducts semantic lookup across local vaults, repositories, and web.",
+    "mission": "Specialized intelligence for hermes",
+    "file": "starlight-hermes.md",
+    "skills": []
+  },
+  {
+    "id": "higgsfield-director",
+    "title": "Higgsfield Director",
+    "tier": "Asset",
+    "domain": "asset",
+    "voice": "Structures video prompts and edits camera panning metrics.",
+    "mission": "Specialized intelligence for higgsfield-director",
+    "file": "starlight-asset-higgsfield.md",
+    "skills": []
+  },
+  {
+    "id": "icp-recruiter",
+    "title": "Icp Recruiter",
+    "tier": "People",
+    "domain": "hiring",
+    "voice": "Screens candidate metrics and plans candidate sourcing pipelines.",
+    "mission": "Specialized intelligence for icp-recruiter",
+    "file": "starlight-hiring.md",
+    "skills": []
+  },
+  {
+    "id": "instagram-composer",
+    "title": "Instagram Composer",
+    "tier": "Dist",
+    "domain": "dist",
+    "voice": "Pairs visual tiles with descriptive captions and location logs.",
+    "mission": "Specialized intelligence for instagram-composer",
+    "file": "starlight-dist-instagram.md",
+    "skills": []
+  },
+  {
+    "id": "ip-custodian",
+    "title": "Ip Custodian",
+    "tier": "Legal",
+    "domain": "ip",
+    "voice": "Catalogues software licenses, copyright registrations, and source keys.",
+    "mission": "Specialized intelligence for ip-custodian",
+    "file": "starlight-legal-ip.md",
+    "skills": []
+  },
+  {
+    "id": "jurisdiction-mapper",
+    "title": "Jurisdiction Mapper",
+    "tier": "Legal",
+    "domain": "legal",
+    "voice": "Compiles local tax and corporate filing laws across active nodes.",
+    "mission": "Specialized intelligence for jurisdiction-mapper",
+    "file": "starlight-legal-jurisdiction.md",
+    "skills": []
+  },
+  {
+    "id": "langgraph-router",
+    "title": "Langgraph Router",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Traces cyclical agent pathways and state branches in LangGraph.",
+    "mission": "Specialized intelligence for langgraph-router",
+    "file": "starlight-adapter-langgraph.md",
+    "skills": []
+  },
+  {
+    "id": "linkedin-formatter",
+    "title": "Linkedin Formatter",
+    "tier": "Dist",
+    "domain": "dist",
+    "voice": "Translates technical whitepapers into business insights.",
+    "mission": "Specialized intelligence for linkedin-formatter",
+    "file": "starlight-dist-linkedin.md",
+    "skills": []
+  },
+  {
+    "id": "log-aggregator",
+    "title": "Log Aggregator",
+    "tier": "Ops",
+    "domain": "ops",
+    "voice": "Filters debug logs, alerts on fatal crashes, and archives data.",
+    "mission": "Specialized intelligence for log-aggregator",
+    "file": "starlight-ops-logs.md",
+    "skills": []
+  },
+  {
+    "id": "longevity-researcher",
+    "title": "Longevity Researcher",
+    "tier": "Longevity",
+    "domain": "longevity",
+    "voice": "Reviews clinical longevity studies, peptide trials, and drug guides.",
+    "mission": "Specialized intelligence for longevity-researcher",
+    "file": "starlight-health-research.md",
+    "skills": []
+  },
+  {
+    "id": "macro-analyst",
+    "title": "Macro Analyst",
+    "tier": "Crypto",
+    "domain": "macro",
+    "voice": "Models interest rate policies, market cycles, and liquidity pools.",
+    "mission": "Specialized intelligence for macro-analyst",
+    "file": "starlight-crypto-macro.md",
+    "skills": []
+  },
+  {
+    "id": "markdown-formatter",
+    "title": "Markdown Formatter",
+    "tier": "Research",
+    "domain": "publishing",
+    "voice": "Formats text columns into clean academic GitHub Markdown.",
+    "mission": "Specialized intelligence for markdown-formatter",
+    "file": "starlight-research-format.md",
+    "skills": []
+  },
+  {
+    "id": "mastra-connector",
+    "title": "Mastra Connector",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Exposes TypeScript-native tools and agent steps via Mastra.",
+    "mission": "Specialized intelligence for mastra-connector",
+    "file": "starlight-adapter-mastra.md",
+    "skills": []
+  },
+  {
+    "id": "midjourney-adapter",
+    "title": "Midjourney Adapter",
+    "tier": "Asset",
+    "domain": "asset",
+    "voice": "Formats cinematic prompts and schedules generation calls.",
+    "mission": "Specialized intelligence for midjourney-adapter",
+    "file": "starlight-asset-midjourney.md",
+    "skills": []
+  },
+  {
+    "id": "music-archivist",
+    "title": "Music Archivist",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Curates the digital song masters database and manages label audits.",
+    "mission": "Specialized intelligence for music-archivist",
+    "file": "music-archivist.md",
+    "skills": []
+  },
+  {
+    "id": "music-curator",
+    "title": "Music Curator",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Apex gate keeper auditing track quality before greenlighting a release.",
+    "mission": "Specialized intelligence for music-curator",
+    "file": "music-curator.md",
+    "skills": []
+  },
+  {
+    "id": "nano-banana-renderer",
+    "title": "Nano Banana Renderer",
+    "tier": "Asset",
+    "domain": "asset",
+    "voice": "Renders flat book cover and thumbnail vectors via nb-image.",
+    "mission": "Specialized intelligence for nano-banana-renderer",
+    "file": "starlight-asset-nb.md",
+    "skills": []
+  },
+  {
+    "id": "navigator",
+    "title": "Navigator",
+    "tier": "Specialist",
+    "domain": "strategy",
+    "voice": "Charts execution roadmaps, identifies bottlenecks, and schedules tasks.",
+    "mission": "Specialized intelligence for navigator",
+    "file": "starlight-navigator.md",
+    "skills": []
+  },
+  {
+    "id": "newsletter-editor",
+    "title": "Newsletter Editor",
+    "tier": "Dist",
+    "domain": "dist",
+    "voice": "Formats email campaigns, maps banner images, and checks links.",
+    "mission": "Specialized intelligence for newsletter-editor",
+    "file": "starlight-dist-newsletter.md",
+    "skills": []
+  },
+  {
+    "id": "nous-hermes-adapter",
+    "title": "Nous Hermes Adapter",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Imports profiles and kanban tasks from Nous Research Hermes agent.",
+    "mission": "Specialized intelligence for nous-hermes-adapter",
+    "file": "starlight-adapter-hermes.md",
+    "skills": []
+  },
+  {
+    "id": "ollama-localizer",
+    "title": "Ollama Localizer",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Configures local model configurations and manages GGUF files.",
+    "mission": "Specialized intelligence for ollama-localizer",
+    "file": "starlight-adapter-ollama.md",
+    "skills": []
+  },
+  {
+    "id": "openai-sdk-adapter",
+    "title": "Openai Sdk Adapter",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Formats function call responses for the OpenAI Agents SDK.",
+    "mission": "Specialized intelligence for openai-sdk-adapter",
+    "file": "starlight-adapter-openai.md",
+    "skills": []
+  },
+  {
+    "id": "openalex-aggregator",
+    "title": "Openalex Aggregator",
+    "tier": "Research",
+    "domain": "research",
+    "voice": "Aggregates citation metrics, h-indexes, and author lists.",
+    "mission": "Specialized intelligence for openalex-aggregator",
+    "file": "starlight-research-openalex.md",
+    "skills": []
+  },
+  {
+    "id": "orbit-calculator",
+    "title": "Orbit Calculator",
+    "tier": "Space",
+    "domain": "cosmos",
+    "voice": "Models Keplerian satellite pathways and estimates decay dates.",
+    "mission": "Specialized intelligence for orbit-calculator",
+    "file": "starlight-space-orbit.md",
+    "skills": []
+  },
+  {
+    "id": "orchestrator",
+    "title": "Orchestrator",
+    "tier": "Leadership",
+    "domain": "coordination",
+    "voice": "Routes tasks, manages multi-step workflows, and drives YOLO sessions.",
+    "mission": "Specialized intelligence for orchestrator",
+    "file": "starlight-orchestrator.md",
+    "skills": []
+  },
+  {
+    "id": "org-structuralist",
+    "title": "Org Structuralist",
+    "tier": "People",
+    "domain": "structure",
+    "voice": "Models organizational charts, span of control, and role definitions.",
+    "mission": "Specialized intelligence for org-structuralist",
+    "file": "starlight-org.md",
+    "skills": []
+  },
+  {
+    "id": "paperclip-broker",
+    "title": "Paperclip Broker",
+    "tier": "Partner",
+    "domain": "partner",
+    "voice": "Syncs project task queues and budgets with Paperclip dashboard.",
+    "mission": "Specialized intelligence for paperclip-broker",
+    "file": "starlight-adapter-paperclip.md",
+    "skills": []
+  },
+  {
+    "id": "payload-integrator",
+    "title": "Payload Integrator",
+    "tier": "Space",
+    "domain": "cosmos",
+    "voice": "Configures sensor capture intervals and registers image assets.",
+    "mission": "Specialized intelligence for payload-integrator",
+    "file": "starlight-space-payload.md",
+    "skills": []
+  },
+  {
+    "id": "pdf-distiller",
+    "title": "Pdf Distiller",
+    "tier": "Research",
+    "domain": "research",
+    "voice": "Extracts charts and abstracts from scientific PDF documents.",
+    "mission": "Specialized intelligence for pdf-distiller",
+    "file": "starlight-research-distill.md",
+    "skills": []
+  },
+  {
+    "id": "performance-coach",
+    "title": "Performance Coach",
+    "tier": "People",
+    "domain": "reviews",
+    "voice": "Rehearses feedback conversations and plans performance calibrations.",
+    "mission": "Specialized intelligence for performance-coach",
+    "file": "starlight-performance.md",
+    "skills": []
+  },
+  {
+    "id": "performance-director",
+    "title": "Performance Director",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Plans live show setlists, broadcast schedules, and tour riders.",
+    "mission": "Specialized intelligence for performance-director",
+    "file": "starlight-sound-performance.md",
+    "skills": []
+  },
+  {
+    "id": "persona-keeper",
+    "title": "Persona Keeper",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Manages AI voice models and logs persona background histories.",
+    "mission": "Specialized intelligence for persona-keeper",
+    "file": "persona-keeper.md",
+    "skills": []
+  },
+  {
+    "id": "pollution-monitor",
+    "title": "Pollution Monitor",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Maps oil spill patterns and registers ocean plastic collection logs.",
+    "mission": "Specialized intelligence for pollution-monitor",
+    "file": "starlight-marine-pollution.md",
+    "skills": []
+  },
+  {
+    "id": "prime",
+    "title": "Prime",
+    "tier": "Leadership",
+    "domain": "synthesis",
+    "voice": "Synthesizes conflicting council inputs into a single rational path.",
+    "mission": "Specialized intelligence for prime",
+    "file": "starlight-prime.md",
+    "skills": []
+  },
+  {
+    "id": "promo-amplifier",
+    "title": "Promo Amplifier",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Coordinates social media posts, advertising, and email drip feeds.",
+    "mission": "Specialized intelligence for promo-amplifier",
+    "file": "music-amplifier.md",
+    "skills": []
+  },
+  {
+    "id": "prompt-hub-manager",
+    "title": "Prompt Hub Manager",
+    "tier": "Asset",
+    "domain": "prompt-hub",
+    "voice": "Optimizes visual prompt parameters and manages presets.",
+    "mission": "Specialized intelligence for prompt-hub-manager",
+    "file": "starlight-asset-prompts.md",
+    "skills": []
+  },
+  {
+    "id": "prompts-extractor",
+    "title": "Prompts Extractor",
+    "tier": "Core",
+    "domain": "parsing",
+    "voice": "Evaluates custom agent prompt files and compiles system instructions.",
+    "mission": "Specialized intelligence for prompts-extractor",
+    "file": "sis-extractor-prompts.md",
+    "skills": []
+  },
+  {
+    "id": "protocol-researcher",
+    "title": "Protocol Researcher",
+    "tier": "Crypto",
+    "domain": "research",
+    "voice": "Reviews new whitepapers, token structures, and developer commits.",
+    "mission": "Specialized intelligence for protocol-researcher",
+    "file": "starlight-crypto-research.md",
+    "skills": []
+  },
+  {
+    "id": "quality-checker",
+    "title": "Quality Checker",
+    "tier": "Asset",
+    "domain": "quality",
+    "voice": "Audits visual outputs to reject blurry panels or text errors.",
+    "mission": "Specialized intelligence for quality-checker",
+    "file": "starlight-asset-quality.md",
+    "skills": []
+  },
+  {
+    "id": "relational",
+    "title": "Relational",
+    "tier": "Universal IS",
+    "domain": "network-architecture",
+    "voice": "Practical, non-manipulative network cartographer.",
+    "mission": "Specialized intelligence for relational",
+    "file": "starlight-relational.md",
+    "skills": []
+  },
+  {
+    "id": "repos-extractor",
+    "title": "Repos Extractor",
+    "tier": "Core",
+    "domain": "parsing",
+    "voice": "Scans repository configurations to identify dependencies and exports.",
+    "mission": "Specialized intelligence for repos-extractor",
+    "file": "sis-extractor-repos.md",
+    "skills": []
+  },
+  {
+    "id": "royalty-calculator",
+    "title": "Royalty Calculator",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Models payout waterfalls, splits, and blockchain-based tokens.",
+    "mission": "Specialized intelligence for royalty-calculator",
+    "file": "royalty-architect.md",
+    "skills": []
+  },
+  {
+    "id": "sage",
+    "title": "Sage",
+    "tier": "Foundation",
+    "domain": "institutional",
+    "voice": "Retrieves past lessons, resolves contradictions, and queries vaults.",
+    "mission": "Specialized intelligence for sage",
+    "file": "starlight-sage.md",
+    "skills": []
+  },
+  {
+    "id": "sage-seat",
+    "title": "Sage Seat",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Evaluates proposals for philosophical meaning and context limits.",
+    "mission": "Specialized intelligence for sage-seat",
+    "file": "council/sage.md",
+    "skills": []
+  },
+  {
+    "id": "second-brain-is",
+    "title": "Second Brain Is",
+    "tier": "Universal",
+    "domain": "layer-2",
+    "voice": "Handles daily inbox parsing, tags notes, and surfaces repeating patterns.",
+    "mission": "Specialized intelligence for second-brain-is",
+    "file": "starlight-secondbrain.md",
+    "skills": []
+  },
+  {
+    "id": "self-is",
+    "title": "Self Is",
+    "tier": "Universal IS",
+    "domain": "layer-1",
+    "voice": "Establishes the core persona, identity keys, and personal values.",
+    "mission": "Specialized intelligence for self-is",
+    "file": "starlight-self-is.md",
+    "skills": []
+  },
+  {
+    "id": "sentinel",
+    "title": "Sentinel",
+    "tier": "Specialist",
+    "domain": "quality",
+    "voice": "Audits code changes, monitors vulnerabilities, and triggers git rollbacks.",
+    "mission": "Specialized intelligence for sentinel",
+    "file": "starlight-sentinel.md",
+    "skills": []
+  },
+  {
+    "id": "sentinel-daemon",
+    "title": "Sentinel Daemon",
+    "tier": "Core",
+    "domain": "daemon",
+    "voice": "Background process monitoring file drift and checking licenses.",
+    "mission": "Specialized intelligence for sentinel-daemon",
+    "file": "starlight-sentinel-daemon.md",
+    "skills": []
+  },
+  {
+    "id": "shadow-witness",
+    "title": "Shadow Witness",
+    "tier": "Council Archetype",
+    "domain": "council",
+    "voice": "Highlights hidden assumptions, ego motives, and security risks.",
+    "mission": "Specialized intelligence for shadow-witness",
+    "file": "council/shadow-witness.md",
+    "skills": []
+  },
+  {
+    "id": "sky-mapper",
+    "title": "Sky Mapper",
+    "tier": "Space",
+    "domain": "observation",
+    "voice": "Updates astronomical database files with target constellations.",
+    "mission": "Specialized intelligence for sky-mapper",
+    "file": "starlight-space-mapper.md",
+    "skills": []
+  },
+  {
+    "id": "sleep-optimizer",
+    "title": "Sleep Optimizer",
+    "tier": "Longevity",
+    "domain": "rhythm",
+    "voice": "Audits sleep cycles, heart rate variability, and bedroom environments.",
+    "mission": "Specialized intelligence for sleep-optimizer",
+    "file": "starlight-health-sleep.md",
+    "skills": []
+  },
+  {
+    "id": "social-cinematic",
+    "title": "Social Cinematic",
+    "tier": "Specialist",
+    "domain": "visual-production",
+    "voice": "Engineering cinematic visuals, image/video prompts, directing Higgsfield/Vee asset generation.",
+    "mission": "Specialized intelligence for social-cinematic",
+    "file": "starlight-social-cinematic.md",
+    "skills": []
+  },
+  {
+    "id": "social-factcheck",
+    "title": "Social Factcheck",
+    "tier": "Specialist",
+    "domain": "claim-verification",
+    "voice": "Running searches, verifying claims/citations, checking links and logical math accuracy.",
+    "mission": "Specialized intelligence for social-factcheck",
+    "file": "starlight-social-factcheck.md",
+    "skills": []
+  },
+  {
+    "id": "social-news-analyst",
+    "title": "Social News Analyst",
+    "tier": "Specialist",
+    "domain": "real-time-news",
+    "voice": "Scanning AI lab releases, partner updates, tracking affiliate feature sets and tech trends.",
+    "mission": "Specialized intelligence for social-news-analyst",
+    "file": "starlight-social-news-analyst.md",
+    "skills": []
+  },
+  {
+    "id": "social-psychologist",
+    "title": "Social Psychologist",
+    "tier": "Specialist",
+    "domain": "cognitive-psychology",
+    "voice": "Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity.",
+    "mission": "Specialized intelligence for social-psychologist",
+    "file": "starlight-social-psychologist.md",
+    "skills": []
+  },
+  {
+    "id": "social-sentinel",
+    "title": "Social Sentinel",
+    "tier": "Specialist",
+    "domain": "tone-and-publication-gating",
+    "voice": "Auditing social copy for brand voice, scrubbing secrets, attaching SIP attestation labels, enforcing approval gates.",
+    "mission": "Specialized intelligence for social-sentinel",
+    "file": "starlight-social-sentinel.md",
+    "skills": []
+  },
+  {
+    "id": "social-strategist",
+    "title": "Social Strategist",
+    "tier": "Specialist",
+    "domain": "social-campaign",
+    "voice": "Translating blogs/releases into threads/posts, copywriting, hook engineering.",
+    "mission": "Specialized intelligence for social-strategist",
+    "file": "starlight-social-strategist.md",
+    "skills": []
+  },
+  {
+    "id": "social-vibetracker",
+    "title": "Social Vibetracker",
+    "tier": "Specialist",
+    "domain": "vibe-curation",
+    "voice": "Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes.",
+    "mission": "Specialized intelligence for social-vibetracker",
+    "file": "starlight-social-vibetracker.md",
+    "skills": []
+  },
+  {
+    "id": "space-debris-tracker",
+    "title": "Space Debris Tracker",
+    "tier": "Space",
+    "domain": "cosmos",
+    "voice": "Cross-references space object catalogs to flag collision alerts.",
+    "mission": "Specialized intelligence for space-debris-tracker",
+    "file": "starlight-space-debris.md",
+    "skills": []
+  },
+  {
+    "id": "species-logger",
+    "title": "Species Logger",
+    "tier": "Marine",
+    "domain": "conservation",
+    "voice": "Logs marine mammal sightings and maps migration pathways.",
+    "mission": "Specialized intelligence for species-logger",
+    "file": "starlight-marine-species.md",
+    "skills": []
+  },
+  {
+    "id": "spiritual-is",
+    "title": "Spiritual Is",
+    "tier": "Universal",
+    "domain": "optional",
+    "voice": "Private, encrypted node handling long-term existential alignment.",
+    "mission": "Specialized intelligence for spiritual-is",
+    "file": "starlight-spiritual-is.md",
+    "skills": []
+  },
+  {
+    "id": "steward",
+    "title": "Steward",
+    "tier": "Core",
+    "domain": "maintenance",
+    "voice": "Manages active file-cleanup, resolves merge conflicts, and maintains packages.",
+    "mission": "Specialized intelligence for steward",
+    "file": "starlight-steward.md",
+    "skills": []
+  },
+  {
+    "id": "stress-tracker",
+    "title": "Stress Tracker",
+    "tier": "Longevity",
+    "domain": "rhythm",
+    "voice": "Tracks daily stress spikes and schedules breathing sessions.",
+    "mission": "Specialized intelligence for stress-tracker",
+    "file": "starlight-health-stress.md",
+    "skills": []
+  },
+  {
+    "id": "supplement-advisor",
+    "title": "Supplement Advisor",
+    "tier": "Longevity",
+    "domain": "longevity",
+    "voice": "Coordinates supplement schedules based on biomarker deficits.",
+    "mission": "Specialized intelligence for supplement-advisor",
+    "file": "starlight-health-supplements.md",
+    "skills": []
+  },
+  {
+    "id": "sync-agent",
+    "title": "Sync Agent",
+    "tier": "Sound",
+    "domain": "sound",
+    "voice": "Evaluates movie/TV briefs, sync placement fits, and licenses rights.",
+    "mission": "Specialized intelligence for sync-agent",
+    "file": "starlight-sound-sync.md",
+    "skills": []
+  },
+  {
+    "id": "sync-specialist",
+    "title": "Sync Specialist",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Pitches tracks directly to supervisors and handles licensing payouts.",
+    "mission": "Specialized intelligence for sync-specialist",
+    "file": "music-sync-specialist.md",
+    "skills": []
+  },
+  {
+    "id": "talent-safeguard",
+    "title": "Talent Safeguard",
+    "tier": "People",
+    "domain": "safety",
+    "voice": "Detects team burnout signs and evaluates team psychological safety.",
+    "mission": "Specialized intelligence for talent-safeguard",
+    "file": "starlight-talent.md",
+    "skills": []
+  },
+  {
+    "id": "telemetry-parser",
+    "title": "Telemetry Parser",
+    "tier": "Space",
+    "domain": "cosmos",
+    "voice": "Logs sensor metrics, packet loss rates, and solar storm warnings.",
+    "mission": "Specialized intelligence for telemetry-parser",
+    "file": "starlight-space-telemetry.md",
+    "skills": []
+  },
+  {
+    "id": "telescope-scheduler",
+    "title": "Telescope Scheduler",
+    "tier": "Space",
+    "domain": "observation",
+    "voice": "Schedules dark sky observation blocks and reviews weather models.",
+    "mission": "Specialized intelligence for telescope-scheduler",
+    "file": "starlight-space-telescope.md",
+    "skills": []
+  },
+  {
+    "id": "terms-compiler",
+    "title": "Terms Compiler",
+    "tier": "Legal",
+    "domain": "compliance",
+    "voice": "Maintains terms of service documents and privacy statements.",
+    "mission": "Specialized intelligence for terms-compiler",
+    "file": "starlight-legal-terms.md",
+    "skills": []
+  },
+  {
+    "id": "tiktok-scriptwriter",
+    "title": "Tiktok Scriptwriter",
+    "tier": "Dist",
+    "domain": "dist",
+    "voice": "Drafts fast-paced video narratives and structures B-roll steps.",
+    "mission": "Specialized intelligence for tiktok-scriptwriter",
+    "file": "starlight-dist-tiktok.md",
+    "skills": []
+  },
+  {
+    "id": "trademark-sentinel",
+    "title": "Trademark Sentinel",
+    "tier": "Legal",
+    "domain": "ip",
+    "voice": "Scrapes domain listings and logs trademark registrations.",
+    "mission": "Specialized intelligence for trademark-sentinel",
+    "file": "starlight-legal-trademarks.md",
+    "skills": []
+  },
+  {
+    "id": "training-planner",
+    "title": "Training Planner",
+    "tier": "Longevity",
+    "domain": "rhythm",
+    "voice": "Models resistance workouts, zone-2 cardio plans, and rest steps.",
+    "mission": "Specialized intelligence for training-planner",
+    "file": "starlight-health-training.md",
+    "skills": []
+  },
+  {
+    "id": "transcripts-extractor",
+    "title": "Transcripts Extractor",
+    "tier": "Core",
+    "domain": "parsing",
+    "voice": "Extracts structured JSONL memory atoms from terminal logs.",
+    "mission": "Specialized intelligence for transcripts-extractor",
+    "file": "sis-extractor-transcripts.md",
+    "skills": []
+  },
+  {
+    "id": "ui-mockup-designer",
+    "title": "Ui Mockup Designer",
+    "tier": "Asset",
+    "domain": "ui",
+    "voice": "Generates Tailwind, shadcn, and HTML dashboard frames.",
+    "mission": "Specialized intelligence for ui-mockup-designer",
+    "file": "starlight-asset-ui.md",
+    "skills": []
+  },
+  {
+    "id": "vault-extractor",
+    "title": "Vault Extractor",
+    "tier": "Core",
+    "domain": "parsing",
+    "voice": "Scrapes Obsidian vault markdown files and indexes connections.",
+    "mission": "Specialized intelligence for vault-extractor",
+    "file": "sis-extractor-vault.md",
+    "skills": [
+      "memory/"
+    ]
+  },
+  {
+    "id": "vessel-tracker",
+    "title": "Vessel Tracker",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Evaluates AIS transponder signals to log marine reserve encroachments.",
+    "mission": "Specialized intelligence for vessel-tracker",
+    "file": "starlight-marine-vessel.md",
+    "skills": []
+  },
+  {
+    "id": "video-assembler",
+    "title": "Video Assembler",
+    "tier": "Asset",
+    "domain": "asset",
+    "voice": "Composes keyframe slides, background tunes, and voice tracks.",
+    "mission": "Specialized intelligence for video-assembler",
+    "file": "starlight-asset-video.md",
+    "skills": []
+  },
+  {
+    "id": "visionary",
+    "title": "Visionary",
+    "tier": "Universal IS",
+    "domain": "vision-excavation",
+    "voice": "First-principles axis-setter, premium and grounded.",
+    "mission": "Specialized intelligence for visionary",
+    "file": "starlight-visionary.md",
+    "skills": []
+  },
+  {
+    "id": "visual-producer",
+    "title": "Visual Producer",
+    "tier": "Sound",
+    "domain": "music-is",
+    "voice": "Generates album artwork, canvas slides, and promotional teasers.",
+    "mission": "Specialized intelligence for visual-producer",
+    "file": "music-producer.md",
+    "skills": []
+  },
+  {
+    "id": "voice-&-video-is",
+    "title": "Voice & Video Is",
+    "tier": "Universal",
+    "domain": "layer-8",
+    "voice": "Guides media asset attestation, audio editing, and video pipelines.",
+    "mission": "Specialized intelligence for voice-&-video-is",
+    "file": "starlight-voice-video-is.md",
+    "skills": []
+  },
+  {
+    "id": "voice-operator",
+    "title": "Voice Operator",
+    "tier": "Front-Door",
+    "domain": "cockpit",
+    "voice": "Listens to spoken executive intents and generates session packets.",
+    "mission": "Specialized intelligence for voice-operator",
+    "file": "starlight-voice-operator.md",
+    "skills": []
+  },
+  {
+    "id": "water-analyst",
+    "title": "Water Analyst",
+    "tier": "Marine",
+    "domain": "marine",
+    "voice": "Tracks salinity, temperature variations, and pH logs.",
+    "mission": "Specialized intelligence for water-analyst",
+    "file": "starlight-marine-water.md",
+    "skills": []
+  },
+  {
+    "id": "wealth-is",
+    "title": "Wealth Is",
+    "tier": "Universal IS",
+    "domain": "layer-6",
+    "voice": "Drives capital allocation decisions and monitors investment metrics.",
+    "mission": "Specialized intelligence for wealth-is",
+    "file": "starlight-wealth-is.md",
+    "skills": []
+  },
+  {
+    "id": "weaver",
+    "title": "Weaver",
+    "tier": "Specialist",
+    "domain": "narrative",
+    "voice": "Weaves creative themes, brand design layouts, and technical copy.",
+    "mission": "Specialized intelligence for weaver",
+    "file": "starlight-weaver.md",
+    "skills": []
+  },
+  {
+    "id": "x-thread-compiler",
+    "title": "X Thread Compiler",
+    "tier": "Dist",
+    "domain": "dist",
+    "voice": "Distills complex codebase changes into engaging punchy posts.",
+    "mission": "Specialized intelligence for x-thread-compiler",
+    "file": "starlight-dist-x.md",
+    "skills": []
+  }
+]
