@@ -72,7 +72,8 @@ export function drainLocal(sql: Sql, now: number, newId: () => string): unknown[
 // The queue locks directories by name, and only names with one spelling are admitted. A changed
 // file with an unusual name locks its nearest admissible parent; too many files lock top-level
 // directories; past that the whole repository. Over-locking costs a wait, under-locking a clobber.
-export function lockPaths(files: string[]): string[] {
+export function lockPaths(files: string[], complete = true): string[] {
+  if (!complete) return ['.'];
   const admissible = (f: string) => {
     const kept: string[] = [];
     for (const part of f.split('/')) {
@@ -89,19 +90,72 @@ export function lockPaths(files: string[]): string[] {
   return top.length <= MAX_LOCK_PATHS ? top : ['.'];
 }
 
-async function perform(sql: Sql, action: Action, api: GithubApi, routing: Routing, now: number, newId: () => string) {
+interface Row {
+  seq: number;
+  delivery: string;
+  created_at: number;
+}
+
+const WRITERS = new Set(['admin', 'maintain', 'write']);
+
+// GitHub has no idempotency key for comments. Each one carries a marker naming its outbox row,
+// and a retry first looks for that marker, so a crash after posting never posts twice.
+async function commentOnce(api: GithubApi, row: Row, owner: string, repo: string, number: number, body: string) {
+  const marker = `<!-- starlight-cp:${row.delivery}:${row.seq} -->`;
+  if (await api.hasComment(owner, repo, number, marker, new Date(row.created_at - 60_000).toISOString())) return { commented: 'already' };
+  await api.comment(owner, repo, number, `${body}\n\n${marker}`);
+  return { commented: true };
+}
+
+async function dispatchIssue(sql: Sql, api: GithubApi, row: Row, a: Extract<Action, { type: 'dispatch_issue' }>, now: number, newId: () => string) {
+  // Only people who could push the change themselves may hand it to an agent.
+  if (!WRITERS.has(await api.permission(a.owner, a.repo, a.sender))) return { ignored: 'sender cannot write to the repository' };
+  const issue = await api.issue(a.owner, a.repo, a.number);
+  if (!issue.open) return { ignored: 'issue is closed' };
+  const full = `${a.owner}/${a.repo}`;
+  const url = `https://github.com/${full}/issues/${a.number}`;
+  // The issue body is where the actual instructions are, so the queue's tripwire reads it here.
+  const tripped = core.tripwire(issue.title, issue.body, []);
+  if (tripped.length) {
+    return enqueueSafely(sql, {
+      id: `gh:${a.owner}.${a.repo}.issue-${a.number}.gate`.slice(0, 100),
+      title: `Approve agent work on ${full}#${a.number}: ${issue.title.slice(0, 80)}`,
+      doneCondition: `A human has read ${url}, which mentions ${tripped.join(', ')}, and either dispatched it by hand or closed it.`,
+      priority: 3, repo: a.repo, paths: [`.starlight/gates/issue-${a.number}`], gates: tripped, kind: 'gate',
+    }, now, newId);
+  }
+  if (a.label === 'agent:codex') {
+    return commentOnce(api, row, a.owner, a.repo, a.number,
+      '@codex Implement what this issue asks and open a draft pull request that links it. Keep the change to the scope the issue states, and say in the PR what you did not verify.');
+  }
+  if (a.label === 'agent:jules') {
+    await api.addLabels(a.owner, a.repo, a.number, ['jules']);
+    return { labelled: ['jules'] };
+  }
+  return enqueueSafely(sql, {
+    id: `gh:${a.owner}.${a.repo}.issue-${a.number}.build`.slice(0, 100),
+    title: `Build ${full}#${a.number}: ${issue.title.slice(0, 120)}`,
+    doneCondition: `A draft pull request on ${full} links ${url}, does what the issue asks within its stated scope, and passes CI.`,
+    // The issue names no files, so the whole repository is held until the lease ends.
+    priority: 4, repo: a.repo, paths: ['.'], gates: ['none'], maxMinutes: 120, kind: 'build',
+  }, now, newId);
+}
+
+async function perform(sql: Sql, row: Row, action: Action, api: GithubApi, routing: Routing, now: number, newId: () => string) {
   switch (action.type) {
     case 'enqueue':
       return enqueueSafely(sql, action.task, now, newId);
     case 'comment':
-      await api.comment(action.owner, action.repo, action.number, action.body);
-      return { commented: true };
+      return commentOnce(api, row, action.owner, action.repo, action.number, action.body);
     case 'label':
+      // Adding a label that is already there changes nothing, so a retry is harmless.
       await api.addLabels(action.owner, action.repo, action.number, action.labels);
       return { labelled: action.labels };
+    case 'dispatch_issue':
+      return dispatchIssue(sql, api, row, action, now, newId);
     case 'enqueue_pr': {
-      const files = await api.prFiles(action.owner, action.repo, action.number);
-      return enqueueSafely(sql, { ...action.task, paths: lockPaths(files) }, now, newId);
+      const { files, complete } = await api.prFiles(action.owner, action.repo, action.number);
+      return enqueueSafely(sql, { ...action.task, paths: lockPaths(files, complete) }, now, newId);
     }
     case 'evaluate_land': {
       const st = await api.prState(action.owner, action.repo, action.number, routing.codexBot);
@@ -114,7 +168,7 @@ async function perform(sql: Sql, action: Action, api: GithubApi, routing: Routin
         title: `Land ${full}#${action.number} through pr-gate`,
         doneCondition: `\`node tools/pr-gate.mjs verify --repo ${full} --pr ${action.number}\` exits 0 and the PR merges through \`pr-gate merge\` at head ${st.headSha}, recorded in the agentic-ops-hub ledger; or a PR comment names the gate that blocked it.`,
         priority: 2, repo: action.repo, paths: [`.starlight/land/pr-${action.number}`], gates: ['none'],
-        maxMinutes: 30, ...(maker?.provider ? { excludeProvider: maker.provider } : {}),
+        maxMinutes: 30, kind: 'land', ...(maker?.provider ? { excludeProvider: maker.provider } : {}),
       }, now, newId);
     }
   }
@@ -127,7 +181,7 @@ export async function drain(
   const due = sql.exec(`SELECT * FROM outbox WHERE state = 'pending' AND NOT ${LOCAL} AND next_at <= ? ORDER BY seq LIMIT ?`, now, limit);
   for (const row of due) {
     try {
-      await perform(sql, JSON.parse(row.action as string), api, routing, now, newId);
+      await perform(sql, row as unknown as Row, JSON.parse(row.action as string), api, routing, now, newId);
       sql.exec(`UPDATE outbox SET state = 'done', updated_at = ? WHERE seq = ?`, now, row.seq);
       tally.done++;
     } catch (err) {

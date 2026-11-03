@@ -24,6 +24,7 @@ export interface RecurringTask {
   paths: string[];
   priority: number;
   excludeProvider?: string;
+  kind?: string;
 }
 
 export interface Maker {
@@ -46,6 +47,9 @@ export interface Signal {
   reviewCommit?: string;
   conclusion?: string;
   label?: string;
+  // When the thing the event describes last changed, in ms. A signed body replayed days later
+  // still verifies, so the handler refuses events older than its freshness window.
+  at: number;
 }
 
 export type Action =
@@ -54,6 +58,8 @@ export type Action =
   | { type: 'enqueue_pr'; owner: string; repo: string; number: number; task: Omit<EnqueueInput, 'paths'> }
   | { type: 'comment'; owner: string; repo: string; number: number; body: string }
   | { type: 'label'; owner: string; repo: string; number: number; labels: string[] }
+  // Decided when it runs, against live GitHub: who added the label, and what the issue says.
+  | { type: 'dispatch_issue'; owner: string; repo: string; number: number; label: string; sender: string }
   // Checks green and Codex passed this head: decided against live GitHub state, not the event.
   | { type: 'evaluate_land'; owner: string; repo: string; number: number };
 
@@ -91,7 +97,7 @@ export function normalize(name: string, payload: Record<string, any>): Signal | 
     if (!pr || pr.draft || pr.state !== 'open') return null;
     return {
       kind: 'pr_ready', owner, repo, number: pr.number, url: pr.html_url, sender,
-      sha: pr.head?.sha, branch: pr.head?.ref, maker: makerFromBranch(pr.head?.ref),
+      sha: pr.head?.sha, branch: pr.head?.ref, maker: makerFromBranch(pr.head?.ref), at: Date.parse(pr.updated_at),
     };
   }
   if (name === 'pull_request_review' && payload.action === 'submitted') {
@@ -102,7 +108,7 @@ export function normalize(name: string, payload: Record<string, any>): Signal | 
       kind: 'review', owner, repo, number: pr.number, url: pr.html_url, sender,
       sha: pr.head?.sha, branch: pr.head?.ref, maker: makerFromBranch(pr.head?.ref),
       reviewState: String(review.state ?? '').toLowerCase(), reviewBody: String(review.body ?? ''),
-      reviewCommit: review.commit_id,
+      reviewCommit: review.commit_id, at: Date.parse(review.submitted_at),
     };
   }
   if (name === 'check_suite' && payload.action === 'completed') {
@@ -113,7 +119,7 @@ export function normalize(name: string, payload: Record<string, any>): Signal | 
     return {
       kind: 'checks', owner, repo, number: pr.number, url: `https://github.com/${repoFull}/pull/${pr.number}`,
       sender, sha: suite.head_sha, branch: suite.head_branch, maker: makerFromBranch(suite.head_branch),
-      conclusion: suite.conclusion,
+      conclusion: suite.conclusion, at: Date.parse(suite.updated_at),
     };
   }
   if (name === 'issues' && payload.action === 'labeled') {
@@ -121,7 +127,7 @@ export function normalize(name: string, payload: Record<string, any>): Signal | 
     if (!issue || issue.state !== 'open' || issue.pull_request) return null;
     return {
       kind: 'issue_labeled', owner, repo, number: issue.number, url: issue.html_url, sender,
-      label: payload.label?.name,
+      label: payload.label?.name, at: Date.parse(issue.updated_at),
     };
   }
   return null;
@@ -154,7 +160,7 @@ export function plan(signal: Signal, routing: Routing): Action[] {
           title: `Review ${full}#${signal.number} (made by ${maker.harness})`,
           doneCondition: `A review is posted on ${signal.url} for head ${signal.sha}: each finding with file:line and P0-P3 severity, or the words "no blocking findings". Nothing is pushed to the branch.`,
           priority: 3, repo: signal.repo, paths: [reviewPath(signal.number)], gates: ['none'],
-          maxMinutes: 30, excludeProvider: 'openai',
+          maxMinutes: 30, excludeProvider: 'openai', kind: 'review',
         },
       }];
     }
@@ -171,7 +177,7 @@ export function plan(signal: Signal, routing: Routing): Action[] {
           id: taskId(signal, 'fix-review'),
           title: `Answer Codex findings on ${full}#${signal.number}`,
           doneCondition: `Every unresolved Codex thread on ${signal.url} has a fix commit or a reasoned reply, the branch is pushed, and "@codex review" is requested again on the new head.`,
-          priority: 2, repo: signal.repo, gates: ['none'], maxMinutes: 90,
+          priority: 2, repo: signal.repo, gates: ['none'], maxMinutes: 90, kind: 'fix',
         },
       }];
     }
@@ -185,42 +191,27 @@ export function plan(signal: Signal, routing: Routing): Action[] {
           id: taskId(signal, 'fix-ci'),
           title: `Make CI green on ${full}#${signal.number}`,
           doneCondition: `Every required check on ${signal.url} passes at a new pushed head, with the cause named in a PR comment. Tests are fixed, never deleted or skipped.`,
-          priority: 2, repo: signal.repo, gates: ['none'], maxMinutes: 60,
+          priority: 2, repo: signal.repo, gates: ['none'], maxMinutes: 60, kind: 'fix',
         },
       }];
     }
     case 'issue_labeled': {
       const label = signal.label ?? '';
-      if (label === 'agent:codex') {
-        return [{
-          type: 'comment', ...where,
-          body: '@codex Implement what this issue asks and open a draft pull request that links it. Keep the change to the scope the issue states, and say in the PR what you did not verify.',
-        }];
-      }
-      if (label === 'agent:jules') return [{ type: 'label', ...where, labels: ['jules'] }];
-      if (label === 'agent:claude' || label === 'agent:any') {
-        return [{
-          type: 'enqueue',
-          task: {
-            id: `gh:${signal.owner}.${signal.repo}.issue-${signal.number}.build`.slice(0, 100),
-            title: `Build ${full}#${signal.number}`,
-            doneCondition: `A draft pull request on ${full} links ${signal.url}, does what the issue asks within its stated scope, and passes CI.`,
-            // The issue names no files, so the whole repository is held until the lease ends.
-            priority: 4, repo: signal.repo, paths: ['.'], gates: ['none'], maxMinutes: 120,
-          },
-        }];
-      }
-      return [];
+      if (!AGENT_LABELS.has(label)) return [];
+      return [{ type: 'dispatch_issue', ...where, label, sender: signal.sender }];
     }
   }
 }
+
+export const AGENT_LABELS = new Set(['agent:codex', 'agent:jules', 'agent:claude', 'agent:any']);
+export const FRESH_MS = 3 * 24 * 3600_000;
 
 // Recurring work gets one task per day; the date in the id makes a repeated cron run harmless.
 export function recurringTasks(routing: Routing, now: number): EnqueueInput[] {
   const day = new Date(now).toISOString().slice(0, 10);
   return (routing.recurring ?? []).map((r) => ({
     id: `cron:${r.name}:${day}`.slice(0, 100), title: r.title, doneCondition: r.doneCondition,
-    priority: r.priority, repo: r.repo, paths: r.paths, gates: ['none'], maxMinutes: 120,
+    priority: r.priority, repo: r.repo, paths: r.paths, gates: ['none'], maxMinutes: 120, kind: r.kind ?? 'research',
     ...(r.excludeProvider ? { excludeProvider: r.excludeProvider } : {}),
   }));
 }

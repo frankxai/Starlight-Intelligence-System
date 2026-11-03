@@ -21,11 +21,19 @@ export interface PrState {
 }
 
 export interface GithubApi {
-  comment(owner: string, repo: string, number: number, body: string): Promise<void>;
+  comment(owner: string, repo: string, number: number, body: string): Promise<string | void>;
+  // True when a comment created since `sinceIso` already contains `marker`: the outbox's way to
+  // know a comment it may have posted before a crash really went out.
+  hasComment(owner: string, repo: string, number: number, marker: string, sinceIso: string): Promise<boolean>;
   addLabels(owner: string, repo: string, number: number, labels: string[]): Promise<void>;
-  prFiles(owner: string, repo: string, number: number): Promise<string[]>;
+  // complete is false when GitHub would not list every file, so the caller must lock more widely.
+  prFiles(owner: string, repo: string, number: number): Promise<{ files: string[]; complete: boolean }>;
   prState(owner: string, repo: string, number: number, codexBot: string): Promise<PrState>;
+  issue(owner: string, repo: string, number: number): Promise<{ title: string; body: string; open: boolean }>;
+  permission(owner: string, repo: string, login: string): Promise<string>;
 }
+
+const MAX_PAGES = 30;
 
 const b64url = (bytes: Uint8Array | string) => {
   const s = typeof bytes === 'string' ? btoa(bytes) : btoa(String.fromCharCode(...bytes));
@@ -75,6 +83,11 @@ export class GithubApp implements GithubApi {
   }
 
   // One installation per owner; its token lasts an hour and is reused until five minutes before.
+  // Public so a sandbox's outbound gateway can add it to git requests the sandbox itself never sees.
+  async installationToken(owner: string, repo: string): Promise<string> {
+    return this.token(owner, repo);
+  }
+
   private async token(owner: string, repo: string): Promise<string> {
     const cached = this.tokens.get(owner);
     if (cached && cached.expiresAt - 300_000 > this.clock()) return cached.token;
@@ -89,10 +102,44 @@ export class GithubApp implements GithubApi {
     return (await this.call(path, { auth: `token ${await this.token(owner, repo)}` })).json() as Promise<T>;
   }
 
-  async comment(owner: string, repo: string, number: number, body: string) {
-    await this.call(`/repos/${owner}/${repo}/issues/${number}/comments`, {
+  async comment(owner: string, repo: string, number: number, body: string): Promise<string> {
+    const res = await this.call(`/repos/${owner}/${repo}/issues/${number}/comments`, {
       method: 'POST', auth: `token ${await this.token(owner, repo)}`, body: JSON.stringify({ body }),
     });
+    return ((await res.json().catch(() => ({}))) as { html_url?: string }).html_url ?? '';
+  }
+
+  async hasComment(owner: string, repo: string, number: number, marker: string, sinceIso: string): Promise<boolean> {
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const batch = await this.get<{ body?: string }[]>(owner, repo,
+        `/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}&since=${encodeURIComponent(sinceIso)}`);
+      if (batch.some((c) => (c.body ?? '').includes(marker))) return true;
+      if (batch.length < 100) return false;
+    }
+    // Could not see every comment; assume it went out rather than risk posting twice.
+    return true;
+  }
+
+  async issue(owner: string, repo: string, number: number) {
+    const i = await this.get<{ title: string; body: string | null; state: string }>(owner, repo, `/repos/${owner}/${repo}/issues/${number}`);
+    return { title: i.title, body: i.body ?? '', open: i.state === 'open' };
+  }
+
+  async permission(owner: string, repo: string, login: string): Promise<string> {
+    const p = await this.get<{ permission: string }>(owner, repo, `/repos/${owner}/${repo}/collaborators/${encodeURIComponent(login)}/permission`);
+    return p.permission;
+  }
+
+  async defaultBranch(owner: string, repo: string): Promise<string> {
+    return (await this.get<{ default_branch: string }>(owner, repo, `/repos/${owner}/${repo}`)).default_branch;
+  }
+
+  async openDraftPullRequest(owner: string, repo: string, head: string, base: string, title: string, body: string): Promise<string> {
+    const res = await this.call(`/repos/${owner}/${repo}/pulls`, {
+      method: 'POST', auth: `token ${await this.token(owner, repo)}`,
+      body: JSON.stringify({ head, base, title, body, draft: true }),
+    });
+    return ((await res.json()) as { html_url: string }).html_url;
   }
 
   async addLabels(owner: string, repo: string, number: number, labels: string[]) {
@@ -101,9 +148,25 @@ export class GithubApp implements GithubApi {
     });
   }
 
-  async prFiles(owner: string, repo: string, number: number): Promise<string[]> {
-    const files = await this.get<{ filename: string }[]>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}/files?per_page=100`);
-    return files.map((f) => f.filename);
+  async prFiles(owner: string, repo: string, number: number) {
+    const files: string[] = [];
+    // GitHub lists at most 3,000 files per pull request: 30 pages of 100.
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const batch = await this.get<{ filename: string }[]>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}/files?per_page=100&page=${page}`);
+      files.push(...batch.map((f) => f.filename));
+      if (batch.length < 100) return { files, complete: true };
+    }
+    return { files, complete: false };
+  }
+
+  private async allReviews(owner: string, repo: string, number: number): Promise<any[] | null> {
+    const out: any[] = [];
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const batch = await this.get<any[]>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}/reviews?per_page=100&page=${page}`);
+      out.push(...batch);
+      if (batch.length < 100) return out;
+    }
+    return null;
   }
 
   async prState(owner: string, repo: string, number: number, codexBot: string): Promise<PrState> {
@@ -112,12 +175,15 @@ export class GithubApp implements GithubApi {
     const [runs, status, reviews] = await Promise.all([
       this.get<any>(owner, repo, `/repos/${owner}/${repo}/commits/${sha}/check-runs?per_page=100`),
       this.get<any>(owner, repo, `/repos/${owner}/${repo}/commits/${sha}/status`),
-      this.get<any[]>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}/reviews?per_page=100`),
+      this.allReviews(owner, repo, number),
     ]);
     const okRun = (r: any) => r.status === 'completed' && ['success', 'neutral', 'skipped'].includes(r.conclusion);
-    // No check runs at all is not green: a repo whose CI never ran has proven nothing.
+    // No check runs at all is not green: a repo whose CI never ran has proven nothing. Green runs
+    // are not enough either: mergeable_state "clean" is GitHub's own word that every required
+    // check and review on the base branch is satisfied and there is no conflict.
     const checksPassed = runs.total_count > 0 && runs.total_count <= 100 && runs.check_runs.every(okRun)
-      && (status.total_count === 0 || status.state === 'success');
+      && (status.total_count === 0 || status.state === 'success') && pr.mergeable_state === 'clean';
+    if (!reviews) return { headSha: sha, draft: !!pr.draft, open: pr.state === 'open', branch: pr.head.ref, checksPassed, codexPassedHead: false };
     const atHead = reviews.filter((r) => r.user?.login === codexBot && r.commit_id === sha);
     const passed = atHead.some((r) => r.state === 'APPROVED' || /didn['’]?t find any major issues|no major issues|no issues found/i.test(r.body ?? ''));
     const blocked = atHead.some((r) => r.state === 'CHANGES_REQUESTED' || /\bP[0-2]\b/.test(r.body ?? ''));
