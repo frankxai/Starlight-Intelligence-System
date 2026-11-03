@@ -1,0 +1,85 @@
+# Starlight harness
+
+Author: Claude (Opus 5.5), 2026-11-03. Review state: unit-tested (18 cases), not yet reviewed by a
+different provider, never run in a real container, not deployed.
+
+Claude Code and Codex working around the clock as workers on the
+[control-plane queue](../starlight-control-plane/README.md), each task in its own Linux sandbox on
+Cloudflare. Nothing runs on the laptop.
+
+## How the pieces fit
+
+```
+GitHub App webhook ──> control plane (Durable Object queue + outbox)
+                          │   review / fix / build tasks, kinds, leases, human gates
+                          ▼
+cron, every minute ──> starlight-harness: claim up to N per harness
+                          │
+                          ▼
+                     TaskRun Workflow (one per task, durable steps)
+                       prepare ─> start agent ─> check+heartbeat each minute ─> push / review ─> complete
+                          │
+                          ▼
+                     HarnessSandbox (Durable Object + container, image "claude" or "codex")
+                          │  every HTTP(S) request
+                          ▼
+                     Outbound entrypoint: AI Gateway (adds token) · github.com git (adds App token,
+                     agent branches only) · package registries (downloads only) · everything else 403
+```
+
+The pattern follows Cloudflare's own guides as of 2026-10-22: *Build a coding agent runner*, the
+Claude Code and Codex pages under Sandbox coding agents, and *Clone a private repository*. Each task
+runs as a [Workflow](https://developers.cloudflare.com/workflows/), so a deploy or eviction resumes
+at the last finished step instead of rerunning the agent.
+
+## What keeps it safe
+
+- **The sandbox holds no credential.** The container starts with `enableInternet: false`; the
+  `Outbound` entrypoint adds the AI Gateway token or a GitHub App installation token after the
+  request leaves the sandbox. Code the agent runs, and every dependency it loads, sees neither.
+- **Pushes reach agent branches only.** The gateway reads the ref commands in each `git-receive-pack`
+  request and refuses anything outside `agent/`, `codex/`, `claude/`, `jules-`, `sentinel-`, and any
+  deletion. `main` cannot be pushed from a sandbox whatever the agent does.
+- **Opted-in repositories only.** `REPOS` lists the `owner/name` pairs a sandbox may clone or push.
+- **Workers claim only their kinds.** The harness claims `review`, `fix` and `build`. Landing stays
+  with sessions that can run the estate's `pr-gate`; human-gated tasks never reach it.
+- **Maker is not checker.** Review tasks for Codex-made PRs carry `excludeProvider: openai`, so only
+  the Claude harness can take them; Claude-made PRs are reviewed by the real Codex bot.
+- **Every run renews its lease each minute.** A run that stops checking frees its task within 15
+  minutes; a run that loses its lease stops its sandbox without completing.
+
+Each opening is also a way out: package registries are on by default so tests can install
+dependencies; set `ALLOW_REGISTRIES` to `false` to close them.
+
+## Deploy (Frank's steps; not done)
+
+Needs the control plane deployed first, Docker or Podman running for `wrangler deploy` (it builds
+both images), and the Workers Paid plan.
+
+1. **AI Gateway.** Create a gateway (or use `default`) with Anthropic and OpenAI credentials, either
+   Unified Billing or stored provider keys, and an authenticated-gateway token.
+2. **Queue identities.** Add `cf-claude` (provider `anthropic`) and `cf-codex` (provider `openai`),
+   both `"roles": ["worker"]`, to `~/.starlight/control-plane/identities.json`, mint, and update the
+   control plane's `AGENT_TOKENS`.
+3. **Secrets:** `AI_GATEWAY_TOKEN`, `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY` (PKCS#8, the same App as
+   the control plane; it also needs Contents read/write to push), `CP_TOKEN_CLAUDE`, `CP_TOKEN_CODEX`.
+4. **Vars:** set `AI_GATEWAY_ACCOUNT_ID`, `REPOS`, and check `CLAUDE_MODEL` / `CODEX_MODEL` against
+   `intel/INTEL-BRIEF.md`. `HARNESSES` ships with `max: 0`, which means off.
+5. `wrangler deploy`, then raise one harness to `max: 1`, watch one task end to end in the Workflows
+   dashboard, and only then raise the limits.
+
+## Not verified yet
+
+- Nothing has run in a real container or a real Workflow: `@cloudflare/sandbox` and the Workers
+  runtime are not exercised by the unit tests.
+- Whether one container class can hold two images, as `wrangler.jsonc` declares, is confirmed by
+  the first deploy; the guides show one image per class.
+- Cost per task is [OPEN] until the first runs: container time plus model tokens through the gateway.
+
+## Next slices
+
+1. A Think or Pi agent as the Queen's planner on the same queue: reads the estate, enqueues work.
+2. Research workers: Browser Run plus the `starlight-research` corpus, on a `research` kind.
+3. OAuth on the control plane's MCP endpoint (`@cloudflare/workers-oauth-provider` v1), so claude.ai
+   and other harnesses can attach it as a connector.
+4. Artifacts repositories per task for agent scratch history, once Artifacts leaves beta.
