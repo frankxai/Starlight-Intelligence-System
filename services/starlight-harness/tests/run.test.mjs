@@ -4,7 +4,7 @@ import { finalVerdict, runTask } from '../src/run.ts';
 
 const task = { id: 'gh:o.r.7.abc.fix-ci', title: 'Make CI green', doneCondition: 'Checks pass on https://github.com/o/r/pull/7', repo: 'r', paths: ['src'], kind: 'fix', attempt: 1, maxMinutes: 10 };
 
-function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan, existingPr = null, commentPosted = false, failHeartbeatAfter = Infinity } = {}) {
+function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan, existingPr = null, commentPosted = false, failHeartbeatAfter = Infinity, leaseLeftMs = 10 * 60_000 } = {}) {
   let beats = 0;
   const log = [];
   const names = [];
@@ -17,7 +17,7 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
     clone: async (...a) => { log.push(['clone', ...a]); },
     startTask: async () => 'started',
     readTask: async () => states[Math.min(i++, states.length - 1)],
-    commitAndPush: async (branch) => { log.push(['push', branch]); return pushed; },
+    commitAndPush: async (branch, message, deadline) => { log.push(['push', branch, deadline]); return pushed; },
     destroy: async () => { log.push(['destroy']); },
   };
   const gh = {
@@ -29,7 +29,10 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
     hasComment: async () => commentPosted,
   };
   const queue = {
-    heartbeat: async () => { if (heartbeatFails || ++beats > failHeartbeatAfter) throw new Error('409'); },
+    heartbeat: async () => {
+      if (heartbeatFails || ++beats > failHeartbeatAfter) throw new Error('409');
+      return { expiresAt: Date.now() + leaseLeftMs };
+    },
     complete: async (id, fence, ref) => { log.push(['complete', ref]); },
     release: async (id, fence, reason) => { log.push(['release', reason]); },
   };
@@ -41,7 +44,9 @@ test('a fix on a PR branch pushes to that branch and completes with the commit',
   const h = harness({ states: [{ state: 'running' }, { state: 'succeeded', result: 'fixed' }] });
   assert.deepEqual(await h.run(), { done: `https://github.com/o/r/commit/${'f'.repeat(40)}` });
   assert.deepEqual(h.log.find((l) => l[0] === 'clone'), ['clone', 'o', 'r', 'agent/claude/x', null]);
-  assert.deepEqual(h.log.find((l) => l[0] === 'push'), ['push', 'agent/claude/x']);
+  const push = h.log.find((l) => l[0] === 'push');
+  assert.equal(push[1], 'agent/claude/x');
+  assert.ok(push[2] > Date.now() && push[2] < Date.now() + 10 * 60_000, 'the push gets a deadline inside the lease');
   assert.equal(new Set(h.names).size, h.names.length, 'step names must be unique for a Workflow');
 });
 
@@ -107,4 +112,10 @@ test('every GitHub write renews the lease inside its own step, so a retry renews
   assert.equal(h.log.some((l) => l[0] === 'pr'), false, 'no PR once the lease is gone');
   assert.ok(h.log.some((l) => l[0] === 'push'), 'the push happened while the lease was held');
   assert.equal(h.names.some((n) => n.startsWith('renew before')), false);
+});
+
+test('too little lease left means no write at all', async () => {
+  const h = harness({ states: [{ state: 'succeeded', result: 'fixed' }], leaseLeftMs: 45_000 });
+  assert.deepEqual(await h.run(), { released: 'lease lost' });
+  assert.equal(h.log.some((l) => l[0] === 'push'), false);
 });
