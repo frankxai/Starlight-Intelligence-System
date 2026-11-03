@@ -2,8 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "starlight-intelligence-mcp",
   "main": "server/src/worker.ts",
-  "compatibility_date": "2026-08-31",
+  "compatibility_date": "2026-10-26",
   "compatibility_flags": ["nodejs_compat"],
+  "keep_names": true,
   "rules": [
     {
       "type": "Text",
@@ -11,7 +12,8 @@
       "fallthrough": true
     }
   ],
-  "workers_dev": true,
+  "workers_dev": false,
+  "preview_urls": false,
   "vars": {
     "STARLIGHT_TENANT_SLUG": "starlight-intelligence",
     "STARLIGHT_MCP_HOST": "mcp.starlightintelligence.ai"
@@ -27,7 +29,12 @@
   },
   "observability": {
     "enabled": true,
-    "head_sampling_rate": 1
+    "head_sampling_rate": 1,
+    "redact_query_string": true,
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
   },
   "dev": {
     "port": 8788

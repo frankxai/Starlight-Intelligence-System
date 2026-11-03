@@ -2,18 +2,73 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "starlight-fleet-ingress",
   "main": "src/index.ts",
-  "compatibility_date": "2026-10-01",
+  "compatibility_date": "2026-10-26",
   "compatibility_flags": ["nodejs_compat"],
+  "keep_names": true,
   "workers_dev": false,
   "preview_urls": false,
   "vars": {
     "GCP_REGION": "europe-west4",
     "CLOUD_RUN_JOB": "starlight-runner-job",
-    "GCP_PROJECT_ID": "starlight-intelligence-estate"
+    "GCP_PROJECT_ID": "starlight-intelligence-estate",
+    "DISPATCH_MODE": "direct"
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DEDUPLICATOR",
+        "class_name": "WebhookDeduplicator"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["WebhookDeduplicator"]
+    }
+  ],
   "observability": {
     "enabled": true,
-    "redact_query_string": true
+    "head_sampling_rate": 1,
+    "redact_query_string": true,
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  },
+  "env": {
+    "queued": {
+      "vars": {
+        "GCP_REGION": "europe-west4",
+        "CLOUD_RUN_JOB": "starlight-runner-job",
+        "GCP_PROJECT_ID": "starlight-intelligence-estate",
+        "DISPATCH_MODE": "queue"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DEDUPLICATOR",
+            "class_name": "WebhookDeduplicator"
+          }
+        ]
+      },
+      "queues": {
+        "producers": [
+          {
+            "binding": "FLEET_DISPATCH_QUEUE",
+            "queue": "starlight-fleet-dispatch"
+          }
+        ],
+        "consumers": [
+          {
+            "queue": "starlight-fleet-dispatch",
+            "max_batch_size": 10,
+            "max_batch_timeout": 5,
+            "max_retries": 3,
+            "dead_letter_queue": "starlight-fleet-dlq"
+          }
+        ]
+      }
+    }
   }
 }
-

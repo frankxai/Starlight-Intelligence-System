@@ -70,6 +70,34 @@ export async function authenticateAccessRequest(
   };
 }
 
+export function resolveAllowedCorsOrigin(
+  originHeader: string | null,
+  allowedHostnames: readonly string[],
+): string | null {
+  if (!originHeader) return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(originHeader);
+  } catch {
+    return null;
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  const isLocal = host === "localhost" || host === "127.0.0.1";
+  if (parsed.protocol !== "https:" && !(isLocal && parsed.protocol === "http:")) {
+    return null;
+  }
+
+  const normalizedAllowed = new Set(
+    allowedHostnames.map((item) => item.trim().toLowerCase()).filter(Boolean),
+  );
+  if (!normalizedAllowed.has(host)) {
+    return null;
+  }
+
+  return parsed.origin;
+}
+
 export function authorizationResponse(error: AuthorizationError): Response {
   return Response.json(
     { error: "unauthorized", message: error.message },

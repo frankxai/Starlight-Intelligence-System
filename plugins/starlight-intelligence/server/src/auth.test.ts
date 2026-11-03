@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { authenticateAccessRequest, AuthorizationError, type AccessEnv } from "./auth.js";
+import {
+  authenticateAccessRequest,
+  AuthorizationError,
+  resolveAllowedCorsOrigin,
+  type AccessEnv,
+} from "./auth.js";
 
 const env: AccessEnv = {
   CF_ACCESS_TEAM_DOMAIN: "example.cloudflareaccess.com",
@@ -39,4 +44,13 @@ test("returns a normalized actor for an allowlisted identity", async () => {
     name: "Founder",
   }));
   assert.deepEqual(actor, { id: "access-user-1", email: "founder@example.com", name: "Founder" });
+});
+
+test("resolveAllowedCorsOrigin reflects only allowlisted HTTPS or localhost origins and never wildcard", () => {
+  const allow = ["chatgpt.com", "mcp.starlightintelligence.ai", "localhost"];
+  assert.equal(resolveAllowedCorsOrigin("https://chatgpt.com", allow), "https://chatgpt.com");
+  assert.equal(resolveAllowedCorsOrigin("http://localhost:8788", allow), "http://localhost:8788");
+  assert.equal(resolveAllowedCorsOrigin("http://chatgpt.com", allow), null);
+  assert.equal(resolveAllowedCorsOrigin("https://evil.example.com", allow), null);
+  assert.equal(resolveAllowedCorsOrigin(null, allow), null);
 });
