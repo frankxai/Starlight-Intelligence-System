@@ -439,3 +439,23 @@ Source: https://github.com/frankxai/starlight-design-intelligence/tree/3d6fc8fdd
 Voice version: 1.0.0 · Source state: PROPOSAL_PREVIEW
 GitHub does not automatically inject this into unrelated chats; use .starlight/voice/CHAT_CONTEXT.md in their project or agent instructions.
 <!-- STARLIGHT-VOICE:END -->
+
+## Review evidence and release routing
+
+Added by Codex, 3 November 2026, revision 1; proposed until reviewed and merged.
+
+Declare one implementation owner/provider and the full head SHA. Branch names and
+shared GitHub accounts are routing hints, not authenticated model identity. Use
+Copilot for the first pass on qualifying ready PRs, then a substantive reviewer
+from a different provider for consequential work. Route OpenAI implementation to
+Claude and Anthropic implementation to Codex when those reviewers are available.
+Another session of the maker's provider or a typed receipt cannot prove independence.
+
+Request a final-head re-review when automatic new-push review is off. Bind findings,
+fixes, test evidence and coverage to that exact head; name unread files or truncated
+diffs. Review auth, money, tenant isolation, secrets, agent authority, CI and
+infrastructure as security-sensitive. Existing human release gates still apply.
+
+Preserve independent-review-policy, harness and scan. Inspect memory/tool execution boundaries, tenant and vault isolation, stale-output handling and denial/recovery behavior. An exit code or fresh heartbeat cannot prove useful output. Report existing bypasses separately; do not use or remove them through this instruction change.
+
+Shared measured rollout: https://github.com/frankxai/agentic-ops/pull/439.
