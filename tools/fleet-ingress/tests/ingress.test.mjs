@@ -840,11 +840,16 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   const dockerfile = fs.readFileSync(dockerfilePath, 'utf8');
   const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
 
-  // 1. Dockerfile must add starlight to starlight-sandbox supplementary group and setgid 2750 on /work
+  // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, add starlight to starlight-sandbox supplementary group, and setgid 2750 on /work
+  assert.doesNotMatch(
+    dockerfile,
+    /useradd[^\n]*-u\s+1000\b/,
+    'Dockerfile must not collide with ubuntu:24.04 pre-existing UID 1000 account',
+  );
   assert.match(
     dockerfile,
-    /useradd\s+-m\s+-u\s+1000\s+-G\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight/,
-    'supervisor starlight must belong to supplementary group starlight-sandbox',
+    /useradd\s+-m\s+-u\s+10001\s+-g\s+starlight\s+-G\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight/,
+    'supervisor starlight must use dedicated UID 10001 and belong to supplementary group starlight-sandbox',
   );
   assert.match(
     dockerfile,
