@@ -858,6 +858,109 @@ function getDeduplicatorStub(env: Env): DurableObjectStubLike | null {
   return env.DEDUPLICATOR.get(id);
 }
 
+async function postDedupWithRetry(
+  stub: DurableObjectStubLike,
+  path: string,
+  payload: Record<string, unknown>,
+  maxAttempts = 3,
+): Promise<boolean> {
+  const body = JSON.stringify(payload);
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const res = await stub
+      .fetch(`https://dedup.internal${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+      .catch(() => null);
+    if (res && res.ok) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function executionMatchesDeliveryId(execution: Record<string, any>, deliveryId: string): boolean {
+  const containerLists = [
+    execution?.template?.containers,
+    execution?.overrides?.containerOverrides,
+  ];
+  for (const containers of containerLists) {
+    if (!Array.isArray(containers)) continue;
+    for (const container of containers) {
+      if (!Array.isArray(container?.env)) continue;
+      for (const item of container.env) {
+        if (item?.name === 'DELIVERY_ID' && item?.value === deliveryId) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+/**
+ * Reconcile a stale `in_flight` / `dispatching_consumer` lease against Cloud Run Admin v2
+ * `executions.list` before re-dispatching so a prior successful `:run` whose `/complete`
+ * bookkeeping failed never launches a duplicate execution.
+ */
+async function findCloudRunExecutionForDelivery(
+  deliveryId: string,
+  env: Env,
+): Promise<'found' | 'not_found' | 'uncertain'> {
+  if (!hasRunnerCredentials(env)) {
+    return 'not_found';
+  }
+
+  let pageToken = '';
+  for (let page = 0; page < 3; page += 1) {
+    const qs = new URLSearchParams({ pageSize: '100' });
+    if (pageToken) qs.set('pageToken', pageToken);
+    const listUrl = `https://run.googleapis.com/v2/projects/${env.GCP_PROJECT_ID}/locations/${env.GCP_REGION}/jobs/${env.CLOUD_RUN_JOB}/executions?${qs.toString()}`;
+
+    try {
+      const res = await fetch(listUrl, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${env.GCP_SERVICE_ACCOUNT_TOKEN}`,
+          Accept: 'application/json',
+        },
+        redirect: 'manual',
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (!res.ok) return 'uncertain';
+
+      const data = (await res.json().catch(() => null)) as Record<string, any> | null;
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        return 'uncertain';
+      }
+      if ('executions' in data && !Array.isArray(data.executions)) {
+        return 'uncertain';
+      }
+
+      const executions = Array.isArray(data.executions) ? data.executions : [];
+      for (const exec of executions) {
+        if (exec && typeof exec === 'object' && executionMatchesDeliveryId(exec, deliveryId)) {
+          return 'found';
+        }
+      }
+
+      const nextToken =
+        typeof data.nextPageToken === 'string' && data.nextPageToken.trim()
+          ? data.nextPageToken.trim()
+          : '';
+      if (!nextToken) {
+        return 'not_found';
+      }
+      pageToken = nextToken;
+    } catch {
+      return 'uncertain';
+    }
+  }
+
+  return 'uncertain';
+}
+
 async function dispatchToCloudRun(
   meta: WebhookEventMeta,
   callbackUrl: string,
@@ -1276,6 +1379,33 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
           priorStatus: claimJson.status ?? 'dispatched',
         });
       }
+      if (claimJson.recoveredStaleClaim === true) {
+        const priorExec = await findCloudRunExecutionForDelivery(deliveryHeader, env);
+        if (priorExec === 'found') {
+          await postDedupWithRetry(dedupStub, '/complete', {
+            deliveryId: deliveryHeader,
+            eventType: meta.event,
+            repo: meta.repo,
+            status: 'dispatched',
+          });
+          return jsonResponse({
+            ok: true,
+            deduplicated: true,
+            deliveryId: deliveryHeader,
+            priorStatus: 'dispatched',
+            reconciledFromCloudRun: true,
+          });
+        }
+        if (priorExec === 'uncertain') {
+          return jsonResponse(
+            {
+              error: 'uncertain_prior_dispatch',
+              deliveryId: deliveryHeader,
+            },
+            502,
+          );
+        }
+      }
     }
 
     const callbackUrl = `${url.origin}/v1/runner/callback`;
@@ -1292,16 +1422,10 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
         });
       } catch {
         if (dedupStub && deliveryHeader) {
-          await dedupStub
-            .fetch('https://dedup.internal/release', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                deliveryId: deliveryHeader,
-                expectedStatus: 'in_flight',
-              }),
-            })
-            .catch(() => {});
+          await postDedupWithRetry(dedupStub, '/release', {
+            deliveryId: deliveryHeader,
+            expectedStatus: 'in_flight',
+          });
         }
         return jsonResponse({ error: 'queue_enqueue_failed' }, 502);
       }
@@ -1309,19 +1433,13 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
       // Once Queue.send() has accepted the message, preserve the delivery claim even if
       // post-enqueue status bookkeeping encounters a transient Durable Object error.
       if (dedupStub && deliveryHeader) {
-        await dedupStub
-          .fetch('https://dedup.internal/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              deliveryId: deliveryHeader,
-              eventType: meta.event,
-              repo: meta.repo,
-              status: 'queued',
-              expectedStatus: 'in_flight',
-            }),
-          })
-          .catch(() => {});
+        await postDedupWithRetry(dedupStub, '/complete', {
+          deliveryId: deliveryHeader,
+          eventType: meta.event,
+          repo: meta.repo,
+          status: 'queued',
+          expectedStatus: 'in_flight',
+        });
       }
 
       return jsonResponse(
@@ -1341,33 +1459,21 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     const dispatchResult = await dispatchToCloudRun(meta, callbackUrl, env, deliveryId);
     if (!dispatchResult.ok) {
       if (dedupStub && deliveryHeader) {
-        await dedupStub
-          .fetch('https://dedup.internal/release', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              deliveryId: deliveryHeader,
-              expectedStatus: 'in_flight',
-            }),
-          })
-          .catch(() => {});
+        await postDedupWithRetry(dedupStub, '/release', {
+          deliveryId: deliveryHeader,
+          expectedStatus: 'in_flight',
+        });
       }
       return jsonResponse({ error: dispatchResult.error }, dispatchResult.status);
     }
 
     if (dedupStub && deliveryHeader) {
-      await dedupStub
-        .fetch('https://dedup.internal/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            deliveryId: deliveryHeader,
-            eventType: meta.event,
-            repo: meta.repo,
-            status: 'dispatched',
-          }),
-        })
-        .catch(() => {});
+      await postDedupWithRetry(dedupStub, '/complete', {
+        deliveryId: deliveryHeader,
+        eventType: meta.event,
+        repo: meta.repo,
+        status: 'dispatched',
+      });
     }
 
     return jsonResponse(
@@ -1447,6 +1553,24 @@ export async function handleQueueBatch(
         }
         continue;
       }
+
+      if (claimJson.recoveredStaleLease === true) {
+        const priorExec = await findCloudRunExecutionForDelivery(payload.deliveryId, env);
+        if (priorExec === 'found') {
+          await postDedupWithRetry(stub, '/complete', {
+            deliveryId: payload.deliveryId,
+            eventType: payload.meta.event,
+            repo: payload.meta.repo,
+            status: 'dispatched',
+          });
+          message.ack();
+          continue;
+        }
+        if (priorExec === 'uncertain') {
+          message.retry({ delaySeconds: 15 });
+          continue;
+        }
+      }
     }
 
     const result = await dispatchToCloudRun(
@@ -1458,35 +1582,23 @@ export async function handleQueueBatch(
 
     if (result.ok) {
       if (stub && payload.deliveryId) {
-        await stub
-          .fetch('https://dedup.internal/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              deliveryId: payload.deliveryId,
-              eventType: payload.meta.event,
-              repo: payload.meta.repo,
-              status: 'dispatched',
-            }),
-          })
-          .catch(() => {});
+        await postDedupWithRetry(stub, '/complete', {
+          deliveryId: payload.deliveryId,
+          eventType: payload.meta.event,
+          repo: payload.meta.repo,
+          status: 'dispatched',
+        });
       }
       message.ack();
     } else {
       if (stub && payload.deliveryId) {
-        await stub
-          .fetch('https://dedup.internal/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              deliveryId: payload.deliveryId,
-              eventType: payload.meta.event,
-              repo: payload.meta.repo,
-              status: 'queued',
-              expectedStatus: 'dispatching_consumer',
-            }),
-          })
-          .catch(() => {});
+        await postDedupWithRetry(stub, '/complete', {
+          deliveryId: payload.deliveryId,
+          eventType: payload.meta.event,
+          repo: payload.meta.repo,
+          status: 'queued',
+          expectedStatus: 'dispatching_consumer',
+        });
       }
       message.retry({ delaySeconds: 15 });
     }

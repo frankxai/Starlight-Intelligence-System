@@ -32,10 +32,20 @@ gcloud artifacts repositories create starlight-fleet \
   --description="Starlight Swarm Autonomous Runner Images" \
   --project="$PROJECT_ID"
 
-# 3. Build container image using Cloud Build
-echo "Building container with Cloud Build..."
-gcloud builds submit . \
-  --tag="$IMAGE_TAG" \
+# 3. Build container image from Dockerfile.runner using Cloud Build
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLOUDBUILD_TMP="$(mktemp "${TMPDIR:-/tmp}/starlight-runner-cloudbuild.XXXXXX.yaml")"
+trap 'rm -f "$CLOUDBUILD_TMP"' EXIT
+cat > "$CLOUDBUILD_TMP" <<EOF
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.runner', '-t', '${IMAGE_TAG}', '.']
+images:
+  - '${IMAGE_TAG}'
+EOF
+echo "Building container with Cloud Build (Dockerfile.runner)..."
+gcloud builds submit "$SCRIPT_DIR" \
+  --config="$CLOUDBUILD_TMP" \
   --project="$PROJECT_ID"
 
 # 4. Provision dedicated zero-project-IAM service account (never use default Compute Engine SA)
@@ -68,14 +78,13 @@ else
   echo " To enable persistent FUSE cache across runs: gcloud storage buckets create gs://${CACHE_BUCKET} --location=${REGION}"
 fi
 
-# 6. Create or Update Cloud Run Job (Gen2 + dedicated least-privilege service account)
+# 6. Create or Update Cloud Run Job (Cloud Run Jobs natively run on Gen2; bind dedicated least-privilege SA)
 echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs, SA=$RUNNER_SA)..."
 if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
   gcloud run jobs update "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
     --service-account="$RUNNER_SA" \
-    --execution-environment=gen2 \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
@@ -87,7 +96,6 @@ else
     --image="$IMAGE_TAG" \
     --region="$REGION" \
     --service-account="$RUNNER_SA" \
-    --execution-environment=gen2 \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \

@@ -308,16 +308,26 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
   const originalFetch = globalThis.fetch;
   let cloudRunCalls = 0;
   let shouldFailNext = true;
+  const createdExecutions = [];
 
   globalThis.fetch = async (input, init) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    if (url.startsWith('https://run.googleapis.com/') && url.includes('/executions')) {
+      return new Response(JSON.stringify({ executions: createdExecutions }), { status: 200 });
+    }
     if (url.startsWith('https://run.googleapis.com/')) {
       cloudRunCalls += 1;
       if (shouldFailNext) {
         shouldFailNext = false;
         return new Response(JSON.stringify({ error: 'transient_503' }), { status: 503 });
       }
-      return new Response(JSON.stringify({ name: 'executions/exec-77' }), { status: 200 });
+      const parsedBody = init?.body ? JSON.parse(String(init.body)) : {};
+      const envList = parsedBody?.overrides?.containerOverrides?.[0]?.env ?? [];
+      createdExecutions.push({
+        name: `executions/exec-${cloudRunCalls}`,
+        template: { containers: [{ env: envList }] },
+      });
+      return new Response(JSON.stringify({ name: `executions/exec-${cloudRunCalls}` }), { status: 200 });
     }
     return originalFetch(input, init);
   };
@@ -356,7 +366,8 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
     // an immediate retry during the active lease returns 503 delivery_in_flight (NEVER 200),
     // and once the 30s producer lease expires, redelivery recovers the stale claim and dispatches!
     let mockNowMs = Date.now();
-    let failNextRelease = true;
+    let failAllRelease = true;
+    let failAllComplete = false;
     const realDateNow = Date.now;
     Date.now = () => mockNowMs;
     const baseStub = DEDUPLICATOR.get(DEDUPLICATOR.idFromName('estate-primary'));
@@ -365,21 +376,24 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
       get: () => ({
         async fetch(input, init) {
           const req = input instanceof Request ? input : new Request(String(input), init);
-          if (new URL(req.url).pathname === '/release' && failNextRelease) {
-            failNextRelease = false;
+          const pathname = new URL(req.url).pathname;
+          if (pathname === '/release' && failAllRelease) {
             throw new Error('simulated_release_network_drop');
+          }
+          if (pathname === '/complete' && failAllComplete) {
+            throw new Error('simulated_complete_network_drop');
           }
           return baseStub.fetch(req);
         },
       }),
     };
     const faultyEnv = { ...baseEnv, DEDUPLICATOR: FaultyDeduplicator };
-    const makeLeaseReq = () =>
+    const makeLeaseReq = (id = 'delivery-uuid-stale-lease-78') =>
       new Request('https://ingress.starlight.local/webhook', {
         method: 'POST',
         headers: {
           'x-github-event': 'pull_request',
-          'x-github-delivery': 'delivery-uuid-stale-lease-78',
+          'x-github-delivery': id,
           'x-hub-signature-256': computeHmacSha256(TEST_SECRET, prBody),
           'content-type': 'application/json',
         },
@@ -391,6 +405,7 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
       const failedAndDroppedRelease = await handleRequest(makeLeaseReq(), faultyEnv);
       assert.equal(failedAndDroppedRelease.status, 502);
       assert.equal(cloudRunCalls, 3);
+      failAllRelease = false;
 
       // Immediate redelivery within 30s lease -> 503 delivery_in_flight (not 200 deduplicated!)
       mockNowMs += 5_000;
@@ -399,11 +414,37 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
       assert.equal((await inFlightRes.json()).error, 'delivery_in_flight');
       assert.equal(cloudRunCalls, 3);
 
-      // Redelivery after 30s producer lease expiry -> recovers stale in_flight claim and dispatches 202!
+      // Redelivery after 30s producer lease expiry ->executions.list confirms 0 prior executions -> dispatches 202!
       mockNowMs += 31_000;
       const recoveredRes = await handleRequest(makeLeaseReq(), faultyEnv);
       assert.equal(recoveredRes.status, 202);
       assert.equal(cloudRunCalls, 4);
+
+      // Case B: Cloud Run :run succeeds (200), ALL /complete attempts fail, then 31s later redelivery arrives ->
+      // executions.list finds DELIVERY_ID, heals /complete, and returns 200 deduplicated with ZERO duplicate :run calls!
+      failAllComplete = true;
+      const succeededButUncompleted = await handleRequest(
+        makeLeaseReq('delivery-uuid-succeeded-uncompleted-79'),
+        faultyEnv,
+      );
+      assert.equal(succeededButUncompleted.status, 202);
+      assert.equal(cloudRunCalls, 5);
+
+      failAllComplete = false;
+      mockNowMs += 31_000;
+      const reconciledRes = await handleRequest(
+        makeLeaseReq('delivery-uuid-succeeded-uncompleted-79'),
+        faultyEnv,
+      );
+      assert.equal(reconciledRes.status, 200);
+      const reconciledJson = await reconciledRes.json();
+      assert.equal(reconciledJson.deduplicated, true);
+      assert.equal(reconciledJson.reconciledFromCloudRun, true);
+      assert.equal(
+        cloudRunCalls,
+        5,
+        'reconciled prior Cloud Run execution must never launch a second job',
+      );
     } finally {
       Date.now = realDateNow;
     }
@@ -557,7 +598,11 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
     let leaseAcked = 0;
     let leaseRetried = 0;
     let leaseLaunches = 0;
-    globalThis.fetch = async () => {
+    globalThis.fetch = async (input) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: [] }), { status: 200 });
+      }
       leaseLaunches += 1;
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     };
@@ -638,7 +683,11 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
       },
     };
     let recoveredLaunches = 0;
-    globalThis.fetch = async () => {
+    globalThis.fetch = async (input) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: [] }), { status: 200 });
+      }
       if (failNextCloudRun) {
         failNextCloudRun = false;
         return new Response(JSON.stringify({ error: '503' }), { status: 503 });
@@ -1007,6 +1056,12 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   assert.match(deployRunner, /RUNNER_SA_NAME="\$\{RUNNER_SA_NAME:-starlight-runner-sandbox\}"/);
   assert.match(deployRunner, /--service-account="\$RUNNER_SA"/);
   assert.match(deployRunner, /mount-path=\/cache\/pnpm,readonly=true/);
+  assert.match(deployRunner, /Dockerfile\.runner/);
+  assert.doesNotMatch(
+    deployRunner,
+    /--execution-environment/,
+    'gcloud run jobs create/update do not accept --execution-environment',
+  );
   assert.doesNotMatch(deployRunner, /roles\/editor|roles\/owner|roles\/storage\.objectAdmin/);
 
   // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, add starlight to starlight-sandbox supplementary group, and setgid 2750 on /work
