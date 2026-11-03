@@ -295,9 +295,15 @@ INSTALL_START=$(date +%s)
     echo "Error: Refusing repository manifest configuring custom pnpmfile, scriptShell, or configDependencies." >&2
     exit 1
   fi
+  EMPTY_NPM_USERCONFIG="$HOME/.npmrc.empty.user"
+  EMPTY_NPM_GLOBALCONFIG="$HOME/.npmrc.empty.global"
+  rm -f "$EMPTY_NPM_USERCONFIG" "$EMPTY_NPM_GLOBALCONFIG"
+  : > "$EMPTY_NPM_USERCONFIG"
+  : > "$EMPTY_NPM_GLOBALCONFIG"
+  chmod 0400 "$EMPTY_NPM_USERCONFIG" "$EMPTY_NPM_GLOBALCONFIG" 2>/dev/null || true
   export NPM_CONFIG_IGNORE_SCRIPTS=true
-  export NPM_CONFIG_USERCONFIG=/dev/null
-  export NPM_CONFIG_GLOBALCONFIG=/dev/null
+  export NPM_CONFIG_USERCONFIG="$EMPTY_NPM_USERCONFIG"
+  export NPM_CONFIG_GLOBALCONFIG="$EMPTY_NPM_GLOBALCONFIG"
   export NPM_CONFIG_SCRIPT_SHELL=/bin/false
   export NPM_CONFIG_GIT=/bin/false
   export GIT_TERMINAL_PROMPT=0

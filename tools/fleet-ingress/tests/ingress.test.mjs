@@ -351,6 +351,62 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
     const dupJson = await dupRes.json();
     assert.equal(dupJson.deduplicated, true);
     assert.equal(cloudRunCalls, 2, 'duplicate delivery must not call Cloud Run again');
+
+    // Producer claim lease recovery: if BOTH Cloud Run dispatch AND /release fail,
+    // an immediate retry during the active lease returns 503 delivery_in_flight (NEVER 200),
+    // and once the 30s producer lease expires, redelivery recovers the stale claim and dispatches!
+    let mockNowMs = Date.now();
+    let failNextRelease = true;
+    const realDateNow = Date.now;
+    Date.now = () => mockNowMs;
+    const baseStub = DEDUPLICATOR.get(DEDUPLICATOR.idFromName('estate-primary'));
+    const FaultyDeduplicator = {
+      idFromName: (name) => DEDUPLICATOR.idFromName(name),
+      get: () => ({
+        async fetch(input, init) {
+          const req = input instanceof Request ? input : new Request(String(input), init);
+          if (new URL(req.url).pathname === '/release' && failNextRelease) {
+            failNextRelease = false;
+            throw new Error('simulated_release_network_drop');
+          }
+          return baseStub.fetch(req);
+        },
+      }),
+    };
+    const faultyEnv = { ...baseEnv, DEDUPLICATOR: FaultyDeduplicator };
+    const makeLeaseReq = () =>
+      new Request('https://ingress.starlight.local/webhook', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'pull_request',
+          'x-github-delivery': 'delivery-uuid-stale-lease-78',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, prBody),
+          'content-type': 'application/json',
+        },
+        body: prBody,
+      });
+
+    try {
+      shouldFailNext = true;
+      const failedAndDroppedRelease = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(failedAndDroppedRelease.status, 502);
+      assert.equal(cloudRunCalls, 3);
+
+      // Immediate redelivery within 30s lease -> 503 delivery_in_flight (not 200 deduplicated!)
+      mockNowMs += 5_000;
+      const inFlightRes = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(inFlightRes.status, 503);
+      assert.equal((await inFlightRes.json()).error, 'delivery_in_flight');
+      assert.equal(cloudRunCalls, 3);
+
+      // Redelivery after 30s producer lease expiry -> recovers stale in_flight claim and dispatches 202!
+      mockNowMs += 31_000;
+      const recoveredRes = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(recoveredRes.status, 202);
+      assert.equal(cloudRunCalls, 4);
+    } finally {
+      Date.now = realDateNow;
+    }
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -1213,6 +1269,24 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
       fs.writeFileSync(path.join(symlinkRepoDir, 'configs', 'evil-pnpmfile.cjs'), 'module.exports = {};\n', 'utf8');
       fs.writeFileSync(path.join(symlinkRepoDir, 'package.json'), '{"name":"safe-pkg","version":"1.0.0"}\n', 'utf8');
 
+      const sandboxHomeDir = path.join(tmpPoisonDir, 'sandbox-home');
+      fs.mkdirSync(sandboxHomeDir, { recursive: true });
+      const verifySanitizerSnippet = `
+        export HOME="$2"
+        ${sanitizerBlock}
+        test ! -e .npmrc && test ! -L .npmrc
+        test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
+        test "$NPM_CONFIG_USERCONFIG" != "$NPM_CONFIG_GLOBALCONFIG"
+        test -f "$NPM_CONFIG_USERCONFIG" && test -f "$NPM_CONFIG_GLOBALCONFIG"
+        test "$NPM_CONFIG_GIT" = "/bin/false"
+        test "$NPM_CONFIG_SCRIPT_SHELL" = "/bin/false"
+        test "$GIT_CONFIG_VALUE_1" = "never"
+        test "$COREPACK_ENABLE_PROJECT_SPEC" = "0"
+        if command -v npm >/dev/null 2>&1; then
+          npm install --ignore-scripts --git=/bin/false --script-shell=/bin/false --dry-run >/dev/null
+        fi
+      `;
+
       // Create real symlinks (or MSYS symlinks) via bash `ln -s` and execute the sanitizer
       const symlinkSanitizeRun = await runBashAsync(
         [
@@ -1221,14 +1295,10 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
            cd "$1"
            ln -s configs/evil-npmrc .npmrc
            ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
-           ${sanitizerBlock}
-           test ! -e .npmrc && test ! -L .npmrc
-           test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
-           test "$NPM_CONFIG_GIT" = "/bin/false"
-           test "$NPM_CONFIG_SCRIPT_SHELL" = "/bin/false"
-           test "$GIT_CONFIG_VALUE_1" = "never"`,
+           ${verifySanitizerSnippet}`,
           '_',
           toBashPath(symlinkRepoDir),
+          toBashPath(sandboxHomeDir),
         ],
         { MSYS: 'winsymlinks:nativestrict' },
       );
@@ -1242,13 +1312,10 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
              rm -rf .npmrc .pnpmfile.cjs
              ln -s configs/evil-npmrc .npmrc
              ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
-             ${sanitizerBlock}
-             test ! -e .npmrc && test ! -L .npmrc
-             test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
-             test "$NPM_CONFIG_GIT" = "/bin/false"
-             test "$COREPACK_ENABLE_PROJECT_SPEC" = "0"`,
+             ${verifySanitizerSnippet}`,
             '_',
             toBashPath(symlinkRepoDir),
+            toBashPath(sandboxHomeDir),
           ],
           {},
         );

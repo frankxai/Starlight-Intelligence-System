@@ -15,6 +15,7 @@
 export const MAX_WEBHOOK_BYTES = 1_048_576; // 1 MiB ceiling on webhook payloads
 export const MAX_CALLBACK_BYTES = 65_536; // 64 KiB ceiling on runner receipts
 export const DEDUP_TTL_MS = 24 * 60 * 60 * 1000; // 24h idempotency window
+export const PRODUCER_CLAIM_LEASE_MS = 30_000; // 30s expiring lease for unfinished in_flight producer claims
 export const CONSUMER_DISPATCH_LEASE_MS = 30_000; // 30s expiring lease for queue consumer claims
 export const CALLBACK_SKEW_SECONDS = 60;
 
@@ -683,8 +684,44 @@ export class WebhookDeduplicator {
     const ttlMs = typeof body.ttlMs === 'number' && body.ttlMs > 0 ? body.ttlMs : DEDUP_TTL_MS;
 
     if (url.pathname === '/claim') {
-      const existing = this.getRecord(deliveryId, nowMs);
+      const effectiveNowMs =
+        typeof body.nowMs === 'number' && Number.isFinite(body.nowMs) ? body.nowMs : nowMs;
+      const leaseMs =
+        typeof body.leaseMs === 'number' && body.leaseMs > 0
+          ? body.leaseMs
+          : PRODUCER_CLAIM_LEASE_MS;
+      const existing = this.getRecord(deliveryId, effectiveNowMs);
       if (existing) {
+        if (existing.status === 'in_flight') {
+          const elapsedMs = effectiveNowMs - existing.updatedMs;
+          if (elapsedMs < leaseMs) {
+            return jsonResponse({
+              claimed: false,
+              duplicate: false,
+              inFlight: true,
+              status: existing.status,
+              firstSeenMs: existing.firstSeenMs,
+              retryAfterSeconds: Math.max(5, Math.ceil((leaseMs - elapsedMs) / 1000)),
+            });
+          }
+          // Stale unfinished producer claim (e.g. dispatch + /release both failed): recover for retry
+          this.putRecord({
+            deliveryId,
+            eventType: typeof body.eventType === 'string' ? body.eventType : existing.eventType,
+            repo: typeof body.repo === 'string' ? body.repo : existing.repo,
+            status: 'in_flight',
+            detail: existing.detail,
+            firstSeenMs: existing.firstSeenMs,
+            updatedMs: effectiveNowMs,
+            expiresAtMs: effectiveNowMs + ttlMs,
+          });
+          return jsonResponse({
+            claimed: true,
+            duplicate: false,
+            recoveredStaleClaim: true,
+          });
+        }
+
         return jsonResponse({
           claimed: false,
           duplicate: true,
@@ -698,9 +735,9 @@ export class WebhookDeduplicator {
         repo: typeof body.repo === 'string' ? body.repo : null,
         status: 'in_flight',
         detail: null,
-        firstSeenMs: nowMs,
-        updatedMs: nowMs,
-        expiresAtMs: nowMs + ttlMs,
+        firstSeenMs: effectiveNowMs,
+        updatedMs: effectiveNowMs,
+        expiresAtMs: effectiveNowMs + ttlMs,
       });
       return jsonResponse({ claimed: true, duplicate: false });
     }
@@ -1200,17 +1237,37 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     // Durable Object SQLite replay deduplication when x-github-delivery is present
     const dedupStub = deliveryHeader ? getDeduplicatorStub(env) : null;
     if (dedupStub && deliveryHeader) {
-      const claimRes = await dedupStub.fetch('https://dedup.internal/claim', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deliveryId: deliveryHeader,
-          eventType: meta.event,
-          repo: meta.repo,
-          ttlMs: DEDUP_TTL_MS,
-        }),
-      });
-      const claimJson = (await claimRes.json().catch(() => ({}))) as Record<string, any>;
+      const claimRes = await dedupStub
+        .fetch('https://dedup.internal/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deliveryId: deliveryHeader,
+            eventType: meta.event,
+            repo: meta.repo,
+            ttlMs: DEDUP_TTL_MS,
+          }),
+        })
+        .catch(() => null);
+      if (!claimRes || !claimRes.ok) {
+        return jsonResponse({ error: 'deduplicator_unavailable' }, 503);
+      }
+      const claimJson = (await claimRes.json().catch(() => null)) as Record<string, any> | null;
+      if (!claimJson) {
+        return jsonResponse({ error: 'deduplicator_unavailable' }, 503);
+      }
+      if (claimJson.inFlight === true) {
+        const retryAfter = String(Number(claimJson.retryAfterSeconds ?? 15));
+        return jsonResponse(
+          {
+            error: 'delivery_in_flight',
+            deliveryId: deliveryHeader,
+            status: 'in_flight',
+          },
+          503,
+          { 'Retry-After': retryAfter },
+        );
+      }
       if (claimJson.duplicate === true) {
         return jsonResponse({
           ok: true,
