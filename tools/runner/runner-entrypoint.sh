@@ -15,10 +15,10 @@ echo " Memory: $(grep MemTotal /proc/meminfo | awk '{print $2}') kB"
 echo " CPU: $(nproc) vCPUs"
 echo "=========================================================="
 
-REPO="${STARLIGHT_REPO:-$1}"
-REF="${STARLIGHT_REF:-${2:-main}}"
+REPO="${STARLIGHT_REPO:-${REPO:-$1}}"
+REF="${STARLIGHT_REF:-${GIT_REF:-${2:-main}}}"
 COMMAND="${STARLIGHT_COMMAND:-${3:-npm test}}"
-CALLBACK_URL="${STARLIGHT_CALLBACK_URL:-$4}"
+CALLBACK_URL="${STARLIGHT_CALLBACK_URL:-${CALLBACK_URL:-$4}}"
 
 if [ -z "$REPO" ]; then
   echo "Error: No repository specified. Pass via STARLIGHT_REPO env or argument 1."
@@ -80,21 +80,31 @@ echo " Run duration: ${DURATION}s"
 
 if [ -n "$CALLBACK_URL" ]; then
   echo " Posting execution receipt to callback: $CALLBACK_URL"
+  CALLBACK_TS=$(date +%s)
+  DELIVERY_OR_RUN_ID="${DELIVERY_ID:-${STARLIGHT_DELIVERY_ID:-run-${CALLBACK_TS}}}"
+  CALLBACK_STATUS="failed"
+  if [ "$STATUS" = "pass" ]; then
+    CALLBACK_STATUS="succeeded"
+  fi
   PAYLOAD=$(jq -n \
+    --arg deliveryId "$DELIVERY_OR_RUN_ID" \
     --arg repo "$REPO" \
     --arg ref "$REF" \
-    --arg status "$STATUS" \
+    --arg commitSha "${COMMIT_SHA:-}" \
+    --arg status "$CALLBACK_STATUS" \
+    --arg durationMs "$((DURATION * 1000))" \
     --arg duration "$DURATION" \
     --arg installDuration "$INSTALL_DURATION" \
     --arg exitCode "$EXIT_CODE" \
-    '{repo: $repo, ref: $ref, status: $status, duration: ($duration|tonumber), installDuration: ($installDuration|tonumber), exitCode: ($exitCode|tonumber), timestamp: (now|todate)}')
-  
-  CURL_ARGS=(-s -X POST "$CALLBACK_URL" -H "Content-Type: application/json")
+    '{deliveryId: $deliveryId, repo: $repo, ref: $ref, commitSha: (if $commitSha == "" then null else $commitSha end), status: $status, durationMs: ($durationMs|tonumber), duration: ($duration|tonumber), installDuration: ($installDuration|tonumber), exitCode: ($exitCode|tonumber), timestamp: (now|todate)}')
 
-  # Authenticate receipt with HMAC-SHA256 signature if runner secret is provided
-  if [ -n "$STARLIGHT_RUNNER_SECRET" ]; then
-    SIG=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$STARLIGHT_RUNNER_SECRET" | awk '{print $2}')
-    CURL_ARGS+=(-H "X-Starlight-Signature: sha256=$SIG")
+  CURL_ARGS=(-s -X POST "$CALLBACK_URL" -H "Content-Type: application/json" -H "X-Starlight-Timestamp: $CALLBACK_TS")
+
+  # Authenticate receipt with timestamped HMAC-SHA256 signature (`v1=hmac(timestamp.body)`)
+  CALLBACK_SECRET="${STARLIGHT_RUNNER_SECRET:-${RUNNER_CALLBACK_SECRET:-}}"
+  if [ -n "$CALLBACK_SECRET" ]; then
+    SIG=$(printf '%s.%s' "$CALLBACK_TS" "$PAYLOAD" | openssl dgst -sha256 -hmac "$CALLBACK_SECRET" | awk '{print $2}')
+    CURL_ARGS+=(-H "X-Starlight-Signature: v1=$SIG")
   fi
 
   curl "${CURL_ARGS[@]}" -d "$PAYLOAD" || true

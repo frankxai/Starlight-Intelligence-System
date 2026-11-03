@@ -300,30 +300,35 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
   assert.equal(sentMessages.length, 1);
 
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response(JSON.stringify({ ok: true }), { status: 200 });
+  let cloudRunLaunches = 0;
+  globalThis.fetch = async () => {
+    cloudRunLaunches += 1;
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
   try {
     let acked = 0;
     let retried = 0;
-    await worker.queue(
-      {
-        queue: 'starlight-fleet-dispatch',
-        messages: [
-          {
-            id: 'msg-1',
-            body: sentMessages[0],
-            ack() {
-              acked += 1;
-            },
-            retry() {
-              retried += 1;
-            },
+    const makeBatch = () => ({
+      queue: 'starlight-fleet-dispatch',
+      messages: [
+        {
+          id: 'msg-1',
+          body: sentMessages[0],
+          ack() {
+            acked += 1;
           },
-        ],
-      },
-      queueEnv,
-    );
-    assert.equal(acked, 1);
+          retry() {
+            retried += 1;
+          },
+        },
+      ],
+    });
+    await worker.queue(makeBatch(), queueEnv);
+    // Redelivering the exact same queued message must ack without launching a second Cloud Run job
+    await worker.queue(makeBatch(), queueEnv);
+    assert.equal(acked, 2);
     assert.equal(retried, 0);
+    assert.equal(cloudRunLaunches, 1, 'consumer-side idempotency must prevent duplicate Cloud Run launches');
   } finally {
     globalThis.fetch = originalFetch;
   }

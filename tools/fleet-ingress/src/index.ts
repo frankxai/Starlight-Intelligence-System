@@ -547,6 +547,33 @@ export class WebhookDeduplicator {
       return jsonResponse({ released: true });
     }
 
+    if (url.pathname === '/claim-dispatch') {
+      const existing = this.getRecord(deliveryId, nowMs);
+      if (
+        existing &&
+        (existing.status === 'dispatched' ||
+          existing.status === 'dispatching_consumer' ||
+          existing.status.startsWith('runner_'))
+      ) {
+        return jsonResponse({
+          dispatchAllowed: false,
+          duplicate: true,
+          status: existing.status,
+        });
+      }
+      this.putRecord({
+        deliveryId,
+        eventType: typeof body.eventType === 'string' ? body.eventType : existing?.eventType ?? 'queued',
+        repo: typeof body.repo === 'string' ? body.repo : existing?.repo ?? null,
+        status: 'dispatching_consumer',
+        detail: existing?.detail ?? null,
+        firstSeenMs: existing?.firstSeenMs ?? nowMs,
+        updatedMs: nowMs,
+        expiresAtMs: nowMs + ttlMs,
+      });
+      return jsonResponse({ dispatchAllowed: true, duplicate: false });
+    }
+
     if (url.pathname === '/complete' || url.pathname === '/callback') {
       const existing = this.getRecord(deliveryId, nowMs);
       this.putRecord({
@@ -1067,6 +1094,27 @@ export async function handleQueueBatch(
       continue;
     }
 
+    if (stub && payload.deliveryId) {
+      const claimRes = await stub
+        .fetch('https://dedup.internal/claim-dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deliveryId: payload.deliveryId,
+            eventType: payload.meta.event,
+            repo: payload.meta.repo,
+          }),
+        })
+        .catch(() => null);
+      if (claimRes) {
+        const claimJson = (await claimRes.json().catch(() => ({}))) as Record<string, any>;
+        if (claimJson.dispatchAllowed === false) {
+          message.ack();
+          continue;
+        }
+      }
+    }
+
     const result = await dispatchToCloudRun(
       payload.meta,
       payload.callbackUrl,
@@ -1091,6 +1139,20 @@ export async function handleQueueBatch(
       }
       message.ack();
     } else {
+      if (stub && payload.deliveryId) {
+        await stub
+          .fetch('https://dedup.internal/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              deliveryId: payload.deliveryId,
+              eventType: payload.meta.event,
+              repo: payload.meta.repo,
+              status: 'queued',
+            }),
+          })
+          .catch(() => {});
+      }
       message.retry({ delaySeconds: 15 });
     }
   }
