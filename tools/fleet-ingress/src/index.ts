@@ -84,6 +84,7 @@ export interface WebhookEventMeta {
   prNumber?: number;
   isFork?: boolean;
   authorAssociation?: string;
+  runnerLabels?: string[];
   sender: string;
   installationId?: number;
 }
@@ -280,6 +281,7 @@ export function extractEventMetadata(
   let ref: string | undefined;
   let isFork: boolean | undefined;
   let authorAssociation: string | undefined;
+  let runnerLabels: string[] | undefined;
   const action = payload.action;
 
   if (eventType === 'pull_request') {
@@ -303,6 +305,21 @@ export function extractEventMetadata(
   } else if (eventType === 'workflow_job') {
     sha = payload.workflow_job?.head_sha;
     ref = payload.workflow_job?.head_branch;
+    runnerLabels = Array.isArray(payload.workflow_job?.labels)
+      ? payload.workflow_job.labels.filter((label: unknown): label is string => typeof label === 'string')
+      : [];
+    const jobHeadRepo = payload.workflow_job?.head_repository ?? payload.workflow_run?.head_repository;
+    if (jobHeadRepo && typeof jobHeadRepo === 'object') {
+      isFork = Boolean(jobHeadRepo.fork === true || !jobHeadRepo.full_name || jobHeadRepo.full_name !== repo);
+    } else if (payload.repository?.fork === true) {
+      isFork = true;
+    }
+    authorAssociation =
+      typeof payload.workflow_job?.author_association === 'string'
+        ? payload.workflow_job.author_association
+        : typeof payload.author_association === 'string'
+          ? payload.author_association
+          : undefined;
   } else if (eventType === 'check_run') {
     sha = payload.check_run?.head_sha;
   }
@@ -316,6 +333,7 @@ export function extractEventMetadata(
     prNumber,
     isFork,
     authorAssociation,
+    runnerLabels,
     sender,
     installationId,
   };
@@ -323,10 +341,21 @@ export function extractEventMetadata(
 
 const TRUSTED_PR_ASSOCIATIONS = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
 
+function hasStarlightRunnerLabel(labels?: string[]): boolean {
+  if (!Array.isArray(labels) || labels.length === 0) return false;
+  const normalized = new Set(labels.map((l) => l.trim().toLowerCase()));
+  return (
+    normalized.has('starlight-runner') ||
+    normalized.has('starlight-cloud-run') ||
+    (normalized.has('self-hosted') && normalized.has('starlight'))
+  );
+}
+
 /**
  * Determine if an event should spin up a scale-to-zero Cloud Run runner instance.
- * Fails closed on external fork PRs and untrusted author associations so runner
- * credentials never execute unreviewed third-party code.
+ * Fails closed on external fork PRs, untrusted workflow jobs, and jobs without
+ * explicit Starlight self-hosted runner labels so runner credentials never execute
+ * unreviewed third-party code.
  */
 export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
   if (meta.event === 'pull_request') {
@@ -345,6 +374,19 @@ export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
     return meta.ref === 'refs/heads/main' || meta.ref?.startsWith('refs/tags/v') === true;
   }
   if (meta.event === 'workflow_job' && meta.action === 'queued') {
+    if (!hasStarlightRunnerLabel(meta.runnerLabels)) {
+      return false;
+    }
+    if (meta.isFork === true) {
+      return false;
+    }
+    // Require explicit same-repo provenance (`isFork === false`) OR trusted collaborator association
+    if (
+      meta.isFork !== false &&
+      (!meta.authorAssociation || !TRUSTED_PR_ASSOCIATIONS.has(meta.authorAssociation))
+    ) {
+      return false;
+    }
     return true;
   }
   return false;

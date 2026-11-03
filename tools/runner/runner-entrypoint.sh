@@ -46,32 +46,30 @@ if [ -n "$PR_NUMBER" ]; then
   # Fetch base repository pull-request ref directly so fork or non-base branch names never fail clone.
   git init repo
   git -C repo remote add origin "$REPO_URL"
-  git "${GIT_AUTH_ARGS[@]}" -C repo fetch --depth 1 origin "refs/pull/${PR_NUMBER}/head"
+  git "${GIT_AUTH_ARGS[@]}" -C repo fetch --depth 50 origin "refs/pull/${PR_NUMBER}/head"
   git -C repo checkout --detach FETCH_HEAD
 else
   case "$REF" in
     refs/heads/*)
       NORMALIZED_REF="${REF#refs/heads/}"
-      git "${GIT_AUTH_ARGS[@]}" clone --depth 1 --branch "$NORMALIZED_REF" "$REPO_URL" repo
+      git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" repo
       ;;
     refs/tags/*)
       NORMALIZED_REF="${REF#refs/tags/}"
-      git "${GIT_AUTH_ARGS[@]}" clone --depth 1 --branch "$NORMALIZED_REF" "$REPO_URL" repo
+      git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" repo
       ;;
     refs/*)
       git init repo
       git -C repo remote add origin "$REPO_URL"
-      git "${GIT_AUTH_ARGS[@]}" -C repo fetch --depth 1 origin "$REF"
+      git "${GIT_AUTH_ARGS[@]}" -C repo fetch --depth 50 origin "$REF"
       git -C repo checkout --detach FETCH_HEAD
       ;;
     *)
       if printf '%s' "$REF" | grep -Eq '^[0-9a-fA-F]{40}$'; then
-        git init repo
-        git -C repo remote add origin "$REPO_URL"
-        git "${GIT_AUTH_ARGS[@]}" -C repo fetch --depth 1 origin "$REF"
-        git -C repo checkout --detach FETCH_HEAD
+        echo "Error: Refusing unanchored raw commit SHA without an explicit repository ref."
+        exit 1
       else
-        git "${GIT_AUTH_ARGS[@]}" clone --depth 1 --branch "$REF" "$REPO_URL" repo
+        git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$REF" "$REPO_URL" repo
       fi
       ;;
   esac
@@ -80,8 +78,12 @@ fi
 cd repo
 
 if [ -n "${COMMIT_SHA:-}" ] && ! printf '%s' "$COMMIT_SHA" | grep -Eq '^0+$' && [ "$(git rev-parse HEAD)" != "$COMMIT_SHA" ]; then
-  echo " Pinning workspace to exact commit SHA: $COMMIT_SHA..."
-  git "${GIT_AUTH_ARGS[@]}" fetch --depth 1 origin "$COMMIT_SHA"
+  # Verify COMMIT_SHA is already reachable in the fetched base-repo ref history — NEVER fetch arbitrary unreferenced fork SHAs!
+  if ! git cat-file -e "${COMMIT_SHA}^{commit}" 2>/dev/null || ! git merge-base --is-ancestor "$COMMIT_SHA" HEAD; then
+    echo "Error: COMMIT_SHA ($COMMIT_SHA) is not an ancestor of fetched ref ($REF). Refusing untrusted object checkout."
+    exit 1
+  fi
+  echo " Pinning workspace to verified ancestor commit SHA: $COMMIT_SHA..."
   git checkout --detach "$COMMIT_SHA"
 fi
 

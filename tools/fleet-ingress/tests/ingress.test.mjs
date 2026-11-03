@@ -173,6 +173,58 @@ test('extractEventMetadata and shouldDispatchRunner classify actionable CI event
   });
   assert.ok(pushMeta);
   assert.equal(shouldDispatchRunner(pushMeta), true);
+
+  // workflow_job: requires starlight-runner label AND same-repo non-fork provenance
+  const hostedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: '11223344',
+      head_branch: 'main',
+      labels: ['ubuntu-latest'],
+      head_repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+  assert.equal(shouldDispatchRunner(hostedJobMeta), false, 'ubuntu-latest jobs must not spin up Cloud Run');
+
+  const forkJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'evilsha9999',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight-runner'],
+      head_repository: { full_name: 'attacker/arcanea-ai-app', fork: true },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'attacker' },
+  });
+  assert.equal(shouldDispatchRunner(forkJobMeta), false, 'fork workflow_job must be blocked');
+
+  const unverifiedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'evilsha8888',
+      head_branch: 'main',
+      labels: ['starlight-runner'],
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'external-user' },
+  });
+  assert.equal(shouldDispatchRunner(unverifiedJobMeta), false, 'workflow_job without provenance or collaborator trust must fail closed');
+
+  const trustedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'goodsha7777',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight'],
+      head_repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+  assert.equal(shouldDispatchRunner(trustedJobMeta), true, 'trusted same-repo starlight workflow_job dispatches');
 });
 
 test('buildCloudRunExecutionPayload constructs container env overrides including DELIVERY_ID', () => {
