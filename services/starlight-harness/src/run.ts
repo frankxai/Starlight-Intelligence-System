@@ -26,8 +26,10 @@ export interface SandboxApi {
 export interface GithubCalls {
   prState(owner: string, repo: string, number: number, codexBot: string): Promise<{ branch: string; headSha: string; open: boolean }>;
   defaultBranch(owner: string, repo: string): Promise<string>;
+  findPullRequest(owner: string, repo: string, head: string): Promise<string | null>;
   openDraftPullRequest(owner: string, repo: string, head: string, base: string, title: string, body: string): Promise<string>;
   comment(owner: string, repo: string, number: number, body: string): Promise<string | void>;
+  hasComment(owner: string, repo: string, number: number, marker: string, sinceIso: string): Promise<boolean>;
 }
 
 export interface QueueCalls {
@@ -46,6 +48,10 @@ export interface RunParams {
 
 export const CHECK_EVERY = '60 seconds';
 const MAX_COMMENT = 60_000;
+// Minutes of the time box kept back for push, PR and completion, so the lease is still alive
+// when the results go out.
+export const FINALIZE_MINUTES = 5;
+const VERDICT = /VERDICT:\s*(PASS|FAIL)\b/;
 
 export type RunResult = { done: string } | { released: string };
 
@@ -58,6 +64,11 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
       await queue.release(task.id, fence, reason).catch(() => undefined);
     });
     return { released: reason };
+  };
+
+  const stopLost = async (): Promise<RunResult> => {
+    await step.do('stop after lost lease', () => sandbox.destroy());
+    return { released: 'lease lost' };
   };
 
   const setup = await step.do('prepare sandbox', async () => {
@@ -80,7 +91,8 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
   // One check a minute until the agent stops or the task time box runs out. Each check renews the
   // lease, so a run that stops checking frees the task for another worker within 15 minutes.
   let last: SandboxState = { state: 'running' };
-  for (let i = 0; i < task.maxMinutes; i++) {
+  const checks = Math.max(1, task.maxMinutes - FINALIZE_MINUTES);
+  for (let i = 0; i < checks; i++) {
     await step.sleep(`wait ${i}`, CHECK_EVERY);
     const check = await step.do(`check ${i}`, async () => {
       const state = await sandbox.readTask(harness);
@@ -91,31 +103,54 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
       }
       return state;
     });
-    if (check.state === 'lease-lost') {
-      await step.do('stop after lost lease', () => sandbox.destroy());
-      return { released: 'lease lost' };
-    }
+    if (check.state === 'lease-lost') return stopLost();
     last = check as SandboxState;
     if (last.state !== 'running') break;
   }
 
-  if (last.state === 'running') return release(`no result within ${task.maxMinutes} minutes`);
+  if (last.state === 'running') return release(`no result within ${checks} minutes`);
   if (last.state !== 'succeeded') return release(last.state === 'failed' ? `agent failed: ${last.error}` : `agent ${last.state}`);
   const summary = last.result;
+  if (plan.mode === 'review' && !VERDICT.test(summary)) return release('the review ended without a VERDICT line');
+
+  // Each step that changes GitHub renews the lease first. If another worker owns the task now,
+  // this run stops instead of writing over its work.
+  const renewed = async (name: string) => step.do(`renew before ${name}`, async () => {
+    try {
+      await queue.heartbeat(task.id, fence);
+      return true;
+    } catch {
+      return false;
+    }
+  });
 
   let resultRef: string;
   if (plan.mode === 'review') {
+    if (!(await renewed('review'))) return stopLost();
     resultRef = await step.do('post review', async () => {
+      // GitHub has no idempotency key for comments; the marker lets a retried step find the one it posted.
+      const marker = `<!-- starlight-harness:${task.id}:${task.attempt} -->`;
+      const since = new Date(Date.now() - 6 * 3600_000).toISOString();
+      const prUrl = `https://github.com/${plan.owner}/${plan.repo}/pull/${plan.prNumber}`;
+      if (await gh.hasComment(plan.owner, plan.repo, plan.prNumber!, marker, since)) return prUrl;
       const header = `Review by the Starlight ${harness} harness (Cloudflare sandbox) at ${setup.headSha}, for queue task \`${task.id}\`.\n\n`;
-      return String(await gh.comment(plan.owner, plan.repo, plan.prNumber!, header + summary.slice(0, MAX_COMMENT)) || `https://github.com/${plan.owner}/${plan.repo}/pull/${plan.prNumber}`);
+      const url = await gh.comment(plan.owner, plan.repo, plan.prNumber!, `${header}${summary.slice(0, MAX_COMMENT)}\n\n${marker}`);
+      if (!url) throw new Error('GitHub accepted the review comment but returned no URL');
+      return url;
     });
   } else {
+    if (!(await renewed('push'))) return stopLost();
     const sha = await step.do('push', () => sandbox.commitAndPush(setup.branch, `${task.title}\n\nQueue task ${task.id}, ${harness} in a Cloudflare sandbox.`));
     if (!sha) return release('the agent changed nothing');
-    resultRef = plan.mode === 'new-branch'
-      ? await step.do('open draft PR', () => gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
-        `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`))
-      : `https://github.com/${plan.owner}/${plan.repo}/commit/${sha}`;
+    if (plan.mode === 'new-branch') {
+      if (!(await renewed('PR'))) return stopLost();
+      resultRef = await step.do('open draft PR', async () =>
+        // A retry after GitHub created the PR but before the step was recorded finds that PR.
+        (await gh.findPullRequest(plan.owner, plan.repo, setup.branch)) ?? gh.openDraftPullRequest(plan.owner, plan.repo, setup.branch, setup.base!, task.title,
+          `Done when: ${task.doneCondition}\n\nQueue task \`${task.id}\`, made by ${harness} in a Cloudflare sandbox.\n\n${summary.slice(0, MAX_COMMENT)}`));
+    } else {
+      resultRef = `https://github.com/${plan.owner}/${plan.repo}/commit/${sha}`;
+    }
   }
 
   await step.do('complete', async () => {

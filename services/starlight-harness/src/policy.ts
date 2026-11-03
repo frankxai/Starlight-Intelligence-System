@@ -67,23 +67,33 @@ export function buildPrompt(task: ClaimedTask, plan: Plan, branch: string): stri
   ].join('\n\n');
 }
 
+export interface PushCommand {
+  old: string;
+  new: string;
+  ref: string;
+}
+
+export const ZERO_SHA = '0'.repeat(40);
+
 // git-receive-pack bodies start with pkt-lines "<old> <new> <ref>" (the first also carries
 // capabilities after a NUL) and end the command list with a flush packet "0000".
-export function pushedRefs(body: Uint8Array): { refs: string[]; deletes: boolean } | null {
+export function pushedRefs(body: Uint8Array): { refs: string[]; deletes: boolean; commands: PushCommand[] } | null {
   const text = new TextDecoder('latin1');
   const refs: string[] = [];
+  const commands: PushCommand[] = [];
   let deletes = false;
   let at = 0;
   while (at + 4 <= body.length) {
     const len = parseInt(text.decode(body.subarray(at, at + 4)), 16);
     if (Number.isNaN(len)) return null;
-    if (len === 0) return { refs, deletes };
+    if (len === 0) return { refs, deletes, commands };
     if (len < 4 || at + len > body.length) return null;
     const line = text.decode(body.subarray(at + 4, at + len)).split('\0')[0].replace(/\n$/, '');
     const m = /^([0-9a-f]{40}) ([0-9a-f]{40}) (\S+)$/.exec(line);
     if (!m) return null;
-    if (/^0{40}$/.test(m[2])) deletes = true;
+    if (m[2] === ZERO_SHA) deletes = true;
     refs.push(m[3]);
+    commands.push({ old: m[1], new: m[2], ref: m[3] });
     at += len;
   }
   return null;
@@ -100,9 +110,16 @@ export interface OutboundContext {
   allowRegistries: boolean;
 }
 
+// What one sandbox may touch, fixed by its Durable Object when it registers the gateway
+// (ctx.exports.Outbound({ props })). The agent inside cannot change it.
+export interface SandboxScope {
+  repo: string;
+  pushBranch: string | null;
+}
+
 const REGISTRIES = new Set(['registry.npmjs.org', 'pypi.org', 'files.pythonhosted.org']);
 
-export function decide(method: string, rawUrl: string, ctx: OutboundContext, pushBody?: Uint8Array): Decision {
+export function decide(method: string, rawUrl: string, ctx: OutboundContext, scope: SandboxScope | null, pushBody?: Uint8Array): Decision {
   const url = new URL(rawUrl);
   // The Worker fetches with the scheme the container used; a credential on plain HTTP would cross
   // the Internet unencrypted.
@@ -118,6 +135,7 @@ export function decide(method: string, rawUrl: string, ctx: OutboundContext, pus
     if (!m) return { allow: false, reason: 'only git smart-HTTP to github.com' };
     const full = `${m[1]}/${m[2]}`.toLowerCase();
     if (!ctx.repos.some((r) => r.toLowerCase() === full)) return { allow: false, reason: `${full} is not an opted-in repository` };
+    if (!scope || scope.repo.toLowerCase() !== full) return { allow: false, reason: `this sandbox works on ${scope?.repo ?? 'no repository'}, not ${full}` };
     const service = url.searchParams.get('service');
     if (m[3] === 'info/refs' && method === 'GET' && (service === 'git-upload-pack' || service === 'git-receive-pack')) {
       return { allow: true, add: 'github' };
@@ -128,7 +146,11 @@ export function decide(method: string, rawUrl: string, ctx: OutboundContext, pus
       if (!pushed || pushed.refs.length === 0) return { allow: false, reason: 'unreadable push' };
       if (pushed.deletes) return { allow: false, reason: 'branch deletion refused' };
       const bad = pushed.refs.find((r) => !AGENT_BRANCH.test(r));
-      return bad ? { allow: false, reason: `push to ${bad} refused: agents push only agent branches` } : { allow: true, add: 'github' };
+      if (bad) return { allow: false, reason: `push to ${bad} refused: agents push only agent branches` };
+      // One task, one branch: a sandbox cannot write to another agent's work in the same repo.
+      const other = pushed.refs.find((r) => r !== `refs/heads/${scope.pushBranch}`);
+      if (!scope.pushBranch || other) return { allow: false, reason: `push to ${other ?? 'any branch'} refused: this sandbox may push only ${scope.pushBranch ?? 'nothing'}` };
+      return { allow: true, add: 'github' };
     }
     return { allow: false, reason: 'git operation refused' };
   }

@@ -4,7 +4,7 @@
 
 import { WorkerEntrypoint } from 'cloudflare:workers';
 import { GithubApp } from '../../starlight-control-plane/src/github.ts';
-import { decide, type OutboundContext } from './policy.ts';
+import { decide, type OutboundContext, type SandboxScope } from './policy.ts';
 
 export interface OutboundEnv {
   AI_GATEWAY_ACCOUNT_ID: string;
@@ -28,7 +28,7 @@ export function outboundContext(env: OutboundEnv): OutboundContext {
   };
 }
 
-export class Outbound extends WorkerEntrypoint<OutboundEnv> {
+export class Outbound extends WorkerEntrypoint<OutboundEnv, SandboxScope> {
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     // A push is judged by the refs it names, so its body is read before the decision.
@@ -38,8 +38,10 @@ export class Outbound extends WorkerEntrypoint<OutboundEnv> {
       if (buf.byteLength > MAX_PUSH_BYTES) return new Response('push too large\n', { status: 413 });
       body = new Uint8Array(buf);
     }
-    const verdict = decide(request.method, request.url, outboundContext(this.env), body);
+    const scope = (this.ctx.props as SandboxScope | undefined) ?? null;
+    const verdict = decide(request.method, request.url, outboundContext(this.env), scope, body);
     if (!verdict.allow) return new Response(`${verdict.reason}\n`, { status: 403 });
+    app ??= new GithubApp(this.env.GITHUB_APP_ID, this.env.GITHUB_APP_PRIVATE_KEY);
 
     const headers = new Headers(request.headers);
     if (verdict.add === 'ai-gateway') {
@@ -49,7 +51,6 @@ export class Outbound extends WorkerEntrypoint<OutboundEnv> {
       headers.set('cf-aig-authorization', `Bearer ${this.env.AI_GATEWAY_TOKEN}`);
     } else if (verdict.add === 'github') {
       const [, owner, repo] = url.pathname.split('/');
-      app ??= new GithubApp(this.env.GITHUB_APP_ID, this.env.GITHUB_APP_PRIVATE_KEY);
       const token = await app.installationToken(owner, repo.replace(/\.git$/, ''));
       headers.set('authorization', `Basic ${btoa(`x-access-token:${token}`)}`);
     } else {

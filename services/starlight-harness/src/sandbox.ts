@@ -5,7 +5,7 @@
 import { Files, SandboxFileError } from '@cloudflare/sandbox';
 import { DurableObject } from 'cloudflare:workers';
 import { agentCommand, agentEnv, EVENTS_PATH, LAST_MESSAGE_PATH, outcome, STDERR_PATH, TASK_DIR, type GatewayVars } from './agents.ts';
-import type { Harness } from './policy.ts';
+import type { Harness, SandboxScope } from './policy.ts';
 import type { SandboxState } from './run.ts';
 
 const REPO_DIR = '/workspace/repo';
@@ -14,6 +14,7 @@ const PID_PATH = `${TASK_DIR}/pid`;
 const INACTIVITY_MS = 30 * 60 * 1000;
 const TASK_KEY = 'task';
 const BASE_KEY = 'base';
+const REPO_KEY = 'repo';
 
 const CA = '/etc/cloudflare/certs/cloudflare-containers-ca.crt';
 // Outbound intercepts every HTTPS request, so its CA replaces the system trust store.
@@ -58,9 +59,13 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
   }
 
   async clone(owner: string, repo: string, ref: string, newBranch: string | null, harness: Harness): Promise<void> {
+    // The repository is fixed before the container starts, so the gateway is scoped from the first request.
+    this.ctx.storage.kv.put(REPO_KEY, `${owner}/${repo}`);
     await this.start(harness);
     // A retried step finds the clone already there.
     if (this.ctx.storage.kv.get(BASE_KEY) !== undefined) return;
+    // A clone or checkout that failed half way leaves a directory the next attempt cannot clone into.
+    await this.mustRun(['rm', '-rf', REPO_DIR], '/workspace');
     await this.mustRun(['git', 'clone', '--depth', '50', '--branch', ref, '--', `https://github.com/${owner}/${repo}.git`, REPO_DIR], '/workspace');
     if (newBranch) await this.mustRun(['git', 'checkout', '-b', newBranch], REPO_DIR);
     // The commit the agent starts from; anything after it is the agent's work.
@@ -70,7 +75,9 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
   startTask(harness: Harness, prompt: string): Promise<'started' | 'busy'> {
     return this.ctx.blockConcurrencyWhile(async () => {
       await this.start(harness);
-      if ((await this.status(harness)).state === 'running') return 'busy';
+      // This sandbox runs one task once. A retried start, even after the agent already finished,
+      // must not wipe its output and run it again.
+      if (this.ctx.storage.kv.get(TASK_KEY) !== undefined) return 'busy';
       await this.files.remove(TASK_DIR, { recursive: true, force: true });
       await this.files.mkdir(TASK_DIR);
       await this.container.exec(['/bin/sh', '-c', TASK_SCRIPT, 'agent', TASK_DIR, ...agentCommand(harness, this.vars(harness), prompt)], {
@@ -94,14 +101,22 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
       await this.mustRun(['git', 'commit', '-m', message], REPO_DIR, { ...TRUST, ...agentEnv('codex', this.vars('codex')) });
     }
     if ((await this.mustRun(['git', 'rev-list', '--count', `${base}..HEAD`], REPO_DIR)).trim() === '0') return null;
-    // The Outbound gateway refuses any ref that is not an agent branch, so this cannot touch main.
-    await this.mustRun(['git', 'push', 'origin', `HEAD:refs/heads/${branch}`], REPO_DIR);
+    // Push rights exist only for this one command: the gateway is re-scoped to the task's branch,
+    // the runner pushes without --force (GitHub refuses a non-fast-forward), and the scope closes
+    // again whatever happens. While the agent ran, the sandbox could push nowhere.
+    await this.scope({ repo: this.repo(), pushBranch: branch });
+    try {
+      await this.mustRun(['git', 'push', 'origin', `HEAD:refs/heads/${branch}`], REPO_DIR);
+    } finally {
+      await this.scope({ repo: this.repo(), pushBranch: null });
+    }
     return (await this.mustRun(['git', 'rev-parse', 'HEAD'], REPO_DIR)).trim();
   }
 
   async destroy(): Promise<void> {
     this.ctx.storage.kv.delete(TASK_KEY);
     this.ctx.storage.kv.delete(BASE_KEY);
+    this.ctx.storage.kv.delete(REPO_KEY);
     if (this.container.running) await this.container.destroy();
   }
 
@@ -124,14 +139,26 @@ export class HarnessSandbox extends DurableObject<SandboxEnv> {
       this.container.start({ image: this.container.images[harness], instance: 'standard-1', enableInternet: false });
     }
     try {
-      await this.container.interceptAllOutboundHttp(this.ctx.exports.Outbound);
-      await this.container.interceptOutboundHttps('*', this.ctx.exports.Outbound);
+      await this.scope({ repo: this.repo(), pushBranch: null });
       await this.container.setInactivityTimeout(INACTIVITY_MS);
     } catch (err) {
       // No command may run before interception is in place; the next request starts afresh.
       await this.container.destroy();
       throw err;
     }
+  }
+
+  private repo(): string {
+    const repo = this.ctx.storage.kv.get(REPO_KEY) as string | undefined;
+    if (!repo) throw new Error('no repository recorded for this sandbox');
+    return repo;
+  }
+
+  // Registering again replaces the earlier handler, and open connections pick it up at once.
+  private async scope(props: SandboxScope): Promise<void> {
+    const outbound = this.ctx.exports.Outbound({ props });
+    await this.container.interceptAllOutboundHttp(outbound);
+    await this.container.interceptOutboundHttps('*', outbound);
   }
 
   private async status(harness: Harness): Promise<SandboxState> {
