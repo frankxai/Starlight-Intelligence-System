@@ -690,6 +690,7 @@ export class WebhookDeduplicator {
         typeof body.leaseMs === 'number' && body.leaseMs > 0
           ? body.leaseMs
           : PRODUCER_CLAIM_LEASE_MS;
+      const claimMode = body.mode === 'queue' ? 'queue' : 'direct';
       const existing = this.getRecord(deliveryId, effectiveNowMs);
       if (existing) {
         if (existing.status === 'in_flight') {
@@ -704,7 +705,7 @@ export class WebhookDeduplicator {
               retryAfterSeconds: Math.max(5, Math.ceil((leaseMs - elapsedMs) / 1000)),
             });
           }
-          // Stale unfinished producer claim (e.g. dispatch + /release both failed): recover for retry
+          // Stale unfinished producer claim (e.g. dispatch + /release or /complete both failed): recover for retry
           this.putRecord({
             deliveryId,
             eventType: typeof body.eventType === 'string' ? body.eventType : existing.eventType,
@@ -719,6 +720,28 @@ export class WebhookDeduplicator {
             claimed: true,
             duplicate: false,
             recoveredStaleClaim: true,
+            needsReconciliation: claimMode === 'direct',
+          });
+        }
+
+        if (existing.status === 'uncertain_dispatch' && claimMode === 'direct') {
+          // Prior direct Cloud Run :run timed out, dropped its connection, or returned 5xx:
+          // reclaim in_flight so handleRequest reconciles against executions.list before retrying :run.
+          this.putRecord({
+            deliveryId,
+            eventType: typeof body.eventType === 'string' ? body.eventType : existing.eventType,
+            repo: typeof body.repo === 'string' ? body.repo : existing.repo,
+            status: 'in_flight',
+            detail: existing.detail,
+            firstSeenMs: existing.firstSeenMs,
+            updatedMs: effectiveNowMs,
+            expiresAtMs: effectiveNowMs + ttlMs,
+          });
+          return jsonResponse({
+            claimed: true,
+            duplicate: false,
+            recoveredStaleClaim: false,
+            needsReconciliation: true,
           });
         }
 
@@ -794,6 +817,8 @@ export class WebhookDeduplicator {
       }
 
       const recoveredStaleLease = existing?.status === 'dispatching_consumer';
+      const needsReconciliation =
+        recoveredStaleLease || existing?.status === 'uncertain_dispatch';
       this.putRecord({
         deliveryId,
         eventType: typeof body.eventType === 'string' ? body.eventType : existing?.eventType ?? 'queued',
@@ -808,6 +833,7 @@ export class WebhookDeduplicator {
         dispatchAllowed: true,
         duplicate: false,
         recoveredStaleLease,
+        needsReconciliation,
       });
     }
 
@@ -815,6 +841,13 @@ export class WebhookDeduplicator {
       const existing = this.getRecord(deliveryId, nowMs);
       const nextStatus = typeof body.status === 'string' ? body.status : 'dispatched';
       if (existing && existing.status.startsWith('runner_') && !nextStatus.startsWith('runner_')) {
+        return jsonResponse({
+          ok: true,
+          recorded: false,
+          preservedStatus: existing.status,
+        });
+      }
+      if (existing && existing.status === 'uncertain_dispatch' && nextStatus === 'queued') {
         return jsonResponse({
           ok: true,
           recorded: false,
@@ -966,9 +999,12 @@ async function dispatchToCloudRun(
   callbackUrl: string,
   env: Env,
   deliveryId?: string,
-): Promise<{ ok: true; status: number; body: unknown } | { ok: false; status: 502 | 503; error: string }> {
+): Promise<
+  | { ok: true; status: number; body: unknown }
+  | { ok: false; status: 502 | 503; error: string; ambiguous: boolean }
+> {
   if (!hasRunnerCredentials(env)) {
-    return { ok: false, status: 503, error: 'runner_unavailable' };
+    return { ok: false, status: 503, error: 'runner_unavailable', ambiguous: false };
   }
 
   const execPayload = buildCloudRunExecutionPayload(meta, callbackUrl, deliveryId);
@@ -987,7 +1023,15 @@ async function dispatchToCloudRun(
     });
 
     if (!gcpRes.ok) {
-      return { ok: false, status: 502, error: 'runner_dispatch_failed' };
+      // 4xx indicates Cloud Run rejected the request before creating an execution;
+      // 5xx or redirect responses are ambiguous because Cloud Run may have committed the execution first.
+      const definiteNonExecution = gcpRes.status >= 400 && gcpRes.status < 500;
+      return {
+        ok: false,
+        status: 502,
+        error: 'runner_dispatch_failed',
+        ambiguous: !definiteNonExecution,
+      };
     }
 
     return {
@@ -996,7 +1040,9 @@ async function dispatchToCloudRun(
       body: await gcpRes.json().catch(() => ({})),
     };
   } catch {
-    return { ok: false, status: 502, error: 'runner_dispatch_failed' };
+    // Network drop, socket close, or AbortSignal timeout after sending POST :run is ambiguous:
+    // Cloud Run may already have created and started the execution.
+    return { ok: false, status: 502, error: 'runner_dispatch_failed', ambiguous: true };
   }
 }
 
@@ -1338,6 +1384,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     }
 
     // Durable Object SQLite replay deduplication when x-github-delivery is present
+    const useQueueMode = Boolean(env.FLEET_DISPATCH_QUEUE && env.DISPATCH_MODE !== 'direct');
     const dedupStub = deliveryHeader ? getDeduplicatorStub(env) : null;
     if (dedupStub && deliveryHeader) {
       const claimRes = await dedupStub
@@ -1349,6 +1396,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
             eventType: meta.event,
             repo: meta.repo,
             ttlMs: DEDUP_TTL_MS,
+            mode: useQueueMode ? 'queue' : 'direct',
           }),
         })
         .catch(() => null);
@@ -1379,7 +1427,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
           priorStatus: claimJson.status ?? 'dispatched',
         });
       }
-      if (claimJson.recoveredStaleClaim === true) {
+      if (claimJson.needsReconciliation === true || claimJson.recoveredStaleClaim === true) {
         const priorExec = await findCloudRunExecutionForDelivery(deliveryHeader, env);
         if (priorExec === 'found') {
           await postDedupWithRetry(dedupStub, '/complete', {
@@ -1397,6 +1445,13 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
           });
         }
         if (priorExec === 'uncertain') {
+          await postDedupWithRetry(dedupStub, '/complete', {
+            deliveryId: deliveryHeader,
+            eventType: meta.event,
+            repo: meta.repo,
+            status: 'uncertain_dispatch',
+            expectedStatus: 'in_flight',
+          });
           return jsonResponse(
             {
               error: 'uncertain_prior_dispatch',
@@ -1412,7 +1467,7 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     const deliveryId = deliveryHeader || crypto.randomUUID();
 
     // Queue-buffered dispatch path when Cloudflare Queues producer is active
-    if (env.FLEET_DISPATCH_QUEUE && env.DISPATCH_MODE !== 'direct') {
+    if (useQueueMode && env.FLEET_DISPATCH_QUEUE) {
       try {
         await env.FLEET_DISPATCH_QUEUE.send({
           deliveryId,
@@ -1459,10 +1514,20 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     const dispatchResult = await dispatchToCloudRun(meta, callbackUrl, env, deliveryId);
     if (!dispatchResult.ok) {
       if (dedupStub && deliveryHeader) {
-        await postDedupWithRetry(dedupStub, '/release', {
-          deliveryId: deliveryHeader,
-          expectedStatus: 'in_flight',
-        });
+        if (dispatchResult.ambiguous) {
+          await postDedupWithRetry(dedupStub, '/complete', {
+            deliveryId: deliveryHeader,
+            eventType: meta.event,
+            repo: meta.repo,
+            status: 'uncertain_dispatch',
+            expectedStatus: 'in_flight',
+          });
+        } else {
+          await postDedupWithRetry(dedupStub, '/release', {
+            deliveryId: deliveryHeader,
+            expectedStatus: 'in_flight',
+          });
+        }
       }
       return jsonResponse({ error: dispatchResult.error }, dispatchResult.status);
     }
@@ -1554,7 +1619,7 @@ export async function handleQueueBatch(
         continue;
       }
 
-      if (claimJson.recoveredStaleLease === true) {
+      if (claimJson.needsReconciliation === true || claimJson.recoveredStaleLease === true) {
         const priorExec = await findCloudRunExecutionForDelivery(payload.deliveryId, env);
         if (priorExec === 'found') {
           await postDedupWithRetry(stub, '/complete', {
@@ -1567,6 +1632,13 @@ export async function handleQueueBatch(
           continue;
         }
         if (priorExec === 'uncertain') {
+          await postDedupWithRetry(stub, '/complete', {
+            deliveryId: payload.deliveryId,
+            eventType: payload.meta.event,
+            repo: payload.meta.repo,
+            status: 'uncertain_dispatch',
+            expectedStatus: 'dispatching_consumer',
+          });
           message.retry({ delaySeconds: 15 });
           continue;
         }
@@ -1596,7 +1668,7 @@ export async function handleQueueBatch(
           deliveryId: payload.deliveryId,
           eventType: payload.meta.event,
           repo: payload.meta.repo,
-          status: 'queued',
+          status: result.ambiguous ? 'uncertain_dispatch' : 'queued',
           expectedStatus: 'dispatching_consumer',
         });
       }

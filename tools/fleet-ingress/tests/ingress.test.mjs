@@ -308,6 +308,7 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
   const originalFetch = globalThis.fetch;
   let cloudRunCalls = 0;
   let shouldFailNext = true;
+  let shouldCreateThenTimeoutNext = false;
   const createdExecutions = [];
 
   globalThis.fetch = async (input, init) => {
@@ -327,6 +328,10 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
         name: `executions/exec-${cloudRunCalls}`,
         template: { containers: [{ env: envList }] },
       });
+      if (shouldCreateThenTimeoutNext) {
+        shouldCreateThenTimeoutNext = false;
+        throw new DOMException('The operation timed out after Cloud Run accepted :run', 'TimeoutError');
+      }
       return new Response(JSON.stringify({ name: `executions/exec-${cloudRunCalls}` }), { status: 200 });
     }
     return originalFetch(input, init);
@@ -402,10 +407,12 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
 
     try {
       shouldFailNext = true;
+      failAllComplete = true;
       const failedAndDroppedRelease = await handleRequest(makeLeaseReq(), faultyEnv);
       assert.equal(failedAndDroppedRelease.status, 502);
       assert.equal(cloudRunCalls, 3);
       failAllRelease = false;
+      failAllComplete = false;
 
       // Immediate redelivery within 30s lease -> 503 delivery_in_flight (not 200 deduplicated!)
       mockNowMs += 5_000;
@@ -444,6 +451,33 @@ test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and rel
         cloudRunCalls,
         5,
         'reconciled prior Cloud Run execution must never launch a second job',
+      );
+
+      // Case C: Cloud Run :run creates the execution upstream, then its HTTP response times out / rejects!
+      // Attempt 1 records `uncertain_dispatch` and returns 502; immediate retry (without waiting 30s)
+      // reconciles via executions.list, heals /complete -> dispatched, and never calls :run a second time!
+      shouldCreateThenTimeoutNext = true;
+      const timedOutAfterCreate = await handleRequest(
+        makeLeaseReq('delivery-uuid-timeout-after-create-80'),
+        faultyEnv,
+      );
+      assert.equal(timedOutAfterCreate.status, 502);
+      assert.equal(cloudRunCalls, 6);
+
+      // Immediate retry 1s later (no 30s lease wait!) must reconcile and return 200 deduplicated
+      mockNowMs += 1_000;
+      const immediateReconciled = await handleRequest(
+        makeLeaseReq('delivery-uuid-timeout-after-create-80'),
+        faultyEnv,
+      );
+      assert.equal(immediateReconciled.status, 200);
+      const immediateReconciledJson = await immediateReconciled.json();
+      assert.equal(immediateReconciledJson.deduplicated, true);
+      assert.equal(immediateReconciledJson.reconciledFromCloudRun, true);
+      assert.equal(
+        cloudRunCalls,
+        6,
+        'timeout/lost-response after Cloud Run created execution must reconcile without duplicate :run',
       );
     } finally {
       Date.now = realDateNow;
@@ -740,6 +774,88 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
     );
     assert.equal(rfAcked, 1);
     assert.equal(recoveredLaunches, 1, 'failed reset write must still recover after lease expiry');
+
+    // Lease recovery test 3: Queue consumer's Cloud Run :run creates the execution upstream, then throws/times out;
+    // immediate queue retry reconciles uncertain_dispatch against executions.list and acks WITHOUT a second :run!
+    const timeoutConsumerMsg = {
+      deliveryId: 'delivery-consumer-timeout-after-create-5',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    const consumerCreatedExecs = [];
+    let consumerRunCalls = 0;
+    let throwAfterCreate = true;
+    globalThis.fetch = async (input, init) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: consumerCreatedExecs }), { status: 200 });
+      }
+      consumerRunCalls += 1;
+      const parsedBody = init?.body ? JSON.parse(String(init.body)) : {};
+      const envList = parsedBody?.overrides?.containerOverrides?.[0]?.env ?? [];
+      consumerCreatedExecs.push({
+        name: `executions/consumer-exec-${consumerRunCalls}`,
+        template: { containers: [{ env: envList }] },
+      });
+      if (throwAfterCreate) {
+        throwAfterCreate = false;
+        throw new TypeError('network connection lost after Cloud Run accepted :run');
+      }
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let tcAcked = 0;
+    let tcRetried = 0;
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'tc-1',
+            body: timeoutConsumerMsg,
+            ack() {
+              tcAcked += 1;
+            },
+            retry() {
+              tcRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 120_000, leaseMs: 30_000 },
+    );
+    assert.equal(tcAcked, 0);
+    assert.equal(tcRetried, 1);
+    assert.equal(consumerRunCalls, 1);
+
+    // Immediate queue retry 2s later (no 30s wait) reconciles uncertain_dispatch and acks without calling :run again!
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'tc-2',
+            body: timeoutConsumerMsg,
+            ack() {
+              tcAcked += 1;
+            },
+            retry() {
+              tcRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 122_000, leaseMs: 30_000 },
+    );
+    assert.equal(tcAcked, 1);
+    assert.equal(tcRetried, 1);
+    assert.equal(
+      consumerRunCalls,
+      1,
+      'queue consumer retry after lost :run response must reconcile via executions.list without duplicate launch',
+    );
 
     // Post-enqueue bookkeeping failure test (reproduces @codex P2 4450895884):
     // Queue.send() succeeds AND fast consumer dispatches, then producer's post-send /complete throws.
@@ -1059,7 +1175,16 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   assert.match(deployRunner, /gcloud beta run jobs update "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
   assert.match(deployRunner, /gcloud beta run jobs create "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
   assert.match(deployRunner, /sandboxLauncher:\[\[:space:\]\]\*true/);
-  assert.match(deployRunner, /mount-path=\/cache\/pnpm,readonly=true/);
+  assert.match(
+    deployRunner,
+    /--add-volume="name=pnpm-cache,type=cloud-storage,bucket=\$\{CACHE_BUCKET\},readonly=true"/,
+  );
+  assert.match(deployRunner, /--add-volume-mount="volume=pnpm-cache,mount-path=\/cache\/pnpm"/);
+  assert.doesNotMatch(
+    deployRunner,
+    /--add-volume-mount="[^"]*readonly=/,
+    'gcloud beta run jobs takes readonly=true on --add-volume rather than --add-volume-mount',
+  );
   assert.match(deployRunner, /Dockerfile\.runner/);
   assert.match(entrypoint, /\/usr\/local\/gcp\/bin\/sandbox/);
   assert.match(entrypoint, /do\s+--write\s+--/);

@@ -70,8 +70,8 @@ if gcloud storage buckets describe "gs://${CACHE_BUCKET}" --project="$PROJECT_ID
     --role="roles/storage.objectViewer" \
     --project="$PROJECT_ID" >/dev/null
   VOLUME_ARGS+=(
-    --add-volume="name=pnpm-cache,type=cloud-storage,bucket=${CACHE_BUCKET}"
-    --add-volume-mount="volume=pnpm-cache,mount-path=/cache/pnpm,readonly=true"
+    --add-volume="name=pnpm-cache,type=cloud-storage,bucket=${CACHE_BUCKET},readonly=true"
+    --add-volume-mount="volume=pnpm-cache,mount-path=/cache/pnpm"
   )
 else
   echo " Note: Persistent cache bucket gs://${CACHE_BUCKET} not detected. (Runner will use image-baked store)."
