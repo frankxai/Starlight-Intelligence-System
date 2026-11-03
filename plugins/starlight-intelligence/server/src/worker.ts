@@ -3,6 +3,7 @@ import {
   authenticateAccessRequest,
   AuthorizationError,
   authorizationResponse,
+  MCP_ALLOWED_CORS_HEADERS,
   resolveAllowedCorsOrigin,
   type AccessEnv,
 } from "./auth.js";
@@ -61,8 +62,8 @@ export default {
         headers: {
           "Access-Control-Allow-Origin": matchedOrigin,
           "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers":
-            "Content-Type, Authorization, Cf-Access-Jwt-Assertion, Mcp-Session-Id, MCP-Protocol-Version",
+          "Access-Control-Allow-Headers": MCP_ALLOWED_CORS_HEADERS,
+          "Access-Control-Expose-Headers": "mcp-session-id",
           "Access-Control-Max-Age": "86400",
           Vary: "Origin",
         },
@@ -89,7 +90,10 @@ export default {
         legacy: "stateless",
         allowedHostnames: Array.from(new Set([endpointHost, canonicalHost])),
         allowedOriginHostnames,
-        corsOptions: { origin: corsOrigin },
+        corsOptions: {
+          origin: corsOrigin,
+          headers: MCP_ALLOWED_CORS_HEADERS,
+        },
         onerror(error) {
           console.error("Starlight MCP request failed", {
             name: error.name,
@@ -107,7 +111,9 @@ export default {
         headers,
       });
     } catch (error) {
-      if (error instanceof AuthorizationError) return authorizationResponse(error);
+      if (error instanceof AuthorizationError) {
+        return authorizationResponse(error, matchedOrigin);
+      }
       console.error("Starlight MCP authorization boundary failed", {
         name: error instanceof Error ? error.name : "UnknownError",
         requestId: request.headers.get("cf-ray") ?? crypto.randomUUID(),

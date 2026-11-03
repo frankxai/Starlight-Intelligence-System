@@ -64,6 +64,7 @@ export interface MessageBatchLike<T = FleetDispatchMessage> {
 
 export interface Env {
   GITHUB_WEBHOOK_SECRET?: string;
+  GITHUB_API_TOKEN?: string;
   GCP_PROJECT_ID?: string;
   GCP_REGION?: string;
   CLOUD_RUN_JOB?: string;
@@ -83,6 +84,7 @@ export interface WebhookEventMeta {
   ref?: string;
   sha?: string;
   prNumber?: number;
+  runId?: number;
   isFork?: boolean;
   authorAssociation?: string;
   runnerLabels?: string[];
@@ -279,6 +281,7 @@ export function extractEventMetadata(
 
   let sha: string | undefined;
   let prNumber: number | undefined;
+  let runId: number | undefined;
   let ref: string | undefined;
   let isFork: boolean | undefined;
   let authorAssociation: string | undefined;
@@ -306,6 +309,10 @@ export function extractEventMetadata(
   } else if (eventType === 'workflow_job') {
     sha = payload.workflow_job?.head_sha;
     ref = payload.workflow_job?.head_branch;
+    const rawRunId = payload.workflow_job?.run_id;
+    if (typeof rawRunId === 'number' && Number.isSafeInteger(rawRunId) && rawRunId > 0) {
+      runId = rawRunId;
+    }
     runnerLabels = Array.isArray(payload.workflow_job?.labels)
       ? payload.workflow_job.labels.filter((label: unknown): label is string => typeof label === 'string')
       : [];
@@ -332,6 +339,7 @@ export function extractEventMetadata(
     ref,
     sha,
     prNumber,
+    runId,
     isFork,
     authorAssociation,
     runnerLabels,
@@ -391,6 +399,87 @@ export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
     return true;
   }
   return false;
+}
+
+/**
+ * Resolve `workflow_job` head-repository provenance via an authenticated GitHub Actions
+ * workflow-run lookup (`GET /repos/{owner}/{repo}/actions/runs/{run_id}`) because GitHub's
+ * `workflow_job` webhook payload omits `head_repository` and `author_association`.
+ * Retains fail-closed semantics (`meta.isFork` stays `undefined`) if credentials are absent,
+ * the lookup fails, or `head_sha` does not match the webhook's `workflow_job.head_sha`.
+ */
+export async function resolveWorkflowJobProvenance(
+  meta: WebhookEventMeta,
+  env: Env,
+): Promise<{ ok: true } | { ok: false; status: 502; error: 'provenance_lookup_failed' }> {
+  if (
+    meta.event !== 'workflow_job' ||
+    meta.action !== 'queued' ||
+    !hasStarlightRunnerLabel(meta.runnerLabels) ||
+    meta.isFork !== undefined
+  ) {
+    return { ok: true };
+  }
+
+  const ghToken = env.GITHUB_API_TOKEN?.trim() || '';
+  if (
+    !ghToken ||
+    !meta.runId ||
+    !meta.sha ||
+    !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(meta.repo)
+  ) {
+    return { ok: true };
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${meta.repo}/actions/runs/${meta.runId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${ghToken}`,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'User-Agent': 'starlight-fleet-ingress',
+        },
+        redirect: 'manual',
+        signal: AbortSignal.timeout(8_000),
+      },
+    );
+    if (res.status >= 500 || res.status === 429) {
+      return { ok: false, status: 502, error: 'provenance_lookup_failed' };
+    }
+    if (!res.ok) return { ok: true };
+
+    const runJson = (await res.json().catch(() => null)) as Record<string, any> | null;
+    if (!runJson || typeof runJson !== 'object') return { ok: true };
+    if (typeof runJson.head_sha !== 'string' || runJson.head_sha !== meta.sha) {
+      return { ok: true };
+    }
+    if (runJson.event === 'pull_request_target') {
+      meta.isFork = true;
+      return { ok: true };
+    }
+
+    const headRepo = runJson.head_repository;
+    if (!headRepo || typeof headRepo !== 'object') return { ok: true };
+    meta.isFork = Boolean(
+      headRepo.fork === true || !headRepo.full_name || headRepo.full_name !== meta.repo,
+    );
+
+    if (
+      !meta.isFork &&
+      !meta.prNumber &&
+      Array.isArray(runJson.pull_requests) &&
+      runJson.pull_requests.length === 1 &&
+      typeof runJson.pull_requests[0]?.number === 'number'
+    ) {
+      meta.prNumber = runJson.pull_requests[0].number;
+    }
+    return { ok: true };
+  } catch {
+    return { ok: false, status: 502, error: 'provenance_lookup_failed' };
+  }
 }
 
 /**
@@ -1096,6 +1185,11 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
       if (!repoOwner || !allowedOwners.has(repoOwner)) {
         return jsonResponse({ ok: true, skipped: 'untrusted_repository_owner' });
       }
+    }
+
+    const provenance = await resolveWorkflowJobProvenance(meta, env);
+    if (!provenance.ok) {
+      return jsonResponse({ error: provenance.error }, provenance.status);
     }
 
     const needsRunner = shouldDispatchRunner(meta);

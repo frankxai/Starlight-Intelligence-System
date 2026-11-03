@@ -829,6 +829,110 @@ test('production src/worker.ts entrypoint exports only default handler and Webho
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.skipped, 'untrusted_repository_owner');
+
+  // Authentic GitHub workflow_job payload (run_id present, no head_repository in webhook body):
+  // resolves provenance via GET /repos/{owner}/{repo}/actions/runs/{run_id} and stays fail-closed on forks or missing token!
+  const realWorkflowJobBody = JSON.stringify({
+    action: 'queued',
+    workflow_job: {
+      id: 9901,
+      run_id: 4242,
+      head_sha: 'goodsha7777',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight'],
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+
+  const makeWfReq = () =>
+    new Request('https://ingress.starlight.local/webhook', {
+      method: 'POST',
+      headers: {
+        'x-github-event': 'workflow_job',
+        'x-hub-signature-256': computeHmacSha256(TEST_SECRET, realWorkflowJobBody),
+      },
+      body: realWorkflowJobBody,
+    });
+
+  // 1) Without GITHUB_API_TOKEN -> fails closed
+  const noTokenRes = await handleRequest(makeWfReq(), {
+    GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+    GCP_PROJECT_ID: 'starlight-estate',
+    GCP_REGION: 'europe-west4',
+    CLOUD_RUN_JOB: 'runner-job',
+    GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token',
+  });
+  assert.equal((await noTokenRes.json()).skipped, 'no_runner_action_needed');
+
+  const originalFetch = globalThis.fetch;
+  let mockRunIsFork = true;
+  let mockRunEvent = 'pull_request';
+  let mockApiStatus = 200;
+  let cloudRunCalls = 0;
+  globalThis.fetch = async (input) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    if (url === 'https://api.github.com/repos/frankxai/arcanea-ai-app/actions/runs/4242') {
+      if (mockApiStatus !== 200) {
+        return new Response(JSON.stringify({ message: 'upstream unavailable' }), { status: mockApiStatus });
+      }
+      return new Response(
+        JSON.stringify({
+          id: 4242,
+          event: mockRunEvent,
+          head_sha: 'goodsha7777',
+          head_repository: mockRunIsFork
+            ? { full_name: 'attacker/arcanea-ai-app', fork: true }
+            : { full_name: 'frankxai/arcanea-ai-app', fork: false },
+          pull_requests: mockRunIsFork ? [] : [{ number: 512 }],
+        }),
+        { status: 200 },
+      );
+    }
+    if (url.startsWith('https://run.googleapis.com/')) {
+      cloudRunCalls += 1;
+      return new Response(JSON.stringify({ name: 'executions/exec-wf-4242' }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch URL: ${url}`);
+  };
+
+  try {
+    const wfEnv = {
+      GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+      GITHUB_API_TOKEN: 'ghs_test_token',
+      GCP_PROJECT_ID: 'starlight-estate',
+      GCP_REGION: 'europe-west4',
+      CLOUD_RUN_JOB: 'runner-job',
+      GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token',
+    };
+
+    // 2) Fork workflow run resolved via GitHub API -> fails closed even on head_branch 'main'
+    const forkWfRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal((await forkWfRes.json()).skipped, 'no_runner_action_needed');
+    assert.equal(cloudRunCalls, 0);
+
+    // 3) Transient GitHub API 503 -> returns 502 provenance_lookup_failed so GitHub retries
+    mockApiStatus = 503;
+    const apiDownRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal(apiDownRes.status, 502);
+    assert.equal((await apiDownRes.json()).error, 'provenance_lookup_failed');
+    mockApiStatus = 200;
+
+    // 4) pull_request_target workflow run -> fails closed even if head_repository appears same-repo
+    mockRunIsFork = false;
+    mockRunEvent = 'pull_request_target';
+    const prTargetRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal((await prTargetRes.json()).skipped, 'no_runner_action_needed');
+    assert.equal(cloudRunCalls, 0);
+
+    // 5) Same-repo pull_request workflow run resolved via GitHub API -> dispatches Cloud Run Job
+    mockRunEvent = 'pull_request';
+    const trustedWfRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal(trustedWfRes.status, 202);
+    assert.equal(cloudRunCalls, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test('runner isolation contract enforces setgid staging, sandbox process reaping, and zero-argv stdin HMAC signing', async () => {
@@ -1084,6 +1188,84 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
       assert.equal(enforcedProbe.status, 0, `isolated sandbox preflight failed: ${enforcedProbe.stderr}`);
       const stolenContent = fs.existsSync(stolenTokenNativePath) ? fs.readFileSync(stolenTokenNativePath, 'utf8') : '';
       assert.equal(stolenContent, '', 'sandboxed repository command must retrieve zero ambient service-account token bytes');
+
+      // Execution Proof D: Pre-fetch config & symlink sanitizer removes symlinked .npmrc/.pnpmfile.cjs,
+      // pins NPM_CONFIG_GIT=/bin/false, and rejects symlinked package.json or unsafe pnpm-workspace.yaml!
+      const sanitizerMatch = entrypoint.match(
+        /(# Pre-fetch config & symlink sanitizer:[\s\S]*?export COREPACK_ENABLE_DOWNLOAD_PROMPT=0)/,
+      );
+      assert.ok(sanitizerMatch, 'expected pre-fetch config & symlink sanitizer block in runner-entrypoint.sh');
+      const sanitizerBlock = sanitizerMatch[1];
+
+      const symlinkRepoDir = path.join(tmpPoisonDir, 'symlink-repo');
+      fs.mkdirSync(path.join(symlinkRepoDir, 'configs'), { recursive: true });
+      const gitHijackMarker = path.join(symlinkRepoDir, 'git-hijack.marker');
+      fs.writeFileSync(
+        path.join(symlinkRepoDir, 'evil-git.sh'),
+        `#!/usr/bin/env bash\necho HIJACKED > "${toBashPath(gitHijackMarker)}"\nexit 0\n`,
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
+        path.join(symlinkRepoDir, 'configs', 'evil-npmrc'),
+        'git=./evil-git.sh\nscript-shell=./evil-git.sh\n',
+        'utf8',
+      );
+      fs.writeFileSync(path.join(symlinkRepoDir, 'configs', 'evil-pnpmfile.cjs'), 'module.exports = {};\n', 'utf8');
+      fs.writeFileSync(path.join(symlinkRepoDir, 'package.json'), '{"name":"safe-pkg","version":"1.0.0"}\n', 'utf8');
+
+      // Create real symlinks (or MSYS symlinks) via bash `ln -s` and execute the sanitizer
+      const symlinkSanitizeRun = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail
+           cd "$1"
+           ln -s configs/evil-npmrc .npmrc
+           ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
+           ${sanitizerBlock}
+           test ! -e .npmrc && test ! -L .npmrc
+           test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
+           test "$NPM_CONFIG_GIT" = "/bin/false"
+           test "$NPM_CONFIG_SCRIPT_SHELL" = "/bin/false"
+           test "$GIT_CONFIG_VALUE_1" = "never"`,
+          '_',
+          toBashPath(symlinkRepoDir),
+        ],
+        { MSYS: 'winsymlinks:nativestrict' },
+      );
+      // Fallback without winsymlinks:nativestrict if Windows developer-mode symlinks require MSYS copy/lnk fallback
+      if (symlinkSanitizeRun.status !== 0 && /symbolic link|symlink|privilege|Operation not permitted/i.test(symlinkSanitizeRun.stderr)) {
+        const fallbackRun = await runBashAsync(
+          [
+            '-c',
+            `set -eo pipefail
+             cd "$1"
+             rm -rf .npmrc .pnpmfile.cjs
+             ln -s configs/evil-npmrc .npmrc
+             ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
+             ${sanitizerBlock}
+             test ! -e .npmrc && test ! -L .npmrc
+             test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
+             test "$NPM_CONFIG_GIT" = "/bin/false"
+             test "$COREPACK_ENABLE_PROJECT_SPEC" = "0"`,
+            '_',
+            toBashPath(symlinkRepoDir),
+          ],
+          {},
+        );
+        assert.equal(fallbackRun.status, 0, `symlink .npmrc sanitizer failed: ${fallbackRun.stderr}`);
+      } else {
+        assert.equal(symlinkSanitizeRun.status, 0, `symlink .npmrc sanitizer failed: ${symlinkSanitizeRun.stderr}`);
+      }
+      assert.equal(fs.existsSync(gitHijackMarker), false, 'repository git executable must never execute');
+
+      // Verify unsafe pnpm-workspace.yaml setting pnpmfile/scriptShell/configDependencies fails closed
+      fs.writeFileSync(path.join(symlinkRepoDir, 'pnpm-workspace.yaml'), 'pnpmfile: ./configs/evil-pnpmfile.cjs\n', 'utf8');
+      const unsafeWorkspaceRun = await runBashAsync(
+        ['-c', `set -eo pipefail; cd "$1"; ${sanitizerBlock}`, '_', toBashPath(symlinkRepoDir)],
+        {},
+      );
+      assert.equal(unsafeWorkspaceRun.status, 1, 'unsafe pnpm-workspace.yaml must fail closed');
+      assert.match(unsafeWorkspaceRun.stderr, /Refusing repository manifest configuring custom pnpmfile/);
     } finally {
       await new Promise((resolve) => metaServer.close(resolve));
       fs.rmSync(tmpPoisonDir, { recursive: true, force: true });

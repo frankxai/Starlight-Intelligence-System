@@ -3,6 +3,8 @@ import test from "node:test";
 import {
   authenticateAccessRequest,
   AuthorizationError,
+  authorizationResponse,
+  MCP_ALLOWED_CORS_HEADERS,
   resolveAllowedCorsOrigin,
   type AccessEnv,
 } from "./auth.js";
@@ -53,4 +55,30 @@ test("resolveAllowedCorsOrigin reflects only allowlisted HTTPS or localhost orig
   assert.equal(resolveAllowedCorsOrigin("http://chatgpt.com", allow), null);
   assert.equal(resolveAllowedCorsOrigin("https://evil.example.com", allow), null);
   assert.equal(resolveAllowedCorsOrigin(null, allow), null);
+});
+
+test("MCP_ALLOWED_CORS_HEADERS preserves modern MCP routing headers alongside Cloudflare Access", () => {
+  for (const requiredHeader of [
+    "Accept",
+    "Cf-Access-Jwt-Assertion",
+    "Mcp-Session-Id",
+    "MCP-Protocol-Version",
+    "Mcp-Method",
+    "Mcp-Name",
+    "Last-Event-ID",
+  ]) {
+    assert.equal(
+      MCP_ALLOWED_CORS_HEADERS.includes(requiredHeader),
+      true,
+      `missing preflight header ${requiredHeader}`,
+    );
+  }
+
+  const corsAuthErr = authorizationResponse(
+    new AuthorizationError("Cloudflare Access authentication is required."),
+    "https://chatgpt.com",
+  );
+  assert.equal(corsAuthErr.status, 401);
+  assert.equal(corsAuthErr.headers.get("Access-Control-Allow-Origin"), "https://chatgpt.com");
+  assert.equal(corsAuthErr.headers.get("Vary"), "Origin");
 });

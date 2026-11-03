@@ -277,24 +277,47 @@ INSTALL_START=$(date +%s)
 "${SANDBOX_EXEC[@]}" /bin/bash -c '
   set -eo pipefail
   cd "$1"
-  # Remove unsafe repo-level package-manager hooks (.pnpmfile.cjs, .npmrc, .yarnrc*) across workspace
-  # and reject any manifest/lockfile referencing cloud link-local/metadata endpoints before fetching tarballs.
-  find . \( -name ".npmrc" -o -name ".pnpmfile.cjs" -o -name "pnpmfile.cjs" -o -name ".yarnrc*" \) -type f -delete
-  if find . \( -name "package.json" -o -name "pnpm-lock.yaml" -o -name "package-lock.json" -o -name "npm-shrinkwrap.json" -o -name "pnpm-workspace.yaml" \) -type f -exec grep -InE "(169\.254\.|metadata\.google\.internal|fe80:)" {} + >/dev/null 2>&1; then
+  # Pre-fetch config & symlink sanitizer:
+  # 1) Remove all repo-level package-manager config files & symlinks (.npmrc, npmrc, .pnpmfile*, .yarnrc*, .bunfig.toml)
+  find -P . \( -name ".npmrc" -o -name "npmrc" -o -name ".pnpmfile*" -o -name "pnpmfile*" -o -name ".yarnrc*" -o -name ".bunfig.toml" \) -exec rm -rf {} +
+  # 2) Reject symlinked manifests or lockfiles that could alias untrusted config
+  if [ -n "$(find -P . \( -name "package.json" -o -name "pnpm-lock.yaml" -o -name "package-lock.json" -o -name "npm-shrinkwrap.json" -o -name "pnpm-workspace.yaml" \) -type l -print -quit)" ]; then
+    echo "Error: Refusing symlinked package manifest or lockfile." >&2
+    exit 1
+  fi
+  # 3) Reject cloud metadata/link-local SSRF URLs and repository-executable config hooks in manifests
+  if [ -n "$(find -P . \( -name "package.json" -o -name "pnpm-lock.yaml" -o -name "package-lock.json" -o -name "npm-shrinkwrap.json" -o -name "pnpm-workspace.yaml" \) -type f -exec grep -IlE "(169\.254\.|metadata\.google\.internal|fe80:)" {} + 2>/dev/null)" ]; then
     echo "Error: Refusing repository manifest referencing cloud metadata or link-local endpoints." >&2
+    exit 1
+  fi
+  if [ -n "$(find -P . -name "pnpm-workspace.yaml" -type f -exec grep -IlE "(pnpmfile|global-pnpmfile|globalPnpmfile|script-shell|scriptShell|shell-emulator|shellEmulator|configDependencies|ignore-scripts|ignoreScripts)" {} + 2>/dev/null)" ] || \
+     [ -n "$(find -P . -name "package.json" -type f -exec grep -IlE "\"(pnpmfile|globalPnpmfile|scriptShell|shellEmulator|configDependencies)\"" {} + 2>/dev/null)" ]; then
+    echo "Error: Refusing repository manifest configuring custom pnpmfile, scriptShell, or configDependencies." >&2
     exit 1
   fi
   export NPM_CONFIG_IGNORE_SCRIPTS=true
   export NPM_CONFIG_USERCONFIG=/dev/null
+  export NPM_CONFIG_GLOBALCONFIG=/dev/null
+  export NPM_CONFIG_SCRIPT_SHELL=/bin/false
+  export NPM_CONFIG_GIT=/bin/false
+  export GIT_TERMINAL_PROMPT=0
+  export GIT_CONFIG_NOSYSTEM=1
+  export GIT_CONFIG_COUNT=2
+  export GIT_CONFIG_KEY_0=core.hooksPath
+  export GIT_CONFIG_VALUE_0=/dev/null
+  export GIT_CONFIG_KEY_1=protocol.allow
+  export GIT_CONFIG_VALUE_1=never
+  export COREPACK_ENABLE_PROJECT_SPEC=0
   export COREPACK_ENABLE_NETWORK=0
   export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
   if [ -f "pnpm-lock.yaml" ]; then
-    pnpm install --frozen-lockfile --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true --prefer-offline || \
-      pnpm install --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true
+    pnpm install --frozen-lockfile --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true --config.script-shell=/bin/false --prefer-offline || \
+      pnpm install --ignore-scripts --ignore-pnpmfile --config.ignore-scripts=true --config.ignore-pnpmfile=true --config.script-shell=/bin/false
   elif [ -f "package-lock.json" ]; then
-    npm ci --ignore-scripts --prefer-offline || npm install --ignore-scripts
+    npm ci --ignore-scripts --git=/bin/false --script-shell=/bin/false --prefer-offline || \
+      npm install --ignore-scripts --git=/bin/false --script-shell=/bin/false
   else
-    npm install --ignore-scripts
+    npm install --ignore-scripts --git=/bin/false --script-shell=/bin/false
   fi
 ' _ "$SANDBOX_REPO"
 reap_sandbox_processes
@@ -303,6 +326,7 @@ echo " Running package rebuild inside metadata/network-isolated sandbox ($SANDBO
 "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c '
   set -eo pipefail
   cd "$1"
+  export COREPACK_ENABLE_PROJECT_SPEC=0
   export COREPACK_ENABLE_NETWORK=0
   export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
   if [ -f "pnpm-lock.yaml" ]; then
