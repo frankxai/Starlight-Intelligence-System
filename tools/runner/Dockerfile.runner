@@ -47,16 +47,18 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && rm -rf /var/lib/apt/lists/*
 
 # Create two isolated non-root identities:
-# - `starlight` (UID 1000): supervisor that clones and signs completion callbacks
+# - `starlight` (UID 1000, supplementary group `starlight-sandbox`): supervisor that clones and signs completion callbacks
 # - `starlight-sandbox` (UID 1001): unprivileged executor for untrusted dependencies & tests
-# Linux enforces 0400 UID ownership on /proc/<supervisor-pid>/environ and /proc/<supervisor-pid>/mem,
-# preventing `starlight-sandbox` from reading startup secrets retained by the supervisor process.
-RUN useradd -m -u 1000 -s /bin/bash starlight \
-    && useradd -m -u 1001 -s /bin/bash starlight-sandbox \
+# `/work` uses mode `2750` (`setgid` + `starlight:starlight-sandbox`) so supervisor-staged source
+# trees automatically inherit group `starlight-sandbox` for read/traverse copy into the sandbox,
+# while `/home/starlight` stays `0700` (`starlight:starlight`) and Linux enforces `0400` UID ownership
+# on `/proc/<supervisor-pid>/environ` and `/proc/<supervisor-pid>/mem`.
+RUN useradd -m -u 1001 -s /bin/bash starlight-sandbox \
+    && useradd -m -u 1000 -G starlight-sandbox -s /bin/bash starlight \
     && chmod 0700 /home/starlight /home/starlight-sandbox \
     && mkdir -p /work /home/starlight-sandbox/workspace /home/starlight-sandbox/.local/share/pnpm /cache/pnpm \
     && chown starlight:starlight-sandbox /work \
-    && chmod 0750 /work \
+    && chmod 2750 /work \
     && chown -R starlight-sandbox:starlight-sandbox /home/starlight-sandbox /cache/pnpm \
     && printf 'Defaults>starlight-sandbox env_reset\nstarlight ALL=(starlight-sandbox) NOPASSWD: /usr/bin/env\n' > /etc/sudoers.d/starlight-sandbox \
     && chmod 0440 /etc/sudoers.d/starlight-sandbox

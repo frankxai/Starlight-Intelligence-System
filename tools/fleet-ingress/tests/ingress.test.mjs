@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
+import { spawn, spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import http from 'node:http';
+import path from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import worker, {
   MAX_WEBHOOK_BYTES,
   WebhookDeduplicator,
@@ -630,6 +635,82 @@ test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retr
     );
     assert.equal(rfAcked, 1);
     assert.equal(recoveredLaunches, 1, 'failed reset write must still recover after lease expiry');
+
+    // Post-enqueue bookkeeping failure test (reproduces @codex P2 4450895884):
+    // Queue.send() succeeds AND fast consumer dispatches, then producer's post-send /complete throws.
+    // Producer MUST still return 202, preserve the consumer's dispatched receipt, and block redelivery duplicates!
+    let postSendLaunches = 0;
+    globalThis.fetch = async () => {
+      postSendLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let postSendMessage = null;
+    let throwProducerComplete = false;
+    const postSendDedup = {
+      idFromName(name) {
+        return DEDUPLICATOR.idFromName(name);
+      },
+      get(id) {
+        const inner = DEDUPLICATOR.get(id);
+        return {
+          async fetch(input, init) {
+            const u = typeof input === 'string' ? input : input.url;
+            if (throwProducerComplete && u.endsWith('/complete')) {
+              const parsed = init?.body ? JSON.parse(String(init.body)) : {};
+              if (parsed.status === 'queued') {
+                throwProducerComplete = false;
+                throw new Error('simulated_post_enqueue_complete_error');
+              }
+            }
+            return inner.fetch(input, init);
+          },
+        };
+      },
+    };
+    const postSendEnv = {
+      ...queueEnv,
+      DEDUPLICATOR: postSendDedup,
+      FLEET_DISPATCH_QUEUE: {
+        async send(msg) {
+          postSendMessage = msg;
+          await worker.queue(
+            {
+              queue: 'starlight-fleet-dispatch',
+              messages: [{ id: 'ps-1', body: msg, ack() {}, retry() {} }],
+            },
+            queueEnv,
+          );
+          throwProducerComplete = true;
+        },
+      },
+    };
+    const postSendRes = await handleRequest(
+      new Request('https://ingress.starlight.local/v1/github/events', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'push',
+          'x-github-delivery': 'delivery-post-send-5',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pushBody),
+        },
+        body: pushBody,
+      }),
+      postSendEnv,
+    );
+    assert.equal(postSendRes.status, 202, 'accepted queue send must return 202 even if post-send /complete throws');
+    const receiptCheck = await stub.fetch('https://dedup.internal/receipt?id=delivery-post-send-5');
+    assert.equal(receiptCheck.status, 200, 'consumer dispatch receipt must not be deleted by producer catch');
+    const receiptCheckJson = await receiptCheck.json();
+    assert.equal(receiptCheckJson.receipt.status, 'dispatched');
+
+    // Redelivering the message must ack without launching a second Cloud Run job
+    await worker.queue(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [{ id: 'ps-2', body: postSendMessage, ack() {}, retry() {} }],
+      },
+      queueEnv,
+    );
+    assert.equal(postSendLaunches, 1, 'preserved consumer claim must block duplicate Cloud Run job on redelivery');
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -748,4 +829,128 @@ test('production src/worker.ts entrypoint exports only default handler and Webho
   assert.equal(res.status, 200);
   const body = await res.json();
   assert.equal(body.skipped, 'untrusted_repository_owner');
+});
+
+test('runner isolation contract enforces setgid staging, sandbox process reaping, and zero-argv stdin HMAC signing', async () => {
+  const testDir = path.dirname(fileURLToPath(import.meta.url));
+  const repoRoot = path.resolve(testDir, '..', '..', '..');
+  const dockerfilePath = path.join(repoRoot, 'tools', 'runner', 'Dockerfile.runner');
+  const entrypointPath = path.join(repoRoot, 'tools', 'runner', 'runner-entrypoint.sh');
+
+  const dockerfile = fs.readFileSync(dockerfilePath, 'utf8');
+  const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
+
+  // 1. Dockerfile must add starlight to starlight-sandbox supplementary group and setgid 2750 on /work
+  assert.match(
+    dockerfile,
+    /useradd\s+-m\s+-u\s+1000\s+-G\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight/,
+    'supervisor starlight must belong to supplementary group starlight-sandbox',
+  );
+  assert.match(
+    dockerfile,
+    /chown\s+starlight:starlight-sandbox\s+\/work[\s\\]+&&\s+chmod\s+2750\s+\/work/,
+    '/work must carry setgid 2750 with group starlight-sandbox',
+  );
+  assert.match(dockerfile, /^USER\s+starlight\s*$/m, 'container default USER must be starlight');
+
+  // 2. Entrypoint must assign sandbox group on staging, reap surviving sandbox processes, and never pass secrets in argv
+  assert.match(entrypoint, /chgrp\s+-R\s+"\$SANDBOX_GROUP"\s+"\$\{STAGE_ROOT\}\/source"/);
+  assert.match(entrypoint, /kill\s+-9\s+-1/);
+  assert.match(entrypoint, /verify_no_surviving_sandbox_processes/);
+  assert.doesNotMatch(
+    entrypoint,
+    /openssl\s+dgst[^\n]*-hmac/,
+    'callback signing must not pass HMAC key via openssl CLI argv',
+  );
+  assert.doesNotMatch(
+    entrypoint,
+    /-c\s+"http\.https:\/\/github\.com\/\.extraHeader=/,
+    'git clone auth must use GIT_CONFIG_* env rather than -c argv',
+  );
+  assert.match(entrypoint, /GIT_CONFIG_VALUE_0="Authorization: Basic \$\{AUTH_B64\}"/);
+
+  // 3. Validate bash syntax of runner-entrypoint.sh when bash is installed
+  const gitBashWin = 'C:\\Program Files\\Git\\bin\\bash.exe';
+  const bashBin = process.platform === 'win32' && fs.existsSync(gitBashWin) ? gitBashWin : 'bash';
+  const bashCheck = spawnSync(bashBin, ['--version'], { encoding: 'utf8' });
+  if (bashCheck.status === 0) {
+    const syntaxCheck = spawnSync(bashBin, ['-n', entrypointPath], { encoding: 'utf8' });
+    assert.equal(syntaxCheck.status, 0, `bash -n failed: ${syntaxCheck.stderr}`);
+  }
+
+  // 4. Execute the exact Node stdin HMAC callback signer against a live local HTTP listener
+  // and prove: (a) process.argv excludes secret & signature, (b) /v1/runner/callback verifies the signature!
+  const signerMatch = entrypoint.match(/node -e '([\s\S]*?)' -- \\/);
+  assert.ok(signerMatch, 'expected inline Node stdin callback signer in runner-entrypoint.sh');
+  const signerScript = signerMatch[1];
+
+  let capturedHeaders = null;
+  let capturedBody = '';
+  const server = http.createServer((req, res) => {
+    capturedHeaders = req.headers;
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', () => {
+      capturedBody = Buffer.concat(chunks).toString('utf8');
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end('{"ok":true}');
+    });
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const callbackUrl = `http://127.0.0.1:${port}/v1/runner/callback`;
+    const nowSec = String(Math.floor(Date.now() / 1000));
+    const cliArgs = [
+      '-e',
+      signerScript,
+      '--',
+      callbackUrl,
+      'deliv-runner-e2e-1',
+      'frankxai/Starlight-Intelligence-System',
+      'refs/heads/main',
+      'abc123def456',
+      'succeeded',
+      '12',
+      '4',
+      '0',
+      nowSec,
+    ];
+
+    for (const arg of cliArgs) {
+      assert.equal(
+        arg.includes(TEST_CALLBACK_SECRET),
+        false,
+        'callback signing secret must never appear in node process argv',
+      );
+    }
+
+    const runSigner = await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, cliArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
+      let stderr = '';
+      child.stderr.on('data', (d) => {
+        stderr += d.toString('utf8');
+      });
+      child.on('error', reject);
+      child.on('close', (status) => resolve({ status, stderr }));
+      child.stdin.end(TEST_CALLBACK_SECRET);
+    });
+    assert.equal(runSigner.status, 0, `signer exited non-zero: ${runSigner.stderr}`);
+    assert.ok(capturedHeaders, 'callback HTTP server did not receive POST');
+
+    const check = await verifyCallbackSignature(
+      capturedBody,
+      String(capturedHeaders['x-starlight-timestamp'] ?? ''),
+      String(capturedHeaders['x-starlight-signature'] ?? ''),
+      TEST_CALLBACK_SECRET,
+    );
+    assert.equal(check.valid, true, `callback HMAC verification failed: ${check.reason}`);
+    const parsed = JSON.parse(capturedBody);
+    assert.equal(parsed.deliveryId, 'deliv-runner-e2e-1');
+    assert.equal(parsed.status, 'succeeded');
+    assert.equal(parsed.durationMs, 12000);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });

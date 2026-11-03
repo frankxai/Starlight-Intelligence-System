@@ -617,6 +617,17 @@ export class WebhookDeduplicator {
     }
 
     if (url.pathname === '/release') {
+      const existing = this.getRecord(deliveryId, nowMs);
+      const expectedStatus =
+        typeof body.expectedStatus === 'string' && body.expectedStatus.trim()
+          ? body.expectedStatus.trim()
+          : null;
+      if (expectedStatus && (!existing || existing.status !== expectedStatus)) {
+        return jsonResponse({
+          released: false,
+          preservedStatus: existing?.status ?? null,
+        });
+      }
       this.deleteRecord(deliveryId);
       return jsonResponse({ released: true });
     }
@@ -676,6 +687,14 @@ export class WebhookDeduplicator {
 
     if (url.pathname === '/complete' || url.pathname === '/callback') {
       const existing = this.getRecord(deliveryId, nowMs);
+      const nextStatus = typeof body.status === 'string' ? body.status : 'dispatched';
+      if (existing && existing.status.startsWith('runner_') && !nextStatus.startsWith('runner_')) {
+        return jsonResponse({
+          ok: true,
+          recorded: false,
+          preservedStatus: existing.status,
+        });
+      }
       const expectedStatus =
         typeof body.expectedStatus === 'string' && body.expectedStatus.trim()
           ? body.expectedStatus.trim()
@@ -694,7 +713,7 @@ export class WebhookDeduplicator {
             ? body.eventType
             : existing?.eventType ?? 'runner_callback',
         repo: typeof body.repo === 'string' ? body.repo : existing?.repo ?? null,
-        status: typeof body.status === 'string' ? body.status : 'dispatched',
+        status: nextStatus,
         detail: typeof body.detail === 'string' ? body.detail : existing?.detail ?? null,
         firstSeenMs: existing?.firstSeenMs ?? nowMs,
         updatedMs: nowMs,
@@ -1120,8 +1139,27 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
           callbackUrl,
           enqueuedAt: new Date().toISOString(),
         });
+      } catch {
         if (dedupStub && deliveryHeader) {
-          await dedupStub.fetch('https://dedup.internal/complete', {
+          await dedupStub
+            .fetch('https://dedup.internal/release', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                deliveryId: deliveryHeader,
+                expectedStatus: 'in_flight',
+              }),
+            })
+            .catch(() => {});
+        }
+        return jsonResponse({ error: 'queue_enqueue_failed' }, 502);
+      }
+
+      // Once Queue.send() has accepted the message, preserve the delivery claim even if
+      // post-enqueue status bookkeeping encounters a transient Durable Object error.
+      if (dedupStub && deliveryHeader) {
+        await dedupStub
+          .fetch('https://dedup.internal/complete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1131,55 +1169,54 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
               status: 'queued',
               expectedStatus: 'in_flight',
             }),
-          });
-        }
-        return jsonResponse(
-          {
-            ok: true,
-            queued: true,
-            deliveryId,
-            event: meta.event,
-            repo: meta.repo,
-            runnerRequired: true,
-          },
-          202,
-        );
-      } catch {
-        if (dedupStub && deliveryHeader) {
-          await dedupStub.fetch('https://dedup.internal/release', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ deliveryId: deliveryHeader }),
-          });
-        }
-        return jsonResponse({ error: 'queue_enqueue_failed' }, 502);
+          })
+          .catch(() => {});
       }
+
+      return jsonResponse(
+        {
+          ok: true,
+          queued: true,
+          deliveryId,
+          event: meta.event,
+          repo: meta.repo,
+          runnerRequired: true,
+        },
+        202,
+      );
     }
 
     // Direct Cloud Run Jobs dispatch path
     const dispatchResult = await dispatchToCloudRun(meta, callbackUrl, env, deliveryId);
     if (!dispatchResult.ok) {
       if (dedupStub && deliveryHeader) {
-        await dedupStub.fetch('https://dedup.internal/release', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ deliveryId: deliveryHeader }),
-        });
+        await dedupStub
+          .fetch('https://dedup.internal/release', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              deliveryId: deliveryHeader,
+              expectedStatus: 'in_flight',
+            }),
+          })
+          .catch(() => {});
       }
       return jsonResponse({ error: dispatchResult.error }, dispatchResult.status);
     }
 
     if (dedupStub && deliveryHeader) {
-      await dedupStub.fetch('https://dedup.internal/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deliveryId: deliveryHeader,
-          eventType: meta.event,
-          repo: meta.repo,
-          status: 'dispatched',
-        }),
-      });
+      await dedupStub
+        .fetch('https://dedup.internal/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deliveryId: deliveryHeader,
+            eventType: meta.event,
+            repo: meta.repo,
+            status: 'dispatched',
+          }),
+        })
+        .catch(() => {});
     }
 
     return jsonResponse(

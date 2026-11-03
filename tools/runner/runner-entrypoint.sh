@@ -2,9 +2,15 @@
 # ==============================================================================
 # Starlight Scale-to-Zero Runner Entrypoint
 # Executes CI/CD validation, SAGE proving ground, and autonomous agent tasks.
-# Security: Enforces mandatory dual-UID isolation (`starlight` -> `starlight-sandbox`)
-# with `env -i` scrubbed environments so repository code cannot inspect supervisor
-# `/proc/<pid>/environ`, `/proc/<pid>/mem`, or callback signing keys.
+# Security:
+#   1. Mandatory dual-UID isolation (`starlight` supervisor -> `starlight-sandbox` executor)
+#      with `env -i` scrubbed environments and explicit `starlight-sandbox` group staging (`2750`).
+#   2. Zero secret exposure in process command lines (`/proc/<pid>/cmdline`):
+#      - Git clone auth uses `GIT_CONFIG_COUNT`/`GIT_CONFIG_VALUE_0` environment config (never `-c` argv or `.git/config`).
+#      - Callback HMAC-SHA256 signing & HTTPS delivery run inside Node.js reading the signing key over `stdin` (`fd 0`)
+#        from bash builtin `printf`, never passing keys or signatures as CLI arguments.
+#   3. Kernel process reaping (`kill -9 -1` as `starlight-sandbox`) + `/proc` verification terminates
+#      all surviving background processes from untrusted repository scripts before supervisor signing.
 # Built on SIP v1.1.1 — Sovereign Substrate
 # ==============================================================================
 
@@ -14,8 +20,8 @@ echo "=========================================================="
 echo " Starlight Sovereign Runner — Initializing Scale-to-Zero Task"
 echo " Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 echo " Host: $(hostname)"
-echo " Memory: $(grep MemTotal /proc/meminfo | awk '{print $2}') kB"
-echo " CPU: $(nproc) vCPUs"
+echo " Memory: $(grep MemTotal /proc/meminfo 2>/dev/null | awk '{print $2}' || echo unknown) kB"
+echo " CPU: $(nproc 2>/dev/null || echo 1) vCPUs"
 echo "=========================================================="
 
 REPO="${STARLIGHT_REPO:-${REPO:-$1}}"
@@ -43,12 +49,13 @@ fi
 
 SUPERVISOR_UID="$(id -u)"
 SANDBOX_UID="$(id -u "$SANDBOX_USER")"
+SANDBOX_GROUP="$(id -gn "$SANDBOX_USER")"
 if [ "$SUPERVISOR_UID" = "$SANDBOX_UID" ]; then
   echo "Error: Supervisor UID ($SUPERVISOR_UID) matches sandbox UID; refusing same-user execution." >&2
   exit 1
 fi
 
-SANDBOX_HOME="$(getent passwd "$SANDBOX_USER" | cut -d: -f6)"
+SANDBOX_HOME="$(getent passwd "$SANDBOX_USER" 2>/dev/null | cut -d: -f6 || true)"
 if [ -z "$SANDBOX_HOME" ]; then
   SANDBOX_HOME="/home/${SANDBOX_USER}"
 fi
@@ -70,38 +77,92 @@ if ! "${SANDBOX_EXEC[@]}" /bin/bash -c 'test "$(id -u)" = "$1"' _ "$SANDBOX_UID"
   exit 1
 fi
 
+reap_sandbox_processes() {
+  "${SANDBOX_EXEC[@]}" /bin/bash -c 'kill -9 -1 2>/dev/null || true' >/dev/null 2>&1 || true
+}
+
+verify_no_surviving_sandbox_processes() {
+  reap_sandbox_processes
+  if [ ! -d /proc ]; then
+    return 0
+  fi
+  local attempt=0
+  while [ "$attempt" -lt 3 ]; do
+    local found_live=0
+    local status_file
+    for status_file in /proc/[0-9]*/status; do
+      [ -r "$status_file" ] || continue
+      if awk -v target="$SANDBOX_UID" '
+        /^State:/ { state = $2 }
+        /^Uid:/ {
+          if ($2 == target || $3 == target || $4 == target || $5 == target) {
+            found = 1
+          }
+        }
+        END { exit((found && state != "Z") ? 0 : 1) }
+      ' "$status_file" 2>/dev/null; then
+        found_live=1
+        break
+      fi
+    done
+    if [ "$found_live" -eq 0 ]; then
+      return 0
+    fi
+    sleep 0.1
+    reap_sandbox_processes
+    attempt=$((attempt + 1))
+  done
+  echo "Error: Surviving sandbox process detected for UID ${SANDBOX_UID}; refusing privileged callback signing." >&2
+  return 1
+}
+
+trap reap_sandbox_processes EXIT
+
 STAGE_ROOT="${STARLIGHT_STAGE_DIR:-/work}"
 mkdir -p "$STAGE_ROOT"
+chgrp "$SANDBOX_GROUP" "$STAGE_ROOT"
+chmod 2750 "$STAGE_ROOT"
 rm -rf "${STAGE_ROOT}/source"
 
 REPO_URL="https://github.com/${REPO}.git"
-GIT_AUTH_ARGS=()
+AUTH_B64=""
 if [ -n "$LOCAL_GITHUB_TOKEN" ]; then
-  AUTH_B64=$(printf 'x-access-token:%s' "$LOCAL_GITHUB_TOKEN" | base64 | tr -d '\r\n')
-  GIT_AUTH_ARGS=(-c "http.https://github.com/.extraHeader=Authorization: Basic ${AUTH_B64}")
+  AUTH_B64="$(printf 'x-access-token:%s' "$LOCAL_GITHUB_TOKEN" | base64 | tr -d '\r\n')"
 fi
+
+run_git_authenticated() {
+  if [ -n "$AUTH_B64" ]; then
+    GIT_TERMINAL_PROMPT=0 \
+    GIT_CONFIG_COUNT=1 \
+    GIT_CONFIG_KEY_0="http.https://github.com/.extraHeader" \
+    GIT_CONFIG_VALUE_0="Authorization: Basic ${AUTH_B64}" \
+    git "$@"
+  else
+    GIT_TERMINAL_PROMPT=0 git "$@"
+  fi
+}
 
 echo " Cloning repository into supervisor staging: $REPO (ref: $REF${PR_NUMBER:+, pr: #$PR_NUMBER})..."
 if [ -n "$PR_NUMBER" ]; then
   # Fetch base repository pull-request ref directly so fork or non-base branch names never fail clone.
   git init "${STAGE_ROOT}/source"
   git -C "${STAGE_ROOT}/source" remote add origin "$REPO_URL"
-  git "${GIT_AUTH_ARGS[@]}" -C "${STAGE_ROOT}/source" fetch --depth 50 origin "refs/pull/${PR_NUMBER}/head"
+  run_git_authenticated -C "${STAGE_ROOT}/source" fetch --depth 50 origin "refs/pull/${PR_NUMBER}/head"
   git -C "${STAGE_ROOT}/source" checkout --detach FETCH_HEAD
 else
   case "$REF" in
     refs/heads/*)
       NORMALIZED_REF="${REF#refs/heads/}"
-      git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" "${STAGE_ROOT}/source"
+      run_git_authenticated clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" "${STAGE_ROOT}/source"
       ;;
     refs/tags/*)
       NORMALIZED_REF="${REF#refs/tags/}"
-      git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" "${STAGE_ROOT}/source"
+      run_git_authenticated clone --depth 50 --branch "$NORMALIZED_REF" "$REPO_URL" "${STAGE_ROOT}/source"
       ;;
     refs/*)
       git init "${STAGE_ROOT}/source"
       git -C "${STAGE_ROOT}/source" remote add origin "$REPO_URL"
-      git "${GIT_AUTH_ARGS[@]}" -C "${STAGE_ROOT}/source" fetch --depth 50 origin "$REF"
+      run_git_authenticated -C "${STAGE_ROOT}/source" fetch --depth 50 origin "$REF"
       git -C "${STAGE_ROOT}/source" checkout --detach FETCH_HEAD
       ;;
     *)
@@ -109,7 +170,7 @@ else
         echo "Error: Refusing unanchored raw commit SHA without an explicit repository ref." >&2
         exit 1
       else
-        git "${GIT_AUTH_ARGS[@]}" clone --depth 50 --branch "$REF" "$REPO_URL" "${STAGE_ROOT}/source"
+        run_git_authenticated clone --depth 50 --branch "$REF" "$REPO_URL" "${STAGE_ROOT}/source"
       fi
       ;;
   esac
@@ -125,19 +186,21 @@ if [ -n "${COMMIT_SHA:-}" ] && ! printf '%s' "$COMMIT_SHA" | grep -Eq '^0+$' && 
   git -C "${STAGE_ROOT}/source" checkout --detach "$COMMIT_SHA"
 fi
 
-# Purge ephemeral GitHub clone credentials from supervisor memory and expose read-only staging to sandbox group.
-GIT_AUTH_ARGS=()
+# Purge ephemeral GitHub clone credentials from supervisor memory and assign sandbox group read/traverse permissions.
 AUTH_B64=""
 LOCAL_GITHUB_TOKEN=""
-unset GIT_AUTH_ARGS AUTH_B64 LOCAL_GITHUB_TOKEN
+unset AUTH_B64 LOCAL_GITHUB_TOKEN
+chgrp -R "$SANDBOX_GROUP" "${STAGE_ROOT}/source"
 chmod -R u+rwX,g+rX,o-rwx "${STAGE_ROOT}/source"
 
 SANDBOX_REPO="${SANDBOX_HOME}/workspace/repo"
 "${SANDBOX_EXEC[@]}" /bin/bash -c '
   set -eo pipefail
+  test -d "$2" && test -r "$2" && test -x "$2"
   rm -rf "$1"
   mkdir -p "$(dirname "$1")"
-  cp -a "$2" "$1"
+  cp -RPp "$2" "$1"
+  chmod -R u+rwX "$1"
   if [ -d "/cache/pnpm" ] && [ -w "/cache/pnpm" ]; then
     pnpm config set store-dir /cache/pnpm/store
   elif [ -d "$HOME/.local/share/pnpm/store/v3" ]; then
@@ -161,6 +224,7 @@ INSTALL_START=$(date +%s)
     npm install
   fi
 ' _ "$SANDBOX_REPO"
+reap_sandbox_processes
 INSTALL_DURATION=$(( $(date +%s) - INSTALL_START ))
 echo " Dependency install finished in ${INSTALL_DURATION}s"
 
@@ -179,6 +243,9 @@ else
   STATUS="fail"
 fi
 
+# Reap any background processes spawned by repository scripts before signing completion receipt.
+verify_no_surviving_sandbox_processes
+
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
@@ -192,27 +259,73 @@ if [ -n "$CALLBACK_URL" ]; then
   if [ "$STATUS" = "pass" ]; then
     CALLBACK_STATUS="succeeded"
   fi
-  PAYLOAD=$(jq -n \
-    --arg deliveryId "$DELIVERY_OR_RUN_ID" \
-    --arg repo "$REPO" \
-    --arg ref "$REF" \
-    --arg commitSha "${COMMIT_SHA:-}" \
-    --arg status "$CALLBACK_STATUS" \
-    --arg durationMs "$((DURATION * 1000))" \
-    --arg duration "$DURATION" \
-    --arg installDuration "$INSTALL_DURATION" \
-    --arg exitCode "$EXIT_CODE" \
-    '{deliveryId: $deliveryId, repo: $repo, ref: $ref, commitSha: (if $commitSha == "" then null else $commitSha end), status: $status, durationMs: ($durationMs|tonumber), duration: ($duration|tonumber), installDuration: ($installDuration|tonumber), exitCode: ($exitCode|tonumber), timestamp: (now|todate)}')
 
-  CURL_ARGS=(-s -X POST "$CALLBACK_URL" -H "Content-Type: application/json" -H "X-Starlight-Timestamp: $CALLBACK_TS")
-
-  # Authenticate receipt with timestamped HMAC-SHA256 signature (`v1=hmac(timestamp.body)`)
-  if [ -n "$LOCAL_CALLBACK_SECRET" ]; then
-    SIG=$(printf '%s.%s' "$CALLBACK_TS" "$PAYLOAD" | openssl dgst -sha256 -hmac "$LOCAL_CALLBACK_SECRET" | awk '{print $2}')
-    CURL_ARGS+=(-H "X-Starlight-Signature: v1=$SIG")
-  fi
-
-  curl "${CURL_ARGS[@]}" -d "$PAYLOAD" || true
+  # Sign and dispatch receipt inside Node.js reading LOCAL_CALLBACK_SECRET over stdin (fd 0)
+  # from bash builtin `printf` so the secret never appears in any process argv (/proc/<pid>/cmdline).
+  printf '%s' "$LOCAL_CALLBACK_SECRET" | node -e '
+    const crypto = require("node:crypto");
+    const fs = require("node:fs");
+    const secret = fs.readFileSync(0, "utf8");
+    const [
+      callbackUrl,
+      deliveryId,
+      repo,
+      ref,
+      commitSha,
+      status,
+      durationSec,
+      installDurationSec,
+      exitCodeRaw,
+      callbackTs,
+    ] = process.argv.slice(1);
+    const duration = Number(durationSec) || 0;
+    const installDuration = Number(installDurationSec) || 0;
+    const exitCode = Number(exitCodeRaw) || 0;
+    const body = JSON.stringify({
+      deliveryId,
+      repo,
+      ref,
+      commitSha: commitSha || null,
+      status,
+      durationMs: duration * 1000,
+      duration,
+      installDuration,
+      exitCode,
+      timestamp: new Date(Number(callbackTs) * 1000).toISOString(),
+    });
+    const headers = {
+      "Content-Type": "application/json",
+      "Connection": "close",
+      "X-Starlight-Timestamp": String(callbackTs),
+    };
+    if (secret.length > 0) {
+      const sig = crypto
+        .createHmac("sha256", secret)
+        .update(`${callbackTs}.${body}`)
+        .digest("hex");
+      headers["X-Starlight-Signature"] = `v1=${sig}`;
+    }
+    fetch(callbackUrl, {
+      method: "POST",
+      headers,
+      body,
+      redirect: "manual",
+      signal: AbortSignal.timeout(15_000),
+    }).catch(() => {});
+  ' -- \
+    "$CALLBACK_URL" \
+    "$DELIVERY_OR_RUN_ID" \
+    "$REPO" \
+    "$REF" \
+    "${COMMIT_SHA:-}" \
+    "$CALLBACK_STATUS" \
+    "$DURATION" \
+    "$INSTALL_DURATION" \
+    "$EXIT_CODE" \
+    "$CALLBACK_TS" || true
 fi
+
+LOCAL_CALLBACK_SECRET=""
+unset LOCAL_CALLBACK_SECRET
 
 exit "$EXIT_CODE"
