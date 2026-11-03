@@ -408,10 +408,33 @@ export type {
   MemoryAddBody,
   MemorySearchBody,
   SessionAddBody,
+  GraphUpsertNodeBody,
+  GraphAssertEdgeBody,
+  GraphSubgraphBody,
+  OtelRecordSpanBody,
 } from './gateway/protocol.js';
 export type { GatewayTransport, HttpTransportOptions } from './gateway/client.js';
 export type { GatewayCoreOptions } from './gateway/server.js';
 export type { DaemonOptions, DaemonInfo } from './gateway/daemon.js';
+
+// Phase 2 — Bitemporal SQLite Knowledge Graph
+export {
+  BitemporalKnowledgeGraph,
+  PrivacyTagError,
+  isPrivateTag,
+  hasPrivateTags,
+} from './graph/bitemporal-kg.js';
+export type {
+  KgNode,
+  KgNodeSearchResult,
+  UpsertNodeInput,
+  KgEdge,
+  AssertEdgeInput,
+  AssertEdgeResult,
+  QuerySubgraphOptions,
+  SubgraphResult,
+  BitemporalKgOptions,
+} from './graph/bitemporal-kg.js';
 
 // v8.8 — SAGE Autonomous Goal Execution (Autonomous Loops)
 export { GoalOrchestrator } from './goal.js';
@@ -433,6 +456,8 @@ export {
   runExperiments,
   discoverLangfuseCredentials,
   resolveSovereignSecret,
+  OtelGenAiStore,
+  isValidOtelGroupBy,
 } from './telemetry/index.js';
 export type {
   LangfuseConfig,
@@ -451,6 +476,14 @@ export type {
   ArenaRunReceipt,
   RetrievalBenchmarkResult,
   ExperimentRunReport,
+  OtelGroupByDimension,
+  OtelGenAiSpanInput,
+  OtelGenAiSpanRecord,
+  OtelSummarizeOptions,
+  OtelSummaryTotals,
+  OtelSummaryGroup,
+  OtelSummaryResult,
+  OtelGenAiStoreOptions,
 } from './telemetry/index.js';
 
 // v9.0 — Sovereign Durability, Robot Fleet Continuity & Starlight Queen

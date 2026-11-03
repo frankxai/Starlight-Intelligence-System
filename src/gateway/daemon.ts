@@ -207,6 +207,7 @@ export class SisGatewayDaemon {
   stop(): Promise<void> {
     return new Promise((resolve) => {
       this.releaseSpawnLock();
+      this.core.close();
       if (!this.server) { resolve(); return; }
       this.server.close(() => {
         this.server = null;
