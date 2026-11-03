@@ -286,15 +286,18 @@ export function enqueue(sql: Sql, who: Identity, input: EnqueueInput, now: numbe
   const fingerprint = JSON.stringify([
     ...base, ...(excludeProvider !== null ? [`exclude:${excludeProvider}`] : []), ...(kind !== 'general' ? [`kind:${kind}`] : []),
   ]);
-  // Spellings written by earlier revisions of this branch, so their retries stay idempotent too.
-  const accepted = new Set([fingerprint, JSON.stringify([...base, excludeProvider]), JSON.stringify([...base, excludeProvider, kind])]);
+  // Spellings written by earlier revisions of this branch. They omit or reorder the new fields, so
+  // they count only when the stored row's kind and exclusion match this request as well.
+  const legacy = new Set([JSON.stringify([...base, excludeProvider]), JSON.stringify([...base, excludeProvider, kind])]);
 
   return sql.transaction(() => {
     // Producers retry on network errors; a supplied id makes enqueue idempotent, but only for the
     // same task. A different task under a reused id must not be reported as accepted.
-    const existing = sql.exec('SELECT state, fingerprint FROM tasks WHERE id = ?', id)[0];
+    const existing = sql.exec('SELECT state, fingerprint, kind, exclude_provider FROM tasks WHERE id = ?', id)[0];
     if (existing) {
-      if (!accepted.has(existing.fingerprint as string)) throw new QueueError(409, `id ${id} already names a different task`);
+      const same = existing.fingerprint === fingerprint
+        || (legacy.has(existing.fingerprint as string) && existing.kind === kind && (existing.exclude_provider ?? null) === excludeProvider);
+      if (!same) throw new QueueError(409, `id ${id} already names a different task`);
       return { id, state: existing.state as TaskState, duplicate: true };
     }
     const tripped = tripwire(title, doneCondition, paths);

@@ -175,3 +175,12 @@ test('fingerprints written by earlier revisions still count as the same task', (
     VALUES ('legacy-2', 'Old', 'Done', 3, 'kernel', '["src"]', '["none"]', 'ready', 3, 60, 'events', 1, 1, ?)`, JSON.stringify([...base, null]));
   assert.equal(core.enqueue(sql, core.SYSTEM_PRODUCER, legacy, NOW, newId).duplicate, true);
 });
+
+test('a legacy fingerprint never hides a change of kind', () => {
+  const sql = memorySql();
+  const base = ['events', 'Old', 'Done', 3, 'kernel', ['src'], ['none'], 60, 3];
+  sql.exec(`INSERT INTO tasks (id, title, done_condition, priority, repo, paths, gates, state, max_attempts, max_minutes, created_by, created_at, updated_at, fingerprint)
+    VALUES ('legacy-3', 'Old', 'Done', 3, 'kernel', '["src"]', '["none"]', 'ready', 3, 60, 'events', 1, 1, ?)`, JSON.stringify([...base, null]));
+  const retry = { id: 'legacy-3', title: 'Old', doneCondition: 'Done', priority: 3, repo: 'kernel', paths: ['src'], gates: ['none'], kind: 'fix' };
+  assert.throws(() => core.enqueue(sql, core.SYSTEM_PRODUCER, retry, NOW, newId), /already names a different task/);
+});
