@@ -58,12 +58,17 @@ const TOOLS: Record<string, ToolDef> = {
       gates: { type: 'array', items: { type: 'string' }, minItems: 1, description: 'Every gate that applies: money, publish, external-send, dns, secrets, credentials, destructive, legal. Use ["none"] only when none apply.' },
       maxMinutes: { type: 'integer', minimum: 1, maximum: 480 },
       maxAttempts: { type: 'integer', minimum: 1, maximum: 10 },
+      kind: { type: 'string', description: 'review, fix, build, land, research or general (default)' },
+      excludeProvider: { type: 'string', description: 'A model provider whose workers may not lease this task, e.g. the author of the work under review' },
     },
     required: ['title', 'doneCondition', 'priority', 'repo', 'paths', 'gates'],
   },
   claim_task: {
     op: 'claim', role: 'worker', description: 'Lease the most urgent ready task whose paths no live lease holds. Returns task: null when nothing fits.',
-    properties: { repo: { type: 'string', description: 'Only claim from this repository' } }, required: [],
+    properties: {
+      repo: { type: 'string', description: 'Only claim from this repository' },
+      kinds: { type: 'array', items: { type: 'string' }, description: 'Only claim these kinds of task' },
+    }, required: [],
   },
   heartbeat_task: { op: 'heartbeat', role: 'worker', description: 'Extend your lease, up to the task time box. A refusal means the lease is gone: stop writing.', properties: { id: ID, fence: FENCE }, required: ['id', 'fence'] },
   complete_task: {

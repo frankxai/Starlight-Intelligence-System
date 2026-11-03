@@ -91,7 +91,8 @@ export class ControlPlane extends DurableObject<Env> {
   // the next lease expiry or the next outbox retry. Read and written with no await in between.
   private armAlarm() {
     const lease = this.sql.exec('SELECT MIN(expires_at) AS next FROM leases')[0]?.next;
-    const due = nextDue(this.sql, this.github !== null);
+    // Remote rows are due only when drainOutbox could send them: credentials and valid routing.
+    const due = nextDue(this.sql, this.github !== null && parseRouting(this.env.ROUTING) !== null);
     const times = [lease, due].filter((t): t is number => typeof t === 'number');
     if (times.length) void this.ctx.storage.setAlarm(Math.min(...times));
     else void this.ctx.storage.deleteAlarm();

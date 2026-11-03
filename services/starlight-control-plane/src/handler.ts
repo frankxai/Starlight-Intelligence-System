@@ -3,7 +3,7 @@
 
 import { PROVIDERS, type Identity, type Role } from './core.ts';
 import { handleMcp } from './mcp.ts';
-import { normalize, parseRouting, plan, type Action } from './events.ts';
+import { FRESH_MS, normalize, parseRouting, plan, type Action } from './events.ts';
 import { verifySignature } from './github.ts';
 
 export type Op =
@@ -75,6 +75,9 @@ export async function handleGithubEvent(request: Request, env: HandlerEnv, stub:
     return json(400, { error: 'body is not JSON' });
   }
   const signal = normalize(name, payload as Record<string, any>);
+  // The delivery id is remembered for 7 days; anything older than 3 days is refused outright, so
+  // no replay window opens between the two.
+  if (signal && !(signal.at > Date.now() - FRESH_MS)) return json(202, { ok: true, actions: 0, stale: true });
   const actions = signal ? plan(signal, routing) : [];
   if (actions.length === 0) return json(202, { ok: true, actions: 0 });
   const result = await stub.ingest(delivery, actions);

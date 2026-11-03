@@ -17,7 +17,10 @@ export function execute(
         return { status: r.duplicate ? 200 : 201, body: r };
       }
       case 'approve': return { status: 200, body: core.approve(sql, who, id, now) };
-      case 'claim': return { status: 200, body: core.claim(sql, who, { repo: typeof args.repo === 'string' ? args.repo : undefined }, now) };
+      case 'claim': {
+        const kinds = Array.isArray(args.kinds) && args.kinds.every((k) => typeof k === 'string') ? args.kinds as string[] : undefined;
+        return { status: 200, body: core.claim(sql, who, { repo: typeof args.repo === 'string' ? args.repo : undefined, kinds }, now) };
+      }
       // The fence is unguessable (crypto.randomUUID in claim) and returned only to the claimer.
       case 'heartbeat': return { status: 200, body: core.heartbeat(sql, who, id, now, args.fence) };
       case 'complete': return { status: 200, body: core.complete(sql, who, id, args.resultRef, now, args.fence) };
