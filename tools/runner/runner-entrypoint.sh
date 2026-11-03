@@ -107,17 +107,62 @@ if ! "${SANDBOX_EXEC[@]}" /bin/bash -c 'test "$(id -u)" = "$1"' _ "$SANDBOX_UID"
 fi
 
 # Enforce mandatory network & GCP metadata-server isolation for all untrusted code execution
-# (Cloud Run gVisor `sandbox do --` when `run.googleapis.com/sandboxLauncher` is enabled, or Linux `unshare -rn` network namespace).
+# (Cloud Run gVisor `/usr/local/gcp/bin/sandbox do --write --` when `--sandbox-launcher` is enabled,
+# or Linux `unshare -rn` network namespace for local/CI container verification).
+SANDBOX_CLI_BIN=""
+if [ -x /usr/local/gcp/bin/sandbox ]; then
+  SANDBOX_CLI_BIN="/usr/local/gcp/bin/sandbox"
+elif command -v sandbox >/dev/null 2>&1; then
+  SANDBOX_CLI_BIN="$(command -v sandbox)"
+fi
+
 SANDBOX_ISOLATION_MODE=""
 ISOLATED_SANDBOX_CMD=()
-if command -v sandbox >/dev/null 2>&1 && "${SANDBOX_EXEC[@]}" sandbox do -- /bin/true >/dev/null 2>&1; then
+if [ -n "$SANDBOX_CLI_BIN" ] && "${SANDBOX_EXEC[@]}" "$SANDBOX_CLI_BIN" do --write -- /bin/true >/dev/null 2>&1; then
   SANDBOX_ISOLATION_MODE="cloud-run-sandbox"
-  ISOLATED_SANDBOX_CMD=("${SANDBOX_EXEC[@]}" sandbox do -- /usr/bin/env "NPM_CONFIG_UNSAFE_PERM=true")
+  ISOLATED_SANDBOX_CMD=(
+    "${SANDBOX_EXEC[@]}" "$SANDBOX_CLI_BIN" do --write --
+    /bin/bash -c '
+      export HOME="$1" USER="$2" LOGNAME="$2" PNPM_HOME="$1/.local/share/pnpm"
+      export CI=true NODE_ENV=production STARLIGHT_SUBSTRATE=true NPM_CONFIG_UNSAFE_PERM=true
+      export PATH="$1/.local/share/pnpm:${PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}:/usr/local/bin:/usr/bin:/bin"
+      shift 2
+      if [ -n "$USER" ] && id -u "$USER" >/dev/null 2>&1 && [ "$(id -u)" != "$(id -u "$USER")" ]; then
+        if [ "$(id -u)" -eq 0 ] && command -v runuser >/dev/null 2>&1; then
+          exec runuser -u "$USER" -- "$@"
+        elif command -v sudo >/dev/null 2>&1 && sudo -n -u "$USER" -- /bin/true >/dev/null 2>&1; then
+          exec sudo -n -u "$USER" -- "$@"
+        fi
+      fi
+      exec "$@"
+    ' _ "${SANDBOX_HOME:-/tmp}" "${SANDBOX_USER:-}"
+  )
+elif [ -n "$SANDBOX_CLI_BIN" ] && /usr/bin/env -i PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" "$SANDBOX_CLI_BIN" do --write -- /bin/true >/dev/null 2>&1; then
+  # Cloud Run Jobs where the sandbox launcher socket accepts only the container runtime user (`starlight`)
+  SANDBOX_ISOLATION_MODE="cloud-run-sandbox"
+  ISOLATED_SANDBOX_CMD=(
+    /usr/bin/env -i PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    "$SANDBOX_CLI_BIN" do --write --
+    /bin/bash -c '
+      export HOME="$1" USER="$2" LOGNAME="$2" PNPM_HOME="$1/.local/share/pnpm"
+      export CI=true NODE_ENV=production STARLIGHT_SUBSTRATE=true NPM_CONFIG_UNSAFE_PERM=true
+      export PATH="$1/.local/share/pnpm:${PATH:-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin}:/usr/local/bin:/usr/bin:/bin"
+      shift 2
+      if [ -n "$USER" ] && id -u "$USER" >/dev/null 2>&1 && [ "$(id -u)" != "$(id -u "$USER")" ]; then
+        if [ "$(id -u)" -eq 0 ] && command -v runuser >/dev/null 2>&1; then
+          exec runuser -u "$USER" -- "$@"
+        elif command -v sudo >/dev/null 2>&1 && sudo -n -u "$USER" -- /bin/true >/dev/null 2>&1; then
+          exec sudo -n -u "$USER" -- "$@"
+        fi
+      fi
+      exec "$@"
+    ' _ "${SANDBOX_HOME:-/tmp}" "${SANDBOX_USER:-}"
+  )
 elif command -v unshare >/dev/null 2>&1 && "${SANDBOX_EXEC[@]}" unshare -rn /bin/true >/dev/null 2>&1; then
   SANDBOX_ISOLATION_MODE="linux-netns"
   ISOLATED_SANDBOX_CMD=("${SANDBOX_EXEC[@]}" unshare -rn /usr/bin/env "NPM_CONFIG_UNSAFE_PERM=true" /bin/bash -c 'ip link set lo up >/dev/null 2>&1 || true; exec "$@"' _)
 else
-  echo "Error: Neither Cloud Run sandboxLauncher ('sandbox') nor Linux network namespace ('unshare -rn') is available to block metadata/egress; refusing fail-open execution." >&2
+  echo "Error: Neither Cloud Run '--sandbox-launcher' ('/usr/local/gcp/bin/sandbox do --write') nor Linux network namespace ('unshare -rn') is available to block metadata/egress; deploy via tools/runner/deploy-runner.sh (--sandbox-launcher). Refusing fail-open execution." >&2
   exit 1
 fi
 
@@ -328,8 +373,27 @@ INSTALL_START=$(date +%s)
 ' _ "$SANDBOX_REPO"
 reap_sandbox_processes
 
-echo " Running package rebuild inside metadata/network-isolated sandbox ($SANDBOX_ISOLATION_MODE)..."
-"${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c '
+INSTALL_DURATION=$(( $(date +%s) - INSTALL_START ))
+echo " Dependency download (--ignore-scripts) finished in ${INSTALL_DURATION}s"
+
+# Ensure workspace is writable inside the isolated sandbox (e.g., when Cloud Run `--sandbox-launcher` runs the
+# gVisor guest under container user `starlight` with supplementary group `starlight-sandbox` under no_new_privs).
+if ! "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'test -d "$1" && test -r "$1" && test -w "$1" && test -x "$1"' _ "$SANDBOX_REPO" >/dev/null 2>&1; then
+  "${SANDBOX_EXEC[@]}" /bin/bash -c 'chmod 0770 "$1" && chmod -R g+rwX "$1/workspace" "$1/.local" 2>/dev/null || true' _ "$SANDBOX_HOME"
+fi
+if ! "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'test -d "$1" && test -r "$1" && test -w "$1" && test -x "$1"' _ "$SANDBOX_REPO" >/dev/null 2>&1; then
+  echo "Error: Isolated sandbox ($SANDBOX_ISOLATION_MODE) cannot write to '$SANDBOX_REPO'; refusing execution." >&2
+  exit 1
+fi
+
+echo " Executing isolated package rebuild & verification command inside '$SANDBOX_USER' ($SANDBOX_ISOLATION_MODE): $COMMAND"
+TASK_TIMEOUT="${STARLIGHT_TIMEOUT:-300s}"
+START_TIME=$(date +%s)
+EXIT_CODE=0
+
+# Run native package rebuild AND untrusted verification command inside a SINGLE isolated sandbox session
+# so Cloud Run `sandbox do --write`'s ephemeral filesystem overlay preserves rebuilt artifacts for `$COMMAND`.
+if timeout -k 10s "$TASK_TIMEOUT" "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c '
   set -eo pipefail
   cd "$1"
   export COREPACK_ENABLE_PROJECT_SPEC=0
@@ -340,18 +404,9 @@ echo " Running package rebuild inside metadata/network-isolated sandbox ($SANDBO
   else
     npm rebuild
   fi
-' _ "$SANDBOX_REPO"
-reap_sandbox_processes
-INSTALL_DURATION=$(( $(date +%s) - INSTALL_START ))
-echo " Dependency install & isolated rebuild finished in ${INSTALL_DURATION}s"
-
-echo " Executing Verification Command inside metadata-isolated '$SANDBOX_USER' ($SANDBOX_ISOLATION_MODE): $COMMAND"
-TASK_TIMEOUT="${STARLIGHT_TIMEOUT:-300s}"
-START_TIME=$(date +%s)
-EXIT_CODE=0
-
-# Execute with process timeout protection inside the network- and metadata-isolated sandbox
-if timeout -k 10s "$TASK_TIMEOUT" "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'cd "$1" && eval "$2"' _ "$SANDBOX_REPO" "$COMMAND"; then
+  set +eo pipefail
+  eval "$2"
+' _ "$SANDBOX_REPO" "$COMMAND"; then
   echo " Verification PASSED"
   STATUS="pass"
 else

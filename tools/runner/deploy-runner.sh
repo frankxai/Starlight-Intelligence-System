@@ -78,13 +78,16 @@ else
   echo " To enable persistent FUSE cache across runs: gcloud storage buckets create gs://${CACHE_BUCKET} --location=${REGION}"
 fi
 
-# 6. Create or Update Cloud Run Job (Cloud Run Jobs natively run on Gen2; bind dedicated least-privilege SA)
-echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs, SA=$RUNNER_SA)..."
-if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  gcloud run jobs update "$JOB_NAME" \
+# 6. Create or Update Cloud Run Job with Cloud Run Sandbox Launcher (`--sandbox-launcher`)
+#    `--sandbox-launcher` injects `/usr/local/gcp/bin/sandbox` (gVisor micro-sandbox with metadata/egress blocked
+#    and `--write` ephemeral overlay support), which `runner-entrypoint.sh` requires fail-closed at preflight.
+echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs, --sandbox-launcher, SA=$RUNNER_SA)..."
+if gcloud beta run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
+  gcloud beta run jobs update "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
     --service-account="$RUNNER_SA" \
+    --sandbox-launcher \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
@@ -92,16 +95,23 @@ if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_I
     "${VOLUME_ARGS[@]}" \
     --project="$PROJECT_ID"
 else
-  gcloud run jobs create "$JOB_NAME" \
+  gcloud beta run jobs create "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
     --service-account="$RUNNER_SA" \
+    --sandbox-launcher \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
     --max-retries=1 \
     "${VOLUME_ARGS[@]}" \
     --project="$PROJECT_ID"
+fi
+
+# Verify `sandboxLauncher: true` is active on the deployed Cloud Run Job spec (fail closed if absent)
+if ! gcloud beta run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" --format=yaml | grep -Eq 'sandboxLauncher:[[:space:]]*true'; then
+  echo "Error: Cloud Run Job '$JOB_NAME' does not report 'sandboxLauncher: true' after deploy; refusing unverified runner." >&2
+  exit 1
 fi
 
 

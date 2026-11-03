@@ -1051,12 +1051,18 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
   const deployRunner = fs.readFileSync(deployRunnerPath, 'utf8');
 
-  // 0. deploy-runner.sh must bind a dedicated zero-project-IAM service account (never default Compute Engine SA)
+  // 0. deploy-runner.sh must bind a dedicated zero-project-IAM service account (never default Compute Engine SA),
+  // enable Cloud Run `--sandbox-launcher` on create/update, verify `sandboxLauncher: true` post-deploy,
   // and mount any GCS cache volume read-only
   assert.match(deployRunner, /RUNNER_SA_NAME="\$\{RUNNER_SA_NAME:-starlight-runner-sandbox\}"/);
   assert.match(deployRunner, /--service-account="\$RUNNER_SA"/);
+  assert.match(deployRunner, /gcloud beta run jobs update "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
+  assert.match(deployRunner, /gcloud beta run jobs create "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
+  assert.match(deployRunner, /sandboxLauncher:\[\[:space:\]\]\*true/);
   assert.match(deployRunner, /mount-path=\/cache\/pnpm,readonly=true/);
   assert.match(deployRunner, /Dockerfile\.runner/);
+  assert.match(entrypoint, /\/usr\/local\/gcp\/bin\/sandbox/);
+  assert.match(entrypoint, /do\s+--write\s+--/);
   assert.doesNotMatch(
     deployRunner,
     /--execution-environment/,
@@ -1243,12 +1249,26 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
       assert.ok(isoBlockMatch, 'expected metadata-isolation preflight block in runner-entrypoint.sh');
       const isoBlock = isoBlockMatch[1];
 
+      const sandboxArgParser = [
+        '#!/usr/bin/env bash',
+        '[ "${1:-}" = "do" ] || { echo "expected sandbox subcommand do" >&2; exit 2; }',
+        'shift',
+        'saw_write=0',
+        'while [ $# -gt 0 ] && [ "$1" != "--" ]; do',
+        '  [ "$1" = "--write" ] && saw_write=1',
+        '  shift',
+        'done',
+        '[ "$saw_write" = "1" ] || { echo "expected --write for writable overlay" >&2; exit 2; }',
+        '[ "${1:-}" = "--" ] || { echo "expected -- separator" >&2; exit 2; }',
+        'shift',
+      ].join('\n');
+
       const porousBinDir = path.join(tmpPoisonDir, 'porous-bin');
       fs.mkdirSync(porousBinDir, { recursive: true });
       // Porous `sandbox` shim passes commands straight through WITHOUT blocking metadata HTTP access
       fs.writeFileSync(
         path.join(porousBinDir, 'sandbox'),
-        '#!/usr/bin/env bash\nshift # do\nshift # --\nexec "$@"\n',
+        `${sandboxArgParser}\nexec "$@"\n`,
         { mode: 0o755 },
       );
       const cmdRanMarker = toBashPath(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker'));
@@ -1267,7 +1287,8 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
       assert.match(porousProbe.stderr, /GCP metadata token endpoint remained reachable/);
       assert.equal(fs.existsSync(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker')), false, 'untrusted command must never run when metadata is reachable');
 
-      // Enforced `sandbox` shim blocks outbound connections to the metadata endpoint (simulating Cloud Run sandboxLauncher / unshare -rn)
+      // Enforced `sandbox` shim blocks outbound connections to the metadata endpoint AND simulates
+      // Cloud Run `sandbox do --write`'s ephemeral per-invocation upperfs overlay (wiped on exit!)
       const isolatedBinDir = path.join(tmpPoisonDir, 'isolated-bin');
       const isolatedCurlDir = path.join(tmpPoisonDir, 'isolated-netns-bin');
       fs.mkdirSync(isolatedBinDir, { recursive: true });
@@ -1278,25 +1299,47 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
         { mode: 0o755 },
       );
       fs.writeFileSync(
+        path.join(isolatedCurlDir, 'npm'),
+        '#!/usr/bin/env bash\nif [ "${1:-}" = "rebuild" ]; then echo "rebuilt" > "$EPHEMERAL_SANDBOX_UPPER/native-addon.node"; exit 0; fi\nexit 1\n',
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
         path.join(isolatedBinDir, 'sandbox'),
-        `#!/usr/bin/env bash\nshift # do\nshift # --\nexport PATH="${toBashPath(isolatedCurlDir)}:$PATH"\nexec "$@"\n`,
+        [
+          sandboxArgParser,
+          'EPHEMERAL_SANDBOX_UPPER="$(mktemp -d)"',
+          'trap \'rm -rf "$EPHEMERAL_SANDBOX_UPPER"\' EXIT',
+          'export EPHEMERAL_SANDBOX_UPPER',
+          `export PATH="${toBashPath(isolatedCurlDir)}:$PATH"`,
+          '"$@"',
+        ].join('\n') + '\n',
         { mode: 0o755 },
       );
       const stolenTokenNativePath = path.join(tmpPoisonDir, 'stolen-token.txt');
       const stolenTokenFile = toBashPath(stolenTokenNativePath);
+      const unifiedExecMatch = entrypoint.match(
+        /(# Run native package rebuild AND untrusted verification command[\s\S]*?\nfi)/,
+      );
+      assert.ok(unifiedExecMatch, 'expected unified rebuild + verification command block in runner-entrypoint.sh');
+      const mockRepoDir = path.join(tmpPoisonDir, 'ephemeral-repo');
+      fs.mkdirSync(mockRepoDir, { recursive: true });
       const enforcedProbe = await runBashAsync(
         [
           '-c',
           `set -eo pipefail; export PATH="$1:/usr/local/bin:/usr/bin:/bin:/mingw64/bin"; SANDBOX_EXEC=(/usr/bin/env); METADATA_BASE_URL="$2"; ${isoBlock}\n` +
-            `"\${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'curl -fsS -H "Metadata-Flavor: Google" "$1/computeMetadata/v1/instance/service-accounts/default/token" > "$2" 2>/dev/null || true' _ "$METADATA_BASE_URL" "$3"`,
+            `"\${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'curl -fsS -H "Metadata-Flavor: Google" "$1/computeMetadata/v1/instance/service-accounts/default/token" > "$2" 2>/dev/null || true' _ "$METADATA_BASE_URL" "$3"\n` +
+            `TASK_TIMEOUT=30s; SANDBOX_REPO="$4"; COMMAND='test -f "$EPHEMERAL_SANDBOX_UPPER/native-addon.node"'; EXIT_CODE=0\n` +
+            `${unifiedExecMatch[1]}\n` +
+            `[ "$STATUS" = "pass" ]`,
           '_',
           toBashPath(isolatedBinDir),
           metaBaseUrl,
           stolenTokenFile,
+          toBashPath(mockRepoDir),
         ],
         {},
       );
-      assert.equal(enforcedProbe.status, 0, `isolated sandbox preflight failed: ${enforcedProbe.stderr}`);
+      assert.equal(enforcedProbe.status, 0, `isolated sandbox preflight or unified ephemeral rebuild+command failed: ${enforcedProbe.stderr}`);
       const stolenContent = fs.existsSync(stolenTokenNativePath) ? fs.readFileSync(stolenTokenNativePath, 'utf8') : '';
       assert.equal(stolenContent, '', 'sandboxed repository command must retrieve zero ambient service-account token bytes');
 
