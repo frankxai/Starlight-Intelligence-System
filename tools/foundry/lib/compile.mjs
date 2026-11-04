@@ -415,7 +415,7 @@ function renderClaudePluginManifest(pack) {
   return manifest;
 }
 
-function writeKindArtifacts({ root, output, pack, graph }) {
+function writeKindArtifacts({ root, output, pack, graph, __evaluationDate }) {
   if (pack.kind === "skill") {
     writeText(join(output, "skill", "SKILL.md"), renderSkill(pack));
     writeText(join(output, "skill", "agents", "openai.yaml"), renderOpenAiYaml(pack));
@@ -483,7 +483,8 @@ function writeKindArtifacts({ root, output, pack, graph }) {
       copySkill(root, node, pluginRoot);
     }
     if (emitsOpenAi && !pack.mcpServerUrl) {
-      const preflight = validateOpenAIPluginPackage(pluginRoot, { evaluationDate: "2026-11-03" });
+      const preflightOptions = __evaluationDate ? { evaluationDate: __evaluationDate } : {};
+      const preflight = validateOpenAIPluginPackage(pluginRoot, preflightOptions);
       if (preflight.status !== "pass") {
         throw new Error(
           `Compiled OpenAI plugin failed final-directory preflight: ${preflight.errors.map((error) => error.code).join(", ")}`,
@@ -536,7 +537,7 @@ export function compilePackage({
     writeJson(join(staging, "task-envelope.json"), envelope);
     writeJson(join(staging, `${pack.kind}-pack.json`), pack);
     writeJson(join(staging, "capability-resolution.json"), compiledResolution);
-    writeKindArtifacts({ root, output: staging, pack, graph });
+    writeKindArtifacts({ root, output: staging, pack, graph, __evaluationDate: arguments[0].__evaluationDate });
     writeText(join(staging, "README.md"), renderPackageReadme(envelope, pack, compiledResolution));
 
     const artifactDigests = hashTree(staging);

@@ -11,6 +11,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
+import { before, after } from "node:test";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { listAgentFiles, repoRootFromTestFile } from "./_lib/repo.js";
@@ -519,6 +520,9 @@ describe("v9.2 Foundry capability graph and routing", () => {
 });
 
 describe("v9.2 Foundry compilation and proof", () => {
+  let OriginalDate;
+  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  after(() => { global.Date = OriginalDate; });
   it("compiles a portable skill and validates every declared required lane", () => {
     const temp = tempDirectory();
     try {
@@ -939,7 +943,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       envelope.evidencePolicy.minimumIndependentJudges = 1;
       envelope.completionTests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.type === "judge").required = true;
       const output = join(temp, "package");
-      compileDemo(output, envelope);
+      compileDemo(output, envelope, "2026-11-03");
       const { receipt } = provePackage({ packageDirectory: output, registry });
       assert.equal(receipt.status, "experimental");
       assert.equal(receipt.laneCoverage.taste, "pending");
@@ -980,7 +984,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       });
       envelope.evidencePolicy.requiredLanes.push("security");
       const output = join(temp, "package");
-      compileDemo(output, envelope);
+      compileDemo(output, envelope, "2026-11-03");
       assert.throws(
         () => provePackage({ packageDirectory: output, registry }),
         /Path escapes allowed root/,
@@ -1003,7 +1007,7 @@ describe("v9.2 Foundry compilation and proof", () => {
         timeoutMs: 5000,
       });
       const output = join(temp, "package");
-      compileDemo(output, envelope);
+      compileDemo(output, envelope, "2026-11-03");
       const pending = provePackage({ packageDirectory: output, registry }).receipt;
       assert.equal(pending.status, "experimental");
       const passed = provePackage({
@@ -1038,6 +1042,9 @@ describe("v9.2 Foundry compilation and proof", () => {
 });
 
 describe("v9.2 Foundry portable plugin compiler", () => {
+  let OriginalDate;
+  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  after(() => { global.Date = OriginalDate; });
   it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", () => {
     const temp = tempDirectory();
     try {
