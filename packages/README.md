@@ -58,7 +58,7 @@ packages/
 ├── sis-mcp/           — MCP server implementation (sis-memory-mcp, sentinel-mcp)
 ├── sis-cli/           — `starlight` CLI binary
 ├── sis-openclaw/      — OpenClaw skill pack for SIS Claws (curated, signed registry)
-├── sis-skills/        — Compiled skill definitions + activation rules (rules)
+├── sis-skills/        — Compiled skill definitions + activation rules (75 rules)
 ├── sis-adapters/      — Platform adapters (Claude Code, Cursor, Codex, Gemini CLI)
 └── sis-conformance/   — SIP conformance test harness
 ```
