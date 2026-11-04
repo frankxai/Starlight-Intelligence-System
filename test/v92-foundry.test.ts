@@ -520,8 +520,20 @@ describe("v9.2 Foundry capability graph and routing", () => {
 });
 
 describe("v9.2 Foundry compilation and proof", () => {
-  let OriginalDate;
-  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  let OriginalDate: DateConstructor;
+  before(() => {
+    OriginalDate = global.Date;
+    function MockDate(...args) {
+    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
+    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
+    return new OriginalDate(...args);
+  }
+  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
+  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
+  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
+  MockDate.prototype = OriginalDate.prototype;
+  global.Date = MockDate as DateConstructor;
+  });
   after(() => { global.Date = OriginalDate; });
   it("compiles a portable skill and validates every declared required lane", () => {
     const temp = tempDirectory();
@@ -1042,8 +1054,20 @@ describe("v9.2 Foundry compilation and proof", () => {
 });
 
 describe("v9.2 Foundry portable plugin compiler", () => {
-  let OriginalDate;
-  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  let OriginalDate: DateConstructor;
+  before(() => {
+    OriginalDate = global.Date;
+    function MockDate(...args) {
+    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
+    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
+    return new OriginalDate(...args);
+  }
+  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
+  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
+  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
+  MockDate.prototype = OriginalDate.prototype;
+  global.Date = MockDate as DateConstructor;
+  });
   after(() => { global.Date = OriginalDate; });
   it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", () => {
     const temp = tempDirectory();

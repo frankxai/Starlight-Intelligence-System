@@ -38,8 +38,20 @@ function sha256(path: string): string {
 }
 
 describe("Foundry upstream Agent Plugins conformance", () => {
-  let OriginalDate;
-  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  let OriginalDate: DateConstructor;
+  before(() => {
+    OriginalDate = global.Date;
+    function MockDate(...args) {
+    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
+    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
+    return new OriginalDate(...args);
+  }
+  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
+  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
+  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
+  MockDate.prototype = OriginalDate.prototype;
+  global.Date = MockDate as DateConstructor;
+  });
   after(() => { global.Date = OriginalDate; });
   it("verifies exact Agent Plugins 1.0.0 schema digests before compilation", () => {
     const cache = verifyAgentPluginSchemaCache();
@@ -267,8 +279,20 @@ describe("Foundry upstream Agent Plugins conformance", () => {
 });
 
 describe("Foundry OpenAI docs-derived package preflight", () => {
-  let OriginalDate;
-  before(() => { OriginalDate = global.Date; global.Date = class extends OriginalDate { constructor(...args) { if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z"); return new OriginalDate(...args); } static now() { return new OriginalDate("2026-11-03T12:00:00Z").getTime(); } }; });
+  let OriginalDate: DateConstructor;
+  before(() => {
+    OriginalDate = global.Date;
+    function MockDate(...args) {
+    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
+    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
+    return new OriginalDate(...args);
+  }
+  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
+  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
+  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
+  MockDate.prototype = OriginalDate.prototype;
+  global.Date = MockDate as DateConstructor;
+  });
   after(() => { global.Date = OriginalDate; });
   it("passes the current skills-only package without promoting an OpenAI claim", () => {
     const result = validateOpenAIPluginPackage(PLUGIN, { evaluationDate: "2026-09-01" });
