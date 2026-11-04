@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
-const title = "Agent setup and Cloudflare for Startups";
-const description = "Rehearse a portable agent handoff, compare a hosted Explorer with local MCP, and check Cloudflare for Startups eligibility and credit coverage.";
+const title = "Documentation for vaults, MCP and agent handoffs";
+const description = "Reference for Starlight vaults, MCP and self-hosting, with a founder guide to portable agent handoffs and Cloudflare for Startups.";
 
 export const metadata: Metadata = {
   title,
@@ -56,9 +56,9 @@ export default function DocsPage() {
           <div className="space-y-6 border-l-2 border-cyan-300/60 pl-5 text-sm leading-7 text-slate-300 sm:pl-6 [&_a]:text-cyan-200 [&_a]:underline [&_a]:underline-offset-4 [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4">
             <p className="font-mono text-xs text-cyan-300">Founder field guide · 4 November 2026</p>
             <p>
-              Put one job through review before choosing a cloud service. Take a
-              proposed signup form from six required fields to three. What can
-              your agent tell customers when the change has never shipped?
+              Put one job through review before choosing a cloud service. A
+              fictional team proposes cutting six required signup fields to three.
+              What can its editor tell customers before the revised form ships?
               To evaluate an application first, <a href="#startup-credit-coverage">check eligibility and credit coverage</a>.
             </p>
 
@@ -72,8 +72,8 @@ export default function DocsPage() {
                 Keep the corrected draft with its source checks.
               </p>
               <p className="mt-2">
-                The Academy supplies the fictional forms and the five-file handoff
-                exercise. Complete it in ordinary notes, or export a packet when
+                The Academy supplies the forms, decision memo and handoff exercise.
+                Complete it in ordinary notes, or export a packet when
                 the Starlight workspace offers <strong>Prepare my handoff</strong>.
                 Bring it to an agent you already operate and name the person who
                 will review the result.
