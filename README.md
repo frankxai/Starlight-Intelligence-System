@@ -39,14 +39,14 @@ Starlight is two things in one repository:
 The current **151 agents** and all other fast-moving counts are dated in [`metrics/current.json`](metrics/current.json) and enforced by both the agent harness and site build.\n\nUse just the memory layer in your current tools. Adopt the protocol. Or run the complete system Frank uses every day.
 
 
-## Product Split
+## Product split
 
 1. **SIP** — public contract (MIT), no canon, no pricing. [Read the spec](SIP.md).
 2. **SIS** — open reference (self-host).
 3. **Runtime / Observatory** — operator product (managed or self-host+SLA).
 4. **GenCreator** — human SKU this quarter.
 
-**Technical Scope:**
+**Technical scope:**
 - We implement MCP + A2A + optional x402. We do not invent an L1.
 - Memory gateway evaluates existing stores (markdown vaults, Mem0, Graphiti). We do not replace them this week.
 
