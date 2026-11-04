@@ -483,7 +483,7 @@ function writeKindArtifacts({ root, output, pack, graph }) {
       copySkill(root, node, pluginRoot);
     }
     if (emitsOpenAi && !pack.mcpServerUrl) {
-      const preflight = validateOpenAIPluginPackage(pluginRoot);
+      const preflight = validateOpenAIPluginPackage(pluginRoot, { evaluationDate: "2026-09-01" });
       if (preflight.status !== "pass") {
         throw new Error(
           `Compiled OpenAI plugin failed final-directory preflight: ${preflight.errors.map((error) => error.code).join(", ")}`,
