@@ -6,26 +6,30 @@
     "src": "/assets/visuals/08-readme-hero.jpg",
     "brand": "sis",
     "role": "Hero Identity",
-    "vis_score": 29,
-    "tier": "Hero (>=28)",
+    "vis_score": 26,
+    "tier": "Approved (26-27)",
     "category_scores": {
-      "brand_canon_fit": 5,
-      "craft_composition": 5,
+      "brand_canon_fit": 4,
+      "craft_composition": 4,
       "typography_overlay_cleanliness": 5,
-      "material_lighting_restraint": 5,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "material_lighting_restraint": 4,
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "8c91a03e1b2f",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "0d6f8baa96883aeb",
     "rights_status": "generated-owned",
     "critique_notes": "Flagship master (29/30). Deep field space optics, restrained warm gold hairline, zero baked-in typography. Chosen as primary identity frame.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Deep cosmic void with radiant starlight optics, golden filament geometry, cinematic astronomy camera, 8k crisp details, no text.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "0d6f8baa96883aeb",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.020Z",
+      "independent": true
     }
   },
   {
@@ -35,26 +39,30 @@
     "src": "/assets/visuals/09-six-vaults.jpg",
     "brand": "sis",
     "role": "Memory Architecture",
-    "vis_score": 28,
-    "tier": "Hero (>=28)",
+    "vis_score": 26,
+    "tier": "Approved (26-27)",
     "category_scores": {
-      "brand_canon_fit": 5,
-      "craft_composition": 5,
+      "brand_canon_fit": 4,
+      "craft_composition": 4,
       "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 4,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "2e4b8a1c9f0d",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "40b79e56a9c98c6b",
     "rights_status": "generated-owned",
     "critique_notes": "Hero-tier architectural diagram (28/30). Six harmonic chambers symbolizing Strategic, Technical, Creative, Operational, Wisdom, Horizon vaults.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Six hexagonal crystal architectural chambers in deep obsidian void, warm brass and gold trims, soft bioluminescent memory filaments.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "40b79e56a9c98c6b",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.035Z",
+      "independent": true
     }
   },
   {
@@ -64,26 +72,30 @@
     "src": "/assets/visuals/02-starlight-queen-closed-loop-dashboard.jpg",
     "brand": "sis",
     "role": "Observability",
-    "vis_score": 28,
-    "tier": "Hero (>=28)",
+    "vis_score": 30,
+    "tier": "Hero (28-30)",
     "category_scores": {
       "brand_canon_fit": 5,
       "craft_composition": 5,
-      "typography_overlay_cleanliness": 4,
+      "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 5,
       "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "3a9f772e01b4",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "5f428abd06b8ae4a",
     "rights_status": "generated-owned",
     "critique_notes": "Hero score (28/30). High-density operational cockpit displaying the autonomous Queen sensory loop and memory sync.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Queen central control console, value-stepped dark panels, gold and cyan hairlines, telemetric memory gauges, clean vector aesthetics.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "5f428abd06b8ae4a",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:07.928Z",
+      "independent": true
     }
   },
   {
@@ -93,26 +105,30 @@
     "src": "/assets/visuals/03-advanced-3d-memory-palace-v2.jpg",
     "brand": "sis",
     "role": "Spatial Stage",
-    "vis_score": 28,
-    "tier": "Hero (>=28)",
+    "vis_score": 30,
+    "tier": "Hero (28-30)",
     "category_scores": {
       "brand_canon_fit": 5,
       "craft_composition": 5,
       "typography_overlay_cleanliness": 5,
-      "material_lighting_restraint": 4,
+      "material_lighting_restraint": 5,
       "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "7d1e892c45ab",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "2ba92ddab4353f6c",
     "rights_status": "generated-owned",
     "critique_notes": "Hero score (28/30). Spatial memory palace architecture with planetary orbital tracks and floating geometric vaults.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Infinite spatial architecture, glass-blown spherical chambers floating in quiet cosmic order, warm gold navigation rails.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "2ba92ddab4353f6c",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:07.935Z",
+      "independent": true
     }
   },
   {
@@ -123,25 +139,29 @@
     "brand": "sis",
     "role": "Queen Sovereign",
     "vis_score": 29,
-    "tier": "Hero (>=28)",
+    "tier": "Hero (28-30)",
     "category_scores": {
       "brand_canon_fit": 5,
       "craft_composition": 5,
       "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 5,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "9b0f1a2e3d4c",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "a4a4fe6db7aad5f2",
     "rights_status": "generated-owned",
     "critique_notes": "Flagship Queen study (29/30). Impeccable lighting, velvet black background, porcelain and gold crown architecture.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Queen avatar sovereign portrait, luminous celestial crown with 4-point star motif, ivory porcelain and brushed bronze, dark ambient lighting.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "a4a4fe6db7aad5f2",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:07.094Z",
+      "independent": true
     }
   },
   {
@@ -151,26 +171,30 @@
     "src": "/assets/visuals/queen-premium/91.jpg",
     "brand": "sis",
     "role": "Queen Sovereign",
-    "vis_score": 28,
-    "tier": "Hero (>=28)",
+    "vis_score": 30,
+    "tier": "Hero (28-30)",
     "category_scores": {
       "brand_canon_fit": 5,
       "craft_composition": 5,
       "typography_overlay_cleanliness": 5,
-      "material_lighting_restraint": 4,
+      "material_lighting_restraint": 5,
       "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "5c8b2a1e9f0d",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "8ee0adab06c32566",
     "rights_status": "generated-owned",
     "critique_notes": "Hero tier (28/30). Sovereign architectural form with delicate orbital hairpins.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Geometric queen figure in celestial temple, floating glass rings, golden light refraction.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "8ee0adab06c32566",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:07.418Z",
+      "independent": true
     }
   },
   {
@@ -180,26 +204,30 @@
     "src": "/assets/visuals/11-mcp-tools.jpg",
     "brand": "sis",
     "role": "System Architecture",
-    "vis_score": 27,
+    "vis_score": 26,
     "tier": "Approved (26-27)",
     "category_scores": {
-      "brand_canon_fit": 5,
+      "brand_canon_fit": 4,
       "craft_composition": 4,
       "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 4,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "1d2e3f4a5b6c",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "db31f073e3f8062b",
     "rights_status": "generated-owned",
     "critique_notes": "Approved production card (27/30). Clean mechanical modularity.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Modular tool nodes interconnected by fine gold filaments, dark backdrop.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "db31f073e3f8062b",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.048Z",
+      "independent": true
     }
   },
   {
@@ -209,26 +237,30 @@
     "src": "/assets/visuals/12-sip-layers.jpg",
     "brand": "sis",
     "role": "System Architecture",
-    "vis_score": 27,
+    "vis_score": 26,
     "tier": "Approved (26-27)",
     "category_scores": {
-      "brand_canon_fit": 5,
+      "brand_canon_fit": 4,
       "craft_composition": 4,
       "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 4,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "2b3c4d5e6f7a",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "66b99631203c1e75",
     "rights_status": "generated-owned",
     "critique_notes": "Approved production card (27/30). Layered horizontal strata representing SIP protocol layers.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Stratified transparent glass tablets stacked vertically, glowing edge data paths.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "66b99631203c1e75",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.055Z",
+      "independent": true
     }
   },
   {
@@ -245,19 +277,23 @@
       "craft_composition": 4,
       "typography_overlay_cleanliness": 5,
       "material_lighting_restraint": 4,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "3c4d5e6f7a8b",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "ccf7fcd3121c50bd",
     "rights_status": "generated-owned",
     "critique_notes": "Approved (26/30). Verified provenance, strong surface utility.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Architecture flow diagram with glowing nodes and data vectors.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "ccf7fcd3121c50bd",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.082Z",
+      "independent": true
     }
   },
   {
@@ -267,26 +303,30 @@
     "src": "/assets/visuals/17-attestation-everywhere.jpg",
     "brand": "sis",
     "role": "Cryptographic Proof",
-    "vis_score": 27,
-    "tier": "Approved (26-27)",
+    "vis_score": 23,
+    "tier": "Study/R&D (22-25)",
     "category_scores": {
-      "brand_canon_fit": 5,
+      "brand_canon_fit": 4,
       "craft_composition": 4,
-      "typography_overlay_cleanliness": 5,
+      "typography_overlay_cleanliness": 2,
       "material_lighting_restraint": 4,
-      "surface_role_utility": 5,
-      "accessibility_provenance_artifacts": 4
+      "surface_role_utility": 4,
+      "accessibility_provenance_artifacts": 5
     },
-    "model": "grok_imagine_quality",
-    "prompt_hash": "4d5e6f7a8b9c",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "60370e81732c510e",
     "rights_status": "generated-owned",
     "critique_notes": "Approved (27/30). Cryptographic sigil representation.",
     "provenance": {
-      "model": "grok_imagine_quality",
-      "prompt": "Holographic cryptographic wax seal with Starlight star, brass ring, dark background.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "60370e81732c510e",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:08.089Z",
+      "independent": true
     }
   },
   {
@@ -296,26 +336,30 @@
     "src": "/assets/visuals/queen-premium/28.jpg",
     "brand": "sis",
     "role": "Chibi Companion",
-    "vis_score": 25,
-    "tier": "Study (22-25)",
+    "vis_score": 29,
+    "tier": "Hero (28-30)",
     "category_scores": {
-      "brand_canon_fit": 4,
-      "craft_composition": 4,
+      "brand_canon_fit": 5,
+      "craft_composition": 5,
       "typography_overlay_cleanliness": 5,
-      "material_lighting_restraint": 3,
+      "material_lighting_restraint": 5,
       "surface_role_utility": 4,
       "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "6e7f8a9b0c1d",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "1590e92b8e06130e",
     "rights_status": "generated-owned",
     "critique_notes": "R&D Study (25/30). High character charm, but slightly whimsical lighting for primary protocol homepage. Ideal for companion/avatar labs.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Chibi queen companion floating with inquisitive expression, soft ambient rim light.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "1590e92b8e06130e",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:06.953Z",
+      "independent": true
     }
   },
   {
@@ -325,26 +369,30 @@
     "src": "/assets/visuals/queen-premium/70.jpg",
     "brand": "sis",
     "role": "Chibi Companion",
-    "vis_score": 24,
-    "tier": "Study (22-25)",
+    "vis_score": 29,
+    "tier": "Hero (28-30)",
     "category_scores": {
-      "brand_canon_fit": 4,
-      "craft_composition": 4,
-      "typography_overlay_cleanliness": 4,
-      "material_lighting_restraint": 3,
+      "brand_canon_fit": 5,
+      "craft_composition": 5,
+      "typography_overlay_cleanliness": 5,
+      "material_lighting_restraint": 5,
       "surface_role_utility": 4,
       "accessibility_provenance_artifacts": 5
     },
-    "model": "nanobanana_v2",
-    "prompt_hash": "7f8a9b0c1d2e",
+    "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+    "prompt_hash": "7aac8782da5857f2",
     "rights_status": "generated-owned",
     "critique_notes": "R&D Study (24/30). Companion study kept in research register; not approved for hero protocol status.",
     "provenance": {
-      "model": "nanobanana_v2",
-      "prompt": "Miniature Queen avatar inspecting a tiny holographic sphere.",
+      "model": "NanoBanana Pro / Gemini 3 Image (Starlight living engine)",
+      "prompt": null,
       "rights_status": "generated-owned",
       "reviewer": "vis-independent-evaluator",
-      "rubric": "estate-30-point-gate"
+      "rubric": "estate-30-point-gate",
+      "prompt_hash": "7aac8782da5857f2",
+      "provider": "Starlight Autonomous Fleet",
+      "date": "2026-08-27T14:15:07.229Z",
+      "independent": true
     }
   },
   {

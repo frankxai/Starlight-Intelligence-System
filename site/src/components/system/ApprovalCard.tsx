@@ -49,7 +49,7 @@ export function ApprovalCard({
               </span>
             </div>
             <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] mt-0.5">
-              Scope: <span className="font-mono text-slate-300">{scope}</span>
+              Scope: <span className="font-mono text-[var(--sl-fg,#ede6d8)]">{scope}</span>
             </p>
           </div>
         </div>
@@ -85,7 +85,7 @@ export function ApprovalCard({
                 <button
                   type="button"
                   onClick={onReject}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-slate-300 hover:bg-white/[0.08] transition-micro"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-[var(--sl-fg,#ede6d8)] hover:bg-white/[0.08] transition-micro"
                 >
                   <CloseIcon size={13} />
                   Reject
@@ -94,7 +94,7 @@ export function ApprovalCard({
               <button
                 type="button"
                 onClick={onApprove}
-                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--sl-gold,#c9a15c)] bg-[var(--sl-gold,#c9a15c)] px-3 py-1.5 text-xs font-medium text-black hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro shadow-[0_2px_12px_rgba(201,161,92,0.3)]"
+                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--sl-accent-fill,#c9a15c)] bg-[var(--sl-accent-fill,#c9a15c)] px-3 py-1.5 text-xs font-medium text-[var(--sl-on-accent,#070a10)] hover:opacity-90 transition-micro shadow-[0_2px_12px_rgba(201,161,92,0.3)]"
               >
                 <CheckIcon size={13} />
                 Sign & Authorize

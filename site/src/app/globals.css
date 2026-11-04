@@ -44,6 +44,10 @@
   --sl-star-body: #e8c98c;
   --sl-star-core: #fbf6eb;
 
+  /* Button & Pill Action Tokens (>= 4.5:1 AA Contrast) */
+  --sl-accent-fill: #c9a15c;
+  --sl-on-accent: #070a10;
+
   /* Status Quartet (Dual Shape + Glyph Accessible Encoding) */
   --sl-status-ok: #77f0bf;
   --sl-status-ok-border: rgba(119, 240, 191, 0.42);
@@ -130,6 +134,10 @@
   --sl-companion-bright: #1f859b;
   --sl-star-body: #9e732c;
   --sl-star-core: #0e131b;
+
+  /* Button & Pill Action Tokens (>= 4.5:1 AA Contrast) */
+  --sl-accent-fill: #8a6522;
+  --sl-on-accent: #ffffff;
 
   /* Status Quartet (Light Theme Contrast) */
   --sl-status-ok: #1e7a4b;

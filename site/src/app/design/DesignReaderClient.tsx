@@ -145,7 +145,9 @@ export function DesignReaderClient() {
                 type="button"
                 onClick={() => setViewMode("doc")}
                 className={`px-3 py-1 rounded-md transition-micro ${
-                  viewMode === "doc" ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold" : "text-slate-400 hover:text-white"
+                  viewMode === "doc"
+                    ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                    : "text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                 }`}
               >
                 Rendered Spec
@@ -154,7 +156,9 @@ export function DesignReaderClient() {
                 type="button"
                 onClick={() => setViewMode("yaml")}
                 className={`px-3 py-1 rounded-md transition-micro ${
-                  viewMode === "yaml" ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold" : "text-slate-400 hover:text-white"
+                  viewMode === "yaml"
+                    ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                    : "text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                 }`}
               >
                 YAML Code
@@ -185,13 +189,13 @@ export function DesignReaderClient() {
               <button
                 type="button"
                 onClick={copyYaml}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
               >
                 {copied ? <CheckIcon size={13} /> : <DownloadIcon size={13} />}
                 <span>{copied ? "Copied Spec!" : "Copy YAML"}</span>
               </button>
             </div>
-            <pre className="text-xs font-mono text-slate-300 leading-relaxed overflow-x-auto p-4 rounded bg-black/60">
+            <pre className="text-xs font-mono text-[var(--sl-fg,#ede6d8)] leading-relaxed overflow-x-auto p-4 rounded bg-black/60">
               {YAML_SPEC}
             </pre>
           </div>
@@ -212,19 +216,19 @@ export function DesignReaderClient() {
               <div className="grid sm:grid-cols-3 gap-4 pt-3">
                 <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.1))] bg-[var(--sl-surface-1,#0d1119)]">
                   <h4 className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mb-1">Law 1: Four Contextual Modes</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)] leading-relaxed">
                     Horizon, Operator, Academy, and Cultural surfaces share one underlying mathematical physics.
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.1))] bg-[var(--sl-surface-1,#0d1119)]">
                   <h4 className="text-xs font-mono text-[var(--sl-companion,#82d8e6)] mb-1">Law 2: Clarity-as-Freshness</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)] leading-relaxed">
                     Liquid glass encodes live telemetry freshness (crystal specular &lt;5m to desaturated amber &gt;24h).
                   </p>
                 </div>
                 <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.1))] bg-[var(--sl-surface-1,#0d1119)]">
                   <h4 className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mb-1">Law 3: One Gold per Fold</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)] leading-relaxed">
                     Starlight Gold is never wallpaper; it marks human approval seals and sovereign commitments.
                   </p>
                 </div>
@@ -243,7 +247,7 @@ export function DesignReaderClient() {
               </p>
               <div className="overflow-x-auto rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.14))] bg-[var(--sl-surface-1,#0d1119)]">
                 <table className="w-full text-left text-xs font-mono">
-                  <thead className="border-b border-white/10 bg-black/20 text-slate-400">
+                  <thead className="border-b border-white/10 bg-black/20 text-[var(--sl-fg-muted,#8b93a1)]">
                     <tr>
                       <th className="p-3">Token</th>
                       <th className="p-3">Ink Mode</th>
@@ -257,29 +261,29 @@ export function DesignReaderClient() {
                       <td className="p-3 text-[var(--sl-gold,#c9a15c)]">--sl-bg</td>
                       <td className="p-3">#070A10</td>
                       <td className="p-3">#EFEDE7</td>
-                      <td className="p-3 text-slate-400">Canvas ground</td>
-                      <td className="p-3 text-slate-300">Base viewport layer</td>
+                      <td className="p-3 text-[var(--sl-fg-muted,#8b93a1)]">Canvas ground</td>
+                      <td className="p-3 text-[var(--sl-fg,#ede6d8)]">Base viewport layer</td>
                     </tr>
                     <tr>
                       <td className="p-3 text-[var(--sl-gold,#c9a15c)]">--sl-fg</td>
                       <td className="p-3">#EDE6D8</td>
                       <td className="p-3">#0E131B</td>
                       <td className="p-3 text-emerald-400 font-bold">14.9:1 / 15.2:1 (AAA)</td>
-                      <td className="p-3 text-slate-300">Primary headline & body prose</td>
+                      <td className="p-3 text-[var(--sl-fg,#ede6d8)]">Primary headline & body prose</td>
                     </tr>
                     <tr>
                       <td className="p-3 text-[var(--sl-gold,#c9a15c)]">--sl-gold</td>
                       <td className="p-3">#C9A15C</td>
                       <td className="p-3">#8A6522</td>
                       <td className="p-3 text-emerald-400 font-bold">8.82:1 (AA)</td>
-                      <td className="p-3 text-slate-300">Human Gate approval & sovereignty</td>
+                      <td className="p-3 text-[var(--sl-fg,#ede6d8)]">Human Gate approval & sovereignty</td>
                     </tr>
                     <tr>
                       <td className="p-3 text-[var(--sl-companion,#82d8e6)]">--sl-companion</td>
                       <td className="p-3">#82D8E6</td>
                       <td className="p-3">#16697A</td>
                       <td className="p-3 text-emerald-400 font-bold">9.4:1 (AA)</td>
-                      <td className="p-3 text-slate-300">Active agent telemetry & links</td>
+                      <td className="p-3 text-[var(--sl-fg,#ede6d8)]">Active agent telemetry & links</td>
                     </tr>
                   </tbody>
                 </table>
@@ -298,16 +302,20 @@ export function DesignReaderClient() {
               </p>
               <div className="grid sm:grid-cols-3 gap-4 pt-2">
                 <GlassSurface tier="webgl" className="p-4 text-center">
-                  <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] block mb-1">Tier 1: WebGL2</span>
-                  <p className="text-xs text-slate-300">Physical refraction pass for capable desktop GPUs.</p>
+                  <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] block mb-1">
+                    CSS Glass Tier (Live) — WebGL2 Refraction Spec Preview
+                  </span>
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)]">
+                    Physical refraction pass for capable desktop GPUs (CSS Fallback Active: live canvas shader disabled in static specimen).
+                  </p>
                 </GlassSurface>
                 <GlassSurface tier="css" className="p-4 text-center">
                   <span className="text-xs font-mono text-[var(--sl-companion,#82d8e6)] block mb-1">Tier 2: CSS Lite</span>
-                  <p className="text-xs text-slate-300">CSS backdrop-filter: blur(18px) for mobile & standard clients.</p>
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)]">CSS backdrop-filter: blur(18px) for mobile & standard clients.</p>
                 </GlassSurface>
                 <GlassSurface tier="static" className="p-4 text-center">
-                  <span className="text-xs font-mono text-slate-400 block mb-1">Tier 3: Static Fallback</span>
-                  <p className="text-xs text-slate-300">High contrast matte surface for reduced-motion & battery savers.</p>
+                  <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)] block mb-1">Tier 3: Static Fallback</span>
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)]">High contrast matte surface for reduced-motion & battery savers.</p>
                 </GlassSurface>
               </div>
             </section>
@@ -316,19 +324,19 @@ export function DesignReaderClient() {
             <section className="pt-8 border-t border-[var(--sl-border,rgba(237,230,216,0.12))] flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)]">Ready to test these components?</h4>
-                <p className="text-xs text-slate-400">Launch the interactive specimen bench to inspect all 24 Signal SVG icons and UI cards.</p>
+                <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Launch the interactive specimen bench to inspect all 24 Signal SVG icons and UI cards.</p>
               </div>
               <div className="flex items-center gap-3">
                 <Link
                   href="/visuals/system"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
                 >
                   <GridIcon size={14} />
                   <span>Component Bench</span>
                 </Link>
                 <Link
                   href="/visuals/brand-lab"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-white/10 text-xs text-[var(--sl-fg,#ede6d8)]"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-white/10 text-xs text-[var(--sl-fg,#ede6d8)] hover:bg-white/5"
                 >
                   <span>Brand Lab Observatory →</span>
                 </Link>

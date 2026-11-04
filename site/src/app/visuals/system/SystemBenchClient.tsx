@@ -112,7 +112,7 @@ export function SystemBenchClient() {
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-slate-400">Size: {iconSize}px</span>
+                <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)]">Size: {iconSize}px</span>
                 <input
                   type="range"
                   min="16"
@@ -124,7 +124,7 @@ export function SystemBenchClient() {
               </div>
 
               <div className="relative w-44">
-                <SearchIcon size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <SearchIcon size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--sl-fg-muted,#8b93a1)]" />
                 <input
                   type="text"
                   value={iconSearch}
@@ -175,22 +175,22 @@ export function SystemBenchClient() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-5 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-3">
               <StatusBadge status="ok">Verified Stable</StatusBadge>
-              <p className="text-xs text-slate-400">status=&quot;ok&quot; · glyph=&quot;●&quot; · #77F0BF</p>
+              <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">status=&quot;ok&quot; · glyph=&quot;●&quot; · #77F0BF</p>
             </div>
 
             <div className="p-5 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-3">
               <StatusBadge status="warn">Degraded / Stale</StatusBadge>
-              <p className="text-xs text-slate-400">status=&quot;warn&quot; · glyph=&quot;▲&quot; · #E8C36A</p>
+              <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">status=&quot;warn&quot; · glyph=&quot;▲&quot; · #E8C36A</p>
             </div>
 
             <div className="p-5 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-3">
               <StatusBadge status="breach">Security Breach</StatusBadge>
-              <p className="text-xs text-slate-400">status=&quot;breach&quot; · glyph=&quot;■&quot; · #FF7B7B</p>
+              <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">status=&quot;breach&quot; · glyph=&quot;■&quot; · #FF7B7B</p>
             </div>
 
             <div className="p-5 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-3">
               <StatusBadge status="unknown">Awaiting Verification</StatusBadge>
-              <p className="text-xs text-slate-400">status=&quot;unknown&quot; · glyph=&quot;◆&quot; · #B7A2FF</p>
+              <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">status=&quot;unknown&quot; · glyph=&quot;◆&quot; · #B7A2FF</p>
             </div>
           </div>
         </section>
@@ -295,7 +295,9 @@ export function SystemBenchClient() {
                   type="button"
                   onClick={() => setFreshness(f)}
                   className={`px-3 py-1 rounded capitalize transition-micro ${
-                    freshness === f ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold" : "text-slate-400 hover:text-white"
+                    freshness === f
+                      ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                      : "text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                   }`}
                 >
                   {f}

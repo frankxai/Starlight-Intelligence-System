@@ -28,9 +28,9 @@ export function PressKitClient() {
   const primaryMarkSvg = `<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="goldStar" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stopColor="#F0C87E"/>
-      <stop offset="50%" stopColor="#C9A15C"/>
-      <stop offset="100%" stopColor="#8A6522"/>
+      <stop offset="0%" stop-color="#F0C87E"/>
+      <stop offset="50%" stop-color="#C9A15C"/>
+      <stop offset="100%" stop-color="#8A6522"/>
     </linearGradient>
   </defs>
   <path d="M50 5 C51 32 68 49 95 50 C68 51 51 68 50 95 C49 68 32 51 5 50 C32 49 49 32 50 5 Z" fill="url(#goldStar)"/>
@@ -83,7 +83,7 @@ export function PressKitClient() {
               href="https://starlightintelligence.ai/brand"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90 transition-micro flex items-center gap-1.5"
             >
               <span>Identity Master (.ai)</span>
               <LinkIcon size={12} />
@@ -137,7 +137,7 @@ export function PressKitClient() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(primaryMarkSvg, "primarySvg")}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90 transition-micro"
               >
                 {copiedKey === "primarySvg" ? <CheckIcon size={14} /> : <DownloadIcon size={14} />}
                 <span>{copiedKey === "primarySvg" ? "SVG Copied!" : "Copy Raw SVG"}</span>
@@ -160,7 +160,7 @@ export function PressKitClient() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(protocolMarkSvg, "protocolSvg")}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90 transition-micro"
               >
                 {copiedKey === "protocolSvg" ? <CheckIcon size={14} /> : <DownloadIcon size={14} />}
                 <span>{copiedKey === "protocolSvg" ? "SVG Copied!" : "Copy Raw SVG"}</span>
@@ -196,7 +196,7 @@ export function PressKitClient() {
                 <div>
                   <div className="h-10 w-full rounded border border-white/10 mb-3" style={{ backgroundColor: c.hex }} />
                   <h4 className="text-xs font-semibold text-[var(--sl-fg,#ede6d8)]">{c.name}</h4>
-                  <span className="text-[10px] text-slate-400 font-mono block mt-0.5">{c.hex}</span>
+                  <span className="text-[10px] text-[var(--sl-fg-muted,#8b93a1)] font-mono block mt-0.5">{c.hex}</span>
                 </div>
                 <span className="text-[9px] font-mono text-[var(--sl-gold,#c9a15c)] mt-2">{c.role}</span>
               </div>

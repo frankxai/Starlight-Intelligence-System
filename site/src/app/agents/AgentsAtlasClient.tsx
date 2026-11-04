@@ -19,8 +19,10 @@ import agentsData from "@/data/agents.json";
 
 interface AgentRecord {
   id: string;
+  profileName?: string;
   title: string;
   tier: string;
+  category?: string;
   domain: string;
   voice: string;
   mission: string;
@@ -36,19 +38,55 @@ export function AgentsAtlasClient() {
 
   const agents: AgentRecord[] = agentsData as AgentRecord[];
 
+  // Support ?id=<agentId> query param (e.g. from Brand Lab "Open in Atlas")
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const idParam = params.get("id");
+      if (idParam) {
+        const needle = idParam.toLowerCase();
+        const found = agents.find(
+          (a) =>
+            a.id.toLowerCase() === needle ||
+            a.id.replace(/^starlight-/, "").toLowerCase() === needle ||
+            (a.profileName && a.profileName.toLowerCase() === needle) ||
+            (a.profileName && a.profileName.replace(/^starlight-/, "").toLowerCase() === needle)
+        );
+        if (found) {
+          setSelectedAgent(found);
+        }
+      }
+    }
+  }, [agents]);
+
+  // Escape key closes modal
+  React.useEffect(() => {
+    if (!selectedAgent) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedAgent(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedAgent]);
+
   const filtered = React.useMemo(() => {
     return agents.filter((agent) => {
       const q = search.toLowerCase();
       const matchSearch =
         agent.id.toLowerCase().includes(q) ||
+        (agent.profileName && agent.profileName.toLowerCase().includes(q)) ||
         agent.title.toLowerCase().includes(q) ||
         agent.domain.toLowerCase().includes(q) ||
         agent.skills.some((s) => s.toLowerCase().includes(q));
       const matchTier =
         tierFilter === "All" ||
+        (agent.category && agent.category.toLowerCase() === tierFilter.toLowerCase()) ||
         agent.tier.toLowerCase().includes(tierFilter.toLowerCase()) ||
         (tierFilter === "Domain Sub-Stack" &&
-          (agent.tier.includes("Intelligence") ||
+          (agent.category === "Domain Sub-Stack" ||
+            agent.tier.includes("Intelligence") ||
             agent.tier.includes("IS") ||
             agent.tier.includes("Domain") ||
             agent.tier.includes("Specialist")));
@@ -103,7 +141,7 @@ export function AgentsAtlasClient() {
             </button>
             <Link
               href="/visuals/brand-lab"
-              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro"
+              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90 transition-micro"
             >
               Brand Lab →
             </Link>
@@ -118,32 +156,32 @@ export function AgentsAtlasClient() {
           <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)]">
             <span className="text-xs font-mono text-[var(--sl-companion,#82d8e6)] block mb-1">Front-Door & Excavation</span>
             <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)]">Concierge, Envoy, Voice & Genius</h4>
-            <p className="text-xs text-slate-400 mt-1">First contact intake, non-technical paths, and corpus pattern excavation.</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] mt-1">First contact intake, non-technical paths, and corpus pattern excavation.</p>
           </div>
 
           <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)]">
             <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] block mb-1">Leadership Tier</span>
             <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)]">Orchestrator, Prime & Architect</h4>
-            <p className="text-xs text-slate-400 mt-1">Synthesis, workflow routing, and planet-scale systems design.</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] mt-1">Synthesis, workflow routing, and planet-scale systems design.</p>
           </div>
 
           <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)]">
             <span className="text-xs font-mono text-emerald-400 block mb-1">Specialists & Foundation</span>
             <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)]">Navigator, Sentinel, Weaver, Hermes & Sage</h4>
-            <p className="text-xs text-slate-400 mt-1">Security, institutional memory, search provenance, foresight.</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] mt-1">Security, institutional memory, search provenance, foresight.</p>
           </div>
 
           <div className="p-4 rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)]">
             <span className="text-xs font-mono text-purple-400 block mb-1">Domain Verticals & Sub-Stacks</span>
             <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)]">10 Universal IS + 120 Sub-Stacks</h4>
-            <p className="text-xs text-slate-400 mt-1">People, Sound, Music, Energy, Marine, Space, Longevity & Assets.</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] mt-1">People, Sound, Music, Energy, Marine, Space, Longevity & Assets.</p>
           </div>
         </section>
 
         {/* Filter & Search Bar */}
         <section className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <SearchIcon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <SearchIcon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--sl-fg-muted,#8b93a1)]" />
             <input
               type="text"
               value={search}
@@ -161,8 +199,8 @@ export function AgentsAtlasClient() {
                 onClick={() => setTierFilter(t)}
                 className={`px-3 py-1 rounded-md transition-micro font-medium ${
                   tierFilter === t
-                    ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold"
-                    : "border border-white/10 text-slate-300 hover:text-white hover:bg-white/5"
+                    ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                    : "border border-white/10 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)] hover:bg-white/5"
                 }`}
               >
                 {t}
@@ -176,12 +214,20 @@ export function AgentsAtlasClient() {
           {filtered.map((agent) => (
             <div
               key={agent.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setSelectedAgent(agent)}
-              className="rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] p-4 hover:border-[var(--sl-gold,#c9a15c)] transition-std cursor-pointer group flex flex-col justify-between"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelectedAgent(agent);
+                }
+              }}
+              className="rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] p-4 hover:border-[var(--sl-gold,#c9a15c)] focus-visible:border-[var(--sl-gold,#c9a15c)] focus-visible:outline-none transition-std cursor-pointer group flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-slate-300">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-[var(--sl-fg,#ede6d8)]">
                     {agent.tier}
                   </span>
                   <span className="text-[10px] font-mono text-[var(--sl-fg-muted,#8b93a1)] truncate max-w-[120px]">
@@ -197,7 +243,7 @@ export function AgentsAtlasClient() {
                     <h3 className="text-sm font-semibold tracking-tight text-[var(--sl-fg,#ede6d8)] group-hover:text-[var(--sl-gold,#c9a15c)] transition-micro">
                       {agent.title}
                     </h3>
-                    <p className="text-[11px] font-mono text-slate-400">id: {agent.id}</p>
+                    <p className="text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)]">id: {agent.id}</p>
                   </div>
                 </div>
 
@@ -206,7 +252,7 @@ export function AgentsAtlasClient() {
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[var(--sl-border,rgba(237,230,216,0.08))] flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <div className="pt-2 border-t border-[var(--sl-border,rgba(237,230,216,0.08))] flex items-center justify-between text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)]">
                 <span>voice: {agent.voice}</span>
                 <span className="text-[var(--sl-companion,#82d8e6)] group-hover:translate-x-0.5 transition-transform">
                   View Profile →
@@ -218,12 +264,18 @@ export function AgentsAtlasClient() {
 
         {/* Selected Agent Modal */}
         {selectedAgent && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <div className="w-full max-w-xl rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="agent-modal-title"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
               <button
                 type="button"
                 onClick={() => setSelectedAgent(null)}
-                className="absolute right-4 top-4 text-slate-400 hover:text-white"
+                aria-label="Close profile"
+                className="absolute right-4 top-4 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
               >
                 <CloseIcon size={18} />
               </button>
@@ -236,7 +288,7 @@ export function AgentsAtlasClient() {
                   size={64}
                 />
                 <div>
-                  <h3 className="text-xl font-semibold text-[var(--sl-fg,#ede6d8)]">
+                  <h3 id="agent-modal-title" className="text-xl font-semibold text-[var(--sl-fg,#ede6d8)]">
                     {selectedAgent.title}
                   </h3>
                   <p className="text-xs font-mono text-[var(--sl-gold,#c9a15c)]">
@@ -254,14 +306,14 @@ export function AgentsAtlasClient() {
 
               <div className="space-y-3 text-xs font-mono">
                 <div>
-                  <span className="text-slate-400 block mb-1">Specification File:</span>
-                  <span className="text-slate-200 bg-white/5 px-2.5 py-1 rounded block truncate">
+                  <span className="text-[var(--sl-fg-muted,#8b93a1)] block mb-1">Specification File:</span>
+                  <span className="text-[var(--sl-fg,#ede6d8)] bg-white/5 px-2.5 py-1 rounded block truncate">
                     agents/{selectedAgent.file}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-slate-400 block mb-1">
+                  <span className="text-[var(--sl-fg-muted,#8b93a1)] block mb-1">
                     Active Skills ({selectedAgent.skills.length}):
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -275,7 +327,7 @@ export function AgentsAtlasClient() {
                         </span>
                       ))
                     ) : (
-                      <span className="text-slate-500">Flat council coordination</span>
+                      <span className="text-[var(--sl-fg-muted,#8b93a1)]">Flat council coordination</span>
                     )}
                   </div>
                 </div>
@@ -285,7 +337,7 @@ export function AgentsAtlasClient() {
                 <button
                   type="button"
                   onClick={() => setSelectedAgent(null)}
-                  className="px-4 py-1.5 rounded-lg border border-white/10 text-xs text-slate-300 hover:text-white"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
                 >
                   Close
                 </button>

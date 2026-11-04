@@ -60,7 +60,8 @@ function HeaderContent({ pathname }: { pathname: string }) {
           {NAV_GROUPS.map((group, groupIndex) => {
             const open = openMenu === group.label;
             const groupActive = group.items.some((it) => isActive(pathname, it.href));
-            const panelId = `nav-panel-${group.label.toLowerCase()}`;
+            const slug = group.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+            const panelId = `nav-panel-${slug}`;
             const alignPanelRight = groupIndex === NAV_GROUPS.length - 1;
             const visual = CINEMATIC_STILLS[group.visual];
             return (

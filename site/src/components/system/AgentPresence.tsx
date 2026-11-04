@@ -52,6 +52,7 @@ export function AgentPresence({
           />
         </div>
       )}
+      <span className="sr-only">Status: {status}</span>
       <div className="flex flex-col">
         <span className="text-xs font-medium tracking-tight text-[var(--sl-fg,#ede6d8)] leading-tight">
           {name}

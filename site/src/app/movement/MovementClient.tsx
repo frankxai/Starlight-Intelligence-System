@@ -15,6 +15,7 @@ import {
   OrbitIcon,
 } from "@/components/icons";
 import { StatusBadge, GlassSurface } from "@/components/system";
+import sisReceipt from "@/lib/generated/sis-receipt.json";
 
 export function MovementClient() {
   const [theme, setTheme] = React.useState<"ink" | "paper">("ink");
@@ -22,54 +23,64 @@ export function MovementClient() {
   const [copiedBadge, setCopiedBadge] = React.useState(false);
 
   const copyBadgeCode = () => {
-    const code = `[![Built on SIP](https://starlightintelligence.org/badge/sip.svg)](https://starlightintelligence.org/verify)`;
+    const code = `[![Built on SIP](https://starlightintelligence.org/badge/latest)](https://starlightintelligence.org/verify)`;
     navigator.clipboard.writeText(code);
     setCopiedBadge(true);
     setTimeout(() => setCopiedBadge(false), 2000);
   };
+
+  const sisSha = sisReceipt?.receipt?.profileSha256
+    ? `sha256:${sisReceipt.receipt.profileSha256.slice(0, 12)}`
+    : "sha256:acac2fd23be1";
 
   const directoryNodes = [
     {
       name: "Starlight Intelligence System",
       domain: "starlightintelligence.org",
       role: "Open Protocol, Vaults & Flagship Observatory",
-      sha: "sha256:83100e02da6f",
+      sha: sisSha,
       status: "Verified",
+      verified: true,
     },
     {
       name: "Starlight Nexus",
       domain: "starlightintelligence.ai",
       role: "Identity Master & Autonomous Crew Desktop",
       sha: "sha256:f600351a92e1",
-      status: "Verified",
+      status: "Example preview",
+      verified: false,
     },
     {
       name: "FrankX Flagship",
       domain: "frankx.ai",
       role: "Systems Architecture, Creative Engine & Demand",
       sha: "sha256:c2c35d2738b6",
-      status: "Verified",
+      status: "Example preview",
+      verified: false,
     },
     {
       name: "Arcanea",
       domain: "arcanea.ai",
       role: "Creative Worlds, Ten Gates & Lore Canon",
       sha: "sha256:754bf99b1042",
-      status: "Verified",
+      status: "Example preview",
+      verified: false,
     },
     {
       name: "Starlight Academy",
       domain: "starlightintelligence.academy",
       role: "Quiet Workflow Studio & Constellation Lab",
       sha: "sha256:bc4eb09befcb",
-      status: "Verified",
+      status: "Example preview",
+      verified: false,
     },
     {
       name: "Starlight Command Center",
       domain: "starlight-command-center",
       role: "Operator Console, HUD Dock & Status Tokens",
       sha: "sha256:08fd0af317c2",
-      status: "Verified",
+      status: "Example preview",
+      verified: false,
     },
   ];
 
@@ -110,7 +121,7 @@ export function MovementClient() {
             </button>
             <Link
               href="/visuals/brand-lab"
-              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold hover:bg-[var(--sl-gold-bright,#f0c87e)] transition-micro"
+              className="px-3.5 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90 transition-micro"
             >
               Brand Lab →
             </Link>
@@ -182,7 +193,7 @@ export function MovementClient() {
 
           <div className="overflow-x-auto rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.14))] bg-[var(--sl-surface-1,#0d1119)]">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="border-b border-white/10 bg-black/20 text-slate-400">
+              <thead className="border-b border-white/10 bg-black/20 text-[var(--sl-fg-muted,#8b93a1)]">
                 <tr>
                   <th className="p-3">Ecosystem Node</th>
                   <th className="p-3">Domain</th>
@@ -196,10 +207,16 @@ export function MovementClient() {
                   <tr key={node.name} className="hover:bg-white/5 transition-colors">
                     <td className="p-3 font-semibold text-[var(--sl-fg,#ede6d8)]">{node.name}</td>
                     <td className="p-3 text-[var(--sl-companion,#82d8e6)]">{node.domain}</td>
-                    <td className="p-3 text-slate-300">{node.role}</td>
-                    <td className="p-3 text-slate-400 font-mono">{node.sha}</td>
+                    <td className="p-3 text-[var(--sl-fg,#ede6d8)]">{node.role}</td>
+                    <td className="p-3 text-[var(--sl-fg-muted,#8b93a1)] font-mono">{node.sha}</td>
                     <td className="p-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                          node.verified
+                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+                            : "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                        }`}
+                      >
                         {node.status}
                       </span>
                     </td>
@@ -233,22 +250,29 @@ export function MovementClient() {
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold font-mono transition-std ${
                   pledged
                     ? "bg-emerald-500 text-black shadow-lg"
-                    : "bg-[var(--sl-gold,#c9a15c)] text-black hover:bg-[var(--sl-gold-bright,#f0c87e)]"
+                    : "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] hover:opacity-90"
                 }`}
               >
                 <CheckIcon size={15} />
-                <span>{pledged ? "Pledge Signed & Recorded" : "Sign the Open Web Pledge"}</span>
+                <span>{pledged ? "Acknowledged in This Session" : "Acknowledge Principles (Session Preview)"}</span>
               </button>
 
               <button
                 type="button"
                 onClick={copyBadgeCode}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-xs font-mono text-slate-300 hover:text-white"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-xs font-mono text-[var(--sl-fg,#ede6d8)] hover:text-white"
               >
                 <CodeIcon size={14} />
                 <span>{copiedBadge ? "Badge Copied!" : "Copy Built on SIP Badge"}</span>
               </button>
             </div>
+
+            <p className="mt-4 text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)] leading-relaxed">
+              Note: This button records in-session acknowledgement only. Persistent public attestation is earned by committing a signed SIP receipt (<code className="text-[var(--sl-gold,#c9a15c)]">Built on SIP</code>) and verifying at{" "}
+              <Link href="/verify" className="underline hover:text-[var(--sl-fg,#ede6d8)]">
+                /verify
+              </Link>.
+            </p>
           </div>
         </section>
       </main>

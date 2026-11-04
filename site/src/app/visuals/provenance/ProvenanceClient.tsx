@@ -22,6 +22,17 @@ export function ProvenanceClient() {
   const [tierFilter, setTierFilter] = React.useState("All");
   const [selectedItem, setSelectedItem] = React.useState<any>(null);
 
+  React.useEffect(() => {
+    if (!selectedItem) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedItem(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedItem]);
+
   const studies = curatedStudies as any[];
 
   const filtered = studies.filter((item) => {
@@ -88,25 +99,25 @@ export function ProvenanceClient() {
           <div className="p-5 rounded-2xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-1">
             <span className="text-[11px] font-mono text-[var(--sl-gold,#c9a15c)] uppercase">Ledger Ingestion</span>
             <div className="text-2xl font-bold text-[var(--sl-fg,#ede6d8)]">3,858 / 3,858</div>
-            <p className="text-xs text-slate-400">100% indexed in vis.sqlite (0 unindexed)</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">100% indexed in vis.sqlite (0 unindexed)</p>
           </div>
 
           <div className="p-5 rounded-2xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-1">
             <span className="text-[11px] font-mono text-[var(--sl-companion,#82d8e6)] uppercase">Brand Attribution</span>
             <div className="text-2xl font-bold text-[var(--sl-fg,#ede6d8)]">0 Unknown</div>
-            <p className="text-xs text-slate-400">Deterministic path & edge classification</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Deterministic path & edge classification</p>
           </div>
 
           <div className="p-5 rounded-2xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-1">
             <span className="text-[11px] font-mono text-emerald-400 uppercase">First-Party Rights</span>
             <div className="text-2xl font-bold text-[var(--sl-fg,#ede6d8)]">2,027+ Owned</div>
-            <p className="text-xs text-slate-400">Verified generated-owned prompt receipts</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Verified generated-owned prompt receipts</p>
           </div>
 
           <div className="p-5 rounded-2xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] space-y-1">
             <span className="text-[11px] font-mono text-[var(--sl-gold,#c9a15c)] uppercase">Ship-Ready Assets</span>
             <div className="text-2xl font-bold text-[var(--sl-fg,#ede6d8)]">1,190 Pass Gate</div>
-            <p className="text-xs text-slate-400">113 Hero (&ge;28) · 1,077 Approved (26-27)</p>
+            <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">113 Hero (&ge;28) · 1,077 Approved (26-27)</p>
           </div>
         </section>
 
@@ -179,7 +190,7 @@ export function ProvenanceClient() {
 
             <div className="flex items-center gap-3">
               <div className="relative w-48">
-                <SearchIcon size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <SearchIcon size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--sl-fg-muted,#8b93a1)]" />
                 <input
                   type="text"
                   value={search}
@@ -196,7 +207,9 @@ export function ProvenanceClient() {
                     type="button"
                     onClick={() => setTierFilter(t)}
                     className={`px-2.5 py-1 rounded transition-micro ${
-                      tierFilter === t ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold" : "text-slate-400 hover:text-white"
+                      tierFilter === t
+                        ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                        : "text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                     }`}
                   >
                     {t}
@@ -208,7 +221,7 @@ export function ProvenanceClient() {
 
           <div className="overflow-x-auto rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.14))] bg-[var(--sl-surface-1,#0d1119)]">
             <table className="w-full text-left text-xs font-mono">
-              <thead className="border-b border-white/10 bg-black/20 text-slate-400">
+              <thead className="border-b border-white/10 bg-black/20 text-[var(--sl-fg-muted,#8b93a1)]">
                 <tr>
                   <th className="p-3">Asset Title / File</th>
                   <th className="p-3">Role</th>
@@ -224,9 +237,9 @@ export function ProvenanceClient() {
                   <tr key={item.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-3 font-semibold text-[var(--sl-fg,#ede6d8)]">
                       <div>{item.title}</div>
-                      <span className="text-[10px] text-slate-400 font-normal">{item.filename}</span>
+                      <span className="text-[10px] text-[var(--sl-fg-muted,#8b93a1)] font-normal">{item.filename}</span>
                     </td>
-                    <td className="p-3 text-slate-300">{item.role}</td>
+                    <td className="p-3 text-[var(--sl-fg,#ede6d8)]">{item.role}</td>
                     <td className="p-3">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -240,9 +253,9 @@ export function ProvenanceClient() {
                         {item.vis_score} / 30
                       </span>
                     </td>
-                    <td className="p-3 text-slate-300">{item.tier}</td>
+                    <td className="p-3 text-[var(--sl-fg,#ede6d8)]">{item.tier}</td>
                     <td className="p-3 text-emerald-400">{item.rights_status}</td>
-                    <td className="p-3 text-slate-400 font-mono text-[11px]">{item.prompt_hash}</td>
+                    <td className="p-3 text-[var(--sl-fg-muted,#8b93a1)] font-mono text-[11px]">{item.prompt_hash}</td>
                     <td className="p-3">
                       <button
                         type="button"
@@ -261,24 +274,30 @@ export function ProvenanceClient() {
 
         {/* Modal for item inspection */}
         {selectedItem && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <div className="w-full max-w-lg rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="provenance-modal-title"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
               <button
                 type="button"
                 onClick={() => setSelectedItem(null)}
-                className="absolute right-4 top-4 text-slate-400 hover:text-white"
+                aria-label="Close modal"
+                className="absolute right-4 top-4 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
               >
                 <CloseIcon size={18} />
               </button>
 
-              <h3 className="text-lg font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
+              <h3 id="provenance-modal-title" className="text-lg font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                 {selectedItem.title}
               </h3>
               <p className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mb-4">
                 Score: {selectedItem.vis_score} / 30 PTS · {selectedItem.tier}
               </p>
 
-              <div className="space-y-3 text-xs font-mono text-slate-300 mb-4">
+              <div className="space-y-3 text-xs font-mono text-[var(--sl-fg,#ede6d8)] mb-4">
                 <p>Filename: {selectedItem.filename}</p>
                 <p>Role: {selectedItem.role}</p>
                 <p>Model: {selectedItem.model}</p>
@@ -287,7 +306,7 @@ export function ProvenanceClient() {
               </div>
 
               {selectedItem.critique_notes && (
-                <div className="p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-slate-300 mb-4">
+                <div className="p-3 rounded-lg border border-white/10 bg-white/5 text-xs text-[var(--sl-fg,#ede6d8)] mb-4">
                   <span className="text-[10px] font-mono text-[var(--sl-gold,#c9a15c)] uppercase block mb-1">
                     Independent Assessment
                   </span>
@@ -296,7 +315,7 @@ export function ProvenanceClient() {
               )}
 
               <EvidenceDisclosure summary="Machine Provenance JSON">
-                <pre className="text-[10px] font-mono p-3 rounded bg-black/60 overflow-x-auto text-slate-300">
+                <pre className="text-[10px] font-mono p-3 rounded bg-black/60 overflow-x-auto text-[var(--sl-fg,#ede6d8)]">
                   {JSON.stringify(selectedItem, null, 2)}
                 </pre>
               </EvidenceDisclosure>
@@ -305,7 +324,7 @@ export function ProvenanceClient() {
                 <button
                   type="button"
                   onClick={() => setSelectedItem(null)}
-                  className="px-4 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold"
+                  className="px-4 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
                 >
                   Close
                 </button>

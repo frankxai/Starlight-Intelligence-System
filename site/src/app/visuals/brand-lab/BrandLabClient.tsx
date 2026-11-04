@@ -115,6 +115,19 @@ export function BrandLabClient() {
   const [studyFilter, setStudyFilter] = React.useState("All");
   const [selectedStudy, setSelectedStudy] = React.useState<StudyRecord | null>(null);
 
+  // Escape key closes open modals
+  React.useEffect(() => {
+    if (!selectedAgent && !selectedStudy) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedAgent(null);
+        setSelectedStudy(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedAgent, selectedStudy]);
+
   const agents: AgentRecord[] = agentsData as AgentRecord[];
   const studies: StudyRecord[] = curatedStudies as StudyRecord[];
 
@@ -391,7 +404,7 @@ export function BrandLabClient() {
                 <span className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">
                   Token: <code className="font-mono text-[11px]">#77F0BF</code> · Shape: Circle (●)
                 </span>
-                <span className="text-[11px] text-slate-400 leading-tight">
+                <span className="text-[11px] text-[var(--sl-fg-muted,#8b93a1)] leading-tight">
                   All tests green, signed SIP receipt verified, zero breach.
                 </span>
               </div>
@@ -401,7 +414,7 @@ export function BrandLabClient() {
                 <span className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">
                   Token: <code className="font-mono text-[11px]">#E8C36A</code> · Shape: Triangle (▲)
                 </span>
-                <span className="text-[11px] text-slate-400 leading-tight">
+                <span className="text-[11px] text-[var(--sl-fg-muted,#8b93a1)] leading-tight">
                   Telemetry degraded, data older than 2 hours, needs sync.
                 </span>
               </div>
@@ -411,7 +424,7 @@ export function BrandLabClient() {
                 <span className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">
                   Token: <code className="font-mono text-[11px]">#FF7B7B</code> · Shape: Square (■)
                 </span>
-                <span className="text-[11px] text-slate-400 leading-tight">
+                <span className="text-[11px] text-[var(--sl-fg-muted,#8b93a1)] leading-tight">
                   Contract violation, security check fail, or data staleness &gt;24h.
                 </span>
               </div>
@@ -421,7 +434,7 @@ export function BrandLabClient() {
                 <span className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">
                   Token: <code className="font-mono text-[11px]">#B7A2FF</code> · Shape: Diamond (◆)
                 </span>
-                <span className="text-[11px] text-slate-400 leading-tight">
+                <span className="text-[11px] text-[var(--sl-fg-muted,#8b93a1)] leading-tight">
                   Evaluating state, awaiting model probe response or genesis sync.
                 </span>
               </div>
@@ -566,7 +579,7 @@ export function BrandLabClient() {
               className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-mono font-medium transition-micro border ${
                 cursorTrialActive
                   ? "border-[var(--sl-gold,#c9a15c)] bg-[var(--sl-gold,#c9a15c)] text-black"
-                  : "border-white/10 bg-white/5 text-slate-300 hover:text-white"
+                  : "border-white/10 bg-white/5 text-[var(--sl-fg,#ede6d8)] hover:text-white"
               }`}
             >
               <SparkIcon size={14} />
@@ -583,7 +596,7 @@ export function BrandLabClient() {
               }}
               className="mt-4 h-48 rounded-xl border border-[var(--sl-gold,#c9a15c)]/40 bg-black/40 relative overflow-hidden flex items-center justify-center cursor-crosshair"
             >
-              <span className="text-xs font-mono text-slate-400 select-none">
+              <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)] select-none">
                 Move cursor within this bounded area to trial the Starlight 4-point star trail.
               </span>
               <div
@@ -626,7 +639,7 @@ export function BrandLabClient() {
                 Variable Type Specimen
               </span>
               <div className="flex items-center gap-4">
-                <span className="text-xs font-mono text-slate-400">Size: {fontSize}px</span>
+                <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)]">Size: {fontSize}px</span>
                 <input
                   type="range"
                   min="20"
@@ -717,7 +730,7 @@ export function BrandLabClient() {
                 onChange={(e) => setFreshnessStep(Number(e.target.value))}
                 className="w-full accent-[var(--sl-gold,#c9a15c)] cursor-pointer"
               />
-              <div className="flex justify-between text-[11px] font-mono text-slate-400 mt-1">
+              <div className="flex justify-between text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)] mt-1">
                 <span>&lt; 5 min (Live)</span>
                 <span>15 min (Normal)</span>
                 <span>&gt; 2 hr (Stale)</span>
@@ -736,7 +749,7 @@ export function BrandLabClient() {
                   <StatusBadge status={freshnessStep === 0 ? "ok" : freshnessStep === 1 ? "ok" : freshnessStep === 2 ? "warn" : "breach"}>
                     {freshnessLabels[freshnessStep]}
                   </StatusBadge>
-                  <span className="text-xs font-mono text-slate-400">Telemetry Stream</span>
+                  <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)]">Telemetry Stream</span>
                 </div>
                 <h4 className="text-lg font-semibold text-[var(--sl-fg,#ede6d8)]">
                   {freshnessStep === 0 && "Crystal Specular Hairline (Live Freshness)"}
@@ -780,7 +793,7 @@ export function BrandLabClient() {
           {/* Search and Tier Filter Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">
             <div className="relative flex-1 max-w-md">
-              <SearchIcon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <SearchIcon size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--sl-fg-muted,#8b93a1)]" />
               <input
                 type="text"
                 value={agentSearch}
@@ -799,8 +812,8 @@ export function BrandLabClient() {
                   onClick={() => setAgentTierFilter(tier)}
                   className={`px-3 py-1 rounded-md transition-micro font-medium ${
                     agentTierFilter === tier
-                      ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold"
-                      : "border border-white/10 text-slate-300 hover:text-white hover:bg-white/5"
+                      ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                      : "border border-white/10 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)] hover:bg-white/5"
                   }`}
                 >
                   {tier}
@@ -814,12 +827,20 @@ export function BrandLabClient() {
             {filteredAgents.slice(0, 48).map((agent) => (
               <div
                 key={agent.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => setSelectedAgent(agent)}
-                className="rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] p-4 hover:border-[var(--sl-gold,#c9a15c)] transition-std cursor-pointer group flex flex-col justify-between"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedAgent(agent);
+                  }
+                }}
+                className="rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.12))] bg-[var(--sl-surface-1,#0d1119)] p-4 hover:border-[var(--sl-gold,#c9a15c)] focus-visible:border-[var(--sl-gold,#c9a15c)] focus-visible:outline-none transition-std cursor-pointer group flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-slate-300">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-[var(--sl-fg,#ede6d8)]">
                       {agent.tier}
                     </span>
                     <span className="text-[10px] font-mono text-[var(--sl-fg-muted,#8b93a1)] truncate max-w-[100px]">
@@ -835,7 +856,7 @@ export function BrandLabClient() {
                       <h4 className="text-sm font-semibold tracking-tight text-[var(--sl-fg,#ede6d8)] group-hover:text-[var(--sl-gold,#c9a15c)] transition-micro">
                         {agent.title}
                       </h4>
-                      <p className="text-[11px] font-mono text-slate-400">id: {agent.id}</p>
+                      <p className="text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)]">id: {agent.id}</p>
                     </div>
                   </div>
 
@@ -844,7 +865,7 @@ export function BrandLabClient() {
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-[var(--sl-border,rgba(237,230,216,0.08))] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="pt-2 border-t border-[var(--sl-border,rgba(237,230,216,0.08))] flex items-center justify-between text-[11px] font-mono text-[var(--sl-fg-muted,#8b93a1)]">
                   <span>Voice: {agent.voice}</span>
                   <span className="text-[var(--sl-companion,#82d8e6)] group-hover:translate-x-0.5 transition-transform">
                     Inspect →
@@ -867,12 +888,18 @@ export function BrandLabClient() {
 
           {/* Agent Inspector Modal/Drawer */}
           {selectedAgent && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-              <div className="w-full max-w-lg rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="brandlab-agent-modal-title"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            >
+              <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
                 <button
                   type="button"
                   onClick={() => setSelectedAgent(null)}
-                  className="absolute right-4 top-4 text-slate-400 hover:text-white"
+                  aria-label="Close profile"
+                  className="absolute right-4 top-4 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                 >
                   <CloseIcon size={18} />
                 </button>
@@ -885,7 +912,7 @@ export function BrandLabClient() {
                     size={64}
                   />
                   <div>
-                    <h3 className="text-xl font-semibold text-[var(--sl-fg,#ede6d8)]">
+                    <h3 id="brandlab-agent-modal-title" className="text-xl font-semibold text-[var(--sl-fg,#ede6d8)]">
                       {selectedAgent.title}
                     </h3>
                     <p className="text-xs font-mono text-[var(--sl-gold,#c9a15c)]">
@@ -900,14 +927,14 @@ export function BrandLabClient() {
 
                 <div className="space-y-3 pt-3 border-t border-white/10 text-xs font-mono">
                   <div>
-                    <span className="text-slate-400 block mb-1">Source File:</span>
+                    <span className="text-[var(--sl-fg-muted,#8b93a1)] block mb-1">Source File:</span>
                     <span className="text-[var(--sl-fg,#ede6d8)] bg-black/40 px-2 py-1 rounded block truncate">
                       agents/{selectedAgent.file}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-slate-400 block mb-1">Active Skills ({selectedAgent.skills.length}):</span>
+                    <span className="text-[var(--sl-fg-muted,#8b93a1)] block mb-1">Active Skills ({selectedAgent.skills.length}):</span>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedAgent.skills.length > 0 ? (
                         selectedAgent.skills.map((s) => (
@@ -919,7 +946,7 @@ export function BrandLabClient() {
                           </span>
                         ))
                       ) : (
-                        <span className="text-slate-500">Autonomous Council coordination</span>
+                        <span className="text-[var(--sl-fg-muted,#8b93a1)]">Autonomous Council coordination</span>
                       )}
                     </div>
                   </div>
@@ -929,13 +956,13 @@ export function BrandLabClient() {
                   <button
                     type="button"
                     onClick={() => setSelectedAgent(null)}
-                    className="px-4 py-1.5 rounded-lg border border-white/10 text-xs text-slate-300 hover:text-white"
+                    className="px-4 py-1.5 rounded-lg border border-white/10 text-xs text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                   >
                     Close
                   </button>
                   <Link
                     href={`/agents?id=${selectedAgent.id}`}
-                    className="px-4 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
                   >
                     Open in Atlas
                   </Link>
@@ -1016,7 +1043,7 @@ export function BrandLabClient() {
                   <button
                     type="button"
                     onClick={() => setStagePlaying(!stagePlaying)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-xs font-mono text-slate-300 hover:text-white"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 text-xs font-mono text-[var(--sl-fg,#ede6d8)] hover:text-white"
                   >
                     {stagePlaying ? <PauseIcon size={14} /> : <PlayIcon size={14} />}
                     <span>{stagePlaying ? "Pause Animation" : "Resume Motion"}</span>
@@ -1040,7 +1067,7 @@ export function BrandLabClient() {
                 <span className="text-[11px] font-mono text-[var(--sl-gold,#c9a15c)] mt-1">
                   Active Tier: {motionTier.toUpperCase()}
                 </span>
-                <span className="text-[10px] font-mono text-slate-400 mt-0.5">
+                <span className="text-[10px] font-mono text-[var(--sl-fg-muted,#8b93a1)] mt-0.5">
                   Frame budget: &lt;16.6ms (60fps)
                 </span>
               </GlassSurface>
@@ -1074,8 +1101,8 @@ export function BrandLabClient() {
                   onClick={() => setStudyFilter(f)}
                   className={`px-3 py-1 rounded-md transition-micro font-medium ${
                     studyFilter === f
-                      ? "bg-[var(--sl-gold,#c9a15c)] text-black font-semibold"
-                      : "border border-white/10 text-slate-300 hover:text-white hover:bg-white/5"
+                      ? "bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] font-semibold"
+                      : "border border-white/10 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)] hover:bg-white/5"
                   }`}
                 >
                   {f}
@@ -1089,8 +1116,16 @@ export function BrandLabClient() {
             {filteredStudies.map((study) => (
               <div
                 key={study.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => setSelectedStudy(study)}
-                className="group relative rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.1))] bg-[var(--sl-surface-1,#0d1119)] overflow-hidden cursor-pointer hover:border-[var(--sl-gold,#c9a15c)] transition-std flex flex-col"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedStudy(study);
+                  }
+                }}
+                className="group relative rounded-xl border border-[var(--sl-border,rgba(237,230,216,0.1))] bg-[var(--sl-surface-1,#0d1119)] overflow-hidden cursor-pointer hover:border-[var(--sl-gold,#c9a15c)] focus-visible:border-[var(--sl-gold,#c9a15c)] focus-visible:outline-none transition-std flex flex-col"
               >
                 {/* Image plate with fallback */}
                 <div className="relative aspect-square w-full bg-black/60 overflow-hidden">
@@ -1139,12 +1174,18 @@ export function BrandLabClient() {
 
           {/* Study Provenance Drawer Modal */}
           {selectedStudy && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-              <div className="w-full max-w-xl rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="brandlab-study-modal-title"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            >
+              <div className="w-full max-w-xl rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
                 <button
                   type="button"
                   onClick={() => setSelectedStudy(null)}
-                  className="absolute right-4 top-4 text-slate-400 hover:text-white"
+                  aria-label="Close study"
+                  className="absolute right-4 top-4 text-[var(--sl-fg-muted,#8b93a1)] hover:text-[var(--sl-fg,#ede6d8)]"
                 >
                   <CloseIcon size={18} />
                 </button>
@@ -1160,7 +1201,7 @@ export function BrandLabClient() {
                     {selectedStudy.vis_score} / 30 PTS
                   </span>
                   <div>
-                    <h3 className="text-lg font-semibold text-[var(--sl-fg,#ede6d8)]">
+                    <h3 id="brandlab-study-modal-title" className="text-lg font-semibold text-[var(--sl-fg,#ede6d8)]">
                       {selectedStudy.title}
                     </h3>
                     <p className="text-xs font-mono text-[var(--sl-gold,#c9a15c)]">
@@ -1180,13 +1221,13 @@ export function BrandLabClient() {
 
                 {/* Score Breakdown (6x5 rubric) */}
                 <div className="mb-4">
-                  <h4 className="text-xs font-mono uppercase text-slate-400 mb-2">
+                  <h4 className="text-xs font-mono uppercase text-[var(--sl-fg-muted,#8b93a1)] mb-2">
                     30-Point Gate Rubric Breakdown
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
                     {Object.entries(selectedStudy.category_scores || {}).map(([key, val]) => (
                       <div key={key} className="p-2 rounded border border-white/5 bg-white/5">
-                        <span className="text-[10px] text-slate-400 block truncate">
+                        <span className="text-[10px] text-[var(--sl-fg-muted,#8b93a1)] block truncate">
                           {key.replace(/_/g, " ")}
                         </span>
                         <span className="text-sm font-semibold text-[var(--sl-gold,#c9a15c)]">
@@ -1209,7 +1250,7 @@ export function BrandLabClient() {
 
                 {/* Machine JSON Sidecar */}
                 <EvidenceDisclosure summary="View Raw .vis.provenance.json Sidecar">
-                  <pre className="text-[11px] font-mono text-slate-300 p-3 rounded bg-black/60 overflow-x-auto">
+                  <pre className="text-[11px] font-mono text-[var(--sl-fg,#ede6d8)] p-3 rounded bg-black/60 overflow-x-auto">
                     {JSON.stringify(
                       {
                         id: selectedStudy.id,
@@ -1230,7 +1271,7 @@ export function BrandLabClient() {
                   <button
                     type="button"
                     onClick={() => setSelectedStudy(null)}
-                    className="px-4 py-1.5 rounded-lg bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold hover:opacity-90"
                   >
                     Close Provenance
                   </button>
@@ -1295,7 +1336,7 @@ export function BrandLabClient() {
                   <h4 className="text-xs font-mono font-semibold text-red-300 mb-2">
                     {item.title}
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-[var(--sl-fg,#ede6d8)] leading-relaxed">
                     {item.critique}
                   </p>
                 </div>
@@ -1327,7 +1368,7 @@ export function BrandLabClient() {
                 <span className="text-xs font-mono uppercase text-[var(--sl-companion,#82d8e6)]">
                   Shadcn Registry 1-Click Install
                 </span>
-                <span className="text-xs font-mono text-slate-400">Next.js / React 19</span>
+                <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)]">Next.js / React 19</span>
               </div>
               <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] leading-relaxed mb-4">
                 Install Starlight Living Design primitives, tokens, and 24 Signal SVG icons into your own project in 60 seconds.
@@ -1343,7 +1384,7 @@ export function BrandLabClient() {
                       "shadcn"
                     )
                   }
-                  className="px-2.5 py-1 rounded bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold shrink-0"
+                  className="px-2.5 py-1 rounded bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold shrink-0 hover:opacity-90"
                 >
                   {copiedKey === "shadcn" ? "Copied!" : "Copy"}
                 </button>
@@ -1356,7 +1397,7 @@ export function BrandLabClient() {
                 <span className="text-xs font-mono uppercase text-[var(--sl-gold,#c9a15c)]">
                   Tailwind v4 @theme Integration
                 </span>
-                <span className="text-xs font-mono text-slate-400">CSS Tokens</span>
+                <span className="text-xs font-mono text-[var(--sl-fg-muted,#8b93a1)]">CSS Tokens</span>
               </div>
               <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)] leading-relaxed mb-4">
                 Drop Starlight semantic variables directly into your Tailwind v4 theme block.
@@ -1372,7 +1413,7 @@ export function BrandLabClient() {
                       "tailwind"
                     )
                   }
-                  className="px-2.5 py-1 rounded bg-[var(--sl-gold,#c9a15c)] text-black text-xs font-semibold shrink-0"
+                  className="px-2.5 py-1 rounded bg-[var(--sl-accent-fill,#c9a15c)] text-[var(--sl-on-accent,#070a10)] text-xs font-semibold shrink-0 hover:opacity-90"
                 >
                   {copiedKey === "tailwind" ? "Copied!" : "Copy"}
                 </button>
@@ -1398,7 +1439,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /design — Living Spec Reader
                   </h4>
-                  <p className="text-xs text-slate-400">Canonical public reader for Living Design v3.0 YAML spec.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Canonical public reader for Living Design v3.0 YAML spec.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Read Spec →</span>
               </Link>
@@ -1411,7 +1452,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /visuals/system — Specimen Bench
                   </h4>
-                  <p className="text-xs text-slate-400">Interactive specimen bench with 24 Signal SVG icons sandbox.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Interactive specimen bench with 24 Signal SVG icons sandbox.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Launch Bench →</span>
               </Link>
@@ -1424,7 +1465,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /visuals/provenance — 30-pt Gate
                   </h4>
-                  <p className="text-xs text-slate-400">Live ledger inspector for VIS 30-pt gate, rights, and R2 CDN.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Live ledger inspector for VIS 30-pt gate, rights, and R2 CDN.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Inspect Ledger →</span>
               </Link>
@@ -1437,7 +1478,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /agents — 151-Agent Atlas
                   </h4>
-                  <p className="text-xs text-slate-400">Full sovereign directory filterable by tier with parametric sigils.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Full sovereign directory filterable by tier with parametric sigils.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Explore Atlas →</span>
               </Link>
@@ -1450,7 +1491,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /movement — The Abundant Web
                   </h4>
-                  <p className="text-xs text-slate-400">Participatory hub uniting manifesto, Built on SIP directory, and pledge.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Participatory hub uniting manifesto, Built on SIP directory, and pledge.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Join Movement →</span>
               </Link>
@@ -1463,7 +1504,7 @@ export function BrandLabClient() {
                   <h4 className="text-sm font-semibold text-[var(--sl-fg,#ede6d8)] mb-1">
                     /visuals/press-kit — Protocol Kit
                   </h4>
-                  <p className="text-xs text-slate-400">Official protocol press kit hosting SVG marks and guidelines.</p>
+                  <p className="text-xs text-[var(--sl-fg-muted,#8b93a1)]">Official protocol press kit hosting SVG marks and guidelines.</p>
                 </div>
                 <span className="text-xs font-mono text-[var(--sl-gold,#c9a15c)] mt-3">Download Kit →</span>
               </Link>

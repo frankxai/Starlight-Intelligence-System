@@ -367,9 +367,35 @@ const LOCAL_STUDIES = [
   },
 ];
 
-// Add 30 more items from the catalog (selecting approved & hero)
+const syncedLocalStudies = LOCAL_STUDIES.map((study) => {
+  const match = catalog.find((item) => item.filename === study.filename);
+  if (!match) return study;
+  const visScore = typeof match.vis_score === "number" ? match.vis_score : study.vis_score;
+  const tier =
+    match.tier ||
+    (visScore >= 28 ? "Hero (>=28)" : visScore >= 26 ? "Approved (26-27)" : "Study (22-25)");
+  return {
+    ...study,
+    vis_score: visScore,
+    tier,
+    category_scores: match.category_scores || study.category_scores,
+    model: match.model || study.model,
+    prompt_hash: match.prompt_hash || study.prompt_hash,
+    rights_status: match.rights_status || study.rights_status,
+    provenance: {
+      ...study.provenance,
+      ...(match.provenance || {}),
+      model: match.model || study.provenance.model,
+      rights_status: match.rights_status || study.provenance.rights_status,
+    },
+  };
+});
+
+const localNames = new Set(syncedLocalStudies.map((s) => s.filename));
+
+// Add 30 more items from the catalog (selecting approved & hero, deduplicating local files)
 let catalogAdditions = catalog
-  .filter((x) => x.vis_score >= 26)
+  .filter((x) => x.vis_score >= 26 && !localNames.has(x.filename))
   .slice(0, 36)
   .map((item, idx) => ({
     id: item.id || `catalog_${idx}`,
@@ -393,7 +419,7 @@ let catalogAdditions = catalog
     },
   }));
 
-const combined = [...LOCAL_STUDIES, ...catalogAdditions];
+const combined = [...syncedLocalStudies, ...catalogAdditions];
 
 await fs.writeFile(OUTPUT_FILE, JSON.stringify(combined, null, 2), "utf8");
 console.log(`Generated ${combined.length} curated studies in ${OUTPUT_FILE}`);

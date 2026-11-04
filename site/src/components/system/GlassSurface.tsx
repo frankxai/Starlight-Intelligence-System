@@ -70,6 +70,7 @@ export function GlassSurface({
       onMouseMove={handleMouseMove}
       data-tier={activeTier}
       data-freshness={freshness}
+      data-webgl-status={activeTier === "webgl" ? "css-fallback-active" : undefined}
       style={backdropStyle}
       className={cn(
         "relative overflow-hidden rounded-2xl border transition-all duration-300",

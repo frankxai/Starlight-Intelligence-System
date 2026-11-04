@@ -126,18 +126,28 @@ export function AgentSigil({
     const hasRays = folds % 4 === 0 || folds === 8;
     const rayLength = 46;
 
-    // Palette accents
+    // Palette accents — explicit overrides always take precedence over tier heuristics
     let primaryColor = "var(--sl-companion, #82d8e6)";
     let accentColor = "var(--sl-gold, #c9a15c)";
-    if (accent === "gold" || tierLower.includes("leadership") || tierLower.includes("council")) {
-      primaryColor = "var(--sl-gold, #c9a15c)";
-      accentColor = "var(--sl-companion, #82d8e6)";
+
+    if (accent === "monochrome") {
+      primaryColor = "currentColor";
+      accentColor = "currentColor";
     } else if (accent === "cyan") {
       primaryColor = "var(--sl-companion, #82d8e6)";
       accentColor = "var(--sl-gold, #c9a15c)";
-    } else if (accent === "monochrome") {
-      primaryColor = "currentColor";
-      accentColor = "currentColor";
+    } else if (accent === "gold") {
+      primaryColor = "var(--sl-gold, #c9a15c)";
+      accentColor = "var(--sl-companion, #82d8e6)";
+    } else {
+      // accent === "auto" or undefined: apply tier-based color defaults
+      if (tierLower.includes("leadership") || tierLower.includes("council")) {
+        primaryColor = "var(--sl-gold, #c9a15c)";
+        accentColor = "var(--sl-companion, #82d8e6)";
+      } else {
+        primaryColor = "var(--sl-companion, #82d8e6)";
+        accentColor = "var(--sl-gold, #c9a15c)";
+      }
     }
 
     return {
