@@ -14,7 +14,7 @@ import {
   CodeIcon,
 } from "@/components/icons";
 import { AgentSigil } from "@/components/AgentSigil";
-import { StatusBadge } from "@/components/system";
+import { StatusBadge, ModalDialog } from "@/components/system";
 import agentsData from "@/data/agents.json";
 
 interface AgentRecord {
@@ -264,13 +264,10 @@ export function AgentsAtlasClient() {
 
         {/* Selected Agent Modal */}
         {selectedAgent && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="agent-modal-title"
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          <ModalDialog
+            labelledBy="agent-modal-title"
+            onClose={() => setSelectedAgent(null)}
           >
-            <div className="w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative">
               <button
                 type="button"
                 onClick={() => setSelectedAgent(null)}
@@ -342,8 +339,7 @@ export function AgentsAtlasClient() {
                   Close
                 </button>
               </div>
-            </div>
-          </div>
+          </ModalDialog>
         )}
       </main>
     </div>

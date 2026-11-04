@@ -36,6 +36,7 @@ import {
   AgentPresence,
   ApprovalCard,
   GlassSurface,
+  ModalDialog,
 } from "@/components/system";
 import { StarlightMark } from "@/components/StarlightMark";
 import agentsData from "@/data/agents.json";
@@ -43,8 +44,10 @@ import curatedStudies from "@/data/curated-studies.json";
 
 interface AgentRecord {
   id: string;
+  profileName?: string;
   title: string;
   tier: string;
+  category?: string;
   domain: string;
   voice: string;
   mission: string;
@@ -147,9 +150,9 @@ export function BrandLabClient() {
         agent.skills.some((s) => s.toLowerCase().includes(agentSearch.toLowerCase()));
       const matchTier =
         agentTierFilter === "All" ||
-        agent.tier.toLowerCase().includes(agentTierFilter.toLowerCase()) ||
-        (agentTierFilter === "Specialist" && agent.tier === "Specialist") ||
-        (agentTierFilter === "Universal IS" && agent.tier === "Universal IS");
+        agent.category === agentTierFilter ||
+        agent.tier.toLowerCase() === agentTierFilter.toLowerCase() ||
+        agent.tier.toLowerCase().includes(agentTierFilter.toLowerCase());
       return matchSearch && matchTier;
     });
   }, [agents, agentSearch, agentTierFilter]);
@@ -667,8 +670,11 @@ export function BrandLabClient() {
                   Instrument Sans (Display & Headings · Tracking -0.025em)
                 </span>
                 <p
-                  style={{ fontSize: `${fontSize}px` }}
-                  className="font-sans font-semibold tracking-tight text-[var(--sl-fg,#ede6d8)] leading-tight"
+                  style={{
+                    fontSize: `${fontSize}px`,
+                    fontFamily: "var(--sl-font-sans-loaded), var(--sl-font-sans), sans-serif",
+                  }}
+                  className="font-semibold tracking-tight text-[var(--sl-fg,#ede6d8)] leading-tight"
                 >
                   {customText || "The Open & Abundant Web"}
                 </p>
@@ -679,8 +685,11 @@ export function BrandLabClient() {
                   Instrument Serif (Editorial Italic Grace Notes)
                 </span>
                 <p
-                  style={{ fontSize: `${fontSize}px` }}
-                  className="font-serif italic text-[var(--sl-gold,#c9a15c)] leading-tight"
+                  style={{
+                    fontSize: `${fontSize}px`,
+                    fontFamily: "var(--sl-font-serif-loaded), var(--sl-font-serif), serif",
+                  }}
+                  className="italic text-[var(--sl-gold,#c9a15c)] leading-tight"
                 >
                   {customText || "Intelligence in service of life."}
                 </p>
@@ -691,8 +700,11 @@ export function BrandLabClient() {
                   IBM Plex Mono (Telemetry, Cryptographic Proof & Code)
                 </span>
                 <p
-                  style={{ fontSize: `${Math.max(14, fontSize - 12)}px` }}
-                  className="font-mono text-[var(--sl-fg-muted,#8b93a1)] leading-tight break-all"
+                  style={{
+                    fontSize: `${Math.max(14, fontSize - 12)}px`,
+                    fontFamily: "var(--sl-font-mono-loaded), var(--sl-font-mono), monospace",
+                  }}
+                  className="text-[var(--sl-fg-muted,#8b93a1)] leading-tight break-all"
                 >
                   {customText ? `SHA256(${customText})` : "c2c35d27 · 30-pt gate verified · SIP-Attested"}
                 </p>
@@ -1002,7 +1014,7 @@ export function BrandLabClient() {
                       : "text-[var(--sl-fg-muted,#8b93a1)] hover:text-white"
                   }`}
                 >
-                  {t === "webgl" ? "Tier 1: WebGL2" : t === "css" ? "Tier 2: CSS Lite" : "Tier 3: Static"}
+                  {t === "webgl" ? "Tier 1: WebGL2 Spec (CSS Preview)" : t === "css" ? "Tier 2: CSS Lite" : "Tier 3: Static"}
                 </button>
               ))}
             </div>
@@ -1033,10 +1045,10 @@ export function BrandLabClient() {
                   Constellation Node Choreography
                 </h3>
                 <p className="mt-3 text-sm text-[var(--sl-fg-muted,#8b93a1)] leading-relaxed">
-                  Notice how liquid glass refraction and chromatic specular reflections gracefully fall back.
-                  On capable desktop GPUs, WebGL2 renders refractive liquid lenses. On mobile devices or battery saving modes,
-                  it seamlessly transitions to pure CSS backdrop blur. Under reduced-motion preferences, it delivers
-                  instant high-contrast static elegance.
+                  Notice how liquid glass refraction and specular highlights degrade predictably across tiers.
+                  On this static documentation site, Tier 1 renders a CSS backdrop-filter specification preview
+                  (full Three.js WebGL2 refraction shaders ship in `@starlight/materials`), Tier 2 uses pure CSS
+                  backdrop blur, and Tier 3 delivers zero-blur high-contrast static surfaces under reduced motion.
                 </p>
 
                 <div className="mt-6 flex items-center gap-3">
@@ -1065,7 +1077,7 @@ export function BrandLabClient() {
                   Queen Visual Engine Specimen
                 </h4>
                 <span className="text-[11px] font-mono text-[var(--sl-gold,#c9a15c)] mt-1">
-                  Active Tier: {motionTier.toUpperCase()}
+                  Active Renderer: {motionTier === "webgl" ? "CSS Fallback (WebGL2 Spec)" : motionTier === "css" ? "CSS Backdrop" : "Static Matte"}
                 </span>
                 <span className="text-[10px] font-mono text-[var(--sl-fg-muted,#8b93a1)] mt-0.5">
                   Frame budget: &lt;16.6ms (60fps)
@@ -1174,13 +1186,10 @@ export function BrandLabClient() {
 
           {/* Study Provenance Drawer Modal */}
           {selectedStudy && (
-            <div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="brandlab-study-modal-title"
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            <ModalDialog
+              labelledBy="brandlab-study-modal-title"
+              onClose={() => setSelectedStudy(null)}
             >
-              <div className="w-full max-w-xl rounded-2xl border border-[var(--sl-gold,#c9a15c)]/60 bg-[var(--sl-surface-1,#0d1119)] p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
                 <button
                   type="button"
                   onClick={() => setSelectedStudy(null)}
@@ -1276,8 +1285,7 @@ export function BrandLabClient() {
                     Close Provenance
                   </button>
                 </div>
-              </div>
-            </div>
+            </ModalDialog>
           )}
 
           {/* Anti-Slop Wall */}
@@ -1409,7 +1417,13 @@ export function BrandLabClient() {
                   type="button"
                   onClick={() =>
                     copyToClipboard(
-                      `@theme inline {\n  --color-sl-bg: var(--sl-bg);\n  --color-sl-gold: var(--sl-gold);\n  --color-sl-companion: var(--sl-companion);\n}`,
+                      [
+                        "@theme inline {",
+                        "  --color-sl-bg: var(--sl-bg);",
+                        "  --color-sl-gold: var(--sl-gold);",
+                        "  --color-sl-companion: var(--sl-companion);",
+                        "}",
+                      ].join("\n"),
                       "tailwind"
                     )
                   }
