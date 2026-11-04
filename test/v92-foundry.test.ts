@@ -943,7 +943,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       envelope.evidencePolicy.minimumIndependentJudges = 1;
       envelope.completionTests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.type === "judge").required = true;
       const output = join(temp, "package");
-      compileDemo(output, envelope, "2026-11-03");
+      compileDemo(output, envelope);
       const { receipt } = provePackage({ packageDirectory: output, registry });
       assert.equal(receipt.status, "experimental");
       assert.equal(receipt.laneCoverage.taste, "pending");
@@ -984,7 +984,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       });
       envelope.evidencePolicy.requiredLanes.push("security");
       const output = join(temp, "package");
-      compileDemo(output, envelope, "2026-11-03");
+      compileDemo(output, envelope);
       assert.throws(
         () => provePackage({ packageDirectory: output, registry }),
         /Path escapes allowed root/,
@@ -1007,7 +1007,7 @@ describe("v9.2 Foundry compilation and proof", () => {
         timeoutMs: 5000,
       });
       const output = join(temp, "package");
-      compileDemo(output, envelope, "2026-11-03");
+      compileDemo(output, envelope);
       const pending = provePackage({ packageDirectory: output, registry }).receipt;
       assert.equal(pending.status, "experimental");
       const passed = provePackage({
