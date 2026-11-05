@@ -81,6 +81,11 @@ export function adjudicateEvolution(experiment, limits = DEFAULT_LIMITS) {
       !text(experiment.hypothesis)) {
     reasons.push("invalid experiment identity/hypothesis/source revision");
   }
+  const budget = experiment.budget;
+  if (!plainObject(budget) || !nonnegative(budget.maxCandidateCostUsd) ||
+      !nonnegative(budget.maxCandidateHumanMinutes)) {
+    reasons.push("explicit candidate cash and human effort budget required");
+  }
   const taskSet = experiment.taskSet;
   if (!plainObject(taskSet) || !sha64(taskSet.digest) ||
       taskSet.sealed !== true || taskSet.contamination !== "clear" ||
@@ -112,6 +117,12 @@ export function adjudicateEvolution(experiment, limits = DEFAULT_LIMITS) {
   }
   if (b.attempted !== c.attempted) {
     reasons.push("paired comparison requires equal observed task counts");
+  }
+  if (c.totalUsd > budget.maxCandidateCostUsd) {
+    reasons.push("candidate exceeded admitted cash budget");
+  }
+  if (c.humanMinutes > budget.maxCandidateHumanMinutes) {
+    reasons.push("candidate exceeded admitted human effort budget");
   }
   if (b.criticalViolations !== 0 || c.criticalViolations !== 0) {
     reasons.push("critical integrity, safety or tenant-boundary violation");
