@@ -215,6 +215,10 @@ PRD v0.1 done when: current source location reviewed, exact GitHub program and N
 - [Supabase security/RLS](https://supabase.com/docs/guides/api/securing-your-api); [Supabase CLI breaking changes](https://supabase.com/changelog?types=breaking-change).
 - [LangSmith evaluation](https://www.langchain.com/langsmith/evaluation); [existing portfolio authority](https://github.com/frankxai/agentic-ops/blob/main/QUALITY.md).
 
+### Data-platform integration dependency
+
+[Ops PR #479](https://github.com/frankxai/agentic-ops/pull/479) already proposes the application-to-database registry, multi-tenant contracts and MyVision isolation. E&E must **consume its reviewed owner/tenant/binding contract** rather than define a competing application-to-database registry. The source audit flags security-advisor warnings that need separate owner review before any new customer-facing run or evaluation API. Do not publish provider/security findings from private audits as evidence of exploitation or copy unreviewed policy into a public API. Data-platform PR #479 is draft, not merged.
+
 ## 16. Observed integration and tenancy facts — 5 November 2026
 
 This section records fresh connector inspections after PRD authoring; it is not a change to deployed infrastructure.
