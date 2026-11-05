@@ -1,3 +1,12 @@
+import { afterEach, describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { createServer, type Server } from "node:http";
+import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { runTerminalCli } from "../src/terminal-cli.js";
+import { terminalDigest } from "../src/terminal-runtime.js";
+import { createOpenCodeRuntime, parseOpenCodeUsage } from "../src/runtime-bridge/opencode.js";
 
 interface MessagePayload {
   id?: string;
@@ -11,15 +20,6 @@ interface MessagePayload {
   parts?: { type: string; tool: string }[];
   [key: string]: unknown;
 }
-import { afterEach, describe, it } from "node:test";
-import assert from "node:assert/strict";
-import { createServer, type Server } from "node:http";
-import { mkdtempSync, readFileSync, writeFileSync, rmSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { runTerminalCli } from "../src/terminal-cli.js";
-import { terminalDigest } from "../src/terminal-runtime.js";
-import { createOpenCodeRuntime, parseOpenCodeUsage } from "../src/runtime-bridge/opencode.js";
 
 const request = { protocol: "starlight.worker.v1" as const, taskId: "draft-1", agent: "creator", input: "Use supplied sources", context: {} };
 const servers: Server[] = [];
