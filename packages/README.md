@@ -86,7 +86,7 @@ OpenClaw skill pack for SIS Claws. Contains curated, signed skills for the OpenC
 ### `sis-skills`
 **npm:** `@arcanea/sis-skills`
 
-Compiled skill definitions and activation rules (75 rules across 5 domains: intelligence, orchestration, memory, integration, safety). Source of truth is `skills/skill-rules.json`.
+Compiled skill definitions and activation rules (rules across 5 domains: intelligence, orchestration, memory, integration, safety). Source of truth is `skills/skill-rules.json`.
 
 ### `sis-adapters`
 **npm:** `@arcanea/sis-adapters`
