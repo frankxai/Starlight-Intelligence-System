@@ -82,7 +82,8 @@ test('shouldDispatchRunner triggers only on actionable continuous integration st
   assert.equal(shouldDispatchRunner({ event: 'push', ref: 'refs/heads/main', repo: 'test', sender: 'user' }), true);
   assert.equal(shouldDispatchRunner({ event: 'push', ref: 'refs/heads/feature-branch', repo: 'test', sender: 'user' }), false);
 
-  assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'queued', repo: 'test', sender: 'user' }), true);
+  assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'queued', repo: 'test', sender: 'user' }), false);
+  assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'queued', labels: ['self-hosted', 'starlight-runner'], repo: 'test', sender: 'user' }), true);
   assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'completed', repo: 'test', sender: 'user' }), false);
 });
 
@@ -105,9 +106,9 @@ test('buildCloudRunExecutionPayload constructs correct container environment ove
     payload.overrides.containerOverrides[0].env.map((item) => [item.name, item.value])
   );
 
-  assert.equal(envs.REPO, 'frankxai/frankx.ai-vercel-website');
+  assert.equal(envs.STARLIGHT_REPO, 'frankxai/frankx.ai-vercel-website');
   assert.equal(envs.PR_NUMBER, '981');
-  assert.equal(envs.COMMIT_SHA, 'a8c679b6297f8abd9d7c63af5f37351d6fddf916');
+  assert.equal(envs.STARLIGHT_COMMIT_SHA, 'a8c679b6297f8abd9d7c63af5f37351d6fddf916');
   assert.equal(envs.TRIGGER_EVENT, 'pull_request');
   assert.equal(envs.CALLBACK_URL, 'https://ingress.starlight.workers.dev/callback');
 });

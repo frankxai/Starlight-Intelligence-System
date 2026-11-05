@@ -1,14 +1,17 @@
 /**
  * Starlight Fleet Ingress Router — Cloudflare Worker
  *
- * Receives GitHub webhooks across Frank's multi-brand estate (~80+ repos),
- * verifies HMAC-SHA256 signatures, deduplicates payloads, and triggers
- * scale-to-zero Google Cloud Run Jobs runners with task-specific container overrides.
- *
- * Latency budget: <15ms edge routing, $0.00 idle cost.
+ * Receives authenticated, source-pinned GitHub work and records a durable dispatch
+ * attempt before calling the configured Cloud Run Job. Public ingress remains
+ * contained until the deployment and workload admission gates are qualified.
+ * No measured latency, cost, completion or GPU qualification is claimed here.
  *
  * Built on SIP — Starlight Intelligence Protocol v1.1.1.
  */
+
+import { AdmissionError, authorizeSource, parsePolicy } from './admission.ts';
+import { accept, claim, LedgerUnavailable } from './delivery-ledger.ts';
+import type { DeliveryStorage } from './delivery-ledger.ts';
 
 export interface Env {
   GITHUB_WEBHOOK_SECRET?: string;
@@ -17,6 +20,11 @@ export interface Env {
   CLOUD_RUN_JOB?: string;
   GCP_SERVICE_ACCOUNT_TOKEN?: string;
   INGRESS_AUTH_BEARER?: string;
+  FLEET_ADMISSION_POLICY?: string;
+  FLEET_DELIVERIES?: {
+    idFromName(name: string): unknown;
+    get(id: unknown): { fetch(request: Request): Promise<Response> };
+  };
 }
 
 export interface WebhookEventMeta {
@@ -28,6 +36,7 @@ export interface WebhookEventMeta {
   prNumber?: number;
   sender: string;
   installationId?: number;
+  labels?: string[];
 }
 
 /**
@@ -101,14 +110,16 @@ export function extractEventMetadata(
     prNumber,
     sender,
     installationId,
+    labels: payload.workflow_job?.labels,
   };
 }
 
 /**
- * Determine if an event should spin up a scale-to-zero Cloud Run runner instance.
+ * Advisory event filter for callers. This does not authorize dispatch.
+ * handleRequest independently enforces the full source policy.
  */
 export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
-  // Always trigger runner on PR opens, syncs, or explicit review requests
+  // Candidate PR states; the effect boundary separately checks repository, draft and SHA.
   if (meta.event === 'pull_request') {
     return ['opened', 'synchronize', 'reopened'].includes(meta.action || '');
   }
@@ -118,7 +129,8 @@ export function shouldDispatchRunner(meta: WebhookEventMeta): boolean {
   }
   // Trigger on workflow jobs queued requesting starlight-runner label
   if (meta.event === 'workflow_job' && meta.action === 'queued') {
-    return true;
+    return Array.isArray(meta.labels) && meta.labels.includes('self-hosted')
+      && meta.labels.includes('starlight-runner');
   }
   return false;
 }
@@ -131,11 +143,11 @@ export function buildCloudRunExecutionPayload(
   callbackUrl?: string
 ): Record<string, any> {
   const envOverrides: Array<{ name: string; value: string }> = [
-    { name: 'REPO', value: meta.repo },
+    { name: 'STARLIGHT_REPO', value: meta.repo },
     { name: 'TRIGGER_EVENT', value: meta.event },
   ];
 
-  if (meta.sha) envOverrides.push({ name: 'COMMIT_SHA', value: meta.sha });
+  if (meta.sha) envOverrides.push({ name: 'STARLIGHT_COMMIT_SHA', value: meta.sha });
   if (meta.prNumber) envOverrides.push({ name: 'PR_NUMBER', value: String(meta.prNumber) });
   if (meta.ref) envOverrides.push({ name: 'GIT_REF', value: meta.ref });
   if (callbackUrl) envOverrides.push({ name: 'CALLBACK_URL', value: callbackUrl });
@@ -151,152 +163,153 @@ export function buildCloudRunExecutionPayload(
   };
 }
 
-export async function handleRequest(request: Request, env: Env = {}): Promise<Response> {
-  const url = new URL(request.url);
-
-    // Health probe
-    if (url.pathname === '/health' || url.pathname === '/v1/health') {
-      return new Response(
-        JSON.stringify({
-          status: 'healthy',
-          substrate: 'starlight-fleet-ingress',
-          timestamp: new Date().toISOString(),
-          protocol: 'SIP-1.1.1',
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    // Webhook receiver endpoint
-    if (request.method === 'POST' && (url.pathname === '/webhook' || url.pathname === '/v1/github/events')) {
-      const signature = request.headers.get('x-hub-signature-256');
-      const eventType = request.headers.get('x-github-event') || 'ping';
-      const rawBody = await request.text();
-
-      // Missing credentials must never turn a private webhook into an unsigned one.
-      if (!env.GITHUB_WEBHOOK_SECRET?.trim()) {
-        return new Response(JSON.stringify({ error: 'webhook_unavailable' }), {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      const isValid = await verifySignature(rawBody, signature, env.GITHUB_WEBHOOK_SECRET);
-      if (!isValid) {
-        return new Response(JSON.stringify({ error: 'invalid_signature' }), {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      let payload: Record<string, any> = {};
-      try {
-        payload = JSON.parse(rawBody);
-      } catch (err) {
-        return new Response(JSON.stringify({ error: 'malformed_json' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-        return new Response(JSON.stringify({ error: 'malformed_json' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      if (eventType === 'ping') {
-        return new Response(JSON.stringify({ ok: true, pong: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      const meta = extractEventMetadata(eventType, payload);
-      if (!meta) {
-        return new Response(JSON.stringify({ ok: true, skipped: 'untracked_event' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      const needsRunner = shouldDispatchRunner(meta);
-      if (!needsRunner) {
-        return new Response(JSON.stringify({ ok: true, skipped: 'no_runner_action_needed', meta }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      // If GCP credentials exist, dispatch directly to Google Cloud Run Jobs REST API
-      if (![env.GCP_PROJECT_ID, env.GCP_REGION, env.CLOUD_RUN_JOB, env.GCP_SERVICE_ACCOUNT_TOKEN]
-        .every((value) => typeof value === 'string' && value.trim().length > 0)) {
-        return new Response(JSON.stringify({ error: 'runner_unavailable' }), {
-          status: 503,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      let gcpDispatchResult: Record<string, any>;
-      {
-        const callbackUrl = `${url.origin}/v1/runner/callback`;
-        const execPayload = buildCloudRunExecutionPayload(meta, callbackUrl);
-        const gcpEndpoint = `https://run.googleapis.com/v2/projects/${env.GCP_PROJECT_ID}/locations/${env.GCP_REGION}/jobs/${env.CLOUD_RUN_JOB}:run`;
-
-        try {
-          const gcpRes = await fetch(gcpEndpoint, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${env.GCP_SERVICE_ACCOUNT_TOKEN}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(execPayload),
-          });
-
-          if (!gcpRes.ok) {
-            return new Response(JSON.stringify({ error: 'runner_dispatch_failed' }), {
-              status: 502,
-              headers: { 'Content-Type': 'application/json' },
-            });
-          }
-          gcpDispatchResult = {
-            dispatched: gcpRes.ok,
-            status: gcpRes.status,
-            body: await gcpRes.json().catch(() => ({})),
-          };
-        } catch (dispatchErr: any) {
-          return new Response(JSON.stringify({ error: 'runner_dispatch_failed' }), {
-            status: 502,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-      }
-
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          event: meta.event,
-          repo: meta.repo,
-          runnerRequired: true,
-          gcp: gcpDispatchResult,
-        }),
-        {
-          status: 202,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    return new Response(JSON.stringify({ error: 'not_found' }), {
-      status: 404,
-      headers: { 'Content-Type': 'application/json' },
-    });
+export const MAX_BODY_BYTES = 1024 * 1024;
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
 }
 
-export default {
-  fetch: handleRequest,
-};
+async function boundedText(request: Request | Response, limit = MAX_BODY_BYTES): Promise<string> {
+  const declared = request.headers.get('content-length');
+  if (declared && (!/^\d+$/.test(declared) || Number(declared) > limit))
+    throw new AdmissionError('payload_too_large', 413);
+  if (!request.body) return '';
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const read = async () => {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        size += value.byteLength;
+        if (size > limit) throw new AdmissionError('payload_too_large', 413);
+        chunks.push(value);
+      }
+      const bytes = new Uint8Array(size);
+      let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+      return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+    };
+    return await Promise.race([read(), new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new AdmissionError('body_timeout', 408)), 2000);
+    })]);
+  } catch (error) {
+    void reader.cancel().catch(() => {});
+    if (error instanceof AdmissionError) throw error;
+    throw new AdmissionError('malformed_body', 400);
+  } finally { clearTimeout(timer); }
+}
 
+async function inspect(request: Request, env: Env) {
+  if (!env.GITHUB_WEBHOOK_SECRET?.trim()) throw new AdmissionError('webhook_unavailable', 503);
+  const raw = await boundedText(request);
+  if (!await verifySignature(raw, request.headers.get('x-hub-signature-256'), env.GITHUB_WEBHOOK_SECRET))
+    throw new AdmissionError('invalid_signature', 401);
+  let payload: Record<string, any>;
+  try { payload = JSON.parse(raw); } catch { throw new AdmissionError('malformed_json', 400); }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload))
+    throw new AdmissionError('malformed_json', 400);
+  const event = request.headers.get('x-github-event');
+  if (!event) throw new AdmissionError('event_header_required', 400);
+  if (event === 'ping') return { response: json({ ok: true, pong: true }) };
+  if (!['push','pull_request','workflow_job'].includes(event))
+    return { response: json({ ok: true, skipped: 'untracked_event' }) };
+  if (![env.GCP_PROJECT_ID, env.GCP_REGION, env.CLOUD_RUN_JOB, env.GCP_SERVICE_ACCOUNT_TOKEN]
+    .every(v => typeof v === 'string' && v.trim().length > 0))
+    throw new AdmissionError('runner_unavailable', 503);
+  if (!/^(?:[a-z][a-z0-9-]{4,28}[a-z0-9]|[0-9]{6,20})$/.test(env.GCP_PROJECT_ID!)
+    || !/^[a-z]+-[a-z]+[0-9]+$/.test(env.GCP_REGION!)
+    || !/^[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(env.CLOUD_RUN_JOB!)
+    || /[\x00-\x20\x7f]/.test(env.GCP_SERVICE_ACCOUNT_TOKEN!))
+    throw new AdmissionError('runner_unavailable', 503);
+  const policy = parsePolicy(env.FLEET_ADMISSION_POLICY);
+  authorizeSource(event, payload, policy);
+  const meta = extractEventMetadata(event, payload)!;
+  const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw)));
+  const fingerprint = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  return { raw, event, policy, meta, fingerprint };
+}
+function failure(error: unknown): Response {
+  return error instanceof AdmissionError ? json({ error: error.message }, error.status)
+    : json({ error: 'ingress_unavailable' }, 503);
+}
+
+export async function handleRequest(request: Request, env: Env = {}): Promise<Response> {
+  const path = new URL(request.url).pathname;
+  if (request.method === 'GET' && ['/health','/v1/health'].includes(path))
+    return json({ status: 'healthy', readiness: 'not_evaluated', substrate: 'starlight-fleet-ingress',
+      timestamp: new Date().toISOString(), protocol: 'SIP-1.1.1' });
+  if (request.method !== 'POST' || !['/webhook','/v1/github/events'].includes(path))
+    return json({ error: 'not_found' }, 404);
+  try {
+    const admitted = await inspect(request, env);
+    if (admitted.response) return admitted.response;
+    if (!env.FLEET_DELIVERIES) return json({ error: 'ledger_unavailable' }, 503);
+    // Delivery headers are not signed. Key only by the verified, unchanged body.
+    const stub = env.FLEET_DELIVERIES.get(env.FLEET_DELIVERIES.idFromName(admitted.fingerprint));
+    return await stub.fetch(new Request('https://delivery.internal/dispatch', {
+      method: 'POST', headers: {
+        'x-github-event': admitted.event,
+        'x-hub-signature-256': request.headers.get('x-hub-signature-256')!,
+      }, body: admitted.raw,
+    }));
+  } catch (error) { return failure(error); }
+}
+
+/** Private binding only. Storage is a dispatch journal, not another task owner. */
+export class FleetDelivery {
+  private storage: DeliveryStorage;
+  private env: Env;
+  constructor(state: { storage: DeliveryStorage }, env: Env) {
+    this.storage = state.storage; this.env = env;
+  }
+  async fetch(request: Request): Promise<Response> {
+    if (request.method !== 'POST' || new URL(request.url).pathname !== '/dispatch')
+      return json({ error: 'not_found' }, 404);
+    try {
+      // Recheck body, scope and expiry at the effect boundary, not just at ingress.
+      const admitted = await inspect(request, this.env);
+      if (admitted.response) return admitted.response;
+      const { meta, policy, fingerprint } = admitted;
+      const { claimed, receipt } = await claim(this.storage, fingerprint, policy.policy_id);
+      if (!claimed) return receipt.state === 'accepted'
+        ? json({ status: 'dispatch_accepted', duplicate: true, receipt })
+        : json({ error: 'runner_dispatch_uncertain', reconciliation_required: true }, 409);
+      const uncertain = () => json({ error: 'runner_dispatch_uncertain', reconciliation_required: true }, 502);
+      try {
+        // An expiry reached while waiting for durable admission must prevent the effect.
+        const currentPolicy = parsePolicy(this.env.FLEET_ADMISSION_POLICY);
+        if (JSON.stringify(currentPolicy) !== JSON.stringify(policy)) return uncertain();
+        const body = buildCloudRunExecutionPayload(meta);
+        body.etag = policy.job_etag;
+        body.overrides.taskCount = 1;
+        body.overrides.timeout = `${policy.max_duration_seconds}s`;
+        body.overrides.containerOverrides[0].env.push({
+          name: 'STARLIGHT_TIMEOUT_SECONDS', value: String(policy.max_duration_seconds),
+        });
+        const prefix = `projects/${this.env.GCP_PROJECT_ID}/locations/${this.env.GCP_REGION}`;
+        const response = await fetch(`https://run.googleapis.com/v2/${prefix}/jobs/${this.env.CLOUD_RUN_JOB}:run`, {
+          method: 'POST', redirect: 'error', signal: AbortSignal.timeout(5000),
+          headers: { Authorization: `Bearer ${this.env.GCP_SERVICE_ACCOUNT_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!response.ok) { void response.body?.cancel().catch(() => {}); return uncertain(); }
+        const operation = JSON.parse(await boundedText(response, 65536));
+        const name = operation?.name;
+        if (operation.error || typeof name !== 'string' || !name.startsWith(`${prefix}/operations/`)
+          || !/^[A-Za-z0-9_-]{1,200}$/.test(name.slice(`${prefix}/operations/`.length))) return uncertain();
+        await accept(this.storage, receipt, name);
+        return json({ ok: true, status: 'dispatch_accepted', duplicate: false,
+          gcp: { dispatched: true, operation: name }, completion_verified: false }, 202);
+      } catch { return uncertain(); }
+    } catch (error) {
+      if (error instanceof LedgerUnavailable) return json({ error: 'ledger_unavailable' }, 503);
+      return failure(error);
+    }
+  }
+}
+
+export default { fetch: handleRequest };

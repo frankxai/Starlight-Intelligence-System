@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { handleRequest, verifySignature } from '../src/index.ts';
 import { createHmac } from 'node:crypto';
+import { environment, payload as admittedPayload, operation } from './fixtures.mjs';
 
 const secret = 'synthetic-fixture-secret';
 const credentials = {
@@ -11,7 +12,7 @@ const credentials = {
   CLOUD_RUN_JOB: 'fixture-job',
   GCP_SERVICE_ACCOUNT_TOKEN: 'synthetic-fixture-token',
 };
-const push = { ref: 'refs/heads/main', after: 'a'.repeat(40), repository: { full_name: 'fixture/example' } };
+const push = { ref: 'refs/heads/main', after: 'a'.repeat(40), repository: { id: 123, full_name: 'fixture/example' }, installation: { id: 456 }, deleted: false };
 
 function signedRequest(payload = push, path = '/webhook') {
   const body = typeof payload === 'string' ? payload : JSON.stringify(payload);
@@ -93,23 +94,23 @@ test('signed malformed or non-object JSON returns 400', async (t) => {
 test('upstream denial or outage returns a sanitized 502', async (t) => {
   for (const status of [401, 403, 500]) {
     t.mock.method(globalThis, 'fetch', async () => new Response('private upstream diagnostic', { status }));
-    const response = await handleRequest(signedRequest(), credentials);
+    const response = await handleRequest(signedRequest(admittedPayload()), environment().env);
     assert.equal(response.status, 502);
-    assert.deepEqual(await response.json(), { error: 'runner_dispatch_failed' });
+    assert.deepEqual(await response.json(), { error: 'runner_dispatch_uncertain', reconciliation_required: true });
     t.mock.restoreAll();
   }
 });
 
 test('network failure returns a sanitized 502', async (t) => {
   t.mock.method(globalThis, 'fetch', async () => { throw new Error('private upstream diagnostic'); });
-  const response = await handleRequest(signedRequest(), credentials);
+  const response = await handleRequest(signedRequest(admittedPayload()), environment().env);
   assert.equal(response.status, 502);
-  assert.deepEqual(await response.json(), { error: 'runner_dispatch_failed' });
+  assert.deepEqual(await response.json(), { error: 'runner_dispatch_uncertain', reconciliation_required: true });
 });
 
 test('202 requires a successful executor response and preserves the source binding', async (t) => {
-  const fetchMock = t.mock.method(globalThis, 'fetch', async () => new Response('{"name":"fixture-operation"}', { status: 200 }));
-  const response = await handleRequest(signedRequest(), credentials);
+  const fetchMock = t.mock.method(globalThis, 'fetch', async () => new Response(JSON.stringify({ name: operation }), { status: 200 }));
+  const response = await handleRequest(signedRequest(admittedPayload()), environment().env);
   assert.equal(response.status, 202);
   const result = await response.json();
   assert.equal(result.gcp.dispatched, true);
@@ -118,5 +119,5 @@ test('202 requires a successful executor response and preserves the source bindi
   const [url, options] = fetchMock.mock.calls[0].arguments;
   assert.equal(url, 'https://run.googleapis.com/v2/projects/fixture-project/locations/europe-west4/jobs/fixture-job:run');
   const env = JSON.parse(options.body).overrides.containerOverrides[0].env;
-  assert.equal(env.find((item) => item.name === 'COMMIT_SHA').value, push.after);
+  assert.equal(env.find((item) => item.name === 'STARLIGHT_COMMIT_SHA').value, push.after);
 });
