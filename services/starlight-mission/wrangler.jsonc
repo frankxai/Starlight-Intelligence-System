@@ -1,0 +1,43 @@
+{
+  "name": "starlight-mission",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-03",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+  "ai_search": [
+    {
+      "binding": "RESEARCH",
+      "instance_name": "starlight-research"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "MISSIONS_DB",
+      "database_name": "starlight-agents-db",
+      "database_id": "21b175b1-7157-4e92-95fa-2719b66b9f09"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "starlight-mission",
+      "binding": "MISSION",
+      "class_name": "MissionWorkflow"
+    }
+  ],
+  "queues": {
+    "consumers": [
+      {
+        "queue": "starlight-agent-jobs",
+        "max_batch_size": 1,
+        "max_retries": 3,
+        "dead_letter_queue": "starlight-agent-jobs-dlq"
+      }
+    ]
+  }
+}
