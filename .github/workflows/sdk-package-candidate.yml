@@ -174,4 +174,4 @@ jobs:
             ${{ runner.temp }}/sdk-candidate/organization/*.tgz
             ${{ runner.temp }}/sdk-candidate/organization/*.json
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 3

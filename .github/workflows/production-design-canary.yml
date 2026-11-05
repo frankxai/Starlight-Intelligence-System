@@ -54,7 +54,7 @@ jobs:
         with:
           name: production-design-canary
           path: probe-results
-          retention-days: 14
+          retention-days: 3
 
       - name: Report failures
         if: steps.probe.outcome == 'failure'
