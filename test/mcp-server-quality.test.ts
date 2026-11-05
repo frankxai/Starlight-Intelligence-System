@@ -16,9 +16,9 @@ const SERVER = join(ROOT, "dist", "mcp-server.js");
 
 type Rpc = { id?: number; result?: unknown; error?: unknown };
 
-async function session(vaultDir: string, requests: object[]): Promise<Map<number, Rpc>> {
+async function session(vaultDir: string, requests: Record<string, unknown>[]): Promise<Map<number, Rpc>> {
   const child = spawn(process.execPath, [SERVER, "--vault-dir", vaultDir, "--no-seed"], { stdio: ["pipe", "pipe", "pipe"] });
-  const expected = requests.filter((r: Record<string, unknown>) => r.id !== undefined).length;
+  const expected = requests.filter((r) => r.id !== undefined).length;
   const responses = new Map<number, Rpc>();
   let buffer = "";
   return await new Promise((resolvePromise, reject) => {
