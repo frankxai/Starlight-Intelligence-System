@@ -1,0 +1,1498 @@
+{
+  "schemaVersion": "starlight.public-operational-lineage.v1",
+  "presentationOnly": true,
+  "grantsAuthority": false,
+  "semantics": "A public profile cites an operational source path. This is not a live handoff, synchronized memory, or identity equivalence.",
+  "source": {
+    "publicRepository": "frankxai/starlight-agent-army-architecture",
+    "publicCommit": "7752041d44f6fbad94f7cc7e862744279a6367a4",
+    "publicPortfolioSha256": "40f260d5685a76fa10393ab3e843f3bbb508c9adefad46b4c6e2169fc578c95c",
+    "operationalSourceDigest": "aae45b8094369a2d4b45f0a97bd06b332ca846bcf1c2de756b2bbb4938eebab5"
+  },
+  "counts": {
+    "publicProfiles": 144,
+    "operationalProfiles": 151,
+    "exactLinks": 126,
+    "unresolved": 18
+  },
+  "links": [
+    {
+      "from": "public:operative-concierge",
+      "to": "sis:starlight-concierge",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-concierge.md",
+      "sourcePath": "agents/starlight-concierge.md",
+      "currentOperationalProfileSha256": "7bf57e69859aa070a6ddbb314ad98060745b5c3e81fdaf89b6c40f26176aee09",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-envoy",
+      "to": "sis:starlight-envoy",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-envoy.md",
+      "sourcePath": "agents/starlight-envoy.md",
+      "currentOperationalProfileSha256": "591777c9e579547af894b7d1d5f946610d3dce6b226d1ff94e9a3f88bc77df0b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-voice-operator",
+      "to": "sis:starlight-voice-operator",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-voice-operator.md",
+      "sourcePath": "agents/starlight-voice-operator.md",
+      "currentOperationalProfileSha256": "dcfbb5146ea0edf96027a474b9ff32b93793523282cda5ec700a2653dcb4c51b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-genius",
+      "to": "sis:starlight-genius",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-genius.md",
+      "sourcePath": "agents/starlight-genius.md",
+      "currentOperationalProfileSha256": "0f9c06269a2a5907d37823280b306a007ae1c36c28fb5b9a4f62af3812026b32",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:vera-decision-verifier",
+      "to": "sis:starlight-evaluator",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-evaluator.md",
+      "sourcePath": "agents/starlight-evaluator.md",
+      "currentOperationalProfileSha256": "dee8d1adc994f86c80664e1e66adccfe1924a86c29a14d0d7e533a4a85e43416",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:ignis-product-conductor",
+      "to": "sis:starlight-orchestrator",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-orchestrator.md",
+      "sourcePath": "agents/starlight-orchestrator.md",
+      "currentOperationalProfileSha256": "aeae969d6c2e5dcc6afb3025989a6cdb98be9efacc9d7194628886b130b298e3",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:astra-sovereign",
+      "to": "sis:starlight-prime",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-prime.md",
+      "sourcePath": "agents/starlight-prime.md",
+      "currentOperationalProfileSha256": "ef458942154255616e1e5ca97ffeff17cc396863f1ca3b213503a503df9e31c1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:tess-system-designer",
+      "to": "sis:starlight-architect",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-architect.md",
+      "sourcePath": "agents/starlight-architect.md",
+      "currentOperationalProfileSha256": "ae7dd38fedcd94b20f3418fdeafd5c4241b9c59349b73ea0bc328dc8ca1326fa",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:orion-mission-architect",
+      "to": "sis:starlight-navigator",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-navigator.md",
+      "sourcePath": "agents/starlight-navigator.md",
+      "currentOperationalProfileSha256": "0e5742098e6965f880bb26e6369f059eb28d1db89fa1603a72b766332fa95f6d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:aegis-trust-conductor",
+      "to": "sis:starlight-sentinel",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sentinel.md",
+      "sourcePath": "agents/starlight-sentinel.md",
+      "currentOperationalProfileSha256": "6425b888319c5c6e1f8c3706b12f5a9c6ed4188b0c8b88d3b36ef94ed7f16978",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:aria-story-architect",
+      "to": "sis:starlight-weaver",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-weaver.md",
+      "sourcePath": "agents/starlight-weaver.md",
+      "currentOperationalProfileSha256": "3e5bdb23c8a2b181504a12f851dd4fae01cfd014b231e704528792aefe7c9829",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:mira-continuity-keeper",
+      "to": "sis:starlight-sage",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sage.md",
+      "sourcePath": "agents/starlight-sage.md",
+      "currentOperationalProfileSha256": "8bdff21e88ddce48053ddd41be83690dcdf6f1223f0b7b82d2dfcded11282f32",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:lyra-research-conductor",
+      "to": "sis:starlight-hermes",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-hermes.md",
+      "sourcePath": "agents/starlight-hermes.md",
+      "currentOperationalProfileSha256": "f815200ba83ab1de77b9a36144f702ef855be8e480c3c5b8dc4d189a36294796",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:cassian-resource-steward",
+      "to": "sis:starlight-steward",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-steward.md",
+      "sourcePath": "agents/starlight-steward.md",
+      "currentOperationalProfileSha256": "9fb730236dca9dc9aebbfa68b03a5a5295a3b083066d1557d9f04620d16c179b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-extractor-transcripts",
+      "to": "sis:sis-extractor-transcripts",
+      "type": "lineage_reference",
+      "sourceIdentifier": "sis-extractor-transcripts.md",
+      "sourcePath": "agents/sis-extractor-transcripts.md",
+      "currentOperationalProfileSha256": "e00f1ac5e3c208901cbc17f33c1214d71a70b391c017f502a20f8dd2de38b689",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-extractor-vault",
+      "to": "sis:sis-extractor-vault",
+      "type": "lineage_reference",
+      "sourceIdentifier": "sis-extractor-vault.md",
+      "sourcePath": "agents/sis-extractor-vault.md",
+      "currentOperationalProfileSha256": "4c734562c1d0ddd13e46859c22a89d55f1fa9bbeaaf14942aa3bb94523e0e50c",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-extractor-prompts",
+      "to": "sis:sis-extractor-prompts",
+      "type": "lineage_reference",
+      "sourceIdentifier": "sis-extractor-prompts.md",
+      "sourcePath": "agents/sis-extractor-prompts.md",
+      "currentOperationalProfileSha256": "6dcb25cb665630a2c286e6739023b1118262b0730074d85206fe9de9ba149d46",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-extractor-repos",
+      "to": "sis:sis-extractor-repos",
+      "type": "lineage_reference",
+      "sourceIdentifier": "sis-extractor-repos.md",
+      "sourcePath": "agents/sis-extractor-repos.md",
+      "currentOperationalProfileSha256": "d9b80ed7f32d9a9a498bbc17e3f43a023ee044d247f24d2a9d9750f8388059a9",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-extractor-external",
+      "to": "sis:sis-extractor-external",
+      "type": "lineage_reference",
+      "sourceIdentifier": "sis-extractor-external.md",
+      "sourcePath": "agents/sis-extractor-external.md",
+      "currentOperationalProfileSha256": "57dfdfcaf48c757f978625689726a90909489ae48c45eb8897339351bdc20660",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:sentinel-risk-analyst",
+      "to": "sis:starlight-sentinel-daemon",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sentinel-daemon.md",
+      "sourcePath": "agents/starlight-sentinel-daemon.md",
+      "currentOperationalProfileSha256": "d95de7347fd349d7eb4732351f46e41c9bd51e74af68d44a58b5acf196085a60",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-self-is",
+      "to": "sis:starlight-self-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-self-is.md",
+      "sourcePath": "agents/starlight-self-is.md",
+      "currentOperationalProfileSha256": "46e2aeb9c624cea4bc08edc4bde5e87b13a615a5fa246ade2e00d0d64d37685f",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-secondbrain",
+      "to": "sis:starlight-secondbrain",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-secondbrain.md",
+      "sourcePath": "agents/starlight-secondbrain.md",
+      "currentOperationalProfileSha256": "4fa6aa3c99d7f033da0863d8525b5e6fac768e5db92a7556f0881d5a55827b67",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-brand-is",
+      "to": "sis:starlight-brand-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-brand-is.md",
+      "sourcePath": "agents/starlight-brand-is.md",
+      "currentOperationalProfileSha256": "87e6de6a7bad3db3ce4f08a9e94aab3a5ea5c5874fa673de4008e5022be8d735",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:ember-creator-conductor",
+      "to": "sis:starlight-creator-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-creator-is.md",
+      "sourcePath": "agents/starlight-creator-is.md",
+      "currentOperationalProfileSha256": "64e8db514ece68ce1883cf49720dd57238e88c5e98a05ee75216d9a2c28ac618",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-wealth-is",
+      "to": "sis:starlight-wealth-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-wealth-is.md",
+      "sourcePath": "agents/starlight-wealth-is.md",
+      "currentOperationalProfileSha256": "43b4096f4845a80742be221306e5c366da0f622f4b96e5e4c1a9d255c71c478d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:rivet-build-engineer",
+      "to": "sis:starlight-code-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-code-is.md",
+      "sourcePath": "agents/starlight-code-is.md",
+      "currentOperationalProfileSha256": "3a3888cb4ed40bbc443b5f344589a8d5bbf45345bed732257ef483088340ee6b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-voice-video-is",
+      "to": "sis:starlight-voice-video-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-voice-video-is.md",
+      "sourcePath": "agents/starlight-voice-video-is.md",
+      "currentOperationalProfileSha256": "3d1d967d91e3d26ac4b0fee472679dd73ff6aa1a00eb91f2c0975a17c1f42e53",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-family-is",
+      "to": "sis:starlight-family-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-family-is.md",
+      "sourcePath": "agents/starlight-family-is.md",
+      "currentOperationalProfileSha256": "aa337f070b9b773248f74db61616e6c25bfeefb357fb247c7e467082e1f71b45",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-spiritual-is",
+      "to": "sis:starlight-spiritual-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-spiritual-is.md",
+      "sourcePath": "agents/starlight-spiritual-is.md",
+      "currentOperationalProfileSha256": "7669996174edfd2b9d5ca1c1cae3cb5316aebd1e4f1769c2ffa02769fa608ddc",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:solace-flourishing-conductor",
+      "to": "sis:starlight-health-is",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-is.md",
+      "sourcePath": "agents/starlight-health-is.md",
+      "currentOperationalProfileSha256": "e1b13ae6eb5adf7f759d5c09ca782fcc2cc6faab0606ff97438101a32496f4f3",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-hiring",
+      "to": "sis:starlight-hiring",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-hiring.md",
+      "sourcePath": "agents/starlight-hiring.md",
+      "currentOperationalProfileSha256": "dc7feb363564ffcc05d10e510016bbfe81d4a736c481665281c2fb48f1ce8c33",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:rune-learning-evaluator",
+      "to": "sis:starlight-performance",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-performance.md",
+      "sourcePath": "agents/starlight-performance.md",
+      "currentOperationalProfileSha256": "0974ef1b0f5db59754a9d773ffb5156a8ed719baede5af7db5c10c2c4170c896",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:kai-curriculum-architect",
+      "to": "sis:starlight-training",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-training.md",
+      "sourcePath": "agents/starlight-training.md",
+      "currentOperationalProfileSha256": "57bd707eb7e474ae67674637244fff2d7d30e3d353cf92ecd2006793983cb90e",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:sophia-academy-conductor",
+      "to": "sis:starlight-culture",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-culture.md",
+      "sourcePath": "agents/starlight-culture.md",
+      "currentOperationalProfileSha256": "32402a026835c68295f87d87483c4be756e9ac3134006b3c481bcdc3b3d69425",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:relay-change-enablement",
+      "to": "sis:starlight-talent",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-talent.md",
+      "sourcePath": "agents/starlight-talent.md",
+      "currentOperationalProfileSha256": "d3e4370d01f3126da441db989ffd50be5db0826c525273444975bbf5ccd882d6",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:maya-operating-model-architect",
+      "to": "sis:starlight-org",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-org.md",
+      "sourcePath": "agents/starlight-org.md",
+      "currentOperationalProfileSha256": "26a6c146f67e00c4a77a534da1c0f3bb4a161c289056e98e916833f08516fae5",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-sound-composition",
+      "to": "sis:starlight-sound-composition",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-composition.md",
+      "sourcePath": "agents/starlight-sound-composition.md",
+      "currentOperationalProfileSha256": "79830b2fdf10d1d90c03cab165cd98a0a16f61a8f1ee4039ba8cf9b2152da924",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-sound-production",
+      "to": "sis:starlight-sound-production",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-production.md",
+      "sourcePath": "agents/starlight-sound-production.md",
+      "currentOperationalProfileSha256": "7beaedcf6ff641d279dcc8cd87e396798c0ed1315e82fe5f7ca247970e6ce7b1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-sound-catalog",
+      "to": "sis:starlight-sound-catalog",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-catalog.md",
+      "sourcePath": "agents/starlight-sound-catalog.md",
+      "currentOperationalProfileSha256": "12d9ae27a9498698f3b36d820f026c7ba8eb9838e1e80fa3b0e6e8661b847499",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-sound-performance",
+      "to": "sis:starlight-sound-performance",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-performance.md",
+      "sourcePath": "agents/starlight-sound-performance.md",
+      "currentOperationalProfileSha256": "89ffab14183b0e9b7192aba93d4c41651c144a406b2714632fcc0b96b66ca92b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:echo-audience-resonance",
+      "to": "sis:starlight-sound-audience",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-audience.md",
+      "sourcePath": "agents/starlight-sound-audience.md",
+      "currentOperationalProfileSha256": "8cef8a767e7084bd054f8b9db5477dd10026a0ea72582e49aa248b24fa5aafd9",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-sound-sync",
+      "to": "sis:starlight-sound-sync",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-sound-sync.md",
+      "sourcePath": "agents/starlight-sound-sync.md",
+      "currentOperationalProfileSha256": "3c69cca4fb4f4eb24aaadb0d30aa23df3e38a71a3e35547421d1e7c088aa264e",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-music-curator",
+      "to": "sis:music-curator",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-curator.md",
+      "sourcePath": "agents/music-curator.md",
+      "currentOperationalProfileSha256": "0d0fd9a04f64311449be4e7e92ad418e34de0f7d1becc0e7a140b25db2cbb790",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-music-archivist",
+      "to": "sis:music-archivist",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-archivist.md",
+      "sourcePath": "agents/music-archivist.md",
+      "currentOperationalProfileSha256": "024de2173bf7fcd659a690dd4c09f75a17a3fb1ce917d27e7a921fd986b1c03e",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-persona-keeper",
+      "to": "sis:persona-keeper",
+      "type": "lineage_reference",
+      "sourceIdentifier": "persona-keeper.md",
+      "sourcePath": "agents/persona-keeper.md",
+      "currentOperationalProfileSha256": "1ae4f0a1a37e3d86f9a2528014039df19840818a83db3ee56ca2a12c88bcc97b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:sol-visual-world-director",
+      "to": "sis:music-producer",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-producer.md",
+      "sourcePath": "agents/music-producer.md",
+      "currentOperationalProfileSha256": "37ac1c4c10a414bcd8399608b038da92be9fdedd25ad22d592c06fd5b3899ecc",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:cadence-release-producer",
+      "to": "sis:music-distributor",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-distributor.md",
+      "sourcePath": "agents/music-distributor.md",
+      "currentOperationalProfileSha256": "65c33d09fa77be4053775f62a11e008841588a8476b69732be68437a2e922f37",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:piper-demand-strategist",
+      "to": "sis:music-amplifier",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-amplifier.md",
+      "sourcePath": "agents/music-amplifier.md",
+      "currentOperationalProfileSha256": "5936c3bf4113a1fdff9e40dae0707c76f88a6fd8636ef321c81136c0471aca67",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-royalty-architect",
+      "to": "sis:royalty-architect",
+      "type": "lineage_reference",
+      "sourceIdentifier": "royalty-architect.md",
+      "sourcePath": "agents/royalty-architect.md",
+      "currentOperationalProfileSha256": "55e69bd7d91bb984c330ebb49f56601eb90bb748cc0094d199643ca5975c7de4",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-music-sync-specialist",
+      "to": "sis:music-sync-specialist",
+      "type": "lineage_reference",
+      "sourceIdentifier": "music-sync-specialist.md",
+      "sourcePath": "agents/music-sync-specialist.md",
+      "currentOperationalProfileSha256": "d84bb1f8f537ae99392064487e459f7d4477e629bdf9d4216862de5bfe290501",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-energy-sizing",
+      "to": "sis:starlight-energy-sizing",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-sizing.md",
+      "sourcePath": "agents/starlight-energy-sizing.md",
+      "currentOperationalProfileSha256": "52e5b9ff5bdcd046071da52d7f06b7c6f510a26e229cba1bb163997ea2a48040",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:ledger-unit-economist",
+      "to": "sis:starlight-energy-cost",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-cost.md",
+      "sourcePath": "agents/starlight-energy-cost.md",
+      "currentOperationalProfileSha256": "efc89d3005952de97e4b5e2499a97873aa3d28c167b12aaf4e904017877801fa",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-energy-installer",
+      "to": "sis:starlight-energy-installer",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-installer.md",
+      "sourcePath": "agents/starlight-energy-installer.md",
+      "currentOperationalProfileSha256": "c28ba0f95cc8c55174c4e3338c966d64c7c2e3f2f2fead37f8369ffc2eef9663",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-energy-operations",
+      "to": "sis:starlight-energy-operations",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-operations.md",
+      "sourcePath": "agents/starlight-energy-operations.md",
+      "currentOperationalProfileSha256": "96afee4273b020594c9a491bea9160945032d9b83fe57db29fb6c152b2840282",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-energy-buyer",
+      "to": "sis:starlight-energy-buyer",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-buyer.md",
+      "sourcePath": "agents/starlight-energy-buyer.md",
+      "currentOperationalProfileSha256": "bf9c28ddecbb8bede3ed0452c273f22a4678728d3933079193e4d109046705d9",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-energy-grid",
+      "to": "sis:starlight-energy-grid",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-grid.md",
+      "sourcePath": "agents/starlight-energy-grid.md",
+      "currentOperationalProfileSha256": "46b166b94fc36a893fc7b2de99ee512ef806b2449a80cc767efebefd9535a9e8",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:beacon-incident-coordinator",
+      "to": "sis:starlight-energy-recovery",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-energy-recovery.md",
+      "sourcePath": "agents/starlight-energy-recovery.md",
+      "currentOperationalProfileSha256": "0a3569453ebc38cd8986c73fbb7b623fe728670f65da47e6965d6b373ee20596",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:delta-forecast-challenger",
+      "to": "sis:starlight-crypto-macro",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-crypto-macro.md",
+      "sourcePath": "agents/starlight-crypto-macro.md",
+      "currentOperationalProfileSha256": "0d6d7a569d04afa18645d7cacbac0d49ad372dcb3bc26a8dd739efd237dbec66",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-crypto-defi",
+      "to": "sis:starlight-crypto-defi",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-crypto-defi.md",
+      "sourcePath": "agents/starlight-crypto-defi.md",
+      "currentOperationalProfileSha256": "95d7bc1ba9f98991279e62140a30ae8ca71be886975ce84f1055268188132e75",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-crypto-custody",
+      "to": "sis:starlight-crypto-custody",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-crypto-custody.md",
+      "sourcePath": "agents/starlight-crypto-custody.md",
+      "currentOperationalProfileSha256": "a24a7caa21eea472e5f80e84fe1a94296c557ea86eb51b2e16d9fd0d32136507",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:horizon-futures-scout",
+      "to": "sis:starlight-crypto-research",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-crypto-research.md",
+      "sourcePath": "agents/starlight-crypto-research.md",
+      "currentOperationalProfileSha256": "c4dd1213d955124bdbec56dc145c0de4ec474a2342b7cc9e167bbdce31d56157",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-crypto-allocation",
+      "to": "sis:starlight-crypto-allocation",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-crypto-allocation.md",
+      "sourcePath": "agents/starlight-crypto-allocation.md",
+      "currentOperationalProfileSha256": "becf7d6cbf4958015a506296eaf1aa1458a9b4bfa9e46cfbab0559812cd70e7d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:clara-deal-critic",
+      "to": "sis:starlight-legal-contracts",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-contracts.md",
+      "sourcePath": "agents/starlight-legal-contracts.md",
+      "currentOperationalProfileSha256": "848fd1c7bb31ad53548abf3ec88e9a71179f726ffa1fe9f750c46983fa7a5ea4",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:cipher-privacy-steward",
+      "to": "sis:starlight-legal-gdpr",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-gdpr.md",
+      "sourcePath": "agents/starlight-legal-gdpr.md",
+      "currentOperationalProfileSha256": "7a0089fc7a5c5ce6e05dbd7fca775638a2e6ce6cf293a727fce47a20c10ab28a",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:quorum-governance-designer",
+      "to": "sis:starlight-legal-jurisdiction",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-jurisdiction.md",
+      "sourcePath": "agents/starlight-legal-jurisdiction.md",
+      "currentOperationalProfileSha256": "d42bec4b2c814c245f0dd86e2d30d7349dd4c104a620b4849cd2ec612d822bd1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-legal-trademarks",
+      "to": "sis:starlight-legal-trademarks",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-trademarks.md",
+      "sourcePath": "agents/starlight-legal-trademarks.md",
+      "currentOperationalProfileSha256": "cd730f1923b7cc46e0db6fc9988f6ac138cf18b7cc83c70c70c305c6a27e309a",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-legal-ip",
+      "to": "sis:starlight-legal-ip",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-ip.md",
+      "sourcePath": "agents/starlight-legal-ip.md",
+      "currentOperationalProfileSha256": "b7be9ab5dadacb0547dd597ddc321aee7928cc57cb2da8bdc8ebdf42163868b2",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:equa-policy-auditor",
+      "to": "sis:starlight-legal-terms",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-terms.md",
+      "sourcePath": "agents/starlight-legal-terms.md",
+      "currentOperationalProfileSha256": "ab1463cd03be56f606072a9d8ad1e1f62d7b51284da0cc1f613a1df4c0033794",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:vector-transformation-conductor",
+      "to": "sis:starlight-legal-liaison",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-legal-liaison.md",
+      "sourcePath": "agents/starlight-legal-liaison.md",
+      "currentOperationalProfileSha256": "1c6d99b2b4caf567280db4bfdcd450bad8ebdf0802a1bb7b325e7be16953f862",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-orbit",
+      "to": "sis:starlight-space-orbit",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-orbit.md",
+      "sourcePath": "agents/starlight-space-orbit.md",
+      "currentOperationalProfileSha256": "b2af0abdf83aa8c2b671955c94715a7c8018d449c658e2f52b87ba00603dd2c8",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-telescope",
+      "to": "sis:starlight-space-telescope",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-telescope.md",
+      "sourcePath": "agents/starlight-space-telescope.md",
+      "currentOperationalProfileSha256": "dc6bde3881d2470c0a2ca48896faf20f28cdbde91d96fbb1445bf3a49005a0bc",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-telemetry",
+      "to": "sis:starlight-space-telemetry",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-telemetry.md",
+      "sourcePath": "agents/starlight-space-telemetry.md",
+      "currentOperationalProfileSha256": "937ca266c4919f235d67f01efcea125ddbddf20d4c4d37e266e717791de0a70a",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:orbit-spatial-interface-designer",
+      "to": "sis:starlight-space-mapper",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-mapper.md",
+      "sourcePath": "agents/starlight-space-mapper.md",
+      "currentOperationalProfileSha256": "4cef1ae6309a5c7309a6b9f833a3615a4e85dcf4ecd5c57b8d7f5c35b5e6abec",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-payload",
+      "to": "sis:starlight-space-payload",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-payload.md",
+      "sourcePath": "agents/starlight-space-payload.md",
+      "currentOperationalProfileSha256": "06db8fad1ad8e0a9a79c376289407209cb6f3601410a9698abc93ede6bb19062",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-downlink",
+      "to": "sis:starlight-space-downlink",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-downlink.md",
+      "sourcePath": "agents/starlight-space-downlink.md",
+      "currentOperationalProfileSha256": "c8d597294c555e1519acdda0ba6db9f945b559bdcaec2266f8e0ee93f6f27c78",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-space-debris",
+      "to": "sis:starlight-space-debris",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-space-debris.md",
+      "sourcePath": "agents/starlight-space-debris.md",
+      "currentOperationalProfileSha256": "5ad4f4abe0e93d497b1d9906833492fc0b9170865c8bbb70e15d93e0463f2a82",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-acoustics",
+      "to": "sis:starlight-marine-acoustics",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-acoustics.md",
+      "sourcePath": "agents/starlight-marine-acoustics.md",
+      "currentOperationalProfileSha256": "da245eb70028365119bb9acc3e882647e927dbf6ab39bf2c3a4eab8dfe8bb2b2",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-water",
+      "to": "sis:starlight-marine-water",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-water.md",
+      "sourcePath": "agents/starlight-marine-water.md",
+      "currentOperationalProfileSha256": "09bdbee2bc9d42cf55d1e1f410b623480e3b23a3904c2e965166b8ca3e04e7ac",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-vessel",
+      "to": "sis:starlight-marine-vessel",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-vessel.md",
+      "sourcePath": "agents/starlight-marine-vessel.md",
+      "currentOperationalProfileSha256": "2a0d1a29ccaf00b75eeabf6e67d2864a45a3d571d4c802b0c009f878b2b194c5",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-species",
+      "to": "sis:starlight-marine-species",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-species.md",
+      "sourcePath": "agents/starlight-marine-species.md",
+      "currentOperationalProfileSha256": "d1bf2254c0ab54dd997b1280d69944631ae4f9ee5f239d119de1a916300e9f48",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-coastal",
+      "to": "sis:starlight-marine-coastal",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-coastal.md",
+      "sourcePath": "agents/starlight-marine-coastal.md",
+      "currentOperationalProfileSha256": "9084bd78b47178795c04955049d7285aecea7261a62ae8597764b2d9b41ee339",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-dive",
+      "to": "sis:starlight-marine-dive",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-dive.md",
+      "sourcePath": "agents/starlight-marine-dive.md",
+      "currentOperationalProfileSha256": "fbe9bc141fd8096eea8b251befa2daf4f1e17bbb65768f103f0b1f5e41bc62fa",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-marine-pollution",
+      "to": "sis:starlight-marine-pollution",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-marine-pollution.md",
+      "sourcePath": "agents/starlight-marine-pollution.md",
+      "currentOperationalProfileSha256": "065faf9e241aee89a205e41671945e2869df82d122f747d142920d0761cf7bdb",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-health-biomarkers",
+      "to": "sis:starlight-health-biomarkers",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-biomarkers.md",
+      "sourcePath": "agents/starlight-health-biomarkers.md",
+      "currentOperationalProfileSha256": "5a5c61709d3e9f9ef73286fab1463a352b455981b6e438455f3159308a8ccfa7",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-health-supplements",
+      "to": "sis:starlight-health-supplements",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-supplements.md",
+      "sourcePath": "agents/starlight-health-supplements.md",
+      "currentOperationalProfileSha256": "6d9b5e5e2bf8e0d59ff372f3af12e0706265dd332840bcaad49b683d37d2b0d8",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-health-sleep",
+      "to": "sis:starlight-health-sleep",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-sleep.md",
+      "sourcePath": "agents/starlight-health-sleep.md",
+      "currentOperationalProfileSha256": "059cd26e413c5cfae70ac1870da3050567a6473fc611d249bb558f6910d8d271",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:kinetica-movement-coach",
+      "to": "sis:starlight-health-training",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-training.md",
+      "sourcePath": "agents/starlight-health-training.md",
+      "currentOperationalProfileSha256": "98cb71c5265f41078c1b86996fac3c8597bdbf4e8bd035ee86836e7858012324",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:harbor-care-navigator",
+      "to": "sis:starlight-health-research",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-research.md",
+      "sourcePath": "agents/starlight-health-research.md",
+      "currentOperationalProfileSha256": "d92846645d02bbf49d7d0690de11d0ea81b31e790e309126dfb2adacd9139c9c",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:terra-nutrition-educator",
+      "to": "sis:starlight-health-diet",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-diet.md",
+      "sourcePath": "agents/starlight-health-diet.md",
+      "currentOperationalProfileSha256": "c603950df1faccffba10c27ca740a440169c8752680c049a9220e6bc7b297af3",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:serene-reflection-guide",
+      "to": "sis:starlight-health-stress",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-health-stress.md",
+      "sourcePath": "agents/starlight-health-stress.md",
+      "currentOperationalProfileSha256": "e2f504d1b741d8982ddb9a9a40935ce04fad3635fbd1cd867fad1c813b8f0bf6",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-deploy",
+      "to": "sis:starlight-ops-deploy",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-deploy.md",
+      "sourcePath": "agents/starlight-ops-deploy.md",
+      "currentOperationalProfileSha256": "04db51c58f43c5519fa0f2eebc3a9bce0835444541ba4b8c01425fc458dde636",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-cluster",
+      "to": "sis:starlight-ops-cluster",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-cluster.md",
+      "sourcePath": "agents/starlight-ops-cluster.md",
+      "currentOperationalProfileSha256": "3a3f91eca27cba055c20447277004a878b1ff9ae0047949523e6a5f64cdab230",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:metric-value-realization",
+      "to": "sis:starlight-ops-cost",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-cost.md",
+      "sourcePath": "agents/starlight-ops-cost.md",
+      "currentOperationalProfileSha256": "6b3d1be38fcece01fd45cf2927bf59c7474e9dfcc9eacd09bb37845c11a99899",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-backup",
+      "to": "sis:starlight-ops-backup",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-backup.md",
+      "sourcePath": "agents/starlight-ops-backup.md",
+      "currentOperationalProfileSha256": "55990972fea6d7db16b88950da02fda77d7d4e7bf3ca67a215ce64fc0feb90e6",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-cdn",
+      "to": "sis:starlight-ops-cdn",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-cdn.md",
+      "sourcePath": "agents/starlight-ops-cdn.md",
+      "currentOperationalProfileSha256": "471fb8e74ebb36c0f4acd405ca3d7277678ec9fdea31c46d0538cc1ef1f9206a",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-logs",
+      "to": "sis:starlight-ops-logs",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-logs.md",
+      "sourcePath": "agents/starlight-ops-logs.md",
+      "currentOperationalProfileSha256": "13fdbff4790574a6b759cde8f9d882c8dcff23a467411bb368ae3dbbc4abaf7a",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-ops-hardware",
+      "to": "sis:starlight-ops-hardware",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-ops-hardware.md",
+      "sourcePath": "agents/starlight-ops-hardware.md",
+      "currentOperationalProfileSha256": "d4000c4e861775a5229e3035570bddd9a0e8e3deba9c96f93650d9a0b4d625d6",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-hermes",
+      "to": "sis:starlight-adapter-hermes",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-hermes.md",
+      "sourcePath": "agents/starlight-adapter-hermes.md",
+      "currentOperationalProfileSha256": "dac55ed2f56f5defd65d1c1d2298a2f9426b1217dc13a3ef02c9817547823498",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-paperclip",
+      "to": "sis:starlight-adapter-paperclip",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-paperclip.md",
+      "sourcePath": "agents/starlight-adapter-paperclip.md",
+      "currentOperationalProfileSha256": "2f4a0a4ee782242942ec78b2ca1ea11fe49bf5ae7522fa830da234b8786f5942",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-mastra",
+      "to": "sis:starlight-adapter-mastra",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-mastra.md",
+      "sourcePath": "agents/starlight-adapter-mastra.md",
+      "currentOperationalProfileSha256": "b492c0195b5ef1f97d850ed2c4253bb8a1f3730eec5b2a276192f60782e9074e",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-agno",
+      "to": "sis:starlight-adapter-agno",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-agno.md",
+      "sourcePath": "agents/starlight-adapter-agno.md",
+      "currentOperationalProfileSha256": "02874296eac1d3cddb995b5789aae66d94ba1c2ab4489adae31836474323189b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:lattice-interoperability-architect",
+      "to": "sis:starlight-adapter-openai",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-openai.md",
+      "sourcePath": "agents/starlight-adapter-openai.md",
+      "currentOperationalProfileSha256": "ac01ae123ccd9eeafea2c1b35b072da4d6bae571a2e537b7f1117841f8ae3859",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:nexus-futures-conductor",
+      "to": "sis:starlight-adapter-langgraph",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-langgraph.md",
+      "sourcePath": "agents/starlight-adapter-langgraph.md",
+      "currentOperationalProfileSha256": "43f1f7b1a8bcc8cfbeedfaf7e3fb2d0a40e13f28796792251f3fee2cf85843ce",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-autogen",
+      "to": "sis:starlight-adapter-autogen",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-autogen.md",
+      "sourcePath": "agents/starlight-adapter-autogen.md",
+      "currentOperationalProfileSha256": "68dd1b48a32a92920290d5d7e3c6c992bc122ef24b92170eb4644c91a848009b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-crewai",
+      "to": "sis:starlight-adapter-crewai",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-crewai.md",
+      "sourcePath": "agents/starlight-adapter-crewai.md",
+      "currentOperationalProfileSha256": "7e94d554c294b190582e563863d59aa9fc86a7ec0cf68e83fffcf1ec1f88c84d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-dify",
+      "to": "sis:starlight-adapter-dify",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-dify.md",
+      "sourcePath": "agents/starlight-adapter-dify.md",
+      "currentOperationalProfileSha256": "5c8d867f7a5348ec1df016d0140193f3883e18fa2c96bfffff9cfbbe3ea2bfb1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-adapter-ollama",
+      "to": "sis:starlight-adapter-ollama",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-adapter-ollama.md",
+      "sourcePath": "agents/starlight-adapter-ollama.md",
+      "currentOperationalProfileSha256": "02c8c9ca526b685cc97a280bbd7ce2b0e07a044b1de28ac32995da80eecaf1b1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-research-arxiv",
+      "to": "sis:starlight-research-arxiv",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-arxiv.md",
+      "sourcePath": "agents/starlight-research-arxiv.md",
+      "currentOperationalProfileSha256": "fd36430372b5f31246f3ef7c4ba79d9570eba3c027e5fc71c8a199c77756050d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-research-biorxiv",
+      "to": "sis:starlight-research-biorxiv",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-biorxiv.md",
+      "sourcePath": "agents/starlight-research-biorxiv.md",
+      "currentOperationalProfileSha256": "f9b5903202a6fef17b116913d3257fff3ef8190a1d57206d766b35df304069ff",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-research-pmc",
+      "to": "sis:starlight-research-pmc",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-pmc.md",
+      "sourcePath": "agents/starlight-research-pmc.md",
+      "currentOperationalProfileSha256": "ad1354dbc0c87f6eaccf4be9585f16c0e2cd10365f22bcc218bff64f55e24fbb",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:atlas-signal-scout",
+      "to": "sis:starlight-research-openalex",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-openalex.md",
+      "sourcePath": "agents/starlight-research-openalex.md",
+      "currentOperationalProfileSha256": "eccc95008422c0fd0e6e1e507258e67c7ab85d721103176842593190ca19c5c5",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:soren-synthesis-analyst",
+      "to": "sis:starlight-research-distill",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-distill.md",
+      "sourcePath": "agents/starlight-research-distill.md",
+      "currentOperationalProfileSha256": "b47099096c1c94fdbd2e3de7a4e3e2533a02d39c8d708dfaa8b32ffa5f7ddcb3",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-research-format",
+      "to": "sis:starlight-research-format",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-format.md",
+      "sourcePath": "agents/starlight-research-format.md",
+      "currentOperationalProfileSha256": "623cd34ff3280df70263f2af05d25ec2d0ed1ba089ce7be78a55a2f726e567d0",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:verity-source-auditor",
+      "to": "sis:starlight-research-attest",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-research-attest.md",
+      "sourcePath": "agents/starlight-research-attest.md",
+      "currentOperationalProfileSha256": "5d62c8e8124c40b9e3a711ca6c07eedbe002cee0c81a8c764fbbc2150b15227b",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-asset-midjourney",
+      "to": "sis:starlight-asset-midjourney",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-midjourney.md",
+      "sourcePath": "agents/starlight-asset-midjourney.md",
+      "currentOperationalProfileSha256": "fdc7eeda075d7b43f62aa45dfadd752552f85d7f3c31a30fc989291767837da1",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-asset-higgsfield",
+      "to": "sis:starlight-asset-higgsfield",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-higgsfield.md",
+      "sourcePath": "agents/starlight-asset-higgsfield.md",
+      "currentOperationalProfileSha256": "ef038d1dfcf7733264ee52519f0f54b4fe8dc6e11ad26efd97002a3e19313f5d",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-asset-nb",
+      "to": "sis:starlight-asset-nb",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-nb.md",
+      "sourcePath": "agents/starlight-asset-nb.md",
+      "currentOperationalProfileSha256": "c310989ddc9648bc20a3f6843857c3578ef25348f9ec1383f845d10d8cbe2de3",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:pixel-web-experience-architect",
+      "to": "sis:starlight-asset-ui",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-ui.md",
+      "sourcePath": "agents/starlight-asset-ui.md",
+      "currentOperationalProfileSha256": "35652c5ee01063028585bf8048b85f729c69dfddebb90f18e36377ec81276655",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-asset-video",
+      "to": "sis:starlight-asset-video",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-video.md",
+      "sourcePath": "agents/starlight-asset-video.md",
+      "currentOperationalProfileSha256": "aee04a24c6beed3ae449f8c8f6e2fffeac70af12907e92a2d6d2731f095c15df",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-asset-prompts",
+      "to": "sis:starlight-asset-prompts",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-prompts.md",
+      "sourcePath": "agents/starlight-asset-prompts.md",
+      "currentOperationalProfileSha256": "e23a3a8c973d3ba18d270095197654b70bbad4a1ffa8ae02d38d62fe42f6db55",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:prism-quality-critic",
+      "to": "sis:starlight-asset-quality",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-asset-quality.md",
+      "sourcePath": "agents/starlight-asset-quality.md",
+      "currentOperationalProfileSha256": "600b500a08d226f776d659754129caab65442ef2b136c9458d1175e6e13a3d12",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-dist-linkedin",
+      "to": "sis:starlight-dist-linkedin",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-dist-linkedin.md",
+      "sourcePath": "agents/starlight-dist-linkedin.md",
+      "currentOperationalProfileSha256": "001377b7af703af133581c4b1898e50b1176bf2aff5cee14a63cd29e816b6ac4",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-dist-x",
+      "to": "sis:starlight-dist-x",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-dist-x.md",
+      "sourcePath": "agents/starlight-dist-x.md",
+      "currentOperationalProfileSha256": "a9c4870162dd12a813ccdb881685fa6ca3aa8f3fc4cc2477b99e41767f231f20",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-dist-newsletter",
+      "to": "sis:starlight-dist-newsletter",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-dist-newsletter.md",
+      "sourcePath": "agents/starlight-dist-newsletter.md",
+      "currentOperationalProfileSha256": "6637f2be8d5b99764a29e092ed011a4df6ed6b723fca80b23368bb1d4d06ba29",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-dist-instagram",
+      "to": "sis:starlight-dist-instagram",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-dist-instagram.md",
+      "sourcePath": "agents/starlight-dist-instagram.md",
+      "currentOperationalProfileSha256": "a5a6b16d2f89a6902b5e85c28da7c59143f79ea56b08e789365d69954d64ad98",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    },
+    {
+      "from": "public:operative-dist-tiktok",
+      "to": "sis:starlight-dist-tiktok",
+      "type": "lineage_reference",
+      "sourceIdentifier": "starlight-dist-tiktok.md",
+      "sourcePath": "agents/starlight-dist-tiktok.md",
+      "currentOperationalProfileSha256": "a37cb9392a1a75582c5124b7deae28cf220953104dda588a7ef891f425e2f316",
+      "evidence": "exact_source_path",
+      "identityEquivalent": false,
+      "grantsAuthority": false
+    }
+  ],
+  "unresolved": [
+    {
+      "publicAgentId": "meridian-venture-conductor",
+      "sourceIdentifier": "starlight-business-is.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-crypto-intelligence-onchain",
+      "sourceIdentifier": "verticals/crypto-intelligence/onchain/agent.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dist-seo",
+      "sourceIdentifier": "starlight-dist-seo.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dist-scheduler",
+      "sourceIdentifier": "starlight-dist-scheduler.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-comm-github",
+      "sourceIdentifier": "starlight-comm-github.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "mina-community-steward",
+      "sourceIdentifier": "starlight-comm-discord.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "bridge-partnership-architect",
+      "sourceIdentifier": "starlight-comm-alliance.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "pulse-cohort-facilitator",
+      "sourceIdentifier": "starlight-comm-events.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-comm-faq",
+      "sourceIdentifier": "starlight-comm-faq.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-comm-contributing",
+      "sourceIdentifier": "starlight-comm-contributing.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "nova-customer-discovery",
+      "sourceIdentifier": "starlight-comm-feedback.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-meter",
+      "sourceIdentifier": "starlight-dev-meter.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-pi",
+      "sourceIdentifier": "starlight-dev-pi.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-syncthing",
+      "sourceIdentifier": "starlight-dev-syncthing.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-audio",
+      "sourceIdentifier": "starlight-dev-audio.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-camera",
+      "sourceIdentifier": "starlight-dev-camera.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-display",
+      "sourceIdentifier": "starlight-dev-display.md",
+      "status": "no_exact_operational_profile"
+    },
+    {
+      "publicAgentId": "operative-dev-thermal",
+      "sourceIdentifier": "starlight-dev-thermal.md",
+      "status": "no_exact_operational_profile"
+    }
+  ]
+}

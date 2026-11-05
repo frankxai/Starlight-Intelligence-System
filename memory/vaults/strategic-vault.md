@@ -482,3 +482,25 @@ Core framework components implemented:
 **Receipt:** unsigned draft `rcpt_1790034118905_5c0d1383`, subject sha256 `d849a34cb9a1d5bf852494b383c66d505f653de7bfbabaa6e0d87bf2b57970d2`; no signing key on the authoring machine.
 
 **Built on SIP** — Starlight Intelligence Protocol v1.1.1
+
+---
+
+### [2026-10-17] Agent hygiene — the quality bar becomes an installable, enforced contract
+
+**Confidence:** 0.85
+**Source:** Frank's direction to spend the remaining top-tier (Fable) budget on the agent and skill contract layer and store it where every agent inherits it; `claude-skills-library` PR #72 (the eighth pack, named in that repo's `docs/STRATEGY.md` bet 2); install PRs on `agentic-creator-os` and this repo
+**Related:** `docs/architecture/agents-md/band-a.md` (Band A), `CLAUDE.md` § Agent hygiene (Karpathy-distilled), `foundry/agent-ontology/`, `agents/AGENT_REGISTRY.md`, `starlight-evals/ROUTING-DOCTRINE.md`
+
+**Decision (operational tier):** the bar for anyone writing agent definitions, skills, commands, hooks, `AGENTS.md` or `CLAUDE.md` is one skill (`agent-hygiene`), one linter (`agent-lint.py`, 7 error and 10 warning checks, ratchet on changed files), and one Stop hook (every hand-back after a change ends with `Verified: <command> → <result>`, and the command must have run). Band A stays the source of the guardrails; the skill re-expresses them with the agent-file contract and the routing rule, and the pack is how they reach repos as a default rather than a reminder. Band A itself was not amended: that is substrate-tier and takes `/starlight-board`.
+
+**What the lint found on 2026-10-17** (seven repos, 741 agent files): 297 errors, 2,004 warnings. This repo's `agents/`: 151 cards, 144 without a `description`, 103 whose `name` differs from the file, 111 with no boundary section. ACOS, FrankX, frankx.ai-vercel-website, arcanea: 24 to 29 prestige-phrase errors each, 4 bodies over 800 lines each; arcanea has 37 agent files with no frontmatter. `ai-architect` is the cleanest roster (11 files, 0 errors, 1 warning). Numbers from `agent-lint.py --all` per repo; re-run before quoting.
+
+**Routing rule recorded (how the top tier is spent when scarce):** contracts and specs other agents inherit first, then the gates and tests that enforce them, then review of what cheaper tiers produced (maker is never checker), then strategy memos with falsifiers. Never volume. Measured evidence stays in `starlight-evals/routing-table.json` (constrained output → Fable, 3 concordant rounds; deep reasoning → Opus, doctrine only, R5 saturated). This session followed the rule: one contract, one linter, one hook, two installs, no bulk edits.
+
+**Rollout order:** `agentic-creator-os` and this repo first (the two agent-authoring hubs; both in this pass), then `FrankX`, `frankx.ai-vercel-website`, `arcanea`, `arcanea-ai-app`, then any repo that carries `.claude/agents`. Each install is one PR: `install.sh`, one CLAUDE.md paragraph, the ratchet green on the branch.
+
+**Debt the contract exposes, for the roster owner, not decided here:** backfill the 144 card descriptions (one sentence each from the Identity section; Sonnet work); frontmatter for the 37 Arcanea files; whether W5 (no boundary section) becomes an error once paid down; the 103 name-vs-file mismatches here, which the registry may depend on.
+
+**Falsifier carried forward:** if by 2026-11-30 the per-repo error counts above have not fallen on the installed repos, or the Stop hook has been opted out of in a repo's settings, the contract is prose and the vault should say so. The receipts are `agent-lint.py --all | tail -1` per repo and the `Stop` entry in each `.claude/settings.json`.
+
+**Built on SIP** — Starlight Intelligence Protocol v1.1.1

@@ -237,6 +237,8 @@ For scaling beyond the core registry to a full **144+ Agent Swarm**, refer to th
 
 Full per-agent file: `agents/<agent-name>.md`.
 
+Operational specialist labels and portable prompts: read `docs/agents/specialist-catalog.md` and `agents/catalog/specialists.json`. Describe the role and expected artifact first; legacy names remain optional aliases. Preserve the separate runtime filename ID, frontmatter profile identity, and Foundry ontology ID. Regenerate with `node scripts/build-specialist-catalog.mjs`; export one inspectable prompt with `node scripts/export-specialist.mjs <id> --print`. Generated instructions and graph relationships do not establish native bindings, permissions, or running agents.
+
 ---
 
 ## Skills (auto-activating)
@@ -408,7 +410,7 @@ Brand: **Starlight Intelligence Systems** (`sis`)
 - Keep public labels in sentence case.
 - Run the changed-copy editorial audit before release.
 
-Pinned source: https://github.com/frankxai/starlight-design-intelligence/blob/3d6fc8fdd38b5db69a16db1078e30d454e891af1/brand-packs/sis/COPY.md (proposal preview; refresh after reviewed merge)
+Pinned source: https://github.com/Starlight-Intelligence/starlight-design-intelligence/blob/851a11be31a0640df64baabcf2b1fc1afb9ce849/brand-packs/sis/COPY.md
 <!-- STARLIGHT-EDITORIAL:END -->
 
 

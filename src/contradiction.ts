@@ -15,7 +15,7 @@ export interface Contradiction {
 
 type Entry = Contradiction["entryA"];
 
-const POS = new Set(["always", "must", "should", "do", "enable", "require", "prefer"]);
+const POS = new Set(["always", "must", "should", "enable", "require", "prefer"]);
 const NEG = new Set(["never", "don't", "dont", "avoid", "disable", "shouldn't", "shouldnt", "cannot"]);
 
 export class ContradictionDetector {
@@ -99,14 +99,14 @@ export class ContradictionDetector {
     const entries = this.readEntries(vaultDir);
     const results: Contradiction[] = [];
     const now = new Date().toISOString();
-    for (let i = 0; i < entries.length && results.length < limit; i++) {
-      for (let j = i + 1; j < entries.length && results.length < limit; j++) {
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
         if (entries[i].vault === entries[j].vault) continue;
         const score = this.similarity(entries[i].content, entries[j].content);
         if (score >= minSim) results.push({ entryA: entries[i], entryB: entries[j], similarity: score, type: "potential", detectedAt: now });
       }
     }
-    return results.sort((a, b) => b.similarity - a.similarity);
+    return results.sort((a, b) => b.similarity - a.similarity).slice(0, limit);
   }
 
   checkEntry(content: string, vault: string, existing: Entry[]): Contradiction[] {

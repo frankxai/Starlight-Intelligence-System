@@ -114,6 +114,20 @@ After every multi-agent workflow:
 
 ## Agent Activation
 
+### Software delivery routing
+
+For software-delivery work, load the
+[agent delivery playbook](../docs/operations/agent-delivery-playbook.md).
+Use the existing work graph and review queue to identify the next missing proof.
+Prioritize a blocked review or verification handoff before starting additional
+implementation when downstream capacity is full. Carry the work ID, exact
+revision, user acceptance and recovery evidence between responsibilities.
+
+`tools/delivery-evidence/agent-next-action.mjs` provides read-only advice over a
+work-graph projection. It does not admit work, schedule agents or authorize a
+release. Existing permissions, admission rules and independent review controls
+remain authoritative. Completion and verified product outcome are distinct.
+
 ### Token Budget
 
 Each agent activation costs context tokens. Orchestration optimizes for minimum cost:

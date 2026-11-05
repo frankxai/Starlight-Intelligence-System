@@ -43,7 +43,7 @@ jobs:
           name: npm-release-${{ github.sha }}
           path: artifacts/npm-ecosystem/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 3
 
   publish:
     needs: verify
