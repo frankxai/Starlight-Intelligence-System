@@ -207,7 +207,7 @@ Config:
 
     it('requires explicit targeting and rejects ambiguous prefixes', async () => {
       const registry = new AgentDiscoveryRegistry();
-      const mockProvider: Record<string, unknown> = {
+      const mockProvider = {
         providerId: 'generic',
         capabilities: { visible: true, transcriptReadable: false, gracefulStopSupported: true, forceTerminationSupported: true },
         discoverSessions: async () => [
@@ -215,7 +215,7 @@ Config:
           { id: 'alpha-session-002', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as Record<string, unknown> },
           { id: 'beta-session-003', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as Record<string, unknown> },
         ],
-      };
+      } as unknown as import('../src/queen/agent-lifecycle/providers/base.js').AgentProvider;
       registry.registerProvider(mockProvider);
 
       // Ambiguous prefix 'alpha' matches 2 sessions -> must throw error
