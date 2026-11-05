@@ -37,12 +37,12 @@ repos:
     measured:
       skills: 89
       skills_unrooted: 24
-      installed_skills: 6
+      installed_skills: 7
       agents: 151
       commands: 28
       installed_commands: 122
       schemas: 1
-      measured_at: "2026-10-12"
+      measured_at: "2026-10-24"
   - name: agentic-creator-os
     section: substrate
     role: os-reference-build
