@@ -32,7 +32,7 @@
   "devDependencies": {
     "typescript": "5.9.3",
     "ai": "7.0.133",
-    "zod": "4.6.5"
+    "zod": "4.6.6"
   },
   "exports": {
     ".": {
