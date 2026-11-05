@@ -70,6 +70,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/brand",
+        destination: "https://starlightintelligence.ai/brand",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

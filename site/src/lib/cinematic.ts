@@ -18,6 +18,7 @@ export const NAV_GROUP_STILLS: Record<string, CinematicStill> = {
   Explore: "deepField",
   Build: "nursery",
   Learn: "veil",
+  "Design & Visuals": "spiral",
 };
 
 export const PAGE_STILLS: Record<string, CinematicStill> = {
@@ -45,5 +46,12 @@ export const PAGE_STILLS: Record<string, CinematicStill> = {
   "/architecture": "nursery",
   "/badge": "veil",
   "/benediction": "veil",
+  "/visuals/brand-lab": "spiral",
+  "/design": "veil",
+  "/visuals/system": "nursery",
+  "/visuals/provenance": "deepField",
+  "/agents": "spiral",
+  "/movement": "veil",
+  "/visuals/press-kit": "deepField",
   "/featured": "deepField",
 };

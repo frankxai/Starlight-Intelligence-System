@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-:root {
+:root,
+[data-theme="ink"] {
   --background: #060609;
   --foreground: #e2e8f0;
   --accent: #a78bfa;
@@ -9,6 +10,175 @@
   --border: rgba(255, 255, 255, 0.06);
   --border-hover: rgba(255, 255, 255, 0.12);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Starlight Living Design System (v3.0) — Converged Tokens */
+  color-scheme: dark;
+
+  /* Canvas & Surfaces (Ink Ground) */
+  --sl-bg: #070a10;
+  --sl-surface-1: #0d1119;
+  --sl-surface-2: #141926;
+  --sl-surface-inset: #04060a;
+  --sl-glass-bg: rgba(13, 17, 25, 0.58);
+  --sl-glass-bg-webgl: rgba(7, 10, 16, 0.30);
+  --sl-glass-blur: 18px;
+  --sl-glass-saturation: 115%;
+  --sl-grain-opacity: 0.025;
+
+  /* Typography & Contrast (14.9:1 Ivory on Ink) */
+  --sl-fg: #ede6d8;
+  --sl-fg-muted: #8b93a1;
+  --sl-fg-faint: #525b68;
+  --sl-fg-inverse: #070a10;
+
+  /* Borders & Hairlines */
+  --sl-border: rgba(237, 230, 216, 0.12);
+  --sl-border-subtle: rgba(237, 230, 216, 0.06);
+  --sl-border-focus: #f0c87e;
+
+  /* Human Gate Gold & Protocol Cyan */
+  --sl-gold: #c9a15c;
+  --sl-gold-bright: #f0c87e;
+  --sl-companion: #82d8e6;
+  --sl-companion-bright: #73e6ff;
+  --sl-star-body: #e8c98c;
+  --sl-star-core: #fbf6eb;
+
+  /* Button & Pill Action Tokens (>= 4.5:1 AA Contrast) */
+  --sl-accent-fill: #c9a15c;
+  --sl-on-accent: #070a10;
+
+  /* Status Quartet (Dual Shape + Glyph Accessible Encoding) */
+  --sl-status-ok: #77f0bf;
+  --sl-status-ok-border: rgba(119, 240, 191, 0.42);
+  --sl-status-ok-tint: rgba(119, 240, 191, 0.10);
+  --sl-status-ok-glyph: "●";
+
+  --sl-status-warn: #e8c36a;
+  --sl-status-warn-border: rgba(232, 195, 106, 0.46);
+  --sl-status-warn-tint: rgba(232, 195, 106, 0.14);
+  --sl-status-warn-glyph: "▲";
+
+  --sl-status-breach: #ff7b7b;
+  --sl-status-breach-border: rgba(255, 123, 123, 0.55);
+  --sl-status-breach-tint: rgba(255, 123, 123, 0.16);
+  --sl-status-breach-glyph: "■";
+
+  --sl-status-unknown: #b7a2ff;
+  --sl-status-unknown-border: rgba(183, 162, 255, 0.42);
+  --sl-status-unknown-tint: rgba(183, 162, 255, 0.10);
+  --sl-status-unknown-glyph: "◆";
+
+  /* Typography Scale */
+  --sl-font-sans: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --sl-font-serif: "Instrument Serif", Georgia, Cambria, serif;
+  --sl-font-mono: "IBM Plex Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing Scale (4-pt grid) */
+  --sl-space-1: 4px;
+  --sl-space-2: 8px;
+  --sl-space-3: 12px;
+  --sl-space-4: 16px;
+  --sl-space-6: 24px;
+  --sl-space-8: 32px;
+  --sl-space-12: 48px;
+  --sl-space-16: 64px;
+
+  /* Border Radii */
+  --sl-radius-xs: 4px;
+  --sl-radius-sm: 8px;
+  --sl-radius-md: 14px;
+  --sl-radius-lg: 24px;
+  --sl-radius-xl: 40px;
+  --sl-radius-full: 9999px;
+
+  /* Shadows & Depth */
+  --sl-depth-base: none;
+  --sl-depth-raised: 0 12px 36px rgba(0, 0, 0, 0.18);
+  --sl-depth-floating: 0 24px 72px rgba(0, 0, 0, 0.32);
+  --sl-glass-shadow: 0 20px 60px rgba(7, 10, 16, 0.45);
+  --sl-bevel-highlight: inset 0 1px 0 rgba(251, 246, 235, 0.18);
+}
+
+[data-theme="paper"] {
+  color-scheme: light;
+  --background: #efede7;
+  --foreground: #0e131b;
+
+  /* Canvas & Surfaces (Paper Ground) */
+  --sl-bg: #efede7;
+  --sl-surface-1: #f7f5f0;
+  --sl-surface-2: #ffffff;
+  --sl-surface-inset: #e5e3dc;
+  --sl-glass-bg: rgba(247, 245, 240, 0.72);
+  --sl-glass-bg-webgl: rgba(239, 237, 231, 0.40);
+  --sl-glass-blur: 18px;
+  --sl-glass-saturation: 110%;
+  --sl-grain-opacity: 0.02;
+
+  /* Typography & Contrast (15.2:1 Slate on Paper) */
+  --sl-fg: #0e131b;
+  --sl-fg-muted: #525b68;
+  --sl-fg-faint: #8a94a2;
+  --sl-fg-inverse: #efede7;
+
+  /* Borders & Hairlines */
+  --sl-border: rgba(7, 10, 16, 0.14);
+  --sl-border-subtle: rgba(7, 10, 16, 0.08);
+  --sl-border-focus: #8a6522;
+
+  /* Contrast-Tuned Brand Accents */
+  --sl-gold: #8a6522;
+  --sl-gold-bright: #ad8234;
+  --sl-companion: #16697a;
+  --sl-companion-bright: #1f859b;
+  --sl-star-body: #9e732c;
+  --sl-star-core: #0e131b;
+
+  /* Button & Pill Action Tokens (>= 4.5:1 AA Contrast) */
+  --sl-accent-fill: #8a6522;
+  --sl-on-accent: #ffffff;
+
+  /* Status Quartet (Light Theme Contrast) */
+  --sl-status-ok: #1e7a4b;
+  --sl-status-ok-border: rgba(30, 122, 75, 0.4);
+  --sl-status-ok-tint: rgba(30, 122, 75, 0.08);
+
+  --sl-status-warn: #8a6522;
+  --sl-status-warn-border: rgba(138, 101, 34, 0.4);
+  --sl-status-warn-tint: rgba(138, 101, 34, 0.08);
+
+  --sl-status-breach: #b82d2d;
+  --sl-status-breach-border: rgba(184, 45, 45, 0.4);
+  --sl-status-breach-tint: rgba(184, 45, 45, 0.08);
+
+  --sl-status-unknown: #5d48a8;
+  --sl-status-unknown-border: rgba(93, 72, 168, 0.4);
+  --sl-status-unknown-tint: rgba(93, 72, 168, 0.08);
+
+  /* Shadows & Depth */
+  --sl-depth-base: none;
+  --sl-depth-raised: 0 12px 36px rgba(14, 19, 27, 0.08);
+  --sl-depth-floating: 0 24px 72px rgba(14, 19, 27, 0.16);
+  --sl-glass-shadow: 0 20px 60px rgba(14, 19, 27, 0.10);
+  --sl-bevel-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-mode="operator"] {
+  /* Operator Cockpit Profile (High Density, Value-Stepped Dark) */
+  --sl-bg: #0b0d12;
+  --sl-surface-1: #11141c;
+  --sl-surface-2: #171b26;
+  --sl-glass-bg: rgba(17, 20, 28, 0.78);
+  --sl-fg: #e8ebf2;
+  --sl-fg-muted: #8b93a7;
+  --sl-fg-faint: #5d6478;
+  --sl-border: rgba(124, 146, 194, 0.18);
+  --sl-border-subtle: rgba(124, 146, 194, 0.09);
+  --sl-gold: #e8c36a;
+  --sl-gold-bright: #f0c87e;
+  --sl-companion: #73e6ff;
+  --sl-companion-bright: #9feeff;
 }
 
 @theme inline {

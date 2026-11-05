@@ -555,7 +555,8 @@ describe("v9.2 Foundry compilation and proof", () => {
     }
   });
 
-  it("compiles and proves agent, swarm, vertical, and plugin projections", () => {
+  it("compiles and proves agent, swarm, vertical, and plugin projections", (t) => {
+    t.mock.timers.enable({ apis: ["Date"], now: new Date("2026-09-01T12:00:00.000Z") });
     const temp = tempDirectory();
     try {
       const projections = [
@@ -1037,7 +1038,8 @@ describe("v9.2 Foundry compilation and proof", () => {
 });
 
 describe("v9.2 Foundry portable plugin compiler", () => {
-  it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", () => {
+  it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", (t) => {
+    t.mock.timers.enable({ apis: ["Date"], now: new Date("2026-09-01T12:00:00.000Z") });
     const temp = tempDirectory();
     try {
       const targets = ["openai-plugin", "codex"];
@@ -1132,6 +1134,57 @@ describe("v9.2 Foundry portable plugin compiler", () => {
         /failed final-directory preflight/,
       );
       assert.equal(existsSync(failedNewOutput), false, "a failed new build must leave no target tree");
+    } finally {
+      rmSync(temp, { recursive: true, force: true });
+    }
+  });
+
+  it("refuses plugin compilation after OpenAI directory rules expire", (t) => {
+    const reviewBy = json(
+      join(ROOT, "foundry", "validators", "openai", "plugin-rules.v2026-10-04.json"),
+    ).reviewBy;
+    const reviewedAt = Date.parse(`${reviewBy}T12:00:00.000Z`);
+    t.mock.timers.enable({ apis: ["Date"], now: new Date(reviewedAt) });
+    t.mock.timers.setTime(reviewedAt + 24 * 60 * 60 * 1000);
+    assert.ok(new Date().toISOString().slice(0, 10) > reviewBy);
+
+    const temp = tempDirectory();
+    try {
+      const targets = ["openai-plugin"];
+      const envelope = projectionEnvelope(
+        "plugin",
+        "expired-rules-plugin",
+        targets,
+        ["foundry/skill-forge"],
+        "plugin/plugin.json",
+      );
+      const pack = {
+        schemaVersion: "1.0.0",
+        kind: "plugin",
+        id: "expired-rules-plugin",
+        version: "0.1.0",
+        description: "Exercise the fail-closed OpenAI rules freshness boundary.",
+        displayName: "Expired Rules Plugin",
+        publisher: starlightPublisher(),
+        openaiListing: openaiListing(),
+        skills: ["foundry/skill-forge"],
+        authentication: "none",
+        deployment: { targets },
+      };
+      const output = join(temp, pack.id);
+
+      assert.throws(
+        () => compilePackage({
+          root: ROOT,
+          envelope,
+          pack,
+          output,
+          graph: buildCapabilityGraph(ROOT),
+          registry,
+        }),
+        /failed final-directory preflight: RULES_FRESHNESS/,
+      );
+      assert.equal(existsSync(output), false, "expired rules must not produce a plugin package");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
