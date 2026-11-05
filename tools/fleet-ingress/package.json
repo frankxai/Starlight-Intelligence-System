@@ -5,7 +5,7 @@
   "private": true,
   "main": "src/index.ts",
   "scripts": {
-    "test": "node --test tests/ingress.test.mjs"
+    "test": "node --test tests/*.test.mjs"
   },
   "keywords": [
     "cloudflare-workers",
@@ -16,3 +16,4 @@
   "author": "Frank Riemer (frankx.ai)",
   "license": "MIT"
 }
+

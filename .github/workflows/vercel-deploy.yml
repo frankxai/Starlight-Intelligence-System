@@ -141,7 +141,7 @@ jobs:
         with:
           name: deploy-attestation-${{ github.sha }}
           path: site/.deploy-log/${{ github.sha }}.txt
-          retention-days: 90
+          retention-days: 3
 
       - name: Comment on commit with attestation
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0

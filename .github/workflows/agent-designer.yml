@@ -26,6 +26,9 @@ on:
       - 'pnpm-workspace.yaml'
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   reference-checks:
     runs-on: ubuntu-latest
