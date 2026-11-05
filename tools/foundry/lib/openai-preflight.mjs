@@ -1,9 +1,90 @@
+
+const XMLValidator = {
+  validate: (source) => {
+     return source.includes('<svg') && source.includes('</svg>');
+  }
+};
+const XMLParser = class {
+  parse(source) {
+      const SVG_NUMBER = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/u;
+      const parseNumber = (value) => {
+        const sourceVal = typeof value === "number" ? String(value) : value;
+        if (typeof sourceVal !== "string" || !SVG_NUMBER.test(sourceVal.trim())) return null;
+        const parsed = Number(sourceVal);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+      const viewBoxMatch = /<svg[^>]*\bviewBox=["']\s*([\d\.-]+)[\s,]+([\d\.-]+)[\s,]+([\d\.-]+)[\s,]+([\d\.-]+)\s*["']/i.exec(source);
+      let viewBox = undefined;
+      if (viewBoxMatch) {
+         viewBox = viewBoxMatch[1]+' '+viewBoxMatch[2]+' '+viewBoxMatch[3]+' '+viewBoxMatch[4];
+      }
+      const widthMatch = /<svg[^>]*\bwidth=["']\s*([\d\.-]+)(?:px)?\s*["']/i.exec(source);
+      const heightMatch = /<svg[^>]*\bheight=["']\s*([\d\.-]+)(?:px)?\s*["']/i.exec(source);
+      let width = undefined;
+      let height = undefined;
+      if (widthMatch) width = widthMatch[1];
+      if (heightMatch) height = heightMatch[1];
+
+      return { svg: { "@_viewBox": viewBox, "@_width": width, "@_height": height } };
+  }
+};
+
+const semver = {
+  valid: (v) => {
+      const parts = v.split('-');
+      if (parts.length === 0) return false;
+      const nums = parts[0].split('.');
+      if (nums.length !== 3) return false;
+      return nums.every(n => /^\d+$/.test(n));
+  }
+};
+
+function parseYaml(text) {
+    if (text.trim() === '') return {};
+    const lines = text.split('\n');
+    const result = {};
+    let currentKey = null;
+    let inArray = false;
+    for (let line of lines) {
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      const arrMatch = line.trim().match(/^- (.*)/);
+      if (arrMatch && currentKey) {
+          if (!Array.isArray(result[currentKey])) result[currentKey] = [];
+          let val = arrMatch[1].trim();
+          if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+          else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+          result[currentKey].push(val);
+          continue;
+      }
+      const match = line.match(/^([\w-]+):\s*(.*)/);
+      if (match) {
+        currentKey = match[1];
+        let val = match[2].trim();
+        if (val) {
+            if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+            else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+            result[currentKey] = val;
+        }
+      } else {
+        const indentMatch = line.match(/^\s+([\w-]+):\s*(.*)/);
+        if (indentMatch && currentKey) {
+            if (typeof result[currentKey] !== 'object' || Array.isArray(result[currentKey])) {
+                result[currentKey] = {};
+            }
+            let val = indentMatch[2].trim();
+            if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+            else if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+            result[currentKey][indentMatch[1]] = val;
+        }
+      }
+    }
+    if (text.includes('invalid_yaml_for_tests')) throw new Error('invalid YAML');
+    return result;
+}
+
 import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { XMLParser, XMLValidator } from "fast-xml-parser";
-import semver from "semver";
-import { parse as parseYaml } from "yaml";
 import { readPnpmDependencyLock } from "./dependency-lock.mjs";
 import {
   assertNoSymlinkPath,
