@@ -1,0 +1,41 @@
+name: Delivery evidence
+
+on:
+  pull_request:
+    paths:
+      - 'tools/delivery-evidence/**'
+      - 'src/work-graph.ts'
+      - 'examples/work-graph/product-delivery.jsonl'
+      - '.github/workflows/delivery-evidence.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/delivery-evidence/**'
+      - 'src/work-graph.ts'
+      - 'examples/work-graph/product-delivery.jsonl'
+      - '.github/workflows/delivery-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: delivery-evidence-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Delivery evidence contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Verify measurement boundaries
+        run: node --test tools/delivery-evidence/report.test.mjs tools/delivery-evidence/agent-next-action.test.mjs
+      - name: Validate the synthetic example
+        run: node tools/delivery-evidence/report.mjs tools/delivery-evidence/example.json

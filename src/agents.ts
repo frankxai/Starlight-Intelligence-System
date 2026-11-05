@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join, basename, extname } from "node:path";
+import { join, basename, extname, resolve, sep, isAbsolute } from "node:path";
+import { createHash } from "node:crypto";
 import type { AgentDefinition, AgentRegistry } from "./types.js";
 
 // ── Static Fallback Agent Definitions ───────────────────────
@@ -93,9 +94,63 @@ const STATIC_AGENTS: AgentDefinition[] = [
 
 // ── Dynamic Agent Discovery ──────────────────────────────────
 
+/** Read the generated operational catalog only when all pinned local inputs still match.
+ * Missing/stale projections fall back to strict source-profile discovery. */
+export function loadSpecialistAgents(root = process.cwd()): AgentDefinition[] | null {
+  const path = join(root, "agents/catalog/specialists.json");
+  if (!existsSync(path)) return null;
+  try {
+    const catalog = JSON.parse(readFileSync(path, "utf8"));
+    if (catalog.schemaVersion !== "starlight.specialist-catalog.v1" ||
+      !Array.isArray(catalog.agents) || !Array.isArray(catalog.sources) ||
+      catalog.count !== catalog.agents.length || catalog.count === 0) return null;
+    const resolvedRoot = resolve(root);
+    const currentProfiles: string[] = [];
+    function collectProfiles(dir: string): void {
+      for (const entry of readdirSync(join(root, dir), { withFileTypes: true })) {
+        const path = `${dir}/${entry.name}`;
+        if (entry.isDirectory() && path !== "agents/catalog") collectProfiles(path);
+        else if (entry.isFile() && entry.name.endsWith(".md") &&
+          !["AGENT_REGISTRY.md", "CODING_AGENTS_REGISTRY.md"].includes(entry.name)) currentProfiles.push(path);
+      }
+    }
+    collectProfiles("agents");
+    const catalogProfiles = catalog.agents.map((card: { source?: { path?: unknown } }) => card.source?.path);
+    if (catalogProfiles.some((path: unknown) => typeof path !== "string") ||
+      JSON.stringify(currentProfiles.sort()) !== JSON.stringify(catalogProfiles.sort())) return null;
+    for (const source of catalog.sources) {
+      if (typeof source.path !== "string" || isAbsolute(source.path)) return null;
+      const target = resolve(resolvedRoot, source.path);
+      if (!target.startsWith(resolvedRoot + sep)) return null;
+      const digest = createHash("sha256").update(readFileSync(target, "utf8")).digest("hex");
+      if (digest !== source.sha256) return null;
+    }
+    const ids = new Set<string>();
+    const agents: AgentDefinition[] = [];
+    for (const card of catalog.agents) {
+      if (typeof card.id !== "string" || ids.has(card.id) || typeof card.name !== "string" ||
+        typeof card.purpose !== "string" || typeof card.profileName !== "string" ||
+        !Array.isArray(card.aliases) || card.aliases.some((alias: unknown) => typeof alias !== "string") ||
+        !Array.isArray(card.skills) || card.skills.some((skill: { id?: unknown }) => typeof skill?.id !== "string") ||
+        !["meta", "specialist"].includes(card.type) || !Array.isArray(card.triggers?.keywords) ||
+        card.triggers.keywords.some((keyword: unknown) => typeof keyword !== "string") ||
+        typeof card.source?.path !== "string") return null;
+      ids.add(card.id);
+      agents.push({
+        id: card.id, name: card.name, aliases: card.aliases, profileName: card.profileName,
+        sourceRef: card.source.path, type: card.type, description: card.purpose,
+        skills: card.skills.map((skill: { id: string }) => skill.id),
+        triggers: { keywords: card.triggers.keywords, filePatterns: card.triggers.filePatterns },
+      });
+    }
+    return agents;
+  } catch { return null; }
+}
+
 function loadDynamicAgents(): AgentDefinition[] {
-  const agentsList: AgentDefinition[] = [];
-  const processedIds = new Set<string>();
+  const catalogAgents = loadSpecialistAgents();
+  const agentsList: AgentDefinition[] = catalogAgents ? [...catalogAgents] : [];
+  const processedIds = new Set(agentsList.map((agent) => agent.id));
 
   const scanDirs = [
     join(process.cwd(), "agents"),
@@ -128,7 +183,12 @@ function loadDynamicAgents(): AgentDefinition[] {
     try {
       const content = readFileSync(filePath, "utf-8");
       const lines = content.split(/\r?\n/);
-      
+      // Registry prose and vertical documentation are not executable agent profiles.
+      const frontmatter = content.match(/^\uFEFF?---\r?\n([\s\S]*?)\r?\n---/);
+      if (!frontmatter || !/^name:\s*\S/m.test(frontmatter[1]) ||
+        !/^tier:\s*\S/m.test(frontmatter[1]) || !/^domain:\s*\S/m.test(frontmatter[1])) return null;
+      const profileName = frontmatter[1].match(/^name:\s*(.+)/m)?.[1]?.trim().replace(/^["']|["']$/g, "");
+
       const filename = basename(filePath, ".md");
       // Decide ID: if filename is "agent.md", take the parent directory name, otherwise the filename
       let id = filename;
@@ -173,7 +233,7 @@ function loadDynamicAgents(): AgentDefinition[] {
       const skills = new Set<string>();
       let inSkillsSection = false;
       for (const line of lines) {
-        if (line.startsWith("## Skill Activations") || line.startsWith("## Capabilities")) {
+        if (/^## (Skill Activations|Active Skills|Skills)\s*$/i.test(line)) {
           inSkillsSection = true;
           continue;
         }
@@ -182,12 +242,12 @@ function loadDynamicAgents(): AgentDefinition[] {
         }
         if (inSkillsSection) {
           // Check for bullet points
-          const bulletMatch = line.match(/^[-*]\s+`?([a-zA-Z0-9_-]+)`?/);
+          const bulletMatch = line.match(/^[-*]\s+`?([a-z][a-z0-9_/-]+)`?(?:\s|$)/);
           if (bulletMatch && bulletMatch[1]) {
             skills.add(bulletMatch[1].trim());
           }
           // Check for table rows
-          const tableMatch = line.match(/^\|\s*`?([a-zA-Z0-9_-]+)`?\s*\|/);
+          const tableMatch = line.match(/^\|\s*`?([a-z][a-z0-9_/-]+)`?\s*\|/);
           if (tableMatch && tableMatch[1]) {
             skills.add(tableMatch[1].trim());
           }
@@ -233,6 +293,9 @@ function loadDynamicAgents(): AgentDefinition[] {
       return {
         id,
         name,
+        profileName,
+        aliases: profileName && profileName !== id ? [profileName] : [],
+        sourceRef: filePath,
         type,
         description,
         skills: Array.from(skills),
@@ -322,7 +385,11 @@ export class AgentRouter {
    * Get an agent by ID.
    */
   getAgent(id: string): AgentDefinition | undefined {
-    return this.agents.find((a) => a.id === id);
+    const byId = this.agents.find((agent) => agent.id === id);
+    if (byId) return byId;
+    const aliases = this.agents.filter((agent) => agent.profileName === id || agent.aliases?.includes(id));
+    // Ambiguous aliases never silently select a specialist.
+    return aliases.length === 1 ? aliases[0] : undefined;
   }
 
   /**

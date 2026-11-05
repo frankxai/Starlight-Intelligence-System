@@ -114,6 +114,12 @@ export class Alexandria {
   private readonly held = new Map<string, { amount: number; fingerprint: string }>();
   /** Requests executed and settled in this session, keyed by request id. Replays are rejected without reserving or billing. */
   private readonly settled = new Map<string, { fingerprint: string }>();
+  /**
+   * Calls that have reserved but not yet settled, keyed by request id.
+   * A duplicate that arrives while the provider call is still running joins this promise.
+   * It is not in `settled` or `held` during that window, so without this map it would reserve and dispatch again.
+   */
+  private readonly inflight = new Map<string, { fingerprint: string; promise: Promise<ExecuteResponse> }>();
   /** Capabilities whose provider once charged more than was reserved. Refused until the catalogue is reconciled. */
   private readonly suspended = new Set<string>();
   /** Set by close(). A closed instance no longer holds the session lock, so it must not spend. */
@@ -302,6 +308,19 @@ export class Alexandria {
       }
       throw new AlexandriaError('replay_completed', `requestId ${req.requestId} was already executed and settled in session ${this.budget.sessionId}`, 'This request was already settled; nothing was reserved or charged. Mint a new request for a different call.', req.requestId);
     }
+    // A settled check does not see a call that has reserved and is still at the provider: that
+    // request is neither settled nor held. Joining its promise is what keeps a timeout retry, or
+    // a second tools/call read from stdin before the first returns, from paying twice.
+    if (req.requestId) {
+      const flight = this.inflight.get(req.requestId);
+      if (flight) {
+        const { fingerprint } = this.normalize(req);
+        if (flight.fingerprint !== fingerprint) {
+          throw new AlexandriaError('retry_mismatch', `requestId ${req.requestId} belongs to a different call that is still running (capability or options differ)`, 'Wait for that call to finish, then retry with exactly its capability and options, or mint a new request for a different call.', req.requestId);
+        }
+        return flight.promise;
+      }
+    }
     // A retry of a held call reuses its reservation instead of taking a second one, and only
     // for the same call: the hold is bound to the capability and options it was taken for.
     const hold = req.requestId ? this.held.get(req.requestId) : undefined;
@@ -331,29 +350,40 @@ export class Alexandria {
       if (this.now) input.now = this.now;
       return buildReceipt(input);
     };
+    // Publish the in-flight promise before the first await. stdin delivers the next tools/call
+    // as soon as this function yields, and that call must see this request id already taken.
+    let settleFlight!: (value: ExecuteResponse) => void;
+    let failFlight!: (err: unknown) => void;
+    const flightPromise = new Promise<ExecuteResponse>((resolve, reject) => {
+      settleFlight = resolve;
+      failFlight = reject;
+    });
+    // The owner rethrows. This handler only marks the shared promise handled when nobody else joined.
+    flightPromise.catch(() => {});
+    this.inflight.set(requestId, { fingerprint, promise: flightPromise });
     // One paid call per capability at a time, across instances and processes: the turn is held
     // from the suspension check through the provider call to the outcome receipt, so a call
     // cannot be dispatched while an earlier one that may overrun is still in flight.
     let releaseTurn: (() => void) | undefined;
-    if (reserved > 0 && this.ledger) {
-      try {
-        releaseTurn = await capabilityTurn(this.ledger.path, hit.capability.id);
-      } catch (err) {
-        this.budget.spent -= reserved - alreadyHeld;
-        if (hold) this.held.set(requestId, hold);
-        const message = err instanceof Error ? err.message : String(err);
-        throw new AlexandriaError('capability_busy', `${hit.capability.id}: another call is dispatching this capability, so the call was not sent (${message})`, 'Call again shortly; nothing was charged. A lock left by a process that has exited is reclaimed automatically; if the error names a lock held by a live, unrelated pid, remove that .cap-*.lock directory once no Alexandria process is dispatching.', req.requestId);
-      }
-      // The wait may have outlived the session: a closed instance, or a session lock that is no
-      // longer ours, means another process may have resumed this session without this reservation.
-      if (this.closed || (this.lock && FileLock.owner(this.lock.path) !== process.pid)) {
-        releaseTurn();
-        this.budget.spent -= reserved - alreadyHeld;
-        if (hold) this.held.set(requestId, hold);
-        throw new AlexandriaError('session_closed', `${hit.capability.id}: budget session ${this.budget.sessionId} was closed or lost its lock while this call waited for its turn, so it was not sent`, 'Construct a new Alexandria to resume the session; nothing was charged.', req.requestId);
-      }
-    }
     try {
+      if (reserved > 0 && this.ledger) {
+        try {
+          releaseTurn = await capabilityTurn(this.ledger.path, hit.capability.id);
+        } catch (err) {
+          this.budget.spent -= reserved - alreadyHeld;
+          if (hold) this.held.set(requestId, hold);
+          const message = err instanceof Error ? err.message : String(err);
+          throw new AlexandriaError('capability_busy', `${hit.capability.id}: another call is dispatching this capability, so the call was not sent (${message})`, 'Call again shortly; nothing was charged. A lock left by a process that has exited is reclaimed automatically; if the error names a lock held by a live, unrelated pid, remove that .cap-*.lock directory once no Alexandria process is dispatching.', req.requestId);
+        }
+        // The wait may have outlived the session: a closed instance, or a session lock that is no
+        // longer ours, means another process may have resumed this session without this reservation.
+        if (this.closed || (this.lock && FileLock.owner(this.lock.path) !== process.pid)) {
+          releaseTurn();
+          this.budget.spent -= reserved - alreadyHeld;
+          if (hold) this.held.set(requestId, hold);
+          throw new AlexandriaError('session_closed', `${hit.capability.id}: budget session ${this.budget.sessionId} was closed or lost its lock while this call waited for its turn, so it was not sent`, 'Construct a new Alexandria to resume the session; nothing was charged.', req.requestId);
+        }
+      }
       // Durable before paid: the pending line holds the reservation in the ledger, so a crash
       // between the provider call and its receipt is restored as a hold, never as free credits.
       // If it cannot be written the call does not run; nothing has reached the provider yet.
@@ -433,9 +463,14 @@ export class Alexandria {
       this.settled.set(requestId, { fingerprint });
       const response: ExecuteResponse = { hit, result, receipt, budget: { ...this.budget } };
       if (overrun) response.overrun = true;
+      settleFlight(response);
       return response;
+    } catch (err) {
+      failFlight(err);
+      throw err;
     } finally {
       releaseTurn?.();
+      if (this.inflight.get(requestId)?.promise === flightPromise) this.inflight.delete(requestId);
     }
   }
 }

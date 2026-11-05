@@ -4,9 +4,16 @@ Standalone MCP server using the official TypeScript SDK v2. It exposes scoped
 memory recall without loading the SIS vault filesystem, SQLite engine, or orchestration
 runtime. The executable bridges an existing operator-owned SIS HTTP gateway.
 
+Release candidate: the registry's `latest` tag still points at the
+`0.0.0-stage` placeholder as verified on 18 October 2026. That artifact has no
+executable. Build this candidate from the repository until the reviewed OIDC
+release publishes the actual package:
+
 ```sh
-npm install @starlight-intelligence/mcp
-starlight-memory-mcp --gateway http://127.0.0.1:7777 --tenant team-a
+# From the repository root, with its pinned pnpm version:
+pnpm install --frozen-lockfile
+pnpm run build:packages
+node packages/mcp-server/dist/cli.js --gateway http://127.0.0.1:7777 --tenant team-a
 ```
 
 Set `STARLIGHT_GATEWAY_TOKEN` through the client's secret environment mechanism.

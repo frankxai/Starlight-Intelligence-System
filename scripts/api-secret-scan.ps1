@@ -84,14 +84,29 @@ foreach ($repo in $existingRepos) {
             $env:GIT_CONFIG_KEY_0 = 'core.safecrlf'
             $env:GIT_CONFIG_VALUE_0 = 'false'
             $modeArgs = @($changeMode.Args)
-            & infisical scan @modeArgs --redact --silent --report-format json --report-path $tmpChangeReport --no-color 2>&1 |
-                Out-File -FilePath $tmpChangeOut -Encoding utf8
-            $changeRc = $LASTEXITCODE
+            $savedNativeErrorAction = $ErrorActionPreference
+            try {
+                # Scanner diagnostics on stderr are not a PowerShell exception. The exit code and
+                # structured report below decide success; neither output stream is persisted.
+                $ErrorActionPreference = 'Continue'
+                & infisical scan @modeArgs --redact --silent --report-format json --report-path $tmpChangeReport --no-color 2>&1 |
+                    Out-File -FilePath $tmpChangeOut -Encoding utf8
+                $changeRc = $LASTEXITCODE
+            } finally {
+                $ErrorActionPreference = $savedNativeErrorAction
+            }
             $changeFindings = @()
             try {
                 $rawChangeReport = Get-Content $tmpChangeReport -Raw -ErrorAction Stop
                 if (-not [string]::IsNullOrWhiteSpace($rawChangeReport)) {
-                    $changeFindings = @($rawChangeReport | ConvertFrom-Json -ErrorAction Stop)
+                    $parsedReport = ConvertFrom-Json -InputObject $rawChangeReport -ErrorAction Stop
+                if ($null -eq $parsedReport) {
+                    $changeFindings = @()
+                } elseif ($parsedReport -is [array]) {
+                    $changeFindings = $parsedReport
+                } else {
+                    $changeFindings = @($parsedReport)
+                }
                 }
             } catch {
                 $changeFindings = @()
@@ -129,17 +144,29 @@ foreach ($repo in $existingRepos) {
     $tmpOut = [System.IO.Path]::GetTempFileName()
     $tmpReport = [System.IO.Path]::GetTempFileName()
     try {
-        & infisical scan --redact --report-format json --report-path $tmpReport --no-color 2>&1 |
-            Out-File -FilePath $tmpOut -Encoding utf8
-        $rc = $LASTEXITCODE
+        $savedNativeErrorAction = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = 'Continue'
+            & infisical scan --redact --silent --report-format json --report-path $tmpReport --no-color 2>&1 |
+                Out-File -FilePath $tmpOut -Encoding utf8
+            $rc = $LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $savedNativeErrorAction
+        }
         $scannedCount++
 
         $scanFindings = @()
         try {
             $rawReport = Get-Content $tmpReport -Raw -ErrorAction Stop
             if (-not [string]::IsNullOrWhiteSpace($rawReport)) {
-                $parsedReport = $rawReport | ConvertFrom-Json -ErrorAction Stop
-                $scanFindings = @($parsedReport)
+                $parsedReport = ConvertFrom-Json -InputObject $rawReport -ErrorAction Stop
+                if ($null -eq $parsedReport) {
+                    $scanFindings = @()
+                } elseif ($parsedReport -is [array]) {
+                    $scanFindings = $parsedReport
+                } else {
+                    $scanFindings = @($parsedReport)
+                }
             }
         } catch {
             # Do not persist parser or scanner stdout: either may contain sensitive text.

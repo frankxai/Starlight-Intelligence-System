@@ -50,8 +50,8 @@ This is the **public registry**. Active alliances and private verticals (Family 
 - **Domain:** Membership and movement layer for sovereign creators adopting SIP. Composes on top of Creator IS.
 - **Owner:** Frank (under Starlight Holding BV or Arcanea BV — TBD at BV formation).
 - **Status:** `active — v0.5`.
-- **Primary repo:** `frankxai/gencreator` *(to be created)*.
-- **Public surface:** `gencreator.community` *(to be registered)*.
+- **Primary repo:** `frankxai/gencreator.ai`.
+- **Public surface:** `gencreator.ai`.
 - **Canon:** none required; composes with Creator IS playbooks + optionally Arcanea for narrative-flavored creators.
 - **Compounds:** membership revenue + retreat revenue + network density.
 - **SIP commands:** `/gencreator-challenge`, `/gencreator-onboard`, `/gencreator-compose`.
