@@ -17,6 +17,19 @@ Claude Code, Cursor, Codex, Gemini CLI, OpenCode, Antigravity — they all read 
 
 Starlight Intelligence is an AI systems project led by Frank Riemer in Amsterdam. This repository contains its public protocol and reference source. [About the project and product](https://starlightintelligence.ai/about) · [Released open-source foundations](https://starlightintelligence.ai/open-source) · [Contribute and explore the community proposal](https://starlightintelligence.ai/community).
 
+## Choose your first result
+
+Starlight is modular. Use the smallest part that solves your problem; a hosted account is not required to explore the protocol or run the local reference implementation.
+
+| Your goal | Start here | Scope |
+|---|---|---|
+| Understand the open contract | [Read SIP](SIP.md) | Protocol and interoperability; no installation |
+| Share memory across AI tools | [60-second local start](#60-second-start) | Local vaults and MCP server; bring your own tools |
+| Explore the public interface | [Deploy Starlight Explorer](#deploy-starlight-explorer) | Read-only Explorer, **not** the private agent runtime |
+| Improve the platform | [Contribution guide](CONTRIBUTING.md) | Tests, fixes, adapters, documentation and protocol proposals |
+
+**Canonical source today:** this `frankxai/Starlight-Intelligence-System` repository owns issues, pull requests and releases. Same-named copies in other organizations are **not alternate contribution targets**. If repository ownership changes, follow the verified canonical destination announced here; do not open duplicate PRs against mirrors.
+
 ## Deploy Starlight Explorer
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2FStarlight-Intelligence-System&root-directory=site&project-name=starlight-explorer&repository-name=starlight-explorer)
