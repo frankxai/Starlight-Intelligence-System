@@ -207,13 +207,13 @@ Config:
 
     it('requires explicit targeting and rejects ambiguous prefixes', async () => {
       const registry = new AgentDiscoveryRegistry();
-      const mockProvider: any = {
+      const mockProvider: Record<string, unknown> = {
         providerId: 'generic',
         capabilities: { visible: true, transcriptReadable: false, gracefulStopSupported: true, forceTerminationSupported: true },
         discoverSessions: async () => [
-          { id: 'alpha-session-001', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as any },
-          { id: 'alpha-session-002', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as any },
-          { id: 'beta-session-003', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as any },
+          { id: 'alpha-session-001', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as Record<string, unknown> },
+          { id: 'alpha-session-002', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as Record<string, unknown> },
+          { id: 'beta-session-003', provider: 'generic', status: 'idle', lastSeen: new Date().toISOString(), capabilities: {} as Record<string, unknown> },
         ],
       };
       registry.registerProvider(mockProvider);
@@ -422,7 +422,7 @@ Config:
       const index = JSON.parse(readFileSync(indexFile, 'utf8'));
 
       // Must only have 1 entry for this session ID
-      const matches = index.filter((e: any) => e.sessionId === session.id);
+      const matches = index.filter((e: { sessionId: string }) => e.sessionId === session.id);
       assert.equal(matches.length, 1);
 
       rmSync(testDir, { recursive: true, force: true });

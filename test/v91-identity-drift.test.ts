@@ -424,7 +424,7 @@ describe("v91 Suite B: decay sweep", () => {
     // The JSONL should now have an archive event appended
     const lines = readVaultLines(vaultDir, "operational");
     const archiveEvent = lines.find(
-      (l: any) => l.type === "archive" && l.id === "ops_old_001",
+      (l: { type: string, id: string, name?: string, version?: string, reason?: string, currentHash?: string, priorHash?: string }) => l.type === "archive" && l.id === "ops_old_001",
     );
     assert.ok(archiveEvent, "expected archive event appended for old entry");
   });
@@ -439,7 +439,7 @@ describe("v91 Suite B: decay sweep", () => {
 
     assert.equal(result.archived, 0, `expected 0 archived, got ${result.archived}`);
     const lines = readVaultLines(vaultDir, "operational");
-    const archiveEvent = lines.find((l: any) => l.type === "archive");
+    const archiveEvent = lines.find((l: { type: string, id: string, name?: string, version?: string, reason?: string, currentHash?: string, priorHash?: string }) => l.type === "archive");
     assert.equal(archiveEvent, undefined, "fresh entry should not be archived");
   });
 
@@ -454,7 +454,7 @@ describe("v91 Suite B: decay sweep", () => {
 
     assert.equal(result.archived, 0, `wisdom vault must never be decayed; got ${result.archived}`);
     const lines = readVaultLines(vaultDir, "wisdom");
-    const archiveEvent = lines.find((l: any) => l.type === "archive");
+    const archiveEvent = lines.find((l: { type: string, id: string, name?: string, version?: string, reason?: string, currentHash?: string, priorHash?: string }) => l.type === "archive");
     assert.equal(archiveEvent, undefined, "wisdom entries must not get archive events");
   });
 
@@ -497,12 +497,12 @@ describe("v91 Suite B: decay sweep", () => {
     // wisdom + horizon untouched
     const wisdomLines = readVaultLines(vaultDir, "wisdom");
     assert.ok(
-      !wisdomLines.find((l: any) => l.type === "archive"),
+      !wisdomLines.find((l: { type: string, id: string, name?: string, version?: string, reason?: string, currentHash?: string, priorHash?: string }) => l.type === "archive"),
       "wisdom must not have archive events",
     );
     const horizonLines = readVaultLines(vaultDir, "horizon");
     assert.ok(
-      !horizonLines.find((l: any) => l.type === "archive"),
+      !horizonLines.find((l: { type: string, id: string, name?: string, version?: string, reason?: string, currentHash?: string, priorHash?: string }) => l.type === "archive"),
       "horizon must not have archive events",
     );
   });

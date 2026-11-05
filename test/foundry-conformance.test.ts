@@ -1,10 +1,8 @@
-interface ValidationError { code?: string; keyword?: string; }
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { before, after } from "node:test";
 import { tmpdir } from "node:os";
 import { repoRootFromTestFile } from "./_lib/repo.js";
 import {
@@ -29,7 +27,7 @@ function tempDirectory(): string {
   return mkdtempSync(join(tmpdir(), "starlight-conformance-test-"));
 }
 
-function portableManifest(): Record<string, unknown> {
+function portableManifest(): any {
   return JSON.parse(readFileSync(join(PLUGIN, "plugin.json"), "utf8"));
 }
 
@@ -38,33 +36,18 @@ function sha256(path: string): string {
 }
 
 describe("Foundry upstream Agent Plugins conformance", () => {
-  let OriginalDate: DateConstructor;
-  before(() => {
-    OriginalDate = global.Date;
-    function MockDate(...args) {
-    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
-    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
-    return new OriginalDate(...args);
-  }
-  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
-  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
-  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
-  MockDate.prototype = OriginalDate.prototype;
-  global.Date = MockDate as DateConstructor;
-  });
-  after(() => { global.Date = OriginalDate; });
   it("verifies exact Agent Plugins 1.0.0 schema digests before compilation", () => {
     const cache = verifyAgentPluginSchemaCache();
     assert.equal(cache.specificationVersion, "1.0.0");
     assert.equal(cache.license, "Apache-2.0");
     assert.deepEqual(
-      Object.fromEntries(cache.records.map((record: { name: string; sha256: string; cacheVerified: boolean; path: string }) => [record.name, record.sha256])),
+      Object.fromEntries(cache.records.map((record: any) => [record.name, record.sha256])),
       {
         "plugin.schema.json": "0a4aad95ce337878ad38802ebf0daa3fde76abe3f65400c86bcbb1ec0b3ab883",
         "mcp.schema.json": "6539175bfcdf43085855183e86da40ea94b166547a72b47ae9a0a390516d3acb",
       },
     );
-    assert.ok(cache.records.every((record: { name: string; sha256: string; cacheVerified: boolean; path: string }) => record.cacheVerified));
+    assert.ok(cache.records.every((record: any) => record.cacheVerified));
   });
 
   it("keeps validator versions and package integrities synchronized with their authoritative locks", () => {
@@ -89,7 +72,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
       [claude.version, claude.integrity],
     );
     for (const validator of [lock.openai.codexLoader, lock.claude.strictValidator]) {
-      for (const expected of Object.values(validator.platformPackages) as { package: string; version: string; integrity: string }[]) {
+      for (const expected of Object.values(validator.platformPackages) as any[]) {
         const actual = nativeLock.packages[`node_modules/${expected.package}`];
         assert.deepEqual(
           [actual?.version, actual?.integrity],
@@ -98,7 +81,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
         );
       }
     }
-    for (const [name, expected] of Object.entries(lock.openai.rules.implementation) as [string, { version: string; integrity: string }][]) {
+    for (const [name, expected] of Object.entries(lock.openai.rules.implementation) as any[]) {
       const actual = npmLock.packages[`node_modules/${name}`];
       assert.deepEqual([actual?.version, actual?.integrity], [expected.version, expected.integrity], name);
     }
@@ -171,7 +154,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
 
     for (const closure of closures) {
       const records = verifyFileDigestClosure(ROOT, closure.value, closure.paths, closure.label);
-      assert.deepEqual(records.map((record: { name: string; sha256: string; cacheVerified: boolean; path: string }) => record.path), [...closure.paths].sort());
+      assert.deepEqual(records.map((record: any) => record.path), [...closure.paths].sort());
 
       const changed = { ...closure.value, [closure.paths[0]]: "0".repeat(64) };
       assert.throws(
@@ -200,7 +183,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     assert.equal(result.invocation.output.content, "this report");
     assert.match(result.claimBoundary, /not a host install, runtime, publication, or support claim/);
     assert.deepEqual(
-      result.checks.map((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => [check.file, check.present, check.valid]),
+      result.checks.map((check: any) => [check.file, check.present, check.valid]),
       [["plugin.json", true, true], ["mcp.json", false, true]],
     );
   });
@@ -210,7 +193,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     manifest.skills = "./skills";
     const result = validateAgentPluginValue({ kind: "plugin", value: manifest });
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && (error as ValidationError).keyword === "additionalProperties"));
+    assert.ok(result.errors.some((error: any) => error.keyword === "additionalProperties"));
   });
 
   it("accepts streamable HTTP and rejects a non-standard MCP transport", () => {
@@ -229,7 +212,7 @@ describe("Foundry upstream Agent Plugins conformance", () => {
     invalid.mcpServers.creator.type = "http";
     const result = validateAgentPluginValue({ kind: "mcp", value: invalid });
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "keyword" in error && (error as ValidationError).keyword === "oneOf"));
+    assert.ok(result.errors.some((error: any) => error.keyword === "oneOf"));
   });
 
   it("fails closed when a vendored schema is missing or has drifted", () => {
@@ -279,37 +262,22 @@ describe("Foundry upstream Agent Plugins conformance", () => {
 });
 
 describe("Foundry OpenAI docs-derived package preflight", () => {
-  let OriginalDate: DateConstructor;
-  before(() => {
-    OriginalDate = global.Date;
-    function MockDate(...args) {
-    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
-    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
-    return new OriginalDate(...args);
-  }
-  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
-  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
-  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
-  MockDate.prototype = OriginalDate.prototype;
-  global.Date = MockDate as DateConstructor;
-  });
-  after(() => { global.Date = OriginalDate; });
   it("passes the current skills-only package without promoting an OpenAI claim", () => {
     const result = validateOpenAIPluginPackage(PLUGIN, { evaluationDate: "2026-09-01" });
     assert.equal(result.status, "pass", JSON.stringify(result.errors));
     assert.equal(result.rules.authority, "docs-derived-preflight");
     assert.equal(result.validator.name, "starlight-openai-docs-derived-preflight");
-    assert.deepEqual(result.validator.packages.map((entry: { name: string }) => entry.name), [
+    assert.deepEqual(result.validator.packages.map((entry: any) => entry.name), [
       "fast-xml-parser",
       "semver",
       "yaml",
     ]);
     assert.equal(result.invocation.output.content, "this report");
-    assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "short-description")?.status, "pass");
-    assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skills-structure")?.status, "pass");
-    assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-identities")?.status, "pass");
-    assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-openai-metadata")?.status, "pass");
-    assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "submission-payload-binding")?.status, "pass");
+    assert.equal(result.checks.find((check: any) => check.id === "short-description")?.status, "pass");
+    assert.equal(result.checks.find((check: any) => check.id === "skills-structure")?.status, "pass");
+    assert.equal(result.checks.find((check: any) => check.id === "skill-identities")?.status, "pass");
+    assert.equal(result.checks.find((check: any) => check.id === "skill-openai-metadata")?.status, "pass");
+    assert.equal(result.checks.find((check: any) => check.id === "submission-payload-binding")?.status, "pass");
     assert.match(result.subject.packagePayloadSha256, /^[a-f0-9]{64}$/);
     assert.match(result.claimBoundary, /cannot replace bundle upload, the OpenAI skill safety\/security scan/);
     assert.ok(result.externalGates.includes("developer-mode ChatGPT runtime"));
@@ -327,8 +295,8 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(result.status, "fail");
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skills-structure")?.status, "fail");
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-openai-metadata")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "skills-structure")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "skill-openai-metadata")?.status, "fail");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -361,7 +329,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const nestedResult = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(nestedResult.status, "fail");
-      const structure = nestedResult.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: string[] }) => check.id === "skills-structure");
+      const structure = nestedResult.checks.find((check: any) => check.id === "skills-structure");
       assert.equal(structure?.status, "fail");
       assert.ok(structure?.errors.some((error: string) => error.includes("not an immediate")));
     } finally {
@@ -382,7 +350,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(result.status, "fail");
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-openai-metadata")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "skill-openai-metadata")?.status, "fail");
 
       writeFileSync(
         metadataPath,
@@ -391,7 +359,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const credentialResult = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(
-        credentialResult.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-openai-metadata")?.status,
+        credentialResult.checks.find((check: any) => check.id === "skill-openai-metadata")?.status,
         "fail",
       );
 
@@ -402,7 +370,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       );
       const queryResult = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(
-        queryResult.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "skill-openai-metadata")?.status,
+        queryResult.checks.find((check: any) => check.id === "skill-openai-metadata")?.status,
         "fail",
       );
     } finally {
@@ -421,18 +389,18 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       manifest.interface.longDescription = "Design the source contract.\nCompile only with a Foundry runtime.";
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       let result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "package-description")?.status, "pass");
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "long-description")?.status, "pass");
+      assert.equal(result.checks.find((check: any) => check.id === "package-description")?.status, "pass");
+      assert.equal(result.checks.find((check: any) => check.id === "long-description")?.status, "pass");
 
       manifest.interface.defaultPrompt[0] = "Turn\tthis workflow into a skill.";
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "starter-prompts")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "starter-prompts")?.status, "fail");
 
       manifest.interface.defaultPrompt[0] = "Turn this workflow into a \u202Eskill.";
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "starter-prompts")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "starter-prompts")?.status, "fail");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -446,11 +414,11 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       const logoPath = join(temp, "assets", "logo.svg");
       writeFileSync(logoPath, '<SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"></SVG>\n', "utf8");
       let result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "logo")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "logo")?.status, "fail");
 
       writeFileSync(logoPath, '<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 48 48"></svg>\n', "utf8");
       result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "logo")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "logo")?.status, "fail");
 
       for (const spoofedSvg of [
         '<svg-x xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"></svg-x>\n',
@@ -460,7 +428,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       ]) {
         writeFileSync(logoPath, spoofedSvg, "utf8");
         result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-        assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "logo")?.status, "fail");
+        assert.equal(result.checks.find((check: any) => check.id === "logo")?.status, "fail");
       }
 
       const manifestPath = join(temp, ".codex-plugin", "plugin.json");
@@ -469,7 +437,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
       writeFileSync(join(temp, "assets", "logo.png"), Buffer.from("89504e470d0a1a0a", "hex"));
       result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "logo")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "logo")?.status, "fail");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -485,7 +453,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       profile.listing.displayName = "Different Listing";
       writeFileSync(profilePath, `${JSON.stringify(profile, null, 2)}\n`, "utf8");
       const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "submission-payload-binding")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "submission-payload-binding")?.status, "fail");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -501,9 +469,9 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       writeFileSync(profilePath, `${JSON.stringify(profile, null, 2)}\n`, "utf8");
       const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-09-01" });
       assert.equal(result.status, "fail");
-      const check = result.checks.find((entry: { id: string }) => entry.id === "submission-profile-contract");
+      const check = result.checks.find((entry: any) => entry.id === "submission-profile-contract");
       assert.equal(check?.status, "fail");
-      assert.ok(check?.errors?.some((error: ValidationError | string) => typeof error === "object" && error !== null && "code" in error && (error as ValidationError).code === "ENUM"));
+      assert.ok(check?.errors.some((error: any) => error.code === "ENUM"));
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -520,7 +488,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
         evaluationDate: "2026-09-01",
         toolchainLockPath: toolchainPath,
       });
-      assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === "rules-lock")?.status, "fail");
+      assert.equal(result.checks.find((check: any) => check.id === "rules-lock")?.status, "fail");
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -540,7 +508,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       const result = validateOpenAIPluginPackage(temp, { evaluationDate: "2026-11-04" });
       assert.equal(result.status, "fail");
       for (const id of ["rules-freshness", "short-description", "starter-prompts", "logo"]) {
-        assert.equal(result.checks.find((check: { id?: string; status?: string; file?: string; present?: boolean; valid?: boolean; errors?: ValidationError[] }) => check.id === id)?.status, "fail", id);
+        assert.equal(result.checks.find((check: any) => check.id === id)?.status, "fail", id);
       }
     } finally {
       rmSync(temp, { recursive: true, force: true });
@@ -568,7 +536,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
       "SUBMISSION_EVIDENCE_GATE",
       "ATTESTATION_VERIFIER_REQUIRED",
     ]) {
-      assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && (error as ValidationError).code === code), code);
+      assert.ok(result.errors.some((error: any) => error.code === code), code);
     }
   });
 
@@ -583,7 +551,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
     forged.policy.termsUrl = "https://example.invalid/terms";
     forged.policy.supportUrl = "https://example.invalid/support";
     forged.policy.controllerMatchesVerifiedPublisher = true;
-    forged.humanGates = forged.humanGates.map((gate: Record<string, unknown>) => ({ ...gate, status: "complete" }));
+    forged.humanGates = forged.humanGates.map((gate: any) => ({ ...gate, status: "complete" }));
     forged.evidence = {
       portableConformanceReport: "self-asserted",
       openaiPreflightReport: "self-asserted",
@@ -596,7 +564,7 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
     const result = validateValue(forged, contract, registry);
     assert.equal(result.valid, false);
     assert.ok(
-      result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && (error as ValidationError).code === "ATTESTATION_VERIFIER_REQUIRED"),
+      result.errors.some((error: any) => error.code === "ATTESTATION_VERIFIER_REQUIRED"),
       JSON.stringify(result.errors),
     );
   });
@@ -609,6 +577,6 @@ describe("Foundry OpenAI docs-derived package preflight", () => {
     profile.experience.reviewRecordingRequired = true;
     const result = validateValue(profile, contract, registry);
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => typeof error === "object" && error !== null && "code" in error && (error as ValidationError).code === "CONST"));
+    assert.ok(result.errors.some((error: any) => error.code === "CONST"));
   });
 });

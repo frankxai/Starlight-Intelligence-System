@@ -124,7 +124,7 @@ describe("OpenCode version-bound worker", () => {
   });
   it("accepts the same denied rule regardless of JSON key order", async () => {
     const f=await fixture((p,v)=>p==="/session"?{...v,permission:[{action:"deny",pattern:"*",permission:"*"}]}:v);
-    assert.equal((await createOpenCodeRuntime(f.options).invoke(request,new AbortController().signal) as any).status,"completed");
+    assert.equal((await createOpenCodeRuntime(f.options).invoke(request,new AbortController().signal) as { status?: string, code?: string }).status,"completed");
   });
   it("does not prompt when the session receipt cannot be saved", async () => {
     const f = await fixture();
@@ -134,12 +134,12 @@ describe("OpenCode version-bound worker", () => {
   });
   it("rejects malformed identity, tools, missing structured output and permissions", async () => {
     for (const mutate of [
-      (p: string,v: any) => p === "/session" ? { ...v, id: "../foreign" } : v,
-      (p: string,v: any) => p === "/session" ? { ...v, permission: [] } : v,
-      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, sessionID: "ses_foreign" } } : v,
-      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, structured: undefined } } : v,
-      (p: string,v: any) => p.endsWith("message") ? { ...v, parts: [{ type: "tool", tool: "bash" }] } : v,
-      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, modelID: "fallback" } } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p === "/session" ? { ...v, id: "../foreign" } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p === "/session" ? { ...v, permission: [] } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, sessionID: "ses_foreign" } } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, structured: undefined } } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, parts: [{ type: "tool", tool: "bash" }] } : v,
+      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, modelID: "fallback" } } : v,
     ]) {
       const f = await fixture(mutate);
       await assert.rejects(createOpenCodeRuntime(f.options).invoke(request, new AbortController().signal));

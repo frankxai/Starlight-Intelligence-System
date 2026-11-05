@@ -1,4 +1,3 @@
-interface ValidationError { code?: string; keyword?: string; }
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -11,7 +10,6 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { before, after } from "node:test";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
 import { listAgentFiles, repoRootFromTestFile } from "./_lib/repo.js";
@@ -33,7 +31,7 @@ const CONTRACTS = join(ROOT, "foundry", "contracts");
 const EXAMPLES = join(ROOT, "foundry", "examples");
 const registry = loadContractRegistry(CONTRACTS);
 
-function json(path: string) {
+function json(path: string): any {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
@@ -48,7 +46,7 @@ function tempDirectory(): string {
   return mkdtempSync(join(tmpdir(), "starlight-foundry-test-"));
 }
 
-function compileDemo(output: string, envelopeOverride?: Record<string, unknown>, force = false) {
+function compileDemo(output: string, envelopeOverride?: any, force = false) {
   const { envelope, pack } = demoInputs();
   const effectiveEnvelope = envelopeOverride ?? envelope;
   const graph = buildCapabilityGraph(ROOT);
@@ -125,7 +123,7 @@ function openaiListing(overrides: Record<string, unknown> = {}) {
 }
 
 function validPlatformReceipt() {
-  const receipt = {
+  const receipt: any = {
     $schema: "https://starlightintelligence.org/schemas/foundry/platform-release-receipt.schema.json",
     schemaVersion: "1.0.0",
     receiptId: "release-openai-001",
@@ -224,7 +222,7 @@ describe("v9.2 Foundry contracts", () => {
     envelope.unboundedAuthority = true;
     const result = validateValue(envelope, getContract(registry, "task-envelope"), registry);
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => error.code === "ADDITIONAL_PROPERTY"));
+    assert.ok(result.errors.some((error: any) => error.code === "ADDITIONAL_PROPERTY"));
   });
 
   it("rejects Taste Profiles with non-normalized weights or duplicate dimension ids", () => {
@@ -233,8 +231,8 @@ describe("v9.2 Foundry contracts", () => {
     profile.dimensions[1].id = profile.dimensions[0].id;
     const result = validateValue(profile, getContract(registry, "taste-profile"), registry);
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => error.code === "WEIGHT_TOTAL"));
-    assert.ok(result.errors.some((error: ValidationError) => error.code === "DUPLICATE_ID"));
+    assert.ok(result.errors.some((error: any) => error.code === "WEIGHT_TOTAL"));
+    assert.ok(result.errors.some((error: any) => error.code === "DUPLICATE_ID"));
   });
 
   it("rejects an Agent Pack with no persistent policy boundary", () => {
@@ -262,7 +260,7 @@ describe("v9.2 Foundry contracts", () => {
     };
     const result = validateValue(invalidAgent, getContract(registry, "agent-pack"), registry);
     assert.equal(result.valid, false);
-    assert.ok(result.errors.some((error: ValidationError) => error.code === "ANY_OF"));
+    assert.ok(result.errors.some((error: any) => error.code === "ANY_OF"));
   });
 
   it("validates the cross-host registry without turning documented compatibility into support", () => {
@@ -273,24 +271,24 @@ describe("v9.2 Foundry contracts", () => {
       registry,
     );
     assert.equal(result.valid, true, JSON.stringify(result.errors));
-    const ids = registryValue.surfaces.map((surface: { id: string, surface?: string, adapterTier?: string }) => surface.id);
+    const ids = registryValue.surfaces.map((surface: any) => surface.id);
     assert.equal(new Set(ids).size, ids.length);
-    const receiptContract = getContract(registry, "platform-release-receipt") as { properties: { host: { properties: { registryId: { enum: string[] } } } }; oneOf: { properties: { host: { properties: { registryId: { const: string }, surface: { const: string } } }, adapter: { properties: { tier: { const: string } } } } }[] };
+    const receiptContract = getContract(registry, "platform-release-receipt") as any;
     const receiptHostIds = receiptContract.properties.host.properties.registryId.enum;
     assert.deepEqual([...ids].sort(), [...receiptHostIds].sort());
-    const receiptBindings = receiptContract.oneOf.map((branch: { properties: { host: { properties: { registryId: { const: string }, surface: { const: string } } }, adapter: { properties: { tier: { const: string } } } } }) => ({
+    const receiptBindings = receiptContract.oneOf.map((branch: any) => ({
       id: branch.properties.host.properties.registryId.const,
       surface: branch.properties.host.properties.surface.const,
       adapterTier: branch.properties.adapter.properties.tier.const,
     }));
-    const registryBindings = registryValue.surfaces.map((surface: { id: string, surface: string, adapterTier: string }) => ({
+    const registryBindings = registryValue.surfaces.map((surface: any) => ({
       id: surface.id,
       surface: surface.surface,
       adapterTier: surface.adapterTier,
     }));
     assert.deepEqual(
-      receiptBindings.sort((left: { id: string }, right: { id: string }) => left.id.localeCompare(right.id)),
-      registryBindings.sort((left: { id: string }, right: { id: string }) => left.id.localeCompare(right.id)),
+      receiptBindings.sort((left: any, right: any) => left.id.localeCompare(right.id)),
+      registryBindings.sort((left: any, right: any) => left.id.localeCompare(right.id)),
     );
     for (const id of [
       "openai-plugin-local",
@@ -315,7 +313,7 @@ describe("v9.2 Foundry contracts", () => {
 
   it("fails closed on unsupported, blocked, unowned, unevidenced, or unattested platform claims", () => {
     const contract = getContract(registry, "platform-release-receipt");
-    const receipt = validPlatformReceipt();
+    const receipt: any = validPlatformReceipt();
     const receiptValidation = validateValue(receipt, contract, registry);
     assert.equal(receiptValidation.valid, true, JSON.stringify(receiptValidation.errors));
 
@@ -323,7 +321,7 @@ describe("v9.2 Foundry contracts", () => {
     unverifiedStrongClaim.claims[0].state = "verified";
     assert.ok(
       validateValue(unverifiedStrongClaim, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "ATTESTATION_VERIFIER_REQUIRED",
+        (error: any) => error.code === "ATTESTATION_VERIFIER_REQUIRED",
       ),
     );
 
@@ -333,8 +331,8 @@ describe("v9.2 Foundry contracts", () => {
     dangling.checks[0].evidenceRefs = ["missing-artifact"];
     const danglingResult = validateValue(dangling, contract, registry);
     assert.equal(danglingResult.valid, false);
-    assert.ok(danglingResult.errors.some((error: ValidationError) => error.code === "CLAIM_EVIDENCE"));
-    assert.ok(danglingResult.errors.some((error: ValidationError) => error.code === "DANGLING_EVIDENCE"));
+    assert.ok(danglingResult.errors.some((error: any) => error.code === "CLAIM_EVIDENCE"));
+    assert.ok(danglingResult.errors.some((error: any) => error.code === "DANGLING_EVIDENCE"));
 
     const falseSupport = structuredClone(receipt);
     falseSupport.claims[0].state = "supported";
@@ -353,14 +351,14 @@ describe("v9.2 Foundry contracts", () => {
       "SUPPORT_OWNER",
       "FAILING_SUPPORT_CHECK",
     ]) {
-      assert.ok(supportResult.errors.some((error: ValidationError) => error.code === code), code);
+      assert.ok(supportResult.errors.some((error: any) => error.code === code), code);
     }
 
     const unknownHost = structuredClone(receipt);
     unknownHost.host.registryId = "invented-host";
     assert.ok(
       validateValue(unknownHost, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "ENUM",
+        (error: any) => error.code === "ENUM",
       ),
     );
 
@@ -369,7 +367,7 @@ describe("v9.2 Foundry contracts", () => {
     wrongSurface.attestation.statementSha256 = platformReceiptStatementSha256(wrongSurface);
     assert.ok(
       validateValue(wrongSurface, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "HOST_SURFACE_BINDING",
+        (error: any) => error.code === "HOST_SURFACE_BINDING",
       ),
     );
 
@@ -378,7 +376,7 @@ describe("v9.2 Foundry contracts", () => {
     wrongTier.attestation.statementSha256 = platformReceiptStatementSha256(wrongTier);
     assert.ok(
       validateValue(wrongTier, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "ADAPTER_TIER_BINDING",
+        (error: any) => error.code === "ADAPTER_TIER_BINDING",
       ),
     );
 
@@ -387,7 +385,7 @@ describe("v9.2 Foundry contracts", () => {
     wrongClaimSurface.attestation.statementSha256 = platformReceiptStatementSha256(wrongClaimSurface);
     assert.ok(
       validateValue(wrongClaimSurface, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "CLAIM_SURFACE_BINDING",
+        (error: any) => error.code === "CLAIM_SURFACE_BINDING",
       ),
     );
 
@@ -396,7 +394,7 @@ describe("v9.2 Foundry contracts", () => {
     siblingRuntime.attestation.statementSha256 = platformReceiptStatementSha256(siblingRuntime);
     assert.ok(
       validateValue(siblingRuntime, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "HOST_SURFACE_BINDING",
+        (error: any) => error.code === "HOST_SURFACE_BINDING",
       ),
       "a Codex receipt must not validate as ChatGPT runtime evidence",
     );
@@ -405,7 +403,7 @@ describe("v9.2 Foundry contracts", () => {
     unattachedAttestation.attestation.artifactSha256 = "d".repeat(64);
     assert.ok(
       validateValue(unattachedAttestation, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "ATTESTATION_SUBJECT",
+        (error: any) => error.code === "ATTESTATION_SUBJECT",
       ),
     );
 
@@ -413,7 +411,7 @@ describe("v9.2 Foundry contracts", () => {
     tamperedStatement.evidence[0].sha256 = "c".repeat(64);
     assert.ok(
       validateValue(tamperedStatement, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "ATTESTATION_STATEMENT",
+        (error: any) => error.code === "ATTESTATION_STATEMENT",
       ),
     );
 
@@ -428,7 +426,7 @@ describe("v9.2 Foundry contracts", () => {
     };
     assert.ok(
       validateValue(pendingMarketplace, contract, registry).errors.some(
-        (error: ValidationError) => error.code === "MARKETPLACE_APPROVAL",
+        (error: any) => error.code === "MARKETPLACE_APPROVAL",
       ),
     );
   });
@@ -444,11 +442,11 @@ describe("v9.2 Foundry capability graph and routing", () => {
     const expectedSkills = JSON.parse(readFileSync(join(ROOT, "skills/skill-rules.json"), "utf8")).rules
       .length;
     const expectedAgents = listAgentFiles(join(ROOT, "agents")).length;
-    assert.equal(graph.nodes.filter((node: { kind?: string; id?: string; path?: string }) => node.kind === "skill").length, expectedSkills);
-    assert.equal(graph.nodes.filter((node: { kind?: string; id?: string; path?: string }) => node.kind === "agent").length, expectedAgents);
-    const nodeIds = new Set(graph.nodes.map((node: { kind?: string; id?: string; path?: string }) => node.id));
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "skill").length, expectedSkills);
+    assert.equal(graph.nodes.filter((node: any) => node.kind === "agent").length, expectedAgents);
+    const nodeIds = new Set(graph.nodes.map((node: any) => node.id));
     assert.equal(nodeIds.size, graph.nodes.length);
-    assert.ok(graph.edges.every((edge: { from: string; to: string }) => nodeIds.has(edge.from) && nodeIds.has(edge.to)));
+    assert.ok(graph.edges.every((edge: any) => nodeIds.has(edge.from) && nodeIds.has(edge.to)));
     const validation = validateValue(graph, getContract(registry, "capability-graph"), registry);
     assert.equal(validation.valid, true, JSON.stringify(validation.errors));
   });
@@ -464,9 +462,9 @@ describe("v9.2 Foundry capability graph and routing", () => {
     });
     const validation = validateValue(graph, getContract(registry, "capability-graph"), registry);
     assert.equal(validation.valid, false);
-    assert.ok(validation.errors.some((error: ValidationError) => error.code === "DUPLICATE_NODE"));
-    assert.ok(validation.errors.some((error: ValidationError) => error.code === "ALIAS_COLLISION"));
-    assert.ok(validation.errors.some((error: ValidationError) => error.code === "DANGLING_EDGE"));
+    assert.ok(validation.errors.some((error: any) => error.code === "DUPLICATE_NODE"));
+    assert.ok(validation.errors.some((error: any) => error.code === "ALIAS_COLLISION"));
+    assert.ok(validation.errors.some((error: any) => error.code === "DANGLING_EDGE"));
   });
 
   it("selects explicit capabilities and labels lexical suggestions as non-binding", () => {
@@ -476,7 +474,7 @@ describe("v9.2 Foundry capability graph and routing", () => {
       "skill:intelligence/hermes-search",
       "skill:intelligence/strategic-reasoning",
     ]);
-    assert.ok(resolution.suggestions.every((entry: { reason: string }) => entry.reason.includes("confirmation required")));
+    assert.ok(resolution.suggestions.every((entry: any) => entry.reason.includes("confirmation required")));
   });
 
   it("resolves explicit agent capabilities, including source-file aliases", () => {
@@ -520,21 +518,6 @@ describe("v9.2 Foundry capability graph and routing", () => {
 });
 
 describe("v9.2 Foundry compilation and proof", () => {
-  let OriginalDate: DateConstructor;
-  before(() => {
-    OriginalDate = global.Date;
-    function MockDate(...args) {
-    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
-    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
-    return new OriginalDate(...args);
-  }
-  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
-  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
-  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
-  MockDate.prototype = OriginalDate.prototype;
-  global.Date = MockDate as DateConstructor;
-  });
-  after(() => { global.Date = OriginalDate; });
   it("compiles a portable skill and validates every declared required lane", () => {
     const temp = tempDirectory();
     try {
@@ -859,16 +842,16 @@ describe("v9.2 Foundry compilation and proof", () => {
           join(sourceRoot, "linked-parent"),
           "dir",
         );
-      } catch (error) {
+      } catch (error: any) {
         if (process.platform === "win32" && error?.code === "EPERM") {
           t.skip("Windows denied symlink fixture creation (EPERM)");
           return;
         }
         throw error;
       }
-      const sourceGraph = structuredClone(buildCapabilityGraph(ROOT));
+      const sourceGraph: any = structuredClone(buildCapabilityGraph(ROOT));
       sourceGraph.nodes.find(
-        (node: { kind?: string; id?: string; path?: string }) => node.id === "skill:foundry/skill-forge",
+        (node: any) => node.id === "skill:foundry/skill-forge",
       ).path = "linked-parent/skill-forge/SKILL.md";
       const sourceEnvelope = projectionEnvelope(
         "plugin",
@@ -914,7 +897,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       const linkedManifest = join(output, "linked-foundry-manifest.json");
       try {
         symlinkSync(join(output, "foundry-manifest.json"), linkedManifest);
-      } catch (error) {
+      } catch (error: any) {
         if (process.platform === "win32" && error?.code === "EPERM") {
           t.skip("Windows denied symlink fixture creation (EPERM)");
           return;
@@ -953,7 +936,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       const { envelope } = demoInputs();
       envelope.evidencePolicy.requiredLanes.push("taste");
       envelope.evidencePolicy.minimumIndependentJudges = 1;
-      envelope.completionTests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.type === "judge").required = true;
+      envelope.completionTests.find((test: any) => test.type === "judge").required = true;
       const output = join(temp, "package");
       compileDemo(output, envelope);
       const { receipt } = provePackage({ packageDirectory: output, registry });
@@ -973,11 +956,11 @@ describe("v9.2 Foundry compilation and proof", () => {
       writeFileSync(skillPath, `${readFileSync(skillPath, "utf8")}\nTampered.\n`);
       const { receipt, output: receiptPath } = provePackage({ packageDirectory: output, registry });
       assert.equal(receipt.status, "revise");
-      assert.match(receipt.tests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.id === "artifact-digests").detail, /changed/);
+      assert.match(receipt.tests.find((test: any) => test.id === "artifact-digests").detail, /changed/);
       const evolutionPath = join(temp, "evolution.json");
       const { proposal } = proposeEvolution({ receiptPath, output: evolutionPath, registry });
       assert.equal(proposal.apply, false);
-      assert.ok(proposal.patches.some((patch: { layer: string }) => patch.layer === "renderer-or-packaging"));
+      assert.ok(proposal.patches.some((patch: any) => patch.layer === "renderer-or-packaging"));
     } finally {
       rmSync(temp, { recursive: true, force: true });
     }
@@ -1030,7 +1013,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       assert.equal(passed.status, "validated");
 
       const disallowedEnvelope = structuredClone(envelope);
-      disallowedEnvelope.completionTests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.id === "node-command").command = [
+      disallowedEnvelope.completionTests.find((test: any) => test.id === "node-command").command = [
         "bash",
         "-c",
         "exit 0",
@@ -1044,7 +1027,7 @@ describe("v9.2 Foundry compilation and proof", () => {
       }).receipt;
       assert.equal(blocked.status, "revise");
       assert.match(
-        blocked.tests.find((test: { id?: string; type?: string; detail?: string; command?: string[]; required?: boolean }) => test.id === "node-command").detail,
+        blocked.tests.find((test: any) => test.id === "node-command").detail,
         /not permitted/,
       );
     } finally {
@@ -1054,21 +1037,6 @@ describe("v9.2 Foundry compilation and proof", () => {
 });
 
 describe("v9.2 Foundry portable plugin compiler", () => {
-  let OriginalDate: DateConstructor;
-  before(() => {
-    OriginalDate = global.Date;
-    function MockDate(...args) {
-    if (!(this instanceof MockDate)) return new OriginalDate("2026-11-03T12:00:00Z").toString();
-    if (args.length === 0) return new OriginalDate("2026-11-03T12:00:00Z");
-    return new OriginalDate(...args);
-  }
-  MockDate.now = () => new OriginalDate("2026-11-03T12:00:00Z").getTime();
-  MockDate.parse = OriginalDate.parse.bind(OriginalDate);
-  MockDate.UTC = OriginalDate.UTC.bind(OriginalDate);
-  MockDate.prototype = OriginalDate.prototype;
-  global.Date = MockDate as DateConstructor;
-  });
-  after(() => { global.Date = OriginalDate; });
   it("emits a publisher-owned skills-only OpenAI directory candidate that passes preflight", () => {
     const temp = tempDirectory();
     try {
@@ -1080,7 +1048,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
         ["foundry/skill-forge"],
         "plugin/plugin.json",
       );
-      const pack: Record<string, unknown> = {
+      const pack: any = {
         schemaVersion: "1.0.0",
         kind: "plugin",
         id: "acme-workflow-kit",
@@ -1113,7 +1081,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
       });
 
       const pluginRoot = join(output, "plugin");
-      const report = validateOpenAIPluginPackage(pluginRoot, { evaluationDate: "2026-11-03" });
+      const report = validateOpenAIPluginPackage(pluginRoot, { evaluationDate: "2026-09-01" });
       assert.equal(report.status, "pass", JSON.stringify(report.errors));
       const manifest = json(join(pluginRoot, ".codex-plugin", "plugin.json"));
       assert.equal(manifest.interface.category, "Productivity");
@@ -1170,7 +1138,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
   });
 
   it("rejects OpenAI listing lengths and credential-bearing publisher URLs before compilation", () => {
-    const basePack: Record<string, unknown> = {
+    const basePack: any = {
       schemaVersion: "1.0.0",
       kind: "plugin",
       id: "invalid-openai-listing",
@@ -1184,9 +1152,9 @@ describe("v9.2 Foundry portable plugin compiler", () => {
       deployment: { targets: ["openai-plugin"] },
     };
     for (const mutate of [
-      (pack: { displayName?: string; publisher?: { name?: string; homepage?: string } }) => { pack.displayName = "D".repeat(31); },
-      (pack: { displayName?: string; publisher?: { name?: string; homepage?: string } }) => { pack.publisher.name = "P".repeat(81); },
-      (pack: { displayName?: string; publisher?: { name?: string; homepage?: string } }) => { pack.publisher.homepage = "https://user:secret@example.com"; },
+      (pack: any) => { pack.displayName = "D".repeat(31); },
+      (pack: any) => { pack.publisher.name = "P".repeat(81); },
+      (pack: any) => { pack.publisher.homepage = "https://user:secret@example.com"; },
     ]) {
       const temp = tempDirectory();
       try {
@@ -1224,7 +1192,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
         ["foundry/skill-forge"],
         "plugin/plugin.json",
       );
-      const pack: Record<string, unknown> = {
+      const pack: any = {
         schemaVersion: "1.0.0",
         kind: "plugin",
         id: "foundry-remote",
@@ -1380,7 +1348,7 @@ describe("v9.2 Foundry portable plugin compiler", () => {
         ["foundry/skill-forge"],
         "plugin/plugin.json",
       );
-      const pack: Record<string, unknown> = {
+      const pack: any = {
         schemaVersion: "1.0.0",
         kind: "plugin",
         id: "portable-only",
