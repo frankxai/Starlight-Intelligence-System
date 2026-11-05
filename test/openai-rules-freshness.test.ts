@@ -13,7 +13,7 @@ const RULES = join(
   "foundry",
   "validators",
   "openai",
-  "plugin-rules.v2026-10-04.json",
+  "plugin-rules.v2026-11-04.json",
 );
 const LOCK = join(ROOT, "foundry", "validators", "toolchain.lock.v1.json");
 
@@ -23,7 +23,7 @@ function check(report: ReturnType<typeof validateOpenAIPluginPackage>, id: strin
 
 describe("OpenAI docs-derived rules freshness", () => {
   it("accepts reviewed rules during their review window, including the boundary", () => {
-    for (const evaluationDate of ["2026-10-04", "2026-11-03"]) {
+    for (const evaluationDate of ["2026-11-04", "2026-12-04"]) {
       const report = validateOpenAIPluginPackage(PLUGIN, { evaluationDate });
       assert.equal(report.status, "pass", JSON.stringify(report.errors));
       assert.equal(check(report, "rules-lock")?.status, "pass");
@@ -32,7 +32,7 @@ describe("OpenAI docs-derived rules freshness", () => {
   });
 
   it("rejects reviewed rules after the review boundary", () => {
-    const report = validateOpenAIPluginPackage(PLUGIN, { evaluationDate: "2026-11-04" });
+    const report = validateOpenAIPluginPackage(PLUGIN, { evaluationDate: "2026-12-05" });
     assert.equal(report.status, "fail");
     assert.equal(check(report, "rules-lock")?.status, "pass");
     assert.equal(check(report, "rules-freshness")?.status, "fail");
@@ -49,7 +49,7 @@ describe("OpenAI docs-derived rules freshness", () => {
 
       const report = validateOpenAIPluginPackage(PLUGIN, {
         rulesPath,
-        evaluationDate: "2026-10-04",
+        evaluationDate: "2026-11-04",
       });
       assert.equal(report.status, "fail");
       assert.equal(check(report, "rules-lock")?.status, "fail");
@@ -69,7 +69,7 @@ describe("OpenAI docs-derived rules freshness", () => {
 
       const report = validateOpenAIPluginPackage(PLUGIN, {
         toolchainLockPath,
-        evaluationDate: "2026-10-04",
+        evaluationDate: "2026-11-04",
       });
       assert.equal(report.status, "fail");
       assert.equal(check(report, "rules-lock")?.status, "fail");
