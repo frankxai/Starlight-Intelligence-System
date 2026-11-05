@@ -70,15 +70,55 @@ export async function authenticateAccessRequest(
   };
 }
 
-export function authorizationResponse(error: AuthorizationError): Response {
+export const MCP_ALLOWED_CORS_HEADERS =
+  "Content-Type, Accept, Authorization, Cf-Access-Jwt-Assertion, Mcp-Session-Id, MCP-Protocol-Version, Mcp-Method, Mcp-Name, Last-Event-ID";
+
+export function resolveAllowedCorsOrigin(
+  originHeader: string | null,
+  allowedHostnames: readonly string[],
+): string | null {
+  if (!originHeader) return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(originHeader);
+  } catch {
+    return null;
+  }
+
+  const host = parsed.hostname.toLowerCase();
+  const isLocal = host === "localhost" || host === "127.0.0.1";
+  if (parsed.protocol !== "https:" && !(isLocal && parsed.protocol === "http:")) {
+    return null;
+  }
+
+  const normalizedAllowed = new Set(
+    allowedHostnames.map((item) => item.trim().toLowerCase()).filter(Boolean),
+  );
+  if (!normalizedAllowed.has(host)) {
+    return null;
+  }
+
+  return parsed.origin;
+}
+
+export function authorizationResponse(
+  error: AuthorizationError,
+  allowedOrigin?: string | null,
+): Response {
+  const headers: Record<string, string> = {
+    "Cache-Control": "no-store",
+    "WWW-Authenticate": 'Bearer realm="starlight-intelligence"',
+    Vary: "Origin",
+  };
+  if (allowedOrigin) {
+    headers["Access-Control-Allow-Origin"] = allowedOrigin;
+    headers["Access-Control-Expose-Headers"] = "WWW-Authenticate, mcp-session-id";
+  }
   return Response.json(
     { error: "unauthorized", message: error.message },
     {
       status: error.status,
-      headers: {
-        "Cache-Control": "no-store",
-        "WWW-Authenticate": 'Bearer realm="starlight-intelligence"',
-      },
+      headers,
     },
   );
 }

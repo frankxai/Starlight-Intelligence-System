@@ -32,20 +32,45 @@ gcloud artifacts repositories create starlight-fleet \
   --description="Starlight Swarm Autonomous Runner Images" \
   --project="$PROJECT_ID"
 
-# 3. Build container image using Cloud Build
-echo "Building container with Cloud Build..."
-gcloud builds submit . \
-  --tag="$IMAGE_TAG" \
+# 3. Build container image from Dockerfile.runner using Cloud Build
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLOUDBUILD_TMP="$(mktemp "${TMPDIR:-/tmp}/starlight-runner-cloudbuild.XXXXXX.yaml")"
+trap 'rm -f "$CLOUDBUILD_TMP"' EXIT
+cat > "$CLOUDBUILD_TMP" <<EOF
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.runner', '-t', '${IMAGE_TAG}', '.']
+images:
+  - '${IMAGE_TAG}'
+EOF
+echo "Building container with Cloud Build (Dockerfile.runner)..."
+gcloud builds submit "$SCRIPT_DIR" \
+  --config="$CLOUDBUILD_TMP" \
   --project="$PROJECT_ID"
 
-# 4. Optional Cloud Storage FUSE Persistent Volume for Zero-Network Dependency Caching
+# 4. Provision dedicated zero-project-IAM service account (never use default Compute Engine SA)
+RUNNER_SA_NAME="${RUNNER_SA_NAME:-starlight-runner-sandbox}"
+RUNNER_SA="${RUNNER_SERVICE_ACCOUNT:-${RUNNER_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}"
+if ! gcloud iam service-accounts describe "$RUNNER_SA" --project="$PROJECT_ID" >/dev/null 2>&1; then
+  echo " Creating least-privilege runner service account: $RUNNER_SA..."
+  gcloud iam service-accounts create "$RUNNER_SA_NAME" \
+    --display-name="Starlight Ephemeral Runner Sandbox (Zero Project IAM)" \
+    --description="Isolated Cloud Run Jobs identity with zero project-wide IAM roles" \
+    --project="$PROJECT_ID"
+fi
+
+# 5. Optional read-only Cloud Storage FUSE Volume for Dependency Seed Cache
 VOLUME_ARGS=()
 CACHE_BUCKET="${GCS_CACHE_BUCKET:-${PROJECT_ID}-starlight-runner-cache}"
 
 if gcloud storage buckets describe "gs://${CACHE_BUCKET}" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  echo " Attaching Cloud Storage cache volume from gs://${CACHE_BUCKET}..."
+  echo " Attaching read-only Cloud Storage cache volume from gs://${CACHE_BUCKET}..."
+  gcloud storage buckets add-iam-policy-binding "gs://${CACHE_BUCKET}" \
+    --member="serviceAccount:${RUNNER_SA}" \
+    --role="roles/storage.objectViewer" \
+    --project="$PROJECT_ID" >/dev/null
   VOLUME_ARGS+=(
-    --add-volume="name=pnpm-cache,type=cloud-storage,bucket=${CACHE_BUCKET}"
+    --add-volume="name=pnpm-cache,type=cloud-storage,bucket=${CACHE_BUCKET},readonly=true"
     --add-volume-mount="volume=pnpm-cache,mount-path=/cache/pnpm"
   )
 else
@@ -53,12 +78,16 @@ else
   echo " To enable persistent FUSE cache across runs: gcloud storage buckets create gs://${CACHE_BUCKET} --location=${REGION}"
 fi
 
-# 5. Create or Update Cloud Run Job
-echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs)..."
-if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
-  gcloud run jobs update "$JOB_NAME" \
+# 6. Create or Update Cloud Run Job with Cloud Run Sandbox Launcher (`--sandbox-launcher`)
+#    `--sandbox-launcher` injects `/usr/local/gcp/bin/sandbox` (gVisor micro-sandbox with metadata/egress blocked
+#    and `--write` ephemeral overlay support), which `runner-entrypoint.sh` requires fail-closed at preflight.
+echo "Configuring Cloud Run Job: $JOB_NAME (Scale-to-Zero, 4GB RAM, 2 vCPUs, --sandbox-launcher, SA=$RUNNER_SA)..."
+if gcloud beta run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" >/dev/null 2>&1; then
+  gcloud beta run jobs update "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
+    --service-account="$RUNNER_SA" \
+    --sandbox-launcher \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
@@ -66,15 +95,23 @@ if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_I
     "${VOLUME_ARGS[@]}" \
     --project="$PROJECT_ID"
 else
-  gcloud run jobs create "$JOB_NAME" \
+  gcloud beta run jobs create "$JOB_NAME" \
     --image="$IMAGE_TAG" \
     --region="$REGION" \
+    --service-account="$RUNNER_SA" \
+    --sandbox-launcher \
     --cpu=2 \
     --memory=4Gi \
     --task-timeout=900s \
     --max-retries=1 \
     "${VOLUME_ARGS[@]}" \
     --project="$PROJECT_ID"
+fi
+
+# Verify `sandboxLauncher: true` is active on the deployed Cloud Run Job spec (fail closed if absent)
+if ! gcloud beta run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" --format=yaml | grep -Eq 'sandboxLauncher:[[:space:]]*true'; then
+  echo "Error: Cloud Run Job '$JOB_NAME' does not report 'sandboxLauncher: true' after deploy; refusing unverified runner." >&2
+  exit 1
 fi
 
 

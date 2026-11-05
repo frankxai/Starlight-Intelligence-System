@@ -2,6 +2,7 @@
 # Starlight Autonomous Scale-to-Zero Cloud Run Linux Runner
 # Target: Google Cloud Run Jobs (Scale-to-Zero, $0.00 Idle)
 # Architecture: Ubuntu 24.04 LTS x86_64 / arm64
+# Security: Dual-UID isolation (`starlight` supervisor -> `starlight-sandbox` executor)
 # Built on SIP v1.1.1 — Sovereign Substrate
 # ==============================================================================
 
@@ -11,13 +12,17 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
-# Install base toolchain, compilers, git, curl, jq, and security prerequisites
+# Install base toolchain, compilers, git, curl, jq, openssl, sudo, iproute2, util-linux, and security prerequisites
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     git \
     gnupg \
+    iproute2 \
     jq \
+    openssl \
+    sudo \
+    util-linux \
     build-essential \
     python3 \
     python3-pip \
@@ -43,28 +48,46 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && apt-get update && apt-get install -y --no-install-recommends gh \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure isolated non-root runner workspace and persistent cache mount directory
-RUN useradd -m -s /bin/bash starlight \
-    && mkdir -p /home/starlight/workspace /home/starlight/.gemini /home/starlight/.local/share/pnpm /cache/pnpm \
-    && chown -R starlight:starlight /home/starlight /cache
+# Create two isolated non-root identities (`ubuntu:24.04` pre-allocates `ubuntu` at UID/GID 1000,
+# so we remove `ubuntu` if present and allocate dedicated non-overlapping UIDs/GIDs 10001 and 10002):
+# - `starlight` (UID 10001, GID 10001, supplementary group `starlight-sandbox` 10002): supervisor that clones and signs completion callbacks
+# - `starlight-sandbox` (UID 10002, GID 10002): unprivileged executor for untrusted dependencies & tests
+# `/work` uses mode `2750` (`setgid` + `starlight:starlight-sandbox`) so supervisor-staged source
+# trees automatically inherit group `starlight-sandbox` for read/traverse copy into the sandbox,
+# while `/home/starlight` stays `0700` (`starlight:starlight`) and Linux enforces `0400` UID ownership
+# on `/proc/<supervisor-pid>/environ` and `/proc/<supervisor-pid>/mem`.
+RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu 2>/dev/null || userdel ubuntu; fi \
+    && groupadd -g 10002 starlight-sandbox \
+    && useradd -m -u 10002 -g starlight-sandbox -s /bin/bash starlight-sandbox \
+    && groupadd -g 10001 starlight \
+    && useradd -m -u 10001 -g starlight -G starlight-sandbox -s /bin/bash starlight \
+    && chmod 0700 /home/starlight /home/starlight-sandbox \
+    && mkdir -p /work /home/starlight-sandbox/workspace /home/starlight-sandbox/.local/share/pnpm /cache/pnpm \
+    && chown starlight:starlight-sandbox /work \
+    && chmod 2750 /work \
+    && chown -R starlight-sandbox:starlight-sandbox /home/starlight-sandbox /cache/pnpm \
+    && printf 'Defaults>starlight-sandbox env_reset\nstarlight ALL=(starlight-sandbox) NOPASSWD: /usr/bin/env\n' > /etc/sudoers.d/starlight-sandbox \
+    && chmod 0440 /etc/sudoers.d/starlight-sandbox
 
-# Setup environment variables
+# Setup supervisor-safe environment variables (strictly root-owned system PATH; never sandbox PNPM_HOME)
 ENV NODE_ENV=production
 ENV CI=true
 ENV STARLIGHT_SUBSTRATE=true
-ENV PNPM_HOME="/home/starlight/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-USER starlight
-WORKDIR /home/starlight/workspace
-
-# Pre-warm common tier-1 dependencies in pnpm store to eliminate cold-start network downloads
-RUN pnpm config set store-dir /home/starlight/.local/share/pnpm/store/v3 \
+# Pre-warm common tier-1 dependencies in sandbox pnpm store to minimize cold-start downloads
+USER starlight-sandbox
+RUN export PNPM_HOME="/home/starlight-sandbox/.local/share/pnpm" \
+    && export PATH="$PNPM_HOME:$PATH" \
+    && pnpm config set store-dir /home/starlight-sandbox/.local/share/pnpm/store/v3 \
     && pnpm add -g typescript vitest @types/node zod || true
 
-# Copy execution entrypoint script
+# Copy execution entrypoint script owned by supervisor `starlight`
+USER root
 COPY --chown=starlight:starlight runner-entrypoint.sh /home/starlight/runner-entrypoint.sh
-RUN chmod +x /home/starlight/runner-entrypoint.sh
+RUN chmod 0700 /home/starlight/runner-entrypoint.sh
+
+USER starlight
+WORKDIR /work
 
 ENTRYPOINT ["/home/starlight/runner-entrypoint.sh"]
-

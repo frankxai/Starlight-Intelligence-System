@@ -3,11 +3,15 @@ import {
   authenticateAccessRequest,
   AuthorizationError,
   authorizationResponse,
+  MCP_ALLOWED_CORS_HEADERS,
+  resolveAllowedCorsOrigin,
   type AccessEnv,
 } from "./auth.js";
 import { createStarlightServer } from "./mcp.js";
 import { StarlightStore } from "./store.js";
 import { SupabaseWorkspaceAdapter } from "./store-supabase.js";
+
+const MAX_MCP_BODY_BYTES = 1_048_576; // 1 MiB ceiling on JSON-RPC payloads
 
 export interface Env extends AccessEnv {
   SUPABASE_URL: string;
@@ -36,6 +40,41 @@ export default {
     }
     if (url.pathname !== "/mcp") return json({ error: "not_found" }, 404);
 
+    const canonicalHost = env.STARLIGHT_MCP_HOST?.trim() || "mcp.starlightintelligence.ai";
+    const allowedOriginHostnames = [
+      "chatgpt.com",
+      "chat.openai.com",
+      "platform.openai.com",
+      canonicalHost,
+      "localhost",
+    ];
+    const matchedOrigin = resolveAllowedCorsOrigin(
+      request.headers.get("origin"),
+      allowedOriginHostnames,
+    );
+
+    if (request.method === "OPTIONS") {
+      if (!matchedOrigin) {
+        return json({ error: "origin_not_allowed" }, 403);
+      }
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": matchedOrigin,
+          "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": MCP_ALLOWED_CORS_HEADERS,
+          "Access-Control-Expose-Headers": "mcp-session-id",
+          "Access-Control-Max-Age": "86400",
+          Vary: "Origin",
+        },
+      });
+    }
+
+    const declaredLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(declaredLength) && declaredLength > MAX_MCP_BODY_BYTES) {
+      return json({ error: "payload_too_large" }, 413);
+    }
+
     try {
       const actor = await authenticateAccessRequest(request, env);
       const adapter = SupabaseWorkspaceAdapter.fromCredentials({
@@ -45,18 +84,16 @@ export default {
       });
       const store = new StarlightStore({ adapter });
       const endpointHost = url.hostname;
+      const corsOrigin = matchedOrigin ?? `https://${canonicalHost}`;
       const handler = createMcpHandler(() => createStarlightServer({ store, actor }), {
         route: "/mcp",
         legacy: "stateless",
-        allowedHostnames: Array.from(new Set([endpointHost, env.STARLIGHT_MCP_HOST])),
-        allowedOriginHostnames: [
-          "chatgpt.com",
-          "chat.openai.com",
-          "platform.openai.com",
-          env.STARLIGHT_MCP_HOST,
-          "localhost",
-        ],
-        corsOptions: { origin: "*" },
+        allowedHostnames: Array.from(new Set([endpointHost, canonicalHost])),
+        allowedOriginHostnames,
+        corsOptions: {
+          origin: corsOrigin,
+          headers: MCP_ALLOWED_CORS_HEADERS,
+        },
         onerror(error) {
           console.error("Starlight MCP request failed", {
             name: error.name,
@@ -65,9 +102,18 @@ export default {
           });
         },
       });
-      return handler(request, env, ctx);
+      const response = await handler(request, env, ctx);
+      const headers = new Headers(response.headers);
+      headers.set("Vary", "Origin");
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
     } catch (error) {
-      if (error instanceof AuthorizationError) return authorizationResponse(error);
+      if (error instanceof AuthorizationError) {
+        return authorizationResponse(error, matchedOrigin);
+      }
       console.error("Starlight MCP authorization boundary failed", {
         name: error instanceof Error ? error.name : "UnknownError",
         requestId: request.headers.get("cf-ray") ?? crypto.randomUUID(),
