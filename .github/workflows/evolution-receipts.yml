@@ -1,0 +1,29 @@
+name: Evolution receipt contract
+on:
+  pull_request:
+    paths:
+      - 'tools/proving-ground/evolution/**'
+      - 'src/run-receipt.ts'
+      - 'test/evolution-*.test.mjs'
+      - '.github/workflows/evolution-receipts.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: evolution-receipts-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native-contract:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24'
+      - name: Verify completed receipt contracts without network or secrets
+        run: node --test test/evolution-adjudication.test.mjs test/evolution-runtime-receipts.test.mjs
