@@ -73,6 +73,7 @@ memory/.dreaming-state.json
 .env
 .env.*
 .env.local
+!.env.example
 *.pem
 *.key
 

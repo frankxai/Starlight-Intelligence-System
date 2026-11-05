@@ -306,7 +306,7 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 > **Where memory lives.** The MCP server and `src/retrieval.ts` read **`*.jsonl`
 > files in your `--vault-dir`** (default `~/.starlight/vaults`) — that is the one
 > source of truth at runtime. The repo ships two example sets for reference only:
-> `public-vault/*.jsonl` is the canonical starter content that `starlight init
+> `public-vault/*.jsonl` is the canonical starter content that `node dist/cli.js init
 > --vaults` copies into your vault dir; `memory/vaults/*.md` are human-readable
 > narrative snapshots and are **not** read by the engine. Seed once, then your
 > own `~/.starlight/vaults` is what counts.
