@@ -122,4 +122,4 @@ jobs:
             ${{ runner.temp }}/codex-loader-smoke.json
             ${{ runner.temp }}/claude-validator-smoke.json
           if-no-files-found: warn
-          retention-days: 45
+          retention-days: 3
