@@ -134,12 +134,12 @@ describe("OpenCode version-bound worker", () => {
   });
   it("rejects malformed identity, tools, missing structured output and permissions", async () => {
     for (const mutate of [
-      (p: string,v: Record<string, unknown> | undefined) => p === "/session" ? { ...v, id: "../foreign" } : v,
-      (p: string,v: Record<string, unknown> | undefined) => p === "/session" ? { ...v, permission: [] } : v,
-      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, sessionID: "ses_foreign" } } : v,
-      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, structured: undefined } } : v,
-      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, parts: [{ type: "tool", tool: "bash" }] } : v,
-      (p: string,v: Record<string, unknown> | undefined) => p.endsWith("message") ? { ...v, info: { ...v.info, modelID: "fallback" } } : v,
+      (p: string,v: any) => p === "/session" ? { ...v, id: "../foreign" } : v,
+      (p: string,v: any) => p === "/session" ? { ...v, permission: [] } : v,
+      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, sessionID: "ses_foreign" } } : v,
+      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, structured: undefined } } : v,
+      (p: string,v: any) => p.endsWith("message") ? { ...v, parts: [{ type: "tool", tool: "bash" }] } : v,
+      (p: string,v: any) => p.endsWith("message") ? { ...v, info: { ...v.info, modelID: "fallback" } } : v,
     ]) {
       const f = await fixture(mutate);
       await assert.rejects(createOpenCodeRuntime(f.options).invoke(request, new AbortController().signal));

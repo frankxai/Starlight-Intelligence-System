@@ -64,7 +64,7 @@ describe("vault MCP server quality contract", () => {
         }
         assert.equal(tool.outputSchema?.type, "object", `${tool.name} outputSchema`);
         assert.equal(tool.inputSchema.additionalProperties, false, `${tool.name} rejects unknown arguments`);
-        for (const [key, prop] of Object.entries(tool.inputSchema.properties as Record<string, unknown>)) {
+        for (const [key, prop] of Object.entries(tool.inputSchema.properties as Record<string, { description?: string }>)) {
           assert.ok(prop.description, `${tool.name}.${key} description`);
         }
       }
