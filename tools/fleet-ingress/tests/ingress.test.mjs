@@ -126,12 +126,14 @@ test('worker fetch handles /health and verifies webhook requests', async () => {
     method: 'POST',
     headers: {
       'x-github-event': 'ping',
+      'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pingBody),
       'Content-Type': 'application/json',
     },
     body: pingBody,
   });
-  const pingRes = await handleRequest(pingReq, {});
+  const pingRes = await handleRequest(pingReq, { GITHUB_WEBHOOK_SECRET: TEST_SECRET });
   assert.equal(pingRes.status, 200);
   const pingJson = await pingRes.json();
   assert.equal(pingJson.pong, true);
 });
+
