@@ -41,6 +41,7 @@ function experiment(overrides = {}) {
     tenantScope: "synthetic-test-tenant",
     sourceRevision: HASH_A,
     hypothesis: "Versioned context compiler will improve accepted output at fixed task set",
+    budget: { maxCandidateCostUsd: 15, maxCandidateHumanMinutes: 150 },
     taskSet: { digest: SET, sealed: true, contamination: "clear", kind: "heldout" },
     baseline: run("baseline", baselineMetrics),
     candidate: run("candidate", candidateMetrics),
@@ -145,4 +146,20 @@ test("bad input object and malformed limits fail without remote effects", () => 
   const got = adjudicateEvolution(experiment(), { minAttempts: -1 });
   assert.equal(got.verdict, "BLOCKED");
   assert.match(got.reasons.join(" "), /invalid explicit evaluation limits/);
+});
+
+test("hard admission budgets block candidates even when relative outcomes improve", () => {
+  const cash = adjudicateEvolution(experiment({
+    budget: { maxCandidateCostUsd: 8, maxCandidateHumanMinutes: 150 },
+  }));
+  assert.equal(cash.verdict, "REVISE_OR_MORE_EVIDENCE");
+  assert.match(cash.reasons.join(" "), /cash budget/);
+
+  const hours = adjudicateEvolution(experiment({
+    budget: { maxCandidateCostUsd: 15, maxCandidateHumanMinutes: 50 },
+  }));
+  assert.equal(hours.verdict, "REVISE_OR_MORE_EVIDENCE");
+  assert.match(hours.reasons.join(" "), /human effort budget/);
+
+  assert.equal(adjudicateEvolution(experiment({ budget: undefined })).verdict, "BLOCKED");
 });
