@@ -313,3 +313,20 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 **Truth boundary:** Structural validity is only `contract-valid`. Source, deploy, integration, security, and rollback checks remain independently evidenced. Hermes and n8n are optional planned adapters until their own source and evidence exist.
 
 **Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-11-05] Evolution evidence requires verified scope and signatures
+
+**Category:** evaluation / runtime-evidence
+**Source:** SIS #545 / draft #546; `tools/proving-ground/evolution/runtime-receipts.mjs`
+
+Completed runtime receipts reuse the canonical DSSE verifier and require a
+server-authorized frozen experiment, exact tenant-to-run mapping, pinned runtime
+descriptor, fresh signed bytes and qualified independent runner/checker identities
+before the existing advisory evaluates them. Derived receipt hashes are excluded
+from preregistration to avoid circular hashes. Synthetic cryptographic tests
+establish contract behavior, not a real provider benchmark. Check telemetry RLS
+policy expressions together with effective grants. Live tenant mapping, issuer
+integration and independent review remain pending; no production or database
+changes were made.
