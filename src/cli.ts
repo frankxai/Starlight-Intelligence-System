@@ -28,6 +28,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { runTerminalCli } from "./terminal-cli.js";
+import { findExtension, runExtension } from "./extensions.js";
 import { StarlightIntelligence } from "./index.js";
 import { GoalOrchestrator } from "./goal.js";
 import { MemoryManager } from "./memory.js";
@@ -1704,6 +1705,12 @@ async function main(): Promise<void> {
     process.exitCode = result.exitCode;
     return;
   }
+  // Before argument parsing, so an extension receives its own flags, --help included.
+  const extension = terminalArgs[0] ? findExtension(terminalArgs[0]) : null;
+  if (extension) {
+    process.exitCode = runExtension(extension, terminalArgs.slice(1));
+    return;
+  }
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
@@ -1970,7 +1977,7 @@ async function main(): Promise<void> {
 
     default:
       console.error(`[starlight] Unknown command: "${command}"`);
-      console.error("Run 'starlight --help' for usage.");
+      console.error(`No built-in command or installed starlight-${command} extension. Run 'starlight --help' for usage.`);
       process.exitCode = 1;
   }
 }
