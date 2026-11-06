@@ -26,6 +26,7 @@ This file is a discovery map for agents and agent operators. It is not a system 
 - Distribution page: https://starlightintelligence.org/download
 - SIS release state: https://starlightintelligence.org/download/latest.json
 - Public plugin release state: https://starlightintelligence.org/download/plugins/latest.json
+- [Inspect a five-file founder handoff](https://starlightintelligence.org/examples/founder-handoff/README.md). Replay the Harbor Desk draft, inspect its authority and memory boundaries, and rehearse recovery when one source is missing.
 
 The SIS release index and plugin release index describe different artifacts. Do not use one artifact's status, version, checksum, or install instructions as evidence for the other.
 
