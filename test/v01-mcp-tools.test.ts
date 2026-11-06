@@ -705,3 +705,4 @@ describe('Track B v0.1 — substrate invariants', () => {
 import './run-receipt.test.js';
 import './v01-receipt-tools.test.js';
 import './receipt-share.test.js';
+import './verify-receipt.test.js';
