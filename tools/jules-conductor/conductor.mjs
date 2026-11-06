@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Starlight Jules Autonomous Conductor v2.0
- * 24/7 Zero-Touch Autonomous Engineering Swarm
+ * Starlight Jules Conductor v2.2 — retirement mode.
+ * New dispatch is disabled; existing evidence and review gates are retained.
  *
  * Council-Driven & Low-RAM Native:
  * 1. Multi-Agent Preflight: Architect & Sage govern prompt formulation.
@@ -22,7 +22,8 @@ import { engineerJulesPrompt } from './prompt-engineer.mjs';
 import { validatePatch } from './sentinel-validator.mjs';
 import { sentinelAudit, weaverTasteReview } from './council-gate.mjs';
 import { capacityAllowsDispatch, claimDaemonLock, julesDraftAction, matchPullRequest } from './merge-gate.mjs';
-import { armAction, formatBoard, takeReady } from './work-board.mjs';
+import { formatBoard, takeReady } from './work-board.mjs';
+import { julesCommandPolicy, RETIREMENT_REASON } from './retirement.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
@@ -115,6 +116,8 @@ function runDirect(bin, args, options = {}) {
 const JULES_EXE = 'C:/Users/frank/AppData/Roaming/npm/node_modules/@google/jules/jules.exe';
 
 function runJules(args, options = {}) {
+  const policy = julesCommandPolicy(args);
+  if (!policy.allowed) return { code: 2, stdout: '', stderr: policy.reason };
   // Use direct binary invocation for maximum speed and zero lock contention
   if (existsSync(JULES_EXE)) {
     return runDirect(JULES_EXE, args, options);
@@ -326,6 +329,8 @@ function recordOrLand(session, config, ledger) {
 }
 
 function sendOwnedTask(task, ledger, config) {
+  const policy = julesCommandPolicy(['new']);
+  if (!policy.allowed) return { sent: false, detail: policy.reason };
   const profile = getRepoProfile(task.repo, config);
   const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   try {
@@ -483,9 +488,9 @@ export async function tick() {
   log(`Active owned sessions: ${activeCount}/${maxSessions}`);
 
   const room = readCapacity();
-  const autoDispatch = config.automation?.autoDispatch === true;
+  const autoDispatch = config.automation?.autoDispatch === true && julesCommandPolicy(['new']).allowed;
   if (activeCount < maxSessions && backlog.queue.length > 0 && !autoDispatch) {
-    log('[DISPATCH HELD] autoDispatch is off');
+    log(`[DISPATCH HELD] ${RETIREMENT_REASON}`);
   } else if (activeCount < maxSessions && backlog.queue.length > 0 && !room.ok) {
     log(`[DISPATCH HELD] ${room.reason}`);
   }
@@ -544,100 +549,25 @@ export function status() {
 
 export function printNext() {
   const board = loadJSON(NEXT_PATH, { actions: [] });
-  console.log(formatBoard(board.actions, readCapacity()));
+  console.log(RETIREMENT_REASON);
+  console.log(formatBoard(board.actions.map(action => ({ ...action, how: 'See migration.mjs handoff; original board is retained as evidence.' })), { ok: false, reason: 'Jules retired for new work' }));
   console.log('');
-  console.log('Arm one Jules id, then run-ready. run-ready sends that one task when the machine has room.');
+  console.log('Use migration.mjs handoff <board-id> <admission.json> to prepare a held contract for agentic-ops.');
 }
 
 export function armOne(id) {
-  const board = loadJSON(NEXT_PATH, { actions: [] });
-  const action = (board.actions || []).find((item) => item.id === id);
-  if (!action) {
-    console.log('Unknown id. Run next.');
-    process.exitCode = 2;
-    return;
-  }
-  if (action.runner !== 'jules') {
-    console.log(action.how);
-    return;
-  }
-  const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
-  const result = armAction(backlog.queue, action);
-  if (!result.armed) {
-    console.log(result.reason);
-    process.exitCode = 2;
-    return;
-  }
-  backlog.queue = result.queue;
-  saveJSON(BACKLOG_PATH, backlog);
-  const room = readCapacity();
-  console.log(`Armed ${id} on ${action.repo}.`);
-  console.log(room.ok ? 'Run run-ready to send it.' : `Held: ${room.reason}. Run run-ready after the machine has room.`);
+  console.error(RETIREMENT_REASON);
+  process.exitCode = 2;
 }
 
 export function runReady() {
-  const room = readCapacity();
-  if (!room.ok) {
-    console.log(`Held: ${room.reason}.`);
-    console.log('Free RAM to 4 GiB and keep 50 GiB free on C: before a Jules session.');
-    return;
-  }
-  const backlog = loadJSON(BACKLOG_PATH, { queue: [] });
-  const picked = takeReady(backlog.queue);
-  if (!picked.task) {
-    console.log('No armed task. Run next, then arm one id.');
-    return;
-  }
-  const config = loadJSON(CONFIG_PATH, {});
-  const ledger = loadJSON(LEDGER_PATH, { lastTick: null, sessions: {}, metrics: {} });
-  const result = sendOwnedTask(picked.task, ledger, config);
-  if (!result.sent) {
-    console.log(`Not sent: ${result.detail}`);
-    return;
-  }
-  backlog.queue = picked.queue;
-  saveJSON(BACKLOG_PATH, backlog);
-  saveJSON(LEDGER_PATH, ledger);
-  console.log(`Sent ${picked.task.id}. ${result.detail}`);
+  console.error(RETIREMENT_REASON);
+  process.exitCode = 2;
 }
 
 export function dispatchDirect(repo, taskDesc, type = 'feature') {
-  const room = readCapacity();
-  if (!room.ok) {
-    log(`[DISPATCH HELD] ${room.reason}`);
-    return;
-  }
-  const config = loadJSON(CONFIG_PATH, {});
-  const profile = getRepoProfile(repo, config);
-  const trackToken = `jules-track-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  log(`Direct dispatch initiated for ${repo} [Lead: ${profile.primaryAgent}]...`);
-
-  const engineeredPrompt = engineerJulesPrompt({
-    repo,
-    taskDescription: taskDesc,
-    repoProfile: profile,
-    taskType: type,
-    trackToken,
-  });
-
-  const res = runJules(['new', '--repo', repo], { input: engineeredPrompt });
-  console.log(res.stdout || res.stderr);
-  const idMatch = (res.stdout || '').match(/(\d{18,20})/);
-  if (!idMatch) return;
-  const ledger = loadJSON(LEDGER_PATH, { lastTick: null, sessions: {}, metrics: {} });
-  ledger.sessions[idMatch[1]] = {
-    id: idMatch[1],
-    repo,
-    description: taskDesc,
-    status: 'Planning',
-    firstSeen: new Date().toISOString(),
-    verified: false,
-    merged: false,
-    owned: true,
-    accepted: false,
-    trackToken,
-  };
-  saveJSON(LEDGER_PATH, ledger);
+  console.error(RETIREMENT_REASON);
+  process.exitCode = 2;
 }
 
 export async function runDaemon() {
@@ -716,12 +646,12 @@ if (cmd === 'tick') {
   console.log(`Starlight Jules Conductor v2.2
 Commands:
   next                                 What to do, where, and the command
-  arm <id>                             Queue one bounded task. Does not call Jules
-  run-ready                            Send the armed task when disk and RAM are above the floor
+  arm <id>                             Retired: use migration.mjs handoff
+  run-ready                            Retired: exits without modifying backlog
   status                               Show ledger status, RAM, and whether a task is armed
   tick                                 One scan. Records Jules draft PRs. Never merges
   accept <session-id>                  Mark one owned session accepted. Never merges by itself
-  dispatch <repo> "<desc>" [type]      Escape hatch. Send one task when disk and RAM are above the floor
+  dispatch <repo> "<desc>" [type]      Retired: exits without calling Jules
   daemon                               One background loop. A second start exits
 `);
 }
