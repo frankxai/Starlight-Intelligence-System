@@ -1,0 +1,24 @@
+{
+  "name": "starlight-tenant-dispatcher",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  // Metadata-only tracing; see tenant-template/wrangler.jsonc for the sampling note.
+  "observability": { "traces": { "enabled": true, "head_sampling_rate": 1 } },
+  "vars": {
+    "PLATFORM_DOMAIN": "tenants.example.invalid",
+    // 5,000,000 micro-USD = $5 of platform compute per tenant per month. Model tokens are
+    // the tenant's own key and are not counted here.
+    "DEFAULT_CAP_MICRO_USD": "5000000"
+  },
+  // PLATFORM_ADMIN_TOKEN is a secret: `wrangler secret put PLATFORM_ADMIN_TOKEN`.
+  "dispatch_namespaces": [
+    { "binding": "DISPATCHER", "namespace": "starlight-tenants" }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "TENANT_LEDGER", "class_name": "TenantLedger" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["TenantLedger"] }]
+}
