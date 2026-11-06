@@ -17,8 +17,9 @@ try {
 } catch {}
 
 $global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-$canonical = "C:\Users\frank\starlight\repos"
-$global:REPOS_ROOT = if (Test-Path $canonical) { $canonical } else { "C:\Users\frank" }
+# Canonical checkouts live in the user profile. starlight\repos is a partial
+# mirror and must not become the root just because the folder exists.
+$global:REPOS_ROOT = "C:\Users\frank"
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
     $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{
@@ -26,8 +27,10 @@ if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
         starlight  = "Starlight-Intelligence-System"
         fx         = "FrankX"
         frankx     = "FrankX"
-        arc        = "arcanea-ecosystem"
-        arcanea    = "arcanea-ecosystem"
+        fxp        = "frankx.ai-vercel-website"
+        website    = "frankx.ai-vercel-website"
+        arc        = "Arcanea"
+        arcanea    = "Arcanea"
         app        = "arcanea-ai-app"
         claw       = "arcanea-claw"
         orchestrator = "arcanea-orchestrator"
@@ -35,10 +38,9 @@ if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
         author     = "author-os"
         aco        = "agentic-creator-os"
         acos       = "agentic-creator-os"
-        anime      = "AnimeLegends"
-        ani        = "AnimeLegends"
+        anime      = "AnimeLegends.ai"
+        ani        = "AnimeLegends.ai"
         dpi        = "dpi"
-        website    = "frankx.ai-vercel-website"
         gencreator = "gencreator.ai"
         g          = "gencreator.ai"
         vibeclubs  = "vibeclubs.ai"
@@ -72,36 +74,28 @@ function Get-StarlightRepo {
         [switch]$Silent
     )
 
-    if (-not (Test-Path $global:REPOS_ROOT)) {
+    if (-not (Test-Path -LiteralPath $global:REPOS_ROOT)) {
         if (-not $Silent) { Write-Error "Repository root does not exist: $global:REPOS_ROOT" }
         return $null
     }
 
     $key = $RepoKey.Trim()
+    $folder = $null
     if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($key.ToLowerInvariant())) {
-        $mappedPath = Join-Path $global:REPOS_ROOT $global:STARLIGHT_REPO_SHORTCUTS[$key.ToLowerInvariant()]
-        if (Test-Path $mappedPath) {
-            return Get-Item $mappedPath
-        }
+        $folder = $global:STARLIGHT_REPO_SHORTCUTS[$key.ToLowerInvariant()]
+    } else {
+        $folder = $key
     }
 
-    $dirs = Get-ChildItem -Path $global:REPOS_ROOT -Directory
-    $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
-
-    if (-not $match) {
-        $match = $dirs | Where-Object { $_.Name.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase) } | Select-Object -First 1
+    $mappedPath = Join-Path $global:REPOS_ROOT $folder
+    if (Test-Path -LiteralPath $mappedPath) {
+        return Get-Item -LiteralPath $mappedPath
     }
 
-    if (-not $match) {
-        $match = $dirs | Where-Object { $_.Name -ilike "*$key*" } | Select-Object -First 1
+    if (-not $Silent) {
+        Write-Error "No canonical folder for '$RepoKey' at $mappedPath"
     }
-
-    if (-not $match) {
-        if (-not $Silent) { Write-Error "Could not resolve repository key '$RepoKey' inside $global:REPOS_ROOT." }
-        return $null
-    }
-
-    return $match
+    return $null
 }
 
 function Show-StarlightRepos {
@@ -110,20 +104,24 @@ function Show-StarlightRepos {
     )
 
     Write-Host "Available repositories to ${Verb}:" -ForegroundColor Cyan
-    Get-ChildItem -Path $global:REPOS_ROOT -Directory | Sort-Object Name | ForEach-Object {
-        Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+    $seen = @{}
+    foreach ($entry in $global:STARLIGHT_REPO_SHORTCUTS.GetEnumerator()) {
+        if ($seen.ContainsKey($entry.Value)) { continue }
+        $seen[$entry.Value] = $true
+        $path = Join-Path $global:REPOS_ROOT $entry.Value
+        $mark = if (Test-Path -LiteralPath $path) { 'ok' } else { 'missing' }
+        Write-Host ("  - {0} ({1})" -f $entry.Value, $mark) -ForegroundColor DarkGray
     }
     Write-Host ""
-    Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
+    $hintOrder = @('sis','fx','fxp','arc','app','aco','prompts','brain','g','vc','ani','dpi','agenticops')
+    $hint = @($hintOrder | Where-Object { Get-StarlightRepo $_ -Silent })
+    Write-Host ("Useful keys: {0}" -f ($hint -join ', ')) -ForegroundColor DarkCyan
 }
 
-# Helper: Run history sync across harnesses
+# Launchers still call this. The old sync-harnesses.js path is not on this machine,
+# so the call returns without starting node.
 function Invoke-HistorySync {
-    $syncScript = "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
-    if (Test-Path $syncScript) {
-        Write-Host "🔄 Syncing harness histories..." -ForegroundColor DarkGray
-        node $syncScript | Out-Null
-    }
+    return
 }
 
 # Helper: Invoke agy with YOLO mode in a target path, optionally seeding a prompt
@@ -303,35 +301,61 @@ function agy-run {
 Set-Alias -Name ay -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agy-yolo -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 
+# Pick the Claude entry for a folder.
+# A repo launcher is used only when its text names this folder. The arcanea-ai-app
+# launcher is a copy of Arcanea's and still names C:\Users\frank\Arcanea, so clapp
+# must not follow it.
+function Resolve-ClaudeLaunch {
+    param([Parameter(Mandatory = $true)][string]$TargetPath)
+
+    if (-not (Test-Path -LiteralPath $TargetPath)) { return $null }
+    $target = (Resolve-Path -LiteralPath $TargetPath).Path.TrimEnd('\')
+    $launcherPath = Join-Path $target '.arcanea\scripts\claude-launcher.ps1'
+    $launcher = ''
+    if (Test-Path -LiteralPath $launcherPath) {
+        $text = Get-Content -LiteralPath $launcherPath -Raw
+        if ($text.IndexOf($target, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $launcher = $launcherPath
+        }
+    }
+    $exe = 'C:\Users\frank\.local\bin\claude.exe'
+    if (-not (Test-Path -LiteralPath $exe)) { $exe = 'claude' }
+    [pscustomobject]@{
+        Target   = $target
+        Launcher = $launcher
+        Exe      = $exe
+    }
+}
+
 # Helper: Invoke Claude Code in a target path in YOLO mode
 function Invoke-ClaudeYolo {
     param(
         [string]$TargetPath
     )
 
-    if (-not (Test-Path $TargetPath)) {
+    $plan = Resolve-ClaudeLaunch -TargetPath $TargetPath
+    if (-not $plan) {
         Write-Error "Target repository path does not exist: $TargetPath"
         return
-    }
-
-    # Resolve local path
-    $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
-    if (-not (Test-Path $claudeExe)) {
-        $claudeExe = "claude"
     }
 
     # Sync history from other harnesses
     Invoke-HistorySync
 
     # Set env for hook-env.sh detection (portable hooks identify harness)
-    $env:CLAUDE_PROJECT_DIR = $TargetPath
+    $env:CLAUDE_PROJECT_DIR = $plan.Target
     $env:CLAUDECODE = "1"
 
-    # Switch location
-    Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning Claude Code YOLO Agent..." -ForegroundColor Green
-    & $claudeExe --dangerously-skip-permissions
+    # Switch location before the launcher. Arcanea's launcher pops back to here.
+    Set-Location -LiteralPath $plan.Target
+    Write-Host "⚡ Switched context to: $($plan.Target)" -ForegroundColor DarkCyan
+    if ($plan.Launcher) {
+        Write-Host "🚀 Spawning Claude Code via repo launcher..." -ForegroundColor Green
+        & $plan.Launcher
+    } else {
+        Write-Host "🚀 Spawning Claude Code YOLO Agent..." -ForegroundColor Green
+        & $plan.Exe --dangerously-skip-permissions
+    }
 }
 
 function Invoke-CodexInRepo {
@@ -339,13 +363,14 @@ function Invoke-CodexInRepo {
         [string]$TargetPath
     )
 
-    if (-not (Test-Path $TargetPath)) {
+    if (-not (Test-Path -LiteralPath $TargetPath)) {
         Write-Error "Target repository path does not exist: $TargetPath"
         return
     }
+    $target = (Resolve-Path -LiteralPath $TargetPath).Path
 
     $codexPath = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"
-    if (-not (Test-Path $codexPath)) {
+    if (-not (Test-Path -LiteralPath $codexPath)) {
         $codexPath = "codex"
     }
 
@@ -353,13 +378,13 @@ function Invoke-CodexInRepo {
     Invoke-HistorySync
 
     # Set env for hook-env.sh detection
-    $env:CODEX_PROJECT_DIR = $TargetPath
+    $env:CODEX_PROJECT_DIR = $target
     $env:CODEX_SESSION = "1"
 
-    Set-Location $TargetPath
-    Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
+    Set-Location -LiteralPath $target
+    Write-Host "⚡ Switched context to: $target" -ForegroundColor DarkCyan
     Write-Host "🚀 Spawning Codex..." -ForegroundColor Green
-    & $codexPath
+    & $codexPath --dangerously-bypass-approvals-and-sandbox
 }
 
 # Helper: headless single-turn dispatch (used by /si fanout)
@@ -562,10 +587,8 @@ function da-run {
 }
 
 Set-Alias -Name da -Value da-run -Scope Global -Force -ErrorAction SilentlyContinue
-Set-Alias -Name dag -Value dag -Scope Global -Force -ErrorAction SilentlyContinue
-Set-Alias -Name davc -Value davc -Scope Global -Force -ErrorAction SilentlyContinue
-Set-Alias -Name daani -Value daani -Scope Global -Force -ErrorAction SilentlyContinue
-Set-Alias -Name dadpi -Value dadpi -Scope Global -Force -ErrorAction SilentlyContinue
+# These four are functions. An alias of the same name shadows the function and calls itself.
+Remove-Item -Path Alias:dag, Alias:davc, Alias:daani, Alias:dadpi -ErrorAction SilentlyContinue
 
 # Dedicated wrappers for Claude Code
 function clsis {
@@ -755,46 +778,45 @@ function cl-intelligent {
         [string[]]$ArgsList
     )
     if ($ArgsList.Count -eq 0) {
-        $claudeExe = "C:\Users\frank\.local\bin\claude.exe"
-        if (-not (Test-Path $claudeExe)) { $claudeExe = "claude" }
-        $env:CLAUDE_PROJECT_DIR = (Get-Location).Path
-        $env:CLAUDECODE = "1"
-        & $claudeExe
-    } else {
-        cl-run ($ArgsList -join ' ')
+        Invoke-ClaudeYolo -TargetPath (Get-Location).Path
+        return
     }
+    $target = ($ArgsList -join ' ').Trim('"').Trim("'")
+    if (Test-Path -LiteralPath $target) {
+        Invoke-ClaudeYolo -TargetPath $target
+        return
+    }
+    cl-run $target
 }
 Remove-Item -Path Alias:cl -ErrorAction SilentlyContinue
 Set-Alias -Name cl -Value cl-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
 
-# Intelligent cd wrapper: cd with no args launches codex, cd <path> changes directory
+# Intelligent cd wrapper.
+# bare cd and cd <repo key> launch Codex. A real path changes directory.
+# No param() block: PowerShell would treat `cd -` as a switch instead of the previous location.
 function cd-intelligent {
-    param(
-        [Parameter(ValueFromRemainingArguments=$true)]
-        [string[]]$PathArgs
-    )
-    if ($PathArgs.Count -eq 0) {
-        $codexPath = "C:\Users\frank\AppData\Roaming\npm\codex.ps1"
-        if (-not (Test-Path $codexPath)) {
-            $codexPath = "codex"
-        }
-        $env:CODEX_PROJECT_DIR = (Get-Location).Path
-        $env:CODEX_SESSION = "1"
-        & $codexPath
+    if ($args.Count -eq 0) {
+        Invoke-CodexInRepo -TargetPath (Get-Location).Path
+        return
+    }
+    if ($args.Count -eq 1 -and ($args[0] -eq '-' -or $args[0] -eq '+')) {
+        Set-Location $args[0]
+        return
+    }
+    $target = ($args -join ' ').Trim('"').Trim("'")
+    if (Test-Path $target) {
+        Set-Location $target
+        return
+    }
+    $repo = Get-StarlightRepo $target -Silent
+    if ($repo) {
+        Invoke-CodexInRepo -TargetPath $repo.FullName
+        return
+    }
+    if (Get-Command __zoxide_z -ErrorAction SilentlyContinue) {
+        __zoxide_z @args
     } else {
-        $target = $PathArgs -join ' '
-        $target = $target.Trim('"').Trim("'")
-        if (Test-Path $target) {
-            Set-Location $target
-        } elseif ($repo = Get-StarlightRepo $target -Silent) {
-            Set-Location $repo.FullName
-        } else {
-            if (Get-Command __zoxide_z -ErrorAction SilentlyContinue) {
-                __zoxide_z $target
-            } else {
-                Set-Location $target
-            }
-        }
+        Set-Location $target
     }
 }
 Remove-Item -Path Alias:cd -ErrorAction SilentlyContinue
@@ -924,24 +946,26 @@ Set-Alias -Name gkani -Value gr-ani -Scope Global -Force -ErrorAction SilentlyCo
 Set-Alias -Name grdpi -Value gr-dpi -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name gkdpi -Value gr-dpi -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name gx -Value gr-run -Scope Global -Force -ErrorAction SilentlyContinue
-Set-Alias -Name gk -Value gr-run -Scope Global -Force -ErrorAction SilentlyContinue
 
-# Intelligent gr wrapper: gr with no args launches grok in current folder, gr <repo> launches in target repo
+# Intelligent gr wrapper: bare gr launches Grok here. gr <key> launches Grok in that repo.
+# gk is the same command, so gk* and gr* stay paired.
 function gr-intelligent {
     param(
         [Parameter(ValueFromRemainingArguments=$true)]
         [string[]]$ArgsList
     )
     if ($ArgsList.Count -eq 0) {
-        $grokExe = "C:\Users\frank\.grok\bin\grok.exe"
-        if (-not (Test-Path $grokExe)) { $grokExe = "grok" }
-        $env:GROK_PROJECT_DIR = (Get-Location).Path
-        $env:GROK_CLI = "1"
-        & $grokExe
-    } else {
-        gr-run ($ArgsList -join ' ')
+        Invoke-GrokYolo -TargetPath (Get-Location).Path
+        return
     }
+    $target = ($ArgsList -join ' ').Trim('"').Trim("'")
+    if (Test-Path -LiteralPath $target) {
+        Invoke-GrokYolo -TargetPath $target
+        return
+    }
+    gr-run $target
 }
+Set-Alias -Name gk -Value gr-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
 Remove-Item -Path Alias:gr -ErrorAction SilentlyContinue
 Set-Alias -Name gr -Value gr-intelligent -Scope Global -Force -ErrorAction SilentlyContinue
 
@@ -1208,11 +1232,14 @@ function Invoke-SiCouncil {
 if ($env:FRANK_QUIET_PROFILE -ne '1') {
     Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green
     Write-Host 'Claude Code, Codex, Grok & DeepAgent integrations active:' -ForegroundColor Green
-    Write-Host '  - cl / cd / gr / da (launches agent in current folder)' -ForegroundColor DarkGray
-    Write-Host '  - cl <repo> / clsis / clfx / clarc / clapp / clstudio / clbrain / clprompts / clacos' -ForegroundColor DarkGray
-    Write-Host '  - cd <repo> / cdsis / cdfx / cdarc / cdapp / cdstudio / cdbrain / cdprompts / cdacos' -ForegroundColor DarkGray
-    Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
-    Write-Host '  - da <repo> / dasis / dafx / daarc / daapp / dastudio / dabrain / daprompts / daacos' -ForegroundColor DarkGray
+    Write-Host '  - bare cl / cd / gr / da launch Claude, Codex, Grok, or DeepAgent in this folder' -ForegroundColor DarkGray
+    Write-Host '  - a real path changes directory. cd - goes back. cx <key> also launches Codex.' -ForegroundColor DarkGray
+    $liveKeys = @(@('sis','fx','arc','app','studio','brain','prompts','acos') | Where-Object { Get-StarlightRepo $_ -Silent })
+    $named = { param($prefix) (@($liveKeys | ForEach-Object { '{0}{1}' -f $prefix, $_ }) -join ' / ') }
+    Write-Host ('  - cl <key> / ' + (& $named 'cl')) -ForegroundColor DarkGray
+    Write-Host ('  - cd <key> / ' + (& $named 'cd')) -ForegroundColor DarkGray
+    Write-Host ('  - gr <key> / ' + (& $named 'gr') + ' (gk* matches these)') -ForegroundColor DarkGray
+    Write-Host ('  - da <key> / ' + (& $named 'da')) -ForegroundColor DarkGray
     Write-Host 'Starlight fanout + council: Invoke-SiFanout | Invoke-SiCouncil (si-dispatch.ps1 / si-council.ps1)' -ForegroundColor Green
     Write-Host 'Hook doctor: scripts/hook-doctor.ps1 (run any time for audit across harnesses)' -ForegroundColor DarkCyan
 }

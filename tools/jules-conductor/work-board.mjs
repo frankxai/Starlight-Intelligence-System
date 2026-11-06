@@ -46,6 +46,37 @@ export function armAction(queue, action) {
   return { queue: without, armed: task, reason: 'armed' };
 }
 
+export function classifyObservation({ verdict, prUrl, merged } = {}) {
+  if (merged === true) return 'landed';
+  if (verdict === 'reject') return 'rejected';
+  return 'accepted-unlanded';
+}
+
+export function acceptedHunkOpen(fileText, prUrl) {
+  const text = String(fileText || '');
+  const stale = text.includes('`frankxai/gencreator` *(to be created)*') || text.includes('gencreator.community');
+  if (stale && (prUrl == null || prUrl === '')) return false;
+  return true;
+}
+
+const MENTION_RE = /[A-Za-z0-9_@][A-Za-z0-9_@./-]{0,160}\.(?:md|json|ts|tsx|js|mjs|cjs|yml|yaml|css|sh|ps1|toml)\b/g;
+
+export function mentionPaths(text) {
+  const found = [];
+  const seen = new Set();
+  const source = String(text || '');
+  for (const match of source.matchAll(MENTION_RE)) {
+    const file = match[0];
+    const prefix = source.slice(Math.max(0, match.index - 3), match.index);
+    if (file.includes('..') || prefix.endsWith('..') || prefix.endsWith('../')) continue;
+    if (seen.has(file)) continue;
+    seen.add(file);
+    found.push(file);
+    if (found.length === 12) break;
+  }
+  return found;
+}
+
 export function formatBoard(actions, room) {
   const lines = [];
   lines.push(room?.ok ? `Machine: ${room.reason}. A Jules session can start.` : `Machine: ${room?.reason || 'capacity unread'}. Jules stays off.`);

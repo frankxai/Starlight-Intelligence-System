@@ -21,8 +21,8 @@ try {
     # Older terminals may not allow encoding change — fall through silently.
 }
 
-# --- zoxide: smart cd that learns frecency ---
-# Replaces `cd` with `z`. Type `z sis` from anywhere to jump to SIS.
+# --- zoxide: smart jump on `z` ---
+# `cd` is claimed later by the agent wrappers. Type `z sis` from anywhere to jump to SIS.
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
     Invoke-Expression (& { (zoxide init powershell | Out-String) })
 }
@@ -97,11 +97,19 @@ function Get-StarlightCloudStatus {
     }
 }
 
+function Get-StarlightCloudHeaders {
+    if ([string]::IsNullOrWhiteSpace($env:STARLIGHT_API_KEY)) {
+        Write-Error "STARLIGHT_API_KEY is not set. st-cloud-query and st-cloud-append stay closed."
+        return $null
+    }
+    return @{ Authorization = "Bearer $($env:STARLIGHT_API_KEY)"; "Content-Type" = "application/json" }
+}
+
 function Invoke-StarlightCloudQuery {
     param([Parameter(Mandatory=$true)][string]$Query, [string]$Tier = "technical")
+    $headers = Get-StarlightCloudHeaders
+    if (-not $headers) { return }
     $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
-    $token = if ($env:STARLIGHT_API_KEY) { $env:STARLIGHT_API_KEY } else { "starlight_live_frank_master_001" }
-    $headers = @{ "Authorization" = "Bearer $token"; "Content-Type" = "application/json" }
     $body = @{ query = $Query; tier = $Tier } | ConvertTo-Json
     $res = Invoke-RestMethod -Uri "$url/v1/memory/query" -Method Post -Headers $headers -Body $body
     $res | ConvertTo-Json -Depth 5 | Write-Host -ForegroundColor Cyan
@@ -109,9 +117,9 @@ function Invoke-StarlightCloudQuery {
 
 function Add-StarlightCloudMemory {
     param([Parameter(Mandatory=$true)][string]$Content, [string]$Tier = "operational")
+    $headers = Get-StarlightCloudHeaders
+    if (-not $headers) { return }
     $url = if ($env:STARLIGHT_CLOUD_URL) { $env:STARLIGHT_CLOUD_URL } else { "https://starlight-cloud-worker.frankxai.workers.dev" }
-    $token = if ($env:STARLIGHT_API_KEY) { $env:STARLIGHT_API_KEY } else { "starlight_live_frank_master_001" }
-    $headers = @{ "Authorization" = "Bearer $token"; "Content-Type" = "application/json" }
     $body = @{ content = $Content; tier = $Tier } | ConvertTo-Json
     $res = Invoke-RestMethod -Uri "$url/v1/memory/append" -Method Post -Headers $headers -Body $body
     $res | ConvertTo-Json -Depth 4 | Write-Host -ForegroundColor Green
@@ -131,5 +139,16 @@ if ($env:FRANK_QUIET_PROFILE -ne '1') {
     # ASCII separator (`|`) instead of middle-dot to render correctly even
     # when the console is misconfigured (some terminals decode UTF-8 multibyte
     # chars as their CP1252 component letters → "Â·" garbling).
-    Write-Host 'Starlight tools loaded: zoxide(z) | mise | bat(cat) | lazygit(lg) | eza(ll/tree) | uv | restic | starlightd | st-cloud' -ForegroundColor DarkCyan
+    # Name a tool only when its command resolved in this shell.
+    $parts = @()
+    if ((Get-Command zoxide -ErrorAction SilentlyContinue) -and (Get-Command z -ErrorAction SilentlyContinue)) { $parts += 'zoxide(z)' }
+    if (Get-Command mise -ErrorAction SilentlyContinue) { $parts += 'mise' }
+    if ((Get-Command bat -ErrorAction SilentlyContinue) -and (Get-Command cat -ErrorAction SilentlyContinue)) { $parts += 'bat(cat)' }
+    if ((Get-Command lazygit -ErrorAction SilentlyContinue) -and (Get-Command lg -ErrorAction SilentlyContinue)) { $parts += 'lazygit(lg)' }
+    if ((Get-Command eza -ErrorAction SilentlyContinue) -and (Get-Command ll -ErrorAction SilentlyContinue) -and (Get-Command tree -ErrorAction SilentlyContinue)) { $parts += 'eza(ll/tree)' }
+    if (Get-Command uv -ErrorAction SilentlyContinue) { $parts += 'uv' }
+    if (Get-Command restic -ErrorAction SilentlyContinue) { $parts += 'restic' }
+    if (Get-Command starlightd -ErrorAction SilentlyContinue) { $parts += 'starlightd' }
+    if (Get-Command st-cloud-status -ErrorAction SilentlyContinue) { $parts += 'st-cloud' }
+    Write-Host ("Starlight tools loaded: {0}" -f ($parts -join ' | ')) -ForegroundColor DarkCyan
 }
