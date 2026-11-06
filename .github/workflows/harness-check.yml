@@ -40,6 +40,9 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Cloud live verifier safety regressions (offline)
+        run: node --test test/cloud-worker-live.test.mjs
+
       - name: Install dependencies
         run: |
           npm install --global pnpm@11.5.0
