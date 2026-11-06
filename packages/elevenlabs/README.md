@@ -45,9 +45,14 @@ Reusable, consent-gated ElevenLabs voice synthesis package for **Starlight Intel
 import {
   StarlightElevenLabsPipeline,
   CloudflareR2StorageAdapter,
+  HmacApprovalAuthority,
   createApprovedVoiceConsentGate,
   createStarlightElevenLabsToolSuite,
 } from "@starlight-intelligence/elevenlabs";
+
+// Server-side approval authority. The signing key lives ONLY in your consent
+// backend (env: STARLIGHT_APPROVAL_SIGNING_KEY) — never in agent hosts.
+const approvalAuthority = new HmacApprovalAuthority();
 
 const pipeline = new StarlightElevenLabsPipeline({
   client: {
@@ -63,7 +68,11 @@ const pipeline = new StarlightElevenLabsPipeline({
     maxCharactersPerRequest: 2500,
     maxCostUsdPerRequest: 0.75,
     maxWindowCostUsd: 5.0,
+    // Durable, restart-safe, multi-instance window budgets:
+    // store: new FileSystemCostLedgerStore("/var/lib/starlight/voice-cost-ledger"),
   },
+  approvalAuthority,          // verifies signed approval tokens server-side
+  expectedTenantId: "starlight-main",
 });
 
 const text = "Welcome to Starlight Intelligence. Every synthesized voice asset carries cryptographic provenance.";
@@ -77,6 +86,14 @@ const approvalGate = createApprovedVoiceConsentGate({
   reason: "Approved intro narration for FrankX ElevenLabs resource slice (#1183).",
 });
 
+// The consent backend issues a signed token after the user approves.
+// The tool caller can present the token but cannot forge or alter it.
+const approvalGateToken = approvalAuthority.issue({
+  gate: approvalGate,
+  tenantId: "starlight-main",
+  purpose: "frankx-resources-launch",
+});
+
 const idemRef = "idem-run-1";
 const result = await pipeline.synthesizeSpeech({
   idempotencyKey: idemRef,
@@ -85,7 +102,7 @@ const result = await pipeline.synthesizeSpeech({
   voice: "starlight_architect",
   modelId: "eleven_multilingual_v2",
   outputFormat: "mp3_44100_128",
-  approvalGate,
+  approvalGateToken,   // server-verified consent (caller-asserted gates fail closed)
 });
 
 console.log(result.preview.playbackUrl);

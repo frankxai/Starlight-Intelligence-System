@@ -23,7 +23,7 @@ export const STARLIGHT_ELEVENLABS_INPUT_SCHEMA = Object.freeze({
   $schema: "https://json-schema.org/draft/2020-12/schema",
   type: "object",
   additionalProperties: false,
-  required: ["idempotencyKey", "runId", "text", "voice", "approvalGate"],
+  required: ["idempotencyKey", "runId", "text", "voice"],
   properties: {
     idempotencyKey: {
       type: "string",
@@ -67,6 +67,17 @@ export const STARLIGHT_ELEVENLABS_INPUT_SCHEMA = Object.freeze({
     includeInlinePreview: {
       type: "boolean",
       description: "Whether to include a base64 inline data URL for small audio previews.",
+    },
+    approvalGateToken: {
+      type: "string",
+      description:
+        "Server-verifiable signed approval token issued by the Starlight consent authority (production consent path).",
+    },
+    ambiguousResolution: {
+      type: "string",
+      enum: ["redispatch"],
+      description:
+        "Operator resolution for a previous attempt with an unknown paid outcome; 'redispatch' explicitly accepts the risk of a second provider charge.",
     },
     approvalGate: {
       type: "object",
@@ -166,8 +177,12 @@ function parseToolInput(raw: unknown): SynthesizeSpeechInput {
   }
   const obj = value as Record<string, unknown>;
   const gate = obj.approvalGate as VoiceConsentApprovalGate | undefined;
-  if (!gate || typeof gate !== "object") {
-    throw new ElevenLabsIntegrationError("consent_required", "Tool arguments must include approvalGate.");
+  const token = typeof obj.approvalGateToken === "string" ? obj.approvalGateToken : undefined;
+  if (!gate && !token) {
+    throw new ElevenLabsIntegrationError(
+      "consent_required",
+      "Tool arguments must include approvalGateToken (server-verified) or approvalGate (development opt-in only)."
+    );
   }
   return {
     idempotencyKey: String(obj.idempotencyKey ?? ""),
@@ -183,7 +198,9 @@ function parseToolInput(raw: unknown): SynthesizeSpeechInput {
     ...(typeof obj.includeInlinePreview === "boolean"
       ? { includeInlinePreview: obj.includeInlinePreview }
       : {}),
-    approvalGate: gate,
+    ...(token ? { approvalGateToken: token } : {}),
+    ...(gate && typeof gate === "object" ? { approvalGate: gate } : {}),
+    ...(obj.ambiguousResolution === "redispatch" ? { ambiguousResolution: "redispatch" as const } : {}),
   };
 }
 

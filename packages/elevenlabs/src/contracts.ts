@@ -314,11 +314,29 @@ export interface SynthesizeSpeechInput {
   readonly outputFormat?: ElevenLabsOutputFormat;
   readonly languageCode?: string;
   readonly voiceSettings?: Partial<ElevenLabsVoiceSettings>;
-  readonly approvalGate: VoiceConsentApprovalGate;
+  /**
+   * Server-verifiable approval token issued by a trusted ApprovalAuthority.
+   * Preferred over a caller-asserted `approvalGate` object: the pipeline resolves
+   * and verifies the token server-side (signature, tenant, expiry, revocation).
+   */
+  readonly approvalGateToken?: string;
+  /**
+   * Caller-asserted approval gate. Only honored when the pipeline was explicitly
+   * constructed with `allowCallerAssertedConsent: true` (development/testing only).
+   * Production hosts must issue and pass `approvalGateToken` instead.
+   */
+  readonly approvalGate?: VoiceConsentApprovalGate;
   readonly sourceIds?: readonly string[];
   readonly includeInlinePreview?: boolean;
   /** Rejects synthesis if sanitization had to redact secrets/PII from the approved text (default: true). */
   readonly rejectOnSanitizationMutation?: boolean;
+  /**
+   * Operator resolution for a previous attempt whose paid outcome is unknown
+   * (timeout after dispatch, crash mid-call). "redispatch" explicitly accepts
+   * the risk of a second provider charge; without it the pipeline fails closed
+   * with `idempotency_ambiguous`.
+   */
+  readonly ambiguousResolution?: "redispatch";
 }
 
 export interface SynthesizeSpeechResult {
@@ -339,6 +357,10 @@ export type ElevenLabsErrorCode =
   | "consent_text_mismatch"
   | "consent_voice_mismatch"
   | "consent_rights_unconfirmed"
+  | "consent_untrusted"
+  | "consent_token_invalid"
+  | "consent_revoked"
+  | "consent_tenant_mismatch"
   | "input_invalid"
   | "input_sanitization_blocked"
   | "voice_not_allowed"
@@ -347,6 +369,7 @@ export type ElevenLabsErrorCode =
   | "budget_exhausted"
   | "idempotency_conflict"
   | "idempotency_in_progress"
+  | "idempotency_ambiguous"
   | "credential_missing"
   | "credential_invalid"
   | "endpoint_insecure"

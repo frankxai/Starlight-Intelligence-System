@@ -154,3 +154,19 @@ node packages/elevenlabs/examples/synthesize-approved-text.mjs --dry-run --journ
 # and R2_* credentials; every run is charged against the cost ledger)
 node packages/elevenlabs/examples/synthesize-approved-text.mjs
 ```
+
+## Independent Review Fixes (v0.2 hardening)
+
+The partial independent review of head `5747570` (PR #547) identified three release blockers. All three are addressed:
+
+### 1. Server-Side Consent Resolution (`HmacApprovalAuthority`)
+
+Caller-asserted `approvalGate` objects are no longer trusted by default. Production hosts configure an `ApprovalAuthority` holding a server-side signing key (`STARLIGHT_APPROVAL_SIGNING_KEY`); the consent backend issues a signed token (`v1.<payload>.<hmac>`) binding principal, tenant, purpose, text digest, voice, and expiry. The pipeline verifies the token server-side (constant-time HMAC, tenant binding, expiry, revocation) before any paid call. Adversarially tested: forged signatures, tampered payloads, revoked approvals, cross-tenant replay, cross-run replay, and caller-asserted gates without the explicit `allowCallerAssertedConsent` development opt-in all fail closed.
+
+### 2. Ambiguous Paid-Outcome Handling
+
+The idempotency journal now models the full paid-effect lifecycle: `in_progress` → `dispatched` (persisted BEFORE the provider call, so a crash mid-flight leaves evidence) → `completed` or `ambiguous`. A timeout after acceptance, transport failure, or 5xx marks the key `ambiguous` and provisionally charges the budget (`markUnknownCost`); retrying fails closed with `idempotency_ambiguous` until an operator passes `ambiguousResolution: "redispatch"` (explicitly accepting a possible second charge) or reconciles with the provider. A storage failure AFTER successful synthesis caches the audio bytes in the journal (`<key>.audio`, digest-verified) so the retry re-uploads only — no second provider charge. Tested: timeout-after-acceptance, storage-failure recovery with a single provider call, and crash-mid-dispatch refusal.
+
+### 3. Durable Shared Cost Ledger (`FileSystemCostLedgerStore`)
+
+The in-memory ledger is now explicitly documented as process-local admission control. With a `store`, committed spend, request counts, and unknown-cost provisions persist under an exclusive file lock, so restarts and multi-instance hosts on the same volume enforce the same window ceiling (`hydrate()` on boot). Unknown-cost provisions count against the budget until explicitly reconciled (`reconcileUnknownCost(provisionId, { charged })`) after checking the provider dashboard. Hard caps against the ElevenLabs billing authority remain an external control — the ledger is admission control, not a billing system.

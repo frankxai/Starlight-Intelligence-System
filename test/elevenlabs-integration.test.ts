@@ -8,6 +8,7 @@ import {
   StarlightElevenLabsPipeline,
   createApprovedVoiceConsentGate,
   createStarlightElevenLabsToolSuite,
+  HmacApprovalAuthority,
   toCoreApprovalGateRecord,
   toCoreArtifactRecord,
   toCoreCostRecord,
@@ -47,6 +48,9 @@ describe("ElevenLabs integration core schema conformance & multi-host verificati
       },
     });
 
+    const approvalAuthority = new HmacApprovalAuthority({
+      signingKey: "schema-verification-authority-signing-key-0123456789abcdef",
+    });
     const pipeline = new StarlightElevenLabsPipeline({
       client: {
         apiKey: () => "el_live_schema_verification_key_123456",
@@ -61,6 +65,8 @@ describe("ElevenLabs integration core schema conformance & multi-host verificati
           }),
       },
       storage: r2,
+      approvalAuthority,
+      expectedTenantId: "starlight-main",
     });
 
     const text = "Starlight Intelligence consent-gated ElevenLabs synthesis for FrankX issue 1183.";
@@ -84,12 +90,24 @@ describe("ElevenLabs integration core schema conformance & multi-host verificati
     const suite = createStarlightElevenLabsToolSuite(pipeline);
     assert.equal(suite.toolName, STARLIGHT_ELEVENLABS_TOOL_NAME);
 
+    // Production consent path: the authority issues a signed token after the
+    // user's approval; the pipeline verifies it server-side before synthesis.
+    const approvalGateToken = approvalAuthority.issue({
+      gate,
+      tenantId: "starlight-main",
+      purpose: "frankx-resources-launch",
+    });
+    const coreGateFromToken = await approvalAuthority.verify(approvalGateToken, {
+      expectedTenantId: "starlight-main",
+    });
+    assert.equal(coreGateFromToken.id, gate.id);
+
     const result = await suite.codex.invoke({
       idempotencyKey: "idem-schema-001",
       runId: "run-schema-001",
       text,
       voice: "starlight_architect",
-      approvalGate: gate,
+      approvalGateToken,
       sourceIds: ["issue-1183"],
     });
 

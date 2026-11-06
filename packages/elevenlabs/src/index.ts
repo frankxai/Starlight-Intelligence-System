@@ -1,4 +1,5 @@
 export * from "./contracts.js";
+export * from "./consent.js";
 export * from "./cost.js";
 export * from "./idempotency.js";
 export * from "./client.js";

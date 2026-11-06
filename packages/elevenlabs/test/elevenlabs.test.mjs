@@ -8,6 +8,8 @@ import {
   ELEVENLABS_MODELS,
   ElevenLabsCostLedger,
   ElevenLabsIntegrationError,
+  FileSystemCostLedgerStore,
+  InMemoryApprovalAuthority,
   FileSystemAudioStorageAdapter,
   FileSystemIdempotencyJournal,
   InMemoryAudioStorageAdapter,
@@ -71,6 +73,7 @@ test("end-to-end consent-gated synthesis produces artifact, provenance record, c
     publicBaseUrl: "https://cdn.starlightintelligence.ai",
   });
   const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
     client: options,
     storage,
   });
@@ -136,7 +139,8 @@ test("end-to-end consent-gated synthesis produces artifact, provenance record, c
 
 test("consent gate blocks unapproved status, expired gates, mutated text, unconfirmed rights, and voice mismatch", async () => {
   const { calls, options } = createTestClientOptions();
-  const pipeline = new StarlightElevenLabsPipeline({ client: options });
+  const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true, client: options });
 
   const baseGate = createApprovedVoiceConsentGate({
     id: "gate-consent-001",
@@ -212,7 +216,8 @@ test("consent gate blocks unapproved status, expired gates, mutated text, unconf
 
 test("SanitizationGateway blocks accidental secret or PII leakage before synthesis", async () => {
   const { calls, options } = createTestClientOptions();
-  const pipeline = new StarlightElevenLabsPipeline({ client: options });
+  const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true, client: options });
 
   const textWithEmail = "Contact friemerx@example.com for the system key.";
   const gate = createApprovedVoiceConsentGate({
@@ -244,6 +249,7 @@ test("cost ledger enforces per-request character cap, per-request USD ceiling, a
     maxRequestsPerWindow: 2,
   });
   const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
     client: options,
     costLedger: ledger,
   });
@@ -267,7 +273,7 @@ test("cost ledger enforces per-request character cap, per-request USD ceiling, a
     approvalGate: gate1,
   });
   assert.equal(first.status, "synthesized");
-  assert.equal(ledger.snapshot().committedRequests, 1);
+  assert.equal((await ledger.snapshot()).committedRequests, 1);
 
   // Second request with same size exceeds maxWindowCostUsd ($0.05)
   const gate2 = createApprovedVoiceConsentGate({
@@ -320,6 +326,7 @@ test("filesystem idempotency journal replays identical requests without re-charg
     });
 
     const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
       client: options,
       idempotencyStore: journal,
       storage,
@@ -345,6 +352,7 @@ test("filesystem idempotency journal replays identical requests without re-charg
 
     // Re-instantiate journal from disk and replay identical request
     const pipelineRestarted = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
       client: options,
       idempotencyStore: new FileSystemIdempotencyJournal(join(tempRoot, "journal")),
       storage,
@@ -360,7 +368,7 @@ test("filesystem idempotency journal replays identical requests without re-charg
     assert.equal(replayed.status, "replayed");
     assert.equal(replayed.artifact.sha256, initial.artifact.sha256);
     assert.equal(calls.length, 1);
-    assert.equal(pipeline.costLedger.snapshot().committedRequests, 1);
+    assert.equal((await pipeline.costLedger.snapshot()).committedRequests, 1);
 
     // Conflicting payload on same idempotencyKey must fail closed
     await assert.rejects(
@@ -384,6 +392,7 @@ test("HTTP client retries transient 429 and 503 with Retry-After, and fails fast
   const secretKey = "el_live_super_sensitive_token_do_not_leak";
 
   const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
     client: {
       apiKey: () => secretKey,
       retryPolicy: {
@@ -435,6 +444,7 @@ test("HTTP client retries transient 429 and 503 with Retry-After, and fails fast
   // Non-retryable 401 fails on attempt 1 and never leaks the API key
   let authAttempts = 0;
   const unauthorizedPipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
     client: {
       apiKey: () => secretKey,
       fetchImplementation: async () => {
@@ -479,6 +489,7 @@ test("CloudflareR2StorageAdapter signs PUT requests with AWS SigV4 and generates
 
   const { options } = createTestClientOptions();
   const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
     client: options,
     storage: r2Adapter,
   });
@@ -517,7 +528,8 @@ test("CloudflareR2StorageAdapter signs PUT requests with AWS SigV4 and generates
 
 test("multi-host tool suite exposes working contracts for Claude Code (MCP), Codex, Vercel AI SDK, and ChatGPT Actions", async () => {
   const { options } = createTestClientOptions();
-  const pipeline = new StarlightElevenLabsPipeline({ client: options });
+  const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true, client: options });
   const suite = createStarlightElevenLabsToolSuite(pipeline);
 
   assert.equal(suite.toolName, STARLIGHT_ELEVENLABS_TOOL_NAME);
@@ -628,7 +640,8 @@ test("idempotency stores serialize concurrent writers and fail closed on lock co
     // Completing the filesystem writer makes the result replayable exactly once.
     const { options } = createTestClientOptions();
     const storage = new InMemoryAudioStorageAdapter();
-    const pipeline = new StarlightElevenLabsPipeline({ client: options, storage, idempotencyStore: journal });
+    const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true, client: options, storage, idempotencyStore: journal });
     const gate = createApprovedVoiceConsentGate({
       id: "gate-concurrent-1",
       runId: "run-concurrent-1",
@@ -653,6 +666,362 @@ test("idempotency stores serialize concurrent writers and fail closed on lock co
     });
     assert.equal(replayed.status, "replayed");
     assert.equal(replayed.artifact.sha256, live.artifact.sha256);
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("caller-asserted consent is rejected by default; only signed approval tokens pass in production mode", async () => {
+  const { calls, options } = createTestClientOptions();
+  const gate = createApprovedVoiceConsentGate({
+    id: "gate-untrusted-1",
+    runId: "run-untrusted-1",
+    text: SAMPLE_TEXT,
+    decidedBy: "user:frank",
+  });
+
+  // Default pipeline (no authority, no opt-in): caller-asserted gate fails closed.
+  const strictPipeline = new StarlightElevenLabsPipeline({ client: options });
+  await assert.rejects(
+    strictPipeline.synthesizeSpeech({
+      idempotencyKey: "idem-untrusted-1",
+      runId: "run-untrusted-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_untrusted"
+  );
+
+  // A token without a configured authority also fails closed.
+  await assert.rejects(
+    strictPipeline.synthesizeSpeech({
+      idempotencyKey: "idem-untrusted-1b",
+      runId: "run-untrusted-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: "v1.aaaaaaaaaaaa.bbbbbbbbbbbb",
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_untrusted"
+  );
+
+  // Token without any consent at all fails closed.
+  await assert.rejects(
+    strictPipeline.synthesizeSpeech({
+      idempotencyKey: "idem-untrusted-1c",
+      runId: "run-untrusted-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_required"
+  );
+
+  assert.equal(calls.length, 0);
+});
+
+test("approval authority rejects forged, tampered, revoked, expired, cross-tenant, and cross-run approvals", async () => {
+  const authority = new InMemoryApprovalAuthority();
+  const gate = createApprovedVoiceConsentGate({
+    id: "gate-auth-1",
+    runId: "run-auth-1",
+    text: SAMPLE_TEXT,
+    decidedBy: "user:frank",
+  });
+  const token = authority.issue({ gate, tenantId: "starlight-main" });
+
+  const { calls, options } = createTestClientOptions();
+  const pipeline = new StarlightElevenLabsPipeline({
+    client: options,
+    approvalAuthority: authority,
+    expectedTenantId: "starlight-main",
+  });
+
+  // Forged token (wrong signature) is rejected.
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-auth-forge",
+      runId: "run-auth-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: "v1.Zm9yZ2Vk.wrong-signature",
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_token_invalid"
+  );
+
+  // Tampered payload (gate text swapped) breaks the signature.
+  const tamperedGate = { ...gate, approvedTextSha256: sha256Hex("different approved text") };
+  const tamperedToken = new InMemoryApprovalAuthority().issue({ gate: tamperedGate, tenantId: "starlight-main" });
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-auth-tamper",
+      runId: "run-auth-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: tamperedToken,
+    }),
+    err =>
+      err instanceof ElevenLabsIntegrationError &&
+      ["consent_token_invalid", "consent_text_mismatch"].includes(err.code)
+  );
+
+  // Cross-tenant replay: a validly-signed token issued for another tenant is rejected.
+  const crossTenantToken = authority.issue({ gate, tenantId: "other-tenant" });
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-auth-tenant",
+      runId: "run-auth-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: crossTenantToken,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_tenant_mismatch"
+  );
+
+  // Revoked approval is rejected even with a valid signature.
+  const revokeAuthority = new InMemoryApprovalAuthority();
+  const revocableToken = revokeAuthority.issue({ gate, tenantId: "starlight-main" });
+  revokeAuthority.revoke(gate.id);
+  const revokedPipeline = new StarlightElevenLabsPipeline({
+    client: options,
+    approvalAuthority: revokeAuthority,
+    expectedTenantId: "starlight-main",
+  });
+  await assert.rejects(
+    revokedPipeline.synthesizeSpeech({
+      idempotencyKey: "idem-auth-revoke",
+      runId: "run-auth-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: revocableToken,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_revoked"
+  );
+
+  // Cross-run replay: gate bound to a different runId is rejected.
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-auth-crossrun",
+      runId: "run-auth-OTHER",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGateToken: token,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "consent_not_approved"
+  );
+
+  // Valid token in a valid run synthesizes exactly once.
+  const ok = await pipeline.synthesizeSpeech({
+    idempotencyKey: "idem-auth-ok",
+    runId: "run-auth-1",
+    text: SAMPLE_TEXT,
+    voice: "starlight_architect",
+    approvalGateToken: token,
+  });
+  assert.equal(ok.status, "synthesized");
+  assert.equal(calls.length, 1);
+});
+
+test("timeout after paid dispatch fails closed: retry is blocked until explicit operator resolution", async () => {
+  // Simulates a request that was accepted but whose response never arrives
+  // on the first dispatch; the re-dispatch after operator resolution succeeds.
+  let dispatchCount = 0;
+  const fetchImplementation = async () => {
+    dispatchCount += 1;
+    if (dispatchCount === 1) {
+      return new Promise((_resolve, reject) => {
+        setTimeout(() => reject(new Error("socket hang up")), 5);
+      });
+    }
+    return new Response(SAMPLE_AUDIO, { status: 200, headers: { "content-type": "audio/mpeg" } });
+  };
+  const { options } = createTestClientOptions({
+    fetchImplementation,
+    retryPolicy: { maxAttempts: 1, sleep: async () => {} },
+  });
+  const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
+    client: options,
+  });
+  const gate = createApprovedVoiceConsentGate({
+    id: "gate-ambiguous-1",
+    runId: "run-ambiguous-1",
+    text: SAMPLE_TEXT,
+    decidedBy: "user:frank",
+  });
+
+  // The dispatch fails with a transport error: outcome may be charged.
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-ambiguous-1",
+      runId: "run-ambiguous-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "provider_unavailable"
+  );
+
+  // Retry without resolution fails closed.
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-ambiguous-1",
+      runId: "run-ambiguous-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "idempotency_ambiguous"
+  );
+
+  // Explicit operator resolution allows a re-dispatch.
+  const resolved = await pipeline.synthesizeSpeech({
+    idempotencyKey: "idem-ambiguous-1",
+    runId: "run-ambiguous-1",
+    text: SAMPLE_TEXT,
+    voice: "starlight_architect",
+    approvalGate: gate,
+    ambiguousResolution: "redispatch",
+  });
+  assert.equal(resolved.status, "synthesized");
+});
+
+test("storage failure after successful synthesis is recovered from the cached audio without a second provider charge", async () => {
+  const transportCalls = [];
+  const fetchImplementation = async () => {
+    transportCalls.push(Date.now());
+    return new Response(SAMPLE_AUDIO, { status: 200, headers: { "content-type": "audio/mpeg" } });
+  };
+  const { options } = createTestClientOptions({ fetchImplementation });
+  let storageBroken = true;
+  const goodAudio = new Map();
+  const flakyStorage = {
+    putAudioAndSidecar: async (asset, sidecarKey, provenance) => {
+      if (storageBroken) {
+        throw new ElevenLabsIntegrationError("storage_failed", "simulated R2 outage");
+      }
+      goodAudio.set(asset.objectKey, asset.audioBytes);
+      return {
+        uri: `r2://starlight-voice-vault/${asset.objectKey}`,
+        playbackUrl: `https://cdn.starlightintelligence.ai/${asset.objectKey}`,
+        sidecarUri: `r2://starlight-voice-vault/${sidecarKey}`,
+        sha256: asset.sha256,
+        sizeBytes: asset.audioBytes.byteLength,
+      };
+    },
+  };
+  const pipeline = new StarlightElevenLabsPipeline({
+    allowCallerAssertedConsent: true,
+    client: options,
+    storage: flakyStorage,
+  });
+  const gate = createApprovedVoiceConsentGate({
+    id: "gate-storage-1",
+    runId: "run-storage-1",
+    text: SAMPLE_TEXT,
+    decidedBy: "user:frank",
+  });
+
+  // First attempt: synthesis succeeds, storage fails.
+  await assert.rejects(
+    pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-storage-1",
+      runId: "run-storage-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    }),
+    err => err instanceof ElevenLabsIntegrationError && err.code === "storage_failed"
+  );
+  assert.equal(transportCalls.length, 1);
+
+  // Retry with storage repaired: completes from cached audio — provider NOT called again.
+  storageBroken = false;
+  const recovered = await pipeline.synthesizeSpeech({
+    idempotencyKey: "idem-storage-1",
+    runId: "run-storage-1",
+    text: SAMPLE_TEXT,
+    voice: "starlight_architect",
+    approvalGate: gate,
+  });
+  assert.equal(recovered.status, "synthesized");
+  assert.equal(transportCalls.length, 1);
+  assert.ok(verifyVoiceProvenanceRecord(recovered.provenance));
+});
+
+test("durable cost ledger persists window budgets across restarts and reconciles unknown costs", async () => {
+  const tempRoot = mkdtempSync(join(tmpdir(), "starlight-el-costledger-"));
+  try {
+    const store = new FileSystemCostLedgerStore(join(tempRoot, "ledger"));
+    const policy = {
+      maxCostUsdPerRequest: 0.05,
+      maxWindowCostUsd: 0.05,
+      maxRequestsPerWindow: 10,
+      store,
+    };
+
+    const { options } = createTestClientOptions();
+    const firstInstance = new StarlightElevenLabsPipeline({
+      allowCallerAssertedConsent: true,
+      client: options,
+      costLedger: policy,
+    });
+    const gate = createApprovedVoiceConsentGate({
+      id: "gate-durable-1",
+      runId: "run-durable-1",
+      text: SAMPLE_TEXT,
+      decidedBy: "user:frank",
+    });
+    const first = await firstInstance.synthesizeSpeech({
+      idempotencyKey: "idem-durable-1",
+      runId: "run-durable-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    });
+    assert.equal(first.status, "synthesized");
+
+    // A "restart": a brand-new pipeline and ledger sharing the same durable store.
+    const restartedLedger = new ElevenLabsCostLedger(policy);
+    await restartedLedger.hydrate();
+    const restarted = new StarlightElevenLabsPipeline({
+      allowCallerAssertedConsent: true,
+      client: options,
+      costLedger: restartedLedger,
+    });
+    const snapshot = await restartedLedger.snapshot();
+    assert.equal(snapshot.durable, true);
+    assert.equal(snapshot.committedRequests, 1);
+
+    // The persisted spend still counts against the window budget on the new instance.
+    await assert.rejects(
+      restarted.synthesizeSpeech({
+        idempotencyKey: "idem-durable-2",
+        runId: "run-durable-2",
+        text: SAMPLE_TEXT,
+        voice: "starlight_architect",
+        approvalGate: createApprovedVoiceConsentGate({
+          id: "gate-durable-2",
+          runId: "run-durable-2",
+          text: SAMPLE_TEXT,
+          decidedBy: "user:frank",
+        }),
+      }),
+      err => err instanceof ElevenLabsIntegrationError && err.code === "budget_exhausted"
+    );
+
+    // Unknown-cost provision counts against the budget and reconciles explicitly.
+    const provision = await restartedLedger.markUnknownCost({
+      idempotencyKey: "idem-durable-unknown",
+      runId: "run-durable-2",
+      stepId: "tts-idem-durable-unknown",
+      costUsd: 0.001,
+      note: "test provision",
+    });
+    let afterProvision = await restartedLedger.snapshot();
+    assert.equal(afterProvision.unknownCostProvisionsUsd, 0.001);
+    await restartedLedger.reconcileUnknownCost(provision.id, { charged: false });
+    afterProvision = await restartedLedger.snapshot();
+    assert.equal(afterProvision.unknownCostProvisionsUsd, 0);
   } finally {
     rmSync(tempRoot, { recursive: true, force: true });
   }

@@ -27,6 +27,7 @@
 import {
   CloudflareR2StorageAdapter,
   FileSystemIdempotencyJournal,
+  HmacApprovalAuthority,
   InMemoryAudioStorageAdapter,
   InMemoryIdempotencyStore,
   STARLIGHT_ELEVENLABS_VOICES,
@@ -65,8 +66,25 @@ const approvalGate = createApprovedVoiceConsentGate({
   reason: "Example narration approved for the FrankX Resources ElevenLabs launch slice (#1183).",
 });
 
+// 2. A server-side authority (holding the signing key) issues a signed token for
+//    that approval. The tool caller can present the token but cannot forge one.
+//    In production the signing key (STARLIGHT_APPROVAL_SIGNING_KEY) lives only
+//    in the consent backend; here we simulate that backend locally.
+const approvalAuthority = new HmacApprovalAuthority({
+  signingKey: "example-local-authority-signing-key-0123456789abcdef",
+});
+const approvalGateToken = approvalAuthority.issue({
+  gate: approvalGate,
+  tenantId: "starlight-main",
+  purpose: "frankx-resources-launch",
+});
+
 // 2. Assemble the pipeline. In dry-run mode a stubbed transport replaces ElevenLabs.
 const pipeline = new StarlightElevenLabsPipeline({
+  // Server-side verification of the signed approval token (production consent path).
+  approvalAuthority,
+  expectedTenantId: "starlight-main",
+  expectedPurpose: "frankx-resources-launch",
   ...(dryRun
     ? {
         client: {
@@ -99,7 +117,7 @@ const result = await pipeline.synthesizeSpeech({
   runId: "run-example-001",
   text: TEXT,
   voice: "starlight_architect",
-  approvalGate,
+  approvalGateToken,
   sourceIds: ["frankx-1183"],
 });
 
@@ -119,7 +137,7 @@ const replay = await pipeline.synthesizeSpeech({
   runId: "run-example-001",
   text: TEXT,
   voice: "starlight_architect",
-  approvalGate,
+  approvalGateToken,
   sourceIds: ["frankx-1183"],
 });
 console.log(`\n[replay]     status=${replay.status} (expected "replayed", no second charge)`);
