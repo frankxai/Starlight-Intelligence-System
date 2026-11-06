@@ -137,3 +137,20 @@ const codexResult = await suite.codex.invoke({
 });
 // codexResult.status === "replayed" (deduplicated by FileSystemIdempotencyJournal)
 ```
+
+## Runnable Example
+
+A complete, self-contained example lives at `packages/elevenlabs/examples/synthesize-approved-text.mjs`. It walks the entire workflow — consent gate, cost estimate, synthesis, storage, provenance verification, playable preview, and zero-cost replay — and can run with no credentials:
+
+```bash
+# Safe: stubbed transport, in-memory storage, no network, no cost
+pnpm --filter @starlight-intelligence/elevenlabs run build
+node packages/elevenlabs/examples/synthesize-approved-text.mjs --dry-run
+
+# Durable: persist the idempotency journal across restarts
+node packages/elevenlabs/examples/synthesize-approved-text.mjs --dry-run --journal /var/lib/starlight/voice-journal
+
+# Live: real ElevenLabs synthesis into Cloudflare R2 (requires ELEVENLABS_API_KEY
+# and R2_* credentials; every run is charged against the cost ledger)
+node packages/elevenlabs/examples/synthesize-approved-text.mjs
+```

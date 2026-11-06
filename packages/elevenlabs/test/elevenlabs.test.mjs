@@ -11,6 +11,7 @@ import {
   FileSystemAudioStorageAdapter,
   FileSystemIdempotencyJournal,
   InMemoryAudioStorageAdapter,
+  InMemoryIdempotencyStore,
   STARLIGHT_ELEVENLABS_TOOL_NAME,
   STARLIGHT_ELEVENLABS_VOICES,
   StarlightElevenLabsPipeline,
@@ -576,4 +577,83 @@ test("multi-host tool suite exposes working contracts for Claude Code (MCP), Cod
   });
   const chatGptRes = await suite.chatGpt.executeActionEnvelope(JSON.stringify(envelope));
   assert.equal(chatGptRes.status, "synthesized");
+});
+
+test("idempotency stores serialize concurrent writers and fail closed on lock contention", async () => {
+  const tempRoot = mkdtempSync(join(tmpdir(), "starlight-el-concurrency-"));
+  try {
+    const journal = new FileSystemIdempotencyJournal(join(tempRoot, "journal"));
+    const fingerprint = sha256Hex("concurrent-request-payload");
+
+    // First writer acquires the exclusive journal lock.
+    const first = await journal.acquireOrInspect("idem-concurrent-1", fingerprint);
+    assert.equal(first.status, "acquired");
+
+    // A second writer with the same key and identical payload must fail closed,
+    // never silently double-charging or racing the first writer's completion.
+    await assert.rejects(
+      () => journal.acquireOrInspect("idem-concurrent-1", fingerprint),
+      (error) =>
+        error instanceof ElevenLabsIntegrationError &&
+        error.code === "idempotency_in_progress"
+    );
+
+    // A mutated payload under the same key is a conflict, not a retry.
+    await assert.rejects(
+      () => journal.acquireOrInspect("idem-concurrent-1", sha256Hex("mutated-payload")),
+      (error) =>
+        error instanceof ElevenLabsIntegrationError &&
+        error.code === "idempotency_conflict"
+    );
+
+    // The in-memory store enforces the same invariants for single-process hosts.
+    const memory = new InMemoryIdempotencyStore();
+    const memoryFirst = await memory.acquireOrInspect("idem-concurrent-2", fingerprint);
+    assert.equal(memoryFirst.status, "acquired");
+    await assert.rejects(
+      () => memory.acquireOrInspect("idem-concurrent-2", fingerprint),
+      (error) =>
+        error instanceof ElevenLabsIntegrationError &&
+        error.code === "idempotency_in_progress"
+    );
+
+    // Releasing on failure frees the key for a clean retry.
+    await memoryFirst.releaseOnFailure();
+    const retried = await memory.acquireOrInspect("idem-concurrent-2", fingerprint);
+    assert.equal(retried.status, "acquired");
+
+    // Release the filesystem writer's lock so the pipeline below starts clean.
+    await first.releaseOnFailure();
+
+    // Completing the filesystem writer makes the result replayable exactly once.
+    const { options } = createTestClientOptions();
+    const storage = new InMemoryAudioStorageAdapter();
+    const pipeline = new StarlightElevenLabsPipeline({ client: options, storage, idempotencyStore: journal });
+    const gate = createApprovedVoiceConsentGate({
+      id: "gate-concurrent-1",
+      runId: "run-concurrent-1",
+      text: SAMPLE_TEXT,
+      decidedBy: "user:frank",
+      approvedVoiceId: "starlight_architect",
+    });
+    const live = await pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-concurrent-1",
+      runId: "run-concurrent-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    });
+    assert.equal(live.status, "synthesized");
+    const replayed = await pipeline.synthesizeSpeech({
+      idempotencyKey: "idem-concurrent-1",
+      runId: "run-concurrent-1",
+      text: SAMPLE_TEXT,
+      voice: "starlight_architect",
+      approvalGate: gate,
+    });
+    assert.equal(replayed.status, "replayed");
+    assert.equal(replayed.artifact.sha256, live.artifact.sha256);
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
 });
