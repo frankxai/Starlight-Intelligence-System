@@ -22,7 +22,7 @@ async function main() {
   console.log(`Target:           ${target}`);
   console.log(`Langfuse Cloud:   ${diag.baseUrl} (${diag.region})`);
   console.log(`Telemetry Active: ${diag.active ? 'YES (connected)' : 'NO (offline mock mode)'}`);
-  console.log(`Substrate:        SIP-v8.3.0 (${diag.release})`);
+  console.log(`Substrate:        SIP-${diag.release}`);
   console.log('───────────────────────────────────────────────────────────\n');
 
   const start = Date.now();

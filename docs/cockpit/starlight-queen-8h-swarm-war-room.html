@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Starlight Queen — 8h Autonomous Shift &amp; Jules Fleet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #08090a;
+      --bg-surface: #0e1013;
+      --bg-elevated: #131519;
+      --bg-hover: #181b20;
+      --bg-active: #1d2026;
+      --border-hairline: rgba(255, 255, 255, 0.065);
+      --border-subtle: rgba(255, 255, 255, 0.1);
+      --border-focus: rgba(94, 106, 210, 0.55);
+      --specular-top: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+
+      --text-primary: #f4f5f8;
+      --text-secondary: #8a8f98;
+      --text-muted: #575c66;
+
+      --accent-indigo: #5e6ad2;
+      --accent-indigo-glow: rgba(94, 106, 210, 0.16);
+      --status-green: #27a644;
+      --status-green-text: #4cc38a;
+      --status-amber: #f59e0b;
+      --status-amber-text: #f9b84a;
+      --status-red: #e5484d;
+      --status-red-text: #ff6369;
+      --status-cyan: #00b8d9;
+      --status-purple: #9b6dff;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, monospace;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-canvas);
+      background-image:
+        radial-gradient(ellipse 70% 35% at 50% -10%, rgba(94, 106, 210, 0.11), transparent),
+        radial-gradient(ellipse 40% 25% at 85% 5%, rgba(0, 184, 217, 0.05), transparent);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: 64px;
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    /* Top Chrome Bar (Linear Style) */
+    .topbar {
+      height: 48px;
+      border-bottom: 1px solid var(--border-hairline);
+      background: rgba(8, 9, 10, 0.84);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #5e6ad2 0%, #3b438c 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 2px 8px rgba(94, 106, 210, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .breadcrumb-title {
+      color: var(--text-primary);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .breadcrumb-sep {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .telemetry-cluster {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .stat-chip strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      position: relative;
+    }
+    .pulse-dot.green { background: var(--status-green-text); box-shadow: 0 0 8px var(--status-green-text); }
+    .pulse-dot.amber { background: var(--status-amber-text); box-shadow: 0 0 8px var(--status-amber-text); }
+    .pulse-dot.indigo { background: var(--accent-indigo); box-shadow: 0 0 8px var(--accent-indigo); }
+    .pulse-dot.red { background: var(--status-red-text); box-shadow: 0 0 8px var(--status-red-text); }
+
+    /* Main Container */
+    .shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 24px 0;
+    }
+
+    /* Hero Strip */
+    .hero-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero-strip h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .hero-strip p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      max-width: 680px;
+    }
+
+    /* Segmented View Switcher */
+    .segmented-nav {
+      display: inline-flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 24px;
+      box-shadow: var(--specular-top);
+    }
+
+    .seg-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 6px 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.14s var(--ease-out);
+    }
+
+    .seg-btn svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.72;
+    }
+
+    .seg-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .seg-btn.active {
+      background: var(--bg-active);
+      color: var(--text-primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .seg-btn.active svg {
+      opacity: 1;
+      color: var(--accent-indigo);
+    }
+
+    .view-pane { display: none; animation: fadeUp 0.18s var(--ease-out); }
+    .view-pane.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* KPI Strip (Minimal Linear Metric Blocks) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      box-shadow: var(--specular-top);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .kpi-cell {
+      padding: 18px 20px;
+      border-right: 1px solid var(--border-hairline);
+    }
+    .kpi-cell:last-child { border-right: none; }
+
+    .kpi-label {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .kpi-meta {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Living Topology Canvas */
+    .substrate-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      box-shadow: var(--specular-top);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .substrate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .substrate-header h2 {
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .substrate-header span {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Animated SVG Dataflow */
+    .signal-line {
+      stroke-dasharray: 6 6;
+      animation: flowDash 16s linear infinite;
+    }
+    @keyframes flowDash {
+      to { stroke-dashoffset: -240; }
+    }
+
+    /* Linear-Style Issue List */
+    .list-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      box-shadow: var(--specular-top);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .list-toolbar {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .filter-pill:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
+
+    .filter-pill.active {
+      color: var(--text-primary);
+      background: var(--bg-active);
+      border-color: var(--border-subtle);
+    }
+
+    .issue-row {
+      border-bottom: 1px solid var(--border-hairline);
+      transition: background 0.12s ease;
+    }
+    .issue-row:last-child { border-bottom: none; }
+    .issue-row:hover { background: var(--bg-hover); }
+
+    .issue-summary {
+      display: grid;
+      grid-template-columns: 28px 74px 98px 1fr auto auto 72px;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 960px) {
+      .issue-summary {
+        grid-template-columns: 24px 70px 1fr auto;
+      }
+      .hide-sm { display: none; }
+    }
+
+    .issue-id {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .pillar-tag {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.02);
+      text-align: center;
+      width: fit-content;
+    }
+
+    .issue-title {
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .repo-label {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .worker-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+    }
+
+    .worker-chip.jules { color: #b494ff; border-color: rgba(155, 109, 255, 0.25); background: rgba(155, 109, 255, 0.07); }
+    .worker-chip.codex { color: #56ccf2; border-color: rgba(0, 184, 217, 0.25); background: rgba(0, 184, 217, 0.07); }
+    .worker-chip.claude { color: #4cc38a; border-color: rgba(39, 166, 68, 0.25); background: rgba(39, 166, 68, 0.07); }
+    .worker-chip.agy { color: #f9b84a; border-color: rgba(245, 158, 11, 0.25); background: rgba(245, 158, 11, 0.07); }
+
+    .btn-ghost {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-hairline);
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+      background: var(--bg-active);
+    }
+
+    /* Progressive Disclosure Drawer */
+    .issue-drawer {
+      display: none;
+      padding: 12px 16px 16px 56px;
+      background: rgba(0, 0, 0, 0.24);
+      border-top: 1px solid var(--border-hairline);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+    .issue-row.open .issue-drawer {
+      display: block;
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 780px) { .drawer-grid { grid-template-columns: 1fr; } }
+
+    .cmd-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #060708;
+      border: 1px solid var(--border-hairline);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #d0d6e0;
+      margin-top: 8px;
+    }
+
+    /* Split Cards for Diagnosis & Pillars */
+    .bento-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .bento-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 920px) {
+      .bento-2, .bento-3 { grid-template-columns: 1fr; }
+    }
+
+    .bento-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--specular-top);
+    }
+
+    .bento-card h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .bento-card p.desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .clean-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .clean-list li strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .mono-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-primary);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Linear-style Chrome Bar -->
+  <header class="topbar">
+    <div class="breadcrumb">
+      <div class="brand-mark">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <span>Starlight</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-title">Queen 8-Hour Autonomous Shift &amp; Jules Fleet</span>
+    </div>
+
+    <div class="telemetry-cluster tabular">
+      <div class="stat-chip">
+        <span class="pulse-dot green"></span>
+        <span>Eval-50</span>
+        <strong>50/50</strong>
+      </div>
+      <div class="stat-chip">
+        <span class="pulse-dot green"></span>
+        <span>Org Governance</span>
+        <strong>9/9</strong>
+      </div>
+      <div class="stat-chip">
+        <span class="pulse-dot indigo"></span>
+        <span>Jules + Cloud Bypass</span>
+        <strong>20/20 Admitted</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <!-- Hero Header -->
+    <div class="hero-strip">
+      <div>
+        <h1>Autonomous Corporation &amp; Cloud Swarm Architecture</h1>
+        <p>Zero-RAM cloud overflow routing across Google Jules, OpenAI Codex Cloud, and local high-judgment pods. Click any execution card to inspect its contract and command.</p>
+      </div>
+    </div>
+
+    <!-- Segmented Control -->
+    <nav class="segmented-nav" role="tablist">
+      <button class="seg-btn active" onclick="setView('view-board', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        8-Hour Shift Board (20)
+      </button>
+      <button class="seg-btn" onclick="setView('view-topology', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Living Topology &amp; C-Suite
+      </button>
+      <button class="seg-btn" onclick="setView('view-pillars', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        5 Pillars &amp; Product Ladder
+      </button>
+      <button class="seg-btn" onclick="setView('view-diagnosis', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Root-Cause Diagnosis &amp; PR Stack
+      </button>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 1: 8-HOUR SHIFT BOARD (LINEAR ISSUE ROWS + LIVING TOPOLOGY)    -->
+    <!-- =================================================================== -->
+    <section id="view-board" class="view-pane active">
+      <!-- Minimal 4-Cell KPI Strip -->
+      <div class="kpi-grid tabular">
+        <div class="kpi-cell">
+          <div class="kpi-label">
+            <span>Shift Execution Cards</span>
+            <span class="pulse-dot indigo"></span>
+          </div>
+          <div class="kpi-value">20 / 20</div>
+          <div class="kpi-meta">4 Waves × 2h · Maker != Checker</div>
+        </div>
+        <div class="kpi-cell">
+          <div class="kpi-label">
+            <span>Zero-RAM Cloud Fleet</span>
+            <span class="pulse-dot green"></span>
+          </div>
+          <div class="kpi-value">11 Cards</div>
+          <div class="kpi-meta">7 Google Jules + 4 Codex Cloud (0 MB local)</div>
+        </div>
+        <div class="kpi-cell">
+          <div class="kpi-label">
+            <span>Held Queue Unblocked</span>
+            <span class="pulse-dot amber"></span>
+          </div>
+          <div class="kpi-value">18 Cards</div>
+          <div class="kpi-meta">_hold-admission routed via RAM bypass</div>
+        </div>
+        <div class="kpi-cell">
+          <div class="kpi-label">
+            <span>Foundation PR Stack</span>
+            <span class="pulse-dot green"></span>
+          </div>
+          <div class="kpi-value">6 Ready</div>
+          <div class="kpi-meta">#362, #80, #54, #1067, #275, #451</div>
+        </div>
+      </div>
+
+      <!-- Linear Issue List -->
+      <div class="list-container">
+        <div class="list-toolbar">
+          <div class="filter-group">
+            <button class="filter-pill active" onclick="filterWave('all', this)">All Waves (20)</button>
+            <button class="filter-pill" onclick="filterWave('1', this)">Wave 1 · 0–2h Foundations</button>
+            <button class="filter-pill" onclick="filterWave('2', this)">Wave 2 · 2–4h Products &amp; Story</button>
+            <button class="filter-pill" onclick="filterWave('3', this)">Wave 3 · 4–6h Pipelines &amp; Jules</button>
+            <button class="filter-pill" onclick="filterWave('4', this)">Wave 4 · 6–8h QA &amp; Handover</button>
+          </div>
+          <div class="filter-group">
+            <button class="filter-pill" onclick="filterWorker('jules', this)">Google Jules (7)</button>
+            <button class="filter-pill" onclick="filterWorker('codex-cloud', this)">Codex Cloud (4)</button>
+            <button class="filter-pill" onclick="filterWorker('claude-code-lead', this)">Claude Lead (4)</button>
+          </div>
+        </div>
+
+        <div id="issue-list"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 2: LIVING TOPOLOGY & C-SUITE                                   -->
+    <!-- =================================================================== -->
+    <section id="view-topology" class="view-pane">
+      <div class="substrate-card">
+        <div class="substrate-header">
+          <h2>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5e6ad2" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Living Dispatch Substrate — RAM-Aware Cloud &amp; Jules Bypass
+          </h2>
+          <span>queen-jules-shift-dispatcher.mjs · forbiddenFreeData enforced</span>
+        </div>
+
+        <svg viewBox="0 0 1200 280" width="100%" height="280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Animated Signal Paths -->
+          <path d="M 230 140 C 275 140, 275 55, 325 55" fill="none" stroke="rgba(155, 109, 255, 0.45)" stroke-width="1.5" class="signal-line"/>
+          <path d="M 230 140 L 325 140" fill="none" stroke="rgba(0, 184, 217, 0.45)" stroke-width="1.5" class="signal-line"/>
+          <path d="M 230 140 C 275 140, 275 225, 325 225" fill="none" stroke="rgba(76, 195, 138, 0.45)" stroke-width="1.5" class="signal-line"/>
+
+          <path d="M 635 55 C 685 55, 685 140, 735 140" fill="none" stroke="rgba(155, 109, 255, 0.45)" stroke-width="1.5" class="signal-line"/>
+          <path d="M 635 140 L 735 140" fill="none" stroke="rgba(0, 184, 217, 0.45)" stroke-width="1.5" class="signal-line"/>
+          <path d="M 635 225 C 685 225, 685 140, 735 140" fill="none" stroke="rgba(76, 195, 138, 0.45)" stroke-width="1.5" class="signal-line"/>
+
+          <path d="M 955 140 L 1015 140" fill="none" stroke="rgba(94, 106, 210, 0.6)" stroke-width="1.5" class="signal-line"/>
+
+          <!-- Node 1: Queen Chair -->
+          <rect x="16" y="52" width="214" height="176" rx="8" fill="#111316" stroke="rgba(255,255,255,0.1)"/>
+          <circle cx="34" cy="76" r="4" fill="#5e6ad2"/>
+          <text x="46" y="80" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12.5">Queen Chair Router</text>
+          <text x="30" y="102" fill="#8a8f98" font-family="JetBrains Mono, monospace" font-size="11">15m pulse · 18 held cards</text>
+          <text x="30" y="128" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">1. Classifies data safety</text>
+          <text x="30" y="148" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">2. Checks local RAM floor</text>
+          <text x="30" y="168" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">3. Bypasses &lt;4GB to Cloud</text>
+          <text x="30" y="198" fill="#4cc38a" font-family="JetBrains Mono, monospace" font-size="10.5">0 local stall · 100% admitted</text>
+
+          <!-- Lane A: Google Jules -->
+          <rect x="325" y="18" width="310" height="74" rx="8" fill="#111316" stroke="rgba(155, 109, 255, 0.3)"/>
+          <circle cx="343" cy="40" r="4" fill="#9b6dff"/>
+          <text x="355" y="44" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12">Google Jules Remote Fleet (0 MB Local)</text>
+          <text x="343" y="64" fill="#8a8f98" font-family="JetBrains Mono, monospace" font-size="11">jules remote new --repo &lt;org/repo&gt;</text>
+          <text x="343" y="81" fill="#575c66" font-family="Inter, sans-serif" font-size="11">4 concurrent cloud VMs · Public/non-secret PRs</text>
+
+          <!-- Lane B: Codex Cloud -->
+          <rect x="325" y="103" width="310" height="74" rx="8" fill="#111316" stroke="rgba(0, 184, 217, 0.3)"/>
+          <circle cx="343" cy="125" r="4" fill="#00b8d9"/>
+          <text x="355" y="129" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12">OpenAI Codex Cloud (0 MB Local)</text>
+          <text x="343" y="149" fill="#8a8f98" font-family="JetBrains Mono, monospace" font-size="11">codex cloud exec --env &lt;ID&gt; --branch</text>
+          <text x="343" y="166" fill="#575c66" font-family="Inter, sans-serif" font-size="11">Downloadable product kits &amp; multi-file pipelines</text>
+
+          <!-- Lane C: Claude / Antigravity Lead -->
+          <rect x="325" y="188" width="310" height="74" rx="8" fill="#111316" stroke="rgba(39, 166, 68, 0.3)"/>
+          <circle cx="343" cy="210" r="4" fill="#4cc38a"/>
+          <text x="355" y="214" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12">Claude Code &amp; Antigravity Lead Pod</text>
+          <text x="343" y="234" fill="#8a8f98" font-family="JetBrains Mono, monospace" font-size="11">In-session zero-spawn execution</text>
+          <text x="343" y="251" fill="#575c66" font-family="Inter, sans-serif" font-size="11">Canon-locked narrative, checkout gates &amp; PR merges</text>
+
+          <!-- Node 3: Maker != Checker -->
+          <rect x="735" y="64" width="220" height="152" rx="8" fill="#111316" stroke="rgba(245, 158, 11, 0.3)"/>
+          <circle cx="753" cy="88" r="4" fill="#f9b84a"/>
+          <text x="765" y="92" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12.5">Maker != Checker Gate</text>
+          <text x="753" y="114" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• Cross-provider code review</text>
+          <text x="753" y="134" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• Santa Crown taste audit</text>
+          <text x="753" y="154" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• Eval-50 &amp; CI verification</text>
+          <text x="753" y="184" fill="#f9b84a" font-family="JetBrains Mono, monospace" font-size="10.5">Requires DONE-CONDITION</text>
+
+          <!-- Node 4: Ship & Vault -->
+          <rect x="1015" y="64" width="170" height="152" rx="8" fill="#111316" stroke="rgba(94, 106, 210, 0.4)"/>
+          <circle cx="1033" cy="88" r="4" fill="#4cc38a"/>
+          <text x="1045" y="92" fill="#f4f5f8" font-family="Inter, sans-serif" font-weight="600" font-size="12.5">Ship &amp; Compound</text>
+          <text x="1033" y="114" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• Vercel Production</text>
+          <text x="1033" y="134" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• SIS JSONL Vaults</text>
+          <text x="1033" y="154" fill="#8a8f98" font-family="Inter, sans-serif" font-size="11.5">• Hub Ledger Receipt</text>
+          <text x="1033" y="184" fill="#5e6ad2" font-family="JetBrains Mono, monospace" font-size="10.5">Built on SIP</text>
+        </svg>
+      </div>
+
+      <div class="bento-3">
+        <div class="bento-card">
+          <h3><span class="pulse-dot indigo"></span>CAEO · Execution &amp; Cloud Fleet</h3>
+          <p class="desc">Owns the 15m Queen pulse, RAM-bypass admission, and `_hold-admission` queue drain.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">Primary</span><div>Antigravity + <code>queen-chair.mjs</code></div></li>
+            <li><span class="mono-tag">Burst</span><div>Google Jules (4 VMs) + Codex Cloud</div></li>
+          </ul>
+        </div>
+        <div class="bento-card">
+          <h3><span class="pulse-dot green"></span>CPO · Products &amp; Surfaces</h3>
+          <p class="desc">Ships downloadable starter kits (`$1`, `$7`, `$27`, `$47`, `$97`, `$497`) and Observatory telemetry.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">Primary</span><div>Codex Cloud + Google Jules</div></li>
+            <li><span class="mono-tag">Checker</span><div>Claude Code + Vercel Preview</div></li>
+          </ul>
+        </div>
+        <div class="bento-card">
+          <h3><span class="pulse-dot amber"></span>CCO · Story, Media &amp; Taste</h3>
+          <p class="desc">Unifies FrankX, GenCreator, Arcanea, and Starlight narrative with zero prestige slop.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">Primary</span><div>Claude Opus 4.7 / Sonnet 4.6</div></li>
+            <li><span class="mono-tag">Checker</span><div>Grok 4.5 Santa Crown Gate</div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 3: 5 PILLARS & PRODUCT LADDER                                  -->
+    <!-- =================================================================== -->
+    <section id="view-pillars" class="view-pane">
+      <div class="bento-2">
+        <div class="bento-card">
+          <h3>Pillar 1 · Four-Brand Story Coherence</h3>
+          <p class="desc">One sovereign substrate powering four distinct builder entry points.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">frankx.ai</span><div><strong>AI Architect Hub:</strong> Flagship research, Compute Atlas, Suno lab, and digital product store.</div></li>
+            <li><span class="mono-tag">gencreator.ai</span><div><strong>GenCreator OS:</strong> Open <code>reality.md</code> standard, skills libraries, and creator systems.</div></li>
+            <li><span class="mono-tag">arcanea.ai</span><div><strong>Creative Mythos:</strong> Ten Gates progression, Luminor companions, and world-building (`CANON_LOCKED`).</div></li>
+            <li><span class="mono-tag">starlight</span><div><strong>Sovereign Substrate (SIP/SIS):</strong> 6-vault hybrid memory engine and multi-agent governance.</div></li>
+          </ul>
+        </div>
+
+        <div class="bento-card">
+          <h3>Pillar 5 · Self-Serve Digital Product Ladder</h3>
+          <p class="desc">100% asynchronous digital fulfillment (`0%` 1:1 consulting).</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">Free</span><div><code>reality.md</code> spec, <code>mcp-doctor</code> CLI, and <code>claude-skills-library</code>.</div></li>
+            <li><span class="mono-tag">$1</span><div><strong>reality.md Starter Pack:</strong> Annotated template, 5-invariant checklist, and <code>AGENTS.md</code> starter.</div></li>
+            <li><span class="mono-tag">$7</span><div><strong>Suno Power Pack 25:</strong> 25 studio-tested Suno v4 metatag prompts and commercial rights checklist.</div></li>
+            <li><span class="mono-tag">$27–$97</span><div>Complete Suno Pack ($27) · ACOS Creator Kit ($47) · Agentic Developer Kit ($97).</div></li>
+            <li><span class="mono-tag">$497</span><div><strong>Founders Circle Guild:</strong> Async vault drops, private repo releases, and guild community.</div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 4: ROOT-CAUSE DIAGNOSIS & 6-PR STACK                           -->
+    <!-- =================================================================== -->
+    <section id="view-diagnosis" class="view-pane">
+      <div class="bento-2">
+        <div class="bento-card">
+          <h3><span class="pulse-dot red"></span>Three Gaps Identified in Post-Mortem</h3>
+          <p class="desc">Why the previous pass fell short of a complete 8-hour engineering shift.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">Gap 01</span><div><strong>Stopped at Draft PRs:</strong> 4 of 6 PRs (`#362`, `#80`, `#54`, `#1067`) passed 100% of GitHub CI checks but remained in <code>DRAFT</code> instead of being promoted and merged.</div></li>
+            <li><span class="mono-tag">Gap 02</span><div><strong>Missing $1 &amp; $7 Asset Bundles:</strong> Checkout routes were wired for <code>reality-md-starter-pack</code> and <code>suno-power-pack-25</code> without generating the downloadable kits under <code>public/products/</code>.</div></li>
+            <li><span class="mono-tag">Gap 03</span><div><strong>Local RAM Floor Blocked Cloud Dispatch:</strong> <code>Invoke-StarlightQueenLoop.ps1</code> exited at line 204 when free RAM hit <code>1,911 MB</code> instead of routing clean cards to 0-RAM Google Jules (`kind="jules"`) and Codex Cloud.</div></li>
+          </ul>
+        </div>
+
+        <div class="bento-card">
+          <h3><span class="pulse-dot green"></span>6-PR Foundation Stack Ready for Promotion</h3>
+          <p class="desc">All 6 isolated worktrees verified clean and tested.</p>
+          <ul class="clean-list">
+            <li><span class="mono-tag">#362</span><div><code>frankxai/agentic-ops-hub</code> — CI <code>verify</code> + <code>estate-guard</code> <strong>PASS</strong></div></li>
+            <li><span class="mono-tag">#80</span><div><code>Starlight-Intelligence/starlight-command-center</code> — CI <code>observatory</code> + <code>electron</code> <strong>PASS</strong></div></li>
+            <li><span class="mono-tag">#54</span><div><code>frankxai/starlight-estate</code> — Control-plane SSOT sync <strong>CLEAN</strong></div></li>
+            <li><span class="mono-tag">#1067</span><div><code>frankxai/frankx.ai-vercel-website</code> — All 6 checks + Vercel Preview <strong>PASS</strong></div></li>
+            <li><span class="mono-tag">#275</span><div><code>frankxai/agentic-ops</code> — 121/121 Python validator tests <strong>PASS</strong></div></li>
+            <li><span class="mono-tag">#451</span><div><code>frankxai/Starlight-Intelligence-System</code> — 135/135 SIS + 20/20 Dispatcher <strong>PASS</strong></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SHIFT_CARDS = [
+      { id: 'W1-C01', wave: 1, pillar: 'FOUNDATIONS', title: 'Patch Queen Loop RAM-Bypass for Zero-RAM Cloud & Jules Steering', repo: 'frankxai/starlight-estate', worker: 'antigravity-pod', checker: 'codex-review', done: 'admitWork(1911, 0, "jules") returns admit:true + unit tests pass', cmd: 'node scripts/queen-jules-shift-dispatcher.mjs --dry-run --wave=1' },
+      { id: 'W1-C02', wave: 1, pillar: 'FOUNDATIONS', title: 'Promote & Merge Validated Foundation PRs (#362, #80, #54, #275, #451, #1067)', repo: '6-Repo Stack', worker: 'claude-code-lead', checker: 'grok-local', done: 'All 6 PRs transitioned from DRAFT and merged cleanly', cmd: 'gh pr ready 362 -R frankxai/agentic-ops-hub && gh pr ready 80 -R Starlight-Intelligence/starlight-command-center' },
+      { id: 'W1-C03', wave: 1, pillar: 'TECH', title: 'Drain Held Compute Atlas Cards via Google Jules Remote Worker #1', repo: 'frankxai/frankx.ai-vercel-website', worker: 'jules', checker: 'claude-code-lead', done: 'Jules remote session opens verified PR with vitest + typecheck green', cmd: 'jules remote new --repo frankxai/frankx.ai-vercel-website --session "Complete compute-atlas data gaps and planner widget unit tests; run pnpm typecheck"' },
+      { id: 'W1-C04', wave: 1, pillar: 'TECH', title: 'Drain Compute Guide Publish Gates via Google Jules Remote Worker #2', repo: 'frankxai/frankx.ai-vercel-website', worker: 'jules', checker: 'codex-review', done: 'Jules PR passes design-contract, editorial-contract, surface-guard', cmd: 'jules remote new --repo frankxai/frankx.ai-vercel-website --session "Verify and enforce compute-guide publish gates, JSON-LD schema, and link integrity"' },
+      { id: 'W1-C05', wave: 1, pillar: 'TECH', title: 'Reclaim Idle Background Processes & Restore >4.5 GB Free Local RAM', repo: 'C:/Users/frank/starlight', worker: 'antigravity-pod', checker: 'codex-review', done: 'chair-pulse.json reports freeRamMB >= 4096 MB', cmd: 'node C:/Users/frank/starlight/tools/queen-chair.mjs' },
+      { id: 'W2-C06', wave: 2, pillar: 'PRODUCTS', title: 'Ship $1 reality.md Starter Pack Downloadable Bundle & Preview Drawer', repo: 'frankxai/frankx.ai-vercel-website', worker: 'codex-cloud', checker: 'claude-code-lead', done: 'public/products/reality-md-starter-pack/ + interactive preview live', cmd: 'codex cloud exec --env frankx-web --branch agent/antigravity/reality-funnel-sync-20261018 --attempts 1' },
+      { id: 'W2-C07', wave: 2, pillar: 'PRODUCTS', title: 'Ship $7 Suno Power Pack 25 Downloadable Prompt Matrix & Preview', repo: 'frankxai/frankx.ai-vercel-website', worker: 'jules', checker: 'claude-code-lead', done: '25 prompts verified in public/products/suno-power-pack-25/', cmd: 'jules remote new --repo frankxai/frankx.ai-vercel-website --session "Build public/products/suno-power-pack-25 starter bundle and preview component"' },
+      { id: 'W2-C08', wave: 2, pillar: 'PRODUCTS', title: 'Zero-Env-Var Graceful Checkout & Instant Preview Receipt Fallback', repo: 'frankxai/frankx.ai-vercel-website', worker: 'claude-code-lead', checker: 'codex-review', done: 'Checkout test suite passes for $1, $7, $27, $47, $97, $497', cmd: 'pnpm --dir C:/Users/frank/starlight/worktrees/frankx-reality-funnel-20261018 test' },
+      { id: 'W2-C09', wave: 2, pillar: 'STORY', title: '4-Brand Narrative Bridge: FrankX -> GenCreator -> Arcanea -> Starlight', repo: 'frankxai/frankx.ai-vercel-website', worker: 'claude-code-lead', checker: 'grok-local', done: 'Passes editorial-contract + anti-slop voice gate', cmd: 'node scripts/starlight-estate-doctor.mjs' },
+      { id: 'W2-C10', wave: 2, pillar: 'STORY', title: 'Arcanea Gate Progression Onboarding & A11y Polish via Jules #3', repo: 'frankxai/arcanea-ai-app', worker: 'jules', checker: 'claude-code-lead', done: '0 CANON_LOCKED drift + next build passes cleanly', cmd: 'jules remote new --repo frankxai/arcanea-ai-app --session "Improve accessibility and onboarding empty-state polish across Gate progression UI; do not touch CANON_LOCKED.md"' },
+      { id: 'W3-C11', wave: 3, pillar: 'PIPELINES', title: 'Autonomous Content Engine Pipeline: Intel -> MDX -> VIS QA -> Social', repo: 'frankxai/frankx.ai-vercel-website', worker: 'codex-cloud', checker: 'claude-code-lead', done: 'Dry-run emits validated article + 5-post social thread packet', cmd: 'codex cloud exec --env frankx-web --branch agent/codex/content-pipeline-e2e --attempts 1' },
+      { id: 'W3-C12', wave: 3, pillar: 'PIPELINES', title: 'Vibe OS Music & Video Factory: Suno Catalog Schema & Canvas Validator', repo: 'frankxai/frankx.ai-vercel-website', worker: 'jules', checker: 'codex-review', done: '100% of featured tracks pass schema & prompt lineage validation', cmd: 'jules remote new --repo frankxai/frankx.ai-vercel-website --session "Add unit tests and schema validator for music catalog tracks and Suno prompt lineage"' },
+      { id: 'W3-C13', wave: 3, pillar: 'PIPELINES', title: 'Multi-Org OSS Showcase & README/Badge Audit across 10 GitHub Orgs', repo: 'frankxai/Starlight-Intelligence-System', worker: 'jules', checker: 'claude-code-lead', done: 'org-federation-controller.mjs --audit-oss passes 100%', cmd: 'jules remote new --repo frankxai/Starlight-Intelligence-System --session "Add --audit-oss readiness check to scripts/org-federation-controller.mjs with unit tests"' },
+      { id: 'W3-C14', wave: 3, pillar: 'PIPELINES', title: 'Observatory Live Telemetry: Jules Queue + Hold-Admission Drain Panel', repo: 'Starlight-Intelligence/starlight-command-center', worker: 'jules', checker: 'codex-review', done: 'Observatory build + vitest pass 100%', cmd: 'jules remote new --repo Starlight-Intelligence/starlight-command-center --session "Add Jules worker queue and Queen RAM-bypass status indicators to HorizonFederationPanel with tests"' },
+      { id: 'W3-C15', wave: 3, pillar: 'TECH', title: 'GenCreator.ai & StarlightIntelligence.ai Cross-Domain Funnel Telemetry', repo: 'frankxai/gencreator.ai', worker: 'codex-cloud', checker: 'claude-code-lead', done: '0 broken cross-domain links + Plausible funnel events verified', cmd: 'codex cloud exec --env gencreator-web --branch agent/codex/cross-domain-funnel --attempts 1' },
+      { id: 'W4-C16', wave: 4, pillar: 'TECH', title: 'Full Eval-50 Benchmark, 135 SIS Symmetry Tests & 20-Check Estate Doctor', repo: 'frankxai/Starlight-Intelligence-System', worker: 'antigravity-pod', checker: 'grok-local', done: 'Eval-50 = 100%, Doctor = 20/20 PASS, SIS = 135/135 PASS', cmd: 'node scripts/starlight-estate-doctor.mjs --eval50' },
+      { id: 'W4-C17', wave: 4, pillar: 'PIPELINES', title: 'Multi-Harness Token & Cloud Cost Ledger Reconciliation ($274/mo Guard)', repo: 'frankxai/agentic-ops', worker: 'codex-cloud', checker: 'claude-code-lead', done: 'validate_registry.py passes 100% + 0 unbudgeted API spend', cmd: 'python scripts/validate_registry.py' },
+      { id: 'W4-C18', wave: 4, pillar: 'STORY', title: 'Santa Method Crown Gate Visual & Copy Audit Across All Updated Surfaces', repo: 'frankxai/frankx.ai-vercel-website', worker: 'claude-code-lead', checker: 'grok-local', done: 'Taste score >= 95/100 and 0 editorial-contract violations', cmd: 'node C:/Users/frank/starlight/tools/starlight-god-mode.mjs --dry-run --target=frankx-product-ladder' },
+      { id: 'W4-C19', wave: 4, pillar: 'FOUNDATIONS', title: 'Sync Live Memory Vaults (Strategic, Technical, Operational) & SIP Receipt', repo: 'frankxai/Starlight-Intelligence-System', worker: 'antigravity-pod', checker: 'claude-code-lead', done: 'JSONL vault entries indexed + SIP attestation verified', cmd: 'node scripts/starlight-estate-doctor.mjs --json' },
+      { id: 'W4-C20', wave: 4, pillar: 'FOUNDATIONS', title: 'Write Canonical Estate Handover in agentic-ops-hub & Arm 12h/7d Daemons', repo: 'frankxai/agentic-ops-hub', worker: 'antigravity-pod', checker: 'codex-review', done: 'OPS-LEDGER.md + 2026-10-18.md updated & CI green', cmd: 'git -C C:/Users/frank/starlight/worktrees/hub-org-federation-20261018 status -sb' }
+    ];
+
+    function workerChip(w) {
+      if (w === 'jules') return '<span class="worker-chip jules"><span class="pulse-dot indigo"></span>Jules VM</span>';
+      if (w === 'codex-cloud') return '<span class="worker-chip codex"><span class="pulse-dot green"></span>Codex Cloud</span>';
+      if (w === 'claude-code-lead') return '<span class="worker-chip claude"><span class="pulse-dot green"></span>Claude Lead</span>';
+      return '<span class="worker-chip agy"><span class="pulse-dot amber"></span>Antigravity</span>';
+    }
+
+    function renderList(list) {
+      const container = document.getElementById('issue-list');
+      container.innerHTML = list.map(c => `
+        <div class="issue-row" onclick="this.classList.toggle('open')">
+          <div class="issue-summary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4cc38a" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+            <span class="issue-id">${c.id}</span>
+            <span class="pillar-tag hide-sm">${c.pillar}</span>
+            <span class="issue-title">${c.title}</span>
+            <span class="repo-label hide-sm">${c.repo}</span>
+            ${workerChip(c.worker)}
+            <button class="btn-ghost" onclick="event.stopPropagation(); copyCmd(${JSON.stringify(c.cmd).replace(/"/g, '&quot;')}, this)">Copy</button>
+          </div>
+          <div class="issue-drawer" onclick="event.stopPropagation()">
+            <div class="drawer-grid">
+              <div><strong>Done Condition:</strong> ${c.done}</div>
+              <div><strong>Independent Checker (Maker != Checker):</strong> <code>${c.checker}</code> · Wave ${c.wave}</div>
+            </div>
+            <div class="cmd-bar">
+              <span>$ ${c.cmd}</span>
+              <button class="btn-ghost" onclick="copyCmd(${JSON.stringify(c.cmd).replace(/"/g, '&quot;')}, this)">Copy Command</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterWave(wave, btn) {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = wave === 'all' ? SHIFT_CARDS : SHIFT_CARDS.filter(c => String(c.wave) === String(wave));
+      renderList(filtered);
+    }
+
+    function filterWorker(worker, btn) {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderList(SHIFT_CARDS.filter(c => c.worker === worker));
+    }
+
+    function setView(id, btn) {
+      document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function copyCmd(text, btn) {
+      navigator.clipboard.writeText(text);
+      const prev = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = prev; }, 1200);
+    }
+
+    renderList(SHIFT_CARDS);
+  </script>
+</body>
+</html>
