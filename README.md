@@ -62,6 +62,8 @@ Starlight Intelligence System (SIS) is the **sovereign AI substrate** for memory
 
 Starlight Foundry turns intent into a typed Task Envelope, resolves existing capabilities, compiles the smallest justified skill or agent system, and issues an evidence receipt before promotion.
 
+[Compare distribution paths and inspect public packages](https://starlightintelligence.org/download). Local source, private ChatGPT access and a reviewed public listing are separate states. The [public distribution registry](site/src/lib/plugin-starter-download.ts) records those distinctions; it does not contain private account plugin identifiers.
+
 ```text
 /forge skill <brief>
 /forge agent <brief>

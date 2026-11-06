@@ -11,6 +11,7 @@ const STATIC_ROUTES = [
   "/protocol",
   "/verify",
   "/download",
+  "/kits",
   "/deploy",
   "/quickstart",
   "/architecture",

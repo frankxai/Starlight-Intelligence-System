@@ -89,3 +89,30 @@ git merge upstream/main
 Review the diff and let Vercel create a preview before merging changes into the production branch.
 
 **Built on SIP — Starlight Intelligence Protocol v1.1.1**
+
+
+## Builder kits and launch workbook
+
+`/kits` gives visitors three outcome-based paths into existing public source,
+local modules and the quickstart. `src/lib/build-kits.ts` owns the public registry;
+this is separate from account plugin inventories and paid service catalogs.
+The route is linked from the shared navigation/footer, `/download` and sitemap.
+
+The free launch workbook lives in `public/downloads/launch-workbook-v1/`. It contains
+an offer brief, a fictional filled example, delivery checks, economics CSV,
+distribution plan, README and MIT license. After editing these files, rebuild:
+
+```bash
+python3 scripts/build-launch-workbook.py
+npm run test:build-kits
+```
+
+Commit the deterministic ZIP and checksum manifest with the source files. The build
+checks promised files, hashes, routes, public boundaries and disclosure language.
+The ZIP uses a fixed timestamp and stored entries, so identical input produces
+identical bytes. The package's own README names prerequisites and support limits.
+
+`data-kit-id` and `data-kit-action` attributes provide stable public identifiers for
+future instrumentation. No analytics provider is installed by this change and no
+conversion is recorded. A download link click, a successful file response and a
+completed customer task are different evidence. Do not infer one from another.

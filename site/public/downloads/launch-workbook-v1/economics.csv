@@ -1,0 +1,13 @@
+Metric,Value EUR,Evidence status,Notes
+Price excluding sales tax,,unknown,One purchase; record currency changes separately
+Discounts and expected refunds,,unknown,Amount per purchase
+Payment and platform fees,,unknown,Amount per purchase; verify current provider terms
+Model and fulfillment cost,,unknown,Direct variable cost per purchase
+Support cost,,unknown,Time multiplied by actual loaded hourly cost
+Acquisition cost,,unknown,Attributable spend per purchase
+Net revenue,"=IF(COUNT(B2:B3)=2,B2-B3,"""")",calculated,Blank until both inputs are numeric
+Gross profit,"=IF(COUNT(B2:B5)=4,B2-B3-B4-B5,"""")",calculated,Before support and acquisition
+Contribution,"=IF(COUNT(B2:B7)=6,B2-B3-B4-B5-B6-B7,"""")",calculated,Before fixed costs and income taxes
+Contribution margin,"=IF(AND(COUNT(B2:B7)=6,B2-B3>0),B10/(B2-B3),"""")",calculated,Fraction; format as percentage
+Cash received,,unknown,Record actual payout; do not substitute revenue
+Fixed development cost,,unknown,Track separately from per-purchase contribution
