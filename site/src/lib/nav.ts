@@ -35,7 +35,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Build",
     visual: NAV_GROUP_STILLS.Build,
     items: [
-      { href: "/sovereign", label: "Sovereign", desc: "Durability, robot continuity & subscription packs" },
+      { href: "/sovereign", label: "Sovereign", desc: "Local vaults, snapshot receipts and what is still experimental" },
       { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
       { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
