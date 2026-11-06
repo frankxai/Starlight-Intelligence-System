@@ -10,12 +10,23 @@
  *   POST /v1/sessions/:id/items          — add items to session
  *   POST /v1/sessions/:id/pop            — pop last session item
  *   DELETE /v1/sessions/:id             — clear + compact session
+ *   POST /v1/graph/nodes      — upsert a bitemporal KG node
+ *   POST /v1/graph/edges      — assert a bitemporal KG edge
+ *   POST /v1/graph/subgraph   — multi-hop point-in-time KG subgraph query
+ *   POST /v1/otel/spans       — record an OpenTelemetry gen_ai.* span
+ *   GET  /v1/otel/summary     — summarize OpenTelemetry gen_ai.* spans
  *
  * Built on SIP — operational tier (memory gateway v0.1)
  */
 
 import type { VaultType } from '../types.js';
 import type { SessionItem } from '../session-store.js';
+import type {
+  UpsertNodeInput,
+  AssertEdgeInput,
+  QuerySubgraphOptions,
+} from '../graph/bitemporal-kg.js';
+import type { OtelGenAiSpanInput } from '../telemetry/otel-sqlite.js';
 
 // ── HTTP-like request shape ─────────────────────────────────
 
@@ -84,6 +95,11 @@ export interface SessionAddBody {
   items: SessionItem[];
 }
 
+export type GraphUpsertNodeBody = UpsertNodeInput;
+export type GraphAssertEdgeBody = AssertEdgeInput;
+export type GraphSubgraphBody = QuerySubgraphOptions;
+export type OtelRecordSpanBody = OtelGenAiSpanInput;
+
 // ── Route table ─────────────────────────────────────────────
 
 export interface ParsedRoute {
@@ -96,6 +112,11 @@ export interface ParsedRoute {
     | 'session.addItems'
     | 'session.pop'
     | 'session.clear'
+    | 'graph.upsertNode'
+    | 'graph.assertEdge'
+    | 'graph.querySubgraph'
+    | 'otel.recordSpan'
+    | 'otel.summary'
     | 'not.found';
   /** Extracted path params. */
   params: Record<string, string>;
@@ -116,6 +137,25 @@ export function parseRoute(method: string, path: string): ParsedRoute {
   }
   if (m === 'GET' && path === '/v1/memory/health') {
     return { kind: 'memory.health', params: {} };
+  }
+
+  // Bitemporal knowledge graph routes
+  if (m === 'POST' && path === '/v1/graph/nodes') {
+    return { kind: 'graph.upsertNode', params: {} };
+  }
+  if (m === 'POST' && path === '/v1/graph/edges') {
+    return { kind: 'graph.assertEdge', params: {} };
+  }
+  if (m === 'POST' && path === '/v1/graph/subgraph') {
+    return { kind: 'graph.querySubgraph', params: {} };
+  }
+
+  // OpenTelemetry gen_ai.* span store routes
+  if (m === 'POST' && path === '/v1/otel/spans') {
+    return { kind: 'otel.recordSpan', params: {} };
+  }
+  if (m === 'GET' && path === '/v1/otel/summary') {
+    return { kind: 'otel.summary', params: {} };
   }
 
   // Session routes: /v1/sessions/:id/items  or  /v1/sessions/:id/pop  or  DELETE /v1/sessions/:id

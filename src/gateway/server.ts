@@ -20,6 +20,15 @@
 import { join } from 'node:path';
 import { VaultMemory } from '../vault-memory.js';
 import { SessionStore } from '../session-store.js';
+import {
+  BitemporalKnowledgeGraph,
+  PrivacyTagError,
+} from '../graph/bitemporal-kg.js';
+import {
+  OtelGenAiStore,
+  isValidOtelGroupBy,
+  type OtelGroupByDimension,
+} from '../telemetry/otel-sqlite.js';
 import { telemetry } from '../telemetry/index.js';
 import type { VaultType, VaultSearchResult } from '../types.js';
 import type { SessionItem } from '../session-store.js';
@@ -32,6 +41,10 @@ import {
   type MemoryAddBody,
   type MemorySearchBody,
   type SessionAddBody,
+  type GraphUpsertNodeBody,
+  type GraphAssertEdgeBody,
+  type GraphSubgraphBody,
+  type OtelRecordSpanBody,
 } from './protocol.js';
 
 // ── SisGatewayCore ──────────────────────────────────────────
@@ -42,14 +55,51 @@ export interface GatewayCoreOptions {
 }
 
 export class SisGatewayCore {
+  private readonly storageRoot: string;
   private readonly vault: VaultMemory;
   private readonly sessions: SessionStore;
+  private graphStore: BitemporalKnowledgeGraph | null = null;
+  private otelStore: OtelGenAiStore | null = null;
 
   constructor(opts: GatewayCoreOptions) {
+    this.storageRoot = opts.storageRoot;
     this.vault = new VaultMemory({
       storagePath: join(opts.storageRoot, '.starlight'),
     });
     this.sessions = new SessionStore(opts.storageRoot);
+  }
+
+  private getGraph(): BitemporalKnowledgeGraph {
+    if (!this.graphStore) {
+      this.graphStore = new BitemporalKnowledgeGraph({
+        storageRoot: this.storageRoot,
+        gatewayBoundary: true,
+      });
+    }
+    return this.graphStore;
+  }
+
+  private getOtel(): OtelGenAiStore {
+    if (!this.otelStore) {
+      this.otelStore = new OtelGenAiStore({
+        storageRoot: this.storageRoot,
+      });
+    }
+    return this.otelStore;
+  }
+
+  /**
+   * Release any open SQLite connections (bitemporal KG + OTel span store).
+   */
+  close(): void {
+    if (this.graphStore) {
+      this.graphStore.close();
+      this.graphStore = null;
+    }
+    if (this.otelStore) {
+      this.otelStore.close();
+      this.otelStore = null;
+    }
   }
 
   /**
@@ -99,6 +149,21 @@ export class SisGatewayCore {
           const harness = req.auth?.harness ?? 'default';
           return this.handleSessionClear(harness, sessionId);
         }
+
+        case 'graph.upsertNode':
+          return this.handleGraphUpsertNode(req.body as GraphUpsertNodeBody | undefined);
+
+        case 'graph.assertEdge':
+          return this.handleGraphAssertEdge(req.body as GraphAssertEdgeBody | undefined);
+
+        case 'graph.querySubgraph':
+          return this.handleGraphQuerySubgraph(req.body as GraphSubgraphBody | undefined);
+
+        case 'otel.recordSpan':
+          return this.handleOtelRecordSpan(req.body as OtelRecordSpanBody | undefined);
+
+        case 'otel.summary':
+          return this.handleOtelSummary(req.query);
 
         case 'not.found':
           return err(404, `Not found: ${req.method} ${req.path}`);
@@ -222,6 +287,95 @@ export class SisGatewayCore {
     try {
       await this.sessions.clearSession(harness, sessionId);
       return ok(200, { ok: true });
+    } catch (e) {
+      return err(400, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  // ── Bitemporal Knowledge Graph handlers ─────────────────────
+
+  private handleGraphUpsertNode(body: GraphUpsertNodeBody | undefined): GatewayResponse {
+    if (!body || typeof body !== 'object') {
+      return err(400, 'request body must be a JSON object');
+    }
+    try {
+      const node = this.getGraph().upsertNode(body, { rejectPrivateTags: true });
+      return ok(200, { ok: true, node });
+    } catch (e) {
+      if (e instanceof PrivacyTagError) {
+        return err(400, e.message);
+      }
+      return err(400, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  private handleGraphAssertEdge(body: GraphAssertEdgeBody | undefined): GatewayResponse {
+    if (!body || typeof body !== 'object') {
+      return err(400, 'request body must be a JSON object');
+    }
+    try {
+      const result = this.getGraph().assertEdge(body, { rejectPrivateTags: true });
+      return ok(200, { ok: true, edge: result.edge, supersededCount: result.supersededCount });
+    } catch (e) {
+      if (e instanceof PrivacyTagError) {
+        return err(400, e.message);
+      }
+      return err(400, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  private handleGraphQuerySubgraph(body: GraphSubgraphBody | undefined): GatewayResponse {
+    if (!body || typeof body !== 'object' || typeof body.seedId !== 'string' || !body.seedId.trim()) {
+      return err(400, 'body.seedId is required and must be a non-empty string');
+    }
+    try {
+      const subgraph = this.getGraph().querySubgraph(body);
+      return ok(200, { ok: true, ...subgraph });
+    } catch (e) {
+      return err(400, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  // ── OpenTelemetry gen_ai.* span store handlers ──────────────
+
+  private handleOtelRecordSpan(body: OtelRecordSpanBody | undefined): GatewayResponse {
+    if (!body || typeof body !== 'object') {
+      return err(400, 'request body must be a JSON object');
+    }
+    try {
+      const span = this.getOtel().recordSpan(body);
+      return ok(200, { ok: true, span });
+    } catch (e) {
+      return err(400, e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  private handleOtelSummary(query: Record<string, string> | undefined): GatewayResponse {
+    const sinceIso = query?.['sinceIso'] ?? query?.['since'];
+    const rawGroupBy = query?.['groupBy'];
+    let groupBy: OtelGroupByDimension | undefined;
+    if (rawGroupBy !== undefined && rawGroupBy !== '') {
+      if (!isValidOtelGroupBy(rawGroupBy)) {
+        return err(
+          400,
+          `Invalid groupBy "${rawGroupBy}"; expected one of: provider, brand_id, workflow_id, agent_id`,
+        );
+      }
+      groupBy = rawGroupBy;
+    }
+
+    let limit: number | undefined;
+    if (query?.['limit'] !== undefined && query['limit'] !== '') {
+      const parsed = Number(query['limit']);
+      if (!Number.isFinite(parsed) || parsed <= 0) {
+        return err(400, 'query.limit must be a positive number');
+      }
+      limit = Math.trunc(parsed);
+    }
+
+    try {
+      const summary = this.getOtel().summarize({ sinceIso, groupBy, limit });
+      return ok(200, { ok: true, ...summary });
     } catch (e) {
       return err(400, e instanceof Error ? e.message : String(e));
     }

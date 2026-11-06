@@ -4,3 +4,4 @@
 
 export * from './langfuse.js';
 export * from './experiments.js';
+export * from './otel-sqlite.js';
