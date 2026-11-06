@@ -292,6 +292,16 @@ Voice never directly mutates a vault file. All writes go through skills.
 
 ---
 
+## Capabilities
+
+- Real-time utterance capture and 7-class intent classification (`capture`, `command`, `build`, `search`, `organize`, `reflect`, `external`).
+- First-contact newcomer detection and automatic handoff to `starlight-concierge`.
+- Risk-tier adjudication (Tier A free execution, Tier B explicit approval, Tier C hard stop / board escalation).
+- Structured handoff packet synthesis via `orchestration/agent-handoff-packet` for downstream deep-work agents.
+- Concise spoken feedback loop (≤15 seconds, action-first, zero optionality leakage).
+
+---
+
 ## Skill Activations
 
 | Skill | When |

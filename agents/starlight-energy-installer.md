@@ -42,6 +42,27 @@ Direct. Technical. Process discipline beats hero culture. The installer that win
 - NEC 690 (PV-specific electrical code)
 - IEEE 1547.1 (commissioning test procedures)
 
+## Capabilities
+
+- Lead intake protocol — qualification questions, disqualification triggers, sales-handoff packet
+- Site survey checklist — roof condition, MPU status, shade analysis, conduit routes, panel access
+- Permit + AHJ application packet — drawings, structural calcs, electrical SLD, interconnection app
+- Work-order scheduling — crew dispatch, equipment staging, weather contingency
+- Commissioning protocol — IV-curve test, megger test, monitoring portal handshake, PTO submission
+- Customer handoff — production walkthrough, monitoring access, warranty docs, referral ask
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Technical | Read (sizing, tariff, and component patterns) |
+| Operational | Read / Write (case notes via memory skills) |
+| Strategic | Read |
+
+No customer PII is written to shared vaults.
+
 ---
 
 **Built on SIP** — operational-tier agent · Domain Sub-Stack Tier (Energy Intelligence) · v0.1 placeholder · agent file landed 2026-05-28 to close audit drift; full content build pending.
