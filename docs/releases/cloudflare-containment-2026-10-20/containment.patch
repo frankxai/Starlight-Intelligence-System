@@ -1,0 +1,85 @@
+--- original-deployed.mjs	2026-10-19 19:58:30.163369651 -0500
++++ worker.mjs	2026-10-19 19:59:01.135224251 -0500
+@@ -559,6 +559,10 @@
+         attestation: "Built on SIP v1.1.1",
+         edgeRegion: request.headers.get("cf-ipcountry") || "global-edge",
+         timestamp: (/* @__PURE__ */ new Date()).toISOString(),
++        protectedApi: {
++          status: "unavailable",
++          reason: "identity_membership_verifier_missing"
++        },
+         bindings: {
+           vectorize: !!env.STARLIGHT_VECTORS,
+           d1: !!env.STARLIGHT_DB,
+@@ -573,19 +577,19 @@
+       });
+     }
+     const authHeader = request.headers.get("Authorization");
+-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
++    if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
+       return new Response(JSON.stringify({
+         error: "Unauthorized",
+         message: "Missing or malformed Authorization header. Expected Bearer token."
+       }), { status: 401, headers: this.CORS_HEADERS });
+     }
+-    const token = authHeader.slice(7).trim();
+-    const tenant = this.resolveTenant(token, request.headers.get("X-Starlight-Tenant"));
++    const tenant = this.resolveTenant();
+     if (!tenant) {
+       return new Response(JSON.stringify({
+-        error: "Forbidden",
+-        message: "Invalid or revoked Starlight API key."
+-      }), { status: 403, headers: this.CORS_HEADERS });
++        error: "Service Unavailable",
++        code: "protected_api_unavailable",
++        message: "Protected API unavailable: verified identity and tenant membership are not configured."
++      }), { status: 503, headers: { ...this.CORS_HEADERS, "Cache-Control": "no-store" } });
+     }
+     try {
+       if (url.pathname === "/v1/memory/append" && method === "POST") {
+@@ -655,16 +659,9 @@
+       }), { status: 500, headers: this.CORS_HEADERS });
+     }
+   }
+-  static resolveTenant(token, explicitTenant) {
+-    if (!token || token.length < 8) return null;
+-    const tenantId = explicitTenant || `tenant_${token.slice(0, 10)}`;
+-    return {
+-      tenantId,
+-      orgName: `Starlight Org ${tenantId.slice(0, 8)}`,
+-      plan: "studio",
+-      quotaRemaining: 95e4,
+-      byovEnabled: true
+-    };
++  static resolveTenant() {
++    // Reviewed mainline containment: no identity/membership authority is wired.
++    return null;
+   }
+   static async handleAppend(tenant, req, env) {
+     const scrubbed = EdgeVeil.scrub(req.content);
+@@ -994,17 +991,14 @@
+     this.state = state;
+     this.env = env;
+   }
+-  async fetch(request) {
+-    const url = new URL(request.url);
+-    if (url.pathname.endsWith("/lease/acquire")) {
+-      return new Response(JSON.stringify({ status: "acquired", timestamp: (/* @__PURE__ */ new Date()).toISOString() }), {
+-        status: 200,
+-        headers: { "Content-Type": "application/json" }
+-      });
+-    }
+-    return new Response(JSON.stringify({ status: "active", role: "SwarmCoordinator" }), {
+-      status: 200,
+-      headers: { "Content-Type": "application/json" }
++  async fetch(_request) {
++    return new Response(JSON.stringify({
++      error: "Service Unavailable",
++      code: "swarm_coordinator_unavailable",
++      message: "Swarm coordination unavailable: verified identity and durable lease arbitration are not configured."
++    }), {
++      status: 503,
++      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" }
+     });
+   }
+ };
