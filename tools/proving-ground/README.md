@@ -50,3 +50,7 @@ fixed same-run. Load-bearing weakness: memory `precision@10 = 0.20`. Full scorec
 `scorecards/2026-06-10-system-eval-v0.1.json`.
 
 Built on SIP — Starlight Intelligence Protocol.
+
+## Authority continuity research pilot
+
+[Authority continuity](authority-continuity/README.md) adds a dependency-free offline replay of permission and recovery contracts to the harness lane. It produces synthetic fixture evidence; actual model behavior, independent reproduction and production enforcement remain separate gates. Run `node --test tools/proving-ground/authority-continuity/replay.test.mjs` before extending the pilot.
