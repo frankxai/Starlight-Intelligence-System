@@ -180,3 +180,58 @@ test("fails closed on a non-retryable authorization response", async () => {
   assert.equal(calls, 1);
   assert.equal(errors.length, 1);
 });
+
+
+test("retries an explicitly public file without credentials after authenticated 403", async () => {
+  let calls = 0;
+  const { logger, warnings, errors } = recordingLogger();
+
+  const content = await fetchGitHubTextFile("owner/public-repo", "vault.jsonl", {
+    token: "configured-token",
+    allowUnauthenticatedFallback: true,
+    fetchImpl: async (_url, init) => {
+      calls += 1;
+      if (calls === 1) {
+        assert.equal(init.headers.Authorization, "Bearer configured-token");
+        return new Response(null, { status: 403 });
+      }
+      assert.equal(init.headers.Authorization, undefined);
+      return encodedResponse("public-content");
+    },
+    retryDelayMs: 0,
+    logger,
+  });
+
+  assert.equal(content, "public-content");
+  assert.equal(calls, 2);
+  assert.equal(warnings.length, 1);
+  assert.equal(warnings[0][1].status, 403);
+  assert.equal(errors.length, 0);
+});
+
+test("bounds public fallback and still fails closed when unauthenticated access is denied", async () => {
+  let calls = 0;
+  const { logger, warnings, errors } = recordingLogger();
+
+  await assert.rejects(
+    fetchGitHubTextFile("owner/public-repo", "vault.jsonl", {
+      token: "configured-token",
+      allowUnauthenticatedFallback: true,
+      fetchImpl: async (_url, init) => {
+        calls += 1;
+        assert.equal(
+          init.headers.Authorization,
+          calls === 1 ? "Bearer configured-token" : undefined,
+        );
+        return new Response(null, { status: 403 });
+      },
+      retryDelayMs: 0,
+      logger,
+    }),
+    /returned 403/,
+  );
+
+  assert.equal(calls, 2);
+  assert.equal(warnings.length, 1);
+  assert.equal(errors.length, 1);
+});
