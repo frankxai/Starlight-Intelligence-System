@@ -280,4 +280,4 @@ Wired in Phase 0, enforced through Phase 5:
 
 ---
 
-**Built on SIP** · v1.1.0 · Cockpit v8 Architecture · 2026-04-29 · Frank Riemer (Starlight Holding BV) · MIT
+**Built on SIP** · v1.1.0 · Cockpit v8 Architecture · 2026-04-29 · Frank Riemer (Starlight Intelligence, eenmanszaak) · MIT

@@ -280,7 +280,7 @@ Verticals:
 - starlight-intelligence-system @<v7.4.0-alpha-tag-sha> · Genius Intelligence System alpha: new Excavation Tier agent (starlight-genius) + five new operational commands (/discover-genius, /reclaim-knowledge, /train-executor, /creator-pipeline, /content-systemize) + vertical-tier /arcanea-canon + two intelligence skills (intelligence/genius-excavation, intelligence/knowledge-reclamation) + public explainer page (docs/public/starlight-intelligence-system.md, ~2,200 words, non-marketing, warm-architect voice) + non-technical Claude Project starter pack (integrations/starter-packs/friend-starter/ — 13 files: README, custom-instructions.md ~3,600 chars, 9 knowledge templates with reference-grade filled examples, mcp.json, badge.svg). First release where attestation is ambient by default (agents auto-embed "Built on SIP" in every output; /sip-attest remains for retrofit of external work).
 
 Canon:
-- none at substrate layer. Arcanea canon (CC-BY-NC © Arcanea BV) referenced via /arcanea-canon for canon-keeping workflows.
+- none at substrate layer. Arcanea canon (CC-BY-NC © Starlight Intelligence (eenmanszaak)) referenced via /arcanea-canon for canon-keeping workflows.
 
 Nodes:
 - Frank Riemer · role: architect · authored v7.4 alpha strategy (pivot from protocol-first to genius-first framing, 9-layer intelligence system architecture, ambient attestation stance) + directed 5-agent parallel swarm dispatch

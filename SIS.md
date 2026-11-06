@@ -49,14 +49,14 @@ See `VERTICALS.md` for full registry. Summary:
 
 | Vertical | Domain | Owner |
 |----------|--------|-------|
-| **Arcanea** | Fiction, game, world-building, author stack, canon-defining | Arcanea BV (Frank) |
+| **Arcanea** | Fiction, game, world-building, author stack, canon-defining | Starlight Intelligence (eenmanszaak, Frank) |
 | **FrankX** | Personal architect brand, protocol thought leadership | Frank, operating as ZZP then BV |
-| **Anime Legends** | Anime-aesthetic fiction + character design, streaming-native | Frank (under Arcanea BV or sub-BV) |
-| **GenCreator Community** | Community + movement layer for SIP-adopting creators | Frank (Starlight Holding or Arcanea BV) |
+| **Anime Legends** | Anime-aesthetic fiction + character design, streaming-native | Frank (under Starlight Intelligence (eenmanszaak) or sub-BV) |
+| **GenCreator Community** | Community + movement layer for SIP-adopting creators | Frank (Starlight Intelligence, eenmanszaak) |
 | **Creator IS** | Creator economics playbook, distribution, catalog | Frank, open substrate |
-| **Wealth IS / DPI** | Disruptive passive income, wealth intelligence, capital architecture | Frank, Starlight Holding |
+| **Wealth IS / DPI** | Disruptive passive income, wealth intelligence, capital architecture | Frank, Starlight Intelligence |
 | **Family IS** | Multi-generational infrastructure, legacy systems | Frank (private) |
-| **Music IS** | Catalog compounding, sync licensing, artist stack | Arcanea Records (Arcanea BV) |
+| **Music IS** | Catalog compounding, sync licensing, artist stack | Arcanea Records (Starlight Intelligence (eenmanszaak)) |
 | **Spiritual IS** | Consciousness practice integration (private) | FrankX |
 | **Vibe OS** | State engineering, ritual stack, chronotype architecture | FrankX |
 
@@ -84,4 +84,4 @@ Products are replaced. Substrates are built upon. The bet: the protocol + attrib
 
 ---
 
-**Built on SIP** · v1 · © Frank Riemer / Starlight Holding BV for the arrangement · MIT for the substrate definition
+**Built on SIP** · v1 · © Frank Riemer / Starlight Intelligence (eenmanszaak) for the arrangement · MIT for the substrate definition

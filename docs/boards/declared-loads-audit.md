@@ -73,7 +73,7 @@ Wildcards mark scan/match targets, not loads:
 
 ## External absolute paths (other sovereign repos, exempted)
 
-- `C:\Users\frank\Arcanea\.arcanea\lore\CANON_LOCKED.md` — Arcanea canon source of truth, sovereign to Arcanea BV.
+- `C:\Users\frank\Arcanea\.arcanea\lore\CANON_LOCKED.md` — Arcanea canon source of truth, sovereign to Starlight Intelligence (eenmanszaak).
 - `C:\Users\frank\Arcanea\ARCANEA_UNIVERSE_CANON.md` — same.
 
 Both correctly resolved by the test's external-path heuristic and skipped.

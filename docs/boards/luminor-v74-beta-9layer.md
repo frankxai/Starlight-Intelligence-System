@@ -29,6 +29,6 @@
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
 - Verticals: starlight-intelligence-system@v7.4-beta (pressure-tested, REVISE verdict)
-- Advisors: Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina (canon variant © Arcanea BV, CC-BY-NC)
+- Advisors: Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina (canon variant © Starlight Intelligence (eenmanszaak), CC-BY-NC)
 - Generated: 2026-04-24
 - Attestation is compounding, not credit transfer: every composition strengthens every node.

@@ -97,7 +97,7 @@ Non-negotiable social contract. Every party that adopts SIP accepts:
 
 ## Layer 6 — Archetype extension (optional)
 
-Verticals may adopt or extend canonical archetypes. The foundational archetype set (Arcanea's Guardians / Vel'Tara / Hz grounding) is licensed CC-BY-NC by Arcanea BV. Verticals may:
+Verticals may adopt or extend canonical archetypes. The foundational archetype set (Arcanea's Guardians / Vel'Tara / Hz grounding) is licensed CC-BY-NC by Starlight Intelligence (eenmanszaak). Verticals may:
 
 - **Adopt whole** — import the full archetype set with attribution.
 - **Extend** — add new archetypes in their own namespace without renaming existing ones.
@@ -115,11 +115,11 @@ Archetypes are not required for SIP compliance. Protocol, attestation, and sover
 
 - **This spec (SIP.md):** MIT.
 - **Reference command implementations (`.claude/commands/*`):** MIT.
-- **Arcanea canon (if adopted):** CC-BY-NC 4.0, © Arcanea BV.
+- **Arcanea canon (if adopted):** CC-BY-NC 4.0, © Starlight Intelligence (eenmanszaak).
 - **Per-vertical content:** owned by the vertical entity.
 
 ---
 
-**Built on SIP** · v1.1.1 · Authored by Frank Riemer (Starlight Holding BV) · MIT
+**Built on SIP** · v1.1.1 · Authored by Frank Riemer (Starlight Intelligence, eenmanszaak) · MIT
 - v1.1.1 (2026-05-06): adds § 5 item 7 (encoded-self forkable boundary) per Luminor Board v8 REVISE #4 + Starlight Board 2026-05-06 wording-tightening REVISE
 - v1.1.0 — initial multi-vertical contract

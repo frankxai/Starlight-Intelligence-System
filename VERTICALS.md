@@ -16,18 +16,18 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Arcanea
 - **Class:** sovereign vertical
 - **Domain:** Fiction, game, world-building, author stack, canonical Guardian / Vel'Tara / Hz system.
-- **Owner:** Arcanea BV (Frank).
+- **Owner:** Starlight Intelligence (eenmanszaak, Frank).
 - **Status:** `active` — v3 architecture canonical.
 - **Primary repo:** `frankxai/arcanea-ecosystem`.
 - **Public surface:** `arcanea.ai`.
-- **Canon:** **defines** — Arcanea canon is the first canon layer others may compose with (CC-BY-NC © Arcanea BV).
-- **Compounds:** Arcanea BV (IP licensing, canon licensing, story IP, game IP).
+- **Canon:** **defines** — Arcanea canon is the first canon layer others may compose with (CC-BY-NC © Starlight Intelligence (eenmanszaak)).
+- **Compounds:** Starlight Intelligence (eenmanszaak, IP licensing, canon licensing, story IP, game IP).
 - **SIP commands:** `/arcanea-canon`, `/arcanea-author`, `/arcanea-world`.
 
 ### FrankX
 - **Class:** sovereign vertical (personal architect brand)
 - **Domain:** Protocol thought leadership, architect voice, consulting funnel, Vibe OS surfacing.
-- **Owner:** Frank Riemer (ZZP → Arcanea BV operating entity post-June 1).
+- **Owner:** Frank Riemer (ZZP → Starlight Intelligence (eenmanszaak) operating entity post-June 1).
 - **Status:** `active` — v1 live at frankx.ai.
 - **Primary repo:** `frankxai/frankx`.
 - **Public surface:** `frankx.ai`.
@@ -37,18 +37,18 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Anime Legends
 - **Class:** sovereign vertical
 - **Domain:** Anime-aesthetic fiction, character design, streaming-native storytelling, stylized creator content.
-- **Owner:** Frank (under Arcanea BV or standalone sub-BV — TBD at BV formation).
+- **Owner:** Frank (under Starlight Intelligence, eenmanszaak; a BV may follow later).
 - **Status:** `active — v0.5`.
 - **Primary repo:** `frankxai/anime-legends` *(to be created)*.
 - **Public surface:** `animelegends.ai` *(to be registered)* + `@animelegends` on social.
 - **Canon:** composes with Arcanea canon (Guardian → anime character archetypes). Licensed reuse, auto-attested.
-- **Compounds:** Arcanea BV (anime-flavored IP expansion) + dedicated catalog.
+- **Compounds:** Starlight Intelligence (eenmanszaak, anime-flavored IP expansion) + dedicated catalog.
 - **SIP commands:** `/anime-character`, `/anime-episode`, `/anime-canon-bridge`.
 
 ### GenCreator Community
 - **Class:** sovereign vertical (community + movement layer)
 - **Domain:** Membership and movement layer for sovereign creators adopting SIP. Composes on top of Creator IS.
-- **Owner:** Frank (under Starlight Holding BV or Arcanea BV — TBD at BV formation).
+- **Owner:** Frank (under Starlight Intelligence, eenmanszaak; a BV may follow later).
 - **Status:** `active — v0.5`.
 - **Primary repo:** `frankxai/gencreator` *(to be created)*.
 - **Public surface:** `gencreator.community` *(to be registered)*.
@@ -68,7 +68,7 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Wealth IS / DPI
 - **Class:** sovereign vertical
 - **Domain:** Disruptive Passive Income, wealth intelligence, compounding capital architecture, tax-aware structuring.
-- **Owner:** Frank / Starlight Holding BV.
+- **Owner:** Frank / Starlight Intelligence (eenmanszaak).
 - **Status:** `active — v0.1 (scaffolding)`.
 - **Primary repo:** `frankxai/wealth-is`.
 - **Canon:** none.
@@ -78,13 +78,13 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Music IS
 - **Class:** sovereign vertical (hybrid — operated + scaffolded)
 - **Domain:** Catalog compounding, sync licensing, artist stack, streaming economics. Labels: Frank Riemer (neo-classical), Frank's Vibes (electronic), Arcanea (Guardian/cinematic), Nona (punk/alt).
-- **Owner:** Arcanea Records (under Arcanea BV).
+- **Owner:** Arcanea Records (under Starlight Intelligence (eenmanszaak)).
 - **Status:** `active` (operated); `scaffolded — v0.2.0` (substrate-side at SIS).
 - **Primary repo (substrate scaffold):** `verticals/music-is/` in `frankxai/Starlight-Intelligence-System` — 6 sub-systems (Apex / Catalog / Persona / Asset / Distribution / Amplification / Monetization), 7 agents, 8 commands. Public reference for the operator-specific sub-system surface.
 - **Primary repo (operated instance):** inside `arcanea-ecosystem/labels/arcanea-records` — release calendar, catalog/royalty-graph state, persona instance state, deal history. Operator-specific; not part of the open substrate.
 - **Distinct from:** `Sound Intelligence` (open forkable reference for any sovereign sound practitioner). Music IS is operator-specific to Frank's four labels; Sound IS is the pattern any indie practitioner forks. Music IS may import patterns from Sound IS; never duplicates substrate.
 - **Canon:** composes with Arcanea canon (Guardian → artist mapping for Arcanea label) under CC-BY-NC.
-- **Compounds:** Arcanea BV (royalties, sync licensing, catalog IP).
+- **Compounds:** Starlight Intelligence (eenmanszaak, royalties, sync licensing, catalog IP).
 
 ### Ocean Intelligence (Marine)
 - **Class:** sovereign vertical (operated + public commons) — **first Commons/IS/OS triad on SIP.**
@@ -146,7 +146,7 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Starlight Gravity Engine
 - **Class:** sovereign vertical (operated, public)
 - **Domain:** Human-and-agentic "gravity" — turning meaningful encounters into shared intelligence, useful artifacts, fulfilled commitments, trusted relationships, valuable introductions, and rooms people want to return to. Mechanism: `Gravity = Direction × Signal × Contribution × Convening × Reliability`.
-- **Owner:** Frank Riemer / Starlight Holding BV.
+- **Owner:** Frank Riemer / Starlight Intelligence (eenmanszaak).
 - **Status:** `active — v0.1 "Field Edition"` (working core + CLI; draft PR under review).
 - **Primary repo:** [`frankxai/starlight-gravity-engine`](https://github.com/frankxai/starlight-gravity-engine) (PUBLIC, MIT).
 - **Public surface:** `github.com/frankxai/starlight-gravity-engine` today; `frankx.ai/starlight/gravity` (product page) forthcoming.
@@ -175,12 +175,12 @@ This is the **public registry**. Active alliances and private verticals (Family 
 ### Starlight Intelligence (the substrate)
 - **Class:** sovereign substrate (the substrate itself, not a vertical)
 - **Domain:** SIP protocol, SIS substrate, Alliance forging method, Starlight Console, canonical registry. Hosts the master **Starlight Orchestrator** layer at `core/orchestrator/` that routes the other nine universal IS.
-- **Owner:** Frank Riemer / Starlight Holding BV.
+- **Owner:** Frank Riemer / Starlight Intelligence (eenmanszaak).
 - **Status:** `active — v1.0.0 spec shipped`.
 - **Primary repo:** `frankxai/Starlight-Intelligence-System`.
 - **Public surface:** `starlightintelligence.org`.
 - **License:** MIT for spec + reference commands. Proprietary for any future Starlight Console managed tier.
-- **Compounds:** Starlight Holding (protocol attribution at scale, canonical authority).
+- **Compounds:** Starlight Intelligence (protocol attribution at scale, canonical authority).
 
 ---
 

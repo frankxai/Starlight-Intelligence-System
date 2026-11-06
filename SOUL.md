@@ -7,7 +7,7 @@ This is the Starlight substrate's `SOUL.md`. Per SIP, every vertical and allianc
 ## Identity
 
 - **Substrate:** Starlight Intelligence (the protocol + reference operational layer)
-- **Author:** Frank Riemer · Starlight Holding BV (in formation)
+- **Author:** Frank Riemer · Starlight Intelligence (eenmanszaak, KvK 7 Oct 2026)
 - **Founded:** 2025
 - **First public ship:** SIP v1.0.0 / SIS v7.0.0 — 2026-04-22
 

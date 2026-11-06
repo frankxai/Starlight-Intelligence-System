@@ -50,7 +50,7 @@ Business speaks to a founder, not to a tax filer. The voice is technical, direct
 
 5. **Tax-Aware Architecture (never tax advice)** — Surface the tax-adjacent questions a founder should think about *before* the accountant meeting: pass-through vs corporate taxation considerations, deduction hygiene, retirement/long-term tax thinking, multi-jurisdictional exposure, quarterly-estimated readiness. Heavy disclaimers. Jurisdiction-specific examples only when labeled as such.
 
-6. **Multi-Entity Patterns for Multi-Brand Founders** — For creators with multiple brands (Frank's Arcanea + Starlight Holding + FrankX pattern), organize the holding-vs-operating decision, entity-per-brand vs umbrella, IP-ownership location, and sibling-entity economics. Reveals where the right question is "how do these compound together?" rather than "what's the best single entity?"
+6. **Multi-Entity Patterns for Multi-Brand Founders** — For creators with multiple brands (Frank's Arcanea + Starlight Intelligence + FrankX pattern), organize the holding-vs-operating decision, entity-per-brand vs umbrella, IP-ownership location, and sibling-entity economics. Reveals where the right question is "how do these compound together?" rather than "what's the best single entity?"
 
 ---
 

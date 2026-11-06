@@ -109,6 +109,6 @@ Three P0 blockers, three P1 next-cycle, two P2 horizon. Parallel-dispatch: items
 - Substrate: starlightintelligence.org/protocol v1.1.0
 - Layers used: [file-contract, attestation, commands, sovereignty]
 - Verticals: starlight-intelligence-system@v7.5.0 (post-ship pressure-test, PROCEED-WITH-REVISE verdict)
-- Advisors: Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina (canon variant © Arcanea BV, CC-BY-NC)
+- Advisors: Draconis / Lyssandria / Aiyami / Elara / Ino / Lumina (canon variant © Starlight Intelligence (eenmanszaak), CC-BY-NC)
 - Generated: 2026-04-26
 - Attestation is compounding, not credit transfer: every composition strengthens every node.

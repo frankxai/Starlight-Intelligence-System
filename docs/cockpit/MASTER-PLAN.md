@@ -269,4 +269,4 @@ Operational-tier (no pre-pass required):
 
 ---
 
-**Built on SIP** · v1.1.0 · Cockpit Master Plan v8 · 2026-04-29 · Frank Riemer (Starlight Holding BV) · MIT
+**Built on SIP** · v1.1.0 · Cockpit Master Plan v8 · 2026-04-29 · Frank Riemer (Starlight Intelligence, eenmanszaak) · MIT

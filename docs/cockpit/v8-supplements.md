@@ -134,7 +134,7 @@ SIP attestation + (optional) EAS on-chain attestation for the artifact
 
 | DPI source | Mechanism | Sovereignty posture | Phase |
 |------------|-----------|---------------------|-------|
-| **SIP attestation fees** | Optional micro-fee per on-chain attestation (Base sub-cent gas) | Sovereign — fee accrues to Starlight Holding BV multisig | 3 |
+| **SIP attestation fees** | Optional micro-fee per on-chain attestation (Base sub-cent gas) | Sovereign — fee accrues to Starlight Intelligence (eenmanszaak) multisig | 3 |
 | **Royalty splits on attested artifacts** | EAS schema embeds royalty split addresses; downstream sales via marketplace contracts route splits automatically | Sovereign — Frank sets default schema for own artifacts; friend-forks define their own | 3 |
 | **Concierge service revenue** | Paid Sovereign Spawn engagements; recurring or one-time | Sovereign — direct invoicing, optional crypto rails | 3 |
 | **AaaS vertical subscriptions** | Hosted People IS / Sound IS / future verticals | Sovereign — recurring SaaS, paid-per-sovereign-user | 3+5 |
@@ -208,4 +208,4 @@ It only **adds scope** within existing phases — no plan re-open required.
 
 ---
 
-**Built on SIP** · v1.1.0 · Cockpit v8 Supplements · 2026-04-29 · Frank Riemer (Starlight Holding BV) · MIT
+**Built on SIP** · v1.1.0 · Cockpit v8 Supplements · 2026-04-29 · Frank Riemer (Starlight Intelligence, eenmanszaak) · MIT

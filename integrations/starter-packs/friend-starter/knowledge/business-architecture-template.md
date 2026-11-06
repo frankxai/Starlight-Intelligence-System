@@ -52,7 +52,7 @@ If anything in the artifact contradicts what a qualified professional tells you,
 <same structure>
 
 ### Multi-entity question (if applicable)
-<Only include when the person runs ≥2 brands. Evaluate umbrella vs entity-per-brand vs holding patterns. Surface the Frank pattern (Starlight Holding → Arcanea BV → personal ZZP) as one example, explicitly not the default.>
+<Only include when the person runs ≥2 brands. Evaluate umbrella vs entity-per-brand vs holding patterns. Surface the Frank pattern (one Starlight Intelligence eenmanszaak trading as Arcanea and FrankX, BV later) as one example, explicitly not the default.>
 
 ### Tax entity selection
 <Surface the pass-through vs corporate question for the chosen jurisdiction. Name the specific election available (S-corp, BV vs ZZP, Ltd vs sole trader, GmbH vs Einzelunternehmer, other). Never invent the crossover revenue threshold — accountant provides.>

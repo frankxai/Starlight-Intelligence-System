@@ -23,7 +23,7 @@ attestation: built_on_sip
 
 ### arcanea-mcp
 - **sip_version:** 1.0.0
-- **owner:** Arcanea BV (Frank Riemer)
+- **owner:** Starlight Intelligence (eenmanszaak, Frank Riemer)
 - **status:** active
 - **repo:** `frankxai/arcanea-mcp`
 - **endpoint:** stdio (local) + hosted TBD
@@ -39,7 +39,7 @@ attestation: built_on_sip
 
 ### starlight-mcp
 - **sip_version:** 1.1.1
-- **owner:** Frank Riemer / Starlight Holding BV
+- **owner:** Frank Riemer / Starlight Intelligence (eenmanszaak)
 - **status:** active
 - **repo:** `frankxai/Starlight-Intelligence-System`
 - **endpoint:** stdio (local) — `starlight-substrate-mcp` bin
@@ -53,7 +53,7 @@ attestation: built_on_sip
 
 ### sis-memory-mcp
 - **sip_version:** 1.1.0
-- **owner:** Frank Riemer / Starlight Holding BV
+- **owner:** Frank Riemer / Starlight Intelligence (eenmanszaak)
 - **status:** active
 - **repo:** `frankxai/Starlight-Intelligence-System`
 - **endpoint:** stdio (local) — `starlight-mcp` bin (planned: dedicated `sis-memory-mcp` bin in v8)
@@ -72,7 +72,7 @@ attestation: built_on_sip
 
 ### sentinel-mcp
 - **sip_version:** 1.1.0
-- **owner:** Frank Riemer / Starlight Holding BV
+- **owner:** Frank Riemer / Starlight Intelligence (eenmanszaak)
 - **status:** planned (v8)
 - **repo:** `frankxai/Starlight-Intelligence-System`
 - **endpoint:** stdio (local)

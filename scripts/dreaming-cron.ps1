@@ -40,11 +40,20 @@ try {
 
     # tsx is a devDependency in this repo's package.json.
     # The --import flag wires it as a Node loader for TS extensions.
-    & node --import tsx scripts/dreaming-run.ts
+    $nodeExe = if (Test-Path 'C:\Program Files\nodejs\node.exe') { 'C:\Program Files\nodejs\node.exe' } else { 'node' }
+    & $nodeExe --import tsx scripts/dreaming-run.ts
     if ($LASTEXITCODE -ne 0) {
         Write-Host "dreaming-cron: dreaming-run.ts exited $LASTEXITCODE" -ForegroundColor Yellow
         exit $LASTEXITCODE
     }
+    $hbPath = 'C:\Users\frank\starlight\logs\heartbeats\heartbeat-task-dreaming.json'
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $hbPath) | Out-Null
+    @{
+        ts = (Get-Date).ToString('o')
+        source = 'StarlightDreaming'
+        status = 'ok'
+        detail = 'dreaming-run.ts completed and appended CONSOLIDATION_LOG.md'
+    } | ConvertTo-Json | Set-Content -LiteralPath $hbPath -Encoding UTF8
 } finally {
     Pop-Location
 }

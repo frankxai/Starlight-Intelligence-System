@@ -110,7 +110,7 @@ Compact matrix. Scan before picking.
 
 Explicit list. Each one-sentence reason.
 
-- **We don't own your canon.** Arcanea canon belongs to Arcanea BV; your canon belongs to you. Composition is opt-in both directions and attributed, never absorbed.
+- **We don't own your canon.** Arcanea canon belongs to Starlight Intelligence (eenmanszaak); your canon belongs to you. Composition is opt-in both directions and attributed, never absorbed.
 - **We don't build your MVP for free.** The substrate is free; your product is your work. Confusing the two is the fastest way to misalign on every future artifact.
 - **We don't guarantee consensus in alliances.** Every fork has exactly one owner per the domain map. If you came for consensus, you came for the wrong protocol.
 - **We don't accept silent composition.** Using SIP elements without the "Built on SIP" block is a breach — `/sip-attest` refuses to stamp decorative use, and we treat stripping the block as substrate dishonesty.
