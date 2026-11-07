@@ -14,11 +14,11 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SERVER = join(ROOT, "dist", "mcp-server.js");
 
-type Rpc = { id?: number; result?: any; error?: any };
+type Rpc = { id?: number; result?: unknown; error?: unknown };
 
-async function session(vaultDir: string, requests: object[]): Promise<Map<number, Rpc>> {
+async function session(vaultDir: string, requests: Record<string, unknown>[]): Promise<Map<number, Rpc>> {
   const child = spawn(process.execPath, [SERVER, "--vault-dir", vaultDir, "--no-seed"], { stdio: ["pipe", "pipe", "pipe"] });
-  const expected = requests.filter((r: any) => r.id !== undefined).length;
+  const expected = requests.filter((r) => r.id !== undefined).length;
   const responses = new Map<number, Rpc>();
   let buffer = "";
   return await new Promise((resolvePromise, reject) => {
@@ -64,7 +64,7 @@ describe("vault MCP server quality contract", () => {
         }
         assert.equal(tool.outputSchema?.type, "object", `${tool.name} outputSchema`);
         assert.equal(tool.inputSchema.additionalProperties, false, `${tool.name} rejects unknown arguments`);
-        for (const [key, prop] of Object.entries<any>(tool.inputSchema.properties)) {
+        for (const [key, prop] of Object.entries(tool.inputSchema.properties as Record<string, { description?: string }>)) {
           assert.ok(prop.description, `${tool.name}.${key} description`);
         }
       }
@@ -106,7 +106,7 @@ describe("vault MCP server quality contract", () => {
   it("a malformed request line gets an error and the server keeps serving", async () => {
     await withVault(async (dir) => {
       const child = spawn(process.execPath, [SERVER, "--vault-dir", dir, "--no-seed"], { stdio: ["pipe", "pipe", "pipe"] });
-      const lines: any[] = [];
+      const lines: string[] = [];
       let buffer = "";
       const done = new Promise<void>((resolvePromise, reject) => {
         const timer = setTimeout(() => { child.kill(); reject(new Error(`got ${lines.length}/4 responses`)); }, 15000);

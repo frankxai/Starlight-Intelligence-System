@@ -30,10 +30,10 @@ describe('Cloud worker ingress containment (synthetic requests)', () => {
     it(`keeps ${path} public and reports protected API unavailability`, async () => {
       const res = await StarlightCloudWorker.handleRequest(new Request(`${BASE_URL}${path}`));
       assert.equal(res.status, 200);
-      const body = await res.json() as any;
+      const body = await res.json() as { status?: string, code?: string, error?: string, model?: string, service?: string, protectedApi?: { status?: string, reason?: string }, success?: boolean, choices?: unknown[] };
       assert.equal(body.service, 'starlight-cloud-worker');
-      assert.equal(body.protectedApi.status, 'unavailable');
-      assert.equal(body.protectedApi.reason, 'identity_membership_verifier_missing');
+      assert.equal(body.protectedApi?.status, 'unavailable');
+      assert.equal(body.protectedApi?.reason, 'identity_membership_verifier_missing');
     });
   }
 
@@ -84,7 +84,7 @@ describe('Cloud worker ingress containment (synthetic requests)', () => {
         });
         assert.equal(res.status, 503);
         assert.equal(res.headers.get('Cache-Control'), 'no-store');
-        const body = await res.json() as any;
+        const body = await res.json() as { status?: string, code?: string, error?: string, model?: string, service?: string, protectedApi?: { status?: string, reason?: string }, success?: boolean, choices?: unknown[] };
         assert.equal(body.code, 'protected_api_unavailable');
         assert.equal(body.success, undefined);
         assert.equal(body.choices, undefined);
@@ -115,7 +115,7 @@ describe('Cloud worker ingress containment (synthetic requests)', () => {
     });
     const res = await worker.fetch(req, {});
     assert.equal(res.status, 503);
-    assert.equal((await res.json() as any).code, 'protected_api_unavailable');
+    assert.equal((await res.json() as { status?: string, code?: string, error?: string, model?: string, service?: string, protectedApi?: { status?: string, reason?: string }, success?: boolean, choices?: unknown[] }).code, 'protected_api_unavailable');
     assert.equal(req.bodyUsed, false);
   });
 

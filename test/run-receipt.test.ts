@@ -347,7 +347,7 @@ describe('run receipt — receiptProblems', () => {
   });
 
   it('refuses an evidence entry missing sha256', () => {
-    const problems = receiptProblems(receipt({ evidence: [{ kind: 'source', ref: 'https://example.org' } as any] }));
+    const problems = receiptProblems(receipt({ evidence: [{ kind: 'source', ref: 'https://example.org' } as unknown as import('../src/run-receipt.js').RunReceiptEvidence] }));
     assert.ok(problems.includes('evidence https://example.org has no sha256'), problems.join('; '));
   });
 
@@ -453,7 +453,7 @@ describe('run receipt hardening', () => {
     assert.match(receiptProblems(stageExtra).join(' '), /unknown property stages\[0\]\.tool/);
     const decisionExtra = {
       ...baseReceipt(),
-      decisions: [{ gate: 'g', decidedBy: 'agent', actorId: 'a', outcome: 'approved', at: '2026-09-21T21:59:00Z', rogue: 1 } as any],
+      decisions: [{ gate: 'g', decidedBy: 'agent', actorId: 'a', outcome: 'approved', at: '2026-09-21T21:59:00Z', rogue: 1 } as unknown as import('../src/run-receipt.js').RunReceiptDecision],
     };
     assert.match(receiptProblems(decisionExtra).join(' '), /unknown property decisions\[0\]\.rogue/);
     const looseDate = { ...baseReceipt(), issuedAt: '2026' };
