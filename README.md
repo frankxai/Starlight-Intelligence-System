@@ -352,6 +352,27 @@ Each vault is a JSONL file. Human-readable. Git-versionable. Greppable.
 | Antigravity | `AGENTS.md` | Built-in native tools & MCP | 1,000,000+ |
 | Grok | `AGENTS.md` / `GROK.md` | `grok-harness-adapter` | 131,000 |
 
+## Product split
+
+
+
+1. SIP = public contract (MIT), no canon, no pricing
+
+2. SIS = open reference (self-host)
+
+3. Runtime / Observatory = operator product (managed or self-host+SLA)
+
+4. GenCreator = human SKU this quarter
+
+5. We implement MCP + A2A + optional x402. We do not invent an L1.
+
+6. Memory gateway evaluates existing stores (markdown vaults, Mem0, Graphiti). We do not replace them this week.
+
+
+
+For details, see [SIP.md](SIP.md) and Federation issues #143–#158.
+
+
 ### Multi-harness runtime bridge & context continuity
 
 The `@arcanea/starlight-intelligence-system/runtime-bridge` export provides `ContextBridge` and `ReviewQueue` for bounded context capture and revision-bound handoffs. The host owns scheduling, provider admission and verification of the receiving checkout.
