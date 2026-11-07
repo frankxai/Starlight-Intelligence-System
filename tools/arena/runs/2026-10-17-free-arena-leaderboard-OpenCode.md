@@ -4,6 +4,11 @@ Built on SIP — receipt: `arena-2026-10-17-free-arena.json`. Transport clone:
 `tools/arena/free-arena.mjs` (R5 fixtures verbatim, `opencode run --format json`,
 prompts via stdin, no LLM judge).
 
+Author: OpenCode harness (model deepseek-v4.1-flash, provider opencode-go), session
+2026-10-17. Revision 1, created 2026-10-17, byline added 2026-11-07 under the
+authorship rule of 18 Oct 2026. Review state: unreviewed; draft PR pending
+cross-provider signoff.
+
 ## Correctness (R5 deep-reasoning card, n=1 per cell)
 
 | model | pass | FAIL-ATTRACTOR | ERROR | contract violations |

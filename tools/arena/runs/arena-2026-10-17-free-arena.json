@@ -1,6 +1,7 @@
 {
   "$comment": "Built on SIP — Starlight Model Arena run receipt. Transport clone of R5 with the opencode free tier. Fixtures, scoring and contract axis reused verbatim from tools/arena/deep-reasoning.mjs.",
   "runId": "arena-2026-10-17-free-arena",
+  "author": "OpenCode harness (deepseek-v4.1-flash, opencode-go), 2026-10-17",
   "date": "2026-10-17",
   "status": "RAN",
   "verdict": "MEASURED",
