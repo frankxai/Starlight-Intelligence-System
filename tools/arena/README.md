@@ -63,6 +63,17 @@ subjective ones blind with sonnet, and write the receipt to tools/arena/runs/.
 (Each step is plain `Agent` tool usage — see the 2026-06-09 run receipt for the
 exact prompt shapes.)
 
+**Zero-cost transport (`free-arena.mjs`).** The same six R5 fixtures and the same
+mechanical scoring, run through `opencode run --format json` against the OpenCode
+free tier (8 models, prompts via stdin, no LLM judge, $0 API budget — the token
+columns measure cost-of-harness-per-answer, not prompt size):
+
+```
+node tools/arena/free-arena.mjs                     # full card, sequential
+node tools/arena/free-arena.mjs --dry-run           # assemble prompts, spend nothing
+node tools/arena/free-arena.mjs --tasks d5 --models glm   # one-cell smoke
+```
+
 ## Eval-stack doctrine (decided 2026-06-09)
 
 | Layer | Tool | Why |
