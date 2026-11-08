@@ -1195,7 +1195,8 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   );
   assert.doesNotMatch(deployRunner, /roles\/editor|roles\/owner|roles\/storage\.objectAdmin/);
 
-  // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, add starlight to starlight-sandbox supplementary group, and setgid 2750 on /work
+  // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, use a dedicated executor UID, and setgid 2750 on /work.
+  // The supervisor is root (drops via runuser): Cloud Run does not support sudo/setuid binaries for non-root users.
   assert.doesNotMatch(
     dockerfile,
     /useradd[^\n]*-u\s+1000\b/,
@@ -1203,15 +1204,14 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   );
   assert.match(
     dockerfile,
-    /useradd\s+-m\s+-u\s+10001\s+-g\s+starlight\s+-G\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight/,
-    'supervisor starlight must use dedicated UID 10001 and belong to supplementary group starlight-sandbox',
+    /useradd\s+-m\s+-u\s+10002\s+-g\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight-sandbox/,
+    'executor starlight-sandbox must use dedicated UID 10002',
   );
   assert.match(
     dockerfile,
-    /chown\s+starlight:starlight-sandbox\s+\/work[\s\\]+&&\s+chmod\s+2750\s+\/work/,
+    /chown\s+root:starlight-sandbox\s+\/work[\s\\]+&&\s+chmod\s+2750\s+\/work/,
     '/work must carry setgid 2750 with group starlight-sandbox',
   );
-  assert.match(dockerfile, /^USER\s+starlight\s*$/m, 'container default USER must be starlight');
   assert.doesNotMatch(
     dockerfile,
     /^ENV\s+PATH=.*starlight-sandbox/m,
@@ -1637,4 +1637,69 @@ test('runner isolation contract enforces setgid staging, sandbox process reaping
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
+});
+
+test('runner UID transition uses root runuser and never setuid sudo (Cloud Run container contract)', async () => {
+  const testDir = path.dirname(fileURLToPath(import.meta.url));
+  const repoRoot = path.resolve(testDir, '..', '..', '..');
+  const entrypointPath = path.join(repoRoot, 'tools', 'runner', 'runner-entrypoint.sh');
+  const dockerfile = fs.readFileSync(path.join(repoRoot, 'tools', 'runner', 'Dockerfile.runner'), 'utf8');
+  const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
+
+  // Static contract: no sudo package, no sudoers grant, supervisor starts as root, entrypoint root-owned.
+  assert.doesNotMatch(dockerfile, /^\s+sudo \\$/m, 'runner image must not install sudo');
+  assert.doesNotMatch(dockerfile, /sudoers/, 'runner image must not ship a sudoers grant');
+  const userLines = dockerfile.match(/^USER\s+\S+\s*$/gm) ?? [];
+  assert.equal(userLines.at(-1)?.trim(), 'USER root', 'final container USER must be root so runuser can drop privileges');
+  assert.match(dockerfile, /COPY --chown=root:root runner-entrypoint\.sh /);
+  assert.doesNotMatch(entrypoint, /\bsudo\s+-n\b/, 'entrypoint must never invoke setuid sudo');
+  assert.match(entrypoint, /if \[ "\$SUPERVISOR_UID" -ne 0 \]; then/);
+  assert.match(entrypoint, /SANDBOX_EXEC=\(runuser -u "\$SANDBOX_USER" -- \/usr\/bin\/env -i /);
+
+  if (process.platform === 'win32' || spawnSync('bash', ['--version']).status !== 0) return;
+  const nobody = spawnSync('id', ['-u', 'nobody'], { encoding: 'utf8' });
+  if (nobody.status !== 0) return;
+  const nobodyUid = nobody.stdout.trim();
+  const callerUid = String(process.getuid());
+
+  // Execution proof 1: the in-sandbox wrapper never runs untrusted code as the caller when it cannot drop.
+  const wrappers = [...entrypoint.matchAll(/\/bin\/bash -c '\n(      export HOME="\$1"[\s\S]*?exec "\$@"\n)    ' _ "\$\{SANDBOX_HOME:-\/tmp\}"/g)];
+  assert.equal(wrappers.length, 2, 'expected both cloud-run-sandbox inner wrappers');
+  for (const [, wrapper] of wrappers) {
+    assert.doesNotMatch(wrapper, /sudo/);
+    const run = spawnSync('bash', ['-c', wrapper, '_', '/tmp', 'nobody', 'id', '-u'], {
+      encoding: 'utf8',
+      env: { PATH: '/usr/bin:/bin' },
+    });
+    if (run.status === 0) {
+      assert.equal(run.stdout.trim(), nobodyUid, 'wrapper must only exec after dropping to the sandbox user');
+    } else {
+      assert.equal(run.status, 126, `wrapper must fail closed, got ${run.status}: ${run.stderr}`);
+      assert.match(run.stderr, /cannot drop to sandbox user/);
+      assert.notEqual(run.stdout.trim(), callerUid);
+    }
+  }
+
+  // Execution proof 2: a non-root supervisor refuses before cloning instead of attempting sudo.
+  if (spawnSync('curl', ['--version']).status !== 0) return;
+  const env = {
+    PATH: process.env.PATH ?? '/usr/bin:/bin',
+    STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+    STARLIGHT_SANDBOX_USER: 'root',
+    STARLIGHT_METADATA_BASE_URL: 'http://127.0.0.1:9',
+  };
+  let refusal;
+  if (callerUid === '0') {
+    if (spawnSync('setpriv', ['--version']).status !== 0) return;
+    refusal = spawnSync(
+      'setpriv',
+      ['--reuid', nobodyUid, '--regid', nobodyUid, '--clear-groups', 'bash', entrypointPath],
+      { encoding: 'utf8', env },
+    );
+  } else {
+    refusal = spawnSync('bash', [entrypointPath], { encoding: 'utf8', env });
+  }
+  assert.equal(refusal.status, 1, `expected non-root refusal, got ${refusal.status}: ${refusal.stderr}`);
+  assert.match(refusal.stderr, /Supervisor must run as root to drop to 'root' via runuser/);
+  assert.doesNotMatch(refusal.stdout, /Cloning repository/);
 });

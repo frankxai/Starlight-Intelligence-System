@@ -3,8 +3,9 @@
 # Starlight Scale-to-Zero Runner Entrypoint
 # Executes CI/CD validation, SAGE proving ground, and autonomous agent tasks.
 # Security:
-#   1. Mandatory dual-UID isolation (`starlight` supervisor -> `starlight-sandbox` executor)
+#   1. Mandatory dual-UID isolation (root supervisor -> `starlight-sandbox` executor via `runuser`)
 #      with `env -i` scrubbed environments and explicit `starlight-sandbox` group staging (`2750`).
+#      No `sudo` or other setuid binary is used: Cloud Run does not support setuid for non-root users.
 #   2. Zero secret exposure in process command lines (`/proc/<pid>/cmdline`):
 #      - Git clone auth uses `GIT_CONFIG_COUNT`/`GIT_CONFIG_VALUE_0` environment config (never `-c` argv or `.git/config`).
 #      - Callback HMAC-SHA256 signing & HTTPS delivery run inside Node.js reading the signing key over `stdin` (`fd 0`)
@@ -90,15 +91,17 @@ if [ -z "$SANDBOX_HOME" ]; then
 fi
 SANDBOX_PATH="${SANDBOX_HOME}/.local/share/pnpm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-SANDBOX_EXEC=()
-if [ "$SUPERVISOR_UID" -eq 0 ] && command -v runuser >/dev/null 2>&1; then
-  SANDBOX_EXEC=(runuser -u "$SANDBOX_USER" -- /usr/bin/env -i "HOME=${SANDBOX_HOME}" "USER=${SANDBOX_USER}" "LOGNAME=${SANDBOX_USER}" "PATH=${SANDBOX_PATH}" "PNPM_HOME=${SANDBOX_HOME}/.local/share/pnpm" "CI=true" "NODE_ENV=production" "STARLIGHT_SUBSTRATE=true")
-elif command -v sudo >/dev/null 2>&1; then
-  SANDBOX_EXEC=(sudo -n -u "$SANDBOX_USER" -- /usr/bin/env -i "HOME=${SANDBOX_HOME}" "USER=${SANDBOX_USER}" "LOGNAME=${SANDBOX_USER}" "PATH=${SANDBOX_PATH}" "PNPM_HOME=${SANDBOX_HOME}/.local/share/pnpm" "CI=true" "NODE_ENV=production" "STARLIGHT_SUBSTRATE=true")
-else
-  echo "Error: Neither runuser nor passwordless sudo available to enter '$SANDBOX_USER'; refusing execution." >&2
+# UID transition: the supervisor must start as root and drop with `runuser` (no setuid bit needed).
+# Cloud Run does not support `sudo`/setuid binaries for non-root users, so there is no sudo fallback.
+if [ "$SUPERVISOR_UID" -ne 0 ]; then
+  echo "Error: Supervisor must run as root to drop to '$SANDBOX_USER' via runuser (Cloud Run does not support setuid sudo); refusing execution." >&2
   exit 1
 fi
+if ! command -v runuser >/dev/null 2>&1; then
+  echo "Error: runuser (util-linux) not available to enter '$SANDBOX_USER'; refusing execution." >&2
+  exit 1
+fi
+SANDBOX_EXEC=(runuser -u "$SANDBOX_USER" -- /usr/bin/env -i "HOME=${SANDBOX_HOME}" "USER=${SANDBOX_USER}" "LOGNAME=${SANDBOX_USER}" "PATH=${SANDBOX_PATH}" "PNPM_HOME=${SANDBOX_HOME}/.local/share/pnpm" "CI=true" "NODE_ENV=production" "STARLIGHT_SUBSTRATE=true")
 
 # Preflight check that UID transition succeeds with a clean environment before cloning.
 if ! "${SANDBOX_EXEC[@]}" /bin/bash -c 'test "$(id -u)" = "$1"' _ "$SANDBOX_UID"; then
@@ -130,15 +133,16 @@ if [ -n "$SANDBOX_CLI_BIN" ] && "${SANDBOX_EXEC[@]}" "$SANDBOX_CLI_BIN" do --wri
       if [ -n "$USER" ] && id -u "$USER" >/dev/null 2>&1 && [ "$(id -u)" != "$(id -u "$USER")" ]; then
         if [ "$(id -u)" -eq 0 ] && command -v runuser >/dev/null 2>&1; then
           exec runuser -u "$USER" -- "$@"
-        elif command -v sudo >/dev/null 2>&1 && sudo -n -u "$USER" -- /bin/true >/dev/null 2>&1; then
-          exec sudo -n -u "$USER" -- "$@"
         fi
+        echo "Error: cannot drop to sandbox user inside isolated sandbox; refusing execution." >&2
+        exit 126
       fi
       exec "$@"
     ' _ "${SANDBOX_HOME:-/tmp}" "${SANDBOX_USER:-}"
   )
 elif [ -n "$SANDBOX_CLI_BIN" ] && /usr/bin/env -i PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" "$SANDBOX_CLI_BIN" do --write -- /bin/true >/dev/null 2>&1; then
-  # Cloud Run Jobs where the sandbox launcher socket accepts only the container runtime user (`starlight`)
+  # Cloud Run Jobs where the sandbox launcher accepts only the container runtime user (root supervisor);
+  # the inner wrapper drops to the executor with runuser and fails closed if it cannot.
   SANDBOX_ISOLATION_MODE="cloud-run-sandbox"
   ISOLATED_SANDBOX_CMD=(
     /usr/bin/env -i PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -151,9 +155,9 @@ elif [ -n "$SANDBOX_CLI_BIN" ] && /usr/bin/env -i PATH="/usr/local/sbin:/usr/loc
       if [ -n "$USER" ] && id -u "$USER" >/dev/null 2>&1 && [ "$(id -u)" != "$(id -u "$USER")" ]; then
         if [ "$(id -u)" -eq 0 ] && command -v runuser >/dev/null 2>&1; then
           exec runuser -u "$USER" -- "$@"
-        elif command -v sudo >/dev/null 2>&1 && sudo -n -u "$USER" -- /bin/true >/dev/null 2>&1; then
-          exec sudo -n -u "$USER" -- "$@"
         fi
+        echo "Error: cannot drop to sandbox user inside isolated sandbox; refusing execution." >&2
+        exit 126
       fi
       exec "$@"
     ' _ "${SANDBOX_HOME:-/tmp}" "${SANDBOX_USER:-}"
@@ -377,7 +381,7 @@ INSTALL_DURATION=$(( $(date +%s) - INSTALL_START ))
 echo " Dependency download (--ignore-scripts) finished in ${INSTALL_DURATION}s"
 
 # Ensure workspace is writable inside the isolated sandbox (e.g., when Cloud Run `--sandbox-launcher` runs the
-# gVisor guest under container user `starlight` with supplementary group `starlight-sandbox` under no_new_privs).
+# gVisor guest under the container runtime user before the inner wrapper drops to `starlight-sandbox`).
 if ! "${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'test -d "$1" && test -r "$1" && test -w "$1" && test -x "$1"' _ "$SANDBOX_REPO" >/dev/null 2>&1; then
   "${SANDBOX_EXEC[@]}" /bin/bash -c 'chmod 0770 "$1" && chmod -R g+rwX "$1/workspace" "$1/.local" 2>/dev/null || true' _ "$SANDBOX_HOME"
 fi
