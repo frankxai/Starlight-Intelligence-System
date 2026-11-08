@@ -7,11 +7,10 @@ import {
   resolveAllowedCorsOrigin,
   type AccessEnv,
 } from "./auth.js";
+import { enforceBodyLimit, PayloadTooLargeError } from "./body-limit.js";
 import { createStarlightServer } from "./mcp.js";
 import { StarlightStore } from "./store.js";
 import { SupabaseWorkspaceAdapter } from "./store-supabase.js";
-
-const MAX_MCP_BODY_BYTES = 1_048_576; // 1 MiB ceiling on JSON-RPC payloads
 
 export interface Env extends AccessEnv {
   SUPABASE_URL: string;
@@ -70,9 +69,14 @@ export default {
       });
     }
 
-    const declaredLength = Number(request.headers.get("content-length") ?? "0");
-    if (Number.isFinite(declaredLength) && declaredLength > MAX_MCP_BODY_BYTES) {
-      return json({ error: "payload_too_large" }, 413);
+    try {
+      // Bounds streamed/chunked bodies too: Content-Length alone is client-controlled and optional.
+      request = await enforceBodyLimit(request);
+    } catch (error) {
+      if (error instanceof PayloadTooLargeError) {
+        return json({ error: "payload_too_large" }, 413);
+      }
+      throw error;
     }
 
     try {
