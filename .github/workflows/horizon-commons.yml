@@ -1,0 +1,50 @@
+name: horizon-commons
+
+# Release gates, consent binding and signed-release verification for the Horizon
+# Commons exporter. Zero dependencies, so no install step. Root package.json sits
+# in the foundry toolchain lock's digest closure, so this suite runs here rather
+# than in npm test.
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/horizon-commons.yml"
+      - "tools/horizon-commons/**"
+      - "test/horizon-commons.test.mjs"
+      - "protocol/lib/dsse.mjs"
+      - "memory/vaults/horizon-vault.md"
+      - "public-vault/horizon.jsonl"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/horizon-commons.yml"
+      - "tools/horizon-commons/**"
+      - "test/horizon-commons.test.mjs"
+      - "protocol/lib/dsse.mjs"
+      - "memory/vaults/horizon-vault.md"
+      - "public-vault/horizon.jsonl"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: horizon-commons-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  horizon-commons:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Gates and signed releases
+        run: node --test test/horizon-commons.test.mjs
+
+      - name: Audit the repository's Horizon material
+        run: node tools/horizon-commons/commons.mjs audit
