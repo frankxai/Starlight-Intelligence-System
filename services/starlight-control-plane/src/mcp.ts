@@ -76,8 +76,8 @@ const TOOLS: Record<string, ToolDef> = {
     properties: { id: ID, fence: FENCE, resultRef: { type: 'string', description: 'PR URL, commit, or receipt path' } }, required: ['id', 'fence', 'resultRef'],
   },
   release_task: {
-    op: 'release', role: 'worker', description: 'Give a task back. Counts as an attempt.',
-    properties: { id: ID, fence: FENCE, reason: { type: 'string' } }, required: ['id', 'fence'],
+    op: 'release', role: 'worker', description: 'Give a task back. Counts as an attempt. terminal: true ends it (dead) when no retry can succeed.',
+    properties: { id: ID, fence: FENCE, reason: { type: 'string' }, terminal: { type: 'boolean' } }, required: ['id', 'fence'],
   },
   verify_task: {
     op: 'verify', role: 'verifier', description: 'Pass or fail completed work. You must be a different provider than the maker.',

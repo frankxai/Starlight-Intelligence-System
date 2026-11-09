@@ -15,7 +15,7 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
   let i = 0;
   const sandbox = {
     clone: async (...a) => { log.push(['clone', ...a]); },
-    startTask: async () => 'started',
+    startTask: async () => { log.push(['start']); return 'started'; },
     readTask: async () => states[Math.min(i++, states.length - 1)],
     commitAndPush: async (branch, message, deadline) => { log.push(['push', branch, deadline]); return pushed; },
     destroy: async () => { log.push(['destroy']); },
@@ -35,7 +35,7 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
       return { expiresAt: Date.now() + leaseLeftMs };
     },
     complete: async (id, fence, ref) => { log.push(['complete', ref]); },
-    release: async (id, fence, reason) => { log.push(['release', reason]); },
+    release: async (id, fence, reason, terminal) => { log.push(['release', reason, terminal === true]); },
   };
   const params = { task, fence: 'f1', harness: 'claude', codexBot: 'codex[bot]', plan: plan ?? { owner: 'o', repo: 'r', mode: 'pr-branch', prNumber: 7 } };
   return { log, names, run: () => runTask(params, step, sandbox, gh, queue) };
@@ -80,10 +80,15 @@ test('a fix on a human PR branch is refused before any agent work, not retried a
     assert.equal(h.names.includes('start agent'), false, 'the agent never starts');
     assert.equal(h.log.some((l) => l[0] === 'push'), false, 'nothing is pushed');
     assert.equal(h.log.filter((l) => l[0] === 'release').length, 1, 'released once, with the reason');
+    assert.equal(h.log.find((l) => l[0] === 'release')[2], true, 'terminal, so the queue does not hand it out again');
   }
   // A review of the same PR pushes nothing, so a human branch is fine there.
   const review = harness({ states: [{ state: 'succeeded', result: 'VERDICT: PASS' }], prBranch: 'feature/frank-login', plan: { owner: 'o', repo: 'r', mode: 'review', prNumber: 7 } });
   assert.deepEqual(await review.run(), { done: 'https://github.com/o/r/pull/7#issuecomment-1' });
+  // Ordinary releases stay retryable.
+  const failed = harness({ states: [{ state: 'failed', error: 'x' }] });
+  await failed.run();
+  assert.equal(failed.log.find((l) => l[0] === 'release')[2], false);
 });
 
 test('a lost lease stops the sandbox without completing', async () => {

@@ -19,3 +19,12 @@ test('the client claims by kind, counts its leases and surfaces refusals', async
   assert.equal(calls[1][2], 'Bearer tok-fixture-0000000000');
   await assert.rejects(cp.heartbeat('t1', 'f'), (err) => err instanceof ControlPlaneError && err.status === 409);
 });
+
+test('release sends terminal only when asked', async () => {
+  const bodies = [];
+  const service = { fetch: async (url, init) => { bodies.push(JSON.parse(init.body)); return Response.json({ id: 't1', state: 'ready' }); } };
+  const cp = new ControlPlane(service, 'tok-fixture-0000000000');
+  await cp.release('t1', 'f', 'out of RAM');
+  await cp.release('t1', 'f', 'not an agent branch', true);
+  assert.deepEqual(bodies, [{ fence: 'f', reason: 'out of RAM' }, { fence: 'f', reason: 'not an agent branch', terminal: true }]);
+});

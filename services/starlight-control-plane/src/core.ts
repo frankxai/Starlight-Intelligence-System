@@ -400,20 +400,24 @@ export function complete(sql: Sql, who: Identity, id: string, resultRef: unknown
   });
 }
 
-function retryOrDie(sql: Sql, t: Record<string, unknown>, now: number, actor: string, kind: string, detail: object) {
+function retryOrDie(sql: Sql, t: Record<string, unknown>, now: number, actor: string, kind: string, detail: object, terminal = false) {
   const attempts = (t.attempts as number) + 1;
-  const state: TaskState = attempts >= (t.max_attempts as number) ? 'dead' : 'ready';
+  const state: TaskState = terminal || attempts >= (t.max_attempts as number) ? 'dead' : 'ready';
   sql.exec('DELETE FROM leases WHERE task_id = ?', t.id);
   sql.exec('UPDATE tasks SET state = ?, attempts = ?, updated_at = ? WHERE id = ?', state, attempts, now, t.id);
   event(sql, now, t.id as string, actor, kind, { ...detail, attempts, state });
   return state;
 }
 
-export function release(sql: Sql, who: Identity, id: string, reason: unknown, now: number, fence: unknown) {
+// terminal: the worker knows no retry can succeed (a push its gateway will always refuse, say), so
+// the task goes straight to dead instead of being handed out again until max_attempts.
+export function release(sql: Sql, who: Identity, id: string, reason: unknown, now: number, fence: unknown, terminal?: unknown) {
   return sql.transaction(() => {
     const t = row(sql, id);
     holderOf(sql, id, who, now, fence);
-    const state = retryOrDie(sql, t, now, who.agentId, 'released', { reason: typeof reason === 'string' ? reason.slice(0, 500) : '' });
+    const final = terminal === true;
+    const detail = { reason: typeof reason === 'string' ? reason.slice(0, 500) : '', ...(final ? { terminal: true } : {}) };
+    const state = retryOrDie(sql, t, now, who.agentId, 'released', detail, final);
     return { id, state };
   });
 }

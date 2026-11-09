@@ -60,7 +60,7 @@ export class ControlPlane {
     return this.call('POST', `/v1/tasks/${encodeURIComponent(id)}/complete`, { fence, resultRef });
   }
 
-  release(id: string, fence: string, reason: string) {
-    return this.call('POST', `/v1/tasks/${encodeURIComponent(id)}/release`, { fence, reason: reason.slice(0, 500) });
+  release(id: string, fence: string, reason: string, terminal = false) {
+    return this.call('POST', `/v1/tasks/${encodeURIComponent(id)}/release`, { fence, reason: reason.slice(0, 500), ...(terminal ? { terminal: true } : {}) });
   }
 }

@@ -38,7 +38,7 @@ export interface GithubCalls {
 export interface QueueCalls {
   heartbeat(id: string, fence: string): Promise<{ expiresAt: number }>;
   complete(id: string, fence: string, resultRef: string): Promise<unknown>;
-  release(id: string, fence: string, reason: string): Promise<unknown>;
+  release(id: string, fence: string, reason: string, terminal?: boolean): Promise<unknown>;
 }
 
 export interface RunParams {
@@ -88,11 +88,11 @@ export type RunResult = { done: string } | { released: string };
 
 export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh: GithubCalls, queue: QueueCalls): Promise<RunResult> {
   const { task, fence, harness, plan } = p;
-  const release = async (reason: string): Promise<RunResult> => {
+  const release = async (reason: string, terminal = false): Promise<RunResult> => {
     await step.do('release', async () => {
       await sandbox.destroy().catch(() => undefined);
       // A lost lease means someone else owns the task now; there is nothing left to release.
-      await queue.release(task.id, fence, reason).catch(() => undefined);
+      await queue.release(task.id, fence, reason, terminal).catch(() => undefined);
     });
     return { released: reason };
   };
@@ -108,9 +108,10 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
       if (!pr.open) return { skip: `PR #${plan.prNumber} is closed` };
       // The gateway lets a sandbox push only agent branches, so a fix on a human's branch (or main)
       // would fail at push time and retry until the lease ran out. Refuse it here, once, before
-      // any agent work; a review pushes nothing and may run on any branch.
+      // any agent work, and terminally: no retry can change the branch name. A review pushes nothing
+      // and may run on any branch.
       if (plan.mode !== 'review' && !AGENT_BRANCH.test(`refs/heads/${pr.branch}`)) {
-        return { skip: `PR #${plan.prNumber} is on ${pr.branch}, not an agent branch; the Cloudflare harness pushes only agent branches, so it will not take this fix` };
+        return { skip: `PR #${plan.prNumber} is on ${pr.branch}, not an agent branch; the Cloudflare harness pushes only agent branches, so it will not take this fix`, terminal: true };
       }
       await sandbox.clone(plan.owner, plan.repo, pr.branch, null);
       return { branch: pr.branch, base: null as string | null, headSha: pr.headSha };
@@ -120,7 +121,7 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
     await sandbox.clone(plan.owner, plan.repo, base, branch);
     return { branch, base, headSha: null as string | null };
   });
-  if ('skip' in setup) return release(setup.skip as string);
+  if ('skip' in setup) return release(setup.skip as string, 'terminal' in setup && setup.terminal === true);
 
   // The sandbox belongs to this task alone, so "busy" can only mean a retried start already began.
   await step.do('start agent', () => sandbox.startTask(harness, buildPrompt(task, plan, setup.branch)));

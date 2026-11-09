@@ -300,6 +300,21 @@ test('release gives the task back and counts the attempt', () => {
   assert.equal(core.getTask(sql, 'a').events.at(-1).detail.reason, 'out of RAM');
 });
 
+test('a terminal release ends the task at once instead of handing it out again', () => {
+  const sql = memorySql();
+  core.enqueue(sql, producer, task({ id: 'a' }), T0, newId);
+  core.claim(sql, claudeWorker, {}, T0);
+  assert.equal(core.release(sql, claudeWorker, 'a', 'feature/x is not an agent branch', T0 + 1, fenceOf(sql, 'a'), true).state, 'dead');
+  const ev = core.getTask(sql, 'a').events.at(-1);
+  assert.equal(ev.detail.terminal, true);
+  assert.equal(ev.detail.attempts, 1);
+  assert.equal(core.claim(sql, claudeWorker, {}, T0 + 2).task, null);
+  // Only a literal true is terminal; anything else is an ordinary, retryable release.
+  core.enqueue(sql, producer, task({ id: 'b', repo: 'other' }), T0, newId);
+  core.claim(sql, claudeWorker, {}, T0 + 3);
+  assert.equal(core.release(sql, claudeWorker, 'b', '', T0 + 4, fenceOf(sql, 'b'), 'yes').state, 'ready');
+});
+
 test('a failed write rolls the whole transaction back', () => {
   const sql = memorySql();
   assert.throws(() => sql.transaction(() => {

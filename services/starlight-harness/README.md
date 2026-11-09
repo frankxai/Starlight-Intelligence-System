@@ -49,7 +49,7 @@ at the last finished step instead of rerunning the agent.
   the work, and pushing the same commit again changes nothing. The gateway also reads the ref commands in each
   `git-receive-pack` request and refuses anything outside agent branches and any deletion, so `main`
   is out of reach. A fix task whose PR sits on a non-agent branch is released before any agent work,
-  with that reason, instead of failing at push time.
+  with that reason and a terminal flag, so the task goes to `dead` instead of back to the queue.
 - **Opted-in repositories only.** `REPOS` lists the `owner/name` pairs the harness may work in.
 - **Workers claim only their kinds.** The harness claims `review`, `fix` and `build`. Landing stays
   with sessions that can run the estate's `pr-gate`; human-gated tasks never reach it.
