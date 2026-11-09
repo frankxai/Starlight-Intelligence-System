@@ -5,7 +5,8 @@ import test from 'node:test';
 import { handleRequest } from '../src/handler.ts';
 import { drain, ingest, outboxStatus } from '../src/outbox.ts';
 import {
-  MAX_CHUNK_BYTES, chunkDiff, d1Store, extractAnswer, readReviewConfig, renderComment, runReview, shaMarker,
+  MAX_CHUNK_BYTES, callModel, chunkDiff, d1Store, extractAnswer, knobsFor, lastVerdictObject, modelInput, readReviewConfig,
+  renderComment, runReview, shaMarker,
 } from '../src/review.ts';
 import { memorySql } from './helpers.mjs';
 
@@ -38,7 +39,27 @@ function fakeGithub(over = {}) {
   };
 }
 
-// AI stub: answers per model from a table; a function answer can throw, hang or vary per call.
+// Server-sent events as Workers AI streams them, cut into 7-byte pieces so the parser has to buffer.
+function sse(events, { done = true } = {}) {
+  const text = events.map((e) => `data: ${JSON.stringify(e)}\n\n`).join('') + (done ? 'data: [DONE]\n\n' : '');
+  const bytes = new TextEncoder().encode(text);
+  let i = 0;
+  return new ReadableStream({
+    pull(c) { if (i >= bytes.length) { c.close(); return; } c.enqueue(bytes.slice(i, i + 7)); i += 7; },
+  });
+}
+// One streamed answer: reasoning deltas (counted, never parsed), content deltas, finish, usage.
+function streamed(content, { reasoning = '', finish = 'stop', usage = { prompt_tokens: 100, completion_tokens: 10 } } = {}) {
+  const ev = [];
+  for (let i = 0; i < reasoning.length; i += 40) ev.push({ choices: [{ delta: { reasoning_content: reasoning.slice(i, i + 40) }, finish_reason: null }] });
+  for (let i = 0; i < content.length; i += 25) ev.push({ choices: [{ delta: { content: content.slice(i, i + 25) }, finish_reason: null }] });
+  ev.push({ choices: [{ delta: {}, finish_reason: finish }] });
+  ev.push({ choices: [], usage });
+  return sse(ev);
+}
+
+// AI stub: answers per model from a table; a string answer is streamed, a function answer can
+// throw, hang, return a stream or vary per call.
 function fakeAi(answers) {
   const calls = [];
   return {
@@ -48,7 +69,7 @@ function fakeAi(answers) {
       const a = answers[model];
       if (typeof a === 'function') return a(calls.filter((c) => c.model === model).length);
       if (a === undefined) throw new Error(`unknown model ${model}`);
-      return { response: a, usage: { prompt_tokens: 100, completion_tokens: 10 } };
+      return streamed(a);
     },
   };
 }
@@ -58,7 +79,8 @@ const memStore = () => {
   const rows = [];
   return { rows, has: async (repo, pr, sha) => rows.some((r) => r.repo === repo && r.pr === pr && r.sha === sha), record: async (r) => { rows.push(r); } };
 };
-const deps = (o = {}) => ({ ai: o.ai, github: o.github ?? fakeGithub(), store: o.store ?? memStore(), env: env(o.env), now: () => NOW, makerProvider: o.makerProvider ?? 'anthropic' });
+const sleeps = [];
+const deps = (o = {}) => ({ ai: o.ai, github: o.github ?? fakeGithub(), store: o.store ?? memStore(), env: env(o.env), now: () => NOW, sleep: async (ms) => { sleeps.push(ms); }, makerProvider: o.makerProvider ?? 'anthropic' });
 
 test('gate tier: every model on the gate list and all pass posts the trailer as the App bot', async () => {
   const github = fakeGithub();
@@ -116,21 +138,22 @@ test('a pass with a high finding is a contradiction and blocks', async () => {
   assert.equal(r.signoff, false);
 });
 
-test('errors, timeouts and invalid JSON are blocks, after exactly one retry', async () => {
+test('errors, timeouts and invalid JSON are blocks: transient ones after 3 attempts, the rest at once', async () => {
   const cases = {
-    error: () => { throw new Error('3046: Request timeout'); },
-    hang: () => new Promise(() => {}),
-    prose: () => ({ response: 'Looks good to me!' }),
-    extraKey: () => ({ response: JSON.stringify({ verdict: 'pass', findings: [], approved: true }) }),
-    truncated: () => ({ choices: [{ finish_reason: 'length', message: { content: PASS } }] }),
+    error: [() => { throw new Error('3046: Request timeout'); }, 3],
+    hang: [() => new Promise(() => {}), 3],
+    stalledStream: [() => new ReadableStream({ pull() { return new Promise(() => {}); } }), 3],
+    prose: [() => ({ response: 'Looks good to me!' }), 1],
+    extraKey: [() => ({ response: JSON.stringify({ verdict: 'pass', findings: [], approved: true }) }), 1],
+    truncated: [() => ({ choices: [{ finish_reason: 'length', message: { content: PASS } }] }), 1],
   };
-  for (const [name, answer] of Object.entries(cases)) {
+  for (const [name, [answer, calls]] of Object.entries(cases)) {
     const github = fakeGithub({ files: files(1) });
     const ai = fakeAi({ [OSS]: answer });
     const r = await runReview(MSG, deps({ ai, github, env: { STARLIGHT_GATE_MODELS: OSS } }));
     assert.equal(r.verdict, 'block', name);
     assert.equal(r.signoff, false, name);
-    assert.equal(ai.calls.length, 2, `${name}: one try plus one retry`);
+    assert.equal(ai.calls.length, calls, `${name}: ${calls} attempt(s)`);
     assert.doesNotMatch(github.comments[0], TRAILER, name);
     assert.match(github.comments[0], /Errors \(each one blocks\)/, name);
   }
@@ -181,24 +204,25 @@ test('the maker family cannot sign: gpt-ci on an OpenAI branch is triage only', 
   }
 });
 
-test('chunking: per file, at most 24 KB per request, large files split by hunk, nothing dropped', () => {
+test('chunking: per file, at most N bytes per request, large files split by hunk, nothing dropped', () => {
+  const KB24 = 24 * 1024;
   const small = chunkDiff(files(3));
   assert.equal(small.length, 1);
   assert.deepEqual(small[0].files, ['src/f0.ts', 'src/f1.ts', 'src/f2.ts']);
 
   const hunk = (i) => `@@ -${i},2 +${i},2 @@\n-${'o'.repeat(4000)}\n+${'n'.repeat(4000)}\n`;
   const big = { filename: 'src/big.ts', status: 'modified', changes: 40, patch: Array.from({ length: 10 }, (_, i) => hunk(i * 10)).join('').trimEnd() };
-  const chunks = chunkDiff([...files(2, 9000), big]);
+  const chunks = chunkDiff([...files(2, 9000), big], KB24);
   assert.ok(chunks.length >= 4, `got ${chunks.length}`);
-  for (const c of chunks) assert.ok(c.bytes <= MAX_CHUNK_BYTES, `${c.label}: ${c.bytes}`);
+  for (const c of chunks) assert.ok(c.bytes <= KB24, `${c.label}: ${c.bytes}`);
   const joined = chunks.map((c) => c.text).join('\n');
   for (let i = 0; i < 10; i++) assert.ok(joined.includes(`@@ -${i * 10},2 +${i * 10},2 @@`), `hunk ${i} kept`);
   assert.match(joined, /\(part 1 of \d+\)/);
 
   assert.throws(() => chunkDiff([{ filename: 'logo.png', status: 'added', changes: 1 }]), /no textual patch/);
   assert.equal(chunkDiff([{ filename: 'moved.ts', previous_filename: 'old.ts', status: 'renamed', changes: 0 }])[0].files[0], 'moved.ts');
-  assert.throws(() => chunkDiff([{ filename: 'min.js', status: 'modified', changes: 1, patch: `@@ -1 +1 @@\n+${'z'.repeat(30_000)}` }]), /larger than/);
-  assert.throws(() => chunkDiff(files(50, 12_000), MAX_CHUNK_BYTES, 40), /split the PR/);
+  assert.throws(() => chunkDiff([{ filename: 'min.js', status: 'modified', changes: 1, patch: `@@ -1 +1 @@\n+${'z'.repeat(30_000)}` }], KB24), /larger than/);
+  assert.throws(() => chunkDiff(files(50, 12_000), KB24, 40), /split the PR/);
 });
 
 test('a PR whose file list GitHub truncated is a block, not a partial review', async () => {
@@ -308,4 +332,140 @@ test('the outbox sends cf_review to the review queue, and an unbound queue retri
   assert.deepEqual(await drain(sql, {}, routing, NOW + 3600_000, () => 't3', 10, { reviewQueue: { send: async (b) => { sent.push(b); } } }), { done: 1, retried: 0, failed: 0 });
   assert.deepEqual(sent, [{ owner: 'frankxai', repo: 'kernel', number: 7, sha: SHA, branch: 'agent/claude/x' }]);
   assert.deepEqual(outboxStatus(sql).counts, { done: 1 });
+});
+
+// ---------- streaming, reasoning, retries, knobs (2026-11-09 harness fix) ----------
+
+const DS = '@cf/deepseek-ai/deepseek-v4.1-flash-1017';
+const GLM = '@cf/zai-org/glm-5.3';
+const CHUNK = { label: 'part 1 of 1: src/a.ts', files: ['src/a.ts'], text: 'diff --git a/src/a.ts b/src/a.ts\n+x\n', bytes: 30 };
+const CALL_CFG = { gatewayId: 'starlight-review', timeoutMs: 200, budgetMs: 60_000, maxTokens: 32_000, concurrency: 3, knobs: readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS }, new Date(NOW)).knobs };
+const call = (ai, model = OSS) => callModel(ai, model, CHUNK, CALL_CFG, NOW + 60_000, () => NOW, { sleep: async () => {} });
+
+test('a streamed pass parses, with stream:true, 32000 completion tokens and no response_format', async () => {
+  const github = fakeGithub({ files: files(1) });
+  const ai = fakeAi({ [OSS]: PASS });
+  const r = await runReview(MSG, deps({ ai, github, env: { STARLIGHT_GATE_MODELS: OSS } }));
+  assert.equal(r.signoff, true);
+  const input = ai.calls[0].input;
+  assert.equal(input.stream, true);
+  assert.equal(input.max_completion_tokens, 32_000);
+  assert.equal(input.temperature, 0);
+  assert.equal('response_format' in input, false);
+  assert.equal('max_tokens' in input, false);
+  assert.deepEqual(ai.calls[0].options, { gateway: { id: 'starlight-review' } });
+});
+
+test('JSON after reasoning text: the last {"verdict"} object is the answer', async () => {
+  const content = `Thinking. A draft: {"verdict":"pass","findings":[]} but wait, the lease leaks.\nFinal:\n${HIGH}`;
+  const r = await call(fakeAi({ [OSS]: () => streamed(content, { reasoning: 'r'.repeat(500) }) }));
+  assert.equal(r.ok, true);
+  assert.equal(r.review.verdict, 'block');
+  assert.equal(r.review.findings[0].summary, 'lease leaks');
+  assert.equal(r.reasoningChars, 500);
+  assert.equal(r.finishReason, 'stop');
+  assert.equal(r.usage.tokensOut, 10);
+  // Braces inside strings do not end the object early; a broken last object is not replaced by a draft.
+  assert.equal(lastVerdictObject('x {"verdict":"pass","findings":[{"severity":"low","file":"a}b","line":1,"summary":"q\\"}"}]} y'), '{"verdict":"pass","findings":[{"severity":"low","file":"a}b","line":1,"summary":"q\\"}"}]}');
+  const broken = await call(fakeAi({ [OSS]: () => streamed(`${PASS} then {"verdict":"pass","findings":[],"extra":1}`) }));
+  assert.equal(broken.ok, false);
+  assert.match(broken.error, /exactly verdict and findings/);
+});
+
+test('finish_reason length with no complete JSON is a block with reason truncated, not retried', async () => {
+  const ai = fakeAi({ [OSS]: () => streamed('{"verdict":"pa', { reasoning: 'r'.repeat(12_000), finish: 'length' }) });
+  const r = await call(ai);
+  assert.equal(r.ok, false);
+  assert.match(r.error, /truncated/);
+  assert.equal(r.attempts, 1);
+  assert.equal(ai.calls.length, 1);
+  const github = fakeGithub({ files: files(1) });
+  const posted = await runReview(MSG, deps({ ai: fakeAi({ [OSS]: () => streamed('', { finish: 'length' }) }), github, env: { STARLIGHT_GATE_MODELS: OSS } }));
+  assert.equal(posted.verdict, 'block');
+  assert.equal(posted.signoff, false);
+  assert.match(github.comments[0], /truncated/);
+});
+
+test('an errors payload inside the stream is an error: non-retryable blocks, a transient code retries', async () => {
+  const fatal = fakeAi({ [OSS]: () => sse([{ errors: [{ code: 5007, message: 'No such model' }] }], { done: false }) });
+  const r = await call(fatal);
+  assert.equal(r.ok, false);
+  assert.match(r.error, /5007: No such model/);
+  assert.equal(fatal.calls.length, 1);
+  const transient = fakeAi({ [OSS]: (n) => (n === 1 ? sse([{ choices: [{ delta: { content: '{"ver' } }] }, { errors: [{ code: 3046, message: 'Request timeout' }] }], { done: false }) : streamed(PASS)) });
+  const ok = await call(transient);
+  assert.equal(ok.ok, true);
+  assert.equal(ok.attempts, 2);
+});
+
+test('3046 then success retries with backoff and passes', async () => {
+  sleeps.length = 0;
+  const ai = fakeAi({ [OSS]: (n) => { if (n === 1) throw new Error('AiError: 3046: Request timeout'); return streamed(PASS); } });
+  const r = await runReview(MSG, deps({ ai, github: fakeGithub({ files: files(1) }), env: { STARLIGHT_GATE_MODELS: OSS } }));
+  assert.equal(r.signoff, true);
+  assert.equal(ai.calls.length, 2);
+  assert.deepEqual(sleeps, [2000]);
+  for (const code of ['3040', '429', '503', '8008']) {
+    const again = fakeAi({ [OSS]: (n) => { if (n < 3) throw new Error(`upstream ${code}`); return streamed(PASS); } });
+    const res = await call(again);
+    assert.equal(res.ok, true, code);
+    assert.equal(res.attempts, 3, code);
+  }
+});
+
+test('a non-retryable error blocks without a retry', async () => {
+  for (const msg of ['5028: model gone', '400 Bad Request: unknown parameter', 'AiError: 5007']) {
+    const ai = fakeAi({ [OSS]: () => { throw new Error(msg); } });
+    const r = await call(ai);
+    assert.equal(r.ok, false, msg);
+    assert.equal(ai.calls.length, 1, msg);
+  }
+});
+
+test('knobs: reasoning effort per model, overridable by STARLIGHT_REVIEW_KNOBS, reserved keys refused', () => {
+  const cfg = readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS }, new Date(NOW));
+  assert.deepEqual(knobsFor(DS, cfg.knobs), { reasoning_effort: 'low' });
+  assert.deepEqual(knobsFor(GLM, cfg.knobs), { reasoning_effort: 'low' });
+  assert.deepEqual(knobsFor(QWEN, cfg.knobs), { reasoning_effort: 'low' });
+  assert.deepEqual(knobsFor(OSS, cfg.knobs), { reasoning_effort: 'high' });
+  assert.deepEqual(knobsFor(KIMI, cfg.knobs), {});
+  assert.equal(modelInput(DS, CHUNK, cfg).reasoning_effort, 'low');
+  assert.equal(modelInput(KIMI, CHUNK, cfg).reasoning_effort, undefined);
+
+  const over = readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS, STARLIGHT_REVIEW_KNOBS: JSON.stringify({ 'glm-5.3': { reasoning_effort: 'none' }, [KIMI]: { top_p: 0.9 } }) }, new Date(NOW));
+  assert.deepEqual(knobsFor(GLM, over.knobs), { reasoning_effort: 'none' });
+  assert.deepEqual(knobsFor(KIMI, over.knobs), { top_p: 0.9 });
+  assert.deepEqual(knobsFor(DS, over.knobs), { reasoning_effort: 'low' });
+  const input = modelInput(GLM, CHUNK, over);
+  assert.equal(input.stream, true);
+  assert.equal(input.reasoning_effort, 'none');
+
+  for (const bad of ['not json', '[]', '{"glm-5.3":"low"}', '{"glm-5.3":{"stream":false}}', '{"x":{"messages":[]}}', '{"x":{"response_format":{}}}']) {
+    assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS, STARLIGHT_REVIEW_KNOBS: bad }, new Date(NOW)), /STARLIGHT_REVIEW_KNOBS/, bad);
+  }
+});
+
+test('chunk ceiling is 96 KB by default and STARLIGHT_REVIEW_CHUNK_BYTES overrides it', async () => {
+  assert.equal(MAX_CHUNK_BYTES, 96 * 1024);
+  assert.equal(readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS }, new Date(NOW)).chunkBytes, 96 * 1024);
+  // Four files of ~20 KB: one request at the default, several at 24 KB.
+  const four = files(4, 10_000);
+  assert.equal(chunkDiff(four).length, 1);
+  assert.ok(chunkDiff(four, 24 * 1024).length >= 4);
+  const ai = fakeAi({ [OSS]: PASS });
+  await runReview(MSG, deps({ ai, github: fakeGithub({ files: four }) }));
+  assert.equal(ai.calls.length, 1);
+  const small = fakeAi({ [OSS]: PASS });
+  await runReview(MSG, deps({ ai: small, github: fakeGithub({ files: four }), env: { STARLIGHT_REVIEW_CHUNK_BYTES: String(24 * 1024) } }));
+  assert.equal(small.calls.length, 4);
+});
+
+test('one model runs its chunks with bounded concurrency (default 3)', async () => {
+  let inFlight = 0;
+  let peak = 0;
+  const ai = fakeAi({ [OSS]: async () => { inFlight++; peak = Math.max(peak, inFlight); await new Promise((r) => setTimeout(r, 5)); inFlight--; return streamed(PASS); } });
+  const r = await runReview(MSG, deps({ ai, github: fakeGithub({ files: files(8, 10_000) }), env: { STARLIGHT_REVIEW_CHUNK_BYTES: String(24 * 1024) } }));
+  assert.equal(r.verdict, 'pass');
+  assert.equal(ai.calls.length, 8);
+  assert.equal(peak, 3);
 });

@@ -94,10 +94,12 @@ Install the App on the repos it should act on, then add them to `ROUTING.repos` 
 | `STARLIGHT_REVIEW_MODELS` | var | comma list of Workers AI model ids; no Claude or Anthropic id is accepted |
 | `STARLIGHT_GATE_MODELS` | var | models trusted to sign; empty by default |
 | `STARLIGHT_REVIEW_GATEWAY` | var | AI Gateway id, default `starlight-review` |
-| `STARLIGHT_REVIEW_TIMEOUT_MS` | var | per request, default 120000; one retry |
+| `STARLIGHT_REVIEW_TIMEOUT_MS` | var | longest wait for the first streamed chunk and between chunks, default 120000 |
 | `STARLIGHT_REVIEW_BUDGET_MS` | var | whole review, default 720000 (the consumer has 15 minutes) |
-| `STARLIGHT_REVIEW_MAX_TOKENS` | var | default 16000 |
-| `STARLIGHT_REVIEW_RESPONSE_FORMAT` | var | `json_object` (default), `json_schema`, or `off` |
+| `STARLIGHT_REVIEW_MAX_TOKENS` | var | `max_completion_tokens`, default 32000 (reasoning counts against it) |
+| `STARLIGHT_REVIEW_CHUNK_BYTES` | var | largest request, default 98304 (96 KB), still split per file |
+| `STARLIGHT_REVIEW_CONCURRENCY` | var | chunks in flight per model, default 3 |
+| `STARLIGHT_REVIEW_KNOBS` | var | JSON `{"<model id or suffix>": {"reasoning_effort": "low"}}` merged over the defaults below; `messages`, `stream`, `response_format` and `model` are refused |
 
 Then deploy: `$W deploy`.
 
@@ -109,11 +111,26 @@ Then deploy: `$W deploy`.
 3. The queue consumer fetches the PR with the App token, skips closed, draft, fork and moved heads,
    and skips a SHA that already has a `review_runs` row or a comment with its
    `<!-- starlight-cf-review:<sha> -->` marker.
-4. The diff is split per file into chunks of at most 24 KB (a large file by hunk, then by line).
-   A file GitHub returns no patch for, a truncated file list, or one line over 24 KB is a block.
+4. The diff is split per file into chunks of at most 96 KB (a large file by hunk, then by line).
+   A file GitHub returns no patch for, a truncated file list, or one line over the ceiling is a block.
 5. Every model reviews every chunk with the prompt and strict JSON shape from
-   `frankxai/starlight-estate` `tools/cross-review.mjs` at df48a91. Any error, timeout or answer
-   that is not exactly `{"verdict","findings"}` is retried once, then counts as a block.
+   `frankxai/starlight-estate` `tools/cross-review.mjs` at df48a91, called as
+   `env.AI.run(model, { messages, stream: true, max_completion_tokens: 32000, temperature: 0, ...knobs }, { gateway: { id } })`.
+   No `response_format` is sent. The model may reason first and must end with one JSON object; the
+   last balanced `{"verdict"...}` object is validated as exactly `{"verdict","findings"}`. Anything
+   else is a block, and `finish_reason: "length"` with no complete object is a block with reason
+   `truncated`. Workers AI 3046, 3040, 429, 503, 8008 and timeouts get up to 3 attempts with
+   backoff (2 s, 4 s); every other error blocks at once. One model's chunks run at most 3 at a time
+   and at most 20 request starts per minute per model.
+
+   Default knobs, matched on the end of the model id:
+
+   | Model | Knobs |
+   |---|---|
+   | `deepseek-v4.1-flash-1017` | `reasoning_effort: "low"` |
+   | `glm-5.3` | `reasoning_effort: "low"` |
+   | `qwen3.8-27b` | `reasoning_effort: "low"` |
+   | `gpt-oss-120b` | `reasoning_effort: "high"` |
 6. The head is re-read; if it moved, nothing is posted. Otherwise one comment is posted and a
    `review_runs` row written. `GET /v1/reviews?repo=owner/name&pr=N&sha=<prefix>&limit=50` (any
    agent token) lists them.
@@ -123,16 +140,39 @@ of 2026-11-09, which is why cf-review is the default.
 
 ## 5. Two tiers
 
-Measured 2026-11-09 on PR #96's real diff (106 KB, 5 chunks) through gateway `starlight-review`:
+The first benchmark (2026-11-09, PR #96's diff, 106 KB in 5 chunks) is invalid and says nothing
+about the models. The harness sent non-streaming requests with `response_format: json_object` and
+default reasoning effort:
 
-| Model | Result |
-|---|---|
-| `@cf/openai/gpt-oss-120b` | 4 chunks passed with zero findings; 1 high finding that was a false positive |
-| `@cf/qwen/qwen3.8-27b` | timed out (Workers AI 3046) on 4 of 5 chunks |
-| `@cf/zai-org/glm-5.3` | timed out or returned 8008 on a 28 KB chunk |
-| `@cf/deepseek-ai/deepseek-v4.1-flash-1017` | timed out or returned 8008 on a 28 KB chunk |
+- AI Gateway's request timeout counts until the first chunk, so long non-streamed reasoning calls
+  hit Workers AI 3046 and 8008. Cloudflare recommends `stream: true` for large and reasoning models.
+- JSON Mode does not support streaming and is listed only for small legacy models.
+- `@cf/deepseek-ai/deepseek-v4.1-flash-1017` reasons at `high` effort by default; its 12k-token
+  budget was consumed entirely by reasoning.
 
-So Cloudflare-hosted open models are a triage tier, not gate-grade. The rule:
+`@cf/deepseek-ai/deepseek-v4.1-flash-1017` and `@cf/zai-org/glm-5.3` (Cloudflare's frontier
+recommendations, 1M context) are gate-tier candidates once `scripts/review-benchmark.mjs` shows
+them catching a seeded defect on a real diff. Until then `STARLIGHT_GATE_MODELS` stays empty.
+
+Run the benchmark from the repo root on a real PR diff with one defect seeded into it:
+
+```bash
+gh pr diff 96 > /tmp/pr96.diff   # then add one real defect to a hunk in /tmp/pr96.diff
+CLOUDFLARE_ACCOUNT_ID=<account id> CLOUDFLARE_API_TOKEN=<Workers AI token> \
+  node services/starlight-control-plane/scripts/review-benchmark.mjs \
+    --diff /tmp/pr96.diff \
+    --models @cf/deepseek-ai/deepseek-v4.1-flash-1017,@cf/zai-org/glm-5.3 \
+    --gateway starlight-review
+```
+
+It prints, per model: verdict, findings, completion tokens, reasoning chars, seconds and
+`finish_reason`. It never prints the token. It calls
+`POST https://api.cloudflare.com/client/v4/accounts/<id>/ai/v1/chat/completions` with the same
+streaming, knob, retry and parse code as the Worker (imported from `src/review.ts`); `--gateway` is
+recorded in the output, not routed. A candidate qualifies when it blocks the seeded defect with a
+high or critical finding on it, with no errors and no `truncated`.
+
+The rule:
 
 - **Gate tier**: every model that ran is listed in `STARLIGHT_GATE_MODELS`, none is the maker's
   family (gpt-ci cannot sign `codex/*` or other OpenAI-made branches), every chunk answered, and
@@ -145,8 +185,9 @@ So Cloudflare-hosted open models are a triage tier, not gate-grade. The rule:
 With `STARLIGHT_GATE_MODELS` empty (the default), cf-review never signs. A block is always posted
 as advisory; it does not post a `verdict=block` trailer.
 
-GLM and DeepSeek ids are refused outright today: the family map copied from the estate knows kimi,
-qwen, grok and gpt only. Add a family there and in `tools/lib/harness-identity.mjs` first.
+GLM and DeepSeek ids are refused outright in the Worker today: the family map copied from the
+estate knows kimi, qwen, grok and gpt only. Add a family there and in `tools/lib/harness-identity.mjs`
+first. The benchmark CLI skips that check, because it measures and never signs.
 
 For a gate-tier sign-off to count in pr-gate (`frankxai/starlight-estate` `tools/pr-gate.mjs`), the
 App's bot login `<slug>[bot]` must be in the gate's `STARLIGHT_SIGNOFF_BOTS`: `-ci` harness names are
@@ -154,9 +195,13 @@ accepted only from an allowlisted bot, never from an OWNER, MEMBER or COLLABORAT
 
 ## Not verified
 
-- No deploy, and no live `env.AI.run` from this Worker. The input is chat-style `messages`; the
-  answer parser accepts `{response}`, OpenAI `choices`, and Responses API `output`. If a model
-  rejects `response_format`, set `STARLIGHT_REVIEW_RESPONSE_FORMAT=off`.
+- No deploy, no live `env.AI.run` from this Worker, and no live run of
+  `scripts/review-benchmark.mjs`. The stream reader accepts OpenAI-style `choices[].delta`
+  (`content`, `reasoning_content`, `reasoning`) and Workers AI `{response}` events, and still reads a
+  non-streamed `{response}`, `choices` or Responses API `output` answer. The exact event shape each
+  model streams and the error payload inside a stream are inferred from Cloudflare docs, not observed.
+- Whether `reasoning_effort` is accepted by `glm-5.3`, `qwen3.8-27b` and `gpt-oss-120b`. A model that
+  rejects it fails closed with a non-retryable error; drop the knob with `STARLIGHT_REVIEW_KNOBS`.
 - Whether the manifest conversion's `webhook_secret` is 32+ characters.
 - `wrangler types` / `tsc` were not run; the TypeScript is exercised only through node's type
   stripping in the test suite.
