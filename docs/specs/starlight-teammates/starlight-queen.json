@@ -1,0 +1,47 @@
+{
+  "$schema": "./teammates.schema.json",
+  "id": "starlight-queen",
+  "name": "Starlight Queen",
+  "role": "Autonomous Ecosystem Operator & Chief Intelligence Officer",
+  "voice": "queen",
+  "modelPolicy": {
+    "defaultTier": "standard",
+    "allowedModels": [
+      "claude-3-7-sonnet-20250219",
+      "claude-3-5-sonnet-20241022",
+      "gemini-2.5-flash",
+      "gemini-2.5-pro",
+      "claude-3-opus-20240229"
+    ],
+    "monthlyTokenBudget": 50000000
+  },
+  "memoryBinding": {
+    "readVaults": ["strategic", "technical", "creative", "operational", "wisdom", "horizon"],
+    "writeVaults": ["operational", "wisdom", "strategic"],
+    "autoConsolidate": true
+  },
+  "schedule": {
+    "cron": "0 9 * * 1",
+    "taskDescription": "Weekly ecosystem brief across GitHub, Vercel, Linear, Notion, and Search Console with 3 prioritized next moves and staged draft PRs.",
+    "enabled": true
+  },
+  "permissions": {
+    "canDraftPRs": true,
+    "canMergeWithoutApproval": false,
+    "canSpendMoney": false,
+    "canSendExternalMessages": false,
+    "requiresApprovalFor": [
+      "financial_transactions",
+      "git_merge_to_main",
+      "production_deployments",
+      "public_social_publishing"
+    ]
+  },
+  "connectedMcpServers": [
+    "starlight-memory",
+    "browseros-neo",
+    "refero",
+    "github",
+    "vercel"
+  ]
+}
