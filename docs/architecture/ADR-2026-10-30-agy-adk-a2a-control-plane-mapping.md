@@ -28,7 +28,7 @@ Evidence level: **corroborated** means current secondary sources agree and the c
 |---|---|---|
 | `agy plugin import gemini` converts legacy Gemini CLI extensions to plugins | corroborated (secondary) | Run it in a scratch profile before relying on it. |
 | That import turns the Workspace extension into "5 skills and 2 slash commands" | unverified | The count has no source. |
-| Antigravity reads workspace skills from `.agents/skills/` | corroborated (secondary) | SIS has no `.agents/skills/` today. Skills live in this repo's `skills/` and in the estate's `starlight-agent-config/core/skills`. |
+| Antigravity reads workspace skills from `.agents/skills/` | corroborated (secondary) | SIS has `.agents/skills/` today with one repository-local skill, `frank-brand-editor` (it loads `CREATOR.md` and applies the editorial gate). Other skills live in this repo's `skills/` and in the estate's `starlight-agent-config/core/skills`. |
 | `agy` parses `AGENTS.md` and `GEMINI.md` | corroborated (secondary) | SIS already ships both, with generated Band A in `AGENTS.md`. |
 | A2A Agent Cards are served at `/.well-known/agent.json` (also `agent-card.json`) | corroborated | Spelling varies by spec version. Pin the version before writing code. |
 | ADK `RemoteA2aAgent` consumes a remote card | corroborated | |
@@ -54,7 +54,7 @@ Evidence level: **corroborated** means current secondary sources agree and the c
 
 1. **SIS stays the system of record.** The work graph owns the ledger. A2A, MCP, Workspace and ADK are adapters. This matches `operational-work-graph.md` ("neither owns the ledger, memory authority, or completion decision") and `PRODUCTION-AND-SOVEREIGN-RUNTIME.md` ("an agent file, A2A card or MCP tool description cannot escalate" grants).
 2. **Workspace is an untrusted proposal inbox, never an executor.** A Sheet row or Doc edit is attacker-reachable input. It may only create a *proposal* envelope. It then follows the existing path: ingress that fails closed (per #513), human gate for money, sends and releases, and an independent verifier. Status flows back as a one-way projection of the work graph. No direct write access to repos, secrets or queue state.
-3. **One context source.** `AGENTS.md` stays universal and its generated Band A stays generated. `GEMINI.md` carries only Gemini-specific routing. No duplicated rule files. Skills in `.agents/skills/` are generated projections of `core/skills` and never hand-edited, consistent with the estate rule that harness directories are projections.
+3. **One context source.** `AGENTS.md` stays universal and its generated Band A stays generated. `GEMINI.md` carries only Gemini-specific routing. No duplicated rule files. Skills projected from `core/skills` into `.agents/skills/` are generated and never hand-edited, consistent with the estate rule that harness directories are projections. The existing repository-local `frank-brand-editor` skill stays hand-authored: the projection and its drift check leave it alone.
 4. **Judge before human, bounded.** Every autonomous worker path gets a deterministic judge stage (tests, lint, anti-slop rules) and at most three refine iterations. Escalate to the human after the cap. The cap lives in the loop contract (already required: max iterations, no-progress stop), not in a framework class.
 5. **A2A is internal-first and private by default.** Any Agent Card is served only on loopback or a private network, with auth declared in the card and enforced by the host. Public reachability needs a named approval. No card is published without a live-verified exchange.
 6. **No new always-on process, schedule, cloud identity or write-back is created by this ADR.** Each needs Frank's approval under Doctrine 0 and the security doctrine.
@@ -70,7 +70,7 @@ Evidence level: **corroborated** means current secondary sources agree and the c
 1. **Primary-source check.** Pin `agy`, ADK and A2A versions from official docs and run `agy plugin import gemini` in a scratch profile. Update the claim table with real evidence.
 2. **Private A2A Agent Card for one read-only specialist** (queen status reporter), loopback only, with a schema test and an auth-required test.
 3. **Judge stage with a three-iteration cap** wrapped around one existing loop contract. Pick a loop that is currently red so the judge is exercised against a real failure.
-4. **`.agents/skills/` projection** generated from `core/skills` with a drift check.
+4. **`.agents/skills/` projection** generated from `core/skills` with a drift check, scoped to the projected skills so the hand-authored `frank-brand-editor` skill is preserved as it is.
 5. **Workspace proposal-inbox design** (read-only adapter, threat model, redaction rules). Needs approval before any credential or write scope exists.
 6. **WIF for GitHub Actions.** Needs GCP setup and explicit approval. Scope the pool to this org and repo.
 
