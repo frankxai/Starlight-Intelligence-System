@@ -6,17 +6,16 @@ import { boundedJson, identifier, record } from "./contracts.js";
  * Deterministic code owns validation, admission, hashes of the contract, and
  * the recommendation. A typed decision model may classify owner and effect.
  * It cannot approve deletion, merges, credential changes, or spend.
- * Cloudflare AI Gateway is an optional observability header, not an authority.
+ * Cloudflare AI Gateway supplies an optional observability header without authority.
  *
  * Model facts checked against Cloudflare docs on 2026-11-03:
  * `@cf/cloudflare/clef-flash` is $0.038 per million input tokens, hosted
  * context 24,576, no output-token charge, Zero Data Retention on the model
- * page. Gateway logging is a separate control and is not enabled here.
- * TypeSafe Jev in this package is an OpenRouter chat-completions preparer,
- * not a System One call, so this route does not dispatch it.
- * Liquid d1-omni-600M is LFM Open License 1.0, about 587M parameters.
- * It is not loaded: system RAM was under the 4 GiB reserve, and a weight
- * file is not a runtime-memory measurement.
+ * page. Gateway logging is a separate control and is disabled here.
+ * TypeSafe Jev in this package prepares OpenRouter chat completions.
+ * Because it operates outside System One requirements, this route skips dispatch.
+ * Liquid d1-omni-600M uses LFM Open License 1.0 with approximately 587M parameters.
+ * It remains unloaded because system RAM remained below the 4 GiB reserve threshold.
  */
 
 export const DECISION_CONTRACT = "starlight.decision-route.v1" as const;
