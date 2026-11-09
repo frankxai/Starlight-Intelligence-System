@@ -1,7 +1,7 @@
 // One claimed task, start to finish, as durable steps. Written against a two-method step
 // interface so the Workflow runs it in production and node --test runs it with a fake.
 
-import { buildPrompt, newBranchName, type ClaimedTask, type Harness, type Plan } from './policy.ts';
+import { AGENT_BRANCH, buildPrompt, newBranchName, type ClaimedTask, type Harness, type Plan } from './policy.ts';
 
 export interface Step {
   do<T>(name: string, fn: () => Promise<T>): Promise<T>;
@@ -106,6 +106,12 @@ export async function runTask(p: RunParams, step: Step, sandbox: SandboxApi, gh:
     if (plan.prNumber !== null) {
       const pr = await gh.prState(plan.owner, plan.repo, plan.prNumber, p.codexBot);
       if (!pr.open) return { skip: `PR #${plan.prNumber} is closed` };
+      // The gateway lets a sandbox push only agent branches, so a fix on a human's branch (or main)
+      // would fail at push time and retry until the lease ran out. Refuse it here, once, before
+      // any agent work; a review pushes nothing and may run on any branch.
+      if (plan.mode !== 'review' && !AGENT_BRANCH.test(`refs/heads/${pr.branch}`)) {
+        return { skip: `PR #${plan.prNumber} is on ${pr.branch}, not an agent branch; the Cloudflare harness pushes only agent branches, so it will not take this fix` };
+      }
       await sandbox.clone(plan.owner, plan.repo, pr.branch, null);
       return { branch: pr.branch, base: null as string | null, headSha: pr.headSha };
     }

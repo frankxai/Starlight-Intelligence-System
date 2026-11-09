@@ -27,10 +27,12 @@ export const AGENT_BRANCH = /^refs\/heads\/(agent\/|codex\/|claude\/|jules-|sent
 
 const PR_URL = /https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/pull\/(\d+)/;
 
+// GitHub names are case-insensitive, so both the queue's repo and REPOS are compared lowercased.
 export function planFor(task: ClaimedTask, repos: string[]): Plan | null {
-  const owner = repos.find((r) => r.split('/')[1]?.toLowerCase() === task.repo)?.split('/')[0];
-  if (!owner) return null;
-  const repo = repos.find((r) => r.toLowerCase() === `${owner.toLowerCase()}/${task.repo}`)!.split('/')[1];
+  const want = String(task.repo ?? '').trim().toLowerCase();
+  const configured = repos.find((r) => r.split('/')[1]?.toLowerCase() === want);
+  if (!want || !configured) return null;
+  const [owner, repo] = configured.split('/');
   const pr = PR_URL.exec(task.doneCondition);
   const prNumber = pr && pr[1].toLowerCase() === owner.toLowerCase() && pr[2].toLowerCase() === repo.toLowerCase() ? Number(pr[3]) : null;
   if (task.kind === 'review') return prNumber ? { owner, repo, mode: 'review', prNumber } : null;

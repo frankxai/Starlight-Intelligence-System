@@ -65,6 +65,13 @@ test('planFor maps the bare queue repo back to its owner and reads the PR', () =
   assert.equal(planFor(task({ doneCondition: 'see https://github.com/x/y/pull/9' }), CTX.repos).prNumber, null);
 });
 
+test('planFor matches the queue repo without regard to case on either side', () => {
+  const want = { owner: 'frankxai', repo: 'Kernel', mode: 'pr-branch', prNumber: 7 };
+  assert.deepEqual(planFor(task({ repo: 'Kernel' }), CTX.repos), want);
+  assert.deepEqual(planFor(task({ repo: 'KERNEL' }), CTX.repos), want);
+  assert.deepEqual(planFor(task({ repo: 'kernel' }), ['FrankXAI/KERNEL']), { ...want, owner: 'FrankXAI', repo: 'KERNEL' });
+});
+
 test('prompts carry the done condition and forbid pushing; reviews forbid editing', () => {
   const plan = planFor(task(), CTX.repos);
   const p = buildPrompt(task(), plan, 'agent/claude/x');

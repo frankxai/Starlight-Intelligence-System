@@ -48,7 +48,8 @@ at the last finished step instead of rerunning the agent.
   Durable Object's storage before the agent's container goes, so a crash at any point can still push
   the work, and pushing the same commit again changes nothing. The gateway also reads the ref commands in each
   `git-receive-pack` request and refuses anything outside agent branches and any deletion, so `main`
-  is out of reach.
+  is out of reach. A fix task whose PR sits on a non-agent branch is released before any agent work,
+  with that reason, instead of failing at push time.
 - **Opted-in repositories only.** `REPOS` lists the `owner/name` pairs the harness may work in.
 - **Workers claim only their kinds.** The harness claims `review`, `fix` and `build`. Landing stays
   with sessions that can run the estate's `pr-gate`; human-gated tasks never reach it.

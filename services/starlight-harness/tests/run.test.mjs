@@ -4,7 +4,7 @@ import { finalVerdict, runTask } from '../src/run.ts';
 
 const task = { id: 'gh:o.r.7.abc.fix-ci', title: 'Make CI green', doneCondition: 'Checks pass on https://github.com/o/r/pull/7', repo: 'r', paths: ['src'], kind: 'fix', attempt: 1, maxMinutes: 10 };
 
-function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan, existingPr = null, commentPosted = false, failHeartbeatAfter = Infinity, leaseLeftMs = 10 * 60_000 } = {}) {
+function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOpen = true, plan, existingPr = null, commentPosted = false, failHeartbeatAfter = Infinity, leaseLeftMs = 10 * 60_000, prBranch = 'agent/claude/x' } = {}) {
   let beats = 0;
   const log = [];
   const names = [];
@@ -21,7 +21,7 @@ function harness({ states, pushed = 'f'.repeat(40), heartbeatFails = false, prOp
     destroy: async () => { log.push(['destroy']); },
   };
   const gh = {
-    prState: async () => ({ branch: 'agent/claude/x', headSha: 'h'.repeat(40), open: prOpen }),
+    prState: async () => ({ branch: prBranch, headSha: 'h'.repeat(40), open: prOpen }),
     defaultBranch: async () => 'main',
     findPullRequest: async () => existingPr,
     openDraftPullRequest: async (o, r, head, base) => { log.push(['pr', head, base]); return 'https://github.com/o/r/pull/99'; },
@@ -69,6 +69,21 @@ test('failures, timeouts, empty work and closed PRs release the task', async () 
   assert.match((await harness({ states: [{ state: 'running' }] }).run()).released, /no result within 5 minutes/);
   assert.equal((await harness({ states: [{ state: 'succeeded', result: '' }], pushed: null }).run()).released, 'the agent changed nothing');
   assert.match((await harness({ states: [{ state: 'running' }], prOpen: false }).run()).released, /closed/);
+});
+
+test('a fix on a human PR branch is refused before any agent work, not retried at push time', async () => {
+  for (const prBranch of ['main', 'feature/frank-login', 'release/1.2']) {
+    const h = harness({ states: [{ state: 'succeeded', result: 'fixed' }], prBranch });
+    const out = await h.run();
+    assert.match(out.released, new RegExp(`PR #7 is on ${prBranch.replace('/', '\\/')}, not an agent branch`));
+    assert.equal(h.log.some((l) => l[0] === 'clone'), false, 'nothing is cloned');
+    assert.equal(h.names.includes('start agent'), false, 'the agent never starts');
+    assert.equal(h.log.some((l) => l[0] === 'push'), false, 'nothing is pushed');
+    assert.equal(h.log.filter((l) => l[0] === 'release').length, 1, 'released once, with the reason');
+  }
+  // A review of the same PR pushes nothing, so a human branch is fine there.
+  const review = harness({ states: [{ state: 'succeeded', result: 'VERDICT: PASS' }], prBranch: 'feature/frank-login', plan: { owner: 'o', repo: 'r', mode: 'review', prNumber: 7 } });
+  assert.deepEqual(await review.run(), { done: 'https://github.com/o/r/pull/7#issuecomment-1' });
 });
 
 test('a lost lease stops the sandbox without completing', async () => {
