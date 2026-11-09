@@ -7,6 +7,8 @@ const ROUTING = {
   codexBot: 'chatgpt-codex-connector[bot]',
   selfLogins: ['starlight-control-plane[bot]'],
 };
+// The old "@codex review" rule, now behind reviewRule: 'codex'.
+const CODEX_RULE = { ...ROUTING, reviewRule: 'codex' };
 const repository = { full_name: 'frankxai/kernel' };
 const NOW_ISO = new Date().toISOString();
 const pr = (over = {}) => ({
@@ -25,9 +27,9 @@ test('makerFromBranch reads the estate branch prefixes', () => {
   assert.equal(makerFromBranch(undefined), null);
 });
 
-test('a ready Claude PR asks Codex to review it', () => {
+test('with the codex flag, a ready Claude PR asks Codex to review it', () => {
   const s = normalize('pull_request', { action: 'ready_for_review', repository, sender: { login: 'frankxai' }, pull_request: pr() });
-  assert.deepEqual(plan(s, ROUTING), [{ type: 'comment', owner: 'frankxai', repo: 'kernel', number: 7, body: '@codex review' }]);
+  assert.deepEqual(plan(s, CODEX_RULE), [{ type: 'comment', owner: 'frankxai', repo: 'kernel', number: 7, body: '@codex review' }]);
 });
 
 test('drafts, closed PRs and human branches trigger nothing', () => {
@@ -37,9 +39,9 @@ test('drafts, closed PRs and human branches trigger nothing', () => {
   assert.deepEqual(plan(human, ROUTING), []);
 });
 
-test('a Codex PR becomes a review task no OpenAI worker can lease', () => {
+test('with the codex flag, a Codex PR becomes a review task no OpenAI worker can lease', () => {
   const s = normalize('pull_request', { action: 'opened', repository, sender: { login: 'x' }, pull_request: pr({ head: { sha: 'c'.repeat(40), ref: 'codex/y' } }) });
-  const [a] = plan(s, ROUTING);
+  const [a] = plan(s, CODEX_RULE);
   assert.equal(a.type, 'enqueue');
   assert.equal(a.task.excludeProvider, 'openai');
   assert.deepEqual(a.task.gates, ['none']);
@@ -55,7 +57,25 @@ test('repos outside the allow-list and the App itself are ignored', () => {
 
 test('codexAutoReview repos are not asked twice', () => {
   const s = normalize('pull_request', { action: 'synchronize', repository, sender: { login: 'x' }, pull_request: pr() });
-  assert.deepEqual(plan(s, { ...ROUTING, codexAutoReview: ['frankxai/kernel'] }), []);
+  assert.deepEqual(plan(s, { ...CODEX_RULE, codexAutoReview: ['frankxai/kernel'] }), []);
+});
+
+test('cf-review is the default: agent/*, codex/* and cf-* heads get a Workers AI review of that sha', () => {
+  for (const [action, ref] of [['opened', 'agent/claude/x'], ['synchronize', 'agent/cf-claude/gh-1'], ['ready_for_review', 'cf-triage-fix']]) {
+    const s = normalize('pull_request', { action, repository, sender: { login: 'x' }, pull_request: pr({ head: { sha: 'a'.repeat(40), ref } }) });
+    assert.deepEqual(plan(s, ROUTING), [{ type: 'cf_review', owner: 'frankxai', repo: 'kernel', number: 7, sha: 'a'.repeat(40), branch: ref }], ref);
+  }
+  const human = normalize('pull_request', { action: 'opened', repository, sender: { login: 'x' }, pull_request: pr({ head: { sha: 'a'.repeat(40), ref: 'feature/y' } }) });
+  assert.deepEqual(plan(human, ROUTING), []);
+  // No "@codex review" comment is ever posted under the default rule.
+  assert.ok(!JSON.stringify(plan(normalize('pull_request', { action: 'opened', repository, sender: { login: 'x' }, pull_request: pr() }), ROUTING)).includes('@codex'));
+});
+
+test('cf-review on a Codex PR still enqueues a review for another family', () => {
+  const s = normalize('pull_request', { action: 'opened', repository, sender: { login: 'x' }, pull_request: pr({ head: { sha: 'c'.repeat(40), ref: 'codex/y' } }) });
+  const actions = plan(s, ROUTING);
+  assert.deepEqual(actions.map((a) => a.type), ['cf_review', 'enqueue']);
+  assert.equal(actions[1].task.excludeProvider, 'openai');
 });
 
 const review = (state, body, commit = 'a'.repeat(40), login = 'chatgpt-codex-connector[bot]') => normalize('pull_request_review', {
@@ -118,4 +138,6 @@ test('parseRouting fails closed on anything malformed', () => {
   assert.equal(parseRouting(JSON.stringify({ ...ROUTING, selfLogins: [] })), null);
   assert.equal(parseRouting(JSON.stringify({ ...ROUTING, repos: ['not a repo'] })), null);
   assert.ok(parseRouting(JSON.stringify(ROUTING)));
+  assert.ok(parseRouting(JSON.stringify(CODEX_RULE)));
+  assert.equal(parseRouting(JSON.stringify({ ...ROUTING, reviewRule: 'anyone' })), null);
 });

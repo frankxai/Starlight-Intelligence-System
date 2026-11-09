@@ -13,6 +13,9 @@ export interface Routing {
   selfLogins: string[];
   // Repos where Codex already reviews every push by itself; the router does not ask again there.
   codexAutoReview?: string[];
+  // Who reviews a ready PR. 'cf-review' (default): the Worker reviews it on Workers AI
+  // (src/review.ts). 'codex': the old rule, a "@codex review" comment, kept behind this flag.
+  reviewRule?: 'cf-review' | 'codex';
   recurring?: RecurringTask[];
 }
 
@@ -61,7 +64,9 @@ export type Action =
   // Decided when it runs, against live GitHub: who added the label, and what the issue says.
   | { type: 'dispatch_issue'; owner: string; repo: string; number: number; label: string; sender: string }
   // Checks green and Codex passed this head: decided against live GitHub state, not the event.
-  | { type: 'evaluate_land'; owner: string; repo: string; number: number };
+  | { type: 'evaluate_land'; owner: string; repo: string; number: number }
+  // A Workers AI review of this exact head, sent to the review queue (src/review.ts runs it).
+  | { type: 'cf_review'; owner: string; repo: string; number: number; sha: string; branch: string };
 
 // Branch prefixes are how the estate tells harnesses apart (pr-gate reads them the same way),
 // because every harness pushes as the same GitHub account.
@@ -83,6 +88,9 @@ export function makerFromBranch(branch: string | undefined): Maker | null {
   if (!harness) return null;
   return { harness, provider: harness in HARNESS_PROVIDER ? HARNESS_PROVIDER[harness] : null };
 }
+
+// Branches cf-review looks at: agent harness branches, Codex branches and cf-* branches.
+export const CF_REVIEW_BRANCH = /^(agent\/|codex\/|cf-)/;
 
 const READY_ACTIONS = new Set(['opened', 'reopened', 'ready_for_review', 'synchronize']);
 const NO_FINDINGS = /didn['’]?t find any major issues|no major issues|no issues found/i;
@@ -149,13 +157,23 @@ export function plan(signal: Signal, routing: Routing): Action[] {
   switch (signal.kind) {
     case 'pr_ready': {
       const maker = signal.maker;
-      if (!maker || maker.harness === 'dependabot') return [];
-      // Codex checks everyone else's work; OpenAI-made work goes to a worker from another family.
-      if (maker.provider !== 'openai') {
-        if (routing.codexAutoReview?.includes(full)) return [];
-        return [{ type: 'comment', ...where, body: '@codex review' }];
+      const actions: Action[] = [];
+      if ((routing.reviewRule ?? 'cf-review') === 'cf-review') {
+        if (CF_REVIEW_BRANCH.test(signal.branch ?? '') && /^[0-9a-f]{40}$/.test(signal.sha ?? '')) {
+          actions.push({ type: 'cf_review', ...where, sha: signal.sha!, branch: signal.branch! });
+        }
+        // A triage model never signs, and gpt-ci cannot sign OpenAI work, so OpenAI-made work
+        // still gets a review task for a worker from another family below.
+        if (!maker || maker.provider !== 'openai') return actions;
+      } else {
+        if (!maker || maker.harness === 'dependabot') return [];
+        // Codex checks everyone else's work; OpenAI-made work goes to a worker from another family.
+        if (maker.provider !== 'openai') {
+          if (routing.codexAutoReview?.includes(full)) return [];
+          return [{ type: 'comment', ...where, body: '@codex review' }];
+        }
       }
-      return [{
+      return [...actions, {
         type: 'enqueue',
         task: {
           id: taskId(signal, 'review'),
@@ -227,6 +245,7 @@ export function parseRouting(raw: string | undefined): Routing | null {
     if (typeof r.codexBot !== 'string' || !r.codexBot || !strings(r.selfLogins) || r.selfLogins.length === 0) return null;
     if (r.codexAutoReview !== undefined && !strings(r.codexAutoReview)) return null;
     if (r.recurring !== undefined && !Array.isArray(r.recurring)) return null;
+    if (r.reviewRule !== undefined && r.reviewRule !== 'cf-review' && r.reviewRule !== 'codex') return null;
     return r as Routing;
   } catch {
     return null;

@@ -169,6 +169,26 @@ export class GithubApp implements GithubApi {
     return { files, complete: false };
   }
 
+  // cf-review: the PR facts it checks before and after a review run.
+  async reviewPull(owner: string, repo: string, number: number) {
+    const pr = await this.get<any>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}`);
+    return {
+      state: String(pr.state), draft: !!pr.draft, headSha: String(pr.head?.sha ?? ''),
+      headRepo: (pr.head?.repo?.full_name as string | undefined) ?? null, changedFiles: Number(pr.changed_files ?? -1),
+    };
+  }
+
+  // Changed files with their patches. complete is false past GitHub's 3,000-file listing limit.
+  async prPatches(owner: string, repo: string, number: number) {
+    const files: { filename: string; previous_filename?: string; status: string; patch?: string; changes: number }[] = [];
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const batch = await this.get<any[]>(owner, repo, `/repos/${owner}/${repo}/pulls/${number}/files?per_page=100&page=${page}`);
+      files.push(...batch.map((f) => ({ filename: f.filename, previous_filename: f.previous_filename, status: f.status, patch: f.patch, changes: Number(f.changes ?? 0) })));
+      if (batch.length < 100) return { files, complete: true };
+    }
+    return { files, complete: false };
+  }
+
   private async allReviews(owner: string, repo: string, number: number): Promise<any[] | null> {
     const out: any[] = [];
     for (let page = 1; page <= MAX_PAGES; page++) {

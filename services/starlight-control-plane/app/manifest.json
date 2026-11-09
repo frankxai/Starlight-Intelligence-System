@@ -1,0 +1,19 @@
+{
+  "name": "starlight-control-plane",
+  "url": "https://github.com/arcanea-labs/starlight-intelligence-system/tree/main/services/starlight-control-plane",
+  "description": "Starlight estate control plane: routes PR, issue and CI events into the agent task queue and runs cf-review on Workers AI.",
+  "hook_attributes": {
+    "url": "https://CONTROL-PLANE-HOST.example/events/github",
+    "active": true
+  },
+  "redirect_url": "https://CONTROL-PLANE-HOST.example/",
+  "public": false,
+  "default_permissions": {
+    "contents": "read",
+    "pull_requests": "write",
+    "issues": "write",
+    "checks": "write",
+    "metadata": "read"
+  },
+  "default_events": ["pull_request", "issues", "check_suite", "workflow_run", "issue_comment"]
+}

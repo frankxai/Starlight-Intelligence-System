@@ -5,6 +5,7 @@ import { PROVIDERS, type Identity, type Role } from './core.ts';
 import { handleMcp } from './mcp.ts';
 import { FRESH_MS, normalize, parseRouting, plan, type Action } from './events.ts';
 import { verifySignature } from './github.ts';
+import { listReviews, type D1Like } from './review.ts';
 
 export type Op =
   | 'enqueue' | 'approve' | 'claim' | 'heartbeat' | 'complete' | 'release' | 'verify' | 'get' | 'status' | 'outbox';
@@ -23,6 +24,8 @@ export interface HandlerEnv {
   GITHUB_WEBHOOK_SECRET?: string;
   // JSON Routing (src/events.ts): which repos the router acts on and who reviews whom.
   ROUTING?: string;
+  // D1 database holding review_runs (migrations/0001_review_runs.sql), read by GET /v1/reviews.
+  REVIEWS_DB?: D1Like;
 }
 
 const MAX_WEBHOOK_BYTES = 1024 * 1024;
@@ -164,6 +167,22 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
     const body = await readBody(request);
     if (body instanceof Response) return body;
     return handleMcp(request, who, stub, body);
+  }
+
+  if (url.pathname === '/v1/reviews') {
+    if (method !== 'GET') return new Response(null, { status: 405, headers: { allow: 'GET' } });
+    if (!env.REVIEWS_DB) return json(503, { error: 'REVIEWS_DB is not bound' });
+    const p = url.searchParams;
+    const repo = p.get('repo') ?? undefined;
+    const pr = p.get('pr');
+    const sha = p.get('sha') ?? undefined;
+    const limit = p.get('limit');
+    if (repo !== undefined && !/^[\w.-]+\/[\w.-]+$/.test(repo)) return json(400, { error: 'repo must be owner/name' });
+    if (pr !== null && !/^\d{1,9}$/.test(pr)) return json(400, { error: 'pr must be a number' });
+    if (sha !== undefined && !/^[0-9a-f]{7,40}$/.test(sha)) return json(400, { error: 'sha must be hex' });
+    if (limit !== null && !/^\d{1,3}$/.test(limit)) return json(400, { error: 'limit must be 1-200' });
+    const reviews = await listReviews(env.REVIEWS_DB, { repo, pr: pr === null ? undefined : Number(pr), sha, limit: limit === null ? undefined : Number(limit) });
+    return json(200, { reviews });
   }
 
   let op: Op | null = null;

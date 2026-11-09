@@ -141,8 +141,20 @@ async function dispatchIssue(sql: Sql, api: GithubApi, row: Row, a: Extract<Acti
   }, now, newId);
 }
 
-async function perform(sql: Sql, row: Row, action: Action, api: GithubApi, routing: Routing, now: number, newId: () => string) {
+export interface DrainHooks {
+  // Cloudflare Queue producer for cf-review (binding REVIEW_QUEUE). The consumer runs the review.
+  reviewQueue?: { send(body: unknown): Promise<unknown> };
+}
+
+async function perform(sql: Sql, row: Row, action: Action, api: GithubApi, routing: Routing, now: number, newId: () => string, hooks: DrainHooks) {
   switch (action.type) {
+    case 'cf_review': {
+      // Unbound queue is an error, so the row retries and then shows as failed in /v1/outbox.
+      if (!hooks.reviewQueue) throw new Error('REVIEW_QUEUE is not bound; cf-review cannot run');
+      // A duplicate send is harmless: the consumer skips a head SHA that already has a review.
+      await hooks.reviewQueue.send({ owner: action.owner, repo: action.repo, number: action.number, sha: action.sha, branch: action.branch });
+      return { queued: action.sha };
+    }
     case 'enqueue':
       return enqueueSafely(sql, action.task, now, newId);
     case 'comment':
@@ -175,13 +187,13 @@ async function perform(sql: Sql, row: Row, action: Action, api: GithubApi, routi
 }
 
 export async function drain(
-  sql: Sql, api: GithubApi, routing: Routing, now: number, newId: () => string, limit = 10,
+  sql: Sql, api: GithubApi, routing: Routing, now: number, newId: () => string, limit = 10, hooks: DrainHooks = {},
 ): Promise<{ done: number; retried: number; failed: number }> {
   const tally = { done: drainLocal(sql, now, newId).length, retried: 0, failed: 0 };
   const due = sql.exec(`SELECT * FROM outbox WHERE state = 'pending' AND NOT ${LOCAL} AND next_at <= ? ORDER BY seq LIMIT ?`, now, limit);
   for (const row of due) {
     try {
-      await perform(sql, row as unknown as Row, JSON.parse(row.action as string), api, routing, now, newId);
+      await perform(sql, row as unknown as Row, JSON.parse(row.action as string), api, routing, now, newId, hooks);
       sql.exec(`UPDATE outbox SET state = 'done', updated_at = ? WHERE seq = ?`, now, row.seq);
       tally.done++;
     } catch (err) {

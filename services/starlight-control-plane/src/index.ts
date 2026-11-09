@@ -1,13 +1,18 @@
 import { DurableObject } from 'cloudflare:workers';
 import { enqueue, migrate, sweep, QueueError, SYSTEM_PRODUCER, type Identity, type Sql } from './core.ts';
-import { parseRouting, recurringTasks, type Action } from './events.ts';
+import { makerFromBranch, parseRouting, recurringTasks, type Action } from './events.ts';
 import { GithubApp, type GithubApi } from './github.ts';
 import { handleRequest, type HandlerEnv, type Op, type QueueStub } from './handler.ts';
 import { execute } from './ops.ts';
 import { drain, drainLocal, ingest, migrateOutbox, nextDue } from './outbox.ts';
+import { d1Store, nullStore, runReview, type AiBinding, type ReviewEnv, type ReviewMessage } from './review.ts';
 
-interface Env extends HandlerEnv {
+interface Env extends HandlerEnv, ReviewEnv {
   CONTROL_PLANE: DurableObjectNamespace<ControlPlane>;
+  // Workers AI, called through AI Gateway "starlight-review" (STARLIGHT_REVIEW_GATEWAY).
+  AI?: AiBinding;
+  // Queue producer and consumer for cf-review runs (docs/control-plane/DEPLOY.md).
+  REVIEW_QUEUE?: Queue<ReviewMessage>;
   GITHUB_APP_ID?: string;
   // PKCS#8 PEM of the App's private key (see src/github.ts for the one-line conversion).
   GITHUB_APP_PRIVATE_KEY?: string;
@@ -74,7 +79,7 @@ export class ControlPlane extends DurableObject<Env> {
     if (!this.github || !routing) return { done: drainLocal(this.sql, Date.now(), () => crypto.randomUUID()).length, remote: 'waiting' };
     this.draining = true;
     try {
-      return await drain(this.sql, this.github, routing, Date.now(), () => crypto.randomUUID());
+      return await drain(this.sql, this.github, routing, Date.now(), () => crypto.randomUUID(), 10, { reviewQueue: this.env.REVIEW_QUEUE });
     } finally {
       this.draining = false;
       this.armAlarm();
@@ -118,4 +123,27 @@ export default {
     const object = queue(env);
     ctx.waitUntil(event.cron === RECURRING_CRON ? object.daily() : object.drainOutbox());
   },
-} satisfies ExportedHandler<Env>;
+  // cf-review runs here, not in the Durable Object: a review takes minutes and must not hold up the
+  // outbox. A GitHub error throws and the message is retried; model errors are block verdicts.
+  async queue(batch: MessageBatch<ReviewMessage>, env: Env): Promise<void> {
+    if (!env.AI || !env.GITHUB_APP_ID || !env.GITHUB_APP_PRIVATE_KEY) {
+      console.error('cf-review: AI binding or GitHub App credentials missing; retrying later');
+      batch.retryAll({ delaySeconds: 300 });
+      return;
+    }
+    const github = new GithubApp(env.GITHUB_APP_ID, env.GITHUB_APP_PRIVATE_KEY);
+    const store = env.REVIEWS_DB ? d1Store(env.REVIEWS_DB) : nullStore;
+    for (const message of batch.messages) {
+      try {
+        const result = await runReview(message.body, {
+          ai: env.AI, github, store, env, makerProvider: makerFromBranch(message.body.branch)?.provider ?? null,
+        });
+        console.log('cf-review', { pr: `${message.body.owner}/${message.body.repo}#${message.body.number}`, sha: message.body.sha, ...('body' in result ? { ...result, body: undefined } : result) });
+        message.ack();
+      } catch (err) {
+        console.error('cf-review failed; will retry', { sha: message.body?.sha, error: String((err as Error)?.message ?? err).slice(0, 300) });
+        message.retry({ delaySeconds: 60 });
+      }
+    }
+  },
+} satisfies ExportedHandler<Env, ReviewMessage>;
