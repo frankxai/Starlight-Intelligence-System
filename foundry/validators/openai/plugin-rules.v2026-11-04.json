@@ -1,15 +1,16 @@
 {
   "schemaVersion": "1.0.0",
-  "id": "openai-plugin-directory-preflight-2026-10-04",
+  "id": "openai-plugin-directory-preflight-2026-11-04",
   "authority": "docs-derived-preflight",
-  "reviewedAt": "2026-10-04",
-  "reviewBy": "2026-11-03",
+  "reviewedAt": "2026-11-04",
+  "reviewBy": "2026-12-04",
   "claimBoundary": "This ruleset is not an OpenAI schema or portal result. A passing report cannot replace bundle upload, the OpenAI skill safety/security scan, review, runtime, or publication evidence. Scan Tools remains an MCP-specific external gate.",
   "localConservativeChecks": {
     "assetDecoder": "SVG only until a bounded, vulnerability-reviewed raster decoder is pinned",
     "promptNormalization": "NFC plus Unicode whitespace collapse for duplicate detection; the portal algorithm is not published",
     "symlinks": "Rejected by the Starlight package evidence boundary even where the portal may warn or ignore",
-    "skillsOnlyScreenshots": "Rejected because current guidelines direct directory listings to starter prompts instead of screenshots; OpenAI submission metadata still permits screenshots generally"
+    "skillsOnlyScreenshots": "Blocked on skills-only ZIP archives per live submission error screenshot_configuration_excluded; With MCP submissions permit UI starter-prompt screenshots",
+    "skillMetadataBounds": "Short description 25-64 chars and MCP tool dependency value/description 128/256 chars are local conservative checks; upstream documents 1,024-char skill description and 64-char combined identity"
   },
   "sources": [
     "https://developers.openai.com/plugins/build/plugins",
