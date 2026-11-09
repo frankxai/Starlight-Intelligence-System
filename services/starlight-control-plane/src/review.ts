@@ -297,6 +297,37 @@ export function chunkDiff(files: PatchFile[], maxBytes = MAX_CHUNK_BYTES, maxChu
   }));
 }
 
+// A unified diff (git diff / gh pr diff) as the PatchFile list chunkDiff expects. Shared by the
+// benchmark CLI and the reviewer arena (arena/run.ts), so both review exactly what they parsed.
+export function parseUnifiedDiff(text: string): PatchFile[] {
+  const files: PatchFile[] = [];
+  let cur: PatchFile | null = null;
+  let inHunks = false;
+  for (const line of text.split('\n')) {
+    const m = /^diff --git a\/(.+?) b\/(.+)$/.exec(line);
+    if (m) {
+      cur = { filename: m[2], status: 'modified', changes: 0, patch: '' };
+      if (m[1] !== m[2]) cur.previous_filename = m[1];
+      files.push(cur);
+      inHunks = false;
+      continue;
+    }
+    if (!cur) continue;
+    if (!inHunks) {
+      if (line.startsWith('new file mode')) cur.status = 'added';
+      else if (line.startsWith('deleted file mode')) cur.status = 'removed';
+      else if (line.startsWith('rename from')) cur.status = 'renamed';
+      else if (line.startsWith('Binary files')) cur.changes = 1; // no patch, so chunkDiff fails closed
+      if (!line.startsWith('@@')) continue;
+      inHunks = true;
+    }
+    cur.patch += `${cur.patch ? '\n' : ''}${line}`;
+    if ((line.startsWith('+') || line.startsWith('-')) && !line.startsWith('+++') && !line.startsWith('---')) cur.changes++;
+  }
+  for (const f of files) f.patch = (f.patch ?? '').replace(/\n+$/, '');
+  return files;
+}
+
 // ---------- config ----------
 
 export interface ReviewEnv {

@@ -7,6 +7,9 @@
 //       --diff pr.diff --models @cf/deepseek-ai/deepseek-v4.1-flash-1017,@cf/zai-org/glm-5.3 \
 //       --gateway starlight-review
 //
+// Reviewer arena (docs/control-plane/ARENA.md): add --arena --base-diff <file> [--seeds all|<class>]
+// [--out results.json] to plant seeded defects and print catch %, false alarm %, p50 s and n per model.
+//
 // Prints per model: verdict, findings, completion tokens, reasoning chars, seconds, finish_reason.
 // The API token is read from the environment and never printed. This is a measurement, not a
 // sign-off: it skips the family and maker checks, so it can measure models the gate does not trust.
@@ -15,56 +18,35 @@
 // only recorded in the output: this REST endpoint is not known to route through AI Gateway, so the
 // benchmark measures the models, not the gateway.
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import {
   DEFAULT_BUDGET_MS, DEFAULT_CONCURRENCY, DEFAULT_GATEWAY, DEFAULT_MAX_TOKENS, DEFAULT_TIMEOUT_MS, MAX_CHUNK_BYTES,
-  chunkDiff, combineReviews, parseKnobs, reviewChunks, sanitizeInline,
+  chunkDiff, combineReviews, parseKnobs, parseUnifiedDiff, reviewChunks, sanitizeInline,
 } from '../src/review.ts';
+import { recommendGateModels, readThresholds, runArena, selectSeeds } from '../arena/run.ts';
 
-const USAGE = 'usage: review-benchmark.mjs --diff <file> --models a,b [--gateway starlight-review] [--chunk-bytes N] [--concurrency N] [--timeout-ms N] [--budget-ms N] [--max-tokens N]';
+// Re-exported: the parser moved to src/review.ts so the reviewer arena shares it.
+export { parseUnifiedDiff };
+
+const USAGE = [
+  'usage: review-benchmark.mjs --diff <file> --models a,b [--gateway starlight-review] [--chunk-bytes N] [--concurrency N] [--timeout-ms N] [--budget-ms N] [--max-tokens N]',
+  '       review-benchmark.mjs --arena --base-diff <file> --models a,b [--seeds all|<class>] [--base-ref <label>] [--out results.json] [--case-concurrency N] [same tuning flags]',
+].join('\n');
+const FLAGS = new Set(['arena']);
 
 export function parseArgs(argv) {
   const out = {};
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (!a.startsWith('--')) throw new Error(`unexpected argument ${a}\n${USAGE}`);
+    if (FLAGS.has(a.slice(2))) { out[a.slice(2)] = true; continue; }
     const v = argv[i + 1];
     if (v === undefined || v.startsWith('--')) throw new Error(`${a} needs a value\n${USAGE}`);
     out[a.slice(2)] = v;
     i++;
   }
-  if (!out.diff || !out.models) throw new Error(USAGE);
+  if (!out.models || (out.arena ? !out['base-diff'] : !out.diff)) throw new Error(USAGE);
   return out;
-}
-
-// A unified diff (git diff / gh pr diff) as the PatchFile list chunkDiff expects.
-export function parseUnifiedDiff(text) {
-  const files = [];
-  let cur = null;
-  let inHunks = false;
-  for (const line of text.split('\n')) {
-    const m = /^diff --git a\/(.+?) b\/(.+)$/.exec(line);
-    if (m) {
-      cur = { filename: m[2], status: 'modified', changes: 0, patch: '' };
-      if (m[1] !== m[2]) cur.previous_filename = m[1];
-      files.push(cur);
-      inHunks = false;
-      continue;
-    }
-    if (!cur) continue;
-    if (!inHunks) {
-      if (line.startsWith('new file mode')) cur.status = 'added';
-      else if (line.startsWith('deleted file mode')) cur.status = 'removed';
-      else if (line.startsWith('rename from')) cur.status = 'renamed';
-      else if (line.startsWith('Binary files')) cur.changes = 1; // no patch, so chunkDiff fails closed
-      if (!line.startsWith('@@')) continue;
-      inHunks = true;
-    }
-    cur.patch += `${cur.patch ? '\n' : ''}${line}`;
-    if ((line.startsWith('+') || line.startsWith('-')) && !line.startsWith('+++') && !line.startsWith('---')) cur.changes++;
-  }
-  for (const f of files) f.patch = f.patch.replace(/\n+$/, '');
-  return files;
 }
 
 // The REST endpoint as an AiBinding, so reviewChunks drives it exactly like env.AI.
@@ -101,6 +83,40 @@ const posInt = (v, d, name) => {
   return n;
 };
 
+const pctCell = (x) => (x === null ? 'n/a' : `${(x * 100).toFixed(1)}%`);
+const pad = (s, n) => String(s).padEnd(n);
+// Terminal text from our own inputs (model ids, file paths, reasons): one line, no GitHub defusing.
+const flat = (s, n) => String(s ?? '').replace(/[\r\n\u2028\u2029]+/g, ' ').slice(0, n);
+
+// --arena: plant every selected seed into the base diff, review each mutated diff (and the clean
+// controls) with every model, and print catch %, false alarm %, p50 seconds and n per model.
+export async function arena(args, { env, cfg, chunkBytes, models, ai, say, redact = (x) => x, now }) {
+  const seeds = selectSeeds(args.seeds ?? 'all');
+  const baseRef = args['base-ref'] || args['base-diff'];
+  const caseConcurrency = posInt(args['case-concurrency'], undefined, 'case-concurrency');
+  const result = await runArena({ ai, models, seeds, baseDiff: readFileSync(args['base-diff'], 'utf8'), baseRef, cfg, chunkBytes, caseConcurrency, now });
+  const recommendation = recommendGateModels(result.scores, readThresholds(env));
+  say(`reviewer arena: ${seeds.length} seed(s) selected, ${seeds.length - result.skipped.length} applied, base=${flat(baseRef, 200)}`);
+  for (const k of result.skipped) say(`  skipped ${k.seed_id}: ${k.reason}`);
+  say('');
+  say(`${pad('model', 48)} ${pad('catch %', 9)} ${pad('false alarm %', 14)} ${pad('p50 s', 7)} n`);
+  for (const s of result.scores) {
+    const p50 = s.p50_latency_ms === null ? 'n/a' : (s.p50_latency_ms / 1000).toFixed(1);
+    say(`${pad(flat(s.model, 80), 48)} ${pad(pctCell(s.catch_rate), 9)} ${pad(pctCell(s.false_alarm_rate), 14)} ${pad(p50, 7)} ${s.n} (${s.n_seeded} seeded, ${s.n_clean} clean)`);
+  }
+  for (const r of result.rows.filter((x) => x.error)) say(`  ! ${flat(r.model, 80)} ${r.seed_id}: ${sanitizeInline(r.error, 300)}`);
+  say('');
+  say(`recommended for STARLIGHT_GATE_MODELS (not applied): ${recommendation.recommended.length ? recommendation.recommended.join(', ') : '(none)'}`);
+  for (const m of recommendation.models) say(`  ${m.qualifies ? '+' : '-'} ${flat(m.model, 80)}: ${m.reasons.map((x) => flat(x, 400)).join('; ')}`);
+  const out = { base_ref: baseRef, rows: result.rows, skipped: result.skipped, scores: result.scores, recommendation };
+  if (args.out) {
+    // Model errors can echo request details; the token is scrubbed from the file as from the console.
+    writeFileSync(args.out, `${redact(JSON.stringify(out, null, 2))}\n`);
+    say(`wrote ${args.out}`);
+  }
+  return out;
+}
+
 export async function main(argv, { env = process.env, fetchImpl = fetch, log = console.log, now = Date.now } = {}) {
   const args = parseArgs(argv);
   const accountId = env.CLOUDFLARE_ACCOUNT_ID;
@@ -119,6 +135,7 @@ export async function main(argv, { env = process.env, fetchImpl = fetch, log = c
     knobs: parseKnobs(env.STARLIGHT_REVIEW_KNOBS),
   };
   const chunkBytes = posInt(args['chunk-bytes'] ?? env.STARLIGHT_REVIEW_CHUNK_BYTES, MAX_CHUNK_BYTES, 'chunk-bytes');
+  if (args.arena) return arena(args, { env, cfg, chunkBytes, models, ai: restBinding({ accountId, token, fetchImpl }), say, redact, now });
   const chunks = chunkDiff(parseUnifiedDiff(readFileSync(args.diff, 'utf8')), chunkBytes);
   const ai = restBinding({ accountId, token, fetchImpl });
 

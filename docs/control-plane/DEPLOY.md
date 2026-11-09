@@ -154,6 +154,9 @@ default reasoning effort:
 recommendations, 1M context) are gate-tier candidates once `scripts/review-benchmark.mjs` shows
 them catching a seeded defect on a real diff. Until then `STARLIGHT_GATE_MODELS` stays empty.
 
+For gate decisions, use the reviewer arena (`docs/control-plane/ARENA.md`): many seeded defects plus
+clean controls, catch and false-alarm rates per model, and a promotion rule that only recommends.
+
 Run the benchmark from the repo root on a real PR diff with one defect seeded into it:
 
 ```bash

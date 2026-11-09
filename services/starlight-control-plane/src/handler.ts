@@ -6,6 +6,8 @@ import { handleMcp } from './mcp.ts';
 import { FRESH_MS, normalize, parseRouting, plan, type Action } from './events.ts';
 import { verifySignature } from './github.ts';
 import { listReviews, type D1Like } from './review.ts';
+import { readThresholds, recommendGateModels, type ArenaEnv } from '../arena/score.ts';
+import { readArenaScores } from '../arena/store.ts';
 
 export type Op =
   | 'enqueue' | 'approve' | 'claim' | 'heartbeat' | 'complete' | 'release' | 'verify' | 'get' | 'status' | 'outbox';
@@ -15,7 +17,7 @@ export interface QueueStub {
   ingest(delivery: string, actions: Action[]): Promise<{ duplicate: boolean; results: unknown[] }>;
 }
 
-export interface HandlerEnv {
+export interface HandlerEnv extends ArenaEnv {
   // JSON object: sha256(token) hex -> Identity. Set with `wrangler secret put AGENT_TOKENS`.
   AGENT_TOKENS?: string;
   // Comma-separated browser origins allowed to call; empty means none.
@@ -24,7 +26,8 @@ export interface HandlerEnv {
   GITHUB_WEBHOOK_SECRET?: string;
   // JSON Routing (src/events.ts): which repos the router acts on and who reviews whom.
   ROUTING?: string;
-  // D1 database holding review_runs (migrations/0001_review_runs.sql), read by GET /v1/reviews.
+  // D1 database holding review_runs (migrations/0001_review_runs.sql), read by GET /v1/reviews, and
+  // arena_runs + arena_scores (migrations/0002_arena.sql), read by GET /v1/arena/scores.
   REVIEWS_DB?: D1Like;
 }
 
@@ -183,6 +186,17 @@ export async function handleRequest(request: Request, env: HandlerEnv, stub: Que
     if (limit !== null && !/^\d{1,3}$/.test(limit)) return json(400, { error: 'limit must be 1-200' });
     const reviews = await listReviews(env.REVIEWS_DB, { repo, pr: pr === null ? undefined : Number(pr), sha, limit: limit === null ? undefined : Number(limit) });
     return json(200, { reviews });
+  }
+
+  // Reviewer arena scores plus the promotion rule's recommendation. Read-only: the recommendation
+  // never touches STARLIGHT_GATE_MODELS (docs/control-plane/ARENA.md).
+  if (url.pathname === '/v1/arena/scores') {
+    if (method !== 'GET') return new Response(null, { status: 405, headers: { allow: 'GET' } });
+    if (!env.REVIEWS_DB) return json(503, { error: 'REVIEWS_DB is not bound' });
+    let thresholds;
+    try { thresholds = readThresholds(env); } catch (e) { return json(503, { error: String((e as Error).message) }); }
+    const scores = await readArenaScores(env.REVIEWS_DB);
+    return json(200, { scores, recommendation: recommendGateModels(scores, thresholds) });
   }
 
   let op: Op | null = null;
