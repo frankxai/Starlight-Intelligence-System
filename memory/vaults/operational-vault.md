@@ -6,7 +6,7 @@ writers:
 - orchestrator
 - prime
 readers: all
-last_consolidated: '2026-05-11'
+last_consolidated: '2026-10-14'
 ---
 
 ## 2026-06-15 — Higgsfield Core Five Workspace Normalized
@@ -1128,3 +1128,38 @@ Built on SIP — operational implementation record.
 
 **Built on SIP — Starlight Intelligence Protocol v1.1.1**
 
+
+
+---
+
+## 2026-10-24 — Estate CI Runner Topology, Unlocked Org Inventory & E2E Autonomous Operations Controller
+
+**Category:** ci-runner-topology / billing-circuit-breaker / autonomous-operations / pr-triage
+**Confidence:** 1.0
+**Source:** Antigravity Multi-Agent Swarm (`starlight-hermes`, `starlight-sentinel`, `starlight-architect`)
+**Related:** `tools/autonomous-ops/e2e-controller.mjs`, `agentic-ops/fleet/reports/org-runner-policy-inventory-2026-10-24.json`, `agentic-ops/fleet/reports/pr-review-disposition-2026-10-24.json`, `agentic-ops/fleet/receipts/rcpt_track3_autonomous_ops_status.json`
+
+### 1. Live Billing & Unlocked Org Runner-Group Inventory (`admin:org` + `user` Scopes Active)
+- **Live v2 Billing Summary (`/users/frankxai/settings/billing/usage/summary` as of 2026-10-24):**
+  - **Actions Net Billed:** `$84.70` (`$74.20` Linux across `12,365.90` net billed min / `78,788.57` gross min; `$7.01` Windows across `700.82` net billed min; `$2.79` macOS across `45.00` net billed min; `$0.61` Storage across `12,531.33` GB-hr; `$0.09` Linux Slim on `gencreator.ai`).
+  - **Copilot & Coding Agent AI Units:** `$65.00` net (`$265.00` gross across `26,500` AI units).
+  - **Private Repo Cost Concentration:** `gencreator.ai` (`$31.73`, 38%), `arcanea-platform` (`$15.33`, 18%, Actions now disabled), `starlightintelligence.ai` (`$7.13`, 8%), `agentic-ops` (`$6.89`, 8%), `starlight-agent-config` (`$5.97`, 7%), `starlight-command-center` (`$5.18`, 6%).
+- **10-Org Runner Group Reality (`/orgs/{org}/actions/runner-groups` -> HTTP 200 OK across all 10 orgs):**
+  - **8 of 10 orgs** (`Arcanea-Labs`, `FrankX-AI`, `AI-Architect-Academy`, `oci-ai-architects`, `Starlight-Intelligence`, `Life-Commons`, `AI-Architect-Studio`, `Agentic-Income`) already have **Blacksmith runner groups** provisioned (`3× Blacksmith runners`, plus `blacksmith-2vcpu-ubuntu-2404` scale sets on `Arcanea-Labs`, `Starlight-Intelligence`, and `Life-Commons`).
+  - Only `Starlight-Intelligence-Systems` and `GenCreator-ai` have `Default` only (no Blacksmith).
+  - `starlight-agent-config` and `starlight-command-center` now resolve via `HTTP 307` to `Starlight-Intelligence/*` (Org Free Plan): they are eligible for `Starlight-Intelligence` Blacksmith scale-set runners rather than personal Railway runners, and their GitHub branch protection returns `HTTP 403` until upgraded to Team or enforced via Merge Steward.
+
+### 2. Exact SHA-Bound PR Review Dispositions
+- **`frankxai/Starlight-Intelligence-System#498`** (`3be9c23fbc78691d7323de7064961c6f2eb3cba7`): **READY_FOR_HUMAN_MERGE** — 10/10 CI checks pass (including `Harness check/harness` and `estate-guard`), fixing the stale portfolio mesh timestamp blocking downstream SIS PRs.
+- **`frankxai/Starlight-Intelligence-System#485`** (`6baac0fd159c876d4c29557e95c90560d4f37a79`) & **`#493`** (`11dcc989c9a1b23e805e722138fd953916543e0f`): **REPIN_TO_CBC5091** — both leave `starlight-design-contract.yml` and `.starlight/design-contract.json` on legacy `80830c60...` instead of the accepted kernel `cbc5091ce58d21947ae70bfffcd80c9e53ee1967` (and descendant `851a11be31a0640df64baabcf2b1fc1afb9ce849`).
+- **`frankxai/gencreator.ai#246`** (`55ec9324d9965ea3ccd8d070d6dbd03d77045738`): **REPIN_TO_CBC5091 + HOLD_PER_LEDGER** — Railway jobs (`lint-typecheck`, `unit`, `build`) pass and `e2e` passes 323/323 tests, failing only at `upload-artifact` due to storage quota and hosted Actions budget cap; requires rebase onto `main` (`f0d386a`) and `cbc5091` design-contract repin.
+- **`frankxai/railway-ci-runners#25`** (`8b3fb0cda6d48d39b249294e1981ff705f41f5f2`), **`#26`** (`ad86638244616d7ac4c1f170bc5d53f772d3012d`), & **`#28`** (`4a364f8a934054d547dd497b380c7f3d80970f71`): **HOLD_PER_LEDGER** — offline tests green (`67` and `43` tests), hard-disabled in production config pending C3 shared wake isolation, DO request budget integration, and whole-head independent review.
+- **`Starlight-Intelligence/starlight-command-center#78`** (`7cd2de7a...`), **`frankxai/go-agenticincome#37`** (`ca34d281...`), & **`frankxai/agentic-ops#253`** (`7e90d8c4...`): **CLOSE_STALE_DRAFT** — violate Railway admission policy (`PILOT_REPOS` admits only `frankxai/gencreator.ai`, missing `repository_id`/`private`/`fork` guards).
+
+### 3. E2E Autonomous Operations Controller (`tools/autonomous-ops/e2e-controller.mjs`)
+- Shipped zero-dependency CLI & library (`5/5` self-test suites passing) enforcing:
+  1. **Cost Circuit Breaker (`evaluateCircuitBreaker`)**: Evaluates Actions spend (`84.5%`), Railway spend (`$31.75 / $75 soft / $130 hard`), and local free RAM (`~3.1 GB`), locking the active envelope to `A2_BOUNDED_PR` and provider routes (`public -> github-hosted`, `org-private -> blacksmith`, `personal-private-admitted -> railway`, `personal-private-unadmitted -> hold-or-public-lint`).
+  2. **Throughput Controller (`auditThroughput`)**: Enforces max 5 active non-draft PRs per repo, flags drafts > 7 days old (`AUTO_PARK_STALE_DRAFT`), and batches dependency PRs.
+  3. **Typed Mission Receipt Emitter (`emitReceipt`)**: Emits compact, SHA-256-sealed JSON receipts (`<= 4096 bytes`) to `agentic-ops/fleet/receipts/`.
+
+**Built on SIP — Starlight Intelligence Protocol v1.1.1**

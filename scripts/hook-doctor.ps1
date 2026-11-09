@@ -15,25 +15,30 @@ param(
 )
 
 $ErrorActionPreference = 'Continue'
-$results = @()
+$script:results = New-Object System.Collections.Generic.List[object]
 function Add-Result($Name, $Status, $Detail) {
-    $results += [pscustomobject]@{ Name=$Name; Status=$Status; Detail=$Detail }
+    $script:results.Add([pscustomobject]@{ Name=$Name; Status=$Status; Detail=$Detail }) | Out-Null
     $color = if ($Status -eq 'PASS') { 'Green' } elseif ($Status -eq 'WARN') { 'Yellow' } else { 'Red' }
     Write-Host "[$Status] $Name : $Detail" -ForegroundColor $color
 }
 
 Write-Host "=== Starlight Hook Doctor v1 (excellence layer) ===" -ForegroundColor Cyan
-Write-Host "Central source: claude-code-config/hooks + .grok excellence + cockpit" -ForegroundColor DarkGray
+Write-Host "Live hooks: .claude\hooks\session-boot.py, .grok\hooks, cockpit as commands" -ForegroundColor DarkGray
 
-$hookCentral = "C:\Users\frank\starlight\repos\claude-code-config\hooks"
+$hookCentral = "C:\Users\frank\.claude\hooks"
 $grokHooks = "$HOME\.grok\hooks"
 $claudeSettings = "$HOME\.claude\settings.json"
 $cockpitHooks = "C:\Users\frank\Starlight-Intelligence-System\cockpit\hooks"
 
 # 1. Central files
 if (Test-Path $hookCentral) {
-    $count = (Get-ChildItem $hookCentral -File -Recurse).Count
-    Add-Result "Central hooks dir" "PASS" "$count files (incl lib)"
+    $boot = Test-Path (Join-Path $hookCentral 'session-boot.py')
+    $stop = Test-Path (Join-Path $hookCentral 'session-stop.py')
+    if ($boot -and $stop) {
+        Add-Result "Live session hooks" "PASS" "session-boot.py and session-stop.py"
+    } else {
+        Add-Result "Live session hooks" "FAIL" "Expected session-boot.py and session-stop.py in $hookCentral"
+    }
 } else { Add-Result "Central hooks dir" "FAIL" "Missing $hookCentral" }
 
 # 2. Registrations
@@ -64,9 +69,9 @@ if (Test-Path $envLib) {
     }
 } else { Add-Result "hook-env.sh" "FAIL" "Missing lib" }
 
-# 4. Simulate critical hooks (non-destructive)
+# 4. Optional execution. A normal run stays read-only.
 $gb = "C:\Program Files\Git\bin\bash.exe"
-if ( (Test-Path $gb) -and (Test-Path $hookCentral) ) {
+if ($Verbose -and (Test-Path $gb) -and (Test-Path $hookCentral)) {
     $payload = '{"prompt":"use excellence review and repo-mastery to fix this","cwd":"C:\\Users\\frank\\Starlight-Intelligence-System"}'
     $tests = @('quality-gate.sh','pre-compact.sh','notification.sh')
     foreach ($t in $tests) {
@@ -84,16 +89,20 @@ if ( (Test-Path $gb) -and (Test-Path $hookCentral) ) {
     }
 }
 
-# 5. Cockpit PS1 hooks (PS native)
+# 5. Cockpit PowerShell hooks stay on disk and off the global hook list.
+# They call ReadToEnd, which deadlocks when the stdin pipe stays open.
 $startPs = Join-Path $cockpitHooks 'claude-session-start.ps1'
 if (Test-Path $startPs) {
-    $tmp = New-TemporaryFile
-    '{"session_id":"doc-test","cwd":"C:\\test"}' | Set-Content $tmp
-    $env:COCKPIT_HOME = "$HOME\.starlight\cockpit"
-    Get-Content $tmp | & pwsh -NoProfile -File $startPs 2>&1 | Out-Null
-    $code = $LASTEXITCODE
-    Remove-Item $tmp -Force
-    if ($code -eq 0) { Add-Result "Cockpit PS1 hooks" "PASS" "Executed (exit 0)" } else { Add-Result "Cockpit PS1 hooks" "FAIL" "Exit $code" }
+    $registered = $false
+    if (Test-Path $claudeSettings) {
+        $rawSettings = Get-Content $claudeSettings -Raw
+        if ($rawSettings -match 'claude-session-start\.ps1|powershell\.exe') { $registered = $true }
+    }
+    if ($registered) {
+        Add-Result "Cockpit PS1 hooks" "FAIL" "Registered on SessionStart. Keep session-boot.py."
+    } else {
+        Add-Result "Cockpit PS1 hooks" "PASS" "On disk, not registered. Use arc snapshot."
+    }
 } else { Add-Result "Cockpit PS1 hooks" "WARN" "Not present in this context" }
 
 # 6. Env injection check (from agy-tools launches)
@@ -108,21 +117,29 @@ Write-Host "`n=== Recommendations (excellence) ===" -ForegroundColor Cyan
 Write-Host "- Source agy-tools.ps1 (or profile) before using cl/gr/da to get env + aliases."
 Write-Host "- For Grok excellence: ensure .grok/hooks/*.json are loaded by your Grok TUI (copy to ~/.grok/hooks if needed)."
 Write-Host "- Re-run with -Fix to attempt light repairs (future)."
-Write-Host "- Full cross-repo: central claude-code-config/hooks is source of truth; others should junction/symlink."
+Write-Host "- Running hooks are C:\Users\frank\.claude\hooks\session-boot.py and session-stop.py. Repo copies do not fire by themselves."
 Write-Host "- Test in real harness: clsis or grfx then issue a prompt that should trigger skill-activation (e.g. 'use repo-mastery')."
 
 Write-Host "`n=== Summary ===" -ForegroundColor Cyan
-$pass = ($results | Where Status -eq 'PASS').Count
-$warn = ($results | Where Status -eq 'WARN').Count
-$fail = ($results | Where Status -eq 'FAIL').Count
+$pass = @($script:results | Where-Object Status -eq 'PASS').Count
+$warn = @($script:results | Where-Object Status -eq 'WARN').Count
+$fail = @($script:results | Where-Object Status -eq 'FAIL').Count
 Write-Host "PASS: $pass  WARN: $warn  FAIL: $fail" 
 if ($fail -gt 0) { Write-Host "Some hard failures - review above." -ForegroundColor Red } else { Write-Host "Core hooks appear executable. Detection + registrations are the usual culprits." -ForegroundColor Green }
 
 # Optional future: if $Fix, touch files or update profile note.
 
-if ($ScanRepos -or $true) {  # always show in this version for visibility; use switch to gate in future
-  Write-Host "`n=== Multi-repo scan (production mains) ===" -ForegroundColor Cyan
-  $scanReposList = @('C:\Users\frank\starlight\repos\agentic-creator-os','C:\Users\frank\starlight\repos\FrankX','C:\Users\frank\starlight\repos\arcanea-ecosystem','C:\Users\frank\starlight\repos\second-brain-os','C:\Users\frank\starlight\repos\prompt-library','C:\Users\frank\Starlight-Intelligence-System','C:\Users\frank\starlight\repos\arcanea-ai-app')
+if ($ScanRepos) {
+  Write-Host "`n=== Multi-repo scan (canonical folders) ===" -ForegroundColor Cyan
+  $scanReposList = @(
+    'C:\Users\frank\agentic-creator-os',
+    'C:\Users\frank\FrankX',
+    'C:\Users\frank\Arcanea',
+    'C:\Users\frank\frankx.ai-vercel-website',
+    'C:\Users\frank\gencreator.ai',
+    'C:\Users\frank\Starlight-Intelligence-System',
+    'C:\Users\frank\arcanea-ai-app'
+  )
   foreach ($r in $scanReposList | Where {Test-Path $_}) {
     Push-Location $r
     $n = Split-Path $r -Leaf
