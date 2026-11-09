@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import worker, {
   handleRequest,
+  scheduled,
+  createEstateHealthSweepReceipt,
   verifySignature,
   extractEventMetadata,
   shouldDispatchRunner,
@@ -137,3 +139,69 @@ test('worker fetch handles /health and verifies webhook requests', async () => {
   assert.equal(pingJson.pong, true);
 });
 
+test('createEstateHealthSweepReceipt generates valid SIP receipt structure', () => {
+  const receipt = createEstateHealthSweepReceipt('0 4 * * *', '2026-11-09T04:00:00.000Z', {
+    GCP_REGION: 'europe-west4',
+  });
+  assert.equal(receipt.type, 'autonomous_estate_health_sweep');
+  assert.equal(receipt.substrate, 'starlight-fleet-ingress');
+  assert.equal(receipt.cron, '0 4 * * *');
+  assert.equal(receipt.scheduledTime, '2026-11-09T04:00:00.000Z');
+  assert.equal(receipt.protocol, 'SIP-1.1.1');
+  assert.equal(receipt.status, 'healthy');
+  assert.equal(receipt.details?.jobsQueueConfigured, false);
+});
+
+test('scheduled handler triggers autonomous receipt emit when queue is not configured', async () => {
+  const controller = {
+    cron: '0 4 * * *',
+    scheduledTime: Date.now(),
+    noRetry() {},
+  };
+  const env = {
+    GCP_REGION: 'europe-west4',
+  };
+
+  await scheduled(controller, env);
+  assert.equal(typeof worker.scheduled, 'function', 'worker default export must include scheduled handler');
+});
+
+test('scheduled handler queues estate health job when STARLIGHT_AGENT_JOBS is configured', async () => {
+  const queuedMessages = [];
+  const waitedPromises = [];
+
+  const mockJobsQueue = {
+    async send(message) {
+      queuedMessages.push(message);
+    },
+  };
+
+  const mockCtx = {
+    waitUntil(promise) {
+      waitedPromises.push(promise);
+    },
+  };
+
+  const controller = {
+    cron: '0 4 * * *',
+    scheduledTime: 1731124800000,
+    noRetry() {},
+  };
+
+  const env = {
+    STARLIGHT_AGENT_JOBS: mockJobsQueue,
+    GCP_REGION: 'europe-west4',
+  };
+
+  await scheduled(controller, env, mockCtx);
+
+  assert.equal(waitedPromises.length, 1, 'ctx.waitUntil must be invoked for the queue send promise');
+  await Promise.all(waitedPromises);
+
+  assert.equal(queuedMessages.length, 1, 'one job must be queued to STARLIGHT_AGENT_JOBS');
+  assert.equal(queuedMessages[0].job, 'estate-health-audit');
+  assert.equal(queuedMessages[0].cron, '0 4 * * *');
+  assert.equal(queuedMessages[0].protocol, 'SIP-1.1.1');
+  assert.equal(queuedMessages[0].receipt.status, 'dispatched');
+  assert.equal(queuedMessages[0].receipt.details.healthPingStatus, 'healthy');
+});
