@@ -25,12 +25,24 @@ id = "5dab9ccc89a04a6a964fd3bc7ef12288"
 
 [durable_objects]
 bindings = [
-  { name = "SWARM_COORDINATOR", class_name = "SwarmCoordinator" }
+  { name = "SWARM_COORDINATOR", class_name = "SwarmCoordinator" },
+  { name = "SANDBOX", class_name = "Sandbox" }
 ]
 
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["SwarmCoordinator"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Sandbox"]
+
+# Cloudflare Containers configuration for zero-egress edge execution (Sandbox SDK 1.0)
+[[containers]]
+name = "starlight-sandbox-container"
+image = "cloudflare/sandbox:next"
+cpu = 1
+memory = "1GB"
 
 [ai]
 binding = "AI"
