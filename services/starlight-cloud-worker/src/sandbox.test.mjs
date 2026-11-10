@@ -72,37 +72,64 @@ test('StarlightCloudWorker rejects unauthenticated /v1/sandbox/execute', async (
   assert.strictEqual(data.error, 'Unauthorized');
 });
 
-test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with Bearer auth', async () => {
+test('StarlightCloudWorker rejects arbitrary unconfigured Bearer token on /v1/sandbox/execute', async () => {
   const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/execute', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer test-bearer-token',
+      'Authorization': 'Bearer arbitrary-unverified-token',
     },
     body: JSON.stringify({
       command: ['python3', '--version'],
     }),
   });
 
-  const response = await StarlightCloudWorker.handleRequest(request, { SANDBOX: mockSandboxBinding });
+  const response = await StarlightCloudWorker.handleRequest(request, {
+    SANDBOX_TOKEN: 'verified-production-token',
+    SANDBOX: mockSandboxBinding,
+  });
+  assert.strictEqual(response.status, 403);
+  const data = await response.json();
+  assert.strictEqual(data.error, 'Forbidden');
+});
+
+test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with validated Bearer auth', async () => {
+  const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/execute', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer verified-production-token',
+    },
+    body: JSON.stringify({
+      command: ['python3', '--version'],
+    }),
+  });
+
+  const response = await StarlightCloudWorker.handleRequest(request, {
+    SANDBOX_TOKEN: 'verified-production-token',
+    SANDBOX: mockSandboxBinding,
+  });
   assert.strictEqual(response.status, 200);
   const data = await response.json();
   assert.strictEqual(data.exitCode, 0);
   assert.strictEqual(data.zeroEgress, true);
 });
 
-test('Sandbox Durable Object rejects unauthenticated /exec', async () => {
-  const sandboxDo = new Sandbox({}, {});
+test('Sandbox Durable Object rejects invalid authorization token on /exec', async () => {
+  const sandboxDo = new Sandbox({}, { SANDBOX_TOKEN: 'verified-production-token' });
   const unauthRequest = new Request('https://do.sandbox/exec', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer wrong-token',
+    },
     body: JSON.stringify({
       command: ['python3', '-c', 'print("unauthorized")'],
     }),
   });
 
   const response = await sandboxDo.fetch(unauthRequest);
-  assert.strictEqual(response.status, 401);
+  assert.strictEqual(response.status, 403);
 });
 
 test('Sandbox Durable Object persists container execution state in SQLite with parameterized query', async () => {
@@ -115,12 +142,15 @@ test('Sandbox Durable Object persists container execution state in SQLite with p
     },
   };
 
-  const sandboxDo = new Sandbox({ storage: mockStorage }, { SANDBOX: mockSandboxBinding });
+  const sandboxDo = new Sandbox(
+    { storage: mockStorage },
+    { SANDBOX_TOKEN: 'verified-production-token', SANDBOX: mockSandboxBinding }
+  );
   const execRequest = new Request('https://do.sandbox/exec', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer do-bearer-token',
+      'Authorization': 'Bearer verified-production-token',
     },
     body: JSON.stringify({
       command: ['python3', '-c', 'print("hello-from-isolated-container")'],

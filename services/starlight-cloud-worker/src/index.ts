@@ -35,6 +35,8 @@ export interface Env {
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
   SANDBOX?: any;           // Cloudflare Sandbox container binding
+  SANDBOX_TOKEN?: string;  // Dedicated secret for sandbox container execution
+  OPS_TOKEN?: string;      // Operational authorization secret
   DEFAULT_HALF_LIFE_DAYS?: string;
 }
 
@@ -111,8 +113,16 @@ export class StarlightCloudWorker {
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    // 6. Cloudflare Edge Sandbox Execution (requires Bearer auth)
+    // 6. Cloudflare Edge Sandbox Execution (requires Bearer auth with validated token)
     if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = env.SANDBOX_TOKEN || env.OPS_TOKEN;
+      if (!expectedToken || token !== expectedToken) {
+        return new Response(JSON.stringify({
+          error: 'Forbidden',
+          message: 'Invalid or unconfigured sandbox authorization token.',
+        }), { status: 403, headers: this.CORS_HEADERS });
+      }
       try {
         const reqBody = (await request.json()) as SandboxExecutionRequest;
         const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.SANDBOX);
@@ -626,12 +636,14 @@ export class Sandbox {
     const url = new URL(request.url);
     if (url.pathname === '/exec' && request.method === 'POST') {
       const authHeader = request.headers.get('Authorization');
+      const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = this.env.SANDBOX_TOKEN || this.env.OPS_TOKEN;
       const isInternal = request.headers.get('X-Starlight-Internal') === 'true';
-      if (!isInternal && (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader))) {
+      if (!isInternal && (!expectedToken || token !== expectedToken)) {
         return new Response(JSON.stringify({
-          error: 'Unauthorized',
-          message: 'Missing or malformed Authorization header for Sandbox DO execution',
-        }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+          error: 'Forbidden',
+          message: 'Invalid or missing authorization for Sandbox DO execution',
+        }), { status: 403, headers: { 'Content-Type': 'application/json' } });
       }
 
       const body = (await request.json()) as SandboxExecutionRequest;
