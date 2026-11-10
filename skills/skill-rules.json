@@ -2872,6 +2872,39 @@
       },
       "priority": "high",
       "load_level": "core"
+    },
+    {
+      "id": "orchestration-starlight-teammates",
+      "skill": "orchestration/starlight-teammates",
+      "triggers": {
+        "keywords": [
+          "teammate",
+          "teammates",
+          "starlight teammates",
+          "queen teammate",
+          "search manager",
+          "github officer",
+          "community lead",
+          "teammate builder",
+          "computer teams",
+          "dispatch teammate",
+          "teammate fleet"
+        ],
+        "agents": [
+          "starlight-orchestrator",
+          "starlight-prime",
+          "starlight-architect",
+          "starlight-sentinel"
+        ],
+        "intents": [
+          "teammates",
+          "autonomous-workers",
+          "dispatch-teammate",
+          "fleet-management"
+        ]
+      },
+      "priority": "high",
+      "load_level": "core"
     }
   ],
   "defaults": {

@@ -176,6 +176,8 @@ Commands:
   queen agent save <session-id>   Capture prompts/outputs, git context, and generate durable secret-redacted handover (--out, --sync-issue)
   queen agent stop <session-id>   Safely stop a targeted agent session tree (--dry-run, --force, --timeout)
   queen agent resume <session-id> Generate resume instructions and Claude continuation prompt for a session
+  teammates list                  List active sovereign teammates, model tiers, and vaults
+  teammates dispatch <id> <text>  Dispatch task to an autonomous teammate with model tier routing
 
 Options:
   --help, -h                      Show this help message
@@ -1965,6 +1967,48 @@ async function main(): Promise<void> {
         json: values.json === true,
         syncIssue: asString(values["sync-issue"]),
       });
+      break;
+    }
+
+    case "teammates": {
+      const teammatesAction = positionals[1] || "list";
+      const { teammatesEngine } = await import("./orchestration/teammates-engine.js");
+      if (teammatesAction === "list") {
+        const list = teammatesEngine.getTeammates();
+        console.log(`\n[starlight] Sovereign Teammates Fleet (${list.length} active):\n`);
+        for (const t of list) {
+          const modelBadge =
+            t.defaultTier === "frontier"
+              ? "Claude Opus 5.5 / Astra"
+              : t.defaultTier === "standard"
+              ? "Claude Sonnet 5.5"
+              : "Gemini 4 Argon / Sol";
+          console.log(`  • ${t.name.padEnd(20)} [${t.status.toUpperCase()}]`);
+          console.log(`    Role:     ${t.role}`);
+          console.log(`    Domain:   ${t.domain} | Voice: ${t.voice}`);
+          console.log(`    Tier:     ${t.defaultTier} (${modelBadge})`);
+          console.log(`    Vaults:   ${t.activeVaults.join(", ")}`);
+          console.log(`    Tools:    ${t.connectedTools.join(", ")}`);
+          console.log("");
+        }
+      } else if (teammatesAction === "dispatch") {
+        const id = positionals[2];
+        const prompt = positionals.slice(3).join(" ");
+        if (!id || !prompt) {
+          console.error("[starlight] Error: dispatch requires <teammate-id> and <prompt>");
+          console.error("  Example: starlight teammates dispatch starlight-queen 'run ecosystem brief'");
+          process.exitCode = 1;
+          return;
+        }
+        console.log(`[starlight] Dispatching to ${id}...`);
+        const result = await teammatesEngine.dispatch(id, prompt);
+        console.log(`\n[${result.teammateId}] (${result.modelUsed})`);
+        console.log(result.content);
+        if (result.approvalRequest) {
+          console.log(`\n[GOVERNANCE GATE] ${result.approvalRequest.title}`);
+          console.log(`  ${result.approvalRequest.consequences}`);
+        }
+      }
       break;
     }
 

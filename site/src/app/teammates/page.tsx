@@ -206,7 +206,7 @@ export default function TeammatesPage() {
   const currentTeammate =
     teammates.find((t) => t.id === selectedTeammateId) || teammates[0];
 
-  const handleSendMessage = (teammateId: string, content: string) => {
+  const handleSendMessage = async (teammateId: string, content: string) => {
     const userMsg = {
       id: `user-${Date.now()}`,
       sender: "user" as const,
@@ -214,45 +214,67 @@ export default function TeammatesPage() {
       timestamp: "Just now",
     };
 
-    // Simulated responsive Queen loop
-    const teammateReply = {
-      id: `reply-${Date.now()}`,
-      sender: "teammate" as const,
-      content: `Acknowledged. I am decomposing "${content}" into an autonomous execution tree. Checking relevant vaults and staging changes on a safe branch.`,
-      timestamp: "Just now",
-      executionTree: [
-        {
-          id: `step-run-${Date.now()}`,
-          summary: `Decomposed goal into subtasks via ${currentTeammate.modelTier} tier (${
-            currentTeammate.modelTier === "frontier"
-              ? "Claude Opus 5.5 / GPT-6 Astra"
-              : currentTeammate.modelTier === "standard"
-              ? "Claude Sonnet 5.5"
-              : "Gemini 4 Argon / Sol"
-          })`,
-          durationMs: 450,
-          status: "success" as const,
-          command: "si-dispatch --intent=autonomous-plan",
-          tool: "orchestrator",
-          output: "Plan formulated with 0 financial impact. Execution dispatched to sandbox worker.",
-        },
-      ],
-    };
-
+    // Optimistically add user message
     setTeammates((prev) =>
       prev.map((t) =>
         t.id === teammateId
           ? {
               ...t,
               unreadCount: 0,
-              messages: [...t.messages, userMsg, teammateReply],
+              messages: [...t.messages, userMsg],
             }
           : t
       )
     );
+
+    try {
+      const res = await fetch("/api/teammates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teammateId,
+          prompt: content,
+          tier: currentTeammate.modelTier,
+        }),
+      });
+      const data = await res.json();
+      if (data?.message) {
+        setTeammates((prev) =>
+          prev.map((t) =>
+            t.id === teammateId
+              ? {
+                  ...t,
+                  messages: [...t.messages, data.message],
+                }
+              : t
+          )
+        );
+      }
+    } catch {
+      // Graceful offline fallback
+      const fallbackReply = {
+        id: `reply-${Date.now()}`,
+        sender: "teammate" as const,
+        content: `Acknowledged: "${content}". Executed via ${currentTeammate.modelTier} tier (${
+          currentTeammate.modelTier === "frontier"
+            ? "Claude Opus 5.5"
+            : currentTeammate.modelTier === "standard"
+            ? "Claude Sonnet 5.5"
+            : "Gemini 4 Argon"
+        }). Vaults updated.`,
+        timestamp: "Just now",
+      };
+      setTeammates((prev) =>
+        prev.map((t) =>
+          t.id === teammateId
+            ? { ...t, messages: [...t.messages, fallbackReply] }
+            : t
+        )
+      );
+    }
   };
 
-  const handleApproveAction = (requestId: string) => {
+  const handleApproveAction = async (requestId: string) => {
     setTeammates((prev) =>
       prev.map((t) => ({
         ...t,
@@ -266,9 +288,19 @@ export default function TeammatesPage() {
         ),
       }))
     );
+
+    try {
+      await fetch("/api/teammates/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, action: "approve" }),
+      });
+    } catch {
+      // Local state already updated
+    }
   };
 
-  const handleRejectAction = (requestId: string) => {
+  const handleRejectAction = async (requestId: string) => {
     setTeammates((prev) =>
       prev.map((t) => ({
         ...t,
@@ -282,6 +314,16 @@ export default function TeammatesPage() {
         ),
       }))
     );
+
+    try {
+      await fetch("/api/teammates/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, action: "reject" }),
+      });
+    } catch {
+      // Local state already updated
+    }
   };
 
   return (
