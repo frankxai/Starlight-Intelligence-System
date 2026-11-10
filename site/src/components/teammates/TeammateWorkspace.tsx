@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Globe,
   SlidersHorizontal,
+  Loader2,
 } from "lucide-react";
 import type { Teammate, ModelTier } from "./types";
 import { AgentExecutionTree } from "./AgentExecutionTree";
@@ -21,9 +22,10 @@ import { ApprovalCard } from "./ApprovalCard";
 
 interface TeammateWorkspaceProps {
   teammate: Teammate;
-  onSendMessage: (teammateId: string, content: string) => void;
+  onSendMessage: (teammateId: string, content: string, tier?: ModelTier) => void;
   onApproveAction?: (requestId: string) => void;
   onRejectAction?: (requestId: string) => void;
+  isStreaming?: boolean;
 }
 
 export function TeammateWorkspace({
@@ -31,15 +33,25 @@ export function TeammateWorkspace({
   onSendMessage,
   onApproveAction,
   onRejectAction,
+  isStreaming = false,
 }: TeammateWorkspaceProps) {
   const [inputMessage, setInputMessage] = useState("");
   const [selectedTier, setSelectedTier] = useState<ModelTier>(teammate.modelTier);
   const [showSidecar, setShowSidecar] = useState(true);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    setSelectedTier(teammate.modelTier);
+  }, [teammate.id, teammate.modelTier]);
+
+  React.useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [teammate.messages, teammate.status, isStreaming]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputMessage.trim()) return;
-    onSendMessage(teammate.id, inputMessage.trim());
+    if (!inputMessage.trim() || teammate.status === "running" || isStreaming) return;
+    onSendMessage(teammate.id, inputMessage.trim(), selectedTier);
     setInputMessage("");
   };
 
@@ -58,9 +70,25 @@ export function TeammateWorkspace({
                 <h2 className="text-sm font-semibold text-white truncate">
                   {teammate.name}
                 </h2>
-                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono text-emerald-400">
-                  {teammate.status.replace("_", " ")}
-                </span>
+                {teammate.status === "running" ? (
+                  <span className="flex items-center gap-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 px-2 py-0.5 text-[10px] font-mono text-indigo-400">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500" />
+                    </span>
+                    executing stream
+                  </span>
+                ) : teammate.status === "waiting_approval" ? (
+                  <span className="flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 text-[10px] font-mono text-amber-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                    waiting approval
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-mono text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    idle
+                  </span>
+                )}
               </div>
               <p className="text-xs text-zinc-400 truncate">{teammate.role}</p>
             </div>
@@ -128,7 +156,14 @@ export function TeammateWorkspace({
                       : "bg-[#0d101a] border border-white/[0.08] text-zinc-200 w-full rounded-tl-sm"
                   }`}
                 >
-                  <div className="whitespace-pre-line font-sans">{message.content}</div>
+                  {message.content ? (
+                    <div className="whitespace-pre-line font-sans">{message.content}</div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-indigo-300 font-mono text-xs py-1">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-400 shrink-0" />
+                      <span>Evaluating context &amp; dispatching microVM execution...</span>
+                    </div>
+                  )}
 
                   {message.executionTree && (
                     <AgentExecutionTree steps={message.executionTree} />
@@ -149,6 +184,21 @@ export function TeammateWorkspace({
               </div>
             );
           })}
+
+          {teammate.status === "running" && (
+            <div className="flex items-center justify-between rounded-xl border border-indigo-500/20 bg-indigo-950/20 px-4 py-2.5 text-xs text-indigo-300 animate-pulse">
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin text-indigo-400 shrink-0" />
+                <span className="font-medium">
+                  {teammate.name} executing in Firecracker microVM
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-indigo-400/80">
+                SSE Step Stream Active
+              </span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Bottom Input Composer */}
@@ -196,11 +246,20 @@ export function TeammateWorkspace({
 
               <button
                 type="submit"
-                disabled={!inputMessage.trim()}
+                disabled={!inputMessage.trim() || teammate.status === "running" || isStreaming}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-30 disabled:pointer-events-none active:scale-[0.98] transition"
               >
-                <Send className="h-3 w-3" />
-                <span>Dispatch</span>
+                {teammate.status === "running" || isStreaming ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>Executing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-3 w-3" />
+                    <span>Dispatch</span>
+                  </>
+                )}
               </button>
             </div>
           </form>

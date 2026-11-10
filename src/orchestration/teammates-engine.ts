@@ -15,6 +15,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 import { SanitizationGateway } from "../sanitization.js";
+import { providerRouter, type TokenUsage } from "./model-adapters/index.js";
 
 const defaultVeil = new SanitizationGateway();
 
@@ -65,6 +66,8 @@ export interface DispatchResult {
   timestamp: string;
   executionTree: ExecutionStepTrace[];
   approvalRequest?: ApprovalGate;
+  usage?: TokenUsage;
+  synthetic?: boolean;
 }
 
 const DEFAULT_TEAMMATES: TeammateManifest[] = [
@@ -214,13 +217,7 @@ export class StarlightTeammatesEngine {
    * Resolves the frontier model for a given task and tier
    */
   public resolveModel(tier: ModelTier, intent: string): string {
-    if (tier === "frontier" || /\b(architecture|council|synthesis|proof|refactor-all)\b/i.test(intent)) {
-      return "Claude Opus 5.5";
-    }
-    if (tier === "light" || /\b(scrape|lint|search|status|check|json)\b/i.test(intent)) {
-      return "Gemini 4 Argon";
-    }
-    return "Claude Sonnet 5.5";
+    return providerRouter.resolveModel(tier, intent).modelName;
   }
 
   /**
@@ -332,27 +329,48 @@ export class StarlightTeammatesEngine {
       };
     }
 
-    // Standard autonomous execution
+    // Standard autonomous execution via Frontier Provider Router
     teammate.status = "running";
+
+    const completion = await providerRouter.dispatchCompletion({
+      prompt: cleanPrompt,
+      model,
+      tier,
+      teammateId: teammate.id,
+      teammateName: teammate.name,
+      metadata: {
+        role: teammate.role,
+        domain: teammate.domain,
+        voice: teammate.voice,
+        activeVaults: teammate.activeVaults,
+      },
+    });
+
     executionTree.push({
       id: `step-run-${Date.now()}`,
-      summary: `Executed autonomous task tree via ${model}`,
-      durationMs: 420,
+      summary: `Executed autonomous task tree via ${completion.model} (${completion.provider})`,
+      durationMs: completion.durationMs,
       status: "success",
-      command: `si-dispatch --teammate=${teammate.id} --tier=${tier}`,
-      tool: "sandbox-microvm",
-      output: `Task completed cleanly in sandboxed microVM. 0 errors, vaults synchronized.`,
+      command: `si-dispatch --teammate=${teammate.id} --tier=${tier} --model=${completion.model}`,
+      tool: `model-provider:${completion.provider}`,
+      output: `Task completed cleanly. Tokens: ${completion.usage.totalTokens} (prompt: ${completion.usage.promptTokens}, completion: ${completion.usage.completionTokens}, est. cost: $${completion.usage.estimatedCostUsd}). Mode: ${completion.synthetic ? "synthetic-trace" : "live-api"}.`,
     });
+
+    const content = completion.content.includes("Completed:")
+      ? completion.content
+      : `Completed: "${cleanPrompt}". Executed with ${completion.model} across bound vaults (${teammate.activeVaults.join(", ")}).\n\n${completion.content}`;
 
     teammate.status = "idle";
     return {
       messageId: `msg-${Date.now()}`,
       teammateId: teammate.id,
-      modelUsed: model,
+      modelUsed: completion.model,
       tierUsed: tier,
-      content: `Completed: "${cleanPrompt}". Executed with ${model} across bound vaults (${teammate.activeVaults.join(", ")}). All receipts anchored.`,
+      content,
       timestamp: "Just now",
       executionTree,
+      usage: completion.usage,
+      synthetic: completion.synthetic,
     };
   }
 
@@ -441,4 +459,5 @@ export interface AutonomicTickSummary {
 
 // Global singleton instance
 export const teammatesEngine = new StarlightTeammatesEngine();
+export { providerRouter } from "./model-adapters/index.js";
 

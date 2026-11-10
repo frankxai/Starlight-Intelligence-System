@@ -15,7 +15,7 @@ export interface TeammateDto {
   activeVaults: string[];
 }
 
-const TEAMMATES: TeammateDto[] = [
+export const TEAMMATES: TeammateDto[] = [
   {
     id: "starlight-queen",
     name: "Starlight Queen",

@@ -181,6 +181,7 @@ Commands:
   teammates approve <id> [action] Resolve a governance approval gate (approve | reject)
   teammates tick                  Trigger autonomic health & task sweep across all teammates
   teammates status <id>           Show telemetry, active models, vaults, and tools for a teammate
+  teammates design <query>        Query Refero design bridge for UI layouts, colors, and tokens
 
 Options:
   --help, -h                      Show this help message
@@ -233,6 +234,8 @@ Examples:
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
   starlight orchestrate "Design a new authentication system"
+  starlight teammates design linear kanban
+  starlight teammates design calm ai chat
   starlight stats
 `);
 }
@@ -2067,8 +2070,84 @@ async function main(): Promise<void> {
         console.log(`  Connected Tools: ${t.connectedTools.join(", ")}`);
         console.log(`  Unread Messages: ${t.unreadCount}`);
         console.log(`  Last Active:     ${t.lastActive}\n`);
+      } else if (teammatesAction === "design") {
+        const query = positionals.slice(2).join(" ").trim();
+        if (!query) {
+          console.error("[starlight] Error: design requires a query string");
+          console.error("  Example: starlight teammates design linear kanban");
+          console.error("  Example: starlight teammates design factory execution tree");
+          console.error("  Example: starlight teammates design calm ai chat");
+          process.exitCode = 1;
+          return;
+        }
+
+        console.log(`[starlight] Querying Refero Design System Bridge for: "${query}"...`);
+        const { searchDesignInspiration } = await import("./orchestration/refero-bridge.js");
+        const res = await searchDesignInspiration(query, "web");
+
+        const sourceLabel =
+          res.source === "live_refero_api"
+            ? `Live Refero MCP (${res.screens.length} screens)`
+            : `Sovereign Offline Registry (${res.screens.length} reference specs)`;
+
+        console.log(`\n================================================================`);
+        console.log(` STARLIGHT TEAMMATES DESIGN BRIDGE: "${res.query}"`);
+        console.log(` Source:   ${sourceLabel}`);
+        console.log(` Platform: ${res.platform.toUpperCase()}`);
+        console.log(` Summary:  ${res.summary}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Top Reference Screens ──────────────────────────────────────`);
+        const topScreens = res.patterns.slice(0, 3);
+        topScreens.forEach((p, idx) => {
+          console.log(`  ${idx + 1}. ${p.appName} — ${p.pageType}`);
+          if (p.pageUrl) console.log(`     Live URL:   ${p.pageUrl}`);
+          console.log(`     Refero:     ${p.referoUrl}`);
+          console.log(`     Palette:    ${p.colorSystem.rawHexColors.slice(0, 5).join("  ")} (${p.colorSystem.mode.toUpperCase()})`);
+          console.log(`     Layout:     ${p.layout.description}`);
+          if (p.uxPatterns.length > 0) {
+            console.log(`     UX:         ${p.uxPatterns.join(", ")}`);
+          }
+          if (p.uiElements.length > 0) {
+            console.log(`     Primitives: ${p.uiElements.slice(0, 6).join(", ")}`);
+          }
+          console.log("");
+        });
+
+        const top = res.topSpec;
+        console.log(`── UI Architecture & Layout Specs ─────────────────────────────`);
+        console.log(`  Archetype:   ${top.layout.type.toUpperCase()} (${top.layout.density} density)`);
+        console.log(`  Structure:   ${top.layout.columns}`);
+        console.log(`  Navigation:  ${top.layout.sidebar ? "Collapsible Left Sidebar / Drawer" : "Header Navigation Bar"}`);
+        console.log(`  Responsive:  ${top.layout.responsiveBehavior}`);
+        console.log("");
+
+        console.log(`── UI Interaction States ──────────────────────────────────────`);
+        console.log(`  Loading:     ${top.interactionStates.loading}`);
+        console.log(`  Empty State: ${top.interactionStates.empty}`);
+        console.log(`  Hover/Focus: ${top.interactionStates.hoverFocus}`);
+        console.log(`  Selection:   ${top.interactionStates.activeSelection}`);
+        console.log(`  Filter/Sort: ${top.interactionStates.filteringSorting}`);
+        console.log(`  Modal/Sheet: ${top.interactionStates.modalDrawer}`);
+        console.log("");
+
+        console.log(`── Recommended Design Tokens & Tailwind Setup ─────────────────`);
+        console.log(`  Theme Mode:  ${top.colorSystem.mode.toUpperCase()}`);
+        console.log(`  Background:  ${top.tokenRecommendations.colors.bg}`);
+        console.log(`  Surface:     ${top.tokenRecommendations.colors.surface}`);
+        console.log(`  Card:        ${top.tokenRecommendations.colors.card}`);
+        console.log(`  Text Pri:    ${top.tokenRecommendations.colors.primaryText}`);
+        console.log(`  Text Muted:  ${top.tokenRecommendations.colors.mutedText}`);
+        console.log(`  Accent:      ${top.tokenRecommendations.colors.accent}`);
+        console.log(`  Border:      ${top.tokenRecommendations.colors.border}`);
+        console.log(`  Typography:  ${top.tokenRecommendations.typography.fontFamily}`);
+        console.log(`  Scale:       ${top.tokenRecommendations.typography.scale}`);
+        console.log(`  Radii & Gap: ${top.tokenRecommendations.spacingAndRadius.radius} | ${top.tokenRecommendations.spacingAndRadius.gap}`);
+        console.log(`  Shadows:     ${top.tokenRecommendations.shadows}`);
+        console.log(`  Components:  ${top.tokenRecommendations.recommendedComponents.join(", ")}`);
+        console.log("");
       } else {
-        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status.`);
+        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status, design.`);
         process.exitCode = 1;
       }
       break;

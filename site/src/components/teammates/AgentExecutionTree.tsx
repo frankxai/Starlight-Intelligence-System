@@ -31,7 +31,10 @@ export function AgentExecutionTree({ steps }: AgentExecutionTreeProps) {
 
       <div className="divide-y divide-white/[0.04]">
         {steps.map((step) => {
-          const isExpanded = !!expandedStepIds[step.id];
+          const isExpanded =
+            expandedStepIds[step.id] !== undefined
+              ? expandedStepIds[step.id]
+              : step.status === "running";
 
           return (
             <div key={step.id} className="transition-colors hover:bg-white/[0.01]">

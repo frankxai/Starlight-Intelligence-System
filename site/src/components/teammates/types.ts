@@ -2,15 +2,41 @@ export type ModelTier = "light" | "standard" | "frontier";
 
 export type TeammateStatus = "idle" | "running" | "waiting_approval";
 
+export type ExecutionStepStatus = "success" | "running" | "error" | "pending";
+
 export interface ExecutionStep {
   id: string;
   summary: string;
   durationMs: number;
-  status: "success" | "running" | "error" | "pending";
+  status: ExecutionStepStatus;
   command?: string;
   tool?: string;
   output?: string;
   diff?: string;
+}
+
+export interface ExecutionStepTrace extends ExecutionStep {
+  timestamp?: string;
+}
+
+export type StreamChunkType =
+  | "status"
+  | "step"
+  | "step_update"
+  | "message_chunk"
+  | "approval"
+  | "done"
+  | "error";
+
+export interface StreamChunk {
+  type: StreamChunkType;
+  status?: TeammateStatus;
+  step?: ExecutionStepTrace;
+  stepId?: string;
+  contentChunk?: string;
+  message?: TeammateMessage;
+  approvalRequest?: ApprovalRequest;
+  error?: string;
 }
 
 export interface ApprovalRequest {

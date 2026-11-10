@@ -14,6 +14,10 @@ export function ApprovalCard({ request, onApprove, onReject }: ApprovalCardProps
   const [status, setStatus] = useState<"pending" | "approved" | "rejected">(request.status);
   const [showDetails, setShowDetails] = useState(false);
 
+  React.useEffect(() => {
+    setStatus(request.status);
+  }, [request.status]);
+
   const handleApprove = () => {
     setStatus("approved");
     onApprove?.(request.id);
