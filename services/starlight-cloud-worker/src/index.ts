@@ -102,26 +102,28 @@ export class StarlightCloudWorker {
       }, null, 2), { status: 200, headers: this.CORS_HEADERS });
     }
 
-    if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
-      try {
-        const reqBody = (await request.json()) as SandboxExecutionRequest;
-        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.SANDBOX);
-        return new Response(JSON.stringify(execResponse), { status: 200, headers: this.CORS_HEADERS });
-      } catch (err) {
-        return new Response(JSON.stringify({
-          error: 'Execution failed',
-          message: (err as Error).message,
-        }), { status: 500, headers: this.CORS_HEADERS });
-      }
-    }
-
-    // 5. Authenticate incoming API requests
+    // 5. Authenticate incoming API requests (Enforce Bearer Auth across all protected routes)
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
       return new Response(JSON.stringify({
         error: 'Unauthorized',
         message: 'Missing or malformed Authorization header. Expected Bearer token.',
       }), { status: 401, headers: this.CORS_HEADERS });
+    }
+
+    // 6. Cloudflare Edge Sandbox Execution (requires Bearer auth)
+    if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
+      try {
+        const reqBody = (await request.json()) as SandboxExecutionRequest;
+        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.SANDBOX);
+        const status = execResponse.exitCode === 0 ? 200 : (execResponse.stderr.includes('unavailable') ? 503 : 400);
+        return new Response(JSON.stringify(execResponse), { status, headers: this.CORS_HEADERS });
+      } catch (err: any) {
+        return new Response(JSON.stringify({
+          error: 'Execution failed',
+          message: err?.message || 'Execution error',
+        }), { status: 500, headers: this.CORS_HEADERS });
+      }
     }
 
     const tenant = this.resolveTenant();
@@ -623,10 +625,19 @@ export class Sandbox {
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === '/exec' && request.method === 'POST') {
+      const authHeader = request.headers.get('Authorization');
+      const isInternal = request.headers.get('X-Starlight-Internal') === 'true';
+      if (!isInternal && (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader))) {
+        return new Response(JSON.stringify({
+          error: 'Unauthorized',
+          message: 'Missing or malformed Authorization header for Sandbox DO execution',
+        }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+      }
+
       const body = (await request.json()) as SandboxExecutionRequest;
       const res = await StarlightEdgeSandbox.execute(body, this.env.SANDBOX);
 
-      // Persist container run in SQLite Durable Object storage
+      // Persist container run in SQLite Durable Object storage using parameterized statement
       if (this.state.storage?.sql) {
         try {
           this.state.storage.sql.exec(`
@@ -638,16 +649,24 @@ export class Sandbox {
               timestamp TEXT
             )
           `);
+          const runId = crypto.randomUUID();
+          const cmdJson = JSON.stringify(body.command ?? []);
+          const ts = new Date().toISOString();
           this.state.storage.sql.exec(
-            `INSERT INTO sandbox_runs VALUES ('${crypto.randomUUID()}', '${JSON.stringify(body.command).replace(/'/g, "''")}', ${res.exitCode}, ${res.durationMs}, '${new Date().toISOString()}')`
+            'INSERT INTO sandbox_runs (id, command, exit_code, duration_ms, timestamp) VALUES (?, ?, ?, ?, ?)',
+            runId,
+            cmdJson,
+            res.exitCode,
+            res.durationMs,
+            ts
           );
-        } catch {
-          // In-memory fallback
+        } catch (err: any) {
+          console.error('[Sandbox DO] SQLite persistence error:', err?.message || err);
         }
       }
 
       return new Response(JSON.stringify(res), {
-        status: 200,
+        status: res.exitCode === 0 ? 200 : 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }

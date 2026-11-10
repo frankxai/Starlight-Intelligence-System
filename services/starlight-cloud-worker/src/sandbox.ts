@@ -35,11 +35,42 @@ export class StarlightEdgeSandbox {
     const startTime = Date.now()
     const { command, cwd = '/workspace', env = {}, timeoutMs = 30000 } = request
 
-    // If native sandbox binding is available at runtime
-    if (sandboxBinding && typeof (sandboxBinding as { get?: Function }).get === 'function') {
+    // If native sandbox binding or instance is available at runtime
+    if (sandboxBinding) {
+      const bindingAny = sandboxBinding as Record<string, unknown>
       try {
-        const binding = sandboxBinding as {
-          get: (id: string) => {
+        let handle: {
+          output: (opts?: { encoding?: string }) => Promise<{
+            stdout: string
+            stderr?: string
+            exitCode: number
+          }>
+        } | null = null
+
+        if (typeof bindingAny.get === 'function') {
+          const binding = sandboxBinding as {
+            get: (id: string) => {
+              exec: (cmd: string[], opts?: unknown) => Promise<{
+                output: (opts?: { encoding?: string }) => Promise<{
+                  stdout: string
+                  stderr?: string
+                  exitCode: number
+                }>
+              }>
+            }
+          }
+          const sandboxInstance = binding.get('starlight-default-sandbox')
+          handle = await sandboxInstance.exec(command, {
+            cwd,
+            env: {
+              ...env,
+              STARLIGHT_SUBSTRATE: 'sip-1.1.1',
+              ZERO_EGRESS_ENFORCED: 'true',
+            },
+            timeout: timeoutMs,
+          })
+        } else if (typeof bindingAny.exec === 'function') {
+          const instance = sandboxBinding as {
             exec: (cmd: string[], opts?: unknown) => Promise<{
               output: (opts?: { encoding?: string }) => Promise<{
                 stdout: string
@@ -48,27 +79,27 @@ export class StarlightEdgeSandbox {
               }>
             }>
           }
+          handle = await instance.exec(command, {
+            cwd,
+            env: {
+              ...env,
+              STARLIGHT_SUBSTRATE: 'sip-1.1.1',
+              ZERO_EGRESS_ENFORCED: 'true',
+            },
+            timeout: timeoutMs,
+          })
         }
 
-        const sandboxInstance = binding.get('starlight-default-sandbox')
-        const handle = await sandboxInstance.exec(command, {
-          cwd,
-          env: {
-            ...env,
-            STARLIGHT_SUBSTRATE: 'sip-1.1.1',
-            ZERO_EGRESS_ENFORCED: 'true',
-          },
-          timeout: timeoutMs,
-        })
-
-        const result = await handle.output({ encoding: 'utf8' })
-        return {
-          exitCode: result.exitCode ?? 0,
-          stdout: result.stdout ?? '',
-          stderr: result.stderr ?? '',
-          durationMs: Date.now() - startTime,
-          zeroEgress: true,
-          containerImage: this.CONTAINER_IMAGE,
+        if (handle) {
+          const result = await handle.output({ encoding: 'utf8' })
+          return {
+            exitCode: result.exitCode ?? 0,
+            stdout: result.stdout ?? '',
+            stderr: result.stderr ?? '',
+            durationMs: Date.now() - startTime,
+            zeroEgress: true,
+            containerImage: this.CONTAINER_IMAGE,
+          }
         }
       } catch (err) {
         return {
@@ -82,11 +113,11 @@ export class StarlightEdgeSandbox {
       }
     }
 
-    // High-performance deterministic edge simulation response for non-container environments
+    // In environments without container binding, fail closed truthfully
     return {
-      exitCode: 0,
-      stdout: `[starlight-sandbox-edge] executed ${JSON.stringify(command)} in ${cwd} with zero egress`,
-      stderr: '',
+      exitCode: 1,
+      stdout: '',
+      stderr: 'SANDBOX binding unavailable: execution requires an active @cloudflare/sandbox container runtime.',
       durationMs: Date.now() - startTime,
       zeroEgress: true,
       containerImage: this.CONTAINER_IMAGE,
