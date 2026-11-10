@@ -1,0 +1,105 @@
+{
+  "schema": "starlight.fleet-verification.v1",
+  "state": "LOCAL_TESTED_DRAFT_NOT_DEPLOYED",
+  "verified_at": "2026-10-31T21:27:32.099429+00:00",
+  "repository": "frankxai/Starlight-Intelligence-System",
+  "base_commit": "7e4ca5b295e4c0097576045326762d278514e360",
+  "environment": {
+    "node": "22.16.0",
+    "typescript": "5.8.3",
+    "scope": "partial source snapshot hydrated from connector; original file blobs verified"
+  },
+  "results": {
+    "original_tests_passed": 16,
+    "new_regressions_failed_on_original": 5,
+    "candidate_tests_passed": 129,
+    "candidate_tests_failed": 0,
+    "scoped_strict_typecheck": "pass",
+    "shell_syntax": "pass",
+    "workflow_structure": "pass"
+  },
+  "limitations": [
+    "Cloudflare journal tested through serialized in-memory contract double, not workerd",
+    "Cloud Run, Git and package-manager calls use test doubles",
+    "Container build, full-repository CI and independent review not performed locally",
+    "No runtime, memory system, budget or vendor benchmark qualification",
+    "No deployment, paid experiments or public-endpoint activation performed"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/fleet-ingress.yml",
+      "sha256": "ffb8bf64a683c1cecb68f1dc567913fea82a11003c836ef1d0c24971671ac6f7",
+      "git_blob_sha": "dda6c86e7045ef864377558804f5215498ca9ddc"
+    },
+    {
+      "path": "tools/fleet-ingress/README.md",
+      "sha256": "a52166acc2c72b8a6042be0d2f91952a02a49288e15827f9a7e9a721885f0c77",
+      "git_blob_sha": "7da7bb088000470bbf12d3d3b69f692839f31c6f"
+    },
+    {
+      "path": "tools/fleet-ingress/package.json",
+      "sha256": "18d1e698ed51010aec9fd684e5eebe2f7b1f7feb934fa87e2743905a9c47b0f2",
+      "git_blob_sha": "963ae9c24343cb0c5d3229c9084773fb449c0fad"
+    },
+    {
+      "path": "tools/fleet-ingress/src/admission.ts",
+      "sha256": "4d37b13de3d64bc0eccad61de45cf3374f63002e98ccfd42cc7dfe75123e73d9",
+      "git_blob_sha": "db7555400a77f247e912f8a609356a30e6c543a5"
+    },
+    {
+      "path": "tools/fleet-ingress/src/delivery-ledger.ts",
+      "sha256": "b9b666b0f9888429923b99c03d5dcea995d432aba6eea834fec1f440ca1eebbd",
+      "git_blob_sha": "67c87222fe44cb9961a0b0507328baaf121168d3"
+    },
+    {
+      "path": "tools/fleet-ingress/src/index.ts",
+      "sha256": "f736fea87179f8340daaa99231e8560462f3ee35e2708a11affbe795abb96dc8",
+      "git_blob_sha": "30ab308b53cb33c72371bed51c82afe38b654491"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/admission.test.mjs",
+      "sha256": "67e841891d08b3ca14859dc4458224e63a46c36638c3596551b8efec91c604ef",
+      "git_blob_sha": "6cd56c668edf1c90ce6ff042c425ef28a5bd3ec0"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/auth-readiness.test.mjs",
+      "sha256": "741d3adafb0e71fa77b1411974e929e08ac36fa6af9166f01daf82b8e5c96ca9",
+      "git_blob_sha": "0000ad7d7fed48a43e6fca2a263d9e2227d099fa"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/boundaries.test.mjs",
+      "sha256": "42b0bf8b83da1da275e6e49eb8f2ea91557aa6ff2d4c4cd56bb7fc3da6142a1c",
+      "git_blob_sha": "409b6a71a62e4363103ba6ebe555e3bf4db309a3"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/fixtures.mjs",
+      "sha256": "64c0ac55402af5bfb642ff99e9a3651f0d4ecb82bf91203db07b30de5b343e1f",
+      "git_blob_sha": "a0258de34ff6d2966b3e69525bde5734de21bd4b"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/ingress.test.mjs",
+      "sha256": "59fbf78e5c7d8bdc985ca97553735eac612cd12c1781278a64f39cef0f6def80",
+      "git_blob_sha": "9dabaab919386a3540fe885ebe25b601adb3bd20"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/recovery.test.mjs",
+      "sha256": "efd9c25d1d030e601425278aa6c5649de866f188dfd293af6ce14fd0bd08644d",
+      "git_blob_sha": "c29425c9fa10d69f3666ae9f7a8b2a7fbb1774e3"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/regressions.test.mjs",
+      "sha256": "91783947fdcf63088920a675c0abe6518a2e3bdc4e9a4d868d0883ac2cd1c2f8",
+      "git_blob_sha": "41d7f326e9c6d6bc3c83f41792c70b00fd784503"
+    },
+    {
+      "path": "tools/fleet-ingress/tests/runner-contract.test.mjs",
+      "sha256": "801abf154c135c2eb8afe2d6ca60079493e9456911dfe577ac0641d395428296",
+      "git_blob_sha": "5883118b161b608a78d82e15dbd2d3c4fb583182"
+    },
+    {
+      "path": "tools/runner/runner-entrypoint.sh",
+      "sha256": "fe9230c2b3df3dc9bd59cd65cb041a401dc03e133cfd11cbb82faad44c82e9ff",
+      "git_blob_sha": "d058c4d4b6db93f3de175ec3ba540161a665bca9"
+    }
+  ]
+}
