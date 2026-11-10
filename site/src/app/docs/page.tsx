@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
@@ -22,6 +23,29 @@ export default function DocsPage() {
         </div>
       </section>
       <div className="mx-auto max-w-3xl px-6 py-16">
+
+      {/* Featured Architecture Guide */}
+      <div className="mb-10 rounded-xl border border-violet-500/20 bg-gradient-to-r from-violet-950/30 to-slate-900/40 p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-[11px] text-violet-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
+            Featured Architecture Guide
+          </div>
+          <p className="mt-1 font-mono text-[14px] font-semibold text-white">
+            Starlight Teammates & AI Genius Architecture
+          </p>
+          <p className="text-[13px] text-slate-400">
+            REST & SSE Streaming APIs, Frontier Model Engine, MicroVM Sandboxes, and Creator Freedom Path.
+          </p>
+        </div>
+        <Link
+          href="/docs/teammates"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 py-2 font-mono text-[12px] font-medium text-white transition-micro hover:bg-violet-500 shadow-sm"
+        >
+          Explore Guide
+          <span>→</span>
+        </Link>
+      </div>
 
       {/* Quick nav */}
       <nav className="mt-8 flex flex-wrap gap-1.5" aria-label="Documentation sections">

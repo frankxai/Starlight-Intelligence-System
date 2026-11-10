@@ -620,3 +620,36 @@ export type {
   StageStatus,
   VerifyResult,
 } from './run-receipt.js';
+
+// Genius Architecture — Sovereign Profiling & Freedom Path
+export { StarlightGeniusEngine, geniusEngine } from './genius/index.js';
+export type {
+  GeniusProfile,
+  GeniusQuadrant,
+  GeniusQuadrantProfile,
+  GeniusVoiceSignature,
+  FreedomPathAction,
+  FreedomPathEvaluation,
+  TaskDecomposition,
+  DelegationPlan,
+} from './genius/index.js';
+
+// Isomorphic Client SDK (v8.5.2)
+export {
+  StarlightClient,
+  TeammatesNamespace,
+  SandboxNamespace,
+  VaultsNamespace,
+  GeniusNamespace,
+} from './client.js';
+export type {
+  StarlightClientOptions,
+  ClientMode,
+  TeammatesDispatchParams,
+  TeammatesApprovalParams,
+  TeammateDaemonStatus,
+  SandboxExecuteParams,
+  VaultSearchParams,
+  VaultRememberParams,
+} from './client.js';
+

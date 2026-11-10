@@ -183,6 +183,9 @@ Commands:
   teammates status <id>           Show telemetry, active models, vaults, and tools for a teammate
   teammates design <query>        Query Refero design bridge for UI layouts, colors, and tokens
   teammates daemon                Run autonomic background controller sweep (--interval <sec>, --once)
+  genius profile                  Display Frank's canonical sovereign Genius Profile
+  genius path <task>              Evaluate task on the Freedom Path (Keep / Delegate / Automate / Eliminate)
+  genius delegate <task>          Generate multi-teammate delegation plan with model tiers
 
 Options:
   --help, -h                      Show this help message
@@ -241,6 +244,9 @@ Examples:
   starlight teammates design calm ai chat
   starlight teammates daemon --once
   starlight teammates daemon --interval 60
+  starlight genius profile
+  starlight genius path "Architect sovereign multi-agent protocol"
+  starlight genius delegate "Build new vision module with verified CI tests"
   starlight stats
 `);
 }
@@ -2186,6 +2192,141 @@ async function main(): Promise<void> {
         }
       } else {
         console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status, design, daemon.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "genius": {
+      const geniusAction = positionals[1] || "profile";
+      const { geniusEngine } = await import("./genius/index.js");
+
+      if (geniusAction === "profile") {
+        const profile = geniusEngine.getFrankGeniusProfile();
+        if (values.json) {
+          console.log(JSON.stringify(profile, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Genius Profile: ${profile.name}`);
+        console.log(` Archetype: ${profile.archetype}`);
+        console.log(` Formula:   ${profile.formula}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Core Quadrants ──────────────────────────────────────────────`);
+        for (const [quadrant, details] of Object.entries(profile.quadrants)) {
+          console.log(`  • ${details.title.toUpperCase()} [${quadrant}]`);
+          console.log(`    Focus:    ${details.focus}`);
+          console.log(`    Domains:  ${details.coreDomains.join(", ")}`);
+          console.log(`    Moves:    ${details.signatureMoves.join(" | ")}`);
+        }
+
+        console.log(`\n── Cognitive Superpowers ───────────────────────────────────────`);
+        for (const power of profile.cognitiveSuperpowers) {
+          console.log(`  ✦ ${power}`);
+        }
+
+        console.log(`\n── Non-Waivable Invariants ─────────────────────────────────────`);
+        for (const inv of profile.nonWaivableInvariants) {
+          console.log(`  🛡️  ${inv}`);
+        }
+
+        console.log(`\n── Voice Signature & Vibe ──────────────────────────────────────`);
+        console.log(`  Tone:    ${profile.voiceSignature.tone}`);
+        console.log(`  Vibe:    ${profile.voiceSignature.vibe}`);
+        console.log(`  Mission: ${profile.voiceSignature.mission}`);
+        console.log(`  Test:    ${profile.evaluationCriteria}`);
+
+        console.log(`\n── Flow Triggers & Anti-Patterns ───────────────────────────────`);
+        console.log(`  Flow:    ${profile.flowTriggers.join(" | ")}`);
+        console.log(`  Avoid:   ${profile.antiPatterns.join(" | ")}\n`);
+      } else if (geniusAction === "path") {
+        const task = positionals.slice(2).join(" ").trim();
+        if (!task) {
+          console.error("[starlight] Error: genius path requires a task description");
+          console.error("  Example: starlight genius path \"Architect sovereign multi-agent protocol\"");
+          console.error("  Example: starlight genius path \"Run hourly database shadow index rebuild\"");
+          console.error("  Example: starlight genius path \"Research top 5 AI agent frameworks\"");
+          process.exitCode = 1;
+          return;
+        }
+
+        const evalResult = geniusEngine.evaluateFreedomPath(task);
+        if (values.json) {
+          console.log(JSON.stringify(evalResult, null, 2));
+          return;
+        }
+
+        const badge = evalResult.action.toUpperCase();
+        console.log(`\n================================================================`);
+        console.log(` Starlight Freedom Path Evaluation`);
+        console.log(` Task:       "${evalResult.taskDescription}"`);
+        console.log(` Action:     [ ${badge} ] (confidence: ${(evalResult.confidence * 100).toFixed(0)}%)`);
+        console.log(`================================================================\n`);
+        console.log(`Rationale:`);
+        console.log(`  ${evalResult.rationale}\n`);
+        if (evalResult.primaryQuadrant) {
+          console.log(`Primary Quadrant: ${evalResult.primaryQuadrant.toUpperCase()}`);
+        }
+        if (evalResult.suggestedTeammate) {
+          console.log(`Suggested Sovereign Teammate: ${evalResult.suggestedTeammate}`);
+        }
+        if (evalResult.suggestedAutomation) {
+          console.log(`Suggested Automation Mechanism: ${evalResult.suggestedAutomation}`);
+        }
+        if (evalResult.eliminationReason) {
+          console.log(`Elimination Reason: ${evalResult.eliminationReason}`);
+        }
+        console.log("");
+      } else if (geniusAction === "delegate") {
+        const task = positionals.slice(2).join(" ").trim();
+        if (!task) {
+          console.error("[starlight] Error: genius delegate requires a task description");
+          console.error("  Example: starlight genius delegate \"Launch new multi-agent vision module with verified CI tests\"");
+          process.exitCode = 1;
+          return;
+        }
+
+        const plan = geniusEngine.planDelegation(task);
+        if (values.json) {
+          console.log(JSON.stringify(plan, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Sovereign Teammates Delegation Plan`);
+        console.log(` Plan ID:        ${plan.id}`);
+        console.log(` Original Task:  "${plan.originalTask}"`);
+        console.log(` Primary Intent: ${plan.primaryIntent}`);
+        console.log(` Coordinator:    ${plan.coordinatingTeammate} (${plan.coordinatingModel})`);
+        console.log(` Timestamp:      ${plan.timestamp}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Decomposed Tasks & Assignments ──────────────────────────────`);
+        plan.subtasks.forEach((st, idx) => {
+          console.log(`  ${idx + 1}. [${st.action.toUpperCase()}] ${st.title}`);
+          console.log(`     Assigned:   ${st.assignedTeammate} (${st.teammateRole})`);
+          console.log(`     Model Tier: ${st.recommendedModelTier} (${st.recommendedModel})`);
+          console.log(`     Rationale:  ${st.rationale}`);
+          if (st.verificationCriteria) {
+            console.log(`     Verify:     ${st.verificationCriteria}`);
+          }
+          if (st.dependencies && st.dependencies.length > 0) {
+            console.log(`     Depends on: ${st.dependencies.join(", ")}`);
+          }
+          console.log("");
+        });
+
+        if (plan.estimatedGovernanceGates && plan.estimatedGovernanceGates.length > 0) {
+          console.log(`── Governance & Safety Gates ───────────────────────────────────`);
+          for (const gate of plan.estimatedGovernanceGates) {
+            console.log(`  🛡️  ${gate}`);
+          }
+          console.log("");
+        }
+      } else {
+        console.error(`[starlight] Unknown genius action: "${geniusAction}". Available: profile, path, delegate.`);
         process.exitCode = 1;
       }
       break;
