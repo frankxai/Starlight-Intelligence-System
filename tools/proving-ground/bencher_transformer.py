@@ -38,7 +38,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[1]  # .claude/worktrees/<branch> -> repo root doesn't exist; use main repo
 # The worktree doesn't have memory/; atoms live in the main repo.
-MAIN_REPO = Path("C:/Users/frank/Starlight-Intelligence-System")
+MAIN_REPO = Path("C:/Users/frank/starlight/repos/Starlight-Intelligence-System")
 
 ATOMS_PATH_FROZEN = MAIN_REPO / "memory" / "mempalace" / "atoms.jsonl"
 EVAL_PATH = REPO_ROOT / "docs" / "research" / "_factory" / "memory-foundations-phase0" / "eval-50.jsonl"

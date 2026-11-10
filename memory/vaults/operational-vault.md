@@ -6,7 +6,7 @@ writers:
 - orchestrator
 - prime
 readers: all
-last_consolidated: '2026-05-11'
+last_consolidated: '2026-10-17'
 ---
 
 ## 2026-06-15 — Higgsfield Core Five Workspace Normalized

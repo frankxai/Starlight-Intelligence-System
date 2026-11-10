@@ -6,7 +6,7 @@ writers:
 - architect
 - sentinel
 readers: all
-last_consolidated: '2026-05-11'
+last_consolidated: '2026-10-17'
 ---
 
 # Technical Vault
