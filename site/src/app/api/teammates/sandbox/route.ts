@@ -4,6 +4,8 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 
+export const dynamic = "force-dynamic";
+
 export type SupportedLanguage = "javascript" | "typescript" | "python" | "bash";
 export type SandboxProvider = "microvm" | "firecracker" | "local" | "edge";
 

@@ -35,6 +35,8 @@ const BASE_ENV_ALLOWLIST = [
   "PATH",
   "PATHEXT",
   "SYSTEMROOT",
+  "SYSTEMDRIVE",
+  "COMSPEC",
   "WINDIR",
   "TMP",
   "TEMP",

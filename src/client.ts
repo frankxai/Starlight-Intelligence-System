@@ -18,6 +18,7 @@ import { teammatesEngine } from "./orchestration/teammates-engine.js";
 import { sandboxRouter } from "./orchestration/sandbox/index.js";
 import { VaultMemory } from "./vault-memory.js";
 import { geniusEngine } from "./genius/genius-engine.js";
+import { workflowRunner, executeCouncilConsensus } from "./orchestration/workflow-runner.js";
 
 import type {
   TeammateManifest,
@@ -39,6 +40,13 @@ import type {
   FreedomPathEvaluation,
   DelegationPlan,
 } from "./genius/types.js";
+import type {
+  WorkflowInfo,
+  WorkflowExecutionSummary,
+  WorkflowRunOptions,
+  CouncilConsensusResult,
+  CouncilConsensusOptions,
+} from "./orchestration/workflow-runner.js";
 
 // ── Options & Configuration ───────────────────────────────────────────────
 
@@ -126,6 +134,8 @@ export class StarlightClient {
   public readonly sandbox: SandboxNamespace;
   public readonly vaults: VaultsNamespace;
   public readonly genius: GeniusNamespace;
+  public readonly workflows: WorkflowsNamespace;
+  public readonly council: CouncilNamespace;
 
   constructor(options: StarlightClientOptions = {}) {
     this.baseUrl = options.baseUrl ? options.baseUrl.replace(/\/+$/, "") : undefined;
@@ -152,6 +162,8 @@ export class StarlightClient {
     this.sandbox = new SandboxNamespace(this);
     this.vaults = new VaultsNamespace(this);
     this.genius = new GeniusNamespace(this);
+    this.workflows = new WorkflowsNamespace(this);
+    this.council = new CouncilNamespace(this);
   }
 
   /**
@@ -571,3 +583,79 @@ export class GeniusNamespace {
     }
   }
 }
+
+// ── Workflows Namespace ───────────────────────────────────────────────────
+
+export class WorkflowsNamespace {
+  constructor(private client: StarlightClient) {}
+
+  /**
+   * Lists available predefined workflows.
+   */
+  public async list(): Promise<WorkflowInfo[]> {
+    if (this.client.mode === "direct") {
+      return workflowRunner.list();
+    }
+
+    try {
+      const res = await this.client._fetch<{ workflows: WorkflowInfo[] }>("/api/workflows");
+      return res.workflows || [];
+    } catch {
+      return workflowRunner.list();
+    }
+  }
+
+  /**
+   * Runs a workflow by ID or name with step-by-step state and dependency tracking.
+   */
+  public async run(name: string, options?: WorkflowRunOptions): Promise<WorkflowExecutionSummary> {
+    if (this.client.mode === "direct") {
+      return workflowRunner.run(name, options);
+    }
+
+    try {
+      const res = await this.client._fetch<{ success: boolean; summary: WorkflowExecutionSummary }>(
+        "/api/workflows/run",
+        {
+          method: "POST",
+          body: JSON.stringify({ name, options }),
+        }
+      );
+      return res.summary;
+    } catch {
+      return workflowRunner.run(name, options);
+    }
+  }
+}
+
+// ── Council Namespace ─────────────────────────────────────────────────────
+
+export class CouncilNamespace {
+  constructor(private client: StarlightClient) {}
+
+  /**
+   * Executes multi-model council consensus across Claude Sonnet 5.5, Gemini 4 Argon, and GPT-6.1 Sol.
+   */
+  public async evaluate(
+    prompt: string,
+    options?: CouncilConsensusOptions
+  ): Promise<CouncilConsensusResult> {
+    if (this.client.mode === "direct") {
+      return executeCouncilConsensus(prompt, options);
+    }
+
+    try {
+      const res = await this.client._fetch<{ success: boolean; consensus: CouncilConsensusResult }>(
+        "/api/council/evaluate",
+        {
+          method: "POST",
+          body: JSON.stringify({ prompt, options }),
+        }
+      );
+      return res.consensus;
+    } catch {
+      return executeCouncilConsensus(prompt, options);
+    }
+  }
+}
+

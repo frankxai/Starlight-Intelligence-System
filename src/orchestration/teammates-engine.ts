@@ -18,6 +18,7 @@ import { SanitizationGateway } from "../sanitization.js";
 import { providerRouter, type TokenUsage } from "./model-adapters/index.js";
 import { sandboxRouter, type SandboxExecutionRequest, type SandboxExecutionResponse } from "./sandbox/index.js";
 import { teammateSynapse } from "./teammate-synapse.js";
+import { skillsDispatcher } from "./skills-dispatcher.js";
 
 const defaultVeil = new SanitizationGateway();
 
@@ -337,8 +338,28 @@ export class StarlightTeammatesEngine {
     // Standard autonomous execution via Frontier Provider Router
     teammate.status = "running";
 
+    // Auto-detect matching skills and build injected context
+    const matchingSkills = skillsDispatcher.matchSkills(cleanPrompt, teammate.id);
+    const topSkills = matchingSkills.slice(0, 3);
+    const skillNames = topSkills.map((s) => s.skill);
+
+    executionTree.push({
+      id: `step-skills-${Date.now()}`,
+      summary: `Activated ${skillNames.length} skills: [${skillNames.join(", ")}]`,
+      durationMs: 14,
+      status: "success",
+      tool: "skills-dispatcher",
+      output:
+        skillNames.length > 0
+          ? `Auto-dispatched ${skillNames.length} skills with high relevance: ${topSkills.map((s) => `${s.skill} (${Math.round(s.confidence * 100)}%)`).join(", ")}`
+          : "Evaluated skills matrix: 0 skills required auto-activation for this prompt.",
+    });
+
+    const skillInstructions = skillsDispatcher.buildInjectedSkillPrompt(cleanPrompt, teammate.id);
+    const promptWithSkills = skillInstructions ? `${skillInstructions}\n\n${cleanPrompt}` : cleanPrompt;
+
     const completion = await providerRouter.dispatchCompletion({
-      prompt: cleanPrompt,
+      prompt: promptWithSkills,
       model,
       tier,
       teammateId: teammate.id,

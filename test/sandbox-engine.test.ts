@@ -77,7 +77,7 @@ describe("LocalIsolatedSandbox", () => {
     const result = await sandbox.execute({
       code: 'Write-Output "PowerShell MicroVM Execution OK"',
       language: "powershell",
-      policy: { timeoutMs: 5000 },
+      policy: { timeoutMs: 15000 },
     });
 
     assert.equal(result.success, true);

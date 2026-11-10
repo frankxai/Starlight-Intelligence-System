@@ -186,6 +186,10 @@ Commands:
   genius profile                  Display Frank's canonical sovereign Genius Profile
   genius path <task>              Evaluate task on the Freedom Path (Keep / Delegate / Automate / Eliminate)
   genius delegate <task>          Generate multi-teammate delegation plan with model tiers
+  skills match <query>            Match auto-activated skills with confidence (--agent, --json)
+  workflow list                   List available predefined workflows
+  workflow run <name> [input]     Run a predefined multi-step workflow with real-time trace
+  council <prompt>                Execute multi-model council consensus across Claude, Gemini & GPT
 
 Options:
   --help, -h                      Show this help message
@@ -247,6 +251,13 @@ Examples:
   starlight genius profile
   starlight genius path "Architect sovereign multi-agent protocol"
   starlight genius delegate "Build new vision module with verified CI tests"
+  starlight skills match "recall memory from obsidian notes"
+  starlight skills match "domain stack architecture" --agent starlight-genius
+  starlight workflow list
+  starlight workflow run product-sprint
+  starlight workflow run autonomous-refactor
+  starlight workflow run sentinel-audit
+  starlight council "Evaluate SQLite FTS5 hybrid indexing vs pure vector search"
   starlight stats
 `);
 }
@@ -2327,6 +2338,215 @@ async function main(): Promise<void> {
         }
       } else {
         console.error(`[starlight] Unknown genius action: "${geniusAction}". Available: profile, path, delegate.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "workflow": {
+      const workflowAction = positionals[1] || "list";
+      const { workflowRunner } = await import("./orchestration/workflow-runner.js");
+
+      if (workflowAction === "list") {
+        const workflows = workflowRunner.list();
+        if (values.json) {
+          console.log(JSON.stringify(workflows, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Predefined Workflows (${workflows.length} available)`);
+        console.log(`================================================================\n`);
+        for (const w of workflows) {
+          console.log(`  • ${w.id}`);
+          console.log(`    Name:        ${w.name}`);
+          console.log(`    Description: ${w.description}`);
+          console.log(`    Pipeline (${w.stepCount}): ${w.pipeline}`);
+          console.log("");
+        }
+      } else if (workflowAction === "run") {
+        const name = positionals[2];
+        if (!name) {
+          console.error("[starlight] Error: workflow run requires <workflow-name>");
+          console.error("  Available: product-sprint, autonomous-refactor, sentinel-audit");
+          console.error("  Example: starlight workflow run product-sprint");
+          process.exitCode = 1;
+          return;
+        }
+
+        const inputParam = positionals.slice(3).join(" ").trim() || undefined;
+        console.log(`\n[starlight] Initializing autonomous workflow: "${name}"...`);
+
+        const summary = await workflowRunner.run(name, {
+          input: inputParam,
+          verbose: values.verbose === true,
+          onStepStart: (step, idx, total) => {
+            console.log(`[starlight] [${idx + 1}/${total}] Starting: ${step.name}...`);
+          },
+          onStepComplete: (exec, idx, total) => {
+            if (exec.status === "success") {
+              console.log(`[starlight] ✓ [${idx + 1}/${total}] ${exec.name} completed in ${exec.durationMs}ms`);
+            } else if (exec.status === "skipped") {
+              console.log(`[starlight] ⊘ [${idx + 1}/${total}] ${exec.name} SKIPPED (dependency not satisfied)`);
+            } else {
+              console.log(`[starlight] ✗ [${idx + 1}/${total}] ${exec.name} FAILED: ${exec.error}`);
+            }
+          },
+        });
+
+        if (values.json) {
+          console.log(JSON.stringify(summary, null, 2));
+          return;
+        }
+
+        const passedCount = summary.steps.filter((s) => s.status === "success").length;
+        const totalCount = summary.steps.length;
+        const badge = summary.status === "success" ? "SUCCESS" : "FAILED";
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Workflow Execution Summary: ${summary.workflowName}`);
+        console.log(` Status:         [ ${badge} ]`);
+        console.log(` Total Duration: ${summary.totalDurationMs}ms`);
+        console.log(` Steps Passed:   ${passedCount} / ${totalCount}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Step Execution Details ──────────────────────────────────────`);
+        summary.steps.forEach((s, idx) => {
+          const statusIcon = s.status === "success" ? "✓" : s.status === "skipped" ? "⊘" : "✗";
+          console.log(`  ${idx + 1}. [${statusIcon}] ${s.name} (${s.durationMs}ms) [${s.status.toUpperCase()}]`);
+          if (s.output) {
+            const firstLines = s.output.split("\n").slice(0, 3).map((l) => `     ${l}`).join("\n");
+            console.log(firstLines);
+          }
+          if (s.error) {
+            console.log(`     Error: ${s.error}`);
+          }
+          console.log("");
+        });
+
+        if (summary.finalOutput) {
+          console.log(`── Final Deliverable / Attestation ─────────────────────────────`);
+          console.log(summary.finalOutput);
+          console.log("");
+        }
+      } else {
+        console.error(`[starlight] Unknown workflow action: "${workflowAction}". Available: list, run.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "council": {
+      const prompt = positionals.slice(1).join(" ").trim();
+      if (!prompt) {
+        console.error("[starlight] Error: council requires an evaluation prompt");
+        console.error("  Example: starlight council \"Should we migrate the memory substrate to SQLite hybrid?\"");
+        process.exitCode = 1;
+        return;
+      }
+
+      console.log(`[starlight] Dispatching council evaluation concurrently across frontier models:`);
+      console.log(`  • Anthropic: Claude Sonnet 5.5 (Architectural Rigor)`);
+      console.log(`  • Google:    Gemini 4 Argon (Massive Context Retrieval)`);
+      console.log(`  • OpenAI:    GPT-6.1 Sol (Pragmatic Tool Execution)`);
+
+      const { executeCouncilConsensus } = await import("./orchestration/workflow-runner.js");
+      const consensus = await executeCouncilConsensus(prompt);
+
+      if (values.json) {
+        console.log(JSON.stringify(consensus, null, 2));
+        return;
+      }
+
+      console.log(`\n================================================================`);
+      console.log(` Starlight Multi-Model Council Consensus`);
+      console.log(` Prompt:          "${consensus.prompt}"`);
+      console.log(` Agreement Index: [ ${consensus.agreementIndex}% CONSENSUS ]`);
+      console.log(` Timestamp:       ${consensus.timestamp}`);
+      console.log(`================================================================\n`);
+
+      console.log(`── Individual Model Viewpoints ─────────────────────────────────`);
+      for (const v of consensus.viewpoints) {
+        console.log(`  ✦ ${v.modelDisplayName} (${v.provider.toUpperCase()} — ${v.durationMs}ms):`);
+        const lines = v.content.split("\n").slice(0, 5).map((l) => `    ${l}`).join("\n");
+        console.log(lines);
+        console.log("");
+      }
+
+      console.log(`── Points of Agreement ─────────────────────────────────────────`);
+      for (const a of consensus.agreements) {
+        console.log(`  ✓ ${a}`);
+      }
+
+      console.log(`\n── Points of Divergence ─────────────────────────────────────────`);
+      for (const d of consensus.divergences) {
+        console.log(`  ⚡ ${d}`);
+      }
+
+      console.log(`\n── Unified Council Recommendation ──────────────────────────────`);
+      console.log(`  ${consensus.consensusText}`);
+      console.log(`\n  Recommended Next Move:`);
+      console.log(`  ${consensus.recommendation}\n`);
+      break;
+    }
+
+    case "skills": {
+      const skillsAction = positionals[1] || "match";
+      const { skillsDispatcher } = await import("./orchestration/skills-dispatcher.js");
+
+      if (skillsAction === "match") {
+        const query = positionals.slice(2).join(" ").trim();
+        if (!query) {
+          console.error("[starlight] Error: skills match requires a query string");
+          console.error("  Example: starlight skills match \"recall memory from obsidian notes\"");
+          console.error("  Example: starlight skills match \"productize expertise into domain stack\" --agent starlight-genius");
+          process.exitCode = 1;
+          return;
+        }
+
+        const agent = asString(values.agent);
+        const matches = skillsDispatcher.matchSkills(query, agent);
+
+        if (values.json) {
+          console.log(JSON.stringify(matches, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Skills Dispatcher — Auto-Activation Matches`);
+        console.log(` Query:  "${query}"`);
+        if (agent) {
+          console.log(` Agent:  ${agent}`);
+        }
+        console.log(` Total:  ${matches.length} matching skill${matches.length === 1 ? "" : "s"}`);
+        console.log(`================================================================\n`);
+
+        if (matches.length === 0) {
+          console.log(`No auto-activating skills matched for this query.`);
+          console.log(`Tip: Ensure keywords or intents align with skill-rules.json triggers.\n`);
+          return;
+        }
+
+        matches.forEach((m, idx) => {
+          const confidencePct = Math.round(m.confidence * 100);
+          console.log(`  ${idx + 1}. [${m.rule.priority.toUpperCase()}] ${m.skill}`);
+          console.log(`     Confidence: ${confidencePct}% | Rule ID: ${m.rule.id}`);
+          if (m.matchedKeywords.length > 0) {
+            console.log(`     Keywords:   ${m.matchedKeywords.join(", ")}`);
+          }
+          if (m.matchedIntents.length > 0) {
+            console.log(`     Intents:    ${m.matchedIntents.join(", ")}`);
+          }
+          if (m.matchedPatterns.length > 0) {
+            console.log(`     Patterns:   ${m.matchedPatterns.join(", ")}`);
+          }
+          if (m.rule.triggers?.agents && m.rule.triggers.agents.length > 0) {
+            console.log(`     Agents:     ${m.rule.triggers.agents.join(", ")}`);
+          }
+          console.log("");
+        });
+      } else {
+        console.error(`[starlight] Unknown skills action: "${skillsAction}". Available: match.`);
         process.exitCode = 1;
       }
       break;
