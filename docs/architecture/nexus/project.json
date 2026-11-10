@@ -1,0 +1,413 @@
+{
+  "acceptance": [
+    "Freeze a two-executor/one-resource fixture: exactly one live lease may own the resource within a tenant.",
+    "Identical operation retries return the original result without extending authority; changed payload under the same operation ID is rejected.",
+    "Expiry followed by reacquisition increments the fence; the previous owner cannot renew, release or validate output under the new generation.",
+    "Recreate the arbiter over persisted storage and preserve ownership, expiry, generation and idempotency behavior.",
+    "Wrong tenant/resource bindings and malformed timestamps, identifiers, TTLs and generations fail closed.",
+    "Storage errors never become apparent lease success; concurrent attempts are serialized by the transactional adapter.",
+    "Keep current protected HTTP routes unavailable before a real identity/membership verifier is integrated; no caller-selected tenant or forged Access header establishes authority.",
+    "Before staging: integrate every effect and artifact sink with current-fence validation and verified grants. Internal lease tests alone do not prove safe distributed execution.",
+    "Before hosted admission: prove unknown residency, revoked node, exhausted budget and denied tool cannot trigger fallback execution.",
+    "Before launch: interrupt and resume a real repository mission, reject a late old-owner result, restore a hashed checkpoint and produce an exact-head reviewed PR.",
+    "Benchmark the same frozen missions, models, budget and review criteria against both manual handoff and an assembled existing coding harness plus persistent cloud workspace plus GitHub PR workflow. Measure reconstruction time, review time, accepted completion and escaped defects; include failed attempts and support in cost.",
+    "Before commerce: concurrent reservation, duplicated settlement, cancellation with late usage and refund fixtures pass against existing business contracts.",
+    "Before UI release: desktop/mobile/keyboard review binds exact artifacts and distinguishes queued, working, disconnected, waiting-for-approval, failed and complete.",
+    "Before recurring pricing: measure repeat use, accepted completion, total supplier cost, review/support time and contribution per accepted mission; unknowns remain unknown.",
+    "Proposed pilot expansion gate: at least three of five teams complete at least two accepted missions per week for three consecutive weeks; reconstruction and review time fall without completion-quality degradation versus the assembled baseline; at least two paid renewals occur. These are proposed thresholds, not observed outcomes or authorized prices.",
+    "If any proposed pilot threshold is missed, stop breadth expansion and repair the repository mission workflow before adding capability categories or execution providers.",
+    "Before promoting this proposal: reconcile SIS #476/#477/#510/#518 and Ops #395/#389 without assuming their open content is accepted architecture."
+  ],
+  "artifacts": [],
+  "brands": [
+    {
+      "id": "brand_starlight_intelligence",
+      "name": "Starlight Intelligence"
+    }
+  ],
+  "brief": {
+    "beneficiary": "Technical founders and small product teams operating an existing repository across local coding harnesses and cloud execution.",
+    "job": "Keep one bounded repository mission coherent while people, harnesses and approved execution machines change.",
+    "accepted_outcome": "A repository change with exact-source tests, a reviewable PR, artifact lineage and measured usage; an interrupted executor cannot submit an authoritative stale result. This is the target journey, not a claim of hosted availability.",
+    "commercial_hypothesis": "Keep portable contracts, local operation, reproducible examples and BYOK export in the existing MIT open core. Test a fixed workspace subscription for managed coordination, team controls and recovery, with compute funded separately. Price, margin and willingness to pay remain unapproved and unmeasured. Expand only after the proposed five-team pilot clears its repeat-use, comparative-quality and paid-renewal gates.",
+    "first_slice": "Implement internal durable fenced lease arbitration at the existing services/starlight-cloud-worker SwarmCoordinator boundary: tenant/resource binding, operation idempotency, acquire/renew/release, generation fencing and restart recovery. Preserve HTTP 503 containment until identity, membership and admission are qualified. Exact implementation and test results belong in the parent release receipt.",
+    "next_action": "Qualify the internal arbiter with independent review, then integrate verified node identity and current-request admission before an isolated local-to-cloud handoff rehearsal. Compare the same frozen repository missions against manual handoff and an assembled existing coding harness plus persistent cloud workspace plus GitHub PR workflow. After hosted and commercial qualification, test five teams; stop breadth expansion and repair the workflow if the proposed pilot gates are missed. No customer dispatch, pricing or cloud deployment is authorized by this projection."
+  },
+  "canonical": {
+    "uri": "https://github.com/frankxai/agentic-ops/tree/61114141e8c25c0891bef028fbfa38e8e1257742/registry",
+    "revision": "61114141e8c25c0891bef028fbfa38e8e1257742",
+    "mode": "projection"
+  },
+  "capabilities": [
+    {
+      "id": "internal-lease-arbitration",
+      "kind": "runtime",
+      "status": "proposed",
+      "owner": "frankxai/Starlight-Intelligence-System/services/starlight-cloud-worker"
+    },
+    {
+      "id": "authenticated-node-enrollment",
+      "kind": "runtime",
+      "status": "unavailable",
+      "owner": "existing product identity/admission boundary"
+    },
+    {
+      "id": "hosted-mission-dispatch",
+      "kind": "runtime",
+      "status": "unavailable",
+      "owner": "frankxai/starlightintelligence.ai"
+    },
+    {
+      "id": "portable-playbook-export",
+      "kind": "skill",
+      "status": "proposed",
+      "owner": "existing source owners and Foundry export adapters"
+    }
+  ],
+  "constraints": {
+    "currency": "EUR",
+    "incremental_budget_cents": 0,
+    "capital_status": "unknown",
+    "allowed_regions": [
+      "local"
+    ],
+    "max_attempts": 2,
+    "max_depth": 1
+  },
+  "decisions": [
+    {
+      "id": "nexus-boundary",
+      "context": "The older Nexus draft mixes catalogue, graph and authority concerns. The current mission product and SIS already own useful boundaries.",
+      "options": [
+        "Existing SIS execution fabric with existing product UI",
+        "Separate Nexus platform/repository",
+        "Read-only discovery catalogue"
+      ],
+      "choice": "Existing SIS execution fabric with existing product UI",
+      "consequences": "Nexus names this module. Starlight Intelligence Network describes the federation, without creating another brand, ledger, protocol authority or control plane. This revises draft #476; it is not ratified Registry policy.",
+      "revisit_trigger": "A distinct release, audience or permissions boundary is proved and admitted through the Registry.",
+      "status": "proposed",
+      "source_id": "registry"
+    },
+    {
+      "id": "durable-lease-owner",
+      "context": "A disconnected local executor can finish after a replacement starts. In-memory ownership cannot survive isolate eviction.",
+      "options": [
+        "Existing SwarmCoordinator with durable fenced leases",
+        "In-memory map and best-effort TTL",
+        "Independent central scheduler service"
+      ],
+      "choice": "Existing SwarmCoordinator with durable fenced leases",
+      "consequences": "Persist state, operation identity and generation atomically. Gate every artifact-acceptance/effect sink against the current fence; issuing a fence alone cannot prevent stale external writes. Keep protected HTTP contained until verified authority is integrated.",
+      "revisit_trigger": "Adversarial race or restart test breaks exclusivity, or measured workload exceeds one-object scope.",
+      "status": "proposed",
+      "source_id": "cloudflare-storage"
+    },
+    {
+      "id": "placement-and-continuation",
+      "context": "A mission can resume on another executor only when its inputs, grants and data boundary permit it.",
+      "options": [
+        "Explicit outbound node pull with checkpoint handoff",
+        "Public inbound local control port",
+        "Unconditional cloud failover"
+      ],
+      "choice": "Explicit outbound node pull with checkpoint handoff",
+      "consequences": "Use time-bounded leases and source/artifact digests. Transfer explicit task checkpoints, not process memory or entire private machine state. Tunnel is optional connectivity for selected services and never execution authority.",
+      "revisit_trigger": "A workload requires interactive inbound service access with a separately reviewed Access policy.",
+      "status": "proposed",
+      "source_id": "registry"
+    },
+    {
+      "id": "private-checkpoint-storage-exception",
+      "context": "Cloud-oriented executors need immutable private checkpoint bytes. Accepted architecture_media_fabric_v2 still governs web media.",
+      "options": [
+        "Proposed R2 exception for private non-web checkpoints",
+        "Existing Vercel Blob for all checkpoint bytes",
+        "Owner-local checkpoint only"
+      ],
+      "choice": "Proposed R2 exception for private non-web checkpoints",
+      "consequences": "Proposed exception only: non-Vercel execution access and restore are the workload need. SIS owns checkpoint schema; application metadata owns authorization and retention. Admit no new bucket until review, region/retention validation and cost comparison. Start with new checkpoints only; retain legacy references. Roll back adapter selection to owner-local/approved Blob; verify hashes, drain references and remove replicas only after retention obligations. One authoritative object per checkpoint version; optional recovery copies record lineage and expire under policy. No web-media migration.",
+      "revisit_trigger": "Measured cost, security or restore evidence fails the chosen adapter, or the Registry declines the exception.",
+      "status": "proposed",
+      "source_id": "registry"
+    },
+    {
+      "id": "progressive-runtime-adoption",
+      "context": "The accepted architecture favors Cloudflare persistent entities and preserves current experience and business owners.",
+      "options": [
+        "Cloudflare durable coordination with existing Vercel/Supabase surfaces",
+        "Only local daemon and manual handoff",
+        "Assembled coding harness plus persistent cloud workspace plus GitHub PR workflow",
+        "Experimental Sandbox-backed managed executor"
+      ],
+      "choice": "Cloudflare durable coordination with existing Vercel/Supabase surfaces",
+      "consequences": "Retain manual/local handoff and compare against an assembled coding harness plus persistent cloud workspace plus GitHub PR workflow on the same frozen tasks, models, budget and review criteria. Evaluate one Sandbox executor after continuity works; snapshot/process limits, isolation and billing must be proven. Preserve one durable workflow owner and existing gateway default; no second wallet.",
+      "revisit_trigger": "Held-out missions fail to reduce reconstruction/review time at equal completion quality against the assembled baseline, or the proposed pilot repeat-use/renewal gate is missed. Stop breadth expansion and repair the workflow.",
+      "status": "proposed",
+      "source_id": "registry"
+    },
+    {
+      "id": "workspace-subscription-hypothesis",
+      "context": "The paid value to test is reliable shared coordination and recovery. Supplier inference and runtime costs vary by mission and must remain attributable.",
+      "options": [
+        "Fixed workspace subscription with separately funded compute",
+        "Bundled unlimited execution subscription",
+        "Self-managed open core only"
+      ],
+      "choice": "Fixed workspace subscription with separately funded compute",
+      "consequences": "Proposed commercial shape only; no price, checkout change or customer charge is authorized here. Preserve BYOK/self-managed open core. Record supplier cost, failed attempts, review/support and payment fees. Before breadth expansion, require three of five pilot teams to complete two accepted missions weekly for three weeks, reduced reconstruction/review time without completion-quality loss against the assembled baseline, and two paid renewals.",
+      "revisit_trigger": "Missed repeat-use, quality, time-saving or renewal threshold; stop expansion and repair the workflow. Unknown contribution margin prevents scaling paid compute.",
+      "status": "proposed",
+      "source_id": "owner-direction"
+    }
+  ],
+  "grants": [],
+  "id": "nexus-mission-continuity",
+  "journey": [
+    {
+      "stage": "Admit",
+      "action": "Select an existing repository, outcome, permitted paths, placement and budget.",
+      "success": "A server-issued scoped mission and reservation exist before work starts.",
+      "recovery": "Missing identity, grants, balance or residency yields a precise unavailable/denied state."
+    },
+    {
+      "stage": "Connect",
+      "action": "Enroll one approved local node and inspect its declared capabilities.",
+      "success": "Fresh authenticated evidence identifies the node and allowable tasks.",
+      "recovery": "Offline, revoked and stale capability reports are visible; no work is sent."
+    },
+    {
+      "stage": "Start",
+      "action": "Start a bounded change from the laptop.",
+      "success": "A tenant/resource lease and generation bind the active attempt; progress and source revision are inspectable.",
+      "recovery": "Retry the same operation identifier only with its unchanged payload."
+    },
+    {
+      "stage": "Handoff",
+      "action": "Checkpoint work, disconnect the original executor and resume on an approved target.",
+      "success": "A new generation is admitted; the target verifies source and checkpoint digests before starting.",
+      "recovery": "Wait for lease expiry or explicit release. Reject old-owner renewal, completion and artifact promotion."
+    },
+    {
+      "stage": "Review",
+      "action": "Inspect the PR, evidence and proposed release from desktop or phone.",
+      "success": "Keyboard/mobile review references the exact artifact hash and head revision.",
+      "recovery": "Changed output invalidates approval. Loading, disconnected and partial states remain distinct."
+    },
+    {
+      "stage": "Accept and settle",
+      "action": "Accept a useful result or request one bounded revision.",
+      "success": "One idempotent settlement records actual supplier usage and releases unused allowance.",
+      "recovery": "Reconcile late usage and uncertain effects; cancellation does not erase incurred cost."
+    },
+    {
+      "stage": "Repeat and export",
+      "action": "Reuse the proven playbook or export the work to another runtime.",
+      "success": "Repository source, context manifest, event history and artifact references reopen with original provenance.",
+      "recovery": "Corrupt, missing or unauthorized bytes are rejected. Commercial upgrade stays a hypothesis until repeat use is demonstrated."
+    }
+  ],
+  "layers": [
+    {
+      "id": "experience",
+      "owner": "frankxai/starlightintelligence.ai: existing Mission Studio / Next.js surface",
+      "status": "observed",
+      "reason": "Retain the established Vercel experience. Display actual availability, shared mission state and artifact-bound review.",
+      "fallback": "Existing inspectable replay and local exports; no invented live status.",
+      "source_id": "site-main"
+    },
+    {
+      "id": "portfolio-authority",
+      "owner": "frankxai/agentic-ops: reviewed Registry",
+      "status": "observed",
+      "reason": "Architecture identity and repository placement stay in reviewed Git. Revise the stale Notion-authority assumption in draft #476.",
+      "fallback": "Read-only proposal while any authority conflict remains.",
+      "source_id": "registry"
+    },
+    {
+      "id": "identity-and-admission",
+      "owner": "frankxai/starlightintelligence.ai: existing identity, membership and mission ticket contracts",
+      "status": "proposed",
+      "reason": "Authorize tenant, node, mission, tool, resource, expiry and current operation before delegation. Authenticated transport alone grants no execution.",
+      "fallback": "Protected worker routes remain unavailable.",
+      "source_id": "mission-runtime-draft"
+    },
+    {
+      "id": "coordination",
+      "owner": "frankxai/Starlight-Intelligence-System: existing SwarmCoordinator / Cloudflare Durable Objects",
+      "status": "proposed",
+      "reason": "Use durable transactional lease state and monotonically increasing generations for one current owner per canonical resource. Namespace by tenant and resource.",
+      "fallback": "Contained local deterministic tests and explicit no-dispatch status.",
+      "source_id": "sis-main"
+    },
+    {
+      "id": "workflow",
+      "owner": "frankxai/starlightintelligence.ai: mission owner; Cloudflare Workflows adapter for cross-service missions",
+      "status": "proposed",
+      "reason": "One workflow owner records execution attempts, checkpoints and uncertain effects. SwarmCoordinator arbitrates ownership; it does not become a second workflow engine.",
+      "fallback": "Pause and reconcile instead of replaying an uncertain effect.",
+      "source_id": "registry"
+    },
+    {
+      "id": "execution",
+      "owner": "frankxai/Starlight-Intelligence-System: local node and cloud adapters",
+      "status": "proposed",
+      "reason": "Local nodes connect outbound, pull approved work and hold renewable leases. Same mission identity survives a machine change; process memory does not migrate.",
+      "fallback": "Wait for an eligible node. Never silently change placement, region or data classification.",
+      "source_id": "registry"
+    },
+    {
+      "id": "business-and-billing",
+      "owner": "frankxai/starlightintelligence.ai: existing Supabase/Postgres contracts",
+      "status": "observed",
+      "reason": "Keep membership, entitlements, reservations, metering and settlement in one business authority. Gateway limits are telemetry and supplemental protection.",
+      "fallback": "No dispatch when reservation, region or entitlement is unknown.",
+      "source_id": "site-main"
+    },
+    {
+      "id": "context-and-memory",
+      "owner": "Existing SIS scoped memory sources; application-owned authorization",
+      "status": "proposed",
+      "reason": "Compile minimal versioned context and source locators. Explicitly authorize each source; treat vector indexes and summaries as rebuildable projections.",
+      "fallback": "Lexical and source-linked retrieval from the authorized repository.",
+      "source_id": "registry"
+    },
+    {
+      "id": "checkpoints-and-artifacts",
+      "owner": "SIS runtime checkpoints; existing application artifact metadata owner",
+      "status": "proposed",
+      "reason": "Propose R2 only for private non-web executor checkpoints under a reviewed workload exception. Keep hashes, manifests, rights and scoped resolution. Existing Vercel web media rules remain.",
+      "fallback": "Owner-local checkpoint plus canonical artifact reference; no automatic upload.",
+      "source_id": "registry"
+    },
+    {
+      "id": "secrets-and-tools",
+      "owner": "Existing Infisical/operator secret source plus product delegated connector boundary",
+      "status": "observed",
+      "reason": "Use short-lived scoped grants where available. MCP describes tools; current server authorization enforces effects.",
+      "fallback": "Fail closed for missing or revoked connector authorization.",
+      "source_id": "registry"
+    },
+    {
+      "id": "models",
+      "owner": "Existing application AI SDK/Gateway route owner; optional evaluated Cloudflare adapter",
+      "status": "observed",
+      "reason": "Preserve the accepted default gateway. Qualify Workers AI or Cloudflare AI Gateway per workload without stacking independent budget authorities.",
+      "fallback": "Known approved model route or pause; consumer plan allowances are not resale API capacity.",
+      "source_id": "registry"
+    },
+    {
+      "id": "evaluation-and-distribution",
+      "owner": "SIS tests, GitHub review and existing Starlight release journey",
+      "status": "proposed",
+      "reason": "Measure accepted mission completion, stale-writer rejection, intervention time and complete cost per accepted output. Export source and evidence.",
+      "fallback": "Local-only result explicitly labeled unqualified for hosted use.",
+      "source_id": "registry"
+    }
+  ],
+  "model_routes": [],
+  "name": "Nexus: mission continuity across approved machines",
+  "observed_at": "2026-10-31",
+  "owner": "Starlight Intelligence / Software Studio",
+  "resources": [
+    {
+      "id": "sis-source",
+      "name": "Existing SIS cloud-worker source",
+      "kind": "repository",
+      "status": "observed",
+      "source_id": "sis-main",
+      "constraint": "Protected endpoints are deliberately contained; source availability does not establish operating hosted execution."
+    },
+    {
+      "id": "local-nodes",
+      "name": "Owner-controlled local execution nodes",
+      "kind": "compute",
+      "status": "user_reported",
+      "source_id": "owner-direction",
+      "constraint": "Enrollment, usable capacity, uptime, data policy and installed harness execution must be measured separately. No local daemon was installed in this work.",
+      "measurement": {
+        "usable_ram_mib": null,
+        "vram_mib": null,
+        "disk_free_mib": null,
+        "throughput_tokens_per_second": null
+      }
+    },
+    {
+      "id": "cloudflare-runtime",
+      "name": "Cloudflare runtime adapter",
+      "kind": "cloud",
+      "status": "observed",
+      "source_id": "cloudflare-storage",
+      "constraint": "Provider documentation confirms primitives; tenant entitlement, deployment qualification, region policy and current cost remain unverified."
+    },
+    {
+      "id": "cloudflare-credits",
+      "name": "Startup credits",
+      "kind": "capital",
+      "status": "user_reported",
+      "source_id": "owner-direction",
+      "constraint": "User reports approved startup credits. Available balance, eligible products and expiry are not account-verified; this slice adds no paid deployment."
+    }
+  ],
+  "schema_version": "1.0.0",
+  "sources": [
+    {
+      "id": "registry",
+      "uri": "https://github.com/frankxai/agentic-ops/blob/61114141e8c25c0891bef028fbfa38e8e1257742/registry/architecture_decisions.yaml",
+      "revision": "61114141e8c25c0891bef028fbfa38e8e1257742",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "sis-main",
+      "uri": "https://github.com/frankxai/Starlight-Intelligence-System/tree/7e4ca5b295e4c0097576045326762d278514e360",
+      "revision": "7e4ca5b295e4c0097576045326762d278514e360",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "site-main",
+      "uri": "https://github.com/frankxai/starlightintelligence.ai/tree/3d4c45f5531de2753c90de24ba26fc339f4df9a8",
+      "revision": "3d4c45f5531de2753c90de24ba26fc339f4df9a8",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "nexus-draft",
+      "uri": "https://github.com/frankxai/Starlight-Intelligence-System/pull/476",
+      "revision": "fcfca3863decf0e67105128154b0449b90ccb54b",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "mission-runtime-draft",
+      "uri": "https://github.com/frankxai/starlightintelligence.ai/pull/238",
+      "revision": "94c3735165f6a27adf9656b80bb6a6b600694275",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "cloudflare-storage",
+      "uri": "https://developers.cloudflare.com/durable-objects/best-practices/access-durable-objects-storage/",
+      "revision": "documentation observed 2026-10-31; updated 2026-10-30",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "cloudflare-sqlite",
+      "uri": "https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/",
+      "revision": "documentation observed 2026-10-31",
+      "checked_at": "2026-10-31",
+      "evidence": "observed"
+    },
+    {
+      "id": "owner-direction",
+      "uri": "current owner request, 2026-10-31: Nexus local/cloud strategy and GitHub implementation",
+      "revision": "conversation request",
+      "checked_at": "2026-10-31",
+      "evidence": "user_reported"
+    }
+  ],
+  "state": "proposed",
+  "tenant_id": "nexus-design-fixture"
+}
