@@ -98,6 +98,7 @@ $global:STARLIGHT_CANONICAL_REMOTES = [ordered]@{
     "starlight-technology"          = "https://github.com/Starlight-Intelligence/starlight-technology.git"
     "starlight-agent-skills"        = "https://github.com/Starlight-Intelligence/starlight-agent-skills.git"
     "starlight-evals"               = "https://github.com/Starlight-Intelligence/starlight-evals.git"
+    "starlight-memory-vault"        = "https://github.com/Starlight-Intelligence-Systems/starlight-memory-vault.git"
     "arcanea-ai-app"                = "https://github.com/Arcanea-Labs/arcanea-ai-app.git"
     "FrankX"                        = "https://github.com/FrankX-AI/FrankX.git"
 }
@@ -150,6 +151,9 @@ function Sync-StarlightFoundation {
                 Write-Host "[Starlight Foundation] Note: Starlight-Intelligence-System is on branch '$br' (run 'git checkout main' if clean)" -ForegroundColor Yellow
             }
         }
+    }
+    if (-not $Quiet) {
+        Write-Host "[Starlight Foundation] Verified canonical org remotes & junctions OK (SIS -> Starlight-Intelligence/Starlight-Intelligence-System)" -ForegroundColor DarkCyan
     }
 }
 Set-Alias -Name sis-sync -Value Sync-StarlightFoundation -Scope Global -Force -ErrorAction SilentlyContinue
