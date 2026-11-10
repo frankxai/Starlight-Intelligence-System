@@ -27,8 +27,20 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/vaults", label: "Public Vaults", desc: "One public vault" },
       { href: "/queen", label: "Queen", desc: "The visual intelligence loop" },
       { href: "/field-notes", label: "Field Notes", desc: "Six studies of protocol, proof, and public memory" },
-      { href: "/visuals/brand-lab", label: "Brand Lab", desc: "The visual identity system" },
       { href: "/verticals", label: "Verticals", desc: "Domain sub-stacks" },
+    ],
+  },
+  {
+    label: "Design & Visuals",
+    visual: NAV_GROUP_STILLS["Design & Visuals"],
+    items: [
+      { href: "/visuals/brand-lab", label: "Brand Lab", desc: "Living Design Observatory & 7 chapters" },
+      { href: "/design", label: "Living Design v3.0", desc: "Canonical public spec & YAML export" },
+      { href: "/visuals/system", label: "Design System", desc: "Glass, status quartet & 24 Signal icons" },
+      { href: "/visuals/provenance", label: "Provenance & R2", desc: "VIS 30-pt gate, rights & Cloudflare R2" },
+      { href: "/agents", label: "151-Agent Atlas", desc: "Parametric vector sigils & sovereign codex" },
+      { href: "/movement", label: "Movement", desc: "Open & abundant web pledge & kit" },
+      { href: "/visuals/press-kit", label: "Press Kit", desc: "Protocol marks & media guidelines" },
     ],
   },
   {

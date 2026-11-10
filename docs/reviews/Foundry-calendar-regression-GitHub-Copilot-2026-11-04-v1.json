@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "reportId": "foundry-calendar-regression-github-copilot-2026-11-04-v1",
+  "attribution": {
+    "executor": "GitHub Copilot hosted coding agent",
+    "requestedBy": "@frankxai",
+    "request": "PR #539 comment 6628123768",
+    "underlyingProvider": "unknown; not exposed by trusted runtime metadata"
+  },
+  "source": {
+    "repository": "frankxai/Starlight-Intelligence-System",
+    "branch": "agent/antigravity/living-brand-lab-v3",
+    "sha": "c02ab41b752c765da677d78ed2262387665db45d"
+  },
+  "execution": {
+    "date": "2026-11-04",
+    "runtime": {
+      "node": "v22.23.4",
+      "pnpm": "11.5.0",
+      "platform": "Linux 7.0.0-1017-azure x86_64",
+      "proxy": "Copilot attachment-proxy flag visible; endpoint and provider unknown"
+    },
+    "beforeRepair": {
+      "command": "node --import tsx --test --test-name-pattern='compiles and proves agent, swarm, vertical, and plugin projections|emits a publisher-owned skills-only OpenAI directory candidate that passes preflight' test/v92-foundry.test.ts",
+      "passed": 0,
+      "failed": 2,
+      "skipped": 0,
+      "failure": "Both compiler-success fixtures failed final-directory preflight with RULES_FRESHNESS."
+    },
+    "afterRepair": {
+      "focusedTests": {
+        "command": "node --import tsx --test --test-name-pattern='compiles and proves agent, swarm, vertical, and plugin projections|emits a publisher-owned skills-only OpenAI directory candidate that passes preflight|refuses plugin compilation after OpenAI directory rules expire' test/v92-foundry.test.ts",
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      },
+      "typecheck": {
+        "command": "npm run lint",
+        "result": "passed"
+      },
+      "foundryHarness": {
+        "command": "npm run test:foundry",
+        "passed": 56,
+        "failed": 0,
+        "skipped": 0
+      },
+      "warning": "Node emitted the experimental MockTimers API warning."
+    }
+  },
+  "finding": {
+    "rulesReviewBy": "2026-11-03",
+    "cause": "The compiler's final OpenAI preflight uses the real default UTC date, so historical success fixtures became dependent on the calendar.",
+    "repair": "Use per-test Node Date mocks for historical success fixtures; add a test that advances from reviewBy by one day and verifies compilation throws RULES_FRESHNESS without leaving output.",
+    "productionPolicyChanged": false,
+    "currentRulesRemainFailClosed": true,
+    "externalHostVerification": "Not exercised. No connected OpenAI, Codex, or Claude host, portal review, or publication was tested.",
+    "rulesRefreshRequirement": "A separate review of current official OpenAI documentation is required before refreshing docs-derived rules."
+  }
+}

@@ -1,0 +1,2246 @@
+[
+  {
+    "id": "builder-elder",
+    "profileName": "builder-elder",
+    "title": "Council — Builder-Elder",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Evaluates proposals for cost, execution speed, and simplicity.",
+    "mission": "Execution. Cost. Systems. Leverage.",
+    "file": "council/builder-elder.md",
+    "skills": []
+  },
+  {
+    "id": "divine-neutral-witness",
+    "profileName": "divine-neutral-witness",
+    "title": "Council — Divine Neutral Witness",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Silence, truth, and non-attached observation.",
+    "mission": "Silence. Truth. Non-attachment.",
+    "file": "council/divine-neutral-witness.md",
+    "skills": []
+  },
+  {
+    "id": "elder-father",
+    "profileName": "elder-father",
+    "title": "Council — Elder Father",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Evaluates proposals for discipline, liability, and long-term legacy.",
+    "mission": "Responsibility. Discipline. Protection. Legacy.",
+    "file": "council/elder-father.md",
+    "skills": []
+  },
+  {
+    "id": "elder-mother",
+    "profileName": "elder-mother",
+    "title": "Council — Elder Mother",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Evaluates proposals for team health, relations, and beauty.",
+    "mission": "Care. Relational truth. Beauty. Emotional wisdom.",
+    "file": "council/elder-mother.md",
+    "skills": []
+  },
+  {
+    "id": "future-self-at-90",
+    "profileName": "future-self-at-90",
+    "title": "Council — Future Self at 90",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Focuses on long-horizon life fulfillment and value commitments.",
+    "mission": "Fulfilled-life review.",
+    "file": "council/future-self-at-90.md",
+    "skills": []
+  },
+  {
+    "id": "music-amplifier",
+    "profileName": "promo-amplifier",
+    "title": "Music Amplifier",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Coordinates social media posts, advertising, and email drip feeds.",
+    "mission": "Senior-tier amplification sub-system + OpenClaws orchestration. The agent that runs the 5-Claws-per-persona social mesh — voice-locked, frequency-capped, AI-disclosure-required, engagement-bot-pattern-refusing — and turns gated releases into per-platform drops without becoming a spam mesh. Amplification sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "music-amplifier.md",
+    "skills": [
+      "music-is/amplification-mesh",
+      "music-is/voice-lock",
+      "music-is/persona-canon",
+      "intelligence/pattern-recognition"
+    ]
+  },
+  {
+    "id": "music-archivist",
+    "profileName": "music-archivist",
+    "title": "Music Archivist",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Curates the digital song masters database and manages label audits.",
+    "mission": "Mechanical-tier catalog steward. The agent that makes \"catalog is truth\" structurally true — by owning the master CSV, draft/released/archived state transitions, ISRC indexing, metadata hygiene, and dedupe with the unsexy discipline most labels never run. Catalog sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "music-archivist.md",
+    "skills": [
+      "music-is/catalog-systems",
+      "music-is/release-gate",
+      "memory/vault-management",
+      "memory/context-preservation",
+      "intelligence/pattern-recognition"
+    ]
+  },
+  {
+    "id": "music-curator",
+    "profileName": "music-curator",
+    "title": "Music Curator",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Apex gate keeper auditing track quality before greenlighting a release.",
+    "mission": "Apex A&R green-light gate. Non-waivable taste authority that turns Suno output into a body of work — by refusing the tracks, asset bundles, persona-orphans, and royalty-blind drops that would corrupt canon under volume pressure. Cross-cutting agent for the Music IS / Arcanea Records vertical.",
+    "file": "music-curator.md",
+    "skills": [
+      "music-is/release-gate",
+      "music-is/persona-canon",
+      "music-is/royalty-graph",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition"
+    ]
+  },
+  {
+    "id": "music-distributor",
+    "profileName": "distro-router",
+    "title": "Music Distributor",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Delivers master stems to streaming services and compiles link trees.",
+    "mission": "Senior-tier distribution sub-system owner. The agent that pushes gated releases to streaming + direct + discovery + sync-library rails — locking metadata from catalog, pulling ISRCs back to truth-layer, refusing distro before GREEN-LIGHT, and rejecting any aggregator that takes master rights or platform that lacks royalty-rate transparency. Distribution sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "music-distributor.md",
+    "skills": [
+      "music-is/distribution-flow",
+      "music-is/sync-licensing",
+      "music-is/release-gate"
+    ]
+  },
+  {
+    "id": "music-producer",
+    "profileName": "visual-producer",
+    "title": "Music Producer",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Generates album artwork, canvas slides, and promotional teasers.",
+    "mission": "Senior-tier asset pipeline orchestrator. The agent that makes \"every release ships with a complete asset bundle\" structurally true — by parallelizing cover render (nano banana) + motion video (Seedance / Higgsfield) + Spotify Canvas (Remotion) against persona DNA and label visual canon, refusing any asset that violates either. Asset sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "music-producer.md",
+    "skills": [
+      "music-is/asset-render",
+      "music-is/persona-canon",
+      "intelligence/systems-thinking",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "music-sync-specialist",
+    "profileName": "sync-specialist",
+    "title": "Sync Specialist",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Pitches tracks directly to supervisors and handles licensing payouts.",
+    "mission": "Pitches tracks directly to supervisors and handles licensing payouts.",
+    "file": "music-sync-specialist.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "persona-keeper",
+    "profileName": "persona-keeper",
+    "title": "Persona Keeper",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Manages AI voice models and logs persona background histories.",
+    "mission": "Apex canon defender — one instance per active persona. The agent that makes \"persona is the unit\" structurally true — by enforcing sound DNA + visual DNA + voice DNA + audience contract + monetization stack at spawn, voice-locking every Claw output, and refusing the persona-N+1 multiplication that would corrupt persona-N's stability. Persona sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "persona-keeper.md",
+    "skills": [
+      "music-is/persona-canon",
+      "music-is/voice-lock",
+      "music-is/release-gate",
+      "intelligence/pattern-recognition",
+      "memory/context-preservation"
+    ]
+  },
+  {
+    "id": "royalty-architect",
+    "profileName": "royalty-calculator",
+    "title": "Royalty Architect",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "music-is",
+    "voice": "Models payout waterfalls, splits, and blockchain-based tokens.",
+    "mission": "Senior-tier monetization sub-system + royalty-cascade graph owner. The agent that makes \"every monetization rail has its attribution-cascade graph designed first, encoded second\" structurally true — by refusing NFT mints without graph, sync deals violating cascade sovereignty, limited editions without per-edition pricing+split, and fan-tiers without cascade design. Monetization sub-system owner for the Music IS / Arcanea Records vertical.",
+    "file": "royalty-architect.md",
+    "skills": [
+      "music-is/royalty-graph",
+      "music-is/sync-licensing",
+      "intelligence/decision-framework"
+    ]
+  },
+  {
+    "id": "sage",
+    "profileName": "sage-seat",
+    "title": "Council — Sage",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Evaluates proposals for philosophical meaning and context limits.",
+    "mission": "Mortality. Philosophy. Detachment. Meaning.",
+    "file": "council/sage.md",
+    "skills": []
+  },
+  {
+    "id": "shadow-witness",
+    "profileName": "shadow-witness",
+    "title": "Council — Shadow Witness",
+    "tier": "Council",
+    "category": "Council",
+    "domain": "council",
+    "voice": "Highlights hidden assumptions, ego motives, and security risks.",
+    "mission": "Ego. Risk. Self-deception. Hidden motives.",
+    "file": "council/shadow-witness.md",
+    "skills": []
+  },
+  {
+    "id": "sis-extractor-external",
+    "profileName": "external-extractor",
+    "title": "SIS Extractor — External (Adaptive)",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "parsing",
+    "voice": "Integrates Notion, Drive, and Google Keep entries via MCP.",
+    "mission": "Sub-agent dispatched by `/sis-forge` Phase 1. Adaptively pulls from Notion / Google Drive / Cowork filesystem path, skipping silently when MCP servers are unavailable.",
+    "file": "sis-extractor-external.md",
+    "skills": []
+  },
+  {
+    "id": "sis-extractor-prompts",
+    "profileName": "prompts-extractor",
+    "title": "SIS Extractor — Prompts",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "parsing",
+    "voice": "Evaluates custom agent prompt files and compiles system instructions.",
+    "mission": "Sub-agent dispatched by `/sis-forge` Phase 1. Walks `skills/`, `agents/`, `commands/` and returns ≤200 atoms summarizing patterns in the user's existing prompt library.",
+    "file": "sis-extractor-prompts.md",
+    "skills": [
+      "agents/y"
+    ]
+  },
+  {
+    "id": "sis-extractor-repos",
+    "profileName": "repos-extractor",
+    "title": "SIS Extractor — Repos",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "parsing",
+    "voice": "Scans repository configurations to identify dependencies and exports.",
+    "mission": "Sub-agent dispatched by `/sis-forge` Phase 1. Walks the user's repo portfolio via `tools/audit-repo-portfolio.ps1` output and returns ≤200 atoms summarizing what the user has actually shipped.",
+    "file": "sis-extractor-repos.md",
+    "skills": []
+  },
+  {
+    "id": "sis-extractor-transcripts",
+    "profileName": "transcripts-extractor",
+    "title": "SIS Extractor — Transcripts",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "parsing",
+    "voice": "Extracts structured JSONL memory atoms from terminal logs.",
+    "mission": "Sub-agent dispatched by `/sis-forge` Phase 1. Walks `~/.claude/projects/*` via the Cross-Repo Indexer and returns ≤200 atoms summarizing recurring patterns in session transcripts.",
+    "file": "sis-extractor-transcripts.md",
+    "skills": []
+  },
+  {
+    "id": "sis-extractor-vault",
+    "profileName": "vault-extractor",
+    "title": "SIS Extractor — Vault",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "parsing",
+    "voice": "Scrapes Obsidian vault markdown files and indexes connections.",
+    "mission": "Sub-agent dispatched by `/sis-forge` Phase 1. Walks `memory/` Obsidian vault (markdown files + KG nodes) and returns ≤200 atoms summarizing recurring patterns in the user's curated second brain.",
+    "file": "sis-extractor-vault.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-adapter-agno",
+    "profileName": "agno-bridge",
+    "title": "Agno Bridge",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Bridges lightweight Python agents built on Agno framework.",
+    "mission": "Bridges lightweight Python agents built on Agno framework.",
+    "file": "starlight-adapter-agno.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-autogen",
+    "profileName": "autogen-bridge",
+    "title": "AutoGen Bridge",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Facilitates chat loops between AutoGen conversation nodes.",
+    "mission": "Facilitates chat loops between AutoGen conversation nodes.",
+    "file": "starlight-adapter-autogen.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-crewai",
+    "profileName": "crewai-orchestrator",
+    "title": "CrewAI Orchestrator",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Formats goal prompts to invoke CrewAI role-playing agents.",
+    "mission": "Formats goal prompts to invoke CrewAI role-playing agents.",
+    "file": "starlight-adapter-crewai.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-dify",
+    "profileName": "dify-sync",
+    "title": "Dify Sync",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Exports workflow structures and prompts to Dify visual engines.",
+    "mission": "Exports workflow structures and prompts to Dify visual engines.",
+    "file": "starlight-adapter-dify.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-hermes",
+    "profileName": "nous-hermes-adapter",
+    "title": "Nous Hermes Adapter",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Imports profiles and kanban tasks from Nous Research Hermes agent.",
+    "mission": "Imports profiles and kanban tasks from Nous Research Hermes agent.",
+    "file": "starlight-adapter-hermes.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-langgraph",
+    "profileName": "langgraph-router",
+    "title": "LangGraph Router",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Traces cyclical agent pathways and state branches in LangGraph.",
+    "mission": "Traces cyclical agent pathways and state branches in LangGraph.",
+    "file": "starlight-adapter-langgraph.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-mastra",
+    "profileName": "mastra-connector",
+    "title": "Mastra Connector",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Exposes TypeScript-native tools and agent steps via Mastra.",
+    "mission": "Exposes TypeScript-native tools and agent steps via Mastra.",
+    "file": "starlight-adapter-mastra.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-ollama",
+    "profileName": "ollama-localizer",
+    "title": "Ollama Localizer",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Configures local model configurations and manages GGUF files.",
+    "mission": "Configures local model configurations and manages GGUF files.",
+    "file": "starlight-adapter-ollama.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-openai",
+    "profileName": "openai-sdk-adapter",
+    "title": "OpenAI SDK Adapter",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Formats function call responses for the OpenAI Agents SDK.",
+    "mission": "Formats function call responses for the OpenAI Agents SDK.",
+    "file": "starlight-adapter-openai.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-adapter-paperclip",
+    "profileName": "paperclip-broker",
+    "title": "Paperclip Broker",
+    "tier": "Partner",
+    "category": "Domain Sub-Stack",
+    "domain": "partner",
+    "voice": "Syncs project task queues and budgets with Paperclip dashboard.",
+    "mission": "Syncs project task queues and budgets with Paperclip dashboard.",
+    "file": "starlight-adapter-paperclip.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-architect",
+    "profileName": "architect",
+    "title": "Architect",
+    "tier": "Core",
+    "category": "Leadership",
+    "domain": "infrastructure",
+    "voice": "Designs database schemas, directory layouts, and system boundaries.",
+    "mission": "Enterprise systems that scale from one user to planetary load. Technical vision that turns constraints into elegant solutions.",
+    "file": "starlight-architect.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-asset-higgsfield",
+    "profileName": "higgsfield-director",
+    "title": "Higgsfield Director",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "asset",
+    "voice": "Structures video prompts and edits camera panning metrics.",
+    "mission": "Structures video prompts and edits camera panning metrics.",
+    "file": "starlight-asset-higgsfield.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-midjourney",
+    "profileName": "midjourney-adapter",
+    "title": "Midjourney Adapter",
+    "tier": "Asset",
+    "category": "Domain Sub-Stack",
+    "domain": "asset",
+    "voice": "Formats cinematic prompts and schedules generation calls.",
+    "mission": "Formats cinematic prompts and schedules generation calls.",
+    "file": "starlight-asset-midjourney.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-nb",
+    "profileName": "nano-banana-renderer",
+    "title": "Nano Banana Renderer",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "asset",
+    "voice": "Renders flat book cover and thumbnail vectors via nb-image.",
+    "mission": "Renders flat book cover and thumbnail vectors via nb-image.",
+    "file": "starlight-asset-nb.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-prompts",
+    "profileName": "prompt-hub-manager",
+    "title": "Prompt Hub Manager",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "prompt-hub",
+    "voice": "Optimizes visual prompt parameters and manages presets.",
+    "mission": "Optimizes visual prompt parameters and manages presets.",
+    "file": "starlight-asset-prompts.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-quality",
+    "profileName": "quality-checker",
+    "title": "Quality Checker",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "quality",
+    "voice": "Audits visual outputs to reject blurry panels or text errors.",
+    "mission": "Audits visual outputs to reject blurry panels or text errors.",
+    "file": "starlight-asset-quality.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-ui",
+    "profileName": "ui-mockup-designer",
+    "title": "UI Mockup Designer",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "ui",
+    "voice": "Generates Tailwind, shadcn, and HTML dashboard frames.",
+    "mission": "Generates Tailwind, shadcn, and HTML dashboard frames.",
+    "file": "starlight-asset-ui.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-asset-video",
+    "profileName": "video-assembler",
+    "title": "Video Assembler",
+    "tier": "Asset",
+    "category": "Specialist",
+    "domain": "asset",
+    "voice": "Composes keyframe slides, background tunes, and voice tracks.",
+    "mission": "Composes keyframe slides, background tunes, and voice tracks.",
+    "file": "starlight-asset-video.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-brand-is",
+    "profileName": "brand-is",
+    "title": "Brand IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-3",
+    "voice": "Maintains visual assets, font alignments, and brand kits.",
+    "mission": "Maintains visual assets, font alignments, and brand kits.",
+    "file": "starlight-brand-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-business",
+    "profileName": "business",
+    "title": "Business",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "entity-architecture",
+    "voice": "Organizes entity, revenue, and tax-aware structure.",
+    "mission": "The architect in civilian clothes. Organizes entity, revenue, and tax-aware structure so a sovereign person walks into their accountant or lawyer with clarity, not confusion.",
+    "file": "starlight-business.md",
+    "skills": [
+      "business/entity-architecture",
+      "business/revenue-modeling",
+      "intelligence/systems-thinking",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-caio",
+    "profileName": "caio",
+    "title": "CAIO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "agent-fleet-economics-and-model-policy",
+    "voice": "Owns the substrate. Prices cognition.",
+    "mission": "Chief AI Officer. The only executive seat that is estate-wide rather than per-company, because there is exactly one substrate and it must not fork.",
+    "file": "executive/starlight-caio.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-ceo",
+    "profileName": "ceo",
+    "title": "CEO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "capital-and-attention-allocation",
+    "voice": "Allocates the scarcest resource. Kills things.",
+    "mission": "The seat that says no. One per company. Owns the only resource that cannot be manufactured: Frank's attention.",
+    "file": "executive/starlight-ceo.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-cfo",
+    "profileName": "cfo",
+    "title": "CFO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "runway-pricing-and-capital-gates",
+    "voice": "Fail closed. Says the number or says there is no number.",
+    "mission": "The seat that holds the money gate. Instantiated per *entity*, not per company — cash pools at the entity, and pretending otherwise is how founders discover a hole.",
+    "file": "executive/starlight-cfo.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-chief-of-staff",
+    "profileName": "chief-of-staff",
+    "title": "Chief of Staff",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "intent-to-agenda-translation",
+    "voice": "Turns one sentence from Frank into the six decisions it implies.",
+    "mission": "The seat between Frank and the other six. It does not decide; it makes sure the right seat decides, with the context already assembled.",
+    "file": "executive/starlight-chief-of-staff.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-cmo",
+    "profileName": "cmo",
+    "title": "CMO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "demand-brand-register-and-distribution",
+    "voice": "Owns the register. Refuses the claim you cannot prove.",
+    "mission": "The seat that owns which register a company speaks in, and which claims it is allowed to make. Every brand without a COPY.md pin is a gap this seat closes.",
+    "file": "executive/starlight-cmo.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-code-is",
+    "profileName": "code-is",
+    "title": "Code IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-7",
+    "voice": "Coordinates local workspace automation and MCP tool development.",
+    "mission": "Coordinates local workspace automation and MCP tool development.",
+    "file": "starlight-code-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-concierge",
+    "profileName": "concierge",
+    "title": "Concierge",
+    "tier": "Core",
+    "category": "Front-Door",
+    "domain": "intake",
+    "voice": "Handles first-time user intake and routes vague requests.",
+    "mission": "The front door. The first voice a newcomer hears. Translates vague ideas into structured routes — then hands off before the council ever convenes.",
+    "file": "starlight-concierge.md",
+    "skills": [
+      "integration/idea-triage",
+      "integration/newcomer-onboarding",
+      "orchestration/context-engineering",
+      "memory/context-preservation"
+    ]
+  },
+  {
+    "id": "starlight-coo",
+    "profileName": "coo",
+    "title": "COO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "loop-health-and-durable-delivery",
+    "voice": "A run that commits nothing did not happen.",
+    "mission": "The seat that enforces the durable-output-sink law: every scheduled routine leaves a PR, a committed file, or a DM — never a report into run-history that dies with the container.",
+    "file": "executive/starlight-coo.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-creator-is",
+    "profileName": "creator-is",
+    "title": "Creator IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-5",
+    "voice": "Formulates content calendars, newsletters, and creative pipeline gates.",
+    "mission": "Formulates content calendars, newsletters, and creative pipeline gates.",
+    "file": "starlight-creator-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-crypto-allocation",
+    "profileName": "asset-allocator",
+    "title": "Asset Allocator",
+    "tier": "Crypto",
+    "category": "Domain Sub-Stack",
+    "domain": "allocation",
+    "voice": "Rebalances digital asset allocations based on risk targets.",
+    "mission": "Rebalances digital asset allocations based on risk targets.",
+    "file": "starlight-crypto-allocation.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-crypto-custody",
+    "profileName": "custody-custodian",
+    "title": "Custody Custodian",
+    "tier": "Crypto",
+    "category": "Domain Sub-Stack",
+    "domain": "sovereignty",
+    "voice": "Audits multi-sig wallet layouts, key paths, and cold storage locations.",
+    "mission": "Audits multi-sig wallet layouts, key paths, and cold storage locations.",
+    "file": "starlight-crypto-custody.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-crypto-defi",
+    "profileName": "defi-auditor",
+    "title": "DeFi Auditor",
+    "tier": "Crypto",
+    "category": "Domain Sub-Stack",
+    "domain": "defi",
+    "voice": "Inspects lending pool ratios, yield pools, and arbitrage logs.",
+    "mission": "Inspects lending pool ratios, yield pools, and arbitrage logs.",
+    "file": "starlight-crypto-defi.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-crypto-macro",
+    "profileName": "macro-analyst",
+    "title": "Macro Analyst",
+    "tier": "Crypto",
+    "category": "Domain Sub-Stack",
+    "domain": "macro",
+    "voice": "Models interest rate policies, market cycles, and liquidity pools.",
+    "mission": "Models interest rate policies, market cycles, and liquidity pools.",
+    "file": "starlight-crypto-macro.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-crypto-research",
+    "profileName": "protocol-researcher",
+    "title": "Protocol Researcher",
+    "tier": "Crypto",
+    "category": "Domain Sub-Stack",
+    "domain": "research",
+    "voice": "Reviews new whitepapers, token structures, and developer commits.",
+    "mission": "Reviews new whitepapers, token structures, and developer commits.",
+    "file": "starlight-crypto-research.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-cto",
+    "profileName": "cto",
+    "title": "CTO",
+    "tier": "Executive",
+    "category": "Specialist",
+    "domain": "build-buy-repo-topology-and-platform-debt",
+    "voice": "Fewer moving parts. Deletes before it adds.",
+    "mission": "The seat that owns repo topology. Repos without a working agent contract, and several repos for one idea, are the brief.",
+    "file": "executive/starlight-cto.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-culture",
+    "profileName": "culture-architect",
+    "title": "Culture",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "rituals",
+    "voice": "Structures company-wide values and schedules onboarding checkpoints.",
+    "mission": "The architect who designs cultures via systems, not posters. Audits what behavior gets rewarded, punished, and ignored — then redesigns the systems (hire / promote / celebrate / fire / measure / pay) until the lived culture matches the declared one. People Intelligence reference vertical — sub-system 4 of 6.",
+    "file": "starlight-culture.md",
+    "skills": [
+      "people-intelligence/culture-design",
+      "intelligence/systems-thinking",
+      "intelligence/pattern-recognition",
+      "intelligence/decision-framework",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-dist-instagram",
+    "profileName": "instagram-composer",
+    "title": "Instagram Composer",
+    "tier": "Dist",
+    "category": "Specialist",
+    "domain": "dist",
+    "voice": "Pairs visual tiles with descriptive captions and location logs.",
+    "mission": "Pairs visual tiles with descriptive captions and location logs.",
+    "file": "starlight-dist-instagram.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-dist-linkedin",
+    "profileName": "linkedin-formatter",
+    "title": "LinkedIn Formatter",
+    "tier": "Dist",
+    "category": "Specialist",
+    "domain": "dist",
+    "voice": "Translates technical whitepapers into business insights.",
+    "mission": "Translates technical whitepapers into business insights.",
+    "file": "starlight-dist-linkedin.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-dist-newsletter",
+    "profileName": "newsletter-editor",
+    "title": "Newsletter Editor",
+    "tier": "Dist",
+    "category": "Specialist",
+    "domain": "dist",
+    "voice": "Formats email campaigns, maps banner images, and checks links.",
+    "mission": "Formats email campaigns, maps banner images, and checks links.",
+    "file": "starlight-dist-newsletter.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-dist-tiktok",
+    "profileName": "tiktok-scriptwriter",
+    "title": "TikTok Scriptwriter",
+    "tier": "Dist",
+    "category": "Specialist",
+    "domain": "dist",
+    "voice": "Drafts fast-paced video narratives and structures B-roll steps.",
+    "mission": "Drafts fast-paced video narratives and structures B-roll steps.",
+    "file": "starlight-dist-tiktok.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-dist-x",
+    "profileName": "x-thread-compiler",
+    "title": "X Thread Compiler",
+    "tier": "Dist",
+    "category": "Specialist",
+    "domain": "dist",
+    "voice": "Distills complex codebase changes into engaging punchy posts.",
+    "mission": "Distills complex codebase changes into engaging punchy posts.",
+    "file": "starlight-dist-x.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-embodiment",
+    "profileName": "embodiment",
+    "title": "Embodiment",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "body-substrate",
+    "voice": "Grounded, direct, empirical athlete-architect.",
+    "mission": "The body-as-substrate agent. Integrates training, nutrition, sleep, recovery, and stress into a single coherent regimen that sustains creative and intellectual output across decades.",
+    "file": "starlight-embodiment.md",
+    "skills": [
+      "health/body-substrate",
+      "health/energy-architecture",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-energy-buyer",
+    "profileName": "energy-buyer",
+    "title": "starlight-energy-buyer",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "buyer",
+    "voice": "Evaluates utility agreements and recommends grid sell-back paths.",
+    "mission": "Translate the kWh + LCOE + interconnection-complexity stack into a decision the homeowner or small-business owner can actually make. The agent that refuses to ship \"guaranteed savings\" framing and refuses to compare quotes without normalizing for kWh, warranty, and ownership.",
+    "file": "starlight-energy-buyer.md",
+    "skills": [
+      "verticals/energy-intelligence",
+      "energy-intelligence/buyer-journey"
+    ]
+  },
+  {
+    "id": "starlight-energy-cost",
+    "profileName": "energy-cost",
+    "title": "starlight-energy-cost",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "cost",
+    "voice": "Calculates solar ROI, tax exemptions, and utility tariff plans.",
+    "mission": "Produce honest financial outcomes for energy projects. The agent that refuses to ship a payback chart without sensitivity bands, refuses to compare lease-vs-buy without naming the lock-in cost, and refuses to model net metering without flagging the rate-design risk.",
+    "file": "starlight-energy-cost.md",
+    "skills": [
+      "itc/incentive",
+      "verticals/energy-intelligence",
+      "energy-intelligence/cost-modeling"
+    ]
+  },
+  {
+    "id": "starlight-energy-grid",
+    "profileName": "energy-grid",
+    "title": "starlight-energy-grid",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "grid",
+    "voice": "Synchronizes with municipal virtual power plant (VPP) events.",
+    "mission": "Get the system from \"permitted and installed\" to \"interconnected and exporting.\" The agent that knows the IEEE 1547 ride-through requirements, the VDE-AR-N 4105 German equivalents, and the specific NEM-3.0 export-rate math — and can navigate them faster than the AHJ can review the application.",
+    "file": "starlight-energy-grid.md",
+    "skills": [
+      "dso/tso",
+      "verticals/energy-intelligence",
+      "energy-intelligence/grid-integration"
+    ]
+  },
+  {
+    "id": "starlight-energy-installer",
+    "profileName": "energy-installer",
+    "title": "starlight-energy-installer",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "installer",
+    "voice": "Creates installation layouts, bill of materials, and permit files.",
+    "mission": "Run the install business with the discipline of a software shop. The agent that designs lead intake forms, site-survey protocols, permit-coordination workflows, and commissioning checklists — the operational tier that makes the difference between a 12-week install timeline and a 24-week one.",
+    "file": "starlight-energy-installer.md",
+    "skills": [
+      "verticals/energy-intelligence",
+      "energy-intelligence/installer-workflow"
+    ]
+  },
+  {
+    "id": "starlight-energy-operations",
+    "profileName": "energy-operations",
+    "title": "starlight-energy-operations",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "operations",
+    "voice": "Logs panel generation, flags low efficiency, and triggers repairs.",
+    "mission": "Keep installed systems performing for 25 years. The agent that designs the alerting thresholds, fault-triage runbooks, and warranty-claim workflows that turn a fleet of installs into a managed asset rather than a forgotten install base.",
+    "file": "starlight-energy-operations.md",
+    "skills": [
+      "disaster/deplatform",
+      "verticals/energy-intelligence",
+      "energy-intelligence/operations-monitoring"
+    ]
+  },
+  {
+    "id": "starlight-energy-recovery",
+    "profileName": "energy-recovery",
+    "title": "starlight-energy-recovery",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "recovery",
+    "voice": "Manages grid blackout alerts, battery backups, and local routing.",
+    "mission": "Keep the system functional when the world around it fails. The agent that designs the \"what happens when the installer goes out of business\" runbook, the \"monitoring service shut down and the data is locked in their cloud\" migration, and the \"grid down for 5 days during a hurricane\" protocol.",
+    "file": "starlight-energy-recovery.md",
+    "skills": [
+      "verticals/energy-intelligence",
+      "energy-intelligence/recovery-protocol"
+    ]
+  },
+  {
+    "id": "starlight-energy-sizing",
+    "profileName": "energy-sizing",
+    "title": "starlight-energy-sizing",
+    "tier": "Domain Sub-Stack — Energy Intelligence",
+    "category": "Domain Sub-Stack",
+    "domain": "sizing",
+    "voice": "Calculates panel setups, battery cells, and heat pump outputs.",
+    "mission": "Translate energy load profiles into correctly-sized PV / battery / thermal / EV-charger component specs. The agent that prevents the two most common solo-installer mistakes — undersizing (system can't carry the load) and oversizing (capital wasted on capacity that never gets used).",
+    "file": "starlight-energy-sizing.md",
+    "skills": [
+      "verticals/energy-intelligence",
+      "energy-intelligence/sizing-architecture"
+    ]
+  },
+  {
+    "id": "starlight-envoy",
+    "profileName": "envoy",
+    "title": "Envoy",
+    "tier": "Core",
+    "category": "Front-Door",
+    "domain": "handoff",
+    "voice": "Facilitates zero-terminal artifact delivery for non-technical users.",
+    "mission": "The no-code path made real. Walks founders, artists, and strategists from idea to stamped artifact — zero terminal required.",
+    "file": "starlight-envoy.md",
+    "skills": [
+      "integration/creator-path",
+      "integration/newcomer-onboarding",
+      "memory/context-preservation"
+    ]
+  },
+  {
+    "id": "starlight-evaluator",
+    "profileName": "evaluator",
+    "title": "Evaluator",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "benchmarks",
+    "voice": "Runs model arena tests and rates compliance against standards.",
+    "mission": "The evaluator being of the Starlight Proving Ground. Holds the Luminor kernel",
+    "file": "starlight-evaluator.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-family-is",
+    "profileName": "family-is",
+    "title": "Family IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-9",
+    "voice": "Updates kinship trees, manages private estate files, and schedules rituals.",
+    "mission": "Updates kinship trees, manages private estate files, and schedules rituals.",
+    "file": "starlight-family-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-genius",
+    "profileName": "genius",
+    "title": "Genius",
+    "tier": "Core",
+    "category": "Excavation",
+    "domain": "excavation",
+    "voice": "Analyzes personal corpus to extract voice signatures and frameworks.",
+    "mission": "The excavator. Sees the signal under someone's noise — the frameworks they keep rebuilding, the vocabulary they keep returning to, the cross-domain synthesis only they can do.",
+    "file": "starlight-genius.md",
+    "skills": [
+      "intelligence/genius-excavation",
+      "intelligence/knowledge-reclamation",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-health-biomarkers",
+    "profileName": "biomarker-analyst",
+    "title": "Biomarker Analyst",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "longevity",
+    "voice": "Flags hormone, vitamin, and cardiovascular metrics from blood sheets.",
+    "mission": "Flags hormone, vitamin, and cardiovascular metrics from blood sheets.",
+    "file": "starlight-health-biomarkers.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-diet",
+    "profileName": "dietary-synthesizer",
+    "title": "Dietary Synthesizer",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "rhythm",
+    "voice": "Logs caloric intakes, macronutrient profiles, and glucose metrics.",
+    "mission": "Logs caloric intakes, macronutrient profiles, and glucose metrics.",
+    "file": "starlight-health-diet.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-is",
+    "profileName": "health-is",
+    "title": "Health IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "rhythm",
+    "voice": "Monitors nutrition plans, sleep logs, and physical exercises.",
+    "mission": "Monitors nutrition plans, sleep logs, and physical exercises.",
+    "file": "starlight-health-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-research",
+    "profileName": "longevity-researcher",
+    "title": "Longevity Researcher",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "longevity",
+    "voice": "Reviews clinical longevity studies, peptide trials, and drug guides.",
+    "mission": "Reviews clinical longevity studies, peptide trials, and drug guides.",
+    "file": "starlight-health-research.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-sleep",
+    "profileName": "sleep-optimizer",
+    "title": "Sleep Optimizer",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "rhythm",
+    "voice": "Audits sleep cycles, heart rate variability, and bedroom environments.",
+    "mission": "Audits sleep cycles, heart rate variability, and bedroom environments.",
+    "file": "starlight-health-sleep.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-stress",
+    "profileName": "stress-tracker",
+    "title": "Stress Tracker",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "rhythm",
+    "voice": "Tracks daily stress spikes and schedules breathing sessions.",
+    "mission": "Tracks daily stress spikes and schedules breathing sessions.",
+    "file": "starlight-health-stress.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-supplements",
+    "profileName": "supplement-advisor",
+    "title": "Supplement Advisor",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "longevity",
+    "voice": "Coordinates supplement schedules based on biomarker deficits.",
+    "mission": "Coordinates supplement schedules based on biomarker deficits.",
+    "file": "starlight-health-supplements.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-health-training",
+    "profileName": "training-planner",
+    "title": "Training Planner",
+    "tier": "Longevity",
+    "category": "Domain Sub-Stack",
+    "domain": "rhythm",
+    "voice": "Models resistance workouts, zone-2 cardio plans, and rest steps.",
+    "mission": "Models resistance workouts, zone-2 cardio plans, and rest steps.",
+    "file": "starlight-health-training.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-hermes",
+    "profileName": "hermes",
+    "title": "Hermes",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "retrieval",
+    "voice": "Conducts semantic lookup across local vaults, repositories, and web.",
+    "mission": "Every answer already exists inside the system. Hermes finds it — fast, precise, sourced.",
+    "file": "starlight-hermes.md",
+    "skills": [
+      "memory/vault-management",
+      "memory/knowledge-synthesis",
+      "intelligence/pattern-recognition",
+      "integration/repo-bridge",
+      "integration/universal-adapter"
+    ]
+  },
+  {
+    "id": "starlight-hiring",
+    "profileName": "icp-recruiter",
+    "title": "Hiring",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "hiring",
+    "voice": "Screens candidate metrics and plans candidate sourcing pipelines.",
+    "mission": "Calibrated, structured, neuroscience-grounded hiring. The system that names the cognitive failure modes most hiring rooms reproduce — and the rubric that prevents them. Sub-system 1 of 6 in the People Intelligence reference vertical.",
+    "file": "starlight-hiring.md",
+    "skills": [
+      "people-intelligence/structured-hiring",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "intelligence/systems-thinking",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-legal-contracts",
+    "profileName": "contract-reviewer",
+    "title": "Contract Reviewer",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "legal",
+    "voice": "Highlights liability terms, terminations, and intellectual rights.",
+    "mission": "Highlights liability terms, terminations, and intellectual rights.",
+    "file": "starlight-legal-contracts.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-gdpr",
+    "profileName": "gdpr-auditor",
+    "title": "GDPR Auditor",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "compliance",
+    "voice": "Audits user data storage structures, consent forms, and cookie APIs.",
+    "mission": "Audits user data storage structures, consent forms, and cookie APIs.",
+    "file": "starlight-legal-gdpr.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-ip",
+    "profileName": "ip-custodian",
+    "title": "IP Custodian",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "ip",
+    "voice": "Catalogues software licenses, copyright registrations, and source keys.",
+    "mission": "Catalogues software licenses, copyright registrations, and source keys.",
+    "file": "starlight-legal-ip.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-jurisdiction",
+    "profileName": "jurisdiction-mapper",
+    "title": "Jurisdiction Mapper",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "legal",
+    "voice": "Compiles local tax and corporate filing laws across active nodes.",
+    "mission": "Compiles local tax and corporate filing laws across active nodes.",
+    "file": "starlight-legal-jurisdiction.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-liaison",
+    "profileName": "board-liaison",
+    "title": "Board Liaison",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "governance",
+    "voice": "Prepares compliance checklists before substrate board hearings.",
+    "mission": "Prepares compliance checklists before substrate board hearings.",
+    "file": "starlight-legal-liaison.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-terms",
+    "profileName": "terms-compiler",
+    "title": "Terms Compiler",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "compliance",
+    "voice": "Maintains terms of service documents and privacy statements.",
+    "mission": "Maintains terms of service documents and privacy statements.",
+    "file": "starlight-legal-terms.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-legal-trademarks",
+    "profileName": "trademark-sentinel",
+    "title": "Trademark Sentinel",
+    "tier": "Legal",
+    "category": "Domain Sub-Stack",
+    "domain": "ip",
+    "voice": "Scrapes domain listings and logs trademark registrations.",
+    "mission": "Scrapes domain listings and logs trademark registrations.",
+    "file": "starlight-legal-trademarks.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-acoustics",
+    "profileName": "acoustic-sensor",
+    "title": "Acoustic Sensor",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Analyzes hydrophone audio files to flag vessel noise or whale calls.",
+    "mission": "Analyzes hydrophone audio files to flag vessel noise or whale calls.",
+    "file": "starlight-marine-acoustics.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-coastal",
+    "profileName": "coastal-sentinel",
+    "title": "Coastal Sentinel",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Scans satellite views to flag coastal erosion and reef bleaching.",
+    "mission": "Scans satellite views to flag coastal erosion and reef bleaching.",
+    "file": "starlight-marine-coastal.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-dive",
+    "profileName": "dive-planner",
+    "title": "Dive Planner",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Compiles tide tables, current speeds, and dive safety checklists.",
+    "mission": "Compiles tide tables, current speeds, and dive safety checklists.",
+    "file": "starlight-marine-dive.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-pollution",
+    "profileName": "pollution-monitor",
+    "title": "Pollution Monitor",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Maps oil spill patterns and registers ocean plastic collection logs.",
+    "mission": "Maps oil spill patterns and registers ocean plastic collection logs.",
+    "file": "starlight-marine-pollution.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-species",
+    "profileName": "species-logger",
+    "title": "Species Logger",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "conservation",
+    "voice": "Logs marine mammal sightings and maps migration pathways.",
+    "mission": "Logs marine mammal sightings and maps migration pathways.",
+    "file": "starlight-marine-species.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-vessel",
+    "profileName": "vessel-tracker",
+    "title": "Vessel Tracker",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Evaluates AIS transponder signals to log marine reserve encroachments.",
+    "mission": "Evaluates AIS transponder signals to log marine reserve encroachments.",
+    "file": "starlight-marine-vessel.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-marine-water",
+    "profileName": "water-analyst",
+    "title": "Water Analyst",
+    "tier": "Marine",
+    "category": "Domain Sub-Stack",
+    "domain": "marine",
+    "voice": "Tracks salinity, temperature variations, and pH logs.",
+    "mission": "Tracks salinity, temperature variations, and pH logs.",
+    "file": "starlight-marine-water.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-navigator",
+    "profileName": "navigator",
+    "title": "Navigator",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "strategy",
+    "voice": "Charts execution roadmaps, identifies bottlenecks, and schedules tasks.",
+    "mission": "Strategic foresight. The agent that decides what to build, when to build it, and what to leave alone.",
+    "file": "starlight-navigator.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-ops-backup",
+    "profileName": "backup-guard",
+    "title": "Backup Guard",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Runs automated database backups and validates target checksums.",
+    "mission": "Runs automated database backups and validates target checksums.",
+    "file": "starlight-ops-backup.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-cdn",
+    "profileName": "cdn-warden",
+    "title": "CDN Warden",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Configures Cloudflare caching rules and mitigates DDoS attempts.",
+    "mission": "Configures Cloudflare caching rules and mitigates DDoS attempts.",
+    "file": "starlight-ops-cdn.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-cluster",
+    "profileName": "cluster-tuner",
+    "title": "Cluster Tuner",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Tunes Kubernetes node configurations and memory allocations.",
+    "mission": "Tunes Kubernetes node configurations and memory allocations.",
+    "file": "starlight-ops-cluster.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-cost",
+    "profileName": "cost-optimization",
+    "title": "Cost Optimization",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Audits cloud monthly usage and cleans orphaned storage blocks.",
+    "mission": "Audits cloud monthly usage and cleans orphaned storage blocks.",
+    "file": "starlight-ops-cost.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-deploy",
+    "profileName": "deploy-overseer",
+    "title": "Deploy Overseer",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Manages Vercel, Railway, and Cloudflare Workers deploy pipelines.",
+    "mission": "Manages Vercel, Railway, and Cloudflare Workers deploy pipelines.",
+    "file": "starlight-ops-deploy.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-hardware",
+    "profileName": "hardware-monitor",
+    "title": "Hardware Monitor",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Tracks local CPU temperatures, fan speeds, and NVMe disk health.",
+    "mission": "Tracks local CPU temperatures, fan speeds, and NVMe disk health.",
+    "file": "starlight-ops-hardware.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-ops-logs",
+    "profileName": "log-aggregator",
+    "title": "Log Aggregator",
+    "tier": "Ops",
+    "category": "Specialist",
+    "domain": "ops",
+    "voice": "Filters debug logs, alerts on fatal crashes, and archives data.",
+    "mission": "Filters debug logs, alerts on fatal crashes, and archives data.",
+    "file": "starlight-ops-logs.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-orchestrator",
+    "profileName": "orchestrator",
+    "title": "Orchestrator",
+    "tier": "Core",
+    "category": "Leadership",
+    "domain": "coordination",
+    "voice": "Routes tasks, manages multi-step workflows, and drives YOLO sessions.",
+    "mission": "The coordinator. Decomposes complex work into agent-sized tasks, routes them to the right minds, and assembles the results.",
+    "file": "starlight-orchestrator.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-org",
+    "profileName": "org-structuralist",
+    "title": "Org",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "structure",
+    "voice": "Models organizational charts, span of control, and role definitions.",
+    "mission": "Organizational architecture without organizational trauma. Role design, span of control, reorg sequencing, succession planning, and change management — designed with the human cost honestly accounted, not papered over.",
+    "file": "starlight-org.md",
+    "skills": [
+      "people-intelligence/org-architecture",
+      "intelligence/systems-thinking",
+      "intelligence/decision-framework",
+      "intelligence/strategic-reasoning",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-performance",
+    "profileName": "performance-coach",
+    "title": "Performance",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "reviews",
+    "voice": "Rehearses feedback conversations and plans performance calibrations.",
+    "mission": "The agent who redesigns the broken performance ritual. Continuous feedback that doesn't trigger the amygdala. Quarterly growth conversations that are actually about growth. Coaching that asks instead of advises. Difficult conversations that don't blow up the relationship. Conflict mediation grounded in psychology, not HR theater.",
+    "file": "starlight-performance.md",
+    "skills": [
+      "people-intelligence/feedback-conversations",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis",
+      "intelligence/systems-thinking"
+    ]
+  },
+  {
+    "id": "starlight-prime",
+    "profileName": "prime",
+    "title": "Prime",
+    "tier": "Core",
+    "category": "Leadership",
+    "domain": "synthesis",
+    "voice": "Synthesizes conflicting council inputs into a single rational path.",
+    "mission": "The synthesizer. When perspectives conflict, when complexity exceeds any single domain, when the system needs one voice — Prime speaks.",
+    "file": "starlight-prime.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-relational",
+    "profileName": "relational",
+    "title": "Relational",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "network-architecture",
+    "voice": "Practical, non-manipulative network cartographer.",
+    "mission": "The network cartographer. Sees who compounds your work, who drains it, and who's ready for alliance — before `/alliance-forge` ever runs.",
+    "file": "starlight-relational.md",
+    "skills": [
+      "relational/network-architecture",
+      "relational/alliance-readiness",
+      "intelligence/strategic-reasoning",
+      "intelligence/pattern-recognition"
+    ]
+  },
+  {
+    "id": "starlight-research-arxiv",
+    "profileName": "arxiv-scraper",
+    "title": "arXiv Scraper",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "research",
+    "voice": "Scrapes latest machine learning and science preprints from arXiv.",
+    "mission": "Scrapes latest machine learning and science preprints from arXiv.",
+    "file": "starlight-research-arxiv.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-attest",
+    "profileName": "attestation-pinner",
+    "title": "Attestation Pinner",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "publishing",
+    "voice": "Pins content hashes and SIP attestation blocks onto papers.",
+    "mission": "Pins content hashes and SIP attestation blocks onto papers.",
+    "file": "starlight-research-attest.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-biorxiv",
+    "profileName": "biorxiv-scraper",
+    "title": "BioRxiv Scraper",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "research",
+    "voice": "Downloads biology preprints and filters them by target tags.",
+    "mission": "Downloads biology preprints and filters them by target tags.",
+    "file": "starlight-research-biorxiv.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-distill",
+    "profileName": "pdf-distiller",
+    "title": "PDF Distiller",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "research",
+    "voice": "Extracts charts and abstracts from scientific PDF documents.",
+    "mission": "Extracts charts and abstracts from scientific PDF documents.",
+    "file": "starlight-research-distill.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-format",
+    "profileName": "markdown-formatter",
+    "title": "Markdown Formatter",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "publishing",
+    "voice": "Formats text columns into clean academic GitHub Markdown.",
+    "mission": "Formats text columns into clean academic GitHub Markdown.",
+    "file": "starlight-research-format.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-openalex",
+    "profileName": "openalex-aggregator",
+    "title": "OpenAlex Aggregator",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "research",
+    "voice": "Aggregates citation metrics, h-indexes, and author lists.",
+    "mission": "Aggregates citation metrics, h-indexes, and author lists.",
+    "file": "starlight-research-openalex.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-research-pmc",
+    "profileName": "europe-pmc-fetcher",
+    "title": "Europe PMC Fetcher",
+    "tier": "Research",
+    "category": "Specialist",
+    "domain": "research",
+    "voice": "Queries PubMed IDs and formats citation link trees.",
+    "mission": "Queries PubMed IDs and formats citation link trees.",
+    "file": "starlight-research-pmc.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-sage",
+    "profileName": "sage",
+    "title": "Sage",
+    "tier": "Core",
+    "category": "Foundation",
+    "domain": "institutional",
+    "voice": "Retrieves past lessons, resolves contradictions, and queries vaults.",
+    "mission": "Wisdom keeper. Vault guardian. The institutional memory of the intelligence system and the bridge to the Horizon Vault.",
+    "file": "starlight-sage.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-secondbrain",
+    "profileName": "second-brain-is",
+    "title": "Second Brain",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-2",
+    "voice": "Handles daily inbox parsing, tags notes, and surfaces repeating patterns.",
+    "mission": "The personal librarian. Sage holds the institution's wisdom; Second Brain holds *yours*. Daily capture, weekly distill, monthly elevate, quarterly integrate — the ongoing practice that turns scattered life into portable knowledge.",
+    "file": "starlight-secondbrain.md",
+    "skills": [
+      "memory/capture-discipline",
+      "memory/insight-distillation",
+      "memory/vault-management",
+      "memory/knowledge-synthesis",
+      "memory/context-preservation"
+    ]
+  },
+  {
+    "id": "starlight-self-is",
+    "profileName": "self-is",
+    "title": "Self IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-1",
+    "voice": "Establishes the core persona, identity keys, and personal values.",
+    "mission": "Establishes the core persona, identity keys, and personal values.",
+    "file": "starlight-self-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-sentinel",
+    "profileName": "sentinel",
+    "title": "Sentinel",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "quality",
+    "voice": "Audits code changes, monitors vulnerabilities, and triggers git rollbacks.",
+    "mission": "Quality, security, and trust. The immune system of the intelligence ecosystem.",
+    "file": "starlight-sentinel.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-sentinel-daemon",
+    "profileName": "sentinel-daemon",
+    "title": "Sentinel Daemon",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "daemon",
+    "voice": "Background process monitoring file drift and checking licenses.",
+    "mission": "Background process monitoring file drift and checking licenses.",
+    "file": "starlight-sentinel-daemon.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-social-cinematic",
+    "profileName": "social-cinematic",
+    "title": "Social Visual Director",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "visual-production",
+    "voice": "Engineering cinematic visuals, image/video prompts, directing Higgsfield/Vee asset generation.",
+    "mission": "Cinematic visuals, premium graphics, and video orchestration. The creative eye of social media media assets.",
+    "file": "starlight-social-cinematic.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-factcheck",
+    "profileName": "social-factcheck",
+    "title": "Social Fact Checker",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "claim-verification",
+    "voice": "Running searches, verifying claims/citations, checking links and logical math accuracy.",
+    "mission": "Accuracy, verification, and technical trust. The analytical auditor of social assertions.",
+    "file": "starlight-social-factcheck.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-news-analyst",
+    "profileName": "social-news-analyst",
+    "title": "Social News & Trend Analyst",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "real-time-news",
+    "voice": "Scanning AI lab releases, partner updates, tracking affiliate feature sets and tech trends.",
+    "mission": "General intelligence, AI lab releases, and affiliate network tracking. The eyes and ears of the content creation suite.",
+    "file": "starlight-social-news-analyst.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-psychologist",
+    "profileName": "social-psychologist",
+    "title": "Social Psychologist",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "cognitive-psychology",
+    "voice": "Auditing audience dynamics, cognitive load, structuring hooks for organic curiosity.",
+    "mission": "Cognitive load management and curiosity architecture. The mind that optimizes how social posts interact with human psychology.",
+    "file": "starlight-social-psychologist.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-sentinel",
+    "profileName": "social-sentinel",
+    "title": "Social Sentinel",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "tone-and-publication-gating",
+    "voice": "Auditing social copy for brand voice, scrubbing secrets, attaching SIP attestation labels, enforcing approval gates.",
+    "mission": "Tone integrity, secret preservation, and SIP attestation. The protective shield and gatekeeper of social publication.",
+    "file": "starlight-social-sentinel.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-strategist",
+    "profileName": "social-strategist",
+    "title": "Social Strategist",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "social-campaign",
+    "voice": "Translating blogs/releases into threads/posts, copywriting, hook engineering.",
+    "mission": "Creative distribution and narrative amplification. The voice of engagement and platform optimization across the social web.",
+    "file": "starlight-social-strategist.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-social-vibetracker",
+    "profileName": "social-vibetracker",
+    "title": "Social Vibe Tracker",
+    "tier": "Specialist",
+    "category": "Specialist",
+    "domain": "vibe-curation",
+    "voice": "Tracking cultural vibes, trend matching, aligning drafts with brand aesthetic lanes.",
+    "mission": "Cultural relevance and aesthetic alignment. The guardian of tone, style, and contemporary resonance.",
+    "file": "starlight-social-vibetracker.md",
+    "skills": []
+  },
+  {
+    "id": "starlight-sound-audience",
+    "profileName": "audience-builder",
+    "title": "Sound Audience",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Handles listener maps, subscriber newsletters, and Fan stay-reviews.",
+    "mission": "Fanbase as architecture — cohort mapping, ritual design, list architecture, fan stay-interview, sovereign publishing rhythm. The system that refuses algorithmic-followers-as-audience and refuses fans-as-marketing-targets. Sub-system 5 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-audience.md",
+    "skills": [
+      "sound-intelligence/audience-architecture",
+      "memory/insight-distillation",
+      "intelligence/pattern-recognition",
+      "intelligence/decision-framework",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-sound-catalog",
+    "profileName": "catalog-mint",
+    "title": "Sound Catalog",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Registers ISRCs, compiles metadata sheets, and handles deplatforming.",
+    "mission": "Catalog as systems design — metadata grammar, ISRC architecture, version-map topology, release-plan sequencing, deplatform-recovery resilience. The system that refuses metadata-as-marketing-only and refuses single-track-into-the-algorithm. Sub-system 3 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-catalog.md",
+    "skills": [
+      "sound-intelligence/catalog-systems",
+      "intelligence/decision-framework",
+      "intelligence/systems-thinking",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-sound-composition",
+    "profileName": "composer",
+    "title": "Sound Composition",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Designs arrangements, drafts scores, and formats demo files.",
+    "mission": "Songwriting and arrangement architecture grounded in music theory and cognitive science. The system that names what tension-and-release is doing in this song — and refuses \"fix it in the mix\" for what should have been arranged. Sub-system 1 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-composition.md",
+    "skills": [
+      "sound-intelligence/composition-architecture",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "intelligence/systems-thinking",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-sound-performance",
+    "profileName": "performance-director",
+    "title": "Sound Performance",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Plans live show setlists, broadcast schedules, and tour riders.",
+    "mission": "Live performance as architecture — set design, audience contract, live-mix planning, residency design, broadcast prep. The system that refuses every-show-same-setlist and refuses single-point-of-failure live mixes. Sub-system 4 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-performance.md",
+    "skills": [
+      "sound-intelligence/performance-design",
+      "intelligence/decision-framework",
+      "intelligence/systems-thinking",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-sound-production",
+    "profileName": "audio-producer",
+    "title": "Sound Production",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Drafts mixing and mastering configurations and logs vocal chains.",
+    "mission": "Mix and master as system design — frequency budget, gain stage hierarchy, dynamic-range envelope, recall as state. The system that refuses the loudness war and refuses to fix in the mix what should have been arranged. Sub-system 2 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-production.md",
+    "skills": [
+      "sound-intelligence/production-systems",
+      "intelligence/decision-framework",
+      "intelligence/systems-thinking",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-sound-sync",
+    "profileName": "sync-agent",
+    "title": "Sound Sync",
+    "tier": "Sound",
+    "category": "Domain Sub-Stack",
+    "domain": "sound",
+    "voice": "Evaluates movie/TV briefs, sync placement fits, and licenses rights.",
+    "mission": "Sync placement as architecture — brief fit, placement thesis, license economics, rights pack, sync stay-interview. The system that refuses sync placements that contradict the artist's vision and refuses master-rights flips for an advance. Sub-system 6 of 6 in the Sound Intelligence reference vertical.",
+    "file": "starlight-sound-sync.md",
+    "skills": [
+      "sound-intelligence/sync-licensing",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "memory/insight-distillation",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-space-debris",
+    "profileName": "space-debris-tracker",
+    "title": "Space Debris Tracker",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "cosmos",
+    "voice": "Cross-references space object catalogs to flag collision alerts.",
+    "mission": "Cross-references space object catalogs to flag collision alerts.",
+    "file": "starlight-space-debris.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-downlink",
+    "profileName": "downlink-router",
+    "title": "Downlink Router",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "cosmos",
+    "voice": "Coordinates data dumps with ground stations and verifies hash keys.",
+    "mission": "Coordinates data dumps with ground stations and verifies hash keys.",
+    "file": "starlight-space-downlink.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-mapper",
+    "profileName": "sky-mapper",
+    "title": "Sky Mapper",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "observation",
+    "voice": "Updates astronomical database files with target constellations.",
+    "mission": "Updates astronomical database files with target constellations.",
+    "file": "starlight-space-mapper.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-orbit",
+    "profileName": "orbit-calculator",
+    "title": "Orbit calculator",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "cosmos",
+    "voice": "Models Keplerian satellite pathways and estimates decay dates.",
+    "mission": "Models Keplerian satellite pathways and estimates decay dates.",
+    "file": "starlight-space-orbit.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-payload",
+    "profileName": "payload-integrator",
+    "title": "Payload Integrator",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "cosmos",
+    "voice": "Configures sensor capture intervals and registers image assets.",
+    "mission": "Configures sensor capture intervals and registers image assets.",
+    "file": "starlight-space-payload.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-telemetry",
+    "profileName": "telemetry-parser",
+    "title": "Telemetry Parser",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "cosmos",
+    "voice": "Logs sensor metrics, packet loss rates, and solar storm warnings.",
+    "mission": "Logs sensor metrics, packet loss rates, and solar storm warnings.",
+    "file": "starlight-space-telemetry.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-space-telescope",
+    "profileName": "telescope-scheduler",
+    "title": "Telescope Scheduler",
+    "tier": "Space",
+    "category": "Domain Sub-Stack",
+    "domain": "observation",
+    "voice": "Schedules dark sky observation blocks and reviews weather models.",
+    "mission": "Schedules dark sky observation blocks and reviews weather models.",
+    "file": "starlight-space-telescope.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-spiritual-is",
+    "profileName": "spiritual-is",
+    "title": "Spiritual IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "optional",
+    "voice": "Private, encrypted node handling long-term existential alignment.",
+    "mission": "Private, encrypted node handling long-term existential alignment.",
+    "file": "starlight-spiritual-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-steward",
+    "profileName": "steward",
+    "title": "Steward",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "maintenance",
+    "voice": "Manages active file-cleanup, resolves merge conflicts, and maintains packages.",
+    "mission": "Manages active file-cleanup, resolves merge conflicts, and maintains packages.",
+    "file": "starlight-steward.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-talent",
+    "profileName": "talent-safeguard",
+    "title": "Talent",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "safety",
+    "voice": "Detects team burnout signs and evaluates team psychological safety.",
+    "mission": "The deepest psychology + neuroscience layer of HR. Individual motivation maps, burnout signal detection, team dynamics audits, psychological safety measurement, retention architecture. Sub-system 5 of 6 in the People Intelligence reference vertical.",
+    "file": "starlight-talent.md",
+    "skills": [
+      "people-intelligence/people-dynamics",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "intelligence/systems-thinking",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-training",
+    "profileName": "curriculum-designer",
+    "title": "Training (TrainI)",
+    "tier": "People",
+    "category": "Domain Sub-Stack",
+    "domain": "training",
+    "voice": "Designs outcome-backed courses and measures skill transfer rates.",
+    "mission": "Adult learning that sticks. Redesigns the ~70% of corporate training that never transfers to the job, using actual learning science — spaced retrieval, encoding-specificity, cognitive load, train-the-trainer.",
+    "file": "starlight-training.md",
+    "skills": [
+      "people-intelligence/learning-architecture",
+      "intelligence/systems-thinking",
+      "intelligence/decision-framework",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-visionary",
+    "profileName": "visionary",
+    "title": "Visionary",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "vision-excavation",
+    "voice": "First-principles axis-setter, premium and grounded.",
+    "mission": "The axis-setter. Excavates the 30/10/3-year horizons under someone's noise, then designs the brand, voice, and visual system that compounds every decision into that axis instead of scattering away from it.",
+    "file": "starlight-visionary.md",
+    "skills": [
+      "vision/fundamentals-excavation",
+      "vision/design-coherence",
+      "intelligence/strategic-reasoning",
+      "intelligence/pattern-recognition",
+      "memory/knowledge-synthesis"
+    ]
+  },
+  {
+    "id": "starlight-voice-operator",
+    "profileName": "voice-operator",
+    "title": "Voice Operator",
+    "tier": "Core",
+    "category": "Front-Door",
+    "domain": "cockpit",
+    "voice": "Listens to spoken executive intents and generates session packets.",
+    "mission": "The cockpit. Listens, classifies intent, routes to engine-room agents via structured packets, holds approval gates, speaks back in compressed human language.",
+    "file": "starlight-voice-operator.md",
+    "skills": [
+      "orchestration/agent-handoff-packet",
+      "orchestration/context-engineering",
+      "memory/capture-discipline",
+      "memory/insight-distillation",
+      "intelligence/decision-framework"
+    ]
+  },
+  {
+    "id": "starlight-voice-video-is",
+    "profileName": "voice-&-video-is",
+    "title": "Voice & Video IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-8",
+    "voice": "Guides media asset attestation, audio editing, and video pipelines.",
+    "mission": "Guides media asset attestation, audio editing, and video pipelines.",
+    "file": "starlight-voice-video-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-wealth-is",
+    "profileName": "wealth-is",
+    "title": "Wealth IS",
+    "tier": "Universal",
+    "category": "Universal IS",
+    "domain": "layer-6",
+    "voice": "Drives capital allocation decisions and monitors investment metrics.",
+    "mission": "Drives capital allocation decisions and monitors investment metrics.",
+    "file": "starlight-wealth-is.md",
+    "skills": [
+      "intelligence/pattern-recognition",
+      "memory/vault-management"
+    ]
+  },
+  {
+    "id": "starlight-weaver",
+    "profileName": "weaver",
+    "title": "Weaver",
+    "tier": "Core",
+    "category": "Specialist",
+    "domain": "narrative",
+    "voice": "Weaves creative themes, brand design layouts, and technical copy.",
+    "mission": "Creative intelligence. Narrative design. The agent that turns ideas into artifacts that move people.",
+    "file": "starlight-weaver.md",
+    "skills": []
+  }
+]

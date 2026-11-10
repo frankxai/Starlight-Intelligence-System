@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import {
+  IBM_Plex_Mono,
+  Instrument_Sans,
+  Instrument_Serif,
+  Inter,
+  JetBrains_Mono,
+  Newsreader,
+} from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StarlightTrail } from "@/components/StarlightTrail";
@@ -26,6 +33,28 @@ const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
   style: ["normal", "italic"],
+});
+
+const instrumentSans = Instrument_Sans({
+  variable: "--sl-font-sans-loaded",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--sl-font-serif-loaded",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--sl-font-mono-loaded",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -108,7 +137,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jbMono.variable} ${newsreader.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jbMono.variable} ${newsreader.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${ibmPlexMono.variable}`}
+    >
       <body className="flex min-h-dvh flex-col bg-[#060609] font-sans text-slate-200 antialiased">
         <script
           type="application/ld+json"
