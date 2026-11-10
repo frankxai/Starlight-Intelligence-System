@@ -107,7 +107,7 @@ export class StarlightEdgeSandbox {
           stdout: '',
           stderr: `Cloudflare container execution error: ${(err as Error).message}`,
           durationMs: Date.now() - startTime,
-          zeroEgress: true,
+          zeroEgress: false,
           containerImage: this.CONTAINER_IMAGE,
         }
       }
@@ -119,7 +119,7 @@ export class StarlightEdgeSandbox {
       stdout: '',
       stderr: 'SANDBOX binding unavailable: execution requires an active @cloudflare/sandbox container runtime.',
       durationMs: Date.now() - startTime,
-      zeroEgress: true,
+      zeroEgress: false,
       containerImage: this.CONTAINER_IMAGE,
     }
   }

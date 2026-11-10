@@ -35,9 +35,24 @@ export interface Env {
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
   SANDBOX?: any;           // Cloudflare Sandbox container binding
+  SANDBOX_DO?: any;        // Durable Object namespace for Sandbox SQLite state
   SANDBOX_TOKEN?: string;  // Dedicated secret for sandbox container execution
   OPS_TOKEN?: string;      // Operational authorization secret
   DEFAULT_HALF_LIFE_DAYS?: string;
+}
+
+/** Constant-time string equality check to mitigate timing side-channel attacks on authorization tokens */
+function safeTimingEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const encoder = new TextEncoder();
+  const aBuf = encoder.encode(a);
+  const bBuf = encoder.encode(b);
+  if (aBuf.byteLength !== bBuf.byteLength) return false;
+  let diff = 0;
+  for (let i = 0; i < aBuf.byteLength; i++) {
+    diff |= aBuf[i] ^ bBuf[i];
+  }
+  return diff === 0;
 }
 
 // In-memory fallback tenant store for edge execution and automated tests
@@ -93,12 +108,13 @@ export class StarlightCloudWorker {
 
     // 4. Cloudflare Edge Sandbox Health & Execution (Sandbox SDK 1.0)
     if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
+      const hasSandbox = !!env.SANDBOX;
       return new Response(JSON.stringify({
-        status: 'healthy',
+        status: hasSandbox ? 'ready' : 'unconfigured',
         sandbox: 'cloudflare/sandbox:next',
         containerCpu: 1,
         containerMemory: '1GB',
-        zeroEgress: true,
+        zeroEgress: hasSandbox,
         attestation: 'Built on SIP v1.1.1',
         timestamp: new Date().toISOString(),
       }, null, 2), { status: 200, headers: this.CORS_HEADERS });
@@ -117,7 +133,7 @@ export class StarlightCloudWorker {
     if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
       const token = authHeader.replace(/^Bearer\s+/i, '').trim();
       const expectedToken = env.SANDBOX_TOKEN || env.OPS_TOKEN;
-      if (!expectedToken || token !== expectedToken) {
+      if (!expectedToken || !safeTimingEqual(token, expectedToken)) {
         return new Response(JSON.stringify({
           error: 'Forbidden',
           message: 'Invalid or unconfigured sandbox authorization token.',
@@ -638,7 +654,7 @@ export class Sandbox {
       const authHeader = request.headers.get('Authorization');
       const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
       const expectedToken = this.env.SANDBOX_TOKEN || this.env.OPS_TOKEN;
-      if (!expectedToken || token !== expectedToken) {
+      if (!expectedToken || !token || !safeTimingEqual(token, expectedToken)) {
         return new Response(JSON.stringify({
           error: 'Forbidden',
           message: 'Invalid or missing authorization for Sandbox DO execution',
@@ -682,8 +698,9 @@ export class Sandbox {
       });
     }
 
+    const hasSandbox = !!this.env.SANDBOX;
     return new Response(JSON.stringify({
-      status: 'active',
+      status: hasSandbox ? 'ready' : 'unconfigured',
       sandbox: 'starlight-sandbox-container',
       image: 'cloudflare/sandbox:next',
     }), {
