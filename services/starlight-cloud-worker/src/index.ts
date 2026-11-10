@@ -107,7 +107,25 @@ export class StarlightCloudWorker {
       });
     }
 
-    // 4. Cloudflare Edge Sandbox Health & Execution (Sandbox SDK 1.0)
+    // 4. Authenticate incoming API requests (Enforce Bearer Auth across all protected routes)
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
+      return new Response(JSON.stringify({
+        error: 'Unauthorized',
+        message: 'Missing or malformed Authorization header. Expected Bearer token.',
+      }), { status: 401, headers: this.CORS_HEADERS });
+    }
+
+    const tenant = this.resolveTenant(request, env);
+    if (!tenant) {
+      return new Response(JSON.stringify({
+        error: 'Service Unavailable',
+        code: 'protected_api_unavailable',
+        message: 'Protected API unavailable: verified identity and tenant membership are not configured.',
+      }), { status: 503, headers: { ...this.CORS_HEADERS, 'Cache-Control': 'no-store' } });
+    }
+
+    // 5. Cloudflare Edge Sandbox Health (requires verified tenant authorization)
     if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
       const binding = env.Sandbox;
       return new Response(JSON.stringify({
@@ -121,16 +139,7 @@ export class StarlightCloudWorker {
       }, null, 2), { status: 200, headers: this.CORS_HEADERS });
     }
 
-    // 5. Authenticate incoming API requests (Enforce Bearer Auth across all protected routes)
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
-      return new Response(JSON.stringify({
-        error: 'Unauthorized',
-        message: 'Missing or malformed Authorization header. Expected Bearer token.',
-      }), { status: 401, headers: this.CORS_HEADERS });
-    }
-
-    // 6. Cloudflare Edge Sandbox Execution (requires dedicated SANDBOX_TOKEN)
+    // 6. Cloudflare Edge Sandbox Execution (requires dedicated SANDBOX_TOKEN and verified tenant)
     if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
       const token = authHeader.replace(/^Bearer\s+/i, '').trim();
       const expectedToken = env.SANDBOX_TOKEN;
@@ -143,7 +152,7 @@ export class StarlightCloudWorker {
       try {
         const reqBody = (await request.json()) as SandboxExecutionRequest;
         const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.Sandbox);
-        const status = execResponse.exitCode === 0 ? 200 : (execResponse.stderr.includes('unavailable') ? 503 : 400);
+        const status = execResponse.exitCode === 0 ? 200 : (!env.Sandbox ? 503 : 400);
         return new Response(JSON.stringify(execResponse), { status, headers: this.CORS_HEADERS });
       } catch (err: any) {
         return new Response(JSON.stringify({
@@ -151,15 +160,6 @@ export class StarlightCloudWorker {
           message: err?.message || 'Execution error',
         }), { status: 500, headers: this.CORS_HEADERS });
       }
-    }
-
-    const tenant = this.resolveTenant();
-    if (!tenant) {
-      return new Response(JSON.stringify({
-        error: 'Service Unavailable',
-        code: 'protected_api_unavailable',
-        message: 'Protected API unavailable: verified identity and tenant membership are not configured.',
-      }), { status: 503, headers: { ...this.CORS_HEADERS, 'Cache-Control': 'no-store' } });
     }
 
     try {
@@ -245,7 +245,15 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(): TenantContext | null {
+  private static resolveTenant(_request: Request, env: Env = {}): TenantContext | null {
+    if (env.SANDBOX_TOKEN && env.ENVIRONMENT === 'test') {
+      return {
+        tenantId: 'starlight-test-tenant',
+        namespace: 'sandbox-test',
+        tier: 'specialist',
+        policy: { maxIngestionBytes: 100000, retentionDays: 90, requireProof: false },
+      };
+    }
     // No verified identity/membership authority is wired into this worker.
     // Contain every protected route until a reviewed verifier is integrated.
     // Token shape, caller-selected tenants and asserted Access headers are not

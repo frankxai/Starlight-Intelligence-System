@@ -48,10 +48,17 @@ test('StarlightEdgeSandbox fails closed when container binding is unavailable', 
 });
 
 test('StarlightCloudWorker routes /v1/sandbox/health endpoint', async () => {
-  const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/health');
+  const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/health', {
+    headers: {
+      'Authorization': `Bearer ${TEST_SANDBOX_SECRET}`,
+    },
+  });
   
   // 1. Without binding: unconfigured
-  const unconfiguredResponse = await StarlightCloudWorker.handleRequest(request, {});
+  const unconfiguredResponse = await StarlightCloudWorker.handleRequest(request, {
+    ENVIRONMENT: 'test',
+    SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
+  });
   assert.strictEqual(unconfiguredResponse.status, 200);
   const unconfiguredData = await unconfiguredResponse.json();
   assert.strictEqual(unconfiguredData.status, 'unconfigured');
@@ -59,6 +66,8 @@ test('StarlightCloudWorker routes /v1/sandbox/health endpoint', async () => {
 
   // 2. With container binding: ready
   const readyResponse = await StarlightCloudWorker.handleRequest(request, {
+    ENVIRONMENT: 'test',
+    SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
     Sandbox: mockSandboxBinding,
   });
   assert.strictEqual(readyResponse.status, 200);
@@ -98,6 +107,7 @@ test('StarlightCloudWorker rejects arbitrary unconfigured Bearer token on /v1/sa
   });
 
   const response = await StarlightCloudWorker.handleRequest(request, {
+    ENVIRONMENT: 'test',
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
     Sandbox: mockSandboxBinding,
   });
@@ -119,6 +129,7 @@ test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with validated Be
   });
 
   const response = await StarlightCloudWorker.handleRequest(request, {
+    ENVIRONMENT: 'test',
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
     Sandbox: mockSandboxBinding,
   });

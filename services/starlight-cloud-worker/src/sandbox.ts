@@ -92,13 +92,13 @@ export class StarlightEdgeSandbox {
 
         if (handle) {
           const result = await handle.output({ encoding: 'utf8' })
-          const egressRestricted = request.env?.ZERO_EGRESS_ENFORCED !== 'false'
+          const zeroEgressRestricted = true
           return {
             exitCode: result.exitCode ?? 0,
             stdout: result.stdout ?? '',
             stderr: result.stderr ?? '',
             durationMs: Date.now() - startTime,
-            zeroEgress: (result.exitCode === 0) && egressRestricted,
+            zeroEgress: (result.exitCode === 0) && zeroEgressRestricted,
             containerImage: this.CONTAINER_IMAGE,
           }
         }

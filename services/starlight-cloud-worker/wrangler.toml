@@ -43,7 +43,6 @@ name = "starlight-sandbox-container"
 image = "cloudflare/sandbox:next"
 cpu = 1
 memory = "1GB"
-class_name = "Sandbox"
 
 [ai]
 binding = "AI"
