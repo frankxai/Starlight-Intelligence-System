@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
+const title = "Documentation for vaults, MCP and agent handoffs";
+const description = "Reference for Starlight vaults, MCP and self-hosting, with a founder guide to portable agent handoffs and Cloudflare for Startups.";
+
 export const metadata: Metadata = {
-  title: "Documentation",
-  description:
-    "Deploy your own Starlight Vault, connect AI agents, and contribute to the public registry.",
+  title,
+  description,
+  alternates: { canonical: "/docs" },
+  openGraph: { title, description, url: "/docs", type: "website" },
 };
 
 export default function DocsPage() {
@@ -17,15 +22,39 @@ export default function DocsPage() {
             Documentation
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400">
-            Everything you need to deploy, configure, and connect.
+            Choose where your agent runs, which records become public and who can approve the work.
           </p>
         </div>
       </section>
       <div className="mx-auto max-w-3xl px-6 py-16">
 
+      {/* Featured Architecture Guide */}
+      <div className="mb-10 rounded-xl border border-violet-500/20 bg-gradient-to-r from-violet-950/30 to-slate-900/40 p-5 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-[11px] text-violet-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
+            Featured Architecture Guide
+          </div>
+          <p className="mt-1 font-mono text-[14px] font-semibold text-white">
+            Starlight Teammates & AI Genius Architecture
+          </p>
+          <p className="text-[13px] text-slate-400">
+            REST & SSE Streaming APIs, Frontier Model Engine, MicroVM Sandboxes, and Creator Freedom Path.
+          </p>
+        </div>
+        <Link
+          href="/docs/teammates"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 py-2 font-mono text-[12px] font-medium text-white transition-micro hover:bg-violet-500 shadow-sm"
+        >
+          Explore Guide
+          <span>→</span>
+        </Link>
+      </div>
+
       {/* Quick nav */}
       <nav className="mt-8 flex flex-wrap gap-1.5" aria-label="Documentation sections">
         {[
+          "Cloudflare for Startups",
           "Quick Start",
           "Vault Structure",
           "Entry Format",
@@ -46,6 +75,75 @@ export default function DocsPage() {
       </nav>
 
       <div className="mt-12 space-y-16">
+        <Section id="cloudflare-for-startups" title="Cloudflare for Startups">
+          <div className="space-y-6 border-l-2 border-cyan-300/60 pl-5 text-sm leading-7 text-slate-300 sm:pl-6 [&_a]:text-cyan-200 [&_a]:underline [&_a]:underline-offset-4 [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-4">
+            <p className="font-mono text-xs text-cyan-300">Founder field guide · 4 November 2026</p>
+            <p>
+              Put one job through review before choosing a cloud service. A
+              fictional team proposes cutting six required signup fields to three.
+              What can its editor tell customers before the revised form ships?
+              To evaluate an application first, <a href="#startup-credit-coverage">check eligibility and credit coverage</a>.
+            </p>
+
+            <div>
+              <h3 className="font-semibold text-white">Give the next operator enough to work with</h3>
+              <p className="mt-2">
+                Keep both form revisions and the decision memo. In ordinary notes,
+                name the draft you want, the editor who accepts it and the files
+                the maker owns. Give a fresh session only the first form and the
+                memo. The comparison must wait until the second form is supplied.
+                Keep the corrected draft with its source checks.
+              </p>
+              <p className="mt-2">
+                The Academy supplies the forms, decision memo and handoff exercise.
+                Complete it in ordinary notes, or export a packet when
+                the Starlight workspace offers <strong>Prepare my handoff</strong>.
+                Bring it to an agent you already operate and name the person who
+                will review the result.
+              </p>
+              <p className="mt-2">
+                <a href="https://starlightintelligence.academy/academy/founder-operations#portable-handoff">Rehearse the founder handoff</a>
+                <span aria-hidden="true"> · </span>
+                <a href="https://starlightintelligence.ai/start#paste">Open the handoff workspace</a>.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-white">Choose who holds the keys</h3>
+              <dl className="mt-2 space-y-3">
+                <div>
+                  <dt className="font-medium text-white">Publish the method</dt>
+                  <dd>Host a public Explorer on Vercel to share selected notes and protocol references. Keep private drafts outside the public vault. <Link href="/deploy">Inspect the Explorer deployment</Link>.</dd>
+                </div>
+                <div>
+                  <dt className="font-medium text-white">Run the work yourself</dt>
+                  <dd>Your chosen machine hosts the agent, its credentials and its private memory. Grant a compatible client only the tools needed for this job. Opening the Explorer creates no worker or customer tenant. <Link href="/quickstart">Read the local MCP setup</Link>.</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div>
+              <h3 id="startup-credit-coverage" className="scroll-mt-20 font-semibold text-white">Check what the first run will cost</h3>
+              <p className="mt-2">
+                Apply through your own Cloudflare account. The program evaluates
+                first-time, for-profit technology startups and asks for a public
+                product website, a matching business email and company and funding
+                details. Review the current tier criteria before applying. Cloudflare
+                decides admission and the award. Credits stay with the approved account.
+              </p>
+              <p className="mt-2">
+                For an edge pilot, list the requests, retained records and model
+                calls separately. The program lists Workers and Durable Objects as
+                eligible services, caps Workers AI by tier and currently excludes
+                AI Gateway. Confirm the balance and expiry in your account before
+                enabling a paid service. Credits expire after a year or when used up.
+                For an application question, contact the startup team through the FAQ.
+              </p>
+              <p className="mt-2"><a href="https://www.cloudflare.com/startups/">Check eligibility, coverage and program support</a>.</p>
+            </div>
+          </div>
+        </Section>
+
         <Section id="quick-start" title="Quick Start">
           <Steps>
             <Step n={1} title="Fork the repo">

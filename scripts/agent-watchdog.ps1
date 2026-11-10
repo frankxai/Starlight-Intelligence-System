@@ -53,6 +53,7 @@ while ($currentPid) {
 }
 
 $allCim = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
+$allTcp = @(try { Get-NetTCPConnection -ErrorAction Stop } catch { @() })
 $childrenByParent = @{}
 foreach ($item in $allCim) {
     $parentKey = [int]$item.ParentProcessId
@@ -88,7 +89,7 @@ foreach ($item in $allCim) {
         # Windows PowerShell 5.1 throws "Argument types do not match" when @() wraps a List[object]; use ToArray().
         $children = if ($childrenByParent.ContainsKey([int]$item.ProcessId)) { $childrenByParent[[int]$item.ProcessId].ToArray() } else { @() }
         $onlyConsoleChildren = @($children | Where-Object { $_.Name -ine 'conhost.exe' }).Count -eq 0
-        $connections = @(Get-NetTCPConnection -OwningProcess $item.ProcessId -ErrorAction SilentlyContinue)
+        $connections = @($allTcp | Where-Object { $_.OwningProcess -eq $item.ProcessId })
         if ($onlyConsoleChildren -and $connections.Count -eq 0) {
             Stop-BoundedProcess ([int]$item.ProcessId) $name "argumentless shell older than ${MaxAgeHours}h with only conhost children and no network connections"
         }
@@ -116,7 +117,7 @@ if (Test-Path "$RepoRoot\.git") {
 
 # Old listeners are evidence, not automatic kill authority.
 foreach ($port in @(7373, 7777, 3007)) {
-    $connection = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    $connection = $allTcp | Where-Object { $_.LocalPort -eq $port -and $_.State -eq 'Listen' } | Select-Object -First 1
     if (-not $connection) { continue }
     $process = Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
     if ($process) {
