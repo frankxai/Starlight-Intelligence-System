@@ -54,14 +54,3 @@ More generally: automation without an owner degrades silently. Green is not evid
 A routine is created or changed · a loop goes red · a session ends without a durable artifact · weekly ops sweep · `/ops`, `/ops-health`, `/ops-sweep`, `/eod`, `/handover`.
 
 Built on SIP.
-
-## Capabilities
-
-- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
-- Structured decision packet generation with clear risk, cost, and verification gates
-- Coordination with Starlight Orchestrator and specialist agents across the estate
-
-## Vault Access
-
-- **Read**: strategic, 	echnical, operational, horizon
-- **Write**: strategic, operational

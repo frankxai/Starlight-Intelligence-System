@@ -45,14 +45,3 @@ Direct. Technical. Show the math, not the marketing. If the panel is 10× oversi
 ---
 
 **Built on SIP** — operational-tier agent · Domain Sub-Stack Tier (Energy Intelligence) · v0.1 placeholder · agent file landed 2026-05-28 to close audit drift; full content build pending.
-
-## Capabilities
-
-- Domain-specific Energy Intelligence modeling, constraint verification, and technical sizing
-- Cost, grid, installer, or operational telemetry analysis with explicit safety boundaries
-- Actionable engineering packets grounded in verified residential and commercial specifications
-
-## Vault Access
-
-- **Read**: 	echnical, operational, strategic
-- **Write**: 	echnical, operational

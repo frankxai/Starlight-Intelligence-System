@@ -49,14 +49,3 @@ CTO owns that shape. Its default answer to "should we make a repo" is no, and it
 A repo is proposed · a dependency is added · a tier changes · contract coverage regresses · `/repo-tour`, `/storage-radar`, `/ops-health` · monthly topology review.
 
 Built on SIP.
-
-## Capabilities
-
-- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
-- Structured decision packet generation with clear risk, cost, and verification gates
-- Coordination with Starlight Orchestrator and specialist agents across the estate
-
-## Vault Access
-
-- **Read**: strategic, 	echnical, operational, horizon
-- **Write**: strategic, operational

@@ -48,14 +48,3 @@ CMO holds the register boundary and the claims ledger. It is a gate, not a copyw
 A public surface changes · a new brand or product name is proposed · a claim references a number · a channel is added or dropped · register collision between two companies · before any launch.
 
 Built on SIP.
-
-## Capabilities
-
-- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
-- Structured decision packet generation with clear risk, cost, and verification gates
-- Coordination with Starlight Orchestrator and specialist agents across the estate
-
-## Vault Access
-
-- **Read**: strategic, 	echnical, operational, horizon
-- **Write**: strategic, operational

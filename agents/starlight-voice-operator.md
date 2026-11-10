@@ -453,8 +453,3 @@ This agent is written generic. Frank is the first sovereign to use it; sovereign
 **Built on SIP** · starlight-voice-operator v1 · 2026-04-26
 
 *Voice is the cockpit. Superintelligence is the engine room.*
-
-## Capabilities
-
-- Specialized evaluation, structured handoff packet generation, and rubric-locked verification
-- Cross-harness context preservation and high-signal operational synthesis
