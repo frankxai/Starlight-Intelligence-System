@@ -69,18 +69,24 @@ export function TeammateWorkspace({
           <div className="flex items-center gap-3">
             {/* Model Tier Selector */}
             <div className="hidden sm:flex items-center gap-1 rounded-lg border border-white/[0.08] bg-black/40 p-1 text-xs">
-              {(["light", "standard", "frontier"] as ModelTier[]).map((tier) => (
+              {[
+                { tier: "light" as ModelTier, label: "Light", model: "Gemini 4 Argon / Sol" },
+                { tier: "standard" as ModelTier, label: "Standard", model: "Sonnet 5.5" },
+                { tier: "frontier" as ModelTier, label: "Frontier", model: "Opus 5.5 / Astra" },
+              ].map(({ tier, label, model }) => (
                 <button
                   key={tier}
                   type="button"
                   onClick={() => setSelectedTier(tier)}
-                  className={`rounded px-2.5 py-1 text-[11px] font-mono capitalize transition ${
+                  title={`Route to ${model}`}
+                  className={`rounded px-2.5 py-1 text-[11px] font-mono transition flex items-center gap-1.5 ${
                     selectedTier === tier
-                      ? "bg-indigo-600 text-white font-medium"
+                      ? "bg-indigo-600 text-white font-medium shadow-sm"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
-                  {tier}
+                  <span>{label}</span>
+                  <span className="text-[9px] opacity-75 font-sans">({model.split(" ")[0]} {model.split(" ")[1] || ""})</span>
                 </button>
               ))}
             </div>

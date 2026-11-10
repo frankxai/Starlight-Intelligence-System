@@ -39,10 +39,10 @@ To deliver **Starlight Teammates** on `starlightintelligence.ai` while maintaini
 
 | Provider | Models Deployed | Assigned Role in Starlight Teammates |
 | :--- | :--- | :--- |
-| **Anthropic** | Claude 3.7 Thinking / Claude 3.5 Sonnet / Claude Opus 3.5 | **Lead Architect & Code Synthesizer.** Standard workhorse for code generation, PR staging, and complex reasoning. |
-| **Google Cloud (Gemini API)** | Gemini 2.5 Flash / Gemini 2.5 Pro / Argon | **High-Velocity Ingest & Research.** 1M+ token context windows for reading large repos, parsing documentation, and running fast sub-agent pools at negligible cost. |
-| **OpenAI** | o3-mini / GPT-4o-mini | **Deterministic Logic & Structured Output.** Schema enforcement, tool-call orchestration, and unit-test validation. |
-| **OpenRouter / Together AI** | DeepSeek V3/R1, Llama 3.3 70B, GLM | **Ultra-Low-Cost Background Swarms.** High-volume background sweeps, linting, and scheduled morning cron tasks where unit costs must be near zero. |
+| **Anthropic** | Claude Sonnet 5.5, Claude Opus 5.5, Claude Fable 5.1 | **Lead Architect & Code Synthesizer.** Claude Sonnet 5.5 is the workhorse for high-speed coding and PR drafting. Claude Opus 5.5 and Claude Fable 5.1 handle deep multi-agent council reasoning and creative synthesis. |
+| **Google Cloud (Gemini API)** | Gemini 4 Argon, Gemini 4 Flash / Pro | **High-Velocity Ingest & Research.** Gemini 4 Argon offers massive 2M+ context windows for reading large enterprise codebases and multi-repo trees at minimal token cost. |
+| **OpenAI** | GPT-6 Astra, GPT-6.1 Sol, o4 / o5 | **Deterministic Logic & High-Speed Subagents.** GPT-6.1 Sol for instantaneous subagent sweeps; GPT-6 Astra and o4/o5 for rigorous mathematical verification and schema compilation. |
+| **OpenRouter / Specialized Swarms** | GLM 5.3, Kimi K2.6, DeepSeek V4 | **Ultra-Low-Cost Background Swarms.** GLM 5.3 and Kimi K2.6 deliver minimal credit burn for 24/7 background sweeps, linting, and scheduled morning cron tasks. |
 
 ### 2.3 Visual Design & Interface Intelligence
 
@@ -78,8 +78,8 @@ graph LR
 
     subgraph Partners ["External Strategic Partners"]
         E2B["E2B (Firecracker microVM Sandbox)"]
-        Anthropic["Anthropic (Claude Sonnet 3.7 / Opus)"]
-        Google["Google Gemini (Flash / Pro Ingest)"]
+        Anthropic["Anthropic (Claude Sonnet 5.5 / Opus 5.5)"]
+        Google["Google Gemini (Gemini 4 Argon / Flash)"]
         Refero["Refero Design MCP (UI Grounding)"]
         BrowserOS["BrowserOS Neo (Live Browser)"]
         Polar["Polar.sh (MoR & Usage Billing)"]
@@ -100,7 +100,7 @@ graph LR
 ## 4. Phased Partnership Rollout
 
 - **Phase 1 (Immediate / Q4 2026):**
-  - **Models:** Anthropic API (Sonnet 3.5/3.7) + Google Gemini (Flash 2.5).
+  - **Models:** Anthropic API (Claude Sonnet 5.5) + Google Gemini (Gemini 4 Argon / Flash) + OpenAI (GPT-6.1 Sol).
   - **Sandboxing:** E2B SDK + local Cloudflare Workers for edge hooks.
   - **Design Grounding:** Refero MCP (active with Pro token).
   - **Billing:** Polar.sh for sovereign teammate subscriptions ($29/seat/mo or usage-metered).

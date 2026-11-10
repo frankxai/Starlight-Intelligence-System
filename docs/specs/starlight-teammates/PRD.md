@@ -58,7 +58,7 @@ The flagship instantiation of Starlight Teammates is the **Starlight Queen**—t
 ### Persona B: Technical Lead / AI Systems Architect
 - **Job:** Wants to orchestrate specialized swarms of AI workers (e.g. Sentinel for security audits, Hermes for deep provenance search, Architect for schema design).
 - **Pain Point:** Lack of persistent state, no shared knowledge graph between different agent runs, unpredictable token costs.
-- **Success Criteria:** Deterministic routing where cheap tasks route to high-velocity models (Gemini Flash, Claude Sonnet) and frontier reasoning is budgeted for synthesis (Claude Opus, Gemini Pro, OpenAI o3).
+- **Success Criteria:** Deterministic routing where cheap tasks route to high-velocity models (Gemini 4 Argon, GPT-6.1 Sol, GLM 5.3) and frontier reasoning is budgeted for synthesis (Claude Opus 5.5, Claude Sonnet 5.5, GPT-6 Astra, o4/o5).
 
 ---
 

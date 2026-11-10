@@ -92,9 +92,9 @@ To prevent the credit-burn phenomenon observed in proprietary systems (e.g. 199 
 
 | Tier | Default Models | Assigned Operations | Target % of Calls | Cost Multiplier |
 | :--- | :--- | :--- | :--- | :--- |
-| **Light (Speed)** | Google Gemini 2.5 Flash, GLM 5.3, GPT-4o-mini | Web scraping, data extraction, JSON validation, commit message generation, syntax linting | 60% | 0.05x |
-| **Standard (Workhorse)** | Anthropic Claude 3.5/3.7 Sonnet, Gemini 2.5 Pro | Coding, component writing, PR drafting, skill execution, conversational interaction | 30% | 0.3x |
-| **Frontier (Reasoning)** | Anthropic Claude 3.7 Thinking / Opus 3.5, OpenAI o3, DeepSeek R1 | Architectural design, cross-vault synthesis, multi-agent conflict resolution, council decisions | 10% | 1.0x |
+| **Light (Speed)** | Google Gemini 4 Flash / Argon, GPT-6.1 Sol, GLM 5.3, Kimi K2.6 | Web scraping, data extraction, JSON validation, commit message generation, syntax linting | 60% | 0.05x |
+| **Standard (Workhorse)** | Anthropic Claude Sonnet 5.5, Gemini 4 Argon | Coding, component writing, PR drafting, skill execution, conversational interaction | 30% | 0.3x |
+| **Frontier (Reasoning)** | Anthropic Claude Opus 5.5, GPT-6 Astra, Claude Fable 5.1, OpenAI o4/o5 | Architectural design, cross-vault synthesis, multi-agent conflict resolution, council decisions | 10% | 1.0x |
 
 ### Intra-Session Sub-agent Isolation
 When a teammate executes a heavy research or indexing task:

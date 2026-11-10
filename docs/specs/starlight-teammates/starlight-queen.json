@@ -7,11 +7,11 @@
   "modelPolicy": {
     "defaultTier": "standard",
     "allowedModels": [
-      "claude-3-7-sonnet-20250219",
-      "claude-3-5-sonnet-20241022",
-      "gemini-2.5-flash",
-      "gemini-2.5-pro",
-      "claude-3-opus-20240229"
+      "claude-sonnet-5-5",
+      "claude-opus-5-5",
+      "gemini-4-argon",
+      "gpt-6-1-sol",
+      "glm-5-3"
     ],
     "monthlyTokenBudget": 50000000
   },

@@ -223,7 +223,13 @@ export default function TeammatesPage() {
       executionTree: [
         {
           id: `step-run-${Date.now()}`,
-          summary: `Decomposed goal into subtasks via ${currentTeammate.modelTier} tier`,
+          summary: `Decomposed goal into subtasks via ${currentTeammate.modelTier} tier (${
+            currentTeammate.modelTier === "frontier"
+              ? "Claude Opus 5.5 / GPT-6 Astra"
+              : currentTeammate.modelTier === "standard"
+              ? "Claude Sonnet 5.5"
+              : "Gemini 4 Argon / Sol"
+          })`,
           durationMs: 450,
           status: "success" as const,
           command: "si-dispatch --intent=autonomous-plan",
