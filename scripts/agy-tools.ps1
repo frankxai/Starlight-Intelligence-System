@@ -17,8 +17,13 @@ try {
 } catch {}
 
 $global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-$canonical = "C:\Users\frank\starlight\repos"
-$global:REPOS_ROOT = if (Test-Path $canonical) { $canonical } else { "C:\Users\frank" }
+# Multi-root resolution: Frank's primary active working repos are in C:\Users\frank ($HOME),
+# with auxiliary/canonical repos potentially under C:\Users\frank\starlight\repos.
+$global:REPOS_ROOT = "C:\Users\frank"
+$global:REPOS_SEARCH_ROOTS = @(
+    "C:\Users\frank",
+    "C:\Users\frank\starlight\repos"
+)
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
     $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{}
@@ -166,36 +171,54 @@ function Get-StarlightRepo {
         [switch]$Silent
     )
 
-    if (-not (Test-Path $global:REPOS_ROOT)) {
-        if (-not $Silent) { Write-Error "Repository root does not exist: $global:REPOS_ROOT" }
+    $searchRoots = @()
+    if ($global:REPOS_SEARCH_ROOTS) {
+        $searchRoots += $global:REPOS_SEARCH_ROOTS
+    }
+    if ($global:REPOS_ROOT -and ($searchRoots -notcontains $global:REPOS_ROOT)) {
+        $searchRoots = @($global:REPOS_ROOT) + $searchRoots
+    }
+    $validRoots = @($searchRoots | Where-Object { Test-Path $_ })
+    if ($validRoots.Count -eq 0) {
+        if (-not $Silent) { Write-Error "No valid repository roots found in: $($searchRoots -join ', ')" }
         return $null
     }
 
     $key = $RepoKey.Trim()
-    if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($key.ToLowerInvariant())) {
-        $mappedPath = Join-Path $global:REPOS_ROOT $global:STARLIGHT_REPO_SHORTCUTS[$key.ToLowerInvariant()]
-        if (Test-Path $mappedPath) {
-            return Get-Item $mappedPath
+    $keyLower = $key.ToLowerInvariant()
+
+    # 1. Match configured shortcut mapping first across valid roots
+    if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($keyLower)) {
+        $targetDir = $global:STARLIGHT_REPO_SHORTCUTS[$keyLower]
+        foreach ($root in $validRoots) {
+            $mappedPath = Join-Path $root $targetDir
+            if (Test-Path $mappedPath) {
+                return Get-Item $mappedPath
+            }
         }
     }
 
-    $dirs = Get-ChildItem -Path $global:REPOS_ROOT -Directory
-    $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+    # 2. Match directory names across candidate roots
+    foreach ($root in $validRoots) {
+        $dirs = Get-ChildItem -Path $root -Directory -ErrorAction SilentlyContinue
 
-    if (-not $match) {
+        # Exact match
+        $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+        if ($match) { return $match }
+
+        # Prefix match
         $match = $dirs | Where-Object { $_.Name.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase) } | Select-Object -First 1
-    }
+        if ($match) { return $match }
 
-    if (-not $match) {
+        # Substring match
         $match = $dirs | Where-Object { $_.Name -ilike "*$key*" } | Select-Object -First 1
+        if ($match) { return $match }
     }
 
-    if (-not $match) {
-        if (-not $Silent) { Write-Error "Could not resolve repository key '$RepoKey' inside $global:REPOS_ROOT." }
-        return $null
+    if (-not $Silent) {
+        Write-Error "Could not resolve repository key '$RepoKey' inside: $($validRoots -join ', ')."
     }
-
-    return $match
+    return $null
 }
 
 function Show-StarlightRepos {
@@ -204,11 +227,19 @@ function Show-StarlightRepos {
     )
 
     Write-Host "Available repositories to ${Verb}:" -ForegroundColor Cyan
-    Get-ChildItem -Path $global:REPOS_ROOT -Directory | Sort-Object Name | ForEach-Object {
-        Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+    $searchRoots = if ($global:REPOS_SEARCH_ROOTS) { $global:REPOS_SEARCH_ROOTS } else { @($global:REPOS_ROOT) }
+    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($root in $searchRoots) {
+        if (Test-Path $root) {
+            Get-ChildItem -Path $root -Directory -ErrorAction SilentlyContinue | Sort-Object Name | ForEach-Object {
+                if ($seen.Add($_.Name)) {
+                    Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+                }
+            }
+        }
     }
     Write-Host ""
-    Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
+    Write-Host "Useful keys: sis, fx, frankx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
 }
 
 # Helper: Run history sync across harnesses
@@ -280,6 +311,12 @@ function agy-sis {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-starlight {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # agy-config: Starlight Agent Config YOLO
 function agy-config {
     param([string]$Prompt)
@@ -296,8 +333,20 @@ function agy-fx {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-frankx {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # agy-arc: Arcanea Ecosystem YOLO
 function agy-arc {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-arcanea {
     param([string]$Prompt)
     $repo = Get-StarlightRepo "arc"
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
@@ -387,6 +436,12 @@ Set-Alias -Name agydpi -Value agy-dpi -Scope Global -Force -ErrorAction Silently
 Set-Alias -Name agyprod -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyproducts -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyforge -Value agy-forge -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyfrankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-frankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agystarlight -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-starlight -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyarcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------------------------
 # Generalized Fuzzy Conductor
@@ -417,6 +472,42 @@ function agy-run {
 # Global short aliases
 Set-Alias -Name ay -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agy-yolo -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
+
+# agy-resume: Resume an Antigravity conversation by ID or continue the most recent one
+function agy-resume {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$ConversationId,
+        [Parameter(Mandatory=$false, Position=1)]
+        [string]$RepoKey
+    )
+
+    if (-not (Test-Path $global:AGY_EXE_PATH)) {
+        Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
+        return
+    }
+
+    if ($RepoKey) {
+        $repo = Get-StarlightRepo $RepoKey -Silent
+        if ($repo) {
+            Set-Location $repo.FullName
+            Write-Host "⚡ Switched context to: $($repo.FullName)" -ForegroundColor DarkCyan
+        }
+    }
+
+    if ($ConversationId) {
+        Write-Host "🔄 Resuming conversation '$ConversationId'..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --conversation $ConversationId --dangerously-skip-permissions
+    } else {
+        Write-Host "🔄 Continuing most recent conversation..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --continue --dangerously-skip-permissions
+    }
+}
+
+Set-Alias -Name agyresume -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-continue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agycontinue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+
 
 # Helper: Invoke Claude Code in a target path in YOLO mode
 function Invoke-ClaudeYolo {
@@ -1099,6 +1190,9 @@ function starlight-status-all {
     foreach ($r in $registry.repos) {
         if ($r.status -eq "active" -or $r.agentStatus -eq "active") {
             $path = Join-Path $ReposRoot $r.name
+            if (-not (Test-Path "$path\.git")) {
+                $path = Join-Path "C:\Users\frank" $r.name
+            }
             if (Test-Path "$path\.git") {
                 Set-Location $path
                 $branch = git branch --show-current 2>$null
@@ -1249,17 +1343,24 @@ function Test-AgentGridCli {
         }
         
         $dirName = $global:STARLIGHT_REPO_SHORTCUTS[$key]
-        $mappedPath = Join-Path $global:REPOS_ROOT $dirName
-        $exists = Test-Path $mappedPath
+        $searchRoots = if ($global:REPOS_SEARCH_ROOTS) { $global:REPOS_SEARCH_ROOTS } else { @($global:REPOS_ROOT) }
+        $found = $null
+        foreach ($root in $searchRoots) {
+            $mappedPath = Join-Path $root $dirName
+            if (Test-Path $mappedPath) {
+                $found = $mappedPath
+                break
+            }
+        }
 
-        if ($exists) {
+        if ($found) {
             Write-Host "  [OK] " -NoNewline -ForegroundColor Green
             Write-Host "$($key.ToUpperInvariant()) -> " -NoNewline -ForegroundColor Cyan
             Write-Host "$dirName exists." -ForegroundColor Gray
         } else {
             Write-Host "  [NOT FOUND] " -NoNewline -ForegroundColor DarkGray
             Write-Host "$($key.ToUpperInvariant()) -> " -NoNewline -ForegroundColor Yellow
-            Write-Host "$dirName does not exist under $global:REPOS_ROOT." -ForegroundColor DarkGray
+            Write-Host "$dirName does not exist." -ForegroundColor DarkGray
         }
     }
     Write-Host "======================================================================" -ForegroundColor Cyan

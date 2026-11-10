@@ -25,6 +25,7 @@ import { RobotContinuityKernel, type RobotActuatorCommand } from './robotics/con
 import { StarlightQueen } from './orchestration/starlight-queen.js';
 import { MarketplaceCatalog } from './marketplace/catalog.js';
 import { AgentLifecycleManager } from './queen/index.js';
+import { teammatesEngine } from './orchestration/teammates-engine.js';
 
 // ── Interfaces ────────────────────────────────────────────────
 export interface McpToolAnnotations {
@@ -888,6 +889,69 @@ export class StarlightMcpServer {
       const sessionId = String(p.sessionId);
       const res = await this.lifecycleManager.resume(sessionId);
       return res as unknown as Record<string, unknown>;
+    });
+
+    // 22. sis_teammates_list
+    this.reg({
+      name: 'sis_teammates_list',
+      title: 'List sovereign teammates fleet',
+      description: 'List active sovereign teammates (Queen, Search Manager, GitHub Officer, Community Lead, Teammate Builder) with their current state, model tiers, and tools.',
+      inputSchema: input({}),
+      outputSchema: output({
+        teammates: { type: 'array', description: 'List of registered teammates.' },
+      }),
+      annotations: READ,
+    }, () => {
+      const teammates = teammatesEngine.getTeammates();
+      return { teammates } as unknown as Record<string, unknown>;
+    });
+
+    // 23. sis_teammates_dispatch
+    this.reg({
+      name: 'sis_teammates_dispatch',
+      title: 'Dispatch task to autonomous teammate',
+      description: 'Dispatch an instruction or task to an autonomous teammate node. Sanitizes inputs, routes dynamically to frontier models (Sonnet 5.5, Gemini 4 Argon, Opus 5.5), and halts execution at fail-closed financial/deployment governance gates.',
+      inputSchema: input({
+        teammateId: { type: 'string', minLength: 1, maxLength: 100, description: 'ID or alias of the teammate (e.g. starlight-queen, queen, search-manager, github-officer).' },
+        prompt: { type: 'string', minLength: 1, maxLength: 50000, description: 'Task instruction or prompt to execute.' },
+        tier: { type: 'string', enum: ['light', 'standard', 'frontier'], description: 'Optional model tier override: light, standard, or frontier.' },
+      }, ['teammateId', 'prompt']),
+      outputSchema: output({
+        messageId: { type: 'string' },
+        teammateId: { type: 'string' },
+        modelUsed: { type: 'string' },
+        tierUsed: { type: 'string' },
+        content: { type: 'string' },
+        timestamp: { type: 'string' },
+        executionTree: { type: 'array' },
+        approvalRequest: { type: 'object' },
+      }),
+      annotations: APPEND,
+    }, async (p) => {
+      const res = await teammatesEngine.dispatch(
+        String(p.teammateId),
+        String(p.prompt),
+        p.tier as any
+      );
+      return res as unknown as Record<string, unknown>;
+    });
+
+    // 24. sis_teammates_approve
+    this.reg({
+      name: 'sis_teammates_approve',
+      title: 'Resolve governance approval gate',
+      description: 'Human or authorized sign-off to approve or reject a pending governance gate (e.g. financial transaction or production merge).',
+      inputSchema: input({
+        gateId: { type: 'string', minLength: 1, maxLength: 100, description: 'ID of the pending approval gate.' },
+        approved: { type: 'boolean', description: 'True to approve, false to reject.' },
+      }, ['gateId', 'approved']),
+      outputSchema: output({
+        gate: { type: 'object', description: 'Updated approval gate record.' },
+      }),
+      annotations: APPEND,
+    }, (p) => {
+      const gate = teammatesEngine.resolveApproval(String(p.gateId), Boolean(p.approved));
+      return { gate } as unknown as Record<string, unknown>;
     });
   }
 
