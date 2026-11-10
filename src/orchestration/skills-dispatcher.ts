@@ -245,7 +245,7 @@ export class SkillsDispatcher {
         }
       }
 
-      // 3. Regex / Pattern triggers
+      // 3. Regex and pattern triggers
       const matchedPatterns: string[] = [];
       const patterns = [
         ...(rule.triggers?.regex || []),

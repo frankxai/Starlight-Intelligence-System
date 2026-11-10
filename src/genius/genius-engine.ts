@@ -3,7 +3,7 @@
  *
  * Implements the sovereign Genius Profile grounded in Frank's DNA
  * (Systems Architect × Composer × Gamer × Builder × GenCreator),
- * the Freedom Path evaluation engine (Keep / Delegate / Automate / Eliminate),
+ * the Freedom Path evaluation engine (keep, delegate, automate, eliminate),
  * and autonomous multi-teammate delegation planning.
  *
  * Attestation: Built on SIP § 5.7 — Sovereign Genius Grounding
@@ -25,7 +25,7 @@ export class StarlightGeniusEngine {
   }
 
   /**
-   * Evaluates task against Freedom Path (keep / delegate / automate / eliminate).
+   * Evaluates task against Freedom Path (keep, delegate, automate, eliminate).
    */
   public evaluatePath(taskDescription: string): FreedomPathEvaluation {
     return this.evaluateFreedomPath(taskDescription);
@@ -46,7 +46,7 @@ export class StarlightGeniusEngine {
           focus:
             "High-order distributed topologies, sovereign substrate protocols, multi-agent frameworks, and fail-closed security invariants.",
           coreDomains: [
-            "Protocol Architecture (SIP / SIS)",
+            "Protocol Architecture (SIP and SIS)",
             "Multi-Agent Fleet Topologies",
             "Event-Sourced SQLite Hybrid Storage",
             "Memory Palaces & Cognitive Graphs",
@@ -80,7 +80,7 @@ export class StarlightGeniusEngine {
           focus:
             "Empirically validated patterns, surgical code modifications, zero-bloat TypeScript/Rust tooling, and rapid shipping velocity.",
           coreDomains: [
-            "TypeScript / Rust Systems Engineering",
+            "TypeScript and Rust Systems Engineering",
             "CLI & Terminal Runtimes",
             "Empirical Sandboxes & Proving Grounds",
             "Local-First Autonomous Tooling",
@@ -103,7 +103,7 @@ export class StarlightGeniusEngine {
             "Sovereign Creator Toolkits",
           ],
           signatureMoves: [
-            "Four-bucket Freedom Path sorting (Keep / Delegate / Automate / Eliminate)",
+            "Four-bucket Freedom Path sorting (keep, delegate, automate, eliminate)",
             "Excavating repeatable frameworks from scattered corpus",
             "Multiplying human creative leverage 100x",
             "Publishing open sovereign substrates",
@@ -163,7 +163,7 @@ export class StarlightGeniusEngine {
           "Compounding",
         ],
       },
-      evaluationCriteria: "Does this help someone build, not just consume?",
+      evaluationCriteria: "Does this help someone build rather than consume?",
     };
   }
 
@@ -201,7 +201,7 @@ export class StarlightGeniusEngine {
           action: "eliminate",
           taskDescription: raw,
           confidence: 0.95,
-          rationale: `This task yields zero compounding leverage and fails the core test ("Does this help someone build, not just consume?"). It represents unnecessary friction or distraction.`,
+          rationale: `This task yields zero compounding leverage and fails the core test ("Does this help someone build rather than consume?"). It represents unnecessary friction or distraction.`,
           eliminationReason: `Matches known zero-compound distraction pattern: "${kw}".`,
         };
       }
@@ -236,7 +236,7 @@ export class StarlightGeniusEngine {
           taskDescription: raw,
           confidence: 0.92,
           rationale: `This task is programmatic, recurring, and deterministic. It should run through background daemons, cron schedules, CI/CD runners, or SAGE autonomic loops.`,
-          suggestedAutomation: `Autonomous SAGE / Daemon / CI pipeline trigger for pattern "${kw}".`,
+          suggestedAutomation: `Autonomous SAGE or daemon or CI pipeline trigger for pattern "${kw}".`,
         };
       }
     }
@@ -349,7 +349,7 @@ export class StarlightGeniusEngine {
           action: "delegate",
           taskDescription: raw,
           confidence: 0.91,
-          rationale: `High-value research and information gathering that should be delegated to Search Manager using lightweight fast reasoning models (Gemini 4 Argon / GPT-6.1 Sol).`,
+          rationale: `High-value research and information gathering that should be delegated to Search Manager using lightweight fast reasoning models (Gemini 4 Argon or GPT-6.1 Sol).`,
           suggestedTeammate: "search-manager",
         };
       }
@@ -441,7 +441,7 @@ export class StarlightGeniusEngine {
     }
 
     // Default classification:
-    // If the task involves "build", "code", "implement", "create", "write" -> delegate to Queen / Teammate Fleet unless it has architectural keywords
+    // If the task involves "build", "code", "implement", "create", "write" -> delegate to Queen or teammate fleet unless it has architectural keywords
     if (/build|implement|code|create|refactor|write|test|deploy|setup|fix/.test(text)) {
       return {
         action: "delegate",
@@ -516,7 +516,7 @@ export class StarlightGeniusEngine {
       });
     }
 
-    // Subtask 3: Tool / Skill Compilation (Teammate Builder)
+    // Subtask 3: Tool or skill compilation (Teammate Builder)
     if (needsFoundry) {
       subtasks.push({
         id: `task-${taskIndex++}`,
@@ -533,7 +533,7 @@ export class StarlightGeniusEngine {
       });
     }
 
-    // Subtask 4: Code Implementation / Refactor (Assigned under Queen/Builder)
+    // Subtask 4: Code implementation or refactor (Assigned under Queen/Builder)
     subtasks.push({
       id: `task-${taskIndex++}`,
       title: "Surgical Implementation & Integration",
@@ -587,7 +587,7 @@ export class StarlightGeniusEngine {
       governanceGates.push("FINANCIAL: Money fails closed. Autonomous payment or fund transfer is blocked. Requires Frank explicit sign-off.");
     }
     if (/merge|main branch|production release|deploy|cloudflare|vercel/i.test(text)) {
-      governanceGates.push("GIT_MERGE / DEPLOYMENT: Direct push to main or production environment requires human approval gate.");
+      governanceGates.push("GIT_MERGE_AND_DEPLOYMENT: Direct push to main or production environment requires human approval gate.");
     }
     if (/public|broadcast|tweet|post|newsletter send|mass email/i.test(text)) {
       governanceGates.push("PUBLIC_BROADCAST: Outbound public communication requires voice and facts verification.");

@@ -184,7 +184,7 @@ Commands:
   teammates design <query>        Query Refero design bridge for UI layouts, colors, and tokens
   teammates daemon                Run autonomic background controller sweep (--interval <sec>, --once)
   genius profile                  Display Frank's canonical sovereign Genius Profile
-  genius path <task>              Evaluate task on the Freedom Path (Keep / Delegate / Automate / Eliminate)
+  genius path <task>              Evaluate task on the Freedom Path (keep, delegate, automate, eliminate)
   genius delegate <task>          Generate multi-teammate delegation plan with model tiers
   skills match <query>            Match auto-activated skills with confidence (--agent, --json)
   workflow list                   List available predefined workflows
@@ -2425,7 +2425,7 @@ async function main(): Promise<void> {
         });
 
         if (summary.finalOutput) {
-          console.log(`── Final Deliverable / Attestation ─────────────────────────────`);
+          console.log(`── Final Deliverable and Attestation ───────────────────────────`);
           console.log(summary.finalOutput);
           console.log("");
         }

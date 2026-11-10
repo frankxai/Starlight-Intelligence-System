@@ -486,7 +486,7 @@ function createProductSprintWorkflow(): WorkflowDefinition {
           const receiptId = `receipt-${randomUUID().slice(0, 8)}`;
           const finalReport =
             `══════════════════════════════════════════════════════════════════\n` +
-            `  STARLIGHT SENTINEL AUDIT RECEIPT — PRODUCT SPRINT\n` +
+            `  Starlight Sentinel audit receipt — product sprint\n` +
             `══════════════════════════════════════════════════════════════════\n` +
             `Receipt ID:        ${receiptId}\n` +
             `Status:            PASS (0 vulnerabilities, 0 secret leaks)\n` +
@@ -594,7 +594,7 @@ function createAutonomousRefactorWorkflow(): WorkflowDefinition {
         execute: async (context) => {
           context.log("Verifying TypeScript strict type safety and compile invariants...");
 
-          // Simulate / verify TS compile check
+          // Simulate and verify TS compile check
           const compileOutput =
             `TypeScript Compile Check:\n` +
             `- Compiler: tsc 5.7+ (Strict Mode)\n` +
@@ -750,15 +750,15 @@ function createSentinelAuditWorkflow(): WorkflowDefinition {
 
           const report =
             `══════════════════════════════════════════════════════════════════\n` +
-            `  STARLIGHT SENTINEL GOVERNANCE & SECURITY AUDIT REPORT\n` +
+            `  Starlight Sentinel governance and security audit report\n` +
             `══════════════════════════════════════════════════════════════════\n` +
             `Audit ID:        ${auditId}\n` +
             `Timestamp:       ${timestamp}\n` +
-            `Risk Rating:     LOW / ZERO CRITICAL FINDINGS\n` +
-            `Worktree State:  CLEAN (0 secrets detected)\n` +
-            `SIP Invariants:  6 / 6 VERIFIED\n` +
+            `Risk Rating:     Low (zero critical findings)\n` +
+            `Worktree State:  Clean (0 secrets detected)\n` +
+            `SIP Invariants:  6 of 6 verified\n` +
             `SHA-256 Digest:  ${digest}\n` +
-            `Status:          CLEAR TO PROCEED\n` +
+            `Status:          Clear to proceed\n` +
             `Attestation:     Built on SIP § 3 — Sentinel Security & Governance Audit\n` +
             `══════════════════════════════════════════════════════════════════`;
 

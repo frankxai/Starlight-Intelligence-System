@@ -527,7 +527,7 @@ export class StarlightTeammatesEngine {
   }
 
   /**
-   * Executes code within the Starlight isolated sandbox / microVM runtime
+   * Executes code within the Starlight isolated sandbox or microVM runtime
    */
   public async executeInSandbox(
     request: SandboxExecutionRequest

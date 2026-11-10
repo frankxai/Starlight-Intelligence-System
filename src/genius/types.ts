@@ -2,7 +2,7 @@
  * Starlight Genius Core Architecture — Types
  *
  * Implements the core type definitions for Genius Profiling,
- * Freedom Path evaluation (Keep / Delegate / Automate / Eliminate),
+ * Freedom Path evaluation (Keep or Delegate or Automate or Eliminate),
  * and multi-teammate delegation planning.
  *
  * Attestation: Built on SIP § 5.7 — Sovereign Genius Grounding

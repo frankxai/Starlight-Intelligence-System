@@ -60,7 +60,7 @@ test("WorkflowRunner — executes sentinel-audit workflow cleanly", async () => 
   }
 
   assert.ok(summary.finalOutput, "Final deliverable must be populated");
-  assert.ok(summary.finalOutput.includes("STARLIGHT SENTINEL GOVERNANCE & SECURITY AUDIT REPORT"));
+  assert.ok(summary.finalOutput.includes("Starlight Sentinel governance and security audit report"));
 });
 
 test("WorkflowRunner — executes autonomous-refactor workflow cleanly", async () => {

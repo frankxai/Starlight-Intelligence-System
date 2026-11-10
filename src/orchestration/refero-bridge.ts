@@ -163,7 +163,7 @@ export function resolveReferoBearerToken(): string | null {
     return cachedBearerToken;
   }
 
-  // 2. Check Antigravity / Gemini mcp_config.json paths
+  // 2. Check Antigravity and Gemini mcp_config.json paths
   const candidateConfigPaths = [
     join("C:", "Users", "frank", ".gemini", "antigravity", "mcp_config.json"),
     join(homedir(), ".gemini", "antigravity", "mcp_config.json"),
@@ -594,7 +594,7 @@ const CURATED_OFFLINE_SCREENS: ReferoScreenRecord[] = [
 // ── Search & Retrieval Implementation ───────────────────────
 
 /**
- * Executes a semantic design inspiration search against Refero Design MCP / HTTP API
+ * Executes a semantic design inspiration search against Refero Design MCP or HTTP API
  * with automatic offline fallback to curated sovereign patterns.
  *
  * @param query Search query (e.g. 'linear kanban', 'factory execution tree', 'calm ai chat')
@@ -748,7 +748,7 @@ export async function searchFlowInspiration(
       {
         id: 1,
         name: `Standard ${query} Journey`,
-        steps: ["Intake / Discovery", "Interactive Configuration", "Validation & Approval", "Execution Settlement"],
+        steps: ["Intake and discovery", "Interactive Configuration", "Validation & Approval", "Execution Settlement"],
       },
     ],
   };

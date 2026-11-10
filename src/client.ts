@@ -9,7 +9,7 @@
  *
  * Operates in:
  * - Direct Engine Mode: in-process direct access to local engines, memory, and sandboxes (Node.js)
- * - HTTP Mode: remote REST client communicating with the Next.js / Cloudflare / Vercel API
+ * - HTTP Mode: remote REST client communicating with the Next.js, Cloudflare, or Vercel API
  *
  * Attestation: Built on SIP § 3 — Client SDK & API Engine
  */
