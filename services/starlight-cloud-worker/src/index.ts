@@ -638,8 +638,7 @@ export class Sandbox {
       const authHeader = request.headers.get('Authorization');
       const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
       const expectedToken = this.env.SANDBOX_TOKEN || this.env.OPS_TOKEN;
-      const isInternal = request.headers.get('X-Starlight-Internal') === 'true';
-      if (!isInternal && (!expectedToken || token !== expectedToken)) {
+      if (!expectedToken || token !== expectedToken) {
         return new Response(JSON.stringify({
           error: 'Forbidden',
           message: 'Invalid or missing authorization for Sandbox DO execution',
