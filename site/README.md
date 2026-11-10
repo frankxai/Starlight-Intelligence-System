@@ -78,6 +78,8 @@ Git integration creates previews for future commits. Connect a custom domain onl
 
 Edit routes in `src/app`, shared components in `src/components`, and public assets in `public`. Preserve the deployment contract when changing the project boundary.
 
+> **Note:** The site uses `pnpm-lock.yaml` as the authoritative lockfile. When adding or modifying dependencies, always use `pnpm install`. Do not use `npm` or commit a `package-lock.json` here.
+
 To pull future upstream work into the cloned repository:
 
 ```bash
