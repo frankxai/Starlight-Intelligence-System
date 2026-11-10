@@ -19,6 +19,20 @@ import { SisGatewayCore } from './server.js';
 import type { GatewayRequest, GatewayResponse } from './protocol.js';
 import type { VaultType } from '../types.js';
 import type { SessionItem } from '../session-store.js';
+import type {
+  UpsertNodeInput,
+  KgNode,
+  AssertEdgeInput,
+  KgEdge,
+  QuerySubgraphOptions,
+  SubgraphResult,
+} from '../graph/bitemporal-kg.js';
+import type {
+  OtelGenAiSpanInput,
+  OtelGenAiSpanRecord,
+  OtelSummarizeOptions,
+  OtelSummaryResult,
+} from '../telemetry/otel-sqlite.js';
 
 // ── Transport interface ──────────────────────────────────────
 
@@ -305,5 +319,73 @@ export class SisMemoryClient {
       auth: { harness: this.harness, includePrivate: false },
     });
     if (!res.ok) throw new Error(res.error);
+  }
+
+  async upsertGraphNode(node: UpsertNodeInput): Promise<{ ok: true; node: KgNode }> {
+    const res = await this.transport.request({
+      method: 'POST',
+      path: '/v1/graph/nodes',
+      body: node,
+      auth: { harness: this.harness, includePrivate: false },
+    });
+    if (!res.ok) throw new Error(res.error);
+    return res.body as { ok: true; node: KgNode };
+  }
+
+  async assertGraphEdge(
+    edge: AssertEdgeInput,
+  ): Promise<{ ok: true; edge: KgEdge; supersededCount: number }> {
+    const res = await this.transport.request({
+      method: 'POST',
+      path: '/v1/graph/edges',
+      body: edge,
+      auth: { harness: this.harness, includePrivate: false },
+    });
+    if (!res.ok) throw new Error(res.error);
+    return res.body as { ok: true; edge: KgEdge; supersededCount: number };
+  }
+
+  async querySubgraph(
+    options: QuerySubgraphOptions,
+  ): Promise<{ ok: true } & SubgraphResult> {
+    const res = await this.transport.request({
+      method: 'POST',
+      path: '/v1/graph/subgraph',
+      body: options,
+      auth: { harness: this.harness, includePrivate: false },
+    });
+    if (!res.ok) throw new Error(res.error);
+    return res.body as { ok: true } & SubgraphResult;
+  }
+
+  async recordOtelSpan(
+    span: OtelGenAiSpanInput,
+  ): Promise<{ ok: true; span: OtelGenAiSpanRecord }> {
+    const res = await this.transport.request({
+      method: 'POST',
+      path: '/v1/otel/spans',
+      body: span,
+      auth: { harness: this.harness, includePrivate: false },
+    });
+    if (!res.ok) throw new Error(res.error);
+    return res.body as { ok: true; span: OtelGenAiSpanRecord };
+  }
+
+  async getOtelSummary(
+    options: OtelSummarizeOptions = {},
+  ): Promise<{ ok: true } & OtelSummaryResult> {
+    const query: Record<string, string> = {};
+    if (options.sinceIso) query['sinceIso'] = options.sinceIso;
+    if (options.groupBy) query['groupBy'] = options.groupBy;
+    if (options.limit != null) query['limit'] = String(options.limit);
+
+    const res = await this.transport.request({
+      method: 'GET',
+      path: '/v1/otel/summary',
+      query,
+      auth: { harness: this.harness, includePrivate: false },
+    });
+    if (!res.ok) throw new Error(res.error);
+    return res.body as { ok: true } & OtelSummaryResult;
   }
 }
