@@ -206,11 +206,12 @@
     "eval:deep-reasoning": "node tools/arena/deep-reasoning.mjs",
     "build:core": "pnpm --filter @starlight-intelligence/core build",
     "build:packages": "turbo run build --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1",
-    "test:packages": "pnpm run build:packages && turbo run test --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1 && node --test test/npm-ecosystem-release.test.mjs test/npm-artifact-audit.test.mjs",
+    "test:packages": "pnpm run build:packages && turbo run test --filter=@starlight-intelligence/core --filter=@starlight-intelligence/ai-sdk --filter=@starlight-intelligence/mcp --concurrency=1 && node --test test/npm-ecosystem-release.test.mjs test/npm-artifact-audit.test.mjs && pnpm run test:playbooks",
     "verify:packages": "pnpm run test:packages && node scripts/verify-npm-ecosystem.mjs",
     "changeset": "changeset",
     "version:packages": "changeset version",
-    "release:packages": "node scripts/publish-npm-ecosystem.mjs"
+    "release:packages": "node scripts/publish-npm-ecosystem.mjs",
+    "test:playbooks": "pnpm --filter @starlight-intelligence/playbooks build && pnpm --filter @starlight-intelligence/playbooks test"
   },
   "files": [
     "dist/",
@@ -270,3 +271,4 @@
   },
   "packageManager": "pnpm@11.5.0"
 }
+
