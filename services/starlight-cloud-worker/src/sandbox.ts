@@ -35,6 +35,30 @@ export class StarlightEdgeSandbox {
     const startTime = Date.now()
     const { command, cwd = '/workspace', env = {}, timeoutMs = 30000 } = request
 
+    // Sanitize user environment to prevent arbitrary environment overrides or code injection
+    const FORBIDDEN_ENV_VARS = new Set([
+      'LD_PRELOAD',
+      'LD_LIBRARY_PATH',
+      'PATH',
+      'PYTHONPATH',
+      'NODE_OPTIONS',
+      'SHELL',
+      'IFS',
+    ])
+    const sanitizedEnv: Record<string, string> = {}
+    if (env && typeof env === 'object') {
+      for (const [k, v] of Object.entries(env)) {
+        if (
+          typeof k === 'string' &&
+          typeof v === 'string' &&
+          !FORBIDDEN_ENV_VARS.has(k.toUpperCase()) &&
+          /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(k)
+        ) {
+          sanitizedEnv[k] = v
+        }
+      }
+    }
+
     // If native sandbox binding or instance is available at runtime
     if (sandboxBinding) {
       const bindingAny = sandboxBinding as Record<string, unknown>
@@ -63,9 +87,8 @@ export class StarlightEdgeSandbox {
           handle = await sandboxInstance.exec(command, {
             cwd,
             env: {
-              ...env,
+              ...sanitizedEnv,
               STARLIGHT_SUBSTRATE: 'sip-1.1.1',
-              ZERO_EGRESS_ENFORCED: 'true',
             },
             timeout: timeoutMs,
           })
@@ -82,9 +105,8 @@ export class StarlightEdgeSandbox {
           handle = await instance.exec(command, {
             cwd,
             env: {
-              ...env,
+              ...sanitizedEnv,
               STARLIGHT_SUBSTRATE: 'sip-1.1.1',
-              ZERO_EGRESS_ENFORCED: 'true',
             },
             timeout: timeoutMs,
           })
@@ -92,13 +114,12 @@ export class StarlightEdgeSandbox {
 
         if (handle) {
           const result = await handle.output({ encoding: 'utf8' })
-          const zeroEgressRestricted = true
           return {
             exitCode: result.exitCode ?? 0,
             stdout: result.stdout ?? '',
             stderr: result.stderr ?? '',
             durationMs: Date.now() - startTime,
-            zeroEgress: (result.exitCode === 0) && zeroEgressRestricted,
+            zeroEgress: false, // Truthful attestation: network isolation requires hypervisor egress policy
             containerImage: this.CONTAINER_IMAGE,
           }
         }

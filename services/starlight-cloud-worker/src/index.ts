@@ -245,15 +245,7 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(_request: Request, env: Env = {}): TenantContext | null {
-    if (env.SANDBOX_TOKEN && env.ENVIRONMENT === 'test') {
-      return {
-        tenantId: 'starlight-test-tenant',
-        namespace: 'sandbox-test',
-        tier: 'specialist',
-        policy: { maxIngestionBytes: 100000, retentionDays: 90, requireProof: false },
-      };
-    }
+  private static resolveTenant(_request: Request, _env: Env = {}): TenantContext | null {
     // No verified identity/membership authority is wired into this worker.
     // Contain every protected route until a reviewed verifier is integrated.
     // Token shape, caller-selected tenants and asserted Access headers are not

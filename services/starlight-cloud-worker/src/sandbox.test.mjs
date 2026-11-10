@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { StarlightEdgeSandbox } from './sandbox.js';
-import { StarlightCloudWorker, Sandbox } from './index.js';
+import { StarlightEdgeSandbox } from './sandbox.ts';
+import { StarlightCloudWorker, Sandbox } from './index.ts';
 
 const mockSandboxBinding = {
   get: () => ({
@@ -15,18 +15,18 @@ const mockSandboxBinding = {
   }),
 };
 
-test('StarlightEdgeSandbox executes isolated python container agent with zero egress', async () => {
+test('StarlightEdgeSandbox executes isolated python container agent with sanitized env', async () => {
   const req = {
     command: ['python3', '-c', 'import sys; print(f"starlight-agent-py-{sys.version_info.major}.{sys.version_info.minor}")'],
     cwd: '/workspace',
-    env: { AGENT_ROLE: 'world-scout' },
+    env: { AGENT_ROLE: 'world-scout', LD_PRELOAD: '/malicious/lib.so' },
     timeoutMs: 5000,
   };
 
   const res = await StarlightEdgeSandbox.execute(req, mockSandboxBinding);
 
   assert.strictEqual(res.exitCode, 0);
-  assert.strictEqual(res.zeroEgress, true);
+  assert.strictEqual(res.zeroEgress, false);
   assert.strictEqual(res.containerImage, 'cloudflare/sandbox:next');
   assert.ok(res.stdout.includes('python3') || res.stdout.includes('zero egress'));
   assert.ok(res.durationMs >= 0);
@@ -47,36 +47,27 @@ test('StarlightEdgeSandbox fails closed when container binding is unavailable', 
   assert.ok(res.stderr.includes('SANDBOX binding unavailable'));
 });
 
-test('StarlightCloudWorker routes /v1/sandbox/health endpoint', async () => {
+test('StarlightCloudWorker rejects unauthenticated /v1/sandbox/health endpoint', async () => {
+  const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/health');
+  const response = await StarlightCloudWorker.handleRequest(request, {});
+  assert.strictEqual(response.status, 401);
+  const data = await response.json();
+  assert.strictEqual(data.error, 'Unauthorized');
+});
+
+test('StarlightCloudWorker fails closed with 503 on protected routes when tenant identity is unconfigured', async () => {
   const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/health', {
     headers: {
       'Authorization': `Bearer ${TEST_SANDBOX_SECRET}`,
     },
   });
   
-  // 1. Without binding: unconfigured
-  const unconfiguredResponse = await StarlightCloudWorker.handleRequest(request, {
-    ENVIRONMENT: 'test',
+  const response = await StarlightCloudWorker.handleRequest(request, {
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
   });
-  assert.strictEqual(unconfiguredResponse.status, 200);
-  const unconfiguredData = await unconfiguredResponse.json();
-  assert.strictEqual(unconfiguredData.status, 'unconfigured');
-  assert.strictEqual(unconfiguredData.containerConfigured, false);
-
-  // 2. With container binding: ready
-  const readyResponse = await StarlightCloudWorker.handleRequest(request, {
-    ENVIRONMENT: 'test',
-    SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
-    Sandbox: mockSandboxBinding,
-  });
-  assert.strictEqual(readyResponse.status, 200);
-  const readyData = await readyResponse.json();
-  assert.strictEqual(readyData.status, 'ready');
-  assert.strictEqual(readyData.sandbox, 'cloudflare/sandbox:next');
-  assert.strictEqual(readyData.containerConfigured, true);
-  assert.strictEqual(readyData.containerCpu, 1);
-  assert.strictEqual(readyData.containerMemory, '1GB');
+  assert.strictEqual(response.status, 503);
+  const data = await response.json();
+  assert.strictEqual(data.code, 'protected_api_unavailable');
 });
 
 test('StarlightCloudWorker rejects unauthenticated /v1/sandbox/execute', async () => {
@@ -94,29 +85,7 @@ test('StarlightCloudWorker rejects unauthenticated /v1/sandbox/execute', async (
   assert.strictEqual(data.error, 'Unauthorized');
 });
 
-test('StarlightCloudWorker rejects arbitrary unconfigured Bearer token on /v1/sandbox/execute', async () => {
-  const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/execute', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer arbitrary-unverified-token',
-    },
-    body: JSON.stringify({
-      command: ['python3', '--version'],
-    }),
-  });
-
-  const response = await StarlightCloudWorker.handleRequest(request, {
-    ENVIRONMENT: 'test',
-    SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
-    Sandbox: mockSandboxBinding,
-  });
-  assert.strictEqual(response.status, 403);
-  const data = await response.json();
-  assert.strictEqual(data.error, 'Forbidden');
-});
-
-test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with validated Bearer auth', async () => {
+test('StarlightCloudWorker fails closed on /v1/sandbox/execute without verified tenant authority', async () => {
   const request = new Request('https://edge.starlightintelligence.ai/v1/sandbox/execute', {
     method: 'POST',
     headers: {
@@ -129,14 +98,12 @@ test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with validated Be
   });
 
   const response = await StarlightCloudWorker.handleRequest(request, {
-    ENVIRONMENT: 'test',
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
     Sandbox: mockSandboxBinding,
   });
-  assert.strictEqual(response.status, 200);
+  assert.strictEqual(response.status, 503);
   const data = await response.json();
-  assert.strictEqual(data.exitCode, 0);
-  assert.strictEqual(data.zeroEgress, true);
+  assert.strictEqual(data.code, 'protected_api_unavailable');
 });
 
 test('Sandbox Durable Object rejects invalid authorization token on /exec', async () => {
@@ -185,7 +152,7 @@ test('Sandbox Durable Object persists container execution state in SQLite with p
   assert.strictEqual(response.status, 200);
   const data = await response.json();
   assert.strictEqual(data.exitCode, 0);
-  assert.strictEqual(data.zeroEgress, true);
+  assert.strictEqual(data.zeroEgress, false);
 
   // Verify SQLite table creation and parameterized insert execution
   assert.ok(mockSqlExecutions.some((e) => e.statement.includes('CREATE TABLE IF NOT EXISTS sandbox_runs')));
