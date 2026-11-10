@@ -182,6 +182,7 @@ Commands:
   teammates tick                  Trigger autonomic health & task sweep across all teammates
   teammates status <id>           Show telemetry, active models, vaults, and tools for a teammate
   teammates design <query>        Query Refero design bridge for UI layouts, colors, and tokens
+  teammates daemon                Run autonomic background controller sweep (--interval <sec>, --once)
 
 Options:
   --help, -h                      Show this help message
@@ -213,6 +214,8 @@ Options:
   --checklist <tasks>             Comma-separated checklist tasks for goal init
   --findings <text>               Findings to consolidate during goal compress
   --no-tests                      Skip test execution during goal audit
+  --interval <sec>                Sweep interval for teammate daemon (default: 30)
+  --once                          Run single autonomic sweep and exit
 
 Examples:
   starlight init
@@ -236,6 +239,8 @@ Examples:
   starlight orchestrate "Design a new authentication system"
   starlight teammates design linear kanban
   starlight teammates design calm ai chat
+  starlight teammates daemon --once
+  starlight teammates daemon --interval 60
   starlight stats
 `);
 }
@@ -1751,6 +1756,8 @@ async function main(): Promise<void> {
       timeout: { type: "string" },
       json: { type: "boolean" },
       "sync-issue": { type: "string" },
+      interval: { type: "string" },
+      once: { type: "boolean" },
     },
     strict: false,
   });
@@ -2146,8 +2153,39 @@ async function main(): Promise<void> {
         console.log(`  Shadows:     ${top.tokenRecommendations.shadows}`);
         console.log(`  Components:  ${top.tokenRecommendations.recommendedComponents.join(", ")}`);
         console.log("");
+      } else if (teammatesAction === "daemon") {
+        const intervalSec = values.interval ? parseInt(asString(values.interval) || "30", 10) : 30;
+        const once = Boolean(values.once);
+        console.log(`[starlight] Sovereign Teammates Autonomic Daemon (${once ? "single sweep" : `interval: ${intervalSec}s`})...`);
+        const { teammateDaemon } = await import("./orchestration/teammate-synapse.js");
+        const status = await teammateDaemon.runDaemon({
+          intervalSec,
+          once,
+          onSweep: (s) => {
+            console.log(`[${s.lastHeartbeat}] Sweep #${s.sweepCount} | Status: ${s.status.toUpperCase()} | Pending gates: ${s.pendingApprovalsCount} | Coherence: ${s.vaultCoherence.status.toUpperCase()}`);
+          },
+        });
+
+        if (once) {
+          console.log(`\n[starlight] Autonomic Daemon Sweep Completed:`);
+          console.log(`  Daemon ID:          ${status.daemonId}`);
+          console.log(`  Status:             ${status.status.toUpperCase()}`);
+          console.log(`  Heartbeat:          ${status.lastHeartbeat}`);
+          console.log(`  Pending Approvals:  ${status.pendingApprovalsCount}`);
+          console.log(`  Vault Coherence:    ${status.vaultCoherence.status.toUpperCase()} (${status.vaultCoherence.operationalEntriesCount} op, ${status.vaultCoherence.technicalEntriesCount} tech entries)`);
+          console.log(`  Actions Taken:      ${status.lastSweep.actionsTaken.join(" | ")}`);
+          console.log(`  Heartbeat File:     ${teammateDaemon.getStatusPath()}\n`);
+        } else {
+          console.log(`[starlight] Autonomic daemon running in background loop. Press Ctrl+C to terminate.`);
+          console.log(`[starlight] Heartbeat file: ${teammateDaemon.getStatusPath()}\n`);
+          process.on("SIGINT", () => {
+            console.log("\n[starlight] Gracefully shutting down Teammate Daemon...");
+            teammateDaemon.stopDaemon();
+            process.exit(0);
+          });
+        }
       } else {
-        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status, design.`);
+        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status, design, daemon.`);
         process.exitCode = 1;
       }
       break;

@@ -215,7 +215,8 @@ export default function TeammatesPage() {
   const handleSendMessage = async (
     teammateId: string,
     content: string,
-    tier?: ModelTier
+    tier?: ModelTier,
+    modelId?: string
   ) => {
     const userMsg: TeammateMessage = {
       id: `user-${Date.now()}`,
@@ -257,6 +258,7 @@ export default function TeammatesPage() {
           teammateId,
           prompt: content,
           tier: activeTier,
+          model: modelId,
         }),
       });
 
@@ -417,6 +419,7 @@ export default function TeammatesPage() {
             teammateId,
             prompt: content,
             tier: activeTier,
+            model: modelId,
           }),
         });
         const data = await res.json();
@@ -444,12 +447,20 @@ export default function TeammatesPage() {
         // Local offline fallback
       }
 
+      const MODEL_NAME_MAP: Record<string, string> = {
+        "claude-sonnet-5-5": "Claude Sonnet 5.5",
+        "gemini-4-argon": "Gemini 4 Argon",
+        "claude-opus-5-5": "Claude Opus 5.5",
+        "gpt-6-1-sol": "GPT-6.1 Sol",
+      };
+
       const modelName =
-        activeTier === "frontier"
+        (modelId && MODEL_NAME_MAP[modelId]) ||
+        (activeTier === "frontier"
           ? "Claude Opus 5.5"
           : activeTier === "standard"
           ? "Claude Sonnet 5.5"
-          : "Gemini 4 Argon";
+          : "Gemini 4 Argon");
 
       const fallbackReply: TeammateMessage = {
         id: streamMsgId,

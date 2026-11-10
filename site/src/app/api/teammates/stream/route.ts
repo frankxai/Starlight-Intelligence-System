@@ -15,22 +15,32 @@ export async function POST(req: Request) {
       teammateId,
       prompt = "",
       tier = "standard",
+      model,
     }: {
       teammateId?: string;
       prompt?: string;
       tier?: ModelTier;
+      model?: string;
     } = body;
 
     const teammate =
       TEAMMATES.find((t) => t.id === teammateId) || TEAMMATES[0];
 
-    // Resolve model based on tier
+    // Resolve model based on specific model parameter or tier
+    const MODEL_MAP: Record<string, string> = {
+      "claude-sonnet-5-5": "Claude Sonnet 5.5",
+      "gemini-4-argon": "Gemini 4 Argon",
+      "claude-opus-5-5": "Claude Opus 5.5",
+      "gpt-6-1-sol": "GPT-6.1 Sol",
+    };
+
     const modelUsed =
-      tier === "frontier"
+      (model && MODEL_MAP[model]) ||
+      (tier === "frontier"
         ? "Claude Opus 5.5"
         : tier === "light"
         ? "Gemini 4 Argon"
-        : "Claude Sonnet 5.5";
+        : "Claude Sonnet 5.5");
 
     const isFinancial = /pay|invoice|spend|buy|purchase|credit/i.test(prompt);
     const isDeployOrMerge =

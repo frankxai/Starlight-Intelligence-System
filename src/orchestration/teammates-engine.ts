@@ -16,6 +16,8 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { SanitizationGateway } from "../sanitization.js";
 import { providerRouter, type TokenUsage } from "./model-adapters/index.js";
+import { sandboxRouter, type SandboxExecutionRequest, type SandboxExecutionResponse } from "./sandbox/index.js";
+import { teammateSynapse } from "./teammate-synapse.js";
 
 const defaultVeil = new SanitizationGateway();
 
@@ -241,7 +243,7 @@ export class StarlightTeammatesEngine {
     const model = this.resolveModel(tier, cleanPrompt);
 
     // 3. Check for fail-closed governance invariants
-    const isFinancial = /pay|invoice|spend|buy|purchase|credit\s*card/i.test(cleanPrompt);
+    const isFinancial = /pay|invoice|spend|buy|purchase|transfer|credit\s*card/i.test(cleanPrompt);
     const isDeployOrMerge = /deploy|merge\s*to\s*main|release|publish/i.test(cleanPrompt);
 
     let approvalRequest: ApprovalGate | undefined;
@@ -317,7 +319,7 @@ export class StarlightTeammatesEngine {
         output: "Branch healthy. Staged for operator signature.",
       });
 
-      return {
+      const gatedResult: DispatchResult = {
         messageId: `msg-${Date.now()}`,
         teammateId: teammate.id,
         modelUsed: model,
@@ -327,6 +329,9 @@ export class StarlightTeammatesEngine {
         executionTree,
         approvalRequest,
       };
+
+      await teammateSynapse.recordDispatch(gatedResult, cleanPrompt);
+      return gatedResult;
     }
 
     // Standard autonomous execution via Frontier Provider Router
@@ -356,12 +361,67 @@ export class StarlightTeammatesEngine {
       output: `Task completed cleanly. Tokens: ${completion.usage.totalTokens} (prompt: ${completion.usage.promptTokens}, completion: ${completion.usage.completionTokens}, est. cost: $${completion.usage.estimatedCostUsd}). Mode: ${completion.synthetic ? "synthetic-trace" : "live-api"}.`,
     });
 
+    // Check for sandbox validation requirement (microVM or local execution)
+    const isCodeOrSandbox =
+      /sandbox|microvm|execute|script|validate\s+code|run\s+code/i.test(cleanPrompt) ||
+      teammate.connectedTools.includes("sentinel-audit") ||
+      teammate.connectedTools.includes("foundry-compiler");
+
+    const codeBlockMatch = completion.content.match(/```(typescript|javascript|python|bash|powershell|js|ts|py|sh)\s*([\s\S]*?)```/i);
+
+    if (isCodeOrSandbox || codeBlockMatch) {
+      const rawLang = (codeBlockMatch?.[1] || "javascript").toLowerCase();
+      const langMap: Record<string, "typescript" | "javascript" | "python" | "bash" | "powershell"> = {
+        typescript: "typescript",
+        ts: "typescript",
+        javascript: "javascript",
+        js: "javascript",
+        python: "python",
+        py: "python",
+        powershell: "powershell",
+        ps1: "powershell",
+        bash: "bash",
+        sh: "bash",
+      };
+      const language = langMap[rawLang] || "javascript";
+      const codeToValidate = codeBlockMatch?.[2]?.trim() || `console.log("Validated isolated microVM runtime for teammate ${teammate.name}.");`;
+
+      try {
+        const sandboxRes = await sandboxRouter.execute({
+          code: codeToValidate,
+          language,
+          teammateId: teammate.id,
+          policy: { timeoutMs: 5000 },
+        });
+
+        executionTree.push({
+          id: `step-sandbox-${Date.now()}`,
+          summary: `Validated code in isolated sandbox (${sandboxRes.provider})`,
+          durationMs: sandboxRes.durationMs,
+          status: sandboxRes.success ? "success" : "error",
+          command: `sandbox-microvm --provider=${sandboxRes.provider} --lang=${language}`,
+          tool: "sandbox-microvm",
+          output: sandboxRes.output || `Sandbox execution ${sandboxRes.success ? "passed" : "failed"} (exit code: ${sandboxRes.exitCode}).`,
+        });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        executionTree.push({
+          id: `step-sandbox-${Date.now()}`,
+          summary: "Sandbox validation encountered error",
+          durationMs: 10,
+          status: "error",
+          tool: "sandbox-microvm",
+          output: `Sandbox error: ${msg}`,
+        });
+      }
+    }
+
     const content = completion.content.includes("Completed:")
       ? completion.content
       : `Completed: "${cleanPrompt}". Executed with ${completion.model} across bound vaults (${teammate.activeVaults.join(", ")}).\n\n${completion.content}`;
 
     teammate.status = "idle";
-    return {
+    const dispatchResult: DispatchResult = {
       messageId: `msg-${Date.now()}`,
       teammateId: teammate.id,
       modelUsed: completion.model,
@@ -372,6 +432,9 @@ export class StarlightTeammatesEngine {
       usage: completion.usage,
       synthetic: completion.synthetic,
     };
+
+    await teammateSynapse.recordDispatch(dispatchResult, cleanPrompt);
+    return dispatchResult;
   }
 
   /**
@@ -387,6 +450,7 @@ export class StarlightTeammatesEngine {
     gate.status = approved ? "approved" : "rejected";
     this.pendingApprovals.delete(gateId);
     this.saveApprovals();
+    teammateSynapse.recordGovernanceApproval(gate, approved ? "approved" : "rejected");
     return gate;
   }
 
@@ -440,6 +504,15 @@ export class StarlightTeammatesEngine {
       details,
     };
   }
+
+  /**
+   * Executes code within the Starlight isolated sandbox / microVM runtime
+   */
+  public async executeInSandbox(
+    request: SandboxExecutionRequest
+  ): Promise<SandboxExecutionResponse> {
+    return sandboxRouter.execute(request);
+  }
 }
 
 export interface AutonomicTickSummary {
@@ -460,4 +533,5 @@ export interface AutonomicTickSummary {
 // Global singleton instance
 export const teammatesEngine = new StarlightTeammatesEngine();
 export { providerRouter } from "./model-adapters/index.js";
+export { sandboxRouter } from "./sandbox/index.js";
 

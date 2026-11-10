@@ -81,3 +81,46 @@ export interface ProjectContext {
   activeBranch: string;
   linkedVaults: string[];
 }
+
+export type FrontierModelId =
+  | "claude-sonnet-5-5"
+  | "gemini-4-argon"
+  | "claude-opus-5-5"
+  | "gpt-6-1-sol";
+
+export interface FrontierModelDef {
+  id: FrontierModelId;
+  name: string;
+  shortLabel: string;
+  provider: string;
+  tier: ModelTier;
+  contextWindow: string;
+  description: string;
+}
+
+export interface AutonomicHeartbeatData {
+  tick: number;
+  status: "healthy" | "degraded" | "evaluating";
+  latencyMs: number;
+  pulse: "active" | "pulsing" | "idle";
+  lastHeartbeat: string;
+  pendingApprovalsCount: number;
+  activeWorkflowsCount: number;
+  telemetry?: {
+    tick: number;
+    pulse: string;
+    status: string;
+    latencyMs: number;
+    frequency: string;
+    memoryPressure: string;
+    substrate: string;
+  };
+}
+
+export interface SandboxExecutionResponse {
+  success: boolean;
+  output: string;
+  durationMs: number;
+  providerUsed: string;
+  error?: string;
+}
