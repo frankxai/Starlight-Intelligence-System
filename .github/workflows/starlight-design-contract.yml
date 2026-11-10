@@ -12,4 +12,4 @@ permissions:
 
 jobs:
   design-contract:
-    uses: Starlight-Intelligence/starlight-design-intelligence/.github/workflows/design-contract.yml@cbc5091ce58d21947ae70bfffcd80c9e53ee1967
+    uses: Starlight-Intelligence/starlight-design-intelligence/.github/workflows/design-contract.yml@e239ed3a37090c85b20ae9e40b7245da2b72f4f0
