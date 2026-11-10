@@ -34,23 +34,24 @@ export interface Env {
   STARLIGHT_DB?: any;      // Cloudflare D1 binding
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
-  SANDBOX?: any;           // Cloudflare Sandbox container binding
-  SANDBOX_DO?: any;        // Durable Object namespace for Sandbox SQLite state
+  Sandbox?: any;           // Cloudflare Sandbox container / DO binding
   SANDBOX_TOKEN?: string;  // Dedicated secret for sandbox container execution
   OPS_TOKEN?: string;      // Operational authorization secret
   DEFAULT_HALF_LIFE_DAYS?: string;
 }
 
-/** Constant-time string equality check to mitigate timing side-channel attacks on authorization tokens */
+/** Constant-time string equality check to mitigate timing side-channel attacks on authorization tokens without length leakage */
 function safeTimingEqual(a: string, b: string): boolean {
   if (typeof a !== 'string' || typeof b !== 'string') return false;
   const encoder = new TextEncoder();
   const aBuf = encoder.encode(a);
   const bBuf = encoder.encode(b);
-  if (aBuf.byteLength !== bBuf.byteLength) return false;
-  let diff = 0;
-  for (let i = 0; i < aBuf.byteLength; i++) {
-    diff |= aBuf[i] ^ bBuf[i];
+  const maxLen = Math.max(aBuf.byteLength, bBuf.byteLength);
+  let diff = aBuf.byteLength ^ bBuf.byteLength;
+  for (let i = 0; i < maxLen; i++) {
+    const aByte = i < aBuf.byteLength ? aBuf[i] : 0;
+    const bByte = i < bBuf.byteLength ? bBuf[i] : 0;
+    diff |= aByte ^ bByte;
   }
   return diff === 0;
 }
@@ -108,13 +109,13 @@ export class StarlightCloudWorker {
 
     // 4. Cloudflare Edge Sandbox Health & Execution (Sandbox SDK 1.0)
     if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
-      const hasSandbox = !!env.SANDBOX;
+      const binding = env.Sandbox;
       return new Response(JSON.stringify({
-        status: hasSandbox ? 'ready' : 'unconfigured',
+        status: binding ? 'ready' : 'unconfigured',
         sandbox: 'cloudflare/sandbox:next',
         containerCpu: 1,
         containerMemory: '1GB',
-        zeroEgress: hasSandbox,
+        containerConfigured: !!binding,
         attestation: 'Built on SIP v1.1.1',
         timestamp: new Date().toISOString(),
       }, null, 2), { status: 200, headers: this.CORS_HEADERS });
@@ -129,10 +130,10 @@ export class StarlightCloudWorker {
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    // 6. Cloudflare Edge Sandbox Execution (requires Bearer auth with validated token)
+    // 6. Cloudflare Edge Sandbox Execution (requires dedicated SANDBOX_TOKEN)
     if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
       const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-      const expectedToken = env.SANDBOX_TOKEN || env.OPS_TOKEN;
+      const expectedToken = env.SANDBOX_TOKEN;
       if (!expectedToken || !safeTimingEqual(token, expectedToken)) {
         return new Response(JSON.stringify({
           error: 'Forbidden',
@@ -141,7 +142,7 @@ export class StarlightCloudWorker {
       }
       try {
         const reqBody = (await request.json()) as SandboxExecutionRequest;
-        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.SANDBOX);
+        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.Sandbox);
         const status = execResponse.exitCode === 0 ? 200 : (execResponse.stderr.includes('unavailable') ? 503 : 400);
         return new Response(JSON.stringify(execResponse), { status, headers: this.CORS_HEADERS });
       } catch (err: any) {
@@ -653,7 +654,7 @@ export class Sandbox {
     if (url.pathname === '/exec' && request.method === 'POST') {
       const authHeader = request.headers.get('Authorization');
       const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
-      const expectedToken = this.env.SANDBOX_TOKEN || this.env.OPS_TOKEN;
+      const expectedToken = this.env.SANDBOX_TOKEN;
       if (!expectedToken || !token || !safeTimingEqual(token, expectedToken)) {
         return new Response(JSON.stringify({
           error: 'Forbidden',
@@ -662,7 +663,7 @@ export class Sandbox {
       }
 
       const body = (await request.json()) as SandboxExecutionRequest;
-      const res = await StarlightEdgeSandbox.execute(body, this.env.SANDBOX);
+      const res = await StarlightEdgeSandbox.execute(body, this.env.Sandbox);
 
       // Persist container run in SQLite Durable Object storage using parameterized statement
       if (this.state.storage?.sql) {
@@ -688,7 +689,7 @@ export class Sandbox {
             ts
           );
         } catch (err: any) {
-          console.error('[Sandbox DO] SQLite persistence error:', err?.message || err);
+          console.error('[Sandbox DO] SQLite persistence error');
         }
       }
 
@@ -698,7 +699,7 @@ export class Sandbox {
       });
     }
 
-    const hasSandbox = !!this.env.SANDBOX;
+    const hasSandbox = !!this.env.Sandbox;
     return new Response(JSON.stringify({
       status: hasSandbox ? 'ready' : 'unconfigured',
       sandbox: 'starlight-sandbox-container',

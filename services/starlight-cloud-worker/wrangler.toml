@@ -26,7 +26,7 @@ id = "5dab9ccc89a04a6a964fd3bc7ef12288"
 [durable_objects]
 bindings = [
   { name = "SWARM_COORDINATOR", class_name = "SwarmCoordinator" },
-  { name = "SANDBOX_DO", class_name = "Sandbox" }
+  { name = "Sandbox", class_name = "Sandbox" }
 ]
 
 [[migrations]]
@@ -43,6 +43,7 @@ name = "starlight-sandbox-container"
 image = "cloudflare/sandbox:next"
 cpu = 1
 memory = "1GB"
+class_name = "Sandbox"
 
 [ai]
 binding = "AI"

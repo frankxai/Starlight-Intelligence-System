@@ -55,17 +55,17 @@ test('StarlightCloudWorker routes /v1/sandbox/health endpoint', async () => {
   assert.strictEqual(unconfiguredResponse.status, 200);
   const unconfiguredData = await unconfiguredResponse.json();
   assert.strictEqual(unconfiguredData.status, 'unconfigured');
-  assert.strictEqual(unconfiguredData.zeroEgress, false);
+  assert.strictEqual(unconfiguredData.containerConfigured, false);
 
   // 2. With container binding: ready
   const readyResponse = await StarlightCloudWorker.handleRequest(request, {
-    SANDBOX: mockSandboxBinding,
+    Sandbox: mockSandboxBinding,
   });
   assert.strictEqual(readyResponse.status, 200);
   const readyData = await readyResponse.json();
   assert.strictEqual(readyData.status, 'ready');
   assert.strictEqual(readyData.sandbox, 'cloudflare/sandbox:next');
-  assert.strictEqual(readyData.zeroEgress, true);
+  assert.strictEqual(readyData.containerConfigured, true);
   assert.strictEqual(readyData.containerCpu, 1);
   assert.strictEqual(readyData.containerMemory, '1GB');
 });
@@ -99,7 +99,7 @@ test('StarlightCloudWorker rejects arbitrary unconfigured Bearer token on /v1/sa
 
   const response = await StarlightCloudWorker.handleRequest(request, {
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
-    SANDBOX: mockSandboxBinding,
+    Sandbox: mockSandboxBinding,
   });
   assert.strictEqual(response.status, 403);
   const data = await response.json();
@@ -120,7 +120,7 @@ test('StarlightCloudWorker routes /v1/sandbox/execute endpoint with validated Be
 
   const response = await StarlightCloudWorker.handleRequest(request, {
     SANDBOX_TOKEN: TEST_SANDBOX_SECRET,
-    SANDBOX: mockSandboxBinding,
+    Sandbox: mockSandboxBinding,
   });
   assert.strictEqual(response.status, 200);
   const data = await response.json();
@@ -157,7 +157,7 @@ test('Sandbox Durable Object persists container execution state in SQLite with p
 
   const sandboxDo = new Sandbox(
     { storage: mockStorage },
-    { SANDBOX_TOKEN: TEST_SANDBOX_SECRET, SANDBOX: mockSandboxBinding }
+    { SANDBOX_TOKEN: TEST_SANDBOX_SECRET, Sandbox: mockSandboxBinding }
   );
   const execRequest = new Request('https://do.sandbox/exec', {
     method: 'POST',
