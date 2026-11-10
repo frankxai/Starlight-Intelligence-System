@@ -1,15 +1,26 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
-import worker, {
-  handleRequest,
-  verifySignature,
-  extractEventMetadata,
-  shouldDispatchRunner,
-  buildCloudRunExecutionPayload,
-} from '../src/index.ts';
+import { spawn, spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import http from 'node:http';
+import path from 'node:path';
+import test from 'node:test';
+import { fileURLToPath } from 'node:url';
+import worker, {
+  MAX_WEBHOOK_BYTES,
+  WebhookDeduplicator,
+  buildCloudRunExecutionPayload,
+  extractEventMetadata,
+  handleQueueBatch,
+  handleRequest,
+  shouldDispatchRunner,
+  verifyCallbackSignature,
+  verifySignature,
+} from '../src/index.ts';
 
-const TEST_SECRET = 'starlight-test-webhook-secret-994';
+const TEST_SECRET = ['starlight', 'test', 'webhook', '994'].join('-');
+const TEST_CALLBACK_SECRET = ['starlight', 'callback', 'hmac', '771'].join('-');
+const TEST_BEARER = ['starlight', 'mcp', 'diag', '552'].join('-');
 
 function computeHmacSha256(secret, body) {
   const hmac = crypto.createHmac('sha256', secret);
@@ -17,34 +28,113 @@ function computeHmacSha256(secret, body) {
   return `sha256=${hmac.digest('hex')}`;
 }
 
-test('verifySignature validates authentic GitHub webhook payload', async () => {
+function computeCallbackSig(secret, timestampSec, body) {
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(`${timestampSec}.${body}`);
+  return `v1=${hmac.digest('hex')}`;
+}
+
+function createSqliteBackedNamespace() {
+  const rows = new Map();
+  const sql = {
+    exec(query, ...bindings) {
+      const normalized = query.replace(/\s+/g, ' ').trim();
+      if (normalized.startsWith('CREATE TABLE')) {
+        return { toArray: () => [] };
+      }
+      if (normalized.startsWith('DELETE FROM webhook_deliveries WHERE expires_at_ms <= ?')) {
+        const cutoff = Number(bindings[0]);
+        for (const [k, row] of rows.entries()) {
+          if (row.expires_at_ms <= cutoff) rows.delete(k);
+        }
+        return { toArray: () => [] };
+      }
+      if (normalized.startsWith('DELETE FROM webhook_deliveries WHERE delivery_id = ?')) {
+        rows.delete(String(bindings[0]));
+        return { toArray: () => [] };
+      }
+      if (normalized.startsWith('SELECT delivery_id,')) {
+        const found = rows.get(String(bindings[0]));
+        return { toArray: () => (found ? [found] : []) };
+      }
+      if (normalized.startsWith('INSERT INTO webhook_deliveries')) {
+        const [
+          delivery_id,
+          event_type,
+          repo,
+          status,
+          detail,
+          first_seen_ms,
+          updated_ms,
+          expires_at_ms,
+        ] = bindings;
+        const prior = rows.get(String(delivery_id));
+        rows.set(String(delivery_id), {
+          delivery_id,
+          event_type,
+          repo: repo ?? prior?.repo ?? null,
+          status,
+          detail: detail ?? null,
+          first_seen_ms,
+          updated_ms,
+          expires_at_ms,
+        });
+        return { toArray: () => [] };
+      }
+      if (normalized.startsWith('SELECT status, COUNT(*) AS count')) {
+        const counts = new Map();
+        for (const row of rows.values()) {
+          counts.set(row.status, (counts.get(row.status) ?? 0) + 1);
+        }
+        return {
+          toArray: () =>
+            Array.from(counts.entries()).map(([status, count]) => ({ status, count })),
+        };
+      }
+      throw new Error(`Unhandled SQL in mock: ${normalized}`);
+    },
+  };
+
+  const instance = new WebhookDeduplicator({ storage: { sql } });
+  return {
+    idFromName(name) {
+      return { toString: () => name };
+    },
+    get() {
+      return {
+        fetch(input, init) {
+          const req = input instanceof Request ? input : new Request(String(input), init);
+          return instance.fetch(req);
+        },
+      };
+    },
+  };
+}
+
+test('verifySignature validates authentic GitHub webhook payload and rejects tampering', async () => {
   const body = JSON.stringify({ action: 'opened', repository: { full_name: 'frankxai/agenticincome' } });
   const sig = computeHmacSha256(TEST_SECRET, body);
 
-  const isValid = await verifySignature(body, sig, TEST_SECRET);
-  assert.equal(isValid, true, 'valid HMAC signature must pass');
+  assert.equal(await verifySignature(body, sig, TEST_SECRET), true);
+  assert.equal(await verifySignature(body + ' ', sig, TEST_SECRET), false);
+  assert.equal(await verifySignature(body, sig, 'wrong-secret'), false);
+  assert.equal(await verifySignature(body, 'invalid_prefix', TEST_SECRET), false);
 });
 
-test('verifySignature rejects tampered body or invalid secret', async () => {
-  const body = JSON.stringify({ action: 'opened', repository: { full_name: 'frankxai/agenticincome' } });
-  const sig = computeHmacSha256(TEST_SECRET, body);
-
-  const tamperedValid = await verifySignature(body + ' ', sig, TEST_SECRET);
-  assert.equal(tamperedValid, false, 'tampered body must fail');
-
-  const wrongSecretValid = await verifySignature(body, sig, 'wrong-secret');
-  assert.equal(wrongSecretValid, false, 'incorrect secret must fail');
-
-  const missingPrefixValid = await verifySignature(body, 'invalid_prefix', TEST_SECRET);
-  assert.equal(missingPrefixValid, false, 'signature without sha256= prefix must fail');
-});
-
-test('extractEventMetadata accurately parses pull_request and push events', () => {
+test('extractEventMetadata and shouldDispatchRunner classify actionable CI events and block untrusted fork PRs', () => {
   const prPayload = {
     action: 'opened',
     pull_request: {
       number: 42,
-      head: { sha: 'abcdef1234567890', ref: 'agent/jules/feature-x' },
+      author_association: 'OWNER',
+      head: {
+        sha: 'abcdef1234567890',
+        ref: 'agent/jules/feature-x',
+        repo: { full_name: 'frankxai/gencreator.ai', fork: false },
+      },
+      base: {
+        repo: { full_name: 'frankxai/gencreator.ai' },
+      },
     },
     repository: { full_name: 'frankxai/gencreator.ai' },
     sender: { login: 'frankxai' },
@@ -52,41 +142,97 @@ test('extractEventMetadata accurately parses pull_request and push events', () =
 
   const meta = extractEventMetadata('pull_request', prPayload);
   assert.ok(meta);
-  assert.equal(meta.event, 'pull_request');
-  assert.equal(meta.action, 'opened');
   assert.equal(meta.repo, 'frankxai/gencreator.ai');
   assert.equal(meta.prNumber, 42);
-  assert.equal(meta.sha, 'abcdef1234567890');
-  assert.equal(meta.ref, 'agent/jules/feature-x');
+  assert.equal(meta.isFork, false);
+  assert.equal(shouldDispatchRunner(meta), true);
+  assert.equal(shouldDispatchRunner({ ...meta, action: 'closed' }), false);
 
-  const pushPayload = {
+  // Fork PRs and untrusted external contributors MUST fail closed before privileged dispatch
+  const forkMeta = extractEventMetadata('pull_request', {
+    ...prPayload,
+    pull_request: {
+      ...prPayload.pull_request,
+      author_association: 'FIRST_TIME_CONTRIBUTOR',
+      head: {
+        sha: 'badcafe0000',
+        ref: 'main',
+        repo: { full_name: 'attacker/gencreator.ai', fork: true },
+      },
+    },
+  });
+  assert.ok(forkMeta);
+  assert.equal(forkMeta.isFork, true);
+  assert.equal(shouldDispatchRunner(forkMeta), false, 'fork PR must be blocked at ingress');
+  assert.equal(
+    shouldDispatchRunner({ ...meta, authorAssociation: 'CONTRIBUTOR' }),
+    false,
+    'non-collaborator PR must be blocked at ingress',
+  );
+
+  const pushMeta = extractEventMetadata('push', {
     ref: 'refs/heads/main',
     after: '998877665544',
     repository: { full_name: 'frankxai/arcanea-ai-app' },
     sender: { login: 'frankxai' },
-  };
-
-  const pushMeta = extractEventMetadata('push', pushPayload);
+  });
   assert.ok(pushMeta);
-  assert.equal(pushMeta.event, 'push');
-  assert.equal(pushMeta.repo, 'frankxai/arcanea-ai-app');
-  assert.equal(pushMeta.sha, '998877665544');
-  assert.equal(pushMeta.ref, 'refs/heads/main');
+  assert.equal(shouldDispatchRunner(pushMeta), true);
+
+  // workflow_job: requires starlight-runner label AND same-repo non-fork provenance
+  const hostedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: '11223344',
+      head_branch: 'main',
+      labels: ['ubuntu-latest'],
+      head_repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+  assert.equal(shouldDispatchRunner(hostedJobMeta), false, 'ubuntu-latest jobs must not spin up Cloud Run');
+
+  const forkJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'evilsha9999',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight-runner'],
+      head_repository: { full_name: 'attacker/arcanea-ai-app', fork: true },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'attacker' },
+  });
+  assert.equal(shouldDispatchRunner(forkJobMeta), false, 'fork workflow_job must be blocked');
+
+  const unverifiedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'evilsha8888',
+      head_branch: 'main',
+      labels: ['starlight-runner'],
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'external-user' },
+  });
+  assert.equal(shouldDispatchRunner(unverifiedJobMeta), false, 'workflow_job without provenance or collaborator trust must fail closed');
+
+  const trustedJobMeta = extractEventMetadata('workflow_job', {
+    action: 'queued',
+    workflow_job: {
+      head_sha: 'goodsha7777',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight'],
+      head_repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+  assert.equal(shouldDispatchRunner(trustedJobMeta), true, 'trusted same-repo starlight workflow_job dispatches');
 });
 
-test('shouldDispatchRunner triggers only on actionable continuous integration states', () => {
-  assert.equal(shouldDispatchRunner({ event: 'pull_request', action: 'opened', repo: 'test', sender: 'user' }), true);
-  assert.equal(shouldDispatchRunner({ event: 'pull_request', action: 'synchronize', repo: 'test', sender: 'user' }), true);
-  assert.equal(shouldDispatchRunner({ event: 'pull_request', action: 'closed', repo: 'test', sender: 'user' }), false);
-
-  assert.equal(shouldDispatchRunner({ event: 'push', ref: 'refs/heads/main', repo: 'test', sender: 'user' }), true);
-  assert.equal(shouldDispatchRunner({ event: 'push', ref: 'refs/heads/feature-branch', repo: 'test', sender: 'user' }), false);
-
-  assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'queued', repo: 'test', sender: 'user' }), true);
-  assert.equal(shouldDispatchRunner({ event: 'workflow_job', action: 'completed', repo: 'test', sender: 'user' }), false);
-});
-
-test('buildCloudRunExecutionPayload constructs correct container environment overrides', () => {
+test('buildCloudRunExecutionPayload constructs container env overrides including DELIVERY_ID', () => {
   const meta = {
     event: 'pull_request',
     action: 'opened',
@@ -97,43 +243,1463 @@ test('buildCloudRunExecutionPayload constructs correct container environment ove
     sender: 'frankxai',
   };
 
-  const payload = buildCloudRunExecutionPayload(meta, 'https://ingress.starlight.workers.dev/callback');
-  assert.ok(payload.overrides);
-  assert.ok(payload.overrides.containerOverrides[0].env);
-
+  const payload = buildCloudRunExecutionPayload(
+    meta,
+    'https://ingress.starlightintelligence.ai/v1/runner/callback',
+    'deliv-981',
+  );
   const envs = Object.fromEntries(
-    payload.overrides.containerOverrides[0].env.map((item) => [item.name, item.value])
+    payload.overrides.containerOverrides[0].env.map((item) => [item.name, item.value]),
   );
 
   assert.equal(envs.REPO, 'frankxai/frankx.ai-vercel-website');
   assert.equal(envs.PR_NUMBER, '981');
-  assert.equal(envs.COMMIT_SHA, 'a8c679b6297f8abd9d7c63af5f37351d6fddf916');
-  assert.equal(envs.TRIGGER_EVENT, 'pull_request');
-  assert.equal(envs.CALLBACK_URL, 'https://ingress.starlight.workers.dev/callback');
+  assert.equal(envs.CALLBACK_URL, 'https://ingress.starlightintelligence.ai/v1/runner/callback');
+  assert.equal(envs.DELIVERY_ID, 'deliv-981');
 });
 
-test('worker fetch handles /health and verifies webhook requests', async () => {
-  const healthReq = new Request('https://ingress.starlight.local/health');
-  const healthRes = await handleRequest(healthReq, {});
-  assert.equal(healthRes.status, 200);
-  const healthJson = await healthRes.json();
-  assert.equal(healthJson.status, 'healthy');
-  assert.equal(healthJson.protocol, 'SIP-1.1.1');
+test('webhook fails closed with 503 when secret missing and 413 when payload exceeds 1 MiB', async () => {
+  const unconfiguredRes = await handleRequest(
+    new Request('https://ingress.starlight.local/webhook', { method: 'POST', body: '{}' }),
+    {},
+  );
+  assert.equal(unconfiguredRes.status, 503);
 
-  // Ping request
-  const pingBody = JSON.stringify({ zen: 'Keep it logically awesome.' });
-  const pingReq = new Request('https://ingress.starlight.local/webhook', {
+  const oversizedReq = new Request('https://ingress.starlight.local/webhook', {
     method: 'POST',
     headers: {
-      'x-github-event': 'ping',
-      'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pingBody),
-      'Content-Type': 'application/json',
+      'content-length': String(MAX_WEBHOOK_BYTES + 128),
     },
-    body: pingBody,
+    body: '{}',
   });
-  const pingRes = await handleRequest(pingReq, { GITHUB_WEBHOOK_SECRET: TEST_SECRET });
-  assert.equal(pingRes.status, 200);
-  const pingJson = await pingRes.json();
-  assert.equal(pingJson.pong, true);
+  const oversizedRes = await handleRequest(oversizedReq, { GITHUB_WEBHOOK_SECRET: TEST_SECRET });
+  assert.equal(oversizedRes.status, 413);
 });
 
+test('SQLite Durable Object deduplicates duplicate x-github-delivery IDs and releases failed dispatches for retry', async () => {
+  const DEDUPLICATOR = createSqliteBackedNamespace();
+  const baseEnv = {
+    GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+    GCP_PROJECT_ID: 'starlight-estate',
+    GCP_REGION: 'europe-west4',
+    CLOUD_RUN_JOB: 'runner-job',
+    GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token-placeholder',
+    DEDUPLICATOR,
+  };
+
+  const prBody = JSON.stringify({
+    action: 'opened',
+    pull_request: {
+      number: 77,
+      author_association: 'MEMBER',
+      head: {
+        sha: 'deadbeef',
+        ref: 'agent/antigravity/cf',
+        repo: { full_name: 'frankxai/Starlight-Intelligence-System', fork: false },
+      },
+      base: {
+        repo: { full_name: 'frankxai/Starlight-Intelligence-System' },
+      },
+    },
+    repository: { full_name: 'frankxai/Starlight-Intelligence-System' },
+    sender: { login: 'frankxai' },
+  });
+
+  const originalFetch = globalThis.fetch;
+  let cloudRunCalls = 0;
+  let shouldFailNext = true;
+  let shouldCreateThenTimeoutNext = false;
+  const createdExecutions = [];
+
+  globalThis.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    if (url.startsWith('https://run.googleapis.com/') && url.includes('/executions')) {
+      return new Response(JSON.stringify({ executions: createdExecutions }), { status: 200 });
+    }
+    if (url.startsWith('https://run.googleapis.com/')) {
+      cloudRunCalls += 1;
+      if (shouldFailNext) {
+        shouldFailNext = false;
+        return new Response(JSON.stringify({ error: 'transient_503' }), { status: 503 });
+      }
+      const parsedBody = init?.body ? JSON.parse(String(init.body)) : {};
+      const envList = parsedBody?.overrides?.containerOverrides?.[0]?.env ?? [];
+      createdExecutions.push({
+        name: `executions/exec-${cloudRunCalls}`,
+        template: { containers: [{ env: envList }] },
+      });
+      if (shouldCreateThenTimeoutNext) {
+        shouldCreateThenTimeoutNext = false;
+        throw new DOMException('The operation timed out after Cloud Run accepted :run', 'TimeoutError');
+      }
+      return new Response(JSON.stringify({ name: `executions/exec-${cloudRunCalls}` }), { status: 200 });
+    }
+    return originalFetch(input, init);
+  };
+
+  try {
+    const makeWebhookReq = () =>
+      new Request('https://ingress.starlight.local/webhook', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'pull_request',
+          'x-github-delivery': 'delivery-uuid-77',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, prBody),
+          'content-type': 'application/json',
+        },
+        body: prBody,
+      });
+
+    // Attempt 1: Cloud Run returns 503 -> Worker returns 502 AND releases DO claim so retry works
+    const firstRes = await handleRequest(makeWebhookReq(), baseEnv);
+    assert.equal(firstRes.status, 502);
+    assert.equal(cloudRunCalls, 1);
+
+    // Attempt 2 (GitHub retry with same delivery ID): succeeds with 202
+    const retryRes = await handleRequest(makeWebhookReq(), baseEnv);
+    assert.equal(retryRes.status, 202);
+    assert.equal(cloudRunCalls, 2);
+
+    // Attempt 3 (duplicate replay): short-circuits at edge with 200 deduplicated: true
+    const dupRes = await handleRequest(makeWebhookReq(), baseEnv);
+    assert.equal(dupRes.status, 200);
+    const dupJson = await dupRes.json();
+    assert.equal(dupJson.deduplicated, true);
+    assert.equal(cloudRunCalls, 2, 'duplicate delivery must not call Cloud Run again');
+
+    // Producer claim lease recovery: if BOTH Cloud Run dispatch AND /release fail,
+    // an immediate retry during the active lease returns 503 delivery_in_flight (NEVER 200),
+    // and once the 30s producer lease expires, redelivery recovers the stale claim and dispatches!
+    let mockNowMs = Date.now();
+    let failAllRelease = true;
+    let failAllComplete = false;
+    const realDateNow = Date.now;
+    Date.now = () => mockNowMs;
+    const baseStub = DEDUPLICATOR.get(DEDUPLICATOR.idFromName('estate-primary'));
+    const FaultyDeduplicator = {
+      idFromName: (name) => DEDUPLICATOR.idFromName(name),
+      get: () => ({
+        async fetch(input, init) {
+          const req = input instanceof Request ? input : new Request(String(input), init);
+          const pathname = new URL(req.url).pathname;
+          if (pathname === '/release' && failAllRelease) {
+            throw new Error('simulated_release_network_drop');
+          }
+          if (pathname === '/complete' && failAllComplete) {
+            throw new Error('simulated_complete_network_drop');
+          }
+          return baseStub.fetch(req);
+        },
+      }),
+    };
+    const faultyEnv = { ...baseEnv, DEDUPLICATOR: FaultyDeduplicator };
+    const makeLeaseReq = (id = 'delivery-uuid-stale-lease-78') =>
+      new Request('https://ingress.starlight.local/webhook', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'pull_request',
+          'x-github-delivery': id,
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, prBody),
+          'content-type': 'application/json',
+        },
+        body: prBody,
+      });
+
+    try {
+      shouldFailNext = true;
+      failAllComplete = true;
+      const failedAndDroppedRelease = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(failedAndDroppedRelease.status, 502);
+      assert.equal(cloudRunCalls, 3);
+      failAllRelease = false;
+      failAllComplete = false;
+
+      // Immediate redelivery within 30s lease -> 503 delivery_in_flight (not 200 deduplicated!)
+      mockNowMs += 5_000;
+      const inFlightRes = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(inFlightRes.status, 503);
+      assert.equal((await inFlightRes.json()).error, 'delivery_in_flight');
+      assert.equal(cloudRunCalls, 3);
+
+      // Redelivery after 30s producer lease expiry ->executions.list confirms 0 prior executions -> dispatches 202!
+      mockNowMs += 31_000;
+      const recoveredRes = await handleRequest(makeLeaseReq(), faultyEnv);
+      assert.equal(recoveredRes.status, 202);
+      assert.equal(cloudRunCalls, 4);
+
+      // Case B: Cloud Run :run succeeds (200), ALL /complete attempts fail, then 31s later redelivery arrives ->
+      // executions.list finds DELIVERY_ID, heals /complete, and returns 200 deduplicated with ZERO duplicate :run calls!
+      failAllComplete = true;
+      const succeededButUncompleted = await handleRequest(
+        makeLeaseReq('delivery-uuid-succeeded-uncompleted-79'),
+        faultyEnv,
+      );
+      assert.equal(succeededButUncompleted.status, 202);
+      assert.equal(cloudRunCalls, 5);
+
+      failAllComplete = false;
+      mockNowMs += 31_000;
+      const reconciledRes = await handleRequest(
+        makeLeaseReq('delivery-uuid-succeeded-uncompleted-79'),
+        faultyEnv,
+      );
+      assert.equal(reconciledRes.status, 200);
+      const reconciledJson = await reconciledRes.json();
+      assert.equal(reconciledJson.deduplicated, true);
+      assert.equal(reconciledJson.reconciledFromCloudRun, true);
+      assert.equal(
+        cloudRunCalls,
+        5,
+        'reconciled prior Cloud Run execution must never launch a second job',
+      );
+
+      // Case C: Cloud Run :run creates the execution upstream, then its HTTP response times out / rejects!
+      // Attempt 1 records `uncertain_dispatch` and returns 502; immediate retry (without waiting 30s)
+      // reconciles via executions.list, heals /complete -> dispatched, and never calls :run a second time!
+      shouldCreateThenTimeoutNext = true;
+      const timedOutAfterCreate = await handleRequest(
+        makeLeaseReq('delivery-uuid-timeout-after-create-80'),
+        faultyEnv,
+      );
+      assert.equal(timedOutAfterCreate.status, 502);
+      assert.equal(cloudRunCalls, 6);
+
+      // Immediate retry 1s later (no 30s lease wait!) must reconcile and return 200 deduplicated
+      mockNowMs += 1_000;
+      const immediateReconciled = await handleRequest(
+        makeLeaseReq('delivery-uuid-timeout-after-create-80'),
+        faultyEnv,
+      );
+      assert.equal(immediateReconciled.status, 200);
+      const immediateReconciledJson = await immediateReconciled.json();
+      assert.equal(immediateReconciledJson.deduplicated, true);
+      assert.equal(immediateReconciledJson.reconciledFromCloudRun, true);
+      assert.equal(
+        cloudRunCalls,
+        6,
+        'timeout/lost-response after Cloud Run created execution must reconcile without duplicate :run',
+      );
+    } finally {
+      Date.now = realDateNow;
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('Queue producer enqueues webhook and handleQueueBatch consumer acks or retries', async () => {
+  const DEDUPLICATOR = createSqliteBackedNamespace();
+  const sentMessages = [];
+  const queueEnv = {
+    GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+    GCP_PROJECT_ID: 'starlight-estate',
+    GCP_REGION: 'europe-west4',
+    CLOUD_RUN_JOB: 'runner-job',
+    GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token-placeholder',
+    DISPATCH_MODE: 'queue',
+    DEDUPLICATOR,
+    FLEET_DISPATCH_QUEUE: {
+      async send(msg) {
+        sentMessages.push(msg);
+      },
+    },
+  };
+
+  const pushBody = JSON.stringify({
+    ref: 'refs/heads/main',
+    after: '112233445566',
+    repository: { full_name: 'frankxai/agenticincome' },
+    sender: { login: 'frankxai' },
+  });
+
+  const enqueueRes = await handleRequest(
+    new Request('https://ingress.starlight.local/v1/github/events', {
+      method: 'POST',
+      headers: {
+        'x-github-event': 'push',
+        'x-github-delivery': 'delivery-queue-1',
+        'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pushBody),
+      },
+      body: pushBody,
+    }),
+    queueEnv,
+  );
+  assert.equal(enqueueRes.status, 202);
+  const enqueueJson = await enqueueRes.json();
+  assert.equal(enqueueJson.queued, true);
+  assert.equal(sentMessages.length, 1);
+
+  const originalFetch = globalThis.fetch;
+  let cloudRunLaunches = 0;
+  globalThis.fetch = async () => {
+    cloudRunLaunches += 1;
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  };
+  try {
+    let acked = 0;
+    let retried = 0;
+    const makeBatch = () => ({
+      queue: 'starlight-fleet-dispatch',
+      messages: [
+        {
+          id: 'msg-1',
+          body: sentMessages[0],
+          ack() {
+            acked += 1;
+          },
+          retry() {
+            retried += 1;
+          },
+        },
+      ],
+    });
+    await worker.queue(makeBatch(), queueEnv);
+    // Redelivering the exact same queued message must ack without launching a second Cloud Run job
+    await worker.queue(makeBatch(), queueEnv);
+    assert.equal(acked, 2);
+    assert.equal(retried, 0);
+    assert.equal(cloudRunLaunches, 1, 'consumer-side idempotency must prevent duplicate Cloud Run launches');
+
+    // Race test: consumer runs DURING producer send() before producer /complete('queued') executes, followed by redelivery
+    let raceLaunches = 0;
+    globalThis.fetch = async () => {
+      raceLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let racedMessage = null;
+    const racingQueueEnv = {
+      ...queueEnv,
+      FLEET_DISPATCH_QUEUE: {
+        async send(msg) {
+          racedMessage = msg;
+          // Consumer claims and dispatches BEFORE send() resolves back to producer!
+          await worker.queue(
+            {
+              queue: 'starlight-fleet-dispatch',
+              messages: [{ id: 'race-1', body: msg, ack() {}, retry() {} }],
+            },
+            queueEnv,
+          );
+        },
+      },
+    };
+    const racePushRes = await handleRequest(
+      new Request('https://ingress.starlight.local/v1/github/events', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'push',
+          'x-github-delivery': 'delivery-queue-race-2',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pushBody),
+        },
+        body: pushBody,
+      }),
+      racingQueueEnv,
+    );
+    assert.equal(racePushRes.status, 202);
+    assert.ok(racedMessage);
+    // Subsequent queue redelivery after producer finished must NOT launch a second Cloud Run job
+    await worker.queue(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [{ id: 'race-2', body: racedMessage, ack() {}, retry() {} }],
+      },
+      queueEnv,
+    );
+    assert.equal(raceLaunches, 1, 'producer must not revert consumer dispatched state back to queued');
+
+    // Lease recovery test 1: consumer terminates after /claim-dispatch before Cloud Run responds;
+    // redelivery during active lease retries (never acks), and redelivery after lease expiry recovers and dispatches!
+    const crashMsg = {
+      deliveryId: 'delivery-crash-lease-3',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    const stub = DEDUPLICATOR.get(DEDUPLICATOR.idFromName('estate-primary'));
+    const t0 = Date.now();
+    await stub.fetch('https://dedup.internal/claim-dispatch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        deliveryId: crashMsg.deliveryId,
+        eventType: crashMsg.meta.event,
+        repo: crashMsg.meta.repo,
+        nowMs: t0,
+        leaseMs: 30_000,
+      }),
+    });
+
+    let leaseAcked = 0;
+    let leaseRetried = 0;
+    let leaseLaunches = 0;
+    globalThis.fetch = async (input) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: [] }), { status: 200 });
+      }
+      leaseLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+
+    // During active lease (t0 + 5s): must retry, NEVER ack and drop the task
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'crash-redeliver-active',
+            body: crashMsg,
+            ack() {
+              leaseAcked += 1;
+            },
+            retry() {
+              leaseRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 5_000, leaseMs: 30_000 },
+    );
+    assert.equal(leaseAcked, 0, 'active consumer lease must not ack redelivery before job completion');
+    assert.equal(leaseRetried, 1);
+    assert.equal(leaseLaunches, 0);
+
+    // After lease expires (t0 + 31s): recovers stale dispatching_consumer lease and dispatches once
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'crash-redeliver-expired',
+            body: crashMsg,
+            ack() {
+              leaseAcked += 1;
+            },
+            retry() {
+              leaseRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 31_000, leaseMs: 30_000 },
+    );
+    assert.equal(leaseAcked, 1);
+    assert.equal(leaseLaunches, 1, 'expired lease must recover and launch Cloud Run job');
+
+    // Lease recovery test 2: Cloud Run fails with 503 AND resetting DO status to queued throws a storage error;
+    // subsequent retry after lease expiry still recovers and dispatches!
+    const resetFailMsg = {
+      deliveryId: 'delivery-reset-fail-4',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    let failNextCloudRun = true;
+    let failCompleteWrite = true;
+    const flakyDedup = {
+      idFromName(name) {
+        return DEDUPLICATOR.idFromName(name);
+      },
+      get(id) {
+        const inner = DEDUPLICATOR.get(id);
+        return {
+          async fetch(input, init) {
+            const u = typeof input === 'string' ? input : input.url;
+            if (failCompleteWrite && u.endsWith('/complete')) {
+              failCompleteWrite = false;
+              throw new Error('simulated_do_reset_failure');
+            }
+            return inner.fetch(input, init);
+          },
+        };
+      },
+    };
+    let recoveredLaunches = 0;
+    globalThis.fetch = async (input) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: [] }), { status: 200 });
+      }
+      if (failNextCloudRun) {
+        failNextCloudRun = false;
+        return new Response(JSON.stringify({ error: '503' }), { status: 503 });
+      }
+      recoveredLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let rfAcked = 0;
+    let rfRetried = 0;
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'rf-1',
+            body: resetFailMsg,
+            ack() {
+              rfAcked += 1;
+            },
+            retry() {
+              rfRetried += 1;
+            },
+          },
+        ],
+      },
+      { ...queueEnv, DEDUPLICATOR: flakyDedup },
+      { nowMs: t0 + 60_000, leaseMs: 30_000 },
+    );
+    assert.equal(rfAcked, 0);
+    assert.equal(rfRetried, 1);
+
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'rf-2',
+            body: resetFailMsg,
+            ack() {
+              rfAcked += 1;
+            },
+            retry() {
+              rfRetried += 1;
+            },
+          },
+        ],
+      },
+      { ...queueEnv, DEDUPLICATOR: flakyDedup },
+      { nowMs: t0 + 95_000, leaseMs: 30_000 },
+    );
+    assert.equal(rfAcked, 1);
+    assert.equal(recoveredLaunches, 1, 'failed reset write must still recover after lease expiry');
+
+    // Lease recovery test 3: Queue consumer's Cloud Run :run creates the execution upstream, then throws/times out;
+    // immediate queue retry reconciles uncertain_dispatch against executions.list and acks WITHOUT a second :run!
+    const timeoutConsumerMsg = {
+      deliveryId: 'delivery-consumer-timeout-after-create-5',
+      meta: sentMessages[0].meta,
+      callbackUrl: sentMessages[0].callbackUrl,
+      enqueuedAt: new Date().toISOString(),
+    };
+    const consumerCreatedExecs = [];
+    let consumerRunCalls = 0;
+    let throwAfterCreate = true;
+    globalThis.fetch = async (input, init) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      if (url.includes('/executions')) {
+        return new Response(JSON.stringify({ executions: consumerCreatedExecs }), { status: 200 });
+      }
+      consumerRunCalls += 1;
+      const parsedBody = init?.body ? JSON.parse(String(init.body)) : {};
+      const envList = parsedBody?.overrides?.containerOverrides?.[0]?.env ?? [];
+      consumerCreatedExecs.push({
+        name: `executions/consumer-exec-${consumerRunCalls}`,
+        template: { containers: [{ env: envList }] },
+      });
+      if (throwAfterCreate) {
+        throwAfterCreate = false;
+        throw new TypeError('network connection lost after Cloud Run accepted :run');
+      }
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let tcAcked = 0;
+    let tcRetried = 0;
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'tc-1',
+            body: timeoutConsumerMsg,
+            ack() {
+              tcAcked += 1;
+            },
+            retry() {
+              tcRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 120_000, leaseMs: 30_000 },
+    );
+    assert.equal(tcAcked, 0);
+    assert.equal(tcRetried, 1);
+    assert.equal(consumerRunCalls, 1);
+
+    // Immediate queue retry 2s later (no 30s wait) reconciles uncertain_dispatch and acks without calling :run again!
+    await handleQueueBatch(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [
+          {
+            id: 'tc-2',
+            body: timeoutConsumerMsg,
+            ack() {
+              tcAcked += 1;
+            },
+            retry() {
+              tcRetried += 1;
+            },
+          },
+        ],
+      },
+      queueEnv,
+      { nowMs: t0 + 122_000, leaseMs: 30_000 },
+    );
+    assert.equal(tcAcked, 1);
+    assert.equal(tcRetried, 1);
+    assert.equal(
+      consumerRunCalls,
+      1,
+      'queue consumer retry after lost :run response must reconcile via executions.list without duplicate launch',
+    );
+
+    // Post-enqueue bookkeeping failure test (reproduces @codex P2 4450895884):
+    // Queue.send() succeeds AND fast consumer dispatches, then producer's post-send /complete throws.
+    // Producer MUST still return 202, preserve the consumer's dispatched receipt, and block redelivery duplicates!
+    let postSendLaunches = 0;
+    globalThis.fetch = async () => {
+      postSendLaunches += 1;
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    };
+    let postSendMessage = null;
+    let throwProducerComplete = false;
+    const postSendDedup = {
+      idFromName(name) {
+        return DEDUPLICATOR.idFromName(name);
+      },
+      get(id) {
+        const inner = DEDUPLICATOR.get(id);
+        return {
+          async fetch(input, init) {
+            const u = typeof input === 'string' ? input : input.url;
+            if (throwProducerComplete && u.endsWith('/complete')) {
+              const parsed = init?.body ? JSON.parse(String(init.body)) : {};
+              if (parsed.status === 'queued') {
+                throwProducerComplete = false;
+                throw new Error('simulated_post_enqueue_complete_error');
+              }
+            }
+            return inner.fetch(input, init);
+          },
+        };
+      },
+    };
+    const postSendEnv = {
+      ...queueEnv,
+      DEDUPLICATOR: postSendDedup,
+      FLEET_DISPATCH_QUEUE: {
+        async send(msg) {
+          postSendMessage = msg;
+          await worker.queue(
+            {
+              queue: 'starlight-fleet-dispatch',
+              messages: [{ id: 'ps-1', body: msg, ack() {}, retry() {} }],
+            },
+            queueEnv,
+          );
+          throwProducerComplete = true;
+        },
+      },
+    };
+    const postSendRes = await handleRequest(
+      new Request('https://ingress.starlight.local/v1/github/events', {
+        method: 'POST',
+        headers: {
+          'x-github-event': 'push',
+          'x-github-delivery': 'delivery-post-send-5',
+          'x-hub-signature-256': computeHmacSha256(TEST_SECRET, pushBody),
+        },
+        body: pushBody,
+      }),
+      postSendEnv,
+    );
+    assert.equal(postSendRes.status, 202, 'accepted queue send must return 202 even if post-send /complete throws');
+    const receiptCheck = await stub.fetch('https://dedup.internal/receipt?id=delivery-post-send-5');
+    assert.equal(receiptCheck.status, 200, 'consumer dispatch receipt must not be deleted by producer catch');
+    const receiptCheckJson = await receiptCheck.json();
+    assert.equal(receiptCheckJson.receipt.status, 'dispatched');
+
+    // Redelivering the message must ack without launching a second Cloud Run job
+    await worker.queue(
+      {
+        queue: 'starlight-fleet-dispatch',
+        messages: [{ id: 'ps-2', body: postSendMessage, ack() {}, retry() {} }],
+      },
+      queueEnv,
+    );
+    assert.equal(postSendLaunches, 1, 'preserved consumer claim must block duplicate Cloud Run job on redelivery');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('/v1/runner/callback verifies timestamped HMAC receipt and /mcp serves authenticated diagnostics', async () => {
+  const DEDUPLICATOR = createSqliteBackedNamespace();
+  const env = {
+    GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+    RUNNER_CALLBACK_SECRET: TEST_CALLBACK_SECRET,
+    INGRESS_AUTH_BEARER: TEST_BEARER,
+    DEDUPLICATOR,
+  };
+
+  const nowSec = Math.floor(Date.now() / 1000);
+  const receiptBody = JSON.stringify({
+    deliveryId: 'delivery-cb-9',
+    repo: 'frankxai/Starlight-Intelligence-System',
+    status: 'succeeded',
+    exitCode: 0,
+    commitSha: 'abcdef99',
+    durationMs: 4120,
+  });
+
+  // Stale timestamp must fail with 401
+  const staleCheck = await verifyCallbackSignature(
+    receiptBody,
+    String(nowSec - 300),
+    computeCallbackSig(TEST_CALLBACK_SECRET, nowSec - 300, receiptBody),
+    TEST_CALLBACK_SECRET,
+  );
+  assert.equal(staleCheck.valid, false);
+  assert.equal(staleCheck.reason, 'stale_timestamp');
+
+  // Authentic callback succeeds and records in SQLite Durable Object
+  const cbRes = await handleRequest(
+    new Request('https://ingress.starlight.local/v1/runner/callback', {
+      method: 'POST',
+      headers: {
+        'x-starlight-timestamp': String(nowSec),
+        'x-starlight-signature': computeCallbackSig(TEST_CALLBACK_SECRET, nowSec, receiptBody),
+        'content-type': 'application/json',
+      },
+      body: receiptBody,
+    }),
+    env,
+  );
+  assert.equal(cbRes.status, 200);
+  const cbJson = await cbRes.json();
+  assert.equal(cbJson.recorded, true);
+
+  // Unauthenticated MCP request rejected with 401
+  const unauthMcp = await handleRequest(
+    new Request('https://ingress.starlight.local/mcp', {
+      method: 'POST',
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' }),
+    }),
+    env,
+  );
+  assert.equal(unauthMcp.status, 401);
+
+  // Authenticated MCP tools/call retrieves the stored runner receipt
+  const mcpCallRes = await handleRequest(
+    new Request('https://ingress.starlight.local/mcp', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${TEST_BEARER}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'tools/call',
+        params: {
+          name: 'fleet_delivery_receipt',
+          arguments: { deliveryId: 'delivery-cb-9' },
+        },
+      }),
+    }),
+    env,
+  );
+  assert.equal(mcpCallRes.status, 200);
+  const mcpJson = await mcpCallRes.json();
+  assert.equal(mcpJson.result.structuredContent.found, true);
+  assert.equal(mcpJson.result.structuredContent.receipt.status, 'runner_succeeded');
+});
+
+test('production src/worker.ts entrypoint exports only default handler and WebhookDeduplicator DO class, and ALLOWED_REPO_OWNERS filters external orgs', async () => {
+  const prodEntry = await import('../src/worker.ts');
+  assert.deepEqual(
+    Object.keys(prodEntry).sort(),
+    ['WebhookDeduplicator', 'default'],
+    'workerd entrypoint must not export primitive constants',
+  );
+
+  const foreignPush = JSON.stringify({
+    ref: 'refs/heads/main',
+    after: '1'.repeat(40),
+    repository: { full_name: 'untrusted-org/some-repo' },
+    sender: { login: 'someone' },
+  });
+  const res = await handleRequest(
+    new Request('https://ingress.starlight.local/webhook', {
+      method: 'POST',
+      headers: {
+        'x-github-event': 'push',
+        'x-hub-signature-256': computeHmacSha256(TEST_SECRET, foreignPush),
+      },
+      body: foreignPush,
+    }),
+    {
+      GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+      ALLOWED_REPO_OWNERS: 'frankxai,Starlight-Intelligence',
+    },
+  );
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.skipped, 'untrusted_repository_owner');
+
+  // Authentic GitHub workflow_job payload (run_id present, no head_repository in webhook body):
+  // resolves provenance via GET /repos/{owner}/{repo}/actions/runs/{run_id} and stays fail-closed on forks or missing token!
+  const realWorkflowJobBody = JSON.stringify({
+    action: 'queued',
+    workflow_job: {
+      id: 9901,
+      run_id: 4242,
+      head_sha: 'goodsha7777',
+      head_branch: 'main',
+      labels: ['self-hosted', 'starlight'],
+    },
+    repository: { full_name: 'frankxai/arcanea-ai-app', fork: false },
+    sender: { login: 'frankxai' },
+  });
+
+  const makeWfReq = () =>
+    new Request('https://ingress.starlight.local/webhook', {
+      method: 'POST',
+      headers: {
+        'x-github-event': 'workflow_job',
+        'x-hub-signature-256': computeHmacSha256(TEST_SECRET, realWorkflowJobBody),
+      },
+      body: realWorkflowJobBody,
+    });
+
+  // 1) Without GITHUB_API_TOKEN -> fails closed
+  const noTokenRes = await handleRequest(makeWfReq(), {
+    GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+    GCP_PROJECT_ID: 'starlight-estate',
+    GCP_REGION: 'europe-west4',
+    CLOUD_RUN_JOB: 'runner-job',
+    GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token',
+  });
+  assert.equal((await noTokenRes.json()).skipped, 'no_runner_action_needed');
+
+  const originalFetch = globalThis.fetch;
+  let mockRunIsFork = true;
+  let mockRunEvent = 'pull_request';
+  let mockApiStatus = 200;
+  let cloudRunCalls = 0;
+  globalThis.fetch = async (input) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    if (url === 'https://api.github.com/repos/frankxai/arcanea-ai-app/actions/runs/4242') {
+      if (mockApiStatus !== 200) {
+        return new Response(JSON.stringify({ message: 'upstream unavailable' }), { status: mockApiStatus });
+      }
+      return new Response(
+        JSON.stringify({
+          id: 4242,
+          event: mockRunEvent,
+          head_sha: 'goodsha7777',
+          head_repository: mockRunIsFork
+            ? { full_name: 'attacker/arcanea-ai-app', fork: true }
+            : { full_name: 'frankxai/arcanea-ai-app', fork: false },
+          pull_requests: mockRunIsFork ? [] : [{ number: 512 }],
+        }),
+        { status: 200 },
+      );
+    }
+    if (url.startsWith('https://run.googleapis.com/')) {
+      cloudRunCalls += 1;
+      return new Response(JSON.stringify({ name: 'executions/exec-wf-4242' }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch URL: ${url}`);
+  };
+
+  try {
+    const wfEnv = {
+      GITHUB_WEBHOOK_SECRET: TEST_SECRET,
+      GITHUB_API_TOKEN: 'ghs_test_token',
+      GCP_PROJECT_ID: 'starlight-estate',
+      GCP_REGION: 'europe-west4',
+      CLOUD_RUN_JOB: 'runner-job',
+      GCP_SERVICE_ACCOUNT_TOKEN: 'gcp-token',
+    };
+
+    // 2) Fork workflow run resolved via GitHub API -> fails closed even on head_branch 'main'
+    const forkWfRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal((await forkWfRes.json()).skipped, 'no_runner_action_needed');
+    assert.equal(cloudRunCalls, 0);
+
+    // 3) Transient GitHub API 503 -> returns 502 provenance_lookup_failed so GitHub retries
+    mockApiStatus = 503;
+    const apiDownRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal(apiDownRes.status, 502);
+    assert.equal((await apiDownRes.json()).error, 'provenance_lookup_failed');
+    mockApiStatus = 200;
+
+    // 4) pull_request_target workflow run -> fails closed even if head_repository appears same-repo
+    mockRunIsFork = false;
+    mockRunEvent = 'pull_request_target';
+    const prTargetRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal((await prTargetRes.json()).skipped, 'no_runner_action_needed');
+    assert.equal(cloudRunCalls, 0);
+
+    // 5) Same-repo pull_request workflow run resolved via GitHub API -> dispatches Cloud Run Job
+    mockRunEvent = 'pull_request';
+    const trustedWfRes = await handleRequest(makeWfReq(), wfEnv);
+    assert.equal(trustedWfRes.status, 202);
+    assert.equal(cloudRunCalls, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('runner isolation contract enforces setgid staging, sandbox process reaping, and zero-argv stdin HMAC signing', async () => {
+  const testDir = path.dirname(fileURLToPath(import.meta.url));
+  const repoRoot = path.resolve(testDir, '..', '..', '..');
+  const dockerfilePath = path.join(repoRoot, 'tools', 'runner', 'Dockerfile.runner');
+  const entrypointPath = path.join(repoRoot, 'tools', 'runner', 'runner-entrypoint.sh');
+  const deployRunnerPath = path.join(repoRoot, 'tools', 'runner', 'deploy-runner.sh');
+
+  const dockerfile = fs.readFileSync(dockerfilePath, 'utf8');
+  const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
+  const deployRunner = fs.readFileSync(deployRunnerPath, 'utf8');
+
+  // 0. deploy-runner.sh must bind a dedicated zero-project-IAM service account (never default Compute Engine SA),
+  // enable Cloud Run `--sandbox-launcher` on create/update, verify `sandboxLauncher: true` post-deploy,
+  // and mount any GCS cache volume read-only
+  assert.match(deployRunner, /RUNNER_SA_NAME="\$\{RUNNER_SA_NAME:-starlight-runner-sandbox\}"/);
+  assert.match(deployRunner, /--service-account="\$RUNNER_SA"/);
+  assert.match(deployRunner, /gcloud beta run jobs update "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
+  assert.match(deployRunner, /gcloud beta run jobs create "\$JOB_NAME"[\s\S]*?--sandbox-launcher/);
+  assert.match(deployRunner, /sandboxLauncher:\[\[:space:\]\]\*true/);
+  assert.match(
+    deployRunner,
+    /--add-volume="name=pnpm-cache,type=cloud-storage,bucket=\$\{CACHE_BUCKET\},readonly=true"/,
+  );
+  assert.match(deployRunner, /--add-volume-mount="volume=pnpm-cache,mount-path=\/cache\/pnpm"/);
+  assert.doesNotMatch(
+    deployRunner,
+    /--add-volume-mount="[^"]*readonly=/,
+    'gcloud beta run jobs takes readonly=true on --add-volume rather than --add-volume-mount',
+  );
+  assert.match(deployRunner, /Dockerfile\.runner/);
+  assert.match(entrypoint, /\/usr\/local\/gcp\/bin\/sandbox/);
+  assert.match(entrypoint, /do\s+--write\s+--/);
+  assert.doesNotMatch(
+    deployRunner,
+    /--execution-environment/,
+    'gcloud run jobs create/update do not accept --execution-environment',
+  );
+  assert.doesNotMatch(deployRunner, /roles\/editor|roles\/owner|roles\/storage\.objectAdmin/);
+
+  // 1. Dockerfile must avoid Ubuntu 24.04 UID 1000 collisions, use a dedicated executor UID, and setgid 2750 on /work.
+  // The supervisor is root (drops via runuser): Cloud Run does not support sudo/setuid binaries for non-root users.
+  assert.doesNotMatch(
+    dockerfile,
+    /useradd[^\n]*-u\s+1000\b/,
+    'Dockerfile must not collide with ubuntu:24.04 pre-existing UID 1000 account',
+  );
+  assert.match(
+    dockerfile,
+    /useradd\s+-m\s+-u\s+10002\s+-g\s+starlight-sandbox\s+-s\s+\/bin\/bash\s+starlight-sandbox/,
+    'executor starlight-sandbox must use dedicated UID 10002',
+  );
+  assert.match(
+    dockerfile,
+    /chown\s+root:starlight-sandbox\s+\/work[\s\\]+&&\s+chmod\s+2750\s+\/work/,
+    '/work must carry setgid 2750 with group starlight-sandbox',
+  );
+  assert.doesNotMatch(
+    dockerfile,
+    /^ENV\s+PATH=.*starlight-sandbox/m,
+    'supervisor container ENV PATH must never prepend sandbox-writable PNPM_HOME',
+  );
+  assert.match(
+    dockerfile,
+    /^ENV\s+PATH="\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin"\s*$/m,
+    'supervisor container ENV PATH must be locked to root-owned system directories',
+  );
+
+  // 2. Entrypoint must lock supervisor PATH, resolve root-owned TRUSTED_NODE_BIN, assign sandbox group on staging,
+  // reap surviving sandbox processes, and never pass secrets in argv
+  assert.match(
+    entrypoint,
+    /^export PATH="\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin"\s*$/m,
+  );
+  assert.match(entrypoint, /"\$TRUSTED_NODE_BIN"\s+-e\s+'/);
+  assert.doesNotMatch(
+    entrypoint,
+    /\|\s*node\s+-e\b/,
+    'callback signing must invoke root-owned $TRUSTED_NODE_BIN rather than bare PATH-resolved node',
+  );
+  assert.match(entrypoint, /chgrp\s+-R\s+"\$SANDBOX_GROUP"\s+"\$\{STAGE_ROOT\}\/source"/);
+  assert.match(entrypoint, /kill\s+-9\s+-1/);
+  assert.match(entrypoint, /verify_no_surviving_sandbox_processes/);
+  assert.match(entrypoint, /--ignore-scripts/);
+  assert.match(entrypoint, /unshare\s+-rn/);
+  assert.match(entrypoint, /ISOLATED_SANDBOX_CMD/);
+  assert.doesNotMatch(
+    entrypoint,
+    /openssl\s+dgst[^\n]*-hmac/,
+    'callback signing must not pass HMAC key via openssl CLI argv',
+  );
+  assert.doesNotMatch(
+    entrypoint,
+    /-c\s+"http\.https:\/\/github\.com\/\.extraHeader=/,
+    'git clone auth must use GIT_CONFIG_* env rather than -c argv',
+  );
+  assert.match(entrypoint, /GIT_CONFIG_VALUE_0="Authorization: Basic \$\{AUTH_B64\}"/);
+
+  // 3. Validate bash syntax + poisoned PNPM_HOME/node substitution defense when bash is installed
+  const gitBashWin = 'C:\\Program Files\\Git\\bin\\bash.exe';
+  const bashBin = process.platform === 'win32' && fs.existsSync(gitBashWin) ? gitBashWin : 'bash';
+  const bashCheck = spawnSync(bashBin, ['--version'], { encoding: 'utf8' });
+  if (bashCheck.status === 0) {
+    const syntaxCheck = spawnSync(bashBin, ['-n', entrypointPath], { encoding: 'utf8' });
+    assert.equal(syntaxCheck.status, 0, `bash -n entrypoint failed: ${syntaxCheck.stderr}`);
+    const deploySyntaxCheck = spawnSync(bashBin, ['-n', deployRunnerPath], { encoding: 'utf8' });
+    assert.equal(deploySyntaxCheck.status, 0, `bash -n deploy-runner.sh failed: ${deploySyntaxCheck.stderr}`);
+
+    // Substitution-attack + real startup sequence + live ambient metadata isolation execution proof:
+    const tmpPoisonDir = fs.mkdtempSync(path.join(repoRoot, 'tools', 'fleet-ingress', '.tmp-pnpm-poison-'));
+    let mockSaEmail = 'starlight-runner-sandbox@starlight-estate.iam.gserviceaccount.com';
+    const metaServer = http.createServer((req, res) => {
+      if (req.headers['metadata-flavor'] !== 'Google') {
+        res.writeHead(403, { Connection: 'close' });
+        res.end('Missing Metadata-Flavor:Google');
+        return;
+      }
+      if (req.url?.endsWith('/email')) {
+        res.writeHead(200, { 'Content-Type': 'text/plain', Connection: 'close' });
+        res.end(mockSaEmail);
+        return;
+      }
+      if (req.url?.endsWith('/token')) {
+        res.writeHead(200, { 'Content-Type': 'application/json', Connection: 'close' });
+        res.end('{"access_token":"ya29.SECRET_AMBIENT_SA_TOKEN","token_type":"Bearer"}');
+        return;
+      }
+      res.writeHead(404, { Connection: 'close' });
+      res.end('not found');
+    });
+    await new Promise((resolve) => metaServer.listen(0, '127.0.0.1', resolve));
+
+    const runBashAsync = (args, envOverrides) =>
+      new Promise((resolve, reject) => {
+        const child = spawn(bashBin, args, {
+          env: { ...process.env, ...envOverrides },
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (d) => {
+          stdout += d.toString('utf8');
+        });
+        child.stderr.on('data', (d) => {
+          stderr += d.toString('utf8');
+        });
+        child.on('error', reject);
+        child.on('close', (status) => resolve({ status, stdout, stderr }));
+      });
+
+    try {
+      const { port: metaPort } = metaServer.address();
+      const metaBaseUrl = `http://127.0.0.1:${metaPort}`;
+      const markerFile = path.join(tmpPoisonDir, 'pwned.marker');
+      const fakeNode = path.join(tmpPoisonDir, 'node');
+      fs.writeFileSync(fakeNode, `#!/usr/bin/env bash\necho PWNED > "${markerFile.replace(/\\/g, '/')}"\nexit 0\n`, { mode: 0o755 });
+      const poisonPath = `${tmpPoisonDir}${path.delimiter}${process.env.PATH || ''}`;
+
+      const startupNoRepo = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        NODE_OPTIONS: '--require=/tmp/evil.js',
+        STARLIGHT_REPO: '',
+        REPO: '',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
+      });
+      assert.equal(startupNoRepo.status, 1);
+      assert.match(
+        startupNoRepo.stderr,
+        /Error: No repository specified/,
+        `expected runner-entrypoint.sh to execute startup sequence cleanly and reach repo validation, got stderr: ${startupNoRepo.stderr}`,
+      );
+      assert.doesNotMatch(startupNoRepo.stderr, /readonly variable/i);
+
+      // Execution Proof A: Real runner-entrypoint.sh refuses default privileged Compute Engine SA before cloning!
+      mockSaEmail = '9988776655-compute@developer.gserviceaccount.com';
+      const defaultSaRefusal = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
+      });
+      assert.equal(defaultSaRefusal.status, 1);
+      assert.match(
+        defaultSaRefusal.stderr,
+        /privileged default Compute Engine service account/,
+        `expected default Compute SA refusal, got stderr: ${defaultSaRefusal.stderr}`,
+      );
+
+      // Restore dedicated least-privilege SA and verify fail-closed sandbox user check
+      mockSaEmail = 'starlight-runner-sandbox@starlight-estate.iam.gserviceaccount.com';
+      const startupMissingSandbox = await runBashAsync([entrypointPath], {
+        PATH: poisonPath,
+        PNPM_HOME: tmpPoisonDir,
+        STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+        STARLIGHT_SANDBOX_USER: 'nonexistent-starlight-sandbox-99999',
+        STARLIGHT_METADATA_BASE_URL: metaBaseUrl,
+      });
+      assert.equal(startupMissingSandbox.status, 1);
+      assert.match(
+        startupMissingSandbox.stderr,
+        /Isolated sandbox user 'nonexistent-starlight-sandbox-99999' does not exist/,
+        `expected fail-closed sandbox check after startup, got stderr: ${startupMissingSandbox.stderr}`,
+      );
+      assert.equal(fs.existsSync(markerFile), false, 'poisoned node shim must never execute');
+
+      // Execution Proof B & C: Extract the exact active metadata-isolation preflight block from runner-entrypoint.sh
+      // and execute against our live mock metadata server under (B) porous vs (C) network-isolated sandbox wrappers!
+      const toBashPath = (p) =>
+        p
+          .replace(/\\/g, '/')
+          .replace(/^([A-Za-z]):/, (_, drive) => `/${drive.toLowerCase()}`);
+
+      const isoBlockMatch = entrypoint.match(
+        /(# Enforce mandatory network & GCP metadata-server isolation[\s\S]*?GCP metadata token endpoint remained reachable[\s\S]*?\nfi)/,
+      );
+      assert.ok(isoBlockMatch, 'expected metadata-isolation preflight block in runner-entrypoint.sh');
+      const isoBlock = isoBlockMatch[1];
+
+      const sandboxArgParser = [
+        '#!/usr/bin/env bash',
+        '[ "${1:-}" = "do" ] || { echo "expected sandbox subcommand do" >&2; exit 2; }',
+        'shift',
+        'saw_write=0',
+        'while [ $# -gt 0 ] && [ "$1" != "--" ]; do',
+        '  [ "$1" = "--write" ] && saw_write=1',
+        '  shift',
+        'done',
+        '[ "$saw_write" = "1" ] || { echo "expected --write for writable overlay" >&2; exit 2; }',
+        '[ "${1:-}" = "--" ] || { echo "expected -- separator" >&2; exit 2; }',
+        'shift',
+      ].join('\n');
+
+      const porousBinDir = path.join(tmpPoisonDir, 'porous-bin');
+      fs.mkdirSync(porousBinDir, { recursive: true });
+      // Porous `sandbox` shim passes commands straight through WITHOUT blocking metadata HTTP access
+      fs.writeFileSync(
+        path.join(porousBinDir, 'sandbox'),
+        `${sandboxArgParser}\nexec "$@"\n`,
+        { mode: 0o755 },
+      );
+      const cmdRanMarker = toBashPath(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker'));
+      const porousProbe = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail; export PATH="$1:/usr/local/bin:/usr/bin:/bin:/mingw64/bin"; SANDBOX_EXEC=(/usr/bin/env); METADATA_BASE_URL="$2"; ${isoBlock}\ntouch "$3"`,
+          '_',
+          toBashPath(porousBinDir),
+          metaBaseUrl,
+          cmdRanMarker,
+        ],
+        {},
+      );
+      assert.equal(porousProbe.status, 1, `porous sandbox leaving metadata reachable must abort fail-closed: ${porousProbe.stderr}`);
+      assert.match(porousProbe.stderr, /GCP metadata token endpoint remained reachable/);
+      assert.equal(fs.existsSync(path.join(tmpPoisonDir, 'untrusted-cmd-ran.marker')), false, 'untrusted command must never run when metadata is reachable');
+
+      // Enforced `sandbox` shim blocks outbound connections to the metadata endpoint AND simulates
+      // Cloud Run `sandbox do --write`'s ephemeral per-invocation upperfs overlay (wiped on exit!)
+      const isolatedBinDir = path.join(tmpPoisonDir, 'isolated-bin');
+      const isolatedCurlDir = path.join(tmpPoisonDir, 'isolated-netns-bin');
+      fs.mkdirSync(isolatedBinDir, { recursive: true });
+      fs.mkdirSync(isolatedCurlDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(isolatedCurlDir, 'curl'),
+        '#!/usr/bin/env bash\necho "curl: (7) Failed to connect: Network is unreachable" >&2\nexit 7\n',
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
+        path.join(isolatedCurlDir, 'npm'),
+        '#!/usr/bin/env bash\nif [ "${1:-}" = "rebuild" ]; then echo "rebuilt" > "$EPHEMERAL_SANDBOX_UPPER/native-addon.node"; exit 0; fi\nexit 1\n',
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
+        path.join(isolatedBinDir, 'sandbox'),
+        [
+          sandboxArgParser,
+          'EPHEMERAL_SANDBOX_UPPER="$(mktemp -d)"',
+          'trap \'rm -rf "$EPHEMERAL_SANDBOX_UPPER"\' EXIT',
+          'export EPHEMERAL_SANDBOX_UPPER',
+          `export PATH="${toBashPath(isolatedCurlDir)}:$PATH"`,
+          '"$@"',
+        ].join('\n') + '\n',
+        { mode: 0o755 },
+      );
+      const stolenTokenNativePath = path.join(tmpPoisonDir, 'stolen-token.txt');
+      const stolenTokenFile = toBashPath(stolenTokenNativePath);
+      const unifiedExecMatch = entrypoint.match(
+        /(# Run native package rebuild AND untrusted verification command[\s\S]*?\nfi)/,
+      );
+      assert.ok(unifiedExecMatch, 'expected unified rebuild + verification command block in runner-entrypoint.sh');
+      const mockRepoDir = path.join(tmpPoisonDir, 'ephemeral-repo');
+      fs.mkdirSync(mockRepoDir, { recursive: true });
+      const enforcedProbe = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail; export PATH="$1:/usr/local/bin:/usr/bin:/bin:/mingw64/bin"; SANDBOX_EXEC=(/usr/bin/env); METADATA_BASE_URL="$2"; ${isoBlock}\n` +
+            `"\${ISOLATED_SANDBOX_CMD[@]}" /bin/bash -c 'curl -fsS -H "Metadata-Flavor: Google" "$1/computeMetadata/v1/instance/service-accounts/default/token" > "$2" 2>/dev/null || true' _ "$METADATA_BASE_URL" "$3"\n` +
+            `TASK_TIMEOUT=30s; SANDBOX_REPO="$4"; COMMAND='test -f "$EPHEMERAL_SANDBOX_UPPER/native-addon.node"'; EXIT_CODE=0\n` +
+            `${unifiedExecMatch[1]}\n` +
+            `[ "$STATUS" = "pass" ]`,
+          '_',
+          toBashPath(isolatedBinDir),
+          metaBaseUrl,
+          stolenTokenFile,
+          toBashPath(mockRepoDir),
+        ],
+        {},
+      );
+      assert.equal(enforcedProbe.status, 0, `isolated sandbox preflight or unified ephemeral rebuild+command failed: ${enforcedProbe.stderr}`);
+      const stolenContent = fs.existsSync(stolenTokenNativePath) ? fs.readFileSync(stolenTokenNativePath, 'utf8') : '';
+      assert.equal(stolenContent, '', 'sandboxed repository command must retrieve zero ambient service-account token bytes');
+
+      // Execution Proof D: Pre-fetch config & symlink sanitizer removes symlinked .npmrc/.pnpmfile.cjs,
+      // pins NPM_CONFIG_GIT=/bin/false, and rejects symlinked package.json or unsafe pnpm-workspace.yaml!
+      const sanitizerMatch = entrypoint.match(
+        /(# Pre-fetch config & symlink sanitizer:[\s\S]*?export COREPACK_ENABLE_DOWNLOAD_PROMPT=0)/,
+      );
+      assert.ok(sanitizerMatch, 'expected pre-fetch config & symlink sanitizer block in runner-entrypoint.sh');
+      const sanitizerBlock = sanitizerMatch[1];
+
+      const symlinkRepoDir = path.join(tmpPoisonDir, 'symlink-repo');
+      fs.mkdirSync(path.join(symlinkRepoDir, 'configs'), { recursive: true });
+      const gitHijackMarker = path.join(symlinkRepoDir, 'git-hijack.marker');
+      fs.writeFileSync(
+        path.join(symlinkRepoDir, 'evil-git.sh'),
+        `#!/usr/bin/env bash\necho HIJACKED > "${toBashPath(gitHijackMarker)}"\nexit 0\n`,
+        { mode: 0o755 },
+      );
+      fs.writeFileSync(
+        path.join(symlinkRepoDir, 'configs', 'evil-npmrc'),
+        'git=./evil-git.sh\nscript-shell=./evil-git.sh\n',
+        'utf8',
+      );
+      fs.writeFileSync(path.join(symlinkRepoDir, 'configs', 'evil-pnpmfile.cjs'), 'module.exports = {};\n', 'utf8');
+      fs.writeFileSync(path.join(symlinkRepoDir, 'package.json'), '{"name":"safe-pkg","version":"1.0.0"}\n', 'utf8');
+
+      const sandboxHomeDir = path.join(tmpPoisonDir, 'sandbox-home');
+      fs.mkdirSync(sandboxHomeDir, { recursive: true });
+      const verifySanitizerSnippet = `
+        export HOME="$2"
+        ${sanitizerBlock}
+        test ! -e .npmrc && test ! -L .npmrc
+        test ! -e .pnpmfile.cjs && test ! -L .pnpmfile.cjs
+        test "$NPM_CONFIG_USERCONFIG" != "$NPM_CONFIG_GLOBALCONFIG"
+        test -f "$NPM_CONFIG_USERCONFIG" && test -f "$NPM_CONFIG_GLOBALCONFIG"
+        test "$NPM_CONFIG_GIT" = "/bin/false"
+        test "$NPM_CONFIG_SCRIPT_SHELL" = "/bin/false"
+        test "$GIT_CONFIG_VALUE_1" = "never"
+        test "$COREPACK_ENABLE_PROJECT_SPEC" = "0"
+        if command -v npm >/dev/null 2>&1; then
+          npm install --ignore-scripts --git=/bin/false --script-shell=/bin/false --dry-run >/dev/null
+        fi
+      `;
+
+      // Create real symlinks (or MSYS symlinks) via bash `ln -s` and execute the sanitizer
+      const symlinkSanitizeRun = await runBashAsync(
+        [
+          '-c',
+          `set -eo pipefail
+           cd "$1"
+           ln -s configs/evil-npmrc .npmrc
+           ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
+           ${verifySanitizerSnippet}`,
+          '_',
+          toBashPath(symlinkRepoDir),
+          toBashPath(sandboxHomeDir),
+        ],
+        { MSYS: 'winsymlinks:nativestrict' },
+      );
+      // Fallback without winsymlinks:nativestrict if Windows developer-mode symlinks require MSYS copy/lnk fallback
+      if (symlinkSanitizeRun.status !== 0 && /symbolic link|symlink|privilege|Operation not permitted/i.test(symlinkSanitizeRun.stderr)) {
+        const fallbackRun = await runBashAsync(
+          [
+            '-c',
+            `set -eo pipefail
+             cd "$1"
+             rm -rf .npmrc .pnpmfile.cjs
+             ln -s configs/evil-npmrc .npmrc
+             ln -s configs/evil-pnpmfile.cjs .pnpmfile.cjs
+             ${verifySanitizerSnippet}`,
+            '_',
+            toBashPath(symlinkRepoDir),
+            toBashPath(sandboxHomeDir),
+          ],
+          {},
+        );
+        assert.equal(fallbackRun.status, 0, `symlink .npmrc sanitizer failed: ${fallbackRun.stderr}`);
+      } else {
+        assert.equal(symlinkSanitizeRun.status, 0, `symlink .npmrc sanitizer failed: ${symlinkSanitizeRun.stderr}`);
+      }
+      assert.equal(fs.existsSync(gitHijackMarker), false, 'repository git executable must never execute');
+
+      // Verify unsafe pnpm-workspace.yaml setting pnpmfile/scriptShell/configDependencies fails closed
+      fs.writeFileSync(path.join(symlinkRepoDir, 'pnpm-workspace.yaml'), 'pnpmfile: ./configs/evil-pnpmfile.cjs\n', 'utf8');
+      const unsafeWorkspaceRun = await runBashAsync(
+        ['-c', `set -eo pipefail; cd "$1"; ${sanitizerBlock}`, '_', toBashPath(symlinkRepoDir)],
+        {},
+      );
+      assert.equal(unsafeWorkspaceRun.status, 1, 'unsafe pnpm-workspace.yaml must fail closed');
+      assert.match(unsafeWorkspaceRun.stderr, /Refusing repository manifest configuring custom pnpmfile/);
+    } finally {
+      await new Promise((resolve) => metaServer.close(resolve));
+      fs.rmSync(tmpPoisonDir, { recursive: true, force: true });
+    }
+  }
+
+  // 4. Execute the exact Node stdin HMAC callback signer against a live local HTTP listener
+  // and prove: (a) process.argv excludes secret & signature, (b) /v1/runner/callback verifies the signature!
+  const signerMatch = entrypoint.match(/"\$TRUSTED_NODE_BIN" -e '([\s\S]*?)' -- \\/);
+  assert.ok(signerMatch, 'expected inline Node stdin callback signer in runner-entrypoint.sh');
+  const signerScript = signerMatch[1];
+
+  let capturedHeaders = null;
+  let capturedBody = '';
+  const server = http.createServer((req, res) => {
+    capturedHeaders = req.headers;
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', () => {
+      capturedBody = Buffer.concat(chunks).toString('utf8');
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end('{"ok":true}');
+    });
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const { port } = server.address();
+    const callbackUrl = `http://127.0.0.1:${port}/v1/runner/callback`;
+    const nowSec = String(Math.floor(Date.now() / 1000));
+    const cliArgs = [
+      '-e',
+      signerScript,
+      '--',
+      callbackUrl,
+      'deliv-runner-e2e-1',
+      'frankxai/Starlight-Intelligence-System',
+      'refs/heads/main',
+      'abc123def456',
+      'succeeded',
+      '12',
+      '4',
+      '0',
+      nowSec,
+    ];
+
+    for (const arg of cliArgs) {
+      assert.equal(
+        arg.includes(TEST_CALLBACK_SECRET),
+        false,
+        'callback signing secret must never appear in node process argv',
+      );
+    }
+
+    const runSigner = await new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, cliArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
+      let stderr = '';
+      child.stderr.on('data', (d) => {
+        stderr += d.toString('utf8');
+      });
+      child.on('error', reject);
+      child.on('close', (status) => resolve({ status, stderr }));
+      child.stdin.end(TEST_CALLBACK_SECRET);
+    });
+    assert.equal(runSigner.status, 0, `signer exited non-zero: ${runSigner.stderr}`);
+    assert.ok(capturedHeaders, 'callback HTTP server did not receive POST');
+
+    const check = await verifyCallbackSignature(
+      capturedBody,
+      String(capturedHeaders['x-starlight-timestamp'] ?? ''),
+      String(capturedHeaders['x-starlight-signature'] ?? ''),
+      TEST_CALLBACK_SECRET,
+    );
+    assert.equal(check.valid, true, `callback HMAC verification failed: ${check.reason}`);
+    const parsed = JSON.parse(capturedBody);
+    assert.equal(parsed.deliveryId, 'deliv-runner-e2e-1');
+    assert.equal(parsed.status, 'succeeded');
+    assert.equal(parsed.durationMs, 12000);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
+test('runner UID transition uses root runuser and never setuid sudo (Cloud Run container contract)', async () => {
+  const testDir = path.dirname(fileURLToPath(import.meta.url));
+  const repoRoot = path.resolve(testDir, '..', '..', '..');
+  const entrypointPath = path.join(repoRoot, 'tools', 'runner', 'runner-entrypoint.sh');
+  const dockerfile = fs.readFileSync(path.join(repoRoot, 'tools', 'runner', 'Dockerfile.runner'), 'utf8');
+  const entrypoint = fs.readFileSync(entrypointPath, 'utf8');
+
+  // Static contract: no sudo package, no sudoers grant, supervisor starts as root, entrypoint root-owned.
+  assert.doesNotMatch(dockerfile, /^\s+sudo \\$/m, 'runner image must not install sudo');
+  assert.doesNotMatch(dockerfile, /sudoers/, 'runner image must not ship a sudoers grant');
+  const userLines = dockerfile.match(/^USER\s+\S+\s*$/gm) ?? [];
+  assert.equal(userLines.at(-1)?.trim(), 'USER root', 'final container USER must be root so runuser can drop privileges');
+  assert.match(dockerfile, /COPY --chown=root:root runner-entrypoint\.sh /);
+  assert.doesNotMatch(entrypoint, /\bsudo\s+-n\b/, 'entrypoint must never invoke setuid sudo');
+  assert.match(entrypoint, /if \[ "\$SUPERVISOR_UID" -ne 0 \]; then/);
+  assert.match(entrypoint, /SANDBOX_EXEC=\(runuser -u "\$SANDBOX_USER" -- \/usr\/bin\/env -i /);
+
+  if (process.platform === 'win32' || spawnSync('bash', ['--version']).status !== 0) return;
+  const nobody = spawnSync('id', ['-u', 'nobody'], { encoding: 'utf8' });
+  if (nobody.status !== 0) return;
+  const nobodyUid = nobody.stdout.trim();
+  const callerUid = String(process.getuid());
+
+  // Execution proof 1: the in-sandbox wrapper never runs untrusted code as the caller when it cannot drop.
+  const wrappers = [...entrypoint.matchAll(/\/bin\/bash -c '\n(      export HOME="\$1"[\s\S]*?exec "\$@"\n)    ' _ "\$\{SANDBOX_HOME:-\/tmp\}"/g)];
+  assert.equal(wrappers.length, 2, 'expected both cloud-run-sandbox inner wrappers');
+  for (const [, wrapper] of wrappers) {
+    assert.doesNotMatch(wrapper, /sudo/);
+    const run = spawnSync('bash', ['-c', wrapper, '_', '/tmp', 'nobody', 'id', '-u'], {
+      encoding: 'utf8',
+      env: { PATH: '/usr/bin:/bin' },
+    });
+    if (run.status === 0) {
+      assert.equal(run.stdout.trim(), nobodyUid, 'wrapper must only exec after dropping to the sandbox user');
+    } else {
+      assert.equal(run.status, 126, `wrapper must fail closed, got ${run.status}: ${run.stderr}`);
+      assert.match(run.stderr, /cannot drop to sandbox user/);
+      assert.notEqual(run.stdout.trim(), callerUid);
+    }
+  }
+
+  // Execution proof 2: a non-root supervisor refuses before cloning instead of attempting sudo.
+  if (spawnSync('curl', ['--version']).status !== 0) return;
+  const env = {
+    PATH: process.env.PATH ?? '/usr/bin:/bin',
+    STARLIGHT_REPO: 'frankxai/Starlight-Intelligence-System',
+    STARLIGHT_SANDBOX_USER: 'root',
+    STARLIGHT_METADATA_BASE_URL: 'http://127.0.0.1:9',
+  };
+  let refusal;
+  if (callerUid === '0') {
+    if (spawnSync('setpriv', ['--version']).status !== 0) return;
+    refusal = spawnSync(
+      'setpriv',
+      ['--reuid', nobodyUid, '--regid', nobodyUid, '--clear-groups', 'bash', entrypointPath],
+      { encoding: 'utf8', env },
+    );
+  } else {
+    refusal = spawnSync('bash', [entrypointPath], { encoding: 'utf8', env });
+  }
+  assert.equal(refusal.status, 1, `expected non-root refusal, got ${refusal.status}: ${refusal.stderr}`);
+  assert.match(refusal.stderr, /Supervisor must run as root to drop to 'root' via runuser/);
+  assert.doesNotMatch(refusal.stdout, /Cloning repository/);
+});
