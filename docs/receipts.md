@@ -71,7 +71,40 @@ The result is `{ ok, status: "signed", receiptId, keyid, receipt, envelope }` wh
 
 `sis.receipt.list` returns recent receipts, newest first, with `receiptId`, `kind`, `keyid`, `verdict`, `runKind`, `issuedAt`, `costEur`, and `subjectName`.
 
-## Verify
+## Verifying a receipt
+
+To verify a receipt standalone from the command line:
+
+```bash
+npx tsx src/verify-receipt.ts <file.json> --public-key <public-key.pem>
+# or
+starlight verify-receipt <file.json> --public-key <public-key.pem>
+```
+
+Exit codes:
+- `0`: Verified. The DSSE envelope is valid, a trusted key's signature verifies, the receipt names that key as its issuer, and `receiptProblems` found no structural issues. The only other case that exits `0` is `starlight verify-receipt --help` (or `-h`), or the standalone command with `--help` or `-h` as its entire argument list; it prints usage and checks nothing. `--help` together with any other argument exits `2`. Any parent flag or `--` placed before the subcommand (`starlight --help verify-receipt ...`, `-hh`, `--json`) is refused with exit `2` as well, so a help screen is never mistaken for a verification.
+- `1`: Rejection. Verification failed due to a signature mismatch, untrusted key, tampered envelope/payload, structural defects in the receipt payload, an encoding the verifier will not forgive (below), or a trusted key it refuses (below).
+- `2`: Invalid input. Missing, unreadable or oversized input file or public key file, malformed JSON, or malformed CLI arguments (unknown flag, missing `--public-key`, more than one envelope).
+
+Exit `1` also covers a key file that is readable but is not a usable Ed25519 public key. The command only reads files; it never writes or signs. The keys you pass with `--public-key` are the whole trust root: a receipt is accepted only when one of them produced a verifying signature and the receipt names that key as its issuer.
+
+Guards the command adds on top of `verifyRunReceipt`:
+- **Strict encodings.** `payload` and every `sig` must be a string in standard base64 (padding required) or base64url (padding optional), with no stray characters, no mixed alphabets and no non-zero trailing bits. Node's decoder forgives all of those, so the command checks first. A `sig` that is an array or a number is rejected, not coerced.
+- **Size limit.** The envelope and each key file must be a regular file of at most 1 MiB (1048576 bytes). The path is checked first, then opened non-blocking where the platform supports it, then checked again on the open descriptor, and read at most 1 MiB plus one byte. A larger file, a directory, a device, or a named pipe exits `2`. Up to 8 `--public-key` flags are accepted and their files may total at most 1 MiB, counted in bytes read from disk; more exits `2`.
+- **Signature entries.** Every entry in `signatures` must be an object with a string `keyid` and a strict-base64 string `sig`. One bad entry is a rejection (exit `1`) even when another entry carries a valid signature.
+- **Small-order keys.** A trusted key that is a small-order Ed25519 point (the identity and the other seven canonical points, plus their sign-bit and non-canonical aliases) is refused with exit `1`, because signatures under such a key can be forged for any message.
+
+What the verifier does NOT check:
+- Maker differs from checker: whether the actor that accepted the work is the same harness that made it (`decisions` against `run.host`). A receipt can verify and still record a maker approving its own work. That is a policy check for the caller.
+- Real provider cost: it checks that `totals.costEur` is not below the stage sum, not that any figure matches a provider bill.
+- Genuine checker output: it checks signature, structure and that evidence entries carry a sha256. It does not fetch the evidence or confirm the hash matches it.
+- Who the key belongs to: a valid signature proves a trusted key signed these bytes, not that the contents are true (see "The rule").
+
+Known limits:
+- `src/run-receipt.ts` (`verifyRunReceipt`, the MCP `sis.receipt.verify` path and `trust_ledger`) still accepts a small-order public key as a trusted key. Depending on the Node and OpenSSL build, a trivial signature under the identity key then verifies for any edit (it does on Node 22.23 with OpenSSL 3.5.8, and not on Node 24.21). Only `starlight verify-receipt` refuses such keys. Fixing the shared code is a separate protocol PR.
+- The command trusts exactly the keys you give it and does not check who they belong to.
+
+The fixtures in `test/fixtures/run-receipt/` come from `node --import tsx tools/gen-run-receipt-fixtures.mjs [--out <dir>]`. They use fixed TEST KEYS that protect nothing; only the public halves are committed. The test regenerates into a temp directory and compares, so running it never changes the checkout. The generator is a test-only developer tool: it writes through a staging file and a rename, refuses symlinked and hard-linked targets, and trusts its `--out` directory (a symlinked ancestor of `--out` is not detected), so do not point it at a directory an untrusted party can write to.
 
 Locally, over MCP:
 
@@ -82,7 +115,7 @@ Locally, over MCP:
 
 With `trust_ledger: true` the server also trusts every `*.pub` file under `SIS_TRUSTED_KEYS_DIR`. The result is `{ ok: true, verified, keyid, reasons, receipt }`; `verified: false` means the check ran and the receipt failed it; errors are reported separately. In code, `verifyRunReceipt(envelope, [publicKeyPem])` from `src/run-receipt.ts` does the same with no I/O.
 
-There is no public verifier for run receipts yet. `https://starlightintelligence.ai/verify` checks only SIS's own SIP receipt, and `/api/v1/receipts/verify` does not exist. Until a public verifier ships, verify with `sis.receipt.verify` or `verifyRunReceipt` and the issuer's public key.
+There is no public verifier for run receipts yet. `https://starlightintelligence.ai/verify` checks only SIS's own SIP receipt, and `/api/v1/receipts/verify` does not exist. Until a public verifier ships, verify with `starlight verify-receipt` or `sis.receipt.verify` or `verifyRunReceipt` and the issuer's public key.
 
 ## The rule
 
