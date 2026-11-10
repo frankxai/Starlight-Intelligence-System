@@ -122,7 +122,7 @@ export function loadSpecialistAgents(root = process.cwd()): AgentDefinition[] | 
       if (typeof source.path !== "string" || isAbsolute(source.path)) return null;
       const target = resolve(resolvedRoot, source.path);
       if (!target.startsWith(resolvedRoot + sep)) return null;
-      const digest = createHash("sha256").update(readFileSync(target, "utf8")).digest("hex");
+      const digest = createHash("sha256").update(readFileSync(target, "utf8").replace(/\r\n/g, "\n")).digest("hex");
       if (digest !== source.sha256) return null;
     }
     const ids = new Set<string>();
