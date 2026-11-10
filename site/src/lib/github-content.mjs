@@ -82,6 +82,7 @@ function wait(milliseconds) {
  * @param {string} path
  * @param {{
  *   token?: string,
+ *   allowUnauthenticatedFallback?: boolean,
  *   revalidateSeconds?: number,
  *   maxAttempts?: number,
  *   retryDelayMs?: number,
@@ -94,6 +95,7 @@ function wait(milliseconds) {
 export async function fetchGitHubTextFile(repo, path, options = {}) {
   const {
     token,
+    allowUnauthenticatedFallback = false,
     revalidateSeconds = DEFAULT_REVALIDATE_SECONDS,
     maxAttempts = DEFAULT_MAX_ATTEMPTS,
     retryDelayMs = DEFAULT_RETRY_DELAY_MS,
@@ -103,13 +105,18 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
   } = options;
 
   const url = `${GITHUB_API}/repos/${repo}/contents/${path}`;
-  const headers = {
-    Accept: "application/vnd.github.v3+json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  let attemptBudget = maxAttempts;
+  let includeAuthorization = Boolean(token);
+  let unauthenticatedFallbackAvailable = Boolean(
+    token && allowUnauthenticatedFallback,
+  );
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= attemptBudget; attempt += 1) {
     try {
+      const headers = {
+        Accept: "application/vnd.github.v3+json",
+        ...(includeAuthorization ? { Authorization: `Bearer ${token}` } : {}),
+      };
       const response = await fetchImpl(url, {
         headers,
         next: { revalidate: revalidateSeconds },
@@ -117,6 +124,21 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
       });
 
       if (response.status === 404) return null;
+
+      if (
+        includeAuthorization &&
+        unauthenticatedFallbackAvailable &&
+        (response.status === 401 || response.status === 403)
+      ) {
+        includeAuthorization = false;
+        unauthenticatedFallbackAvailable = false;
+        attemptBudget += 1;
+        logger.warn(
+          "[vault/github] authenticated public-content fetch denied; retrying without credentials",
+          { repo, path, attempt, status: response.status },
+        );
+        continue;
+      }
 
       if (!response.ok) {
         throw new GitHubContentFetchError(
@@ -137,12 +159,12 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
 
       return Buffer.from(payload.content, "base64").toString("utf-8");
     } catch (error) {
-      const willRetry = attempt < maxAttempts && isRetryableError(error);
+      const willRetry = attempt < attemptBudget && isRetryableError(error);
       const receipt = {
         repo,
         path,
         attempt,
-        maxAttempts,
+        maxAttempts: attemptBudget,
         error: errorReceipt(error),
       };
 
