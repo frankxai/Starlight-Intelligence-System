@@ -18,8 +18,6 @@ import type {
   QueryRequest, 
   QueryResponse, 
   VmcpRequest,
-  SwarmLeaseRequest,
-  SwarmLeaseResponse,
   TenantContext
 } from './types.js';
 import {
@@ -58,7 +56,6 @@ function safeTimingEqual(a: string, b: string): boolean {
 
 // In-memory fallback tenant store for edge execution and automated tests
 const MEMORY_INDEX = new Map<string, MemoryAtom[]>();
-const ACTIVE_LEASES = new Map<string, SwarmLeaseResponse>();
 const VMCP_ROUTER = new EdgeVirtualMcpRouter();
 
 export class StarlightCloudWorker {
@@ -202,21 +199,14 @@ export class StarlightCloudWorker {
         return new Response(JSON.stringify(result, null, 2), { status: 200, headers: this.CORS_HEADERS });
       }
 
-      // 8. Route Swarm Worktree Lease: POST /v1/swarm/lease/acquire
-      if (url.pathname === '/v1/swarm/lease/acquire' && method === 'POST') {
-        const body = (await request.json()) as SwarmLeaseRequest;
-        const result = this.handleLeaseAcquire(tenant, body);
-        return new Response(JSON.stringify(result, null, 2), { 
-          status: result.status === 'acquired' ? 200 : 409, 
-          headers: this.CORS_HEADERS 
-        });
-      }
-
-      // 9. Route Swarm Worktree Lease Release: POST /v1/swarm/lease/release
-      if (url.pathname === '/v1/swarm/lease/release' && method === 'POST') {
-        const { leaseId } = (await request.json()) as { leaseId: string };
-        ACTIVE_LEASES.delete(leaseId);
-        return new Response(JSON.stringify({ success: true, status: 'released', released: leaseId }), { status: 200, headers: this.CORS_HEADERS });
+      // 8. Leases moved to the control plane (services/starlight-control-plane), which holds them in
+      // a Durable Object with fences and expiry. The in-memory map here lost every lease on restart.
+      if (url.pathname.startsWith('/v1/swarm/lease/')) {
+        return new Response(JSON.stringify({
+          error: 'Gone',
+          code: 'leases_moved',
+          message: 'Leases are issued by the Starlight control plane: POST /v1/tasks/claim.',
+        }), { status: 410, headers: this.CORS_HEADERS });
       }
 
       // 10. Route Model Context Protocol (MCP) SSE Transport Handshake
@@ -441,47 +431,6 @@ export class StarlightCloudWorker {
     };
   }
 
-  private static handleLeaseAcquire(tenant: TenantContext, req: SwarmLeaseRequest): SwarmLeaseResponse {
-    // Check conflicts
-    for (const lease of ACTIVE_LEASES.values()) {
-      const now = new Date().toISOString();
-      if (lease.expiresAt > now) {
-        for (const p of req.paths) {
-          if (lease.paths.includes(p) && lease.agentId !== req.agentId) {
-            return {
-              leaseId: `conflict_${Date.now()}`,
-              agentId: req.agentId,
-              worktree: req.worktree,
-              paths: req.paths,
-              acquiredAt: now,
-              expiresAt: now,
-              status: 'conflict',
-              conflictWith: lease.agentId,
-            };
-          }
-        }
-      }
-    }
-
-    const leaseId = `lease_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    const acquiredAt = new Date().toISOString();
-    const ttl = req.ttlSeconds || 120;
-    const expiresAt = new Date(Date.now() + ttl * 1000).toISOString();
-
-    const lease: SwarmLeaseResponse = {
-      leaseId,
-      agentId: req.agentId,
-      worktree: req.worktree,
-      paths: req.paths,
-      acquiredAt,
-      expiresAt,
-      status: 'acquired',
-    };
-
-    ACTIVE_LEASES.set(leaseId, lease);
-    return lease;
-  }
-
   private static getPalaceHtml(): string {
     return `<!DOCTYPE html>
 <html lang="en">
@@ -509,15 +458,12 @@ export class StarlightCloudWorker {
   <div class="header-bar">
     <div class="title">STARLIGHT HYPER-VAULT PALACE</div>
     <div class="pill">Edge Mesh v0.3.0</div>
-    <div class="pill">Zero-Knowledge E2EE</div>
   </div>
 
   <div class="stats-card">
-    <h3>Epistemic Mesh Telemetry</h3>
-    <div class="stat-row"><span>Indexed Nodes:</span><span class="stat-val">1,560 Nodes</span></div>
-    <div class="stat-row"><span>Token Savings (vMCP):</span><span class="stat-val">82.0% Saved</span></div>
-    <div class="stat-row"><span>Active Agent Leases:</span><span class="stat-val">4 Harnesses</span></div>
-    <div class="stat-row"><span>Contradiction Rate:</span><span class="stat-val">0.00% (Harmonic)</span></div>
+    <h3>Preview</h3>
+    <div class="stat-row"><span>Live data:</span><span class="stat-val">not connected</span></div>
+    <p style="font-size:12px;color:#94a3b8;margin-top:6px">The points below are an illustration of the six vault tiers, not a count of stored memories.</p>
     <div class="tier-legend">
       <span class="tier-dot"><span class="dot" style="background:#38bdf8"></span>Strategic</span>
       <span class="tier-dot"><span class="dot" style="background:#818cf8"></span>Technical</span>
