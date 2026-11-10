@@ -51,6 +51,9 @@ const EXPECTED_TOOLS = [
   "sis_search",
   "sis_stale",
   "sis_stats",
+  "sis_teammates_approve",
+  "sis_teammates_dispatch",
+  "sis_teammates_list",
   "sis_vault_search",
 ].sort();
 

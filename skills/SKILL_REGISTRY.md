@@ -1,6 +1,6 @@
 # Starlight Skill Registry
 
-> 89 skills across 17 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
+> 90 skills across 17 domains. Domain-specific registry parallel to `agents/AGENT_REGISTRY.md`. Source-of-truth for skill ownership, version, and status; `skill-rules.json` remains the source-of-truth for activation triggers (keywords, agents, intents).
 
 ---
 
@@ -133,7 +133,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | music-is/song-intake | music-is-song-intake | SIS | 2026-05-06 | stable |
 | music-is/suno-prompt | music-is-suno-prompt | SIS | 2026-05-06 | stable |
 
-### orchestration (13)
+### orchestration (14)
 
 | Skill | Activation rule ID | Owner repo | Version | Status |
 |---|---|---|---|---|
@@ -150,6 +150,7 @@ When a sovereign forks an SIS-canonical skill (e.g., Arcanea wants a divergent v
 | orchestration/sage-autonomous-execution | orchestration-sage-autonomous-execution | SIS | 2026-06-16 | stable |
 | orchestration/agent-creator | orchestration-agent-creator | SIS | 2026-07-28 | deprecated |
 | orchestration/workflow-skill-creator | orchestration-workflow-skill-creator | SIS | 2026-07-28 | deprecated |
+| orchestration/starlight-teammates | orchestration-starlight-teammates | SIS | 2026-11-10 | stable |
 
 ### foundry (4)
 

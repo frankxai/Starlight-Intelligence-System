@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StarlightTeammate",
+  "description": "Definition schema for a persistent autonomous Starlight Teammate digital worker.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique slug identifier for the teammate (e.g. 'starlight-queen', 'github-officer')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the teammate."
+    },
+    "role": {
+      "type": "string",
+      "description": "Operational job title and primary domain responsibility."
+    },
+    "voice": {
+      "type": "string",
+      "enum": ["architect", "queen", "sentinel", "navigator", "weaver", "sage"],
+      "description": "Registered brand and dialogue voice personality."
+    },
+    "modelPolicy": {
+      "type": "object",
+      "properties": {
+        "defaultTier": {
+          "type": "string",
+          "enum": ["light", "standard", "frontier"],
+          "default": "standard"
+        },
+        "allowedModels": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "monthlyTokenBudget": {
+          "type": "integer",
+          "description": "Token cap threshold before human alert."
+        }
+      },
+      "required": ["defaultTier"]
+    },
+    "memoryBinding": {
+      "type": "object",
+      "properties": {
+        "readVaults": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["strategic", "technical", "creative", "operational", "wisdom", "horizon"]
+          }
+        },
+        "writeVaults": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["strategic", "technical", "creative", "operational", "wisdom", "horizon"]
+          }
+        },
+        "autoConsolidate": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["readVaults", "writeVaults"]
+    },
+    "schedule": {
+      "type": "object",
+      "properties": {
+        "cron": {
+          "type": "string",
+          "description": "Standard 5-field cron expression for recurring tasks."
+        },
+        "taskDescription": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "properties": {
+        "canDraftPRs": { "type": "boolean", "default": true },
+        "canMergeWithoutApproval": { "type": "boolean", "default": false },
+        "canSpendMoney": { "type": "boolean", "default": false },
+        "canSendExternalMessages": { "type": "boolean", "default": false },
+        "requiresApprovalFor": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["canSpendMoney", "canMergeWithoutApproval"]
+    },
+    "connectedMcpServers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of MCP servers mounted into the teammate's execution context."
+    }
+  },
+  "required": ["id", "name", "role", "voice", "modelPolicy", "memoryBinding", "permissions"]
+}

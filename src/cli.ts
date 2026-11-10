@@ -176,6 +176,20 @@ Commands:
   queen agent save <session-id>   Capture prompts/outputs, git context, and generate durable secret-redacted handover (--out, --sync-issue)
   queen agent stop <session-id>   Safely stop a targeted agent session tree (--dry-run, --force, --timeout)
   queen agent resume <session-id> Generate resume instructions and Claude continuation prompt for a session
+  teammates list                  List active sovereign teammates, model tiers, and vaults
+  teammates dispatch <id> <text>  Dispatch task to an autonomous teammate with model tier routing
+  teammates approve <id> [action] Resolve a governance approval gate (approve | reject)
+  teammates tick                  Trigger autonomic health & task sweep across all teammates
+  teammates status <id>           Show telemetry, active models, vaults, and tools for a teammate
+  teammates design <query>        Query Refero design bridge for UI layouts, colors, and tokens
+  teammates daemon                Run autonomic background controller sweep (--interval <sec>, --once)
+  genius profile                  Display Frank's canonical sovereign Genius Profile
+  genius path <task>              Evaluate task on the Freedom Path (keep, delegate, automate, eliminate)
+  genius delegate <task>          Generate multi-teammate delegation plan with model tiers
+  skills match <query>            Match auto-activated skills with confidence (--agent, --json)
+  workflow list                   List available predefined workflows
+  workflow run <name> [input]     Run a predefined multi-step workflow with real-time trace
+  council <prompt>                Execute multi-model council consensus across Claude, Gemini & GPT
 
 Options:
   --help, -h                      Show this help message
@@ -207,6 +221,8 @@ Options:
   --checklist <tasks>             Comma-separated checklist tasks for goal init
   --findings <text>               Findings to consolidate during goal compress
   --no-tests                      Skip test execution during goal audit
+  --interval <sec>                Sweep interval for teammate daemon (default: 30)
+  --once                          Run single autonomic sweep and exit
 
 Examples:
   starlight init
@@ -228,6 +244,20 @@ Examples:
   starlight vault set my-pattern "Always use server components" --category pattern --tags react,next
   starlight vault search "server components"
   starlight orchestrate "Design a new authentication system"
+  starlight teammates design linear kanban
+  starlight teammates design calm ai chat
+  starlight teammates daemon --once
+  starlight teammates daemon --interval 60
+  starlight genius profile
+  starlight genius path "Architect sovereign multi-agent protocol"
+  starlight genius delegate "Build new vision module with verified CI tests"
+  starlight skills match "recall memory from obsidian notes"
+  starlight skills match "domain stack architecture" --agent starlight-genius
+  starlight workflow list
+  starlight workflow run product-sprint
+  starlight workflow run autonomous-refactor
+  starlight workflow run sentinel-audit
+  starlight council "Evaluate SQLite FTS5 hybrid indexing vs pure vector search"
   starlight stats
 `);
 }
@@ -1743,6 +1773,8 @@ async function main(): Promise<void> {
       timeout: { type: "string" },
       json: { type: "boolean" },
       "sync-issue": { type: "string" },
+      interval: { type: "string" },
+      once: { type: "boolean" },
     },
     strict: false,
   });
@@ -1965,6 +1997,558 @@ async function main(): Promise<void> {
         json: values.json === true,
         syncIssue: asString(values["sync-issue"]),
       });
+      break;
+    }
+
+    case "teammates": {
+      const teammatesAction = positionals[1] || "list";
+      const { teammatesEngine } = await import("./orchestration/teammates-engine.js");
+      if (teammatesAction === "list") {
+        const list = teammatesEngine.getTeammates();
+        console.log(`\n[starlight] Sovereign Teammates Fleet (${list.length} active):\n`);
+        for (const t of list) {
+          const modelBadge =
+            t.defaultTier === "frontier"
+              ? "Claude Opus 5.5 and Astra"
+              : t.defaultTier === "standard"
+              ? "Claude Sonnet 5.5"
+              : "Gemini 4 Argon and Sol";
+          console.log(`  • ${t.name.padEnd(20)} [${t.status.toUpperCase()}]`);
+          console.log(`    Role:     ${t.role}`);
+          console.log(`    Domain:   ${t.domain} | Voice: ${t.voice}`);
+          console.log(`    Tier:     ${t.defaultTier} (${modelBadge})`);
+          console.log(`    Vaults:   ${t.activeVaults.join(", ")}`);
+          console.log(`    Tools:    ${t.connectedTools.join(", ")}`);
+          console.log("");
+        }
+      } else if (teammatesAction === "dispatch") {
+        const id = positionals[2];
+        const prompt = positionals.slice(3).join(" ");
+        if (!id || !prompt) {
+          console.error("[starlight] Error: dispatch requires <teammate-id> and <prompt>");
+          console.error("  Example: starlight teammates dispatch starlight-queen 'run ecosystem brief'");
+          process.exitCode = 1;
+          return;
+        }
+        console.log(`[starlight] Dispatching to ${id}...`);
+        const result = await teammatesEngine.dispatch(id, prompt);
+        console.log(`\n[${result.teammateId}] (${result.modelUsed})`);
+        console.log(result.content);
+        if (result.approvalRequest) {
+          console.log(`\n[GOVERNANCE GATE] ${result.approvalRequest.title}`);
+          console.log(`  ${result.approvalRequest.consequences}`);
+          console.log(`  Gate ID: ${result.approvalRequest.id}`);
+          console.log(`  To approve: starlight teammates approve ${result.approvalRequest.id}`);
+        }
+      } else if (teammatesAction === "approve") {
+        const gateId = positionals[2];
+        const decision = positionals[3] || "approve";
+        if (!gateId) {
+          console.error("[starlight] Error: approve requires <gate-id> [approve|reject]");
+          process.exitCode = 1;
+          return;
+        }
+        const isApproved = decision.toLowerCase() !== "reject";
+        try {
+          const resolved = teammatesEngine.resolveApproval(gateId, isApproved);
+          console.log(`\n[starlight] Governance Gate Resolved: ${resolved.title}`);
+          console.log(`  Status:       ${resolved.status.toUpperCase()}`);
+          console.log(`  Consequences: ${resolved.consequences}`);
+        } catch (err: any) {
+          console.error(`[starlight] Error: ${err.message}`);
+          process.exitCode = 1;
+        }
+      } else if (teammatesAction === "tick") {
+        console.log("[starlight] Running autonomic tick across sovereign teammates fleet...");
+        const tick = await teammatesEngine.runAutonomicTick();
+        console.log(`\n[starlight] Autonomic Tick: ${tick.tickId}`);
+        console.log(`  Timestamp:         ${tick.timestamp}`);
+        console.log(`  Teammates Polled:  ${tick.teammatesPolled}`);
+        console.log(`  Active Workflows:  ${tick.activeWorkflows}`);
+        console.log(`  Pending Approvals: ${tick.pendingApprovals}\n`);
+        for (const d of tick.details) {
+          console.log(`  • ${d.name.padEnd(20)} [${d.status.toUpperCase()} | ${d.modelTier}]`);
+          console.log(`    Action: ${d.actionTaken}`);
+        }
+      } else if (teammatesAction === "status") {
+        const id = positionals[2];
+        if (!id) {
+          console.error("[starlight] Error: status requires <teammate-id>");
+          process.exitCode = 1;
+          return;
+        }
+        const t = teammatesEngine.getTeammate(id);
+        if (!t) {
+          console.error(`[starlight] Error: Teammate '${id}' not found.`);
+          process.exitCode = 1;
+          return;
+        }
+        console.log(`\n[starlight] Teammate Telemetry: ${t.name}`);
+        console.log(`  ID:              ${t.id}`);
+        console.log(`  Role:            ${t.role}`);
+        console.log(`  Domain, Voice:   ${t.domain}, ${t.voice}`);
+        console.log(`  Status:          ${t.status.toUpperCase()}`);
+        console.log(`  Default Tier:    ${t.defaultTier}`);
+        console.log(`  Active Models:   ${t.activeModels.join(", ")}`);
+        console.log(`  Bound Vaults:    ${t.activeVaults.join(", ")}`);
+        console.log(`  Connected Tools: ${t.connectedTools.join(", ")}`);
+        console.log(`  Unread Messages: ${t.unreadCount}`);
+        console.log(`  Last Active:     ${t.lastActive}\n`);
+      } else if (teammatesAction === "design") {
+        const query = positionals.slice(2).join(" ").trim();
+        if (!query) {
+          console.error("[starlight] Error: design requires a query string");
+          console.error("  Example: starlight teammates design linear kanban");
+          console.error("  Example: starlight teammates design factory execution tree");
+          console.error("  Example: starlight teammates design calm ai chat");
+          process.exitCode = 1;
+          return;
+        }
+
+        console.log(`[starlight] Querying Refero Design System Bridge for: "${query}"...`);
+        const { searchDesignInspiration } = await import("./orchestration/refero-bridge.js");
+        const res = await searchDesignInspiration(query, "web");
+
+        const sourceLabel =
+          res.source === "live_refero_api"
+            ? `Live Refero MCP (${res.screens.length} screens)`
+            : `Sovereign Offline Registry (${res.screens.length} reference specs)`;
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Teammates Design Bridge: "${res.query}"`);
+        console.log(` Source:   ${sourceLabel}`);
+        console.log(` Platform: ${res.platform.toUpperCase()}`);
+        console.log(` Summary:  ${res.summary}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Top Reference Screens ──────────────────────────────────────`);
+        const topScreens = res.patterns.slice(0, 3);
+        topScreens.forEach((p, idx) => {
+          console.log(`  ${idx + 1}. ${p.appName} — ${p.pageType}`);
+          if (p.pageUrl) console.log(`     Live URL:   ${p.pageUrl}`);
+          console.log(`     Refero:     ${p.referoUrl}`);
+          console.log(`     Palette:    ${p.colorSystem.rawHexColors.slice(0, 5).join("  ")} (${p.colorSystem.mode.toUpperCase()})`);
+          console.log(`     Layout:     ${p.layout.description}`);
+          if (p.uxPatterns.length > 0) {
+            console.log(`     UX:         ${p.uxPatterns.join(", ")}`);
+          }
+          if (p.uiElements.length > 0) {
+            console.log(`     Primitives: ${p.uiElements.slice(0, 6).join(", ")}`);
+          }
+          console.log("");
+        });
+
+        const top = res.topSpec;
+        console.log(`── UI Architecture & Layout Specs ─────────────────────────────`);
+        console.log(`  Archetype:   ${top.layout.type.toUpperCase()} (${top.layout.density} density)`);
+        console.log(`  Structure:   ${top.layout.columns}`);
+        console.log(`  Navigation:  ${top.layout.sidebar ? "Collapsible Left Sidebar or Drawer" : "Header Navigation Bar"}`);
+        console.log(`  Responsive:  ${top.layout.responsiveBehavior}`);
+        console.log("");
+
+        console.log(`── UI Interaction States ──────────────────────────────────────`);
+        console.log(`  Loading:     ${top.interactionStates.loading}`);
+        console.log(`  Empty State: ${top.interactionStates.empty}`);
+        console.log(`  Hover/Focus: ${top.interactionStates.hoverFocus}`);
+        console.log(`  Selection:   ${top.interactionStates.activeSelection}`);
+        console.log(`  Filter/Sort: ${top.interactionStates.filteringSorting}`);
+        console.log(`  Modal/Sheet: ${top.interactionStates.modalDrawer}`);
+        console.log("");
+
+        console.log(`── Recommended Design Tokens & Tailwind Setup ─────────────────`);
+        console.log(`  Theme Mode:  ${top.colorSystem.mode.toUpperCase()}`);
+        console.log(`  Background:  ${top.tokenRecommendations.colors.bg}`);
+        console.log(`  Surface:     ${top.tokenRecommendations.colors.surface}`);
+        console.log(`  Card:        ${top.tokenRecommendations.colors.card}`);
+        console.log(`  Text Pri:    ${top.tokenRecommendations.colors.primaryText}`);
+        console.log(`  Text Muted:  ${top.tokenRecommendations.colors.mutedText}`);
+        console.log(`  Accent:      ${top.tokenRecommendations.colors.accent}`);
+        console.log(`  Border:      ${top.tokenRecommendations.colors.border}`);
+        console.log(`  Typography:  ${top.tokenRecommendations.typography.fontFamily}`);
+        console.log(`  Scale:       ${top.tokenRecommendations.typography.scale}`);
+        console.log(`  Radii & Gap: ${top.tokenRecommendations.spacingAndRadius.radius} | ${top.tokenRecommendations.spacingAndRadius.gap}`);
+        console.log(`  Shadows:     ${top.tokenRecommendations.shadows}`);
+        console.log(`  Components:  ${top.tokenRecommendations.recommendedComponents.join(", ")}`);
+        console.log("");
+      } else if (teammatesAction === "daemon") {
+        const intervalSec = values.interval ? parseInt(asString(values.interval) || "30", 10) : 30;
+        const once = Boolean(values.once);
+        console.log(`[starlight] Sovereign Teammates Autonomic Daemon (${once ? "single sweep" : `interval: ${intervalSec}s`})...`);
+        const { teammateDaemon } = await import("./orchestration/teammate-synapse.js");
+        const status = await teammateDaemon.runDaemon({
+          intervalSec,
+          once,
+          onSweep: (s) => {
+            console.log(`[${s.lastHeartbeat}] Sweep #${s.sweepCount} | Status: ${s.status.toUpperCase()} | Pending gates: ${s.pendingApprovalsCount} | Coherence: ${s.vaultCoherence.status.toUpperCase()}`);
+          },
+        });
+
+        if (once) {
+          console.log(`\n[starlight] Autonomic Daemon Sweep Completed:`);
+          console.log(`  Daemon ID:          ${status.daemonId}`);
+          console.log(`  Status:             ${status.status.toUpperCase()}`);
+          console.log(`  Heartbeat:          ${status.lastHeartbeat}`);
+          console.log(`  Pending Approvals:  ${status.pendingApprovalsCount}`);
+          console.log(`  Vault Coherence:    ${status.vaultCoherence.status.toUpperCase()} (${status.vaultCoherence.operationalEntriesCount} op, ${status.vaultCoherence.technicalEntriesCount} tech entries)`);
+          console.log(`  Actions Taken:      ${status.lastSweep.actionsTaken.join(" | ")}`);
+          console.log(`  Heartbeat File:     ${teammateDaemon.getStatusPath()}\n`);
+        } else {
+          console.log(`[starlight] Autonomic daemon running in background loop. Press Ctrl+C to terminate.`);
+          console.log(`[starlight] Heartbeat file: ${teammateDaemon.getStatusPath()}\n`);
+          process.on("SIGINT", () => {
+            console.log("\n[starlight] Gracefully shutting down Teammate Daemon...");
+            teammateDaemon.stopDaemon();
+            process.exit(0);
+          });
+        }
+      } else {
+        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status, design, daemon.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "genius": {
+      const geniusAction = positionals[1] || "profile";
+      const { geniusEngine } = await import("./genius/index.js");
+
+      if (geniusAction === "profile") {
+        const profile = geniusEngine.getFrankGeniusProfile();
+        if (values.json) {
+          console.log(JSON.stringify(profile, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Genius Profile: ${profile.name}`);
+        console.log(` Archetype: ${profile.archetype}`);
+        console.log(` Formula:   ${profile.formula}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Core Quadrants ──────────────────────────────────────────────`);
+        for (const [quadrant, details] of Object.entries(profile.quadrants)) {
+          console.log(`  • ${details.title.toUpperCase()} [${quadrant}]`);
+          console.log(`    Focus:    ${details.focus}`);
+          console.log(`    Domains:  ${details.coreDomains.join(", ")}`);
+          console.log(`    Moves:    ${details.signatureMoves.join(" | ")}`);
+        }
+
+        console.log(`\n── Cognitive Superpowers ───────────────────────────────────────`);
+        for (const power of profile.cognitiveSuperpowers) {
+          console.log(`  ✦ ${power}`);
+        }
+
+        console.log(`\n── Non-Waivable Invariants ─────────────────────────────────────`);
+        for (const inv of profile.nonWaivableInvariants) {
+          console.log(`  🛡️  ${inv}`);
+        }
+
+        console.log(`\n── Voice Signature & Vibe ──────────────────────────────────────`);
+        console.log(`  Tone:    ${profile.voiceSignature.tone}`);
+        console.log(`  Vibe:    ${profile.voiceSignature.vibe}`);
+        console.log(`  Mission: ${profile.voiceSignature.mission}`);
+        console.log(`  Test:    ${profile.evaluationCriteria}`);
+
+        console.log(`\n── Flow Triggers & Anti-Patterns ───────────────────────────────`);
+        console.log(`  Flow:    ${profile.flowTriggers.join(" | ")}`);
+        console.log(`  Avoid:   ${profile.antiPatterns.join(" | ")}\n`);
+      } else if (geniusAction === "path") {
+        const task = positionals.slice(2).join(" ").trim();
+        if (!task) {
+          console.error("[starlight] Error: genius path requires a task description");
+          console.error("  Example: starlight genius path \"Architect sovereign multi-agent protocol\"");
+          console.error("  Example: starlight genius path \"Run hourly database shadow index rebuild\"");
+          console.error("  Example: starlight genius path \"Research top 5 AI agent frameworks\"");
+          process.exitCode = 1;
+          return;
+        }
+
+        const evalResult = geniusEngine.evaluateFreedomPath(task);
+        if (values.json) {
+          console.log(JSON.stringify(evalResult, null, 2));
+          return;
+        }
+
+        const badge = evalResult.action.toUpperCase();
+        console.log(`\n================================================================`);
+        console.log(` Starlight Freedom Path Evaluation`);
+        console.log(` Task:       "${evalResult.taskDescription}"`);
+        console.log(` Action:     [ ${badge} ] (confidence: ${(evalResult.confidence * 100).toFixed(0)}%)`);
+        console.log(`================================================================\n`);
+        console.log(`Rationale:`);
+        console.log(`  ${evalResult.rationale}\n`);
+        if (evalResult.primaryQuadrant) {
+          console.log(`Primary Quadrant: ${evalResult.primaryQuadrant.toUpperCase()}`);
+        }
+        if (evalResult.suggestedTeammate) {
+          console.log(`Suggested Sovereign Teammate: ${evalResult.suggestedTeammate}`);
+        }
+        if (evalResult.suggestedAutomation) {
+          console.log(`Suggested Automation Mechanism: ${evalResult.suggestedAutomation}`);
+        }
+        if (evalResult.eliminationReason) {
+          console.log(`Elimination Reason: ${evalResult.eliminationReason}`);
+        }
+        console.log("");
+      } else if (geniusAction === "delegate") {
+        const task = positionals.slice(2).join(" ").trim();
+        if (!task) {
+          console.error("[starlight] Error: genius delegate requires a task description");
+          console.error("  Example: starlight genius delegate \"Launch new multi-agent vision module with verified CI tests\"");
+          process.exitCode = 1;
+          return;
+        }
+
+        const plan = geniusEngine.planDelegation(task);
+        if (values.json) {
+          console.log(JSON.stringify(plan, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Sovereign Teammates Delegation Plan`);
+        console.log(` Plan ID:        ${plan.id}`);
+        console.log(` Original Task:  "${plan.originalTask}"`);
+        console.log(` Primary Intent: ${plan.primaryIntent}`);
+        console.log(` Coordinator:    ${plan.coordinatingTeammate} (${plan.coordinatingModel})`);
+        console.log(` Timestamp:      ${plan.timestamp}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Decomposed Tasks & Assignments ──────────────────────────────`);
+        plan.subtasks.forEach((st, idx) => {
+          console.log(`  ${idx + 1}. [${st.action.toUpperCase()}] ${st.title}`);
+          console.log(`     Assigned:   ${st.assignedTeammate} (${st.teammateRole})`);
+          console.log(`     Model Tier: ${st.recommendedModelTier} (${st.recommendedModel})`);
+          console.log(`     Rationale:  ${st.rationale}`);
+          if (st.verificationCriteria) {
+            console.log(`     Verify:     ${st.verificationCriteria}`);
+          }
+          if (st.dependencies && st.dependencies.length > 0) {
+            console.log(`     Depends on: ${st.dependencies.join(", ")}`);
+          }
+          console.log("");
+        });
+
+        if (plan.estimatedGovernanceGates && plan.estimatedGovernanceGates.length > 0) {
+          console.log(`── Governance & Safety Gates ───────────────────────────────────`);
+          for (const gate of plan.estimatedGovernanceGates) {
+            console.log(`  🛡️  ${gate}`);
+          }
+          console.log("");
+        }
+      } else {
+        console.error(`[starlight] Unknown genius action: "${geniusAction}". Available: profile, path, delegate.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "workflow": {
+      const workflowAction = positionals[1] || "list";
+      const { workflowRunner } = await import("./orchestration/workflow-runner.js");
+
+      if (workflowAction === "list") {
+        const workflows = workflowRunner.list();
+        if (values.json) {
+          console.log(JSON.stringify(workflows, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Predefined Workflows (${workflows.length} available)`);
+        console.log(`================================================================\n`);
+        for (const w of workflows) {
+          console.log(`  • ${w.id}`);
+          console.log(`    Name:        ${w.name}`);
+          console.log(`    Description: ${w.description}`);
+          console.log(`    Pipeline (${w.stepCount}): ${w.pipeline}`);
+          console.log("");
+        }
+      } else if (workflowAction === "run") {
+        const name = positionals[2];
+        if (!name) {
+          console.error("[starlight] Error: workflow run requires <workflow-name>");
+          console.error("  Available: product-sprint, autonomous-refactor, sentinel-audit");
+          console.error("  Example: starlight workflow run product-sprint");
+          process.exitCode = 1;
+          return;
+        }
+
+        const inputParam = positionals.slice(3).join(" ").trim() || undefined;
+        console.log(`\n[starlight] Initializing autonomous workflow: "${name}"...`);
+
+        const summary = await workflowRunner.run(name, {
+          input: inputParam,
+          verbose: values.verbose === true,
+          onStepStart: (step, idx, total) => {
+            console.log(`[starlight] [${idx + 1}/${total}] Starting: ${step.name}...`);
+          },
+          onStepComplete: (exec, idx, total) => {
+            if (exec.status === "success") {
+              console.log(`[starlight] ✓ [${idx + 1}/${total}] ${exec.name} completed in ${exec.durationMs}ms`);
+            } else if (exec.status === "skipped") {
+              console.log(`[starlight] ⊘ [${idx + 1}/${total}] ${exec.name} SKIPPED (dependency not satisfied)`);
+            } else {
+              console.log(`[starlight] ✗ [${idx + 1}/${total}] ${exec.name} FAILED: ${exec.error}`);
+            }
+          },
+        });
+
+        if (values.json) {
+          console.log(JSON.stringify(summary, null, 2));
+          return;
+        }
+
+        const passedCount = summary.steps.filter((s) => s.status === "success").length;
+        const totalCount = summary.steps.length;
+        const badge = summary.status === "success" ? "SUCCESS" : "FAILED";
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Workflow Execution Summary: ${summary.workflowName}`);
+        console.log(` Status:         [ ${badge} ]`);
+        console.log(` Total Duration: ${summary.totalDurationMs}ms`);
+        console.log(` Steps Passed:   ${passedCount} / ${totalCount}`);
+        console.log(`================================================================\n`);
+
+        console.log(`── Step Execution Details ──────────────────────────────────────`);
+        summary.steps.forEach((s, idx) => {
+          const statusIcon = s.status === "success" ? "✓" : s.status === "skipped" ? "⊘" : "✗";
+          console.log(`  ${idx + 1}. [${statusIcon}] ${s.name} (${s.durationMs}ms) [${s.status.toUpperCase()}]`);
+          if (s.output) {
+            const firstLines = s.output.split("\n").slice(0, 3).map((l) => `     ${l}`).join("\n");
+            console.log(firstLines);
+          }
+          if (s.error) {
+            console.log(`     Error: ${s.error}`);
+          }
+          console.log("");
+        });
+
+        if (summary.finalOutput) {
+          console.log(`── Final Deliverable and Attestation ───────────────────────────`);
+          console.log(summary.finalOutput);
+          console.log("");
+        }
+      } else {
+        console.error(`[starlight] Unknown workflow action: "${workflowAction}". Available: list, run.`);
+        process.exitCode = 1;
+      }
+      break;
+    }
+
+    case "council": {
+      const prompt = positionals.slice(1).join(" ").trim();
+      if (!prompt) {
+        console.error("[starlight] Error: council requires an evaluation prompt");
+        console.error("  Example: starlight council \"Should we migrate the memory substrate to SQLite hybrid?\"");
+        process.exitCode = 1;
+        return;
+      }
+
+      console.log(`[starlight] Dispatching council evaluation concurrently across frontier models:`);
+      console.log(`  • Anthropic: Claude Sonnet 5.5 (Architectural Rigor)`);
+      console.log(`  • Google:    Gemini 4 Argon (Massive Context Retrieval)`);
+      console.log(`  • OpenAI:    GPT-6.1 Sol (Pragmatic Tool Execution)`);
+
+      const { executeCouncilConsensus } = await import("./orchestration/workflow-runner.js");
+      const consensus = await executeCouncilConsensus(prompt);
+
+      if (values.json) {
+        console.log(JSON.stringify(consensus, null, 2));
+        return;
+      }
+
+      console.log(`\n================================================================`);
+      console.log(` Starlight Multi-Model Council Consensus`);
+      console.log(` Prompt:          "${consensus.prompt}"`);
+      console.log(` Agreement Index: [ ${consensus.agreementIndex}% CONSENSUS ]`);
+      console.log(` Timestamp:       ${consensus.timestamp}`);
+      console.log(`================================================================\n`);
+
+      console.log(`── Individual Model Viewpoints ─────────────────────────────────`);
+      for (const v of consensus.viewpoints) {
+        console.log(`  ✦ ${v.modelDisplayName} (${v.provider.toUpperCase()} — ${v.durationMs}ms):`);
+        const lines = v.content.split("\n").slice(0, 5).map((l) => `    ${l}`).join("\n");
+        console.log(lines);
+        console.log("");
+      }
+
+      console.log(`── Points of Agreement ─────────────────────────────────────────`);
+      for (const a of consensus.agreements) {
+        console.log(`  ✓ ${a}`);
+      }
+
+      console.log(`\n── Points of Divergence ─────────────────────────────────────────`);
+      for (const d of consensus.divergences) {
+        console.log(`  ⚡ ${d}`);
+      }
+
+      console.log(`\n── Unified Council Recommendation ──────────────────────────────`);
+      console.log(`  ${consensus.consensusText}`);
+      console.log(`\n  Recommended Next Move:`);
+      console.log(`  ${consensus.recommendation}\n`);
+      break;
+    }
+
+    case "skills": {
+      const skillsAction = positionals[1] || "match";
+      const { skillsDispatcher } = await import("./orchestration/skills-dispatcher.js");
+
+      if (skillsAction === "match") {
+        const query = positionals.slice(2).join(" ").trim();
+        if (!query) {
+          console.error("[starlight] Error: skills match requires a query string");
+          console.error("  Example: starlight skills match \"recall memory from obsidian notes\"");
+          console.error("  Example: starlight skills match \"productize expertise into domain stack\" --agent starlight-genius");
+          process.exitCode = 1;
+          return;
+        }
+
+        const agent = asString(values.agent);
+        const matches = skillsDispatcher.matchSkills(query, agent);
+
+        if (values.json) {
+          console.log(JSON.stringify(matches, null, 2));
+          return;
+        }
+
+        console.log(`\n================================================================`);
+        console.log(` Starlight Skills Dispatcher — Auto-Activation Matches`);
+        console.log(` Query:  "${query}"`);
+        if (agent) {
+          console.log(` Agent:  ${agent}`);
+        }
+        console.log(` Total:  ${matches.length} matching skill${matches.length === 1 ? "" : "s"}`);
+        console.log(`================================================================\n`);
+
+        if (matches.length === 0) {
+          console.log(`No auto-activating skills matched for this query.`);
+          console.log(`Tip: Ensure keywords or intents align with skill-rules.json triggers.\n`);
+          return;
+        }
+
+        matches.forEach((m, idx) => {
+          const confidencePct = Math.round(m.confidence * 100);
+          console.log(`  ${idx + 1}. [${m.rule.priority.toUpperCase()}] ${m.skill}`);
+          console.log(`     Confidence: ${confidencePct}% | Rule ID: ${m.rule.id}`);
+          if (m.matchedKeywords.length > 0) {
+            console.log(`     Keywords:   ${m.matchedKeywords.join(", ")}`);
+          }
+          if (m.matchedIntents.length > 0) {
+            console.log(`     Intents:    ${m.matchedIntents.join(", ")}`);
+          }
+          if (m.matchedPatterns.length > 0) {
+            console.log(`     Patterns:   ${m.matchedPatterns.join(", ")}`);
+          }
+          if (m.rule.triggers?.agents && m.rule.triggers.agents.length > 0) {
+            console.log(`     Agents:     ${m.rule.triggers.agents.join(", ")}`);
+          }
+          console.log("");
+        });
+      } else {
+        console.error(`[starlight] Unknown skills action: "${skillsAction}". Available: match.`);
+        process.exitCode = 1;
+      }
       break;
     }
 

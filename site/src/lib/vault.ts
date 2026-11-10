@@ -2,7 +2,7 @@ import "server-only";
 
 import { fetchGitHubTextFile } from "./github-content.mjs";
 
-const REGISTRY_REPO = "frankxai/Starlight-Intelligence-System";
+const REGISTRY_REPO = process.env.STARLIGHT_REPO || "Starlight-Intelligence/Starlight-Intelligence-System";
 const VAULT_CATEGORIES = [
   "strategic",
   "technical",
@@ -163,9 +163,30 @@ async function fetchGitHubFile(
   repo: string,
   path: string
 ): Promise<string | null> {
-  return fetchGitHubTextFile(repo, path, {
-    token: process.env.GITHUB_TOKEN,
-  });
+  try {
+    return await fetchGitHubTextFile(repo, path, {
+      token: process.env.GITHUB_TOKEN,
+    });
+  } catch {
+    // Graceful fallback to local repository files if offline or rate-limited
+    try {
+      const fs = await import("node:fs");
+      const nodePath = await import("node:path");
+      const candidates = [
+        nodePath.resolve(/*turbopackIgnore: true*/ process.cwd(), "..", path),
+        nodePath.resolve(/*turbopackIgnore: true*/ process.cwd(), path),
+        nodePath.resolve(/*turbopackIgnore: true*/ process.cwd(), "..", "memory", "vaults", nodePath.basename(path)),
+      ];
+      for (const candidate of candidates) {
+        if (fs.existsSync(candidate)) {
+          return fs.readFileSync(candidate, "utf-8");
+        }
+      }
+    } catch {
+      // Local fallback unavailable
+    }
+    return null;
+  }
 }
 
 function parseJsonl(content: string): VaultEntry[] {

@@ -1,0 +1,14 @@
+{
+  "name": "@starlight/harness",
+  "version": "0.1.0",
+  "description": "Claude Code and Codex as 24/7 workers on the control-plane queue, each task in its own Cloudflare sandbox driven by a Workflow",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@cloudflare/sandbox": "1.0.1"
+  },
+  "license": "MIT"
+}
