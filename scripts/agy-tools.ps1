@@ -473,6 +473,42 @@ function agy-run {
 Set-Alias -Name ay -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agy-yolo -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 
+# agy-resume: Resume an Antigravity conversation by ID or continue the most recent one
+function agy-resume {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$ConversationId,
+        [Parameter(Mandatory=$false, Position=1)]
+        [string]$RepoKey
+    )
+
+    if (-not (Test-Path $global:AGY_EXE_PATH)) {
+        Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
+        return
+    }
+
+    if ($RepoKey) {
+        $repo = Get-StarlightRepo $RepoKey -Silent
+        if ($repo) {
+            Set-Location $repo.FullName
+            Write-Host "⚡ Switched context to: $($repo.FullName)" -ForegroundColor DarkCyan
+        }
+    }
+
+    if ($ConversationId) {
+        Write-Host "🔄 Resuming conversation '$ConversationId'..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --conversation $ConversationId --dangerously-skip-permissions
+    } else {
+        Write-Host "🔄 Continuing most recent conversation..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --continue --dangerously-skip-permissions
+    }
+}
+
+Set-Alias -Name agyresume -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-continue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agycontinue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+
+
 # Helper: Invoke Claude Code in a target path in YOLO mode
 function Invoke-ClaudeYolo {
     param(
