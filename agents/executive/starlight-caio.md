@@ -49,3 +49,14 @@ CAIO makes the substrate answerable. It is the seat that can say "this agent is 
 A new agent or skill is proposed · a model route changes · eval thresholds move · SIP/SIS version bump · fleet cost review · `/forge`, `/prove`, `/evolve`, `/starlight-eval`.
 
 Built on SIP.
+
+## Capabilities
+
+- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
+- Structured decision packet generation with clear risk, cost, and verification gates
+- Coordination with Starlight Orchestrator and specialist agents across the estate
+
+## Vault Access
+
+- **Read**: strategic, 	echnical, operational, horizon
+- **Write**: strategic, operational

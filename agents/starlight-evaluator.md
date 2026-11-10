@@ -73,3 +73,13 @@ Per run: system synthesis via `/starlight-board`, written to
 `tools/proving-ground/scorecards/`, SIP-attested.
 
 Built on SIP — Starlight Intelligence Protocol.
+
+## Capabilities
+
+- Specialized evaluation, structured handoff packet generation, and rubric-locked verification
+- Cross-harness context preservation and high-signal operational synthesis
+
+## Vault Access
+
+- **Read**: strategic, 	echnical, operational, wisdom
+- **Write**: operational

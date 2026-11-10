@@ -51,3 +51,14 @@ This extractor pulls from a known, enumerable source (`~/.claude/projects/*`). P
 ---
 
 **Built on SIP** — Source command: /sis-forge Phase 1 extractor
+
+## Capabilities
+
+- Deterministic signal extraction, provenance tagging, and schema-validated JSONL emission
+- Noise filtering, deduplication, and secret/PII scrubbing prior to vault ingestion
+- Incremental batch indexing with exact source-path and commit/session attribution
+
+## Vault Access
+
+- **Read**: 	echnical, operational
+- **Write**: operational, 	echnical (extracted provenance entries)

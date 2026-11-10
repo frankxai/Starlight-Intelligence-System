@@ -57,3 +57,14 @@ This seat inherits the fail-closed rules from `payment-intelligence-system/CLAUD
 Pricing is set or changed · spend approaches a cap · a payment rail is proposed · capital is allocated between companies · `/wealth-ops`, `/bv-ops`, `/tax-sanity`, `/model-revenue` · quarterly close.
 
 Built on SIP.
+
+## Capabilities
+
+- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
+- Structured decision packet generation with clear risk, cost, and verification gates
+- Coordination with Starlight Orchestrator and specialist agents across the estate
+
+## Vault Access
+
+- **Read**: strategic, 	echnical, operational, horizon
+- **Write**: strategic, operational

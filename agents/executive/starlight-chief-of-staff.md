@@ -56,3 +56,14 @@ Chief of Staff decomposes intent into seated decisions, assembles the context ea
 Frank states compressed intent · two seats contend · a decision ages past its stage · session start (assembles state) · session end (writes it back) · `/intake`, `/handover`, `/eod`, `/starlight-board`.
 
 Built on SIP.
+
+## Capabilities
+
+- Executive domain synthesis, cross-repo priority alignment, and KPI/resource governance
+- Structured decision packet generation with clear risk, cost, and verification gates
+- Coordination with Starlight Orchestrator and specialist agents across the estate
+
+## Vault Access
+
+- **Read**: strategic, 	echnical, operational, horizon
+- **Write**: strategic, operational

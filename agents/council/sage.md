@@ -105,3 +105,14 @@ Before delivering a Council Sage perspective, check:
 ---
 
 **Built on SIP** · Council archetype · MIT
+
+## Capabilities
+
+- Inner-council perspective synthesis, assumption auditing, and long-horizon decision framing
+- Blind-spot detection across personal, relational, and strategic trade-offs
+- Grounded advisory reflection without overriding operator sovereignty
+
+## Vault Access
+
+- **Read**: strategic, wisdom, horizon
+- **Write**: wisdom (advisory reflections via council synthesis)
