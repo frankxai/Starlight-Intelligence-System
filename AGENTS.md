@@ -167,7 +167,7 @@ SIS integrates and aligns with the leading open multi-agent frameworks across th
 ## What you have access to
 
 - **151 named agents** across Core, Universal, and specialized Domain Vertical layers (including Space, Marine, Longevity, Legal, Crypto, and Partner adapters). Full registry: `agents/AGENT_REGISTRY.md`.
-- **89 auto-activating skill rules** across 17 domains (intelligence · orchestration · memory · integration · **foundry** · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
+- **90 auto-activating skill rules** across 17 domains (intelligence · orchestration · memory · integration · **foundry** · business · vision · health · relational · people-intelligence · sound-intelligence · music-is · energy · machine · crypto-intelligence · **safety** · **marine-intelligence**). Foundry adds skills-first capability compilation, agent necessity gates, system packaging, taste evaluation, and evidence receipts. Activation: `skills/skill-rules.json`.
 - **6 semantic memory vaults** (Strategic ◆ · Technical ⬡ · Creative ✦ · Operational ▸ · Wisdom ◎ · Horizon ↗) — Event-sourced JSONL truth, SQLite FTS5 hybrid index, 90-day temporal half-life, contradiction detection, dreaming background promotion. SIS Memory Gateway v0.1 (SessionStore + per-harness loopback daemon + RRF hybrid unification, privacy drop on private tags) + Memory Engine v0.2 (pluggable embeddings). See memory/README.md, VAULT_ARCHITECTURE.md, src/gateway/*, src/embedding.ts. Dreaming pipeline + CONSOLIDATION_LOG + PROMOTION_QUEUE for observable compounding. Private mount: separate starlight-private-memory repo (2026-06-11). **2026-06-12:** Queen (via driver + surfaces) now drives visual palace recall + consolidation; gateway SessionStore as Queen loop state; 5 image_gen visuals (loop/gateway/palace/arch/heatmap/receipt) integrated as first-class artifacts. See operational-vault Queen Advance + tools/queen/queen-advance-2026-06-12.json.
 - **Sanitization Gateway (The Veil)** — Local-first PII and secret scrubbing. Automatic protection against data leakage in continuous capture workflows.
 - **Empirical Sandbox (The Proving Ground)** — Isolated execution environment for technical pattern validation. All code blocks in the Technical Vault are empirically grounded.
@@ -243,7 +243,7 @@ Operational specialist labels and portable prompts: read `docs/agents/specialist
 
 ## Skills (auto-activating)
 
-Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (89 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (54 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (35 directory packages), together matching the 89-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
+Skills fire based on context — keywords, active agent, detected intent. Activation rules live in `skills/skill-rules.json` (90 rules). Skill markdown definitions use a mixed layout: `skills/<domain>/<skill-name>.md` (54 legacy flat files) or `skills/<domain>/<skill-name>/SKILL.md` (36 directory packages), together matching the 90-rule count. New skills use directory packages. `EXEMPT_PHANTOMS` remains empty.
 
 | Domain | Surface (sample) |
 |--------|------------------|
@@ -439,3 +439,23 @@ Source: https://github.com/frankxai/starlight-design-intelligence/tree/3d6fc8fdd
 Voice version: 1.0.0 · Source state: PROPOSAL_PREVIEW
 GitHub does not automatically inject this into unrelated chats; use .starlight/voice/CHAT_CONTEXT.md in their project or agent instructions.
 <!-- STARLIGHT-VOICE:END -->
+
+## Review evidence and release routing
+
+Added by Codex, 3 November 2026, revision 1; proposed until reviewed and merged.
+
+Declare one implementation owner/provider and the full head SHA. Branch names and
+shared GitHub accounts are routing hints, not authenticated model identity. Use
+Copilot for the first pass on qualifying ready PRs, then a substantive reviewer
+from a different provider for consequential work. Route OpenAI implementation to
+Claude and Anthropic implementation to Codex when those reviewers are available.
+Another session of the maker's provider or a typed receipt cannot prove independence.
+
+Request a final-head re-review when automatic new-push review is off. Bind findings,
+fixes, test evidence and coverage to that exact head; name unread files or truncated
+diffs. Review auth, money, tenant isolation, secrets, agent authority, CI and
+infrastructure as security-sensitive. Existing human release gates still apply.
+
+Preserve independent-review-policy, harness and scan. Inspect memory/tool execution boundaries, tenant and vault isolation, stale-output handling and denial/recovery behavior. An exit code or fresh heartbeat cannot prove useful output. Report existing bypasses separately; do not use or remove them through this instruction change.
+
+Shared measured rollout: https://github.com/frankxai/agentic-ops/pull/439.

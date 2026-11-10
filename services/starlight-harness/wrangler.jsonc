@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "starlight-harness",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  "upload_source_maps": true,
+  // Every minute: claim work up to each harness's limit and start one Workflow per task.
+  "triggers": { "crons": ["* * * * *"] },
+  "vars": {
+    "AI_GATEWAY_ACCOUNT_ID": "<ACCOUNT_ID>",
+    "AI_GATEWAY_ID": "default",
+    // Model ids your gateway can serve. Check intel/INTEL-BRIEF.md before changing them.
+    "CLAUDE_MODEL": "claude-sonnet-5-5",
+    "CODEX_MODEL": "gpt-6-sol",
+    // owner/name pairs, comma-separated. A sandbox can clone and push only these.
+    "REPOS": "",
+    // max 0 = off. Raise one harness at a time after the first manual run.
+    "HARNESSES": "{\"claude\":{\"agentId\":\"cf-claude\",\"max\":0,\"kinds\":[\"review\",\"fix\",\"build\"]},\"codex\":{\"agentId\":\"cf-codex\",\"max\":0,\"kinds\":[\"fix\",\"build\"]}}",
+    "CODEX_BOT": "chatgpt-codex-connector[bot]",
+    "ALLOW_REGISTRIES": "true"
+  },
+  "secrets": {
+    "required": ["AI_GATEWAY_TOKEN", "GITHUB_APP_ID", "GITHUB_APP_PRIVATE_KEY", "CP_TOKEN_CLAUDE", "CP_TOKEN_CODEX"]
+  },
+  "containers": [
+    {
+      "class_name": "HarnessSandbox",
+      "scheduling_policy": "durable_object",
+      "max_instances": 4,
+      "images": {
+        "claude": { "dockerfile": "./docker/claude.Dockerfile" },
+        "codex": { "dockerfile": "./docker/codex.Dockerfile" }
+      }
+    }
+  ],
+  "durable_objects": { "bindings": [{ "class_name": "HarnessSandbox", "name": "SANDBOX" }] },
+  "exports": { "HarnessSandbox": { "type": "durable-object", "storage": "sqlite" } },
+  "workflows": [{ "name": "starlight-harness-task-run", "binding": "TASK_RUN", "class_name": "TaskRun" }],
+  "services": [{ "binding": "CONTROL_PLANE", "service": "starlight-control-plane" }]
+}

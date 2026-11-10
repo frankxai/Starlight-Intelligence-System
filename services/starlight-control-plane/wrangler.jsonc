@@ -1,0 +1,45 @@
+{
+  "name": "starlight-control-plane",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "logs": { "enabled": true }, "traces": { "enabled": true, "head_sampling_rate": 1 } },
+  // */10: outbox safety net (the alarm normally drains it). 06:00 UTC: recurring tasks.
+  "triggers": { "crons": ["*/10 * * * *", "0 6 * * *"] },
+  // Nightly reviewer arena (docs/control-plane/ARENA.md): DISABLED. Frank must approve before this is
+  // enabled (estate rule: crons stay off until Frank approves). Enabling it also needs a scheduled()
+  // branch for this cron in src/index.ts; until then index.ts would treat it as an outbox drain.
+  // To enable after approval, replace the line above with:
+  // "triggers": { "crons": ["*/10 * * * *", "0 6 * * *", "30 3 * * *"] },
+  "vars": {
+    // Empty repos list = the router acts on nothing. Add owner/name pairs to opt a repo in.
+    // selfLogins must hold this App's bot login (<app-slug>[bot]) or its own labels re-trigger it.
+    "ROUTING": "{\"repos\":[],\"codexBot\":\"chatgpt-codex-connector[bot]\",\"selfLogins\":[\"starlight-control-plane[bot]\"],\"recurring\":[]}",
+    // cf-review (src/review.ts). Triage tier by default: STARLIGHT_GATE_MODELS is empty, so no
+    // model here can post a starlight-signoff trailer. See docs/control-plane/DEPLOY.md.
+    "STARLIGHT_REVIEW_MODELS": "@cf/openai/gpt-oss-120b",
+    "STARLIGHT_GATE_MODELS": "",
+    "STARLIGHT_REVIEW_GATEWAY": "starlight-review",
+    "STARLIGHT_REVIEW_TIMEOUT_MS": "120000",
+    "STARLIGHT_REVIEW_BUDGET_MS": "720000"
+  },
+  "ai": { "binding": "AI" },
+  "d1_databases": [
+    // database_id comes from `wrangler d1 create starlight-reviews`; deploy fails until it is set.
+    { "binding": "REVIEWS_DB", "database_name": "starlight-reviews", "database_id": "SET-FROM-wrangler-d1-create", "migrations_dir": "migrations" }
+  ],
+  "queues": {
+    "producers": [{ "binding": "REVIEW_QUEUE", "queue": "starlight-review" }],
+    // One review per invocation: a review is minutes of model calls, and a batch shares one wall clock.
+    "consumers": [{ "queue": "starlight-review", "max_batch_size": 1, "max_retries": 3, "dead_letter_queue": "starlight-review-dlq" }]
+  },
+  // AGENT_TOKENS is a secret: `wrangler secret put AGENT_TOKENS` with a JSON object mapping
+  // sha256(token) hex to { agentId, harness, provider, roles }. Never commit it.
+  // Also secrets: GITHUB_WEBHOOK_SECRET, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY (PKCS#8).
+  "durable_objects": {
+    "bindings": [{ "name": "CONTROL_PLANE", "class_name": "ControlPlane" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ControlPlane"] }]
+}
