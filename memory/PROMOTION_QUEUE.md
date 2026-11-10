@@ -69,3 +69,62 @@
       Cross-vault pattern: found in Witali Riemer + Adam Riemer, Ahmad Hashem, Alex Riemer, Ana Cancino, Logan Carlson, Manon Janssen, Tien
 - [ ] **`md:Witali Riemer.md#5`** (people) — Witali Riemer → wisdom
       Cross-vault pattern: found in Witali Riemer + Adam Riemer, Ahmad Hashem, Alex Riemer, Ana Cancino, Logan Carlson, Manon Janssen
+
+### 2026-11-10T03:15:05.228Z — Second Brain pass (28 new)
+
+- [ ] **`md:2026-W27-reflection.md#8`** (patterns) — 2026-W27-reflection → wisdom
+      Cross-vault pattern: found in 2026-W27-reflection + 2026-W44-reflection-2, 2026-W44-reflection-5, 2026-W44-reflection, 2026-W45-reflection-2
+- [ ] **`md:2026-W28-reflection-2.md#0`** (patterns) — 2026-W28-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W28-reflection-2 + 2026-W44-reflection-2, 2026-W44-reflection
+- [ ] **`md:2026-W44-reflection-2.md#0`** (patterns) — 2026-W44-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-2 + 2026-W28-reflection-2, 2026-W44-reflection-3, 2026-W44-reflection
+- [ ] **`md:2026-W44-reflection-2.md#7`** (patterns) — 2026-W44-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-2 + 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W44-reflection-6
+- [ ] **`md:2026-W44-reflection-2.md#8`** (patterns) — 2026-W44-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-2 + 2026-W27-reflection, 2026-W44-reflection-3, 2026-W44-reflection-5, 2026-W44-reflection
+- [ ] **`md:2026-W44-reflection-3.md#0`** (patterns) — 2026-W44-reflection-3 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-3 + 2026-W44-reflection-2, 2026-W44-reflection
+- [ ] **`md:2026-W44-reflection-3.md#6`** (patterns) — 2026-W44-reflection-3 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-3 + 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W44-reflection-6
+- [ ] **`md:2026-W44-reflection-3.md#7`** (patterns) — 2026-W44-reflection-3 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-3 + 2026-W44-reflection-2
+- [ ] **`md:2026-W44-reflection-4.md#6`** (patterns) — 2026-W44-reflection-4 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-4 + 2026-W44-reflection-2, 2026-W44-reflection-3, 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-4
+- [ ] **`md:2026-W44-reflection-4.md#7`** (patterns) — 2026-W44-reflection-4 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-4 + 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W44-reflection-5.md#6`** (patterns) — 2026-W44-reflection-5 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-5 + 2026-W44-reflection-2, 2026-W44-reflection-3, 2026-W44-reflection-4, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5
+- [ ] **`md:2026-W44-reflection-5.md#7`** (patterns) — 2026-W44-reflection-5 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-5 + 2026-W27-reflection, 2026-W44-reflection-2, 2026-W44-reflection-4, 2026-W44-reflection-6, 2026-W44-reflection, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection
+- [ ] **`md:2026-W44-reflection-6.md#6`** (patterns) — 2026-W44-reflection-6 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-6 + 2026-W44-reflection-2, 2026-W44-reflection-3, 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection
+- [ ] **`md:2026-W44-reflection-6.md#7`** (patterns) — 2026-W44-reflection-6 → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection-6 + 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection
+- [ ] **`md:2026-W44-reflection.md#0`** (patterns) — 2026-W44-reflection → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection + 2026-W28-reflection-2, 2026-W44-reflection-2, 2026-W44-reflection-3
+- [ ] **`md:2026-W44-reflection.md#9`** (patterns) — 2026-W44-reflection → wisdom
+      Cross-vault pattern: found in 2026-W44-reflection + 2026-W27-reflection, 2026-W44-reflection-2, 2026-W44-reflection-5, 2026-W45-reflection-2
+- [ ] **`md:2026-W45-reflection-2.md#6`** (patterns) — 2026-W45-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-2 + 2026-W44-reflection-5, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-2.md#7`** (patterns) — 2026-W45-reflection-2 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-2 + 2026-W27-reflection, 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W44-reflection, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-3.md#6`** (patterns) — 2026-W45-reflection-3 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-3 + 2026-W44-reflection-5, 2026-W45-reflection-2, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-3.md#7`** (patterns) — 2026-W45-reflection-3 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-3 + 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-4.md#6`** (patterns) — 2026-W45-reflection-4 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-4 + 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-4.md#7`** (patterns) — 2026-W45-reflection-4 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-4 + 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-5, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-5.md#6`** (patterns) — 2026-W45-reflection-5 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-5 + 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection-5.md#7`** (patterns) — 2026-W45-reflection-5 → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection-5 + 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection.md#6`** (patterns) — 2026-W45-reflection → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection + 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W46-reflection
+- [ ] **`md:2026-W45-reflection.md#7`** (patterns) — 2026-W45-reflection → wisdom
+      Cross-vault pattern: found in 2026-W45-reflection + 2026-W44-reflection-4, 2026-W44-reflection-5, 2026-W44-reflection-6, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5
+- [ ] **`md:2026-W46-reflection.md#6`** (patterns) — 2026-W46-reflection → wisdom
+      Cross-vault pattern: found in 2026-W46-reflection + 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5, 2026-W45-reflection
+- [ ] **`md:2026-W46-reflection.md#7`** (patterns) — 2026-W46-reflection → wisdom
+      Cross-vault pattern: found in 2026-W46-reflection + 2026-W44-reflection-4, 2026-W45-reflection-2, 2026-W45-reflection-3, 2026-W45-reflection-4, 2026-W45-reflection-5
