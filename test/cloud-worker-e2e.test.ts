@@ -261,6 +261,67 @@ describe('Configured D1 acknowledgement ordering (synthetic component)', () => {
 
 import { SwarmCoordinator } from '../services/starlight-cloud-worker/src/index.js';
 
+describe('Cloud connector lease HTTP acknowledgement (synthetic requests)', () => {
+  const operations = [
+    ['acquire', (connector: StarlightCloudConnector) =>
+      connector.acquireLease('synthetic-agent', '/fixture', ['fixture.ts'])],
+    ['release', (connector: StarlightCloudConnector) =>
+      connector.releaseLease('synthetic-lease')],
+  ] as const;
+
+  for (const [operation, invoke] of operations) {
+    const connector = () => new StarlightCloudConnector({
+      cloudEndpoint: BASE_URL,
+      apiKey: TEST_API_KEY,
+      offlineFallback: true,
+    });
+
+    it(`rejects contained worker ${operation} instead of returning an error envelope`, async (t) => {
+      t.mock.method(globalThis, 'fetch', (input: string | URL | Request, init?: RequestInit) =>
+        StarlightCloudWorker.handleRequest(new Request(input, init)));
+
+      await assert.rejects(invoke(connector()), {
+        message: `Starlight Cloud lease ${operation} failed with HTTP 503.`,
+      });
+    });
+
+    for (const status of [401, 403, 409, 429, 500, 503]) {
+      it(`rejects ${operation} HTTP ${status} without reading or leaking the response body`, async (t) => {
+        const response = new Response(JSON.stringify({
+          acquired: true,
+          released: true,
+          error: 'synthetic-private-provider-detail',
+        }), { status });
+        const fetch = t.mock.method(globalThis, 'fetch', async () => response);
+
+        await assert.rejects(invoke(connector()), {
+          message: `Starlight Cloud lease ${operation} failed with HTTP ${status}.`,
+        });
+        assert.equal(response.bodyUsed, false);
+        assert.equal(fetch.mock.callCount(), 1);
+      });
+    }
+
+    it(`reports ${operation} HTTP denial before parsing a non-JSON response`, async (t) => {
+      t.mock.method(globalThis, 'fetch', async () =>
+        new Response('synthetic-private-provider-detail', { status: 503 }));
+
+      await assert.rejects(invoke(connector()), {
+        message: `Starlight Cloud lease ${operation} failed with HTTP 503.`,
+      });
+    });
+
+    it(`preserves successful ${operation} response compatibility without proving a real lease`, async (t) => {
+      const payload = operation === 'acquire'
+        ? { leaseId: 'synthetic-lease', acquired: true }
+        : { released: true };
+      t.mock.method(globalThis, 'fetch', async () => Response.json(payload));
+
+      assert.deepEqual(await invoke(connector()), payload);
+    });
+  }
+});
+
 describe('Direct SwarmCoordinator containment (synthetic requests)', () => {
   const expected = {
     error: 'Service Unavailable',

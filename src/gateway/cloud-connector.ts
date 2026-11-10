@@ -230,6 +230,10 @@ export class StarlightCloudConnector {
       body: JSON.stringify({ agentId, worktree, paths, ttlSeconds }),
     });
 
+    if (!res.ok) {
+      throw new Error(`Starlight Cloud lease acquire failed with HTTP ${res.status}.`);
+    }
+
     return await res.json();
   }
 
@@ -246,6 +250,10 @@ export class StarlightCloudConnector {
       },
       body: JSON.stringify({ leaseId }),
     });
+
+    if (!res.ok) {
+      throw new Error(`Starlight Cloud lease release failed with HTTP ${res.status}.`);
+    }
 
     return await res.json();
   }
