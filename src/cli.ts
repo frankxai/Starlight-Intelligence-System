@@ -1992,10 +1992,10 @@ async function main(): Promise<void> {
         for (const t of list) {
           const modelBadge =
             t.defaultTier === "frontier"
-              ? "Claude Opus 5.5 / Astra"
+              ? "Claude Opus 5.5 and Astra"
               : t.defaultTier === "standard"
               ? "Claude Sonnet 5.5"
-              : "Gemini 4 Argon / Sol";
+              : "Gemini 4 Argon and Sol";
           console.log(`  • ${t.name.padEnd(20)} [${t.status.toUpperCase()}]`);
           console.log(`    Role:     ${t.role}`);
           console.log(`    Domain:   ${t.domain} | Voice: ${t.voice}`);
@@ -2069,7 +2069,7 @@ async function main(): Promise<void> {
         console.log(`\n[starlight] Teammate Telemetry: ${t.name}`);
         console.log(`  ID:              ${t.id}`);
         console.log(`  Role:            ${t.role}`);
-        console.log(`  Domain / Voice:  ${t.domain} / ${t.voice}`);
+        console.log(`  Domain, Voice:   ${t.domain}, ${t.voice}`);
         console.log(`  Status:          ${t.status.toUpperCase()}`);
         console.log(`  Default Tier:    ${t.defaultTier}`);
         console.log(`  Active Models:   ${t.activeModels.join(", ")}`);
@@ -2098,7 +2098,7 @@ async function main(): Promise<void> {
             : `Sovereign Offline Registry (${res.screens.length} reference specs)`;
 
         console.log(`\n================================================================`);
-        console.log(` STARLIGHT TEAMMATES DESIGN BRIDGE: "${res.query}"`);
+        console.log(` Starlight Teammates Design Bridge: "${res.query}"`);
         console.log(` Source:   ${sourceLabel}`);
         console.log(` Platform: ${res.platform.toUpperCase()}`);
         console.log(` Summary:  ${res.summary}`);
@@ -2125,7 +2125,7 @@ async function main(): Promise<void> {
         console.log(`── UI Architecture & Layout Specs ─────────────────────────────`);
         console.log(`  Archetype:   ${top.layout.type.toUpperCase()} (${top.layout.density} density)`);
         console.log(`  Structure:   ${top.layout.columns}`);
-        console.log(`  Navigation:  ${top.layout.sidebar ? "Collapsible Left Sidebar / Drawer" : "Header Navigation Bar"}`);
+        console.log(`  Navigation:  ${top.layout.sidebar ? "Collapsible Left Sidebar or Drawer" : "Header Navigation Bar"}`);
         console.log(`  Responsive:  ${top.layout.responsiveBehavior}`);
         console.log("");
 

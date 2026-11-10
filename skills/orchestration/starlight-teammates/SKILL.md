@@ -1,5 +1,5 @@
 ---
-name: orchestration/starlight-teammates
+name: starlight-teammates
 description: Coordinate autonomous sovereign teammates across the Starlight Intelligence System. Routes tasks across dynamic frontier models (Sonnet 5.5, Gemini 4 Argon, Opus 5.5, GPT-6.1 Sol), enforces fail-closed governance invariants, integrates Refero MCP and BrowserOS Neo, and anchors state to the 6-vault memory substrate.
 type: orchestration
 ---
