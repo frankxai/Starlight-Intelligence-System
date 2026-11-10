@@ -14,3 +14,9 @@ export { ReviewQueue } from "../review-queue.js";
 export type { ReviewJob, ReviewState, ReviewReceipt, ReviewBinding } from "../review-queue.js";
 export { prepareJevRouterRequest, inspectJevRouterResponse } from "./jev-router.js";
 export type { JevRouterPolicy, JevRouterRequest, JevRouteReceipt } from "./jev-router.js";
+export {
+  DECISION_CONTRACT, CLEF_FLASH_MODEL, CLEF_FLASH_USD_PER_MILLION_INPUT, CLEF_FLASH_CONTEXT_TOKENS,
+  RAM_RESERVE_BYTES, prepareClefFlashRequest, inspectClefFlashResponse, routeDecision, routeShadowOperations,
+  SHADOW_STORAGE_PACKET,
+} from "./decision-route.js";
+export type { DecisionAdmission, DecisionResult, DecisionProvider, PreparedClefRequest, RouteInput } from "./decision-route.js";

@@ -1,4 +1,4 @@
-# Starlight tool initializers -- source from $PROFILE alongside zellij-aliases.ps1.
+﻿# Starlight tool initializers -- source from $PROFILE alongside zellij-aliases.ps1.
 #
 # To install permanently:
 #   notepad $PROFILE
@@ -72,10 +72,13 @@ function Start-StarlightDaemon {
 }
 
 function Start-SisGateway {
-    param([int]$Port = 4400, [string]$StorageRoot = "C:\Users\frank\Starlight-Intelligence-System")
-    Write-Host "Starting SIS Memory Gateway on port $Port..." -ForegroundColor Cyan
+    param(
+        [int]$Port = 4400,
+        [string]$StorageRoot = $(if (Test-Path "C:\Users\frank\starlight\repos\Starlight-Intelligence-System") { "C:\Users\frank\starlight\repos\Starlight-Intelligence-System" } else { "C:\Users\frank\Starlight-Intelligence-System" })
+    )
+    Write-Host "Starting SIS Memory Gateway on port $Port ($StorageRoot)..." -ForegroundColor Cyan
     $cmd = "npx tsx src/gateway/daemon.ts `"$StorageRoot`" $Port"
-    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "cd `"$StorageRoot`"; $cmd" -WindowStyle Minimized
+    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location -LiteralPath `"$StorageRoot`"; $cmd" -WindowStyle Minimized
 }
 
 function Get-StarlightStatus {
