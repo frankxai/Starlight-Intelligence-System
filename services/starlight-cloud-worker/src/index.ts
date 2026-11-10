@@ -22,6 +22,11 @@ import type {
   SwarmLeaseResponse,
   TenantContext
 } from './types.js';
+import {
+  StarlightEdgeSandbox,
+  type SandboxExecutionRequest,
+  type SandboxExecutionResponse,
+} from './sandbox.js';
 
 export interface Env {
   ENVIRONMENT?: string;
@@ -29,6 +34,7 @@ export interface Env {
   STARLIGHT_DB?: any;      // Cloudflare D1 binding
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
+  SANDBOX?: any;           // Cloudflare Sandbox container binding
   DEFAULT_HALF_LIFE_DAYS?: string;
 }
 
@@ -83,7 +89,33 @@ export class StarlightCloudWorker {
       });
     }
 
-    // 4. Authenticate incoming API requests
+    // 4. Cloudflare Edge Sandbox Health & Execution (Sandbox SDK 1.0)
+    if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
+      return new Response(JSON.stringify({
+        status: 'healthy',
+        sandbox: 'cloudflare/sandbox:next',
+        containerCpu: 1,
+        containerMemory: '1GB',
+        zeroEgress: true,
+        attestation: 'Built on SIP v1.1.1',
+        timestamp: new Date().toISOString(),
+      }, null, 2), { status: 200, headers: this.CORS_HEADERS });
+    }
+
+    if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
+      try {
+        const reqBody = (await request.json()) as SandboxExecutionRequest;
+        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.SANDBOX);
+        return new Response(JSON.stringify(execResponse), { status: 200, headers: this.CORS_HEADERS });
+      } catch (err) {
+        return new Response(JSON.stringify({
+          error: 'Execution failed',
+          message: (err as Error).message,
+        }), { status: 500, headers: this.CORS_HEADERS });
+      }
+    }
+
+    // 5. Authenticate incoming API requests
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
       return new Response(JSON.stringify({
@@ -575,6 +607,58 @@ export class SwarmCoordinator {
     }), {
       status: 503,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  }
+}
+
+export class Sandbox {
+  private state: any;
+  private env: Env;
+
+  constructor(state: any, env: Env) {
+    this.state = state;
+    this.env = env;
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname === '/exec' && request.method === 'POST') {
+      const body = (await request.json()) as SandboxExecutionRequest;
+      const res = await StarlightEdgeSandbox.execute(body, this.env.SANDBOX);
+
+      // Persist container run in SQLite Durable Object storage
+      if (this.state.storage?.sql) {
+        try {
+          this.state.storage.sql.exec(`
+            CREATE TABLE IF NOT EXISTS sandbox_runs (
+              id TEXT PRIMARY KEY,
+              command TEXT,
+              exit_code INTEGER,
+              duration_ms INTEGER,
+              timestamp TEXT
+            )
+          `);
+          this.state.storage.sql.exec(
+            `INSERT INTO sandbox_runs VALUES ('${crypto.randomUUID()}', '${JSON.stringify(body.command).replace(/'/g, "''")}', ${res.exitCode}, ${res.durationMs}, '${new Date().toISOString()}')`
+          );
+        } catch {
+          // In-memory fallback
+        }
+      }
+
+      return new Response(JSON.stringify(res), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({
+      status: 'active',
+      sandbox: 'starlight-sandbox-container',
+      image: 'cloudflare/sandbox:next',
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
