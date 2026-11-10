@@ -22,6 +22,11 @@ import type {
   SwarmLeaseResponse,
   TenantContext
 } from './types.js';
+import {
+  StarlightEdgeSandbox,
+  type SandboxExecutionRequest,
+  type SandboxExecutionResponse,
+} from './sandbox.js';
 
 export interface Env {
   ENVIRONMENT?: string;
@@ -29,7 +34,26 @@ export interface Env {
   STARLIGHT_DB?: any;      // Cloudflare D1 binding
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
+  Sandbox?: any;           // Cloudflare Sandbox container / DO binding
+  SANDBOX_TOKEN?: string;  // Dedicated secret for sandbox container execution
+  OPS_TOKEN?: string;      // Operational authorization secret
   DEFAULT_HALF_LIFE_DAYS?: string;
+}
+
+/** Constant-time string equality check to mitigate timing side-channel attacks on authorization tokens without length leakage */
+function safeTimingEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const encoder = new TextEncoder();
+  const aBuf = encoder.encode(a);
+  const bBuf = encoder.encode(b);
+  const maxLen = Math.max(aBuf.byteLength, bBuf.byteLength);
+  let diff = aBuf.byteLength ^ bBuf.byteLength;
+  for (let i = 0; i < maxLen; i++) {
+    const aByte = i < aBuf.byteLength ? aBuf[i] : 0;
+    const bByte = i < bBuf.byteLength ? bBuf[i] : 0;
+    diff |= aByte ^ bByte;
+  }
+  return diff === 0;
 }
 
 // In-memory fallback tenant store for edge execution and automated tests
@@ -83,7 +107,7 @@ export class StarlightCloudWorker {
       });
     }
 
-    // 4. Authenticate incoming API requests
+    // 4. Authenticate incoming API requests (Enforce Bearer Auth across all protected routes)
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
       return new Response(JSON.stringify({
@@ -92,13 +116,50 @@ export class StarlightCloudWorker {
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    const tenant = this.resolveTenant();
+    const tenant = this.resolveTenant(request, env);
     if (!tenant) {
       return new Response(JSON.stringify({
         error: 'Service Unavailable',
         code: 'protected_api_unavailable',
         message: 'Protected API unavailable: verified identity and tenant membership are not configured.',
       }), { status: 503, headers: { ...this.CORS_HEADERS, 'Cache-Control': 'no-store' } });
+    }
+
+    // 5. Cloudflare Edge Sandbox Health (requires verified tenant authorization)
+    if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
+      const binding = env.Sandbox;
+      return new Response(JSON.stringify({
+        status: binding ? 'ready' : 'unconfigured',
+        sandbox: 'cloudflare/sandbox:next',
+        containerCpu: 1,
+        containerMemory: '1GB',
+        containerConfigured: !!binding,
+        attestation: 'Built on SIP v1.1.1',
+        timestamp: new Date().toISOString(),
+      }, null, 2), { status: 200, headers: this.CORS_HEADERS });
+    }
+
+    // 6. Cloudflare Edge Sandbox Execution (requires dedicated SANDBOX_TOKEN and verified tenant)
+    if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = env.SANDBOX_TOKEN;
+      if (!expectedToken || !safeTimingEqual(token, expectedToken)) {
+        return new Response(JSON.stringify({
+          error: 'Forbidden',
+          message: 'Invalid or unconfigured sandbox authorization token.',
+        }), { status: 403, headers: this.CORS_HEADERS });
+      }
+      try {
+        const reqBody = (await request.json()) as SandboxExecutionRequest;
+        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.Sandbox);
+        const status = execResponse.exitCode === 0 ? 200 : (!env.Sandbox ? 503 : 400);
+        return new Response(JSON.stringify(execResponse), { status, headers: this.CORS_HEADERS });
+      } catch (err: any) {
+        return new Response(JSON.stringify({
+          error: 'Execution failed',
+          message: err?.message || 'Execution error',
+        }), { status: 500, headers: this.CORS_HEADERS });
+      }
     }
 
     try {
@@ -184,7 +245,7 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(): TenantContext | null {
+  private static resolveTenant(_request: Request, _env: Env = {}): TenantContext | null {
     // No verified identity/membership authority is wired into this worker.
     // Contain every protected route until a reviewed verifier is integrated.
     // Token shape, caller-selected tenants and asserted Access headers are not
@@ -575,6 +636,77 @@ export class SwarmCoordinator {
     }), {
       status: 503,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  }
+}
+
+export class Sandbox {
+  private state: any;
+  private env: Env;
+
+  constructor(state: any, env: Env) {
+    this.state = state;
+    this.env = env;
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname === '/exec' && request.method === 'POST') {
+      const authHeader = request.headers.get('Authorization');
+      const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = this.env.SANDBOX_TOKEN;
+      if (!expectedToken || !token || !safeTimingEqual(token, expectedToken)) {
+        return new Response(JSON.stringify({
+          error: 'Forbidden',
+          message: 'Invalid or missing authorization for Sandbox DO execution',
+        }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      const body = (await request.json()) as SandboxExecutionRequest;
+      const res = await StarlightEdgeSandbox.execute(body, this.env.Sandbox);
+
+      // Persist container run in SQLite Durable Object storage using parameterized statement
+      if (this.state.storage?.sql) {
+        try {
+          this.state.storage.sql.exec(`
+            CREATE TABLE IF NOT EXISTS sandbox_runs (
+              id TEXT PRIMARY KEY,
+              command TEXT,
+              exit_code INTEGER,
+              duration_ms INTEGER,
+              timestamp TEXT
+            )
+          `);
+          const runId = crypto.randomUUID();
+          const cmdJson = JSON.stringify(body.command ?? []);
+          const ts = new Date().toISOString();
+          this.state.storage.sql.exec(
+            'INSERT INTO sandbox_runs (id, command, exit_code, duration_ms, timestamp) VALUES (?, ?, ?, ?, ?)',
+            runId,
+            cmdJson,
+            res.exitCode,
+            res.durationMs,
+            ts
+          );
+        } catch (err: any) {
+          console.error('[Sandbox DO] SQLite persistence error');
+        }
+      }
+
+      return new Response(JSON.stringify(res), {
+        status: res.exitCode === 0 ? 200 : 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const hasSandbox = !!this.env.Sandbox;
+    return new Response(JSON.stringify({
+      status: hasSandbox ? 'ready' : 'unconfigured',
+      sandbox: 'starlight-sandbox-container',
+      image: 'cloudflare/sandbox:next',
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }
