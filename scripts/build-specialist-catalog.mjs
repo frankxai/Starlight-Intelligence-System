@@ -12,7 +12,7 @@ export const GRAPH_PATH = "agents/catalog/constellation.json";
 export const CONTRACTS_PATH = "agents/catalog/contracts.json";
 export const IDENTITIES_PATH = "agents/catalog/identity-overrides.json";
 const META = new Set(["AGENT_REGISTRY.md", "CODING_AGENTS_REGISTRY.md"]);
-const read = (root, path) => readFileSync(join(root, path), "utf8");
+const read = (root, path) => readFileSync(join(root, path), "utf8").replace(/\r\n/g, "\n");
 const hash = (text) => createHash("sha256").update(text).digest("hex");
 const sortedUnique = (values) => [...new Set(values)].sort();
 const json = (value) => JSON.stringify(value, null, 2) + "\n";

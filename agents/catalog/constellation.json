@@ -1,6 +1,6 @@
 {
   "schemaVersion": "starlight.specialist-constellation.v1",
-  "sourceDigest": "6fc3f4dc486b6a9bd598278e2609825918b9200eb23a67ba861f9eaa487e1816",
+  "sourceDigest": "86018da632aaca21054e92e3808656c90049c3a9d54ea7b083f4f140c8804590",
   "kind": "discovery-and-policy-projection",
   "execution": "No scheduler, delegation authority, runtime activation, or data access is created by an edge. Use the existing loop and work graph contracts.",
   "nodes": [
@@ -12,7 +12,7 @@
       "ontologyId": "agent:sis/starlight-builder-elder",
       "source": {
         "path": "agents/council/builder-elder.md",
-        "sha256": "5db7e8c14f3dd598fba4c55cc4a4efa596112b838d8468dafd333e1d738098dc"
+        "sha256": "afe7f4c3294cf8ba26527a182d57db8a4dbd0533ec93cbd04433e522b36d7bcf"
       }
     },
     {
@@ -23,7 +23,7 @@
       "ontologyId": "agent:sis/starlight-divine-neutral-witness",
       "source": {
         "path": "agents/council/divine-neutral-witness.md",
-        "sha256": "a61df6dbfb1670fc6bb48b922b46b187b78c705bbb7cf2b7235d20bea34978a8"
+        "sha256": "07e178ad3cce85f213b3a7564cad8d79a99aa9046e528bd7d8b1b845a046ce26"
       }
     },
     {
@@ -34,7 +34,7 @@
       "ontologyId": "agent:sis/starlight-elder-father",
       "source": {
         "path": "agents/council/elder-father.md",
-        "sha256": "91906694d67998ecbc0efe26fd92aca6da349330bba5ceaaa2163127586da320"
+        "sha256": "1f02265af3fa6b47e6a646612a34c0e6d15542521ff9d4bf407c35ced00a1d83"
       }
     },
     {
@@ -45,7 +45,7 @@
       "ontologyId": "agent:sis/starlight-elder-mother",
       "source": {
         "path": "agents/council/elder-mother.md",
-        "sha256": "c1d7972c7b9e1f89fb102c583a0ddabe599b32248b88ff6656566098947daf95"
+        "sha256": "739c8f6ce885bdf7ae3630fd558e240e77ace9630518fd597feddebfa2eb68b0"
       }
     },
     {
@@ -56,7 +56,7 @@
       "ontologyId": "agent:sis/starlight-future-self-at-90",
       "source": {
         "path": "agents/council/future-self-at-90.md",
-        "sha256": "22f6b7068b7016de5b185a10e1dea99bad4ad8d35966bea981c27686e9a57e45"
+        "sha256": "95a9b13c56267844fba3f1da3d12919adc0059c510ed7e56a05f8f8d488331bc"
       }
     },
     {
@@ -67,7 +67,7 @@
       "ontologyId": "agent:sis/starlight-promo-amplifier",
       "source": {
         "path": "agents/music-amplifier.md",
-        "sha256": "f734506798075b13e69bd5575c2b2646d88793070b45d4459769fe25ef43c978"
+        "sha256": "5936c3bf4113a1fdff9e40dae0707c76f88a6fd8636ef321c81136c0471aca67"
       }
     },
     {
@@ -78,7 +78,7 @@
       "ontologyId": "agent:sis/starlight-music-archivist",
       "source": {
         "path": "agents/music-archivist.md",
-        "sha256": "9950c00970527be55fbc07bcb6434619f816961bdff640b041e7e7d7d79a3452"
+        "sha256": "024de2173bf7fcd659a690dd4c09f75a17a3fb1ce917d27e7a921fd986b1c03e"
       }
     },
     {
@@ -89,7 +89,7 @@
       "ontologyId": "agent:sis/starlight-music-curator",
       "source": {
         "path": "agents/music-curator.md",
-        "sha256": "ffc48c94d3895dc90c99f661912775ba8bdd51435d22ce9789759cb4189cbc99"
+        "sha256": "0d0fd9a04f64311449be4e7e92ad418e34de0f7d1becc0e7a140b25db2cbb790"
       }
     },
     {
@@ -100,7 +100,7 @@
       "ontologyId": "agent:sis/starlight-distro-router",
       "source": {
         "path": "agents/music-distributor.md",
-        "sha256": "a7a05457af2248a954cac88341154b3f40303d23ba9e3502d60f8372c376e84f"
+        "sha256": "65c33d09fa77be4053775f62a11e008841588a8476b69732be68437a2e922f37"
       }
     },
     {
@@ -111,7 +111,7 @@
       "ontologyId": "agent:sis/starlight-visual-producer",
       "source": {
         "path": "agents/music-producer.md",
-        "sha256": "684cdbe221a020dd936ce8d346f485b7ac14707e219f8679520a0cd290f4cd13"
+        "sha256": "37ac1c4c10a414bcd8399608b038da92be9fdedd25ad22d592c06fd5b3899ecc"
       }
     },
     {
@@ -122,7 +122,7 @@
       "ontologyId": "agent:sis/starlight-sync-specialist",
       "source": {
         "path": "agents/music-sync-specialist.md",
-        "sha256": "169a8de5e5bd28628295933607b9b05d903e5b6f4558b2646424aee39130a365"
+        "sha256": "d84bb1f8f537ae99392064487e459f7d4477e629bdf9d4216862de5bfe290501"
       }
     },
     {
@@ -133,7 +133,7 @@
       "ontologyId": "agent:sis/starlight-persona-keeper",
       "source": {
         "path": "agents/persona-keeper.md",
-        "sha256": "c5c84727d9b5b6e68bb8c75153615db47cf86df55be64a0f2ee853eacc03713b"
+        "sha256": "1ae4f0a1a37e3d86f9a2528014039df19840818a83db3ee56ca2a12c88bcc97b"
       }
     },
     {
@@ -144,7 +144,7 @@
       "ontologyId": "agent:sis/starlight-royalty-calculator",
       "source": {
         "path": "agents/royalty-architect.md",
-        "sha256": "1191fbc95aacaa2d62c78657c6ddc5279cf4bb96269fbf8adca4b3cc648a9bbb"
+        "sha256": "55e69bd7d91bb984c330ebb49f56601eb90bb748cc0094d199643ca5975c7de4"
       }
     },
     {
@@ -155,7 +155,7 @@
       "ontologyId": "agent:sis/starlight-sage-seat",
       "source": {
         "path": "agents/council/sage.md",
-        "sha256": "0f3bf836cb973aa964043092070cfdbfa461693f140219622111e524f9bfdc21"
+        "sha256": "c3e795816175413d39039ff8da79d135c0aaeb4cc5bd66341af5eafe8bbbf6f9"
       }
     },
     {
@@ -166,7 +166,7 @@
       "ontologyId": "agent:sis/starlight-shadow-witness",
       "source": {
         "path": "agents/council/shadow-witness.md",
-        "sha256": "1e96e512b24392a4cd5ccdbadbe531af7424159f3a474407e376546cc624cfb0"
+        "sha256": "d2c83f26e79ed1c103e9d3e4b855c207c217007f140ab83ae4036598a35b05c2"
       }
     },
     {
@@ -177,7 +177,7 @@
       "ontologyId": "agent:sis/starlight-external-extractor",
       "source": {
         "path": "agents/sis-extractor-external.md",
-        "sha256": "b102c440b4d0d3878b3aeae03c55d65c5d3a101b0bd040dbddde44a169f88e23"
+        "sha256": "57dfdfcaf48c757f978625689726a90909489ae48c45eb8897339351bdc20660"
       }
     },
     {
@@ -188,7 +188,7 @@
       "ontologyId": "agent:sis/starlight-prompts-extractor",
       "source": {
         "path": "agents/sis-extractor-prompts.md",
-        "sha256": "c094c37e592d4098e4f4117fa9f053bdce3b2992464e994a2832d1a04b0f8c16"
+        "sha256": "6dcb25cb665630a2c286e6739023b1118262b0730074d85206fe9de9ba149d46"
       }
     },
     {
@@ -199,7 +199,7 @@
       "ontologyId": "agent:sis/starlight-repos-extractor",
       "source": {
         "path": "agents/sis-extractor-repos.md",
-        "sha256": "e2796f30962da9fedf096c11dea2636852728bde1e47ad641ce766908b7576f1"
+        "sha256": "d9b80ed7f32d9a9a498bbc17e3f43a023ee044d247f24d2a9d9750f8388059a9"
       }
     },
     {
@@ -210,7 +210,7 @@
       "ontologyId": "agent:sis/starlight-transcripts-extractor",
       "source": {
         "path": "agents/sis-extractor-transcripts.md",
-        "sha256": "230a5cefad03a1bd796c80a477f005285f2336186ee411eca11efb196f6fecc6"
+        "sha256": "e00f1ac5e3c208901cbc17f33c1214d71a70b391c017f502a20f8dd2de38b689"
       }
     },
     {
@@ -221,7 +221,7 @@
       "ontologyId": "agent:sis/starlight-vault-extractor",
       "source": {
         "path": "agents/sis-extractor-vault.md",
-        "sha256": "c163317b52aa312b919137d6a134a6501e5c1fa90e186ae003b8d556d7fdd53d"
+        "sha256": "4c734562c1d0ddd13e46859c22a89d55f1fa9bbeaaf14942aa3bb94523e0e50c"
       }
     },
     {
@@ -232,7 +232,7 @@
       "ontologyId": "agent:sis/starlight-agno-bridge",
       "source": {
         "path": "agents/starlight-adapter-agno.md",
-        "sha256": "4af714265c5b53bcc08818ed40fa428b7aa8a915659946c3d33ef1042f6bf783"
+        "sha256": "02874296eac1d3cddb995b5789aae66d94ba1c2ab4489adae31836474323189b"
       }
     },
     {
@@ -243,7 +243,7 @@
       "ontologyId": "agent:sis/starlight-autogen-bridge",
       "source": {
         "path": "agents/starlight-adapter-autogen.md",
-        "sha256": "d1140f7971643ff9470475e71f4385e19d3ca61b70b26c497a4cac8cced9b99c"
+        "sha256": "68dd1b48a32a92920290d5d7e3c6c992bc122ef24b92170eb4644c91a848009b"
       }
     },
     {
@@ -254,7 +254,7 @@
       "ontologyId": "agent:sis/starlight-crewai-orchestrator",
       "source": {
         "path": "agents/starlight-adapter-crewai.md",
-        "sha256": "027c393dcd23182393e1b743a89ca68b5b39a1d3d9a57da27d3dab3b25a0cc82"
+        "sha256": "7e94d554c294b190582e563863d59aa9fc86a7ec0cf68e83fffcf1ec1f88c84d"
       }
     },
     {
@@ -265,7 +265,7 @@
       "ontologyId": "agent:sis/starlight-dify-sync",
       "source": {
         "path": "agents/starlight-adapter-dify.md",
-        "sha256": "0a1dafdf9dff52545215a54bbfa7c32aabbd4af651a021f177193af2482a0e91"
+        "sha256": "5c8d867f7a5348ec1df016d0140193f3883e18fa2c96bfffff9cfbbe3ea2bfb1"
       }
     },
     {
@@ -276,7 +276,7 @@
       "ontologyId": "agent:sis/starlight-nous-hermes-adapter",
       "source": {
         "path": "agents/starlight-adapter-hermes.md",
-        "sha256": "2a02e0d33e3989a1be2eaf39e2c087fb34d249be6c555bbc36409a9f084ffab5"
+        "sha256": "dac55ed2f56f5defd65d1c1d2298a2f9426b1217dc13a3ef02c9817547823498"
       }
     },
     {
@@ -287,7 +287,7 @@
       "ontologyId": "agent:sis/starlight-langgraph-router",
       "source": {
         "path": "agents/starlight-adapter-langgraph.md",
-        "sha256": "be0349bbc8d1c2455bac7bd94fab3a7e0294a5134e7c46258e4620dc3eb328d1"
+        "sha256": "43f1f7b1a8bcc8cfbeedfaf7e3fb2d0a40e13f28796792251f3fee2cf85843ce"
       }
     },
     {
@@ -298,7 +298,7 @@
       "ontologyId": "agent:sis/starlight-mastra-connector",
       "source": {
         "path": "agents/starlight-adapter-mastra.md",
-        "sha256": "6853cbe13a8cc98f91777cb449d1e93a1944b8334d3bb8ec9bf25decb312eca0"
+        "sha256": "b492c0195b5ef1f97d850ed2c4253bb8a1f3730eec5b2a276192f60782e9074e"
       }
     },
     {
@@ -309,7 +309,7 @@
       "ontologyId": "agent:sis/starlight-ollama-localizer",
       "source": {
         "path": "agents/starlight-adapter-ollama.md",
-        "sha256": "c83b49a059c493906037126cb543eae20f36d89b497d0ac48cefa44b18c647de"
+        "sha256": "02c8c9ca526b685cc97a280bbd7ce2b0e07a044b1de28ac32995da80eecaf1b1"
       }
     },
     {
@@ -320,7 +320,7 @@
       "ontologyId": "agent:sis/starlight-openai-sdk-adapter",
       "source": {
         "path": "agents/starlight-adapter-openai.md",
-        "sha256": "d55340de5de4bb5699771d7875212ee5547b7e1c7428bcdb34cde6a2a3114548"
+        "sha256": "ac01ae123ccd9eeafea2c1b35b072da4d6bae571a2e537b7f1117841f8ae3859"
       }
     },
     {
@@ -331,7 +331,7 @@
       "ontologyId": "agent:sis/starlight-paperclip-broker",
       "source": {
         "path": "agents/starlight-adapter-paperclip.md",
-        "sha256": "69467a7b9af6afb5b6d276e37b3a940dc902036d2f58af59d71d69234a9783da"
+        "sha256": "2f4a0a4ee782242942ec78b2ca1ea11fe49bf5ae7522fa830da234b8786f5942"
       }
     },
     {
@@ -342,7 +342,7 @@
       "ontologyId": "agent:sis/starlight-architect",
       "source": {
         "path": "agents/starlight-architect.md",
-        "sha256": "e37378a9bfec1644ef0b3230a79f1f961df3210951f84c195b64276d206f86c4"
+        "sha256": "ae7dd38fedcd94b20f3418fdeafd5c4241b9c59349b73ea0bc328dc8ca1326fa"
       }
     },
     {
@@ -353,7 +353,7 @@
       "ontologyId": "agent:sis/starlight-higgsfield-director",
       "source": {
         "path": "agents/starlight-asset-higgsfield.md",
-        "sha256": "28baa9863453359bccaef36bab52156b8fdf946d15bcff399f9b701927661974"
+        "sha256": "ef038d1dfcf7733264ee52519f0f54b4fe8dc6e11ad26efd97002a3e19313f5d"
       }
     },
     {
@@ -364,7 +364,7 @@
       "ontologyId": "agent:sis/starlight-midjourney-adapter",
       "source": {
         "path": "agents/starlight-asset-midjourney.md",
-        "sha256": "4a9418d975880502a7463f091981588bbcda77be98abfe9881a4ad4768b66a8f"
+        "sha256": "fdc7eeda075d7b43f62aa45dfadd752552f85d7f3c31a30fc989291767837da1"
       }
     },
     {
@@ -375,7 +375,7 @@
       "ontologyId": "agent:sis/starlight-nano-banana-renderer",
       "source": {
         "path": "agents/starlight-asset-nb.md",
-        "sha256": "8323bb6ce3832c78a3737ce25c4d9f338e99e7c6f2b62c84f83c84ec0c83ded6"
+        "sha256": "c310989ddc9648bc20a3f6843857c3578ef25348f9ec1383f845d10d8cbe2de3"
       }
     },
     {
@@ -386,7 +386,7 @@
       "ontologyId": "agent:sis/starlight-prompt-hub-manager",
       "source": {
         "path": "agents/starlight-asset-prompts.md",
-        "sha256": "1a9b74b777f8a5b66359f7586f3e9d7965419fa368e4ce46f8ed10a0bddb45e7"
+        "sha256": "e23a3a8c973d3ba18d270095197654b70bbad4a1ffa8ae02d38d62fe42f6db55"
       }
     },
     {
@@ -397,7 +397,7 @@
       "ontologyId": "agent:sis/starlight-quality-checker",
       "source": {
         "path": "agents/starlight-asset-quality.md",
-        "sha256": "4bf907ea95b71ec161e27511601b884241ac6e551aa3904f304aa5e386e213cf"
+        "sha256": "600b500a08d226f776d659754129caab65442ef2b136c9458d1175e6e13a3d12"
       }
     },
     {
@@ -408,7 +408,7 @@
       "ontologyId": "agent:sis/starlight-ui-mockup-designer",
       "source": {
         "path": "agents/starlight-asset-ui.md",
-        "sha256": "58d9a2678023b7516ea99cfadfb03d4b55d657186488ee70244cf740231bb20d"
+        "sha256": "35652c5ee01063028585bf8048b85f729c69dfddebb90f18e36377ec81276655"
       }
     },
     {
@@ -419,7 +419,7 @@
       "ontologyId": "agent:sis/starlight-video-assembler",
       "source": {
         "path": "agents/starlight-asset-video.md",
-        "sha256": "a78df62abbd6015c91673b891bd382c71467fed8c879367c3aa1f4f08cdf6db9"
+        "sha256": "aee04a24c6beed3ae449f8c8f6e2fffeac70af12907e92a2d6d2731f095c15df"
       }
     },
     {
@@ -430,7 +430,7 @@
       "ontologyId": "agent:sis/starlight-brand-is",
       "source": {
         "path": "agents/starlight-brand-is.md",
-        "sha256": "cc0dbe976b17b41bdf73563cc9797da79f64549ed58b5b450eb7f238ec515626"
+        "sha256": "87e6de6a7bad3db3ce4f08a9e94aab3a5ea5c5874fa673de4008e5022be8d735"
       }
     },
     {
@@ -441,7 +441,7 @@
       "ontologyId": "agent:sis/starlight-business",
       "source": {
         "path": "agents/starlight-business.md",
-        "sha256": "2d87c85f03217201d0f593e524d8b4a59ec85ca2abb6127aa75399464f414ee8"
+        "sha256": "34dad0a7b68f3757a52ef40f28dce9a2eda40d96c198a91836765f8159b248fb"
       }
     },
     {
@@ -452,7 +452,7 @@
       "ontologyId": "agent:sis/starlight-caio",
       "source": {
         "path": "agents/executive/starlight-caio.md",
-        "sha256": "18d98f2d3977839c7fdfec4fdf232ee802fda93397219df9900aa368feb5fa6e"
+        "sha256": "f441c82b474dc0d6fd42a72c3a517bb1612acb29742e6aa51e07228eb2ca3400"
       }
     },
     {
@@ -463,7 +463,7 @@
       "ontologyId": "agent:sis/starlight-ceo",
       "source": {
         "path": "agents/executive/starlight-ceo.md",
-        "sha256": "07321760f08c25e0638e5268457fba2022ccfcba131176f8ee6878a0d0469889"
+        "sha256": "405ba748d447fe0d62b58be6ab0181e039d866f704d8c2724c877b6e7cfa94a1"
       }
     },
     {
@@ -474,7 +474,7 @@
       "ontologyId": "agent:sis/starlight-cfo",
       "source": {
         "path": "agents/executive/starlight-cfo.md",
-        "sha256": "12c36084d7c00174a09a0720a324c2c4064bd1248e32133b98d96caf6e8eecc2"
+        "sha256": "111d87baf482ad9bbfd1006714e402a3ec6e524e448e1b989637f69e6615012a"
       }
     },
     {
@@ -485,7 +485,7 @@
       "ontologyId": "agent:sis/starlight-chief-of-staff",
       "source": {
         "path": "agents/executive/starlight-chief-of-staff.md",
-        "sha256": "e3bf419a3c2a62c5d12b6c9c0b96106c01868ff9d648ee3e7a94c29d4edb3ef8"
+        "sha256": "806290df82b3e1502ba3a4448fac6988822336e29e9ade9c200527ede898f791"
       }
     },
     {
@@ -496,7 +496,7 @@
       "ontologyId": "agent:sis/starlight-cmo",
       "source": {
         "path": "agents/executive/starlight-cmo.md",
-        "sha256": "02612ce5ea9b38c6dc2135db7e32b56b1dcaa6a63acd34198f24a438ffec26d8"
+        "sha256": "010bbc1f3161dae6b4f6ae16604270a8f027ac91e10f578fce3d2ea645ca5d7e"
       }
     },
     {
@@ -507,7 +507,7 @@
       "ontologyId": "agent:sis/starlight-code-is",
       "source": {
         "path": "agents/starlight-code-is.md",
-        "sha256": "c8b2dd1136e97dafb9a6380e3d55ffb392ecce5dce7f7086bce804891f12f2dc"
+        "sha256": "3a3888cb4ed40bbc443b5f344589a8d5bbf45345bed732257ef483088340ee6b"
       }
     },
     {
@@ -518,7 +518,7 @@
       "ontologyId": "agent:sis/starlight-concierge",
       "source": {
         "path": "agents/starlight-concierge.md",
-        "sha256": "0b6ec659e0a67f195898547b1afc33659d0ec55aa1e6778b71c581e3b25aa97e"
+        "sha256": "7bf57e69859aa070a6ddbb314ad98060745b5c3e81fdaf89b6c40f26176aee09"
       }
     },
     {
@@ -529,7 +529,7 @@
       "ontologyId": "agent:sis/starlight-coo",
       "source": {
         "path": "agents/executive/starlight-coo.md",
-        "sha256": "655094fbd914efff262d0a7fbd788425d62af6bd0812770bfe07a7d212dbaaa2"
+        "sha256": "d7e7dbe78b36db926acbba795d5c09fdbb96d23175040e8bbe53e7c6885af5a3"
       }
     },
     {
@@ -540,7 +540,7 @@
       "ontologyId": "agent:sis/starlight-creator-is",
       "source": {
         "path": "agents/starlight-creator-is.md",
-        "sha256": "35f1e3ec5ea612dd533cd30089c4da290251d0acfba49452b733e44467f2d56b"
+        "sha256": "64e8db514ece68ce1883cf49720dd57238e88c5e98a05ee75216d9a2c28ac618"
       }
     },
     {
@@ -551,7 +551,7 @@
       "ontologyId": "agent:sis/starlight-asset-allocator",
       "source": {
         "path": "agents/starlight-crypto-allocation.md",
-        "sha256": "0506d184e937ceacc23139322a18b0e0f25bc2a98572630939ded0a780e2c6ff"
+        "sha256": "becf7d6cbf4958015a506296eaf1aa1458a9b4bfa9e46cfbab0559812cd70e7d"
       }
     },
     {
@@ -562,7 +562,7 @@
       "ontologyId": "agent:sis/starlight-custody-custodian",
       "source": {
         "path": "agents/starlight-crypto-custody.md",
-        "sha256": "37ee78faa1a303bdc8394b2a0e77e11f7c19828c1e735d04d46d59877fe7b8e7"
+        "sha256": "a24a7caa21eea472e5f80e84fe1a94296c557ea86eb51b2e16d9fd0d32136507"
       }
     },
     {
@@ -573,7 +573,7 @@
       "ontologyId": "agent:sis/starlight-defi-auditor",
       "source": {
         "path": "agents/starlight-crypto-defi.md",
-        "sha256": "2c5e41afefd52babcf7fb5e4a085f3f61cb20347111f24954f9afea834cc9182"
+        "sha256": "95d7bc1ba9f98991279e62140a30ae8ca71be886975ce84f1055268188132e75"
       }
     },
     {
@@ -584,7 +584,7 @@
       "ontologyId": "agent:sis/starlight-macro-analyst",
       "source": {
         "path": "agents/starlight-crypto-macro.md",
-        "sha256": "619dec2511bb29a0e59757180c2a5fde1fb385bf286a09ee0a3e09511e261c8e"
+        "sha256": "0d6d7a569d04afa18645d7cacbac0d49ad372dcb3bc26a8dd739efd237dbec66"
       }
     },
     {
@@ -595,7 +595,7 @@
       "ontologyId": "agent:sis/starlight-protocol-researcher",
       "source": {
         "path": "agents/starlight-crypto-research.md",
-        "sha256": "bbd16271f4c2947b9545653ca80503ee74601aac54864b454120e7a14fde0901"
+        "sha256": "c4dd1213d955124bdbec56dc145c0de4ec474a2342b7cc9e167bbdce31d56157"
       }
     },
     {
@@ -606,7 +606,7 @@
       "ontologyId": "agent:sis/starlight-cto",
       "source": {
         "path": "agents/executive/starlight-cto.md",
-        "sha256": "d2141d2a455a43f7a340309e971a07fc2a6877e02264c1f45e67d6ee7b7d90b4"
+        "sha256": "f55c96052a43eca791a39ecda9590caed1043537b6b391349fcedf18dd8d3234"
       }
     },
     {
@@ -617,7 +617,7 @@
       "ontologyId": "agent:sis/starlight-culture-architect",
       "source": {
         "path": "agents/starlight-culture.md",
-        "sha256": "e47d5e30dd338990b5f0ec00ddafb2462efc61f4640cef84a16055e823374414"
+        "sha256": "32402a026835c68295f87d87483c4be756e9ac3134006b3c481bcdc3b3d69425"
       }
     },
     {
@@ -628,7 +628,7 @@
       "ontologyId": "agent:sis/starlight-instagram-composer",
       "source": {
         "path": "agents/starlight-dist-instagram.md",
-        "sha256": "315bd4602dfe89e43e3b3d5e83e5f164564a4aaf0f4ce04b2fa7482f508cfbab"
+        "sha256": "a5a6b16d2f89a6902b5e85c28da7c59143f79ea56b08e789365d69954d64ad98"
       }
     },
     {
@@ -639,7 +639,7 @@
       "ontologyId": "agent:sis/starlight-linkedin-formatter",
       "source": {
         "path": "agents/starlight-dist-linkedin.md",
-        "sha256": "f31960e0de1806b9a09af5d91d735e6fda97227d9a13a27c7c525bd633705888"
+        "sha256": "001377b7af703af133581c4b1898e50b1176bf2aff5cee14a63cd29e816b6ac4"
       }
     },
     {
@@ -650,7 +650,7 @@
       "ontologyId": "agent:sis/starlight-newsletter-editor",
       "source": {
         "path": "agents/starlight-dist-newsletter.md",
-        "sha256": "98c9911b3d2ce2e5f82ab3b60ae6e15d590493e3e5ce5f13246d158c4c859491"
+        "sha256": "6637f2be8d5b99764a29e092ed011a4df6ed6b723fca80b23368bb1d4d06ba29"
       }
     },
     {
@@ -661,7 +661,7 @@
       "ontologyId": "agent:sis/starlight-tiktok-scriptwriter",
       "source": {
         "path": "agents/starlight-dist-tiktok.md",
-        "sha256": "a127667e89a76ae64dd9d7e0e9563efe818ffc1553bd8c2bee2a7f7c3447078a"
+        "sha256": "a37cb9392a1a75582c5124b7deae28cf220953104dda588a7ef891f425e2f316"
       }
     },
     {
@@ -672,7 +672,7 @@
       "ontologyId": "agent:sis/starlight-x-thread-compiler",
       "source": {
         "path": "agents/starlight-dist-x.md",
-        "sha256": "e498a9c047d285cf353f002102bce9e3a3ac161a0cee6b63074e5ffca285f2d8"
+        "sha256": "a9c4870162dd12a813ccdb881685fa6ca3aa8f3fc4cc2477b99e41767f231f20"
       }
     },
     {
@@ -683,7 +683,7 @@
       "ontologyId": "agent:sis/starlight-embodiment",
       "source": {
         "path": "agents/starlight-embodiment.md",
-        "sha256": "490496ff8c47a1b9ee5f796ad3abb186ae76224914f459ef23c692d0d0df7f44"
+        "sha256": "e727ef1c5fa302e5eba847e23490f210b014763095725b3208c2caa1936f87ae"
       }
     },
     {
@@ -694,7 +694,7 @@
       "ontologyId": "agent:sis/starlight-energy-buyer",
       "source": {
         "path": "agents/starlight-energy-buyer.md",
-        "sha256": "9a8134e6c4d18af78fdf7f5be3b2f7970b88fc8b11d9ddf37928fb80dcb7079a"
+        "sha256": "bf9c28ddecbb8bede3ed0452c273f22a4678728d3933079193e4d109046705d9"
       }
     },
     {
@@ -705,7 +705,7 @@
       "ontologyId": "agent:sis/starlight-energy-cost",
       "source": {
         "path": "agents/starlight-energy-cost.md",
-        "sha256": "cf7562dbc75d5f1b9ab40429e355502e6fd428b6715c924dfc57ae1526b7f77d"
+        "sha256": "efc89d3005952de97e4b5e2499a97873aa3d28c167b12aaf4e904017877801fa"
       }
     },
     {
@@ -716,7 +716,7 @@
       "ontologyId": "agent:sis/starlight-energy-grid",
       "source": {
         "path": "agents/starlight-energy-grid.md",
-        "sha256": "2f4293d843e2b9efda7f4bbb461e57d32cf15a9522fc678d74d34504ed952a68"
+        "sha256": "46b166b94fc36a893fc7b2de99ee512ef806b2449a80cc767efebefd9535a9e8"
       }
     },
     {
@@ -727,7 +727,7 @@
       "ontologyId": "agent:sis/starlight-energy-installer",
       "source": {
         "path": "agents/starlight-energy-installer.md",
-        "sha256": "8fd4692987e4b177436780f2ea32ef87f39c2ea2982206b94d51d4431db47205"
+        "sha256": "c28ba0f95cc8c55174c4e3338c966d64c7c2e3f2f2fead37f8369ffc2eef9663"
       }
     },
     {
@@ -738,7 +738,7 @@
       "ontologyId": "agent:sis/starlight-energy-operations",
       "source": {
         "path": "agents/starlight-energy-operations.md",
-        "sha256": "d8ed0116151bb61bd49200e763815b8f04f0143f60f706bb5959e83fa9521216"
+        "sha256": "96afee4273b020594c9a491bea9160945032d9b83fe57db29fb6c152b2840282"
       }
     },
     {
@@ -749,7 +749,7 @@
       "ontologyId": "agent:sis/starlight-energy-recovery",
       "source": {
         "path": "agents/starlight-energy-recovery.md",
-        "sha256": "027f82cf50e1dbb5df6f601ede943cab986c8216550db4dbd09e21af99429be8"
+        "sha256": "0a3569453ebc38cd8986c73fbb7b623fe728670f65da47e6965d6b373ee20596"
       }
     },
     {
@@ -760,7 +760,7 @@
       "ontologyId": "agent:sis/starlight-energy-sizing",
       "source": {
         "path": "agents/starlight-energy-sizing.md",
-        "sha256": "3d45d2766409a3cccb3974f24a5902161732fae45c784497563244fcedc7f9ef"
+        "sha256": "52e5b9ff5bdcd046071da52d7f06b7c6f510a26e229cba1bb163997ea2a48040"
       }
     },
     {
@@ -771,7 +771,7 @@
       "ontologyId": "agent:sis/starlight-envoy",
       "source": {
         "path": "agents/starlight-envoy.md",
-        "sha256": "047102bc6ab008218395ff0cd008d39fea2e425b7809a540ed30a68d6eb01baf"
+        "sha256": "591777c9e579547af894b7d1d5f946610d3dce6b226d1ff94e9a3f88bc77df0b"
       }
     },
     {
@@ -782,7 +782,7 @@
       "ontologyId": "agent:sis/starlight-evaluator",
       "source": {
         "path": "agents/starlight-evaluator.md",
-        "sha256": "87818ab35dd38d451f508126d1c3b549510b3dfdf67603072baa411e89af25b9"
+        "sha256": "dee8d1adc994f86c80664e1e66adccfe1924a86c29a14d0d7e533a4a85e43416"
       }
     },
     {
@@ -793,7 +793,7 @@
       "ontologyId": "agent:sis/starlight-family-is",
       "source": {
         "path": "agents/starlight-family-is.md",
-        "sha256": "cbd99eaee515b490fddbfcfa8306ef21c440c48cd3a5f87f2f77f5fca3495df1"
+        "sha256": "aa337f070b9b773248f74db61616e6c25bfeefb357fb247c7e467082e1f71b45"
       }
     },
     {
@@ -804,7 +804,7 @@
       "ontologyId": "agent:sis/starlight-genius",
       "source": {
         "path": "agents/starlight-genius.md",
-        "sha256": "cb5e1baf94b2a9415efeac071ecb0be2dd1a4124e700f8dd0f3624e482664063"
+        "sha256": "0f9c06269a2a5907d37823280b306a007ae1c36c28fb5b9a4f62af3812026b32"
       }
     },
     {
@@ -815,7 +815,7 @@
       "ontologyId": "agent:sis/starlight-biomarker-analyst",
       "source": {
         "path": "agents/starlight-health-biomarkers.md",
-        "sha256": "884782213292330d47227192d9acf7f0e8b1335fd0221e89bd74cac2f7fc6a7c"
+        "sha256": "5a5c61709d3e9f9ef73286fab1463a352b455981b6e438455f3159308a8ccfa7"
       }
     },
     {
@@ -826,7 +826,7 @@
       "ontologyId": "agent:sis/starlight-dietary-synthesizer",
       "source": {
         "path": "agents/starlight-health-diet.md",
-        "sha256": "8cc6e9669c80c25642a77155b33988cca4fe30dcc23c8b1d48d8672590528107"
+        "sha256": "c603950df1faccffba10c27ca740a440169c8752680c049a9220e6bc7b297af3"
       }
     },
     {
@@ -837,7 +837,7 @@
       "ontologyId": "agent:sis/starlight-health-is",
       "source": {
         "path": "agents/starlight-health-is.md",
-        "sha256": "dad625729372f86321fe8682ec2edb7471acc358681e0b07fc5516d46961e63d"
+        "sha256": "e1b13ae6eb5adf7f759d5c09ca782fcc2cc6faab0606ff97438101a32496f4f3"
       }
     },
     {
@@ -848,7 +848,7 @@
       "ontologyId": "agent:sis/starlight-longevity-researcher",
       "source": {
         "path": "agents/starlight-health-research.md",
-        "sha256": "e640842e0c632967b98ed0c18b4c6cb6b3cfb2f91d79b555eddc54d7b72b2df1"
+        "sha256": "d92846645d02bbf49d7d0690de11d0ea81b31e790e309126dfb2adacd9139c9c"
       }
     },
     {
@@ -859,7 +859,7 @@
       "ontologyId": "agent:sis/starlight-sleep-optimizer",
       "source": {
         "path": "agents/starlight-health-sleep.md",
-        "sha256": "c7e7abcee984ac4ea02a8949d94cd67a29ac82bbe06d2f28c0fe6dfd9953526b"
+        "sha256": "059cd26e413c5cfae70ac1870da3050567a6473fc611d249bb558f6910d8d271"
       }
     },
     {
@@ -870,7 +870,7 @@
       "ontologyId": "agent:sis/starlight-stress-tracker",
       "source": {
         "path": "agents/starlight-health-stress.md",
-        "sha256": "38873c7440778b2645a0bce0cf1540685e56aa65402bf2ce65680235440b87af"
+        "sha256": "e2f504d1b741d8982ddb9a9a40935ce04fad3635fbd1cd867fad1c813b8f0bf6"
       }
     },
     {
@@ -881,7 +881,7 @@
       "ontologyId": "agent:sis/starlight-supplement-advisor",
       "source": {
         "path": "agents/starlight-health-supplements.md",
-        "sha256": "fa0d8426ad2e66741c51bbb950831924749bb1d027156930398d4872d2a70ce5"
+        "sha256": "6d9b5e5e2bf8e0d59ff372f3af12e0706265dd332840bcaad49b683d37d2b0d8"
       }
     },
     {
@@ -892,7 +892,7 @@
       "ontologyId": "agent:sis/starlight-training-planner",
       "source": {
         "path": "agents/starlight-health-training.md",
-        "sha256": "79b5783588fb3f45857484b44df19ef36fb639f8b61226030cc1900b50820c3c"
+        "sha256": "98cb71c5265f41078c1b86996fac3c8597bdbf4e8bd035ee86836e7858012324"
       }
     },
     {
@@ -903,7 +903,7 @@
       "ontologyId": "agent:sis/starlight-hermes",
       "source": {
         "path": "agents/starlight-hermes.md",
-        "sha256": "cab153a0ee5b6028060898b5d137192287e69a49128337ade6a6137c21ead071"
+        "sha256": "f815200ba83ab1de77b9a36144f702ef855be8e480c3c5b8dc4d189a36294796"
       }
     },
     {
@@ -914,7 +914,7 @@
       "ontologyId": "agent:sis/starlight-icp-recruiter",
       "source": {
         "path": "agents/starlight-hiring.md",
-        "sha256": "6eca604caffcdff8455c706609cf7fdc8295c28f62d8560bb548dfc8d9334fe5"
+        "sha256": "dc7feb363564ffcc05d10e510016bbfe81d4a736c481665281c2fb48f1ce8c33"
       }
     },
     {
@@ -925,7 +925,7 @@
       "ontologyId": "agent:sis/starlight-contract-reviewer",
       "source": {
         "path": "agents/starlight-legal-contracts.md",
-        "sha256": "c9c164058ae1dd414d7afd07927148933273b1aa9d38e6cc695e33713489c4d5"
+        "sha256": "848fd1c7bb31ad53548abf3ec88e9a71179f726ffa1fe9f750c46983fa7a5ea4"
       }
     },
     {
@@ -936,7 +936,7 @@
       "ontologyId": "agent:sis/starlight-gdpr-auditor",
       "source": {
         "path": "agents/starlight-legal-gdpr.md",
-        "sha256": "91bcf039694873ca8f6c6b2d7e0290b76e00fea81053aa719de31b382cffe99e"
+        "sha256": "7a0089fc7a5c5ce6e05dbd7fca775638a2e6ce6cf293a727fce47a20c10ab28a"
       }
     },
     {
@@ -947,7 +947,7 @@
       "ontologyId": "agent:sis/starlight-ip-custodian",
       "source": {
         "path": "agents/starlight-legal-ip.md",
-        "sha256": "6026db8f8733d78b029d9d2533cc209d00980a888a54ec2bab8a832d3dfef1c1"
+        "sha256": "b7be9ab5dadacb0547dd597ddc321aee7928cc57cb2da8bdc8ebdf42163868b2"
       }
     },
     {
@@ -958,7 +958,7 @@
       "ontologyId": "agent:sis/starlight-jurisdiction-mapper",
       "source": {
         "path": "agents/starlight-legal-jurisdiction.md",
-        "sha256": "1970941ef6c017017497d9d5a48ab23d179de52d5a55c3502f5064387bc0b7a4"
+        "sha256": "d42bec4b2c814c245f0dd86e2d30d7349dd4c104a620b4849cd2ec612d822bd1"
       }
     },
     {
@@ -969,7 +969,7 @@
       "ontologyId": "agent:sis/starlight-board-liaison",
       "source": {
         "path": "agents/starlight-legal-liaison.md",
-        "sha256": "8faed777ad616bd84dd925b7b2735e78c6748dd29881c72bb6e7964cb0f1febf"
+        "sha256": "1c6d99b2b4caf567280db4bfdcd450bad8ebdf0802a1bb7b325e7be16953f862"
       }
     },
     {
@@ -980,7 +980,7 @@
       "ontologyId": "agent:sis/starlight-terms-compiler",
       "source": {
         "path": "agents/starlight-legal-terms.md",
-        "sha256": "a8d1977616c1d4d684e7c05c8d630a95a907a499b829dfa0a139a7406159f807"
+        "sha256": "ab1463cd03be56f606072a9d8ad1e1f62d7b51284da0cc1f613a1df4c0033794"
       }
     },
     {
@@ -991,7 +991,7 @@
       "ontologyId": "agent:sis/starlight-trademark-sentinel",
       "source": {
         "path": "agents/starlight-legal-trademarks.md",
-        "sha256": "a7c8158244ba3ef32df96473a0fa1d298e76d399a5ffe960cd6773cc87804028"
+        "sha256": "cd730f1923b7cc46e0db6fc9988f6ac138cf18b7cc83c70c70c305c6a27e309a"
       }
     },
     {
@@ -1002,7 +1002,7 @@
       "ontologyId": "agent:sis/starlight-acoustic-sensor",
       "source": {
         "path": "agents/starlight-marine-acoustics.md",
-        "sha256": "2448f077574d7bf3556e8111b38d5dfa6afe932a183204662ffa8407a473b95c"
+        "sha256": "da245eb70028365119bb9acc3e882647e927dbf6ab39bf2c3a4eab8dfe8bb2b2"
       }
     },
     {
@@ -1013,7 +1013,7 @@
       "ontologyId": "agent:sis/starlight-coastal-sentinel",
       "source": {
         "path": "agents/starlight-marine-coastal.md",
-        "sha256": "815caeca5a3ed198db874bc4230ed4df8f8001a24f97513879faed7f1c75da4d"
+        "sha256": "9084bd78b47178795c04955049d7285aecea7261a62ae8597764b2d9b41ee339"
       }
     },
     {
@@ -1024,7 +1024,7 @@
       "ontologyId": "agent:sis/starlight-dive-planner",
       "source": {
         "path": "agents/starlight-marine-dive.md",
-        "sha256": "c913cb58ed1d415ca9638795bcd4d6783891f06843e97757d46d39c3d3545f9f"
+        "sha256": "fbe9bc141fd8096eea8b251befa2daf4f1e17bbb65768f103f0b1f5e41bc62fa"
       }
     },
     {
@@ -1035,7 +1035,7 @@
       "ontologyId": "agent:sis/starlight-pollution-monitor",
       "source": {
         "path": "agents/starlight-marine-pollution.md",
-        "sha256": "cadbf55f7ad5324c2b13c4ba4aab4494db2025ae93fc7ad76f6048a6271ca2d2"
+        "sha256": "065faf9e241aee89a205e41671945e2869df82d122f747d142920d0761cf7bdb"
       }
     },
     {
@@ -1046,7 +1046,7 @@
       "ontologyId": "agent:sis/starlight-species-logger",
       "source": {
         "path": "agents/starlight-marine-species.md",
-        "sha256": "85d2ea8861451a83b6dd792b331c33bfbafb3d872bd1bce3895b2f63ef715deb"
+        "sha256": "d1bf2254c0ab54dd997b1280d69944631ae4f9ee5f239d119de1a916300e9f48"
       }
     },
     {
@@ -1057,7 +1057,7 @@
       "ontologyId": "agent:sis/starlight-vessel-tracker",
       "source": {
         "path": "agents/starlight-marine-vessel.md",
-        "sha256": "9f4f6bda3c292362397bd1a75dfc2118b2438a504be31114be8d421a22dbba41"
+        "sha256": "2a0d1a29ccaf00b75eeabf6e67d2864a45a3d571d4c802b0c009f878b2b194c5"
       }
     },
     {
@@ -1068,7 +1068,7 @@
       "ontologyId": "agent:sis/starlight-water-analyst",
       "source": {
         "path": "agents/starlight-marine-water.md",
-        "sha256": "61259a2985fc796abf23b2afddcf4cf1060289ff531b8ec7b2affe0434c739f9"
+        "sha256": "09bdbee2bc9d42cf55d1e1f410b623480e3b23a3904c2e965166b8ca3e04e7ac"
       }
     },
     {
@@ -1079,7 +1079,7 @@
       "ontologyId": "agent:sis/starlight-navigator",
       "source": {
         "path": "agents/starlight-navigator.md",
-        "sha256": "dbb5335d61ec61b15541f39642de3fa4a2b487c4ea8e29cfaeff42556165ecc1"
+        "sha256": "0e5742098e6965f880bb26e6369f059eb28d1db89fa1603a72b766332fa95f6d"
       }
     },
     {
@@ -1090,7 +1090,7 @@
       "ontologyId": "agent:sis/starlight-backup-guard",
       "source": {
         "path": "agents/starlight-ops-backup.md",
-        "sha256": "6fedce2a7e57be3beb108861538a4d0f4d69218962dcf27db9ca8524d8331a4e"
+        "sha256": "55990972fea6d7db16b88950da02fda77d7d4e7bf3ca67a215ce64fc0feb90e6"
       }
     },
     {
@@ -1101,7 +1101,7 @@
       "ontologyId": "agent:sis/starlight-cdn-warden",
       "source": {
         "path": "agents/starlight-ops-cdn.md",
-        "sha256": "0a3217238de64aa934c386d4efb78de158663c91072b4cb3abff91c9b69e1989"
+        "sha256": "471fb8e74ebb36c0f4acd405ca3d7277678ec9fdea31c46d0538cc1ef1f9206a"
       }
     },
     {
@@ -1112,7 +1112,7 @@
       "ontologyId": "agent:sis/starlight-cluster-tuner",
       "source": {
         "path": "agents/starlight-ops-cluster.md",
-        "sha256": "dbee39ce33621a850fe886431511c70a7c06e2323278646197884e468fbeed28"
+        "sha256": "3a3f91eca27cba055c20447277004a878b1ff9ae0047949523e6a5f64cdab230"
       }
     },
     {
@@ -1123,7 +1123,7 @@
       "ontologyId": "agent:sis/starlight-cost-optimization",
       "source": {
         "path": "agents/starlight-ops-cost.md",
-        "sha256": "fc877fe66b594c72917102bf05c71dff15a9f9df543c0660713b593994e30e3b"
+        "sha256": "6b3d1be38fcece01fd45cf2927bf59c7474e9dfcc9eacd09bb37845c11a99899"
       }
     },
     {
@@ -1134,7 +1134,7 @@
       "ontologyId": "agent:sis/starlight-deploy-overseer",
       "source": {
         "path": "agents/starlight-ops-deploy.md",
-        "sha256": "919ded9e6d68f81bef3e9f0aad774573322e490e623ca9bd2ce7073a1647d6a7"
+        "sha256": "04db51c58f43c5519fa0f2eebc3a9bce0835444541ba4b8c01425fc458dde636"
       }
     },
     {
@@ -1145,7 +1145,7 @@
       "ontologyId": "agent:sis/starlight-hardware-monitor",
       "source": {
         "path": "agents/starlight-ops-hardware.md",
-        "sha256": "19d2a21c5a8f660948be8ba4f01a4cf0b367518867d6d00b9954fbd47b45095b"
+        "sha256": "d4000c4e861775a5229e3035570bddd9a0e8e3deba9c96f93650d9a0b4d625d6"
       }
     },
     {
@@ -1156,7 +1156,7 @@
       "ontologyId": "agent:sis/starlight-log-aggregator",
       "source": {
         "path": "agents/starlight-ops-logs.md",
-        "sha256": "17d9e4b283c0bd64da81a0b5848f4f6205b0db9946d14f8e349253c50b7feb68"
+        "sha256": "13fdbff4790574a6b759cde8f9d882c8dcff23a467411bb368ae3dbbc4abaf7a"
       }
     },
     {
@@ -1167,7 +1167,7 @@
       "ontologyId": "agent:sis/starlight-orchestrator",
       "source": {
         "path": "agents/starlight-orchestrator.md",
-        "sha256": "315044b53775fc52e750dbaf4f5922708e86250f13339a70c2c16b1ce538247f"
+        "sha256": "aeae969d6c2e5dcc6afb3025989a6cdb98be9efacc9d7194628886b130b298e3"
       }
     },
     {
@@ -1178,7 +1178,7 @@
       "ontologyId": "agent:sis/starlight-org-structuralist",
       "source": {
         "path": "agents/starlight-org.md",
-        "sha256": "d5e295d448e9a0c502a795c9438f1fa1a011c0f68347814f2e39ab3fe5fbc65b"
+        "sha256": "26a6c146f67e00c4a77a534da1c0f3bb4a161c289056e98e916833f08516fae5"
       }
     },
     {
@@ -1189,7 +1189,7 @@
       "ontologyId": "agent:sis/starlight-performance-coach",
       "source": {
         "path": "agents/starlight-performance.md",
-        "sha256": "f8529d9e2ded785f6b1626961ba5356c997802f416ea29ff11adec459ead3a87"
+        "sha256": "0974ef1b0f5db59754a9d773ffb5156a8ed719baede5af7db5c10c2c4170c896"
       }
     },
     {
@@ -1200,7 +1200,7 @@
       "ontologyId": "agent:sis/starlight-prime",
       "source": {
         "path": "agents/starlight-prime.md",
-        "sha256": "b23517b24b2984ae7f377d326d1c4221fc7e93b082108f037404b4354d6e580a"
+        "sha256": "ef458942154255616e1e5ca97ffeff17cc396863f1ca3b213503a503df9e31c1"
       }
     },
     {
@@ -1211,7 +1211,7 @@
       "ontologyId": "agent:sis/starlight-relational",
       "source": {
         "path": "agents/starlight-relational.md",
-        "sha256": "981edbc95aaa8333db92f1df8cec238334895348a8709a839d0920f278fb6cc2"
+        "sha256": "17b5262a27c04a69a26f2585beef28592529ed9e116965eb7ce8cfc8251bf82f"
       }
     },
     {
@@ -1222,7 +1222,7 @@
       "ontologyId": "agent:sis/starlight-arxiv-scraper",
       "source": {
         "path": "agents/starlight-research-arxiv.md",
-        "sha256": "157df836495969a843823ff20f9966ba6e8365d47dd56555ef5701e6eaf8e56b"
+        "sha256": "fd36430372b5f31246f3ef7c4ba79d9570eba3c027e5fc71c8a199c77756050d"
       }
     },
     {
@@ -1233,7 +1233,7 @@
       "ontologyId": "agent:sis/starlight-attestation-pinner",
       "source": {
         "path": "agents/starlight-research-attest.md",
-        "sha256": "9ce13506325f63261ca35e22050520c3081b691e577a19ccff2020475268ac0b"
+        "sha256": "5d62c8e8124c40b9e3a711ca6c07eedbe002cee0c81a8c764fbbc2150b15227b"
       }
     },
     {
@@ -1244,7 +1244,7 @@
       "ontologyId": "agent:sis/starlight-biorxiv-scraper",
       "source": {
         "path": "agents/starlight-research-biorxiv.md",
-        "sha256": "4946d196d58022660c558ef2ecf79b468e70ab5539bb24645b1638ccb8fbb5d7"
+        "sha256": "f9b5903202a6fef17b116913d3257fff3ef8190a1d57206d766b35df304069ff"
       }
     },
     {
@@ -1255,7 +1255,7 @@
       "ontologyId": "agent:sis/starlight-pdf-distiller",
       "source": {
         "path": "agents/starlight-research-distill.md",
-        "sha256": "38952178787a63d9d1f080f2a469a06cb3d77f2139ecc939364c8b2f58c62888"
+        "sha256": "b47099096c1c94fdbd2e3de7a4e3e2533a02d39c8d708dfaa8b32ffa5f7ddcb3"
       }
     },
     {
@@ -1266,7 +1266,7 @@
       "ontologyId": "agent:sis/starlight-markdown-formatter",
       "source": {
         "path": "agents/starlight-research-format.md",
-        "sha256": "a2e86a1191403c7653e95a8988600055b4d6a31a8c8b10e44c54b73fccb29433"
+        "sha256": "623cd34ff3280df70263f2af05d25ec2d0ed1ba089ce7be78a55a2f726e567d0"
       }
     },
     {
@@ -1277,7 +1277,7 @@
       "ontologyId": "agent:sis/starlight-openalex-aggregator",
       "source": {
         "path": "agents/starlight-research-openalex.md",
-        "sha256": "90913e96755f6245136760801fe5575f6b83029810072a6b18ddc1faf1b51634"
+        "sha256": "eccc95008422c0fd0e6e1e507258e67c7ab85d721103176842593190ca19c5c5"
       }
     },
     {
@@ -1288,7 +1288,7 @@
       "ontologyId": "agent:sis/starlight-europe-pmc-fetcher",
       "source": {
         "path": "agents/starlight-research-pmc.md",
-        "sha256": "c24817712b7d8b5f8149ff46c41acdd73364bc6b19d90c9128261d078eab0576"
+        "sha256": "ad1354dbc0c87f6eaccf4be9585f16c0e2cd10365f22bcc218bff64f55e24fbb"
       }
     },
     {
@@ -1299,7 +1299,7 @@
       "ontologyId": "agent:sis/starlight-sage",
       "source": {
         "path": "agents/starlight-sage.md",
-        "sha256": "de70c3f8c91836d98b07fe771ed62652ee1a257fbc9605a45c67f15b3eabad7e"
+        "sha256": "8bdff21e88ddce48053ddd41be83690dcdf6f1223f0b7b82d2dfcded11282f32"
       }
     },
     {
@@ -1310,7 +1310,7 @@
       "ontologyId": "agent:sis/starlight-second-brain-is",
       "source": {
         "path": "agents/starlight-secondbrain.md",
-        "sha256": "7b7787ca17de58d96f38e95f19a89a133d9f11b4a272124aa0461d50ba7d42f3"
+        "sha256": "4fa6aa3c99d7f033da0863d8525b5e6fac768e5db92a7556f0881d5a55827b67"
       }
     },
     {
@@ -1321,7 +1321,7 @@
       "ontologyId": "agent:sis/starlight-self-is",
       "source": {
         "path": "agents/starlight-self-is.md",
-        "sha256": "9d82e1edf8bda7cff7af2c7637a7f8d1df73f94b1d65cd38064b4c3437fbebe1"
+        "sha256": "46e2aeb9c624cea4bc08edc4bde5e87b13a615a5fa246ade2e00d0d64d37685f"
       }
     },
     {
@@ -1332,7 +1332,7 @@
       "ontologyId": "agent:sis/starlight-sentinel",
       "source": {
         "path": "agents/starlight-sentinel.md",
-        "sha256": "a71d9b61bab086331961195daa8e7a8805aca7017e32d7322a2173c59a43baec"
+        "sha256": "6425b888319c5c6e1f8c3706b12f5a9c6ed4188b0c8b88d3b36ef94ed7f16978"
       }
     },
     {
@@ -1343,7 +1343,7 @@
       "ontologyId": "agent:sis/starlight-sentinel-daemon",
       "source": {
         "path": "agents/starlight-sentinel-daemon.md",
-        "sha256": "a50004159aecb794c299f9c5544c036c7dec890032e3970687cb93d68038c50f"
+        "sha256": "d95de7347fd349d7eb4732351f46e41c9bd51e74af68d44a58b5acf196085a60"
       }
     },
     {
@@ -1354,7 +1354,7 @@
       "ontologyId": "agent:sis/starlight-social-cinematic",
       "source": {
         "path": "agents/starlight-social-cinematic.md",
-        "sha256": "e98aaf70eac226c8c56f74dd1763b3d73db9ff877898792b2d180e5ea0b4eea8"
+        "sha256": "0177692f15f1d375f7b6dd79483bcee1c98492ea1e43cc33fa2d1eb79e3c0b44"
       }
     },
     {
@@ -1365,7 +1365,7 @@
       "ontologyId": "agent:sis/starlight-social-factcheck",
       "source": {
         "path": "agents/starlight-social-factcheck.md",
-        "sha256": "57569632f6173896e3f79fc24d3666ca6c55c00665a067c48afb1cfa20ab08b6"
+        "sha256": "1b96c4f4776b951d3052f2ff386daa0a908d45c4fb012969d7ccff04cbf4b16a"
       }
     },
     {
@@ -1376,7 +1376,7 @@
       "ontologyId": "agent:sis/starlight-social-news-analyst",
       "source": {
         "path": "agents/starlight-social-news-analyst.md",
-        "sha256": "9ddecf919635818eedc254293da4bd89fcec15647e285ad041d485ead8f8de30"
+        "sha256": "d9378bca5b3bf92d52fa89f3a876251113d1df8ac12e218327d8399d366e5233"
       }
     },
     {
@@ -1387,7 +1387,7 @@
       "ontologyId": "agent:sis/starlight-social-psychologist",
       "source": {
         "path": "agents/starlight-social-psychologist.md",
-        "sha256": "9eb7910f9e0699f4b6c2b39533267f8934356fa8318d4f335748c4e9ef11e007"
+        "sha256": "9ca8cef5addad7a21a600ed6067b484d28eb13c9b9e4302b722a55dbde6d8293"
       }
     },
     {
@@ -1398,7 +1398,7 @@
       "ontologyId": "agent:sis/starlight-social-sentinel",
       "source": {
         "path": "agents/starlight-social-sentinel.md",
-        "sha256": "03a876ebff31d922430429155662ea4f74d4a556abf5fcf4e17e923abc286eb5"
+        "sha256": "91422207adb62c6f53132ec55898b5f2b64bd3f3b726aaef710fcc61fb32b953"
       }
     },
     {
@@ -1409,7 +1409,7 @@
       "ontologyId": "agent:sis/starlight-social-strategist",
       "source": {
         "path": "agents/starlight-social-strategist.md",
-        "sha256": "9f9734478fc282dd8420a2598a8fed0597a46c18b031f2adc51bab5603ea12fd"
+        "sha256": "69758859821e31ec9f8210610bf168e697044eefbb1132a26323b5093530f7cb"
       }
     },
     {
@@ -1420,7 +1420,7 @@
       "ontologyId": "agent:sis/starlight-social-vibetracker",
       "source": {
         "path": "agents/starlight-social-vibetracker.md",
-        "sha256": "b3c0ea0cfb0fe6c11bd25353634de87109dc68e905bdc77f7b384b98adb01b22"
+        "sha256": "ab1837777f3f0852b3015f54b3c3f6ba1350b37ab54df50968340610fb25f30b"
       }
     },
     {
@@ -1431,7 +1431,7 @@
       "ontologyId": "agent:sis/starlight-audience-builder",
       "source": {
         "path": "agents/starlight-sound-audience.md",
-        "sha256": "547f735ac7bbc49c1cba137f43f8622d8d91cc85cd724b7456ba3859e6e05b98"
+        "sha256": "8cef8a767e7084bd054f8b9db5477dd10026a0ea72582e49aa248b24fa5aafd9"
       }
     },
     {
@@ -1442,7 +1442,7 @@
       "ontologyId": "agent:sis/starlight-catalog-mint",
       "source": {
         "path": "agents/starlight-sound-catalog.md",
-        "sha256": "b71f486889a0f72944f248447cab2cfe100ec678d1ddb58fefe867e7a52cba1b"
+        "sha256": "12d9ae27a9498698f3b36d820f026c7ba8eb9838e1e80fa3b0e6e8661b847499"
       }
     },
     {
@@ -1453,7 +1453,7 @@
       "ontologyId": "agent:sis/starlight-composer",
       "source": {
         "path": "agents/starlight-sound-composition.md",
-        "sha256": "6ddec299516031df260eed5d0641267d33b8fa079593c9b07cf667fb7ef62050"
+        "sha256": "79830b2fdf10d1d90c03cab165cd98a0a16f61a8f1ee4039ba8cf9b2152da924"
       }
     },
     {
@@ -1464,7 +1464,7 @@
       "ontologyId": "agent:sis/starlight-performance-director",
       "source": {
         "path": "agents/starlight-sound-performance.md",
-        "sha256": "df369abecf73ad941dbde29e046287cf3eeec3b32291fee6e794e88cdc226287"
+        "sha256": "89ffab14183b0e9b7192aba93d4c41651c144a406b2714632fcc0b96b66ca92b"
       }
     },
     {
@@ -1475,7 +1475,7 @@
       "ontologyId": "agent:sis/starlight-audio-producer",
       "source": {
         "path": "agents/starlight-sound-production.md",
-        "sha256": "2348e19910d23f1a79a883637650cb1ab555c122b188b58d7ad93a9b8cd8a000"
+        "sha256": "7beaedcf6ff641d279dcc8cd87e396798c0ed1315e82fe5f7ca247970e6ce7b1"
       }
     },
     {
@@ -1486,7 +1486,7 @@
       "ontologyId": "agent:sis/starlight-sync-agent",
       "source": {
         "path": "agents/starlight-sound-sync.md",
-        "sha256": "3ac704dc568f283593965e6853e37c4a7b8bbaf715f060feb31438d4a4c6cd1e"
+        "sha256": "3c69cca4fb4f4eb24aaadb0d30aa23df3e38a71a3e35547421d1e7c088aa264e"
       }
     },
     {
@@ -1497,7 +1497,7 @@
       "ontologyId": "agent:sis/starlight-space-debris-tracker",
       "source": {
         "path": "agents/starlight-space-debris.md",
-        "sha256": "cf9d17129c7e634ee1d3844fba4623338d0efbb927cd40fea637015934718fe1"
+        "sha256": "5ad4f4abe0e93d497b1d9906833492fc0b9170865c8bbb70e15d93e0463f2a82"
       }
     },
     {
@@ -1508,7 +1508,7 @@
       "ontologyId": "agent:sis/starlight-downlink-router",
       "source": {
         "path": "agents/starlight-space-downlink.md",
-        "sha256": "1cdea855ef2563def185ef6cc52a77dbe8f71e656c8488d4490cfb95cff3ee91"
+        "sha256": "c8d597294c555e1519acdda0ba6db9f945b559bdcaec2266f8e0ee93f6f27c78"
       }
     },
     {
@@ -1519,7 +1519,7 @@
       "ontologyId": "agent:sis/starlight-sky-mapper",
       "source": {
         "path": "agents/starlight-space-mapper.md",
-        "sha256": "4b857ba9fae556b1f7f69e252f468a48f408be9b6e2a998de7f510f66153dc86"
+        "sha256": "4cef1ae6309a5c7309a6b9f833a3615a4e85dcf4ecd5c57b8d7f5c35b5e6abec"
       }
     },
     {
@@ -1530,7 +1530,7 @@
       "ontologyId": "agent:sis/starlight-orbit-calculator",
       "source": {
         "path": "agents/starlight-space-orbit.md",
-        "sha256": "0cf3b98020ae633c408737e2bf9505d495f4feaea2b9a4b2ab3ff6626fffde5c"
+        "sha256": "b2af0abdf83aa8c2b671955c94715a7c8018d449c658e2f52b87ba00603dd2c8"
       }
     },
     {
@@ -1541,7 +1541,7 @@
       "ontologyId": "agent:sis/starlight-payload-integrator",
       "source": {
         "path": "agents/starlight-space-payload.md",
-        "sha256": "0664a7498fae2470204afc9bd784e23ba56b3337eb44747edd281416d1eaadc2"
+        "sha256": "06db8fad1ad8e0a9a79c376289407209cb6f3601410a9698abc93ede6bb19062"
       }
     },
     {
@@ -1552,7 +1552,7 @@
       "ontologyId": "agent:sis/starlight-telemetry-parser",
       "source": {
         "path": "agents/starlight-space-telemetry.md",
-        "sha256": "2d705291dec4629c8712d115370f4e5253945d858a9124f68f1577fab33539e4"
+        "sha256": "937ca266c4919f235d67f01efcea125ddbddf20d4c4d37e266e717791de0a70a"
       }
     },
     {
@@ -1563,7 +1563,7 @@
       "ontologyId": "agent:sis/starlight-telescope-scheduler",
       "source": {
         "path": "agents/starlight-space-telescope.md",
-        "sha256": "b1d0dbe54a1212b9dcf8cd61142cdf6a495a40db58e980eb3888f017edbcd61f"
+        "sha256": "dc6bde3881d2470c0a2ca48896faf20f28cdbde91d96fbb1445bf3a49005a0bc"
       }
     },
     {
@@ -1574,7 +1574,7 @@
       "ontologyId": "agent:sis/starlight-spiritual-is",
       "source": {
         "path": "agents/starlight-spiritual-is.md",
-        "sha256": "1da3870a6e016add63a5b905ff1cdd1a0db694fb12e3b6aae0fe81836e59ad60"
+        "sha256": "7669996174edfd2b9d5ca1c1cae3cb5316aebd1e4f1769c2ffa02769fa608ddc"
       }
     },
     {
@@ -1585,7 +1585,7 @@
       "ontologyId": "agent:sis/starlight-steward",
       "source": {
         "path": "agents/starlight-steward.md",
-        "sha256": "632820d7bc48b12014f8798e47e0779c82497d526f1400590b44b68fd7f22d27"
+        "sha256": "9fb730236dca9dc9aebbfa68b03a5a5295a3b083066d1557d9f04620d16c179b"
       }
     },
     {
@@ -1596,7 +1596,7 @@
       "ontologyId": "agent:sis/starlight-talent-safeguard",
       "source": {
         "path": "agents/starlight-talent.md",
-        "sha256": "47598f1b0961db9edc5493007d35f31e640bb85245c908bad10b4b3f76e2ef09"
+        "sha256": "d3e4370d01f3126da441db989ffd50be5db0826c525273444975bbf5ccd882d6"
       }
     },
     {
@@ -1607,7 +1607,7 @@
       "ontologyId": "agent:sis/starlight-curriculum-designer",
       "source": {
         "path": "agents/starlight-training.md",
-        "sha256": "028ee552833dea4be60053558a003edc3a8ca91ca5c4edd989fc0a0293972683"
+        "sha256": "57bd707eb7e474ae67674637244fff2d7d30e3d353cf92ecd2006793983cb90e"
       }
     },
     {
@@ -1618,7 +1618,7 @@
       "ontologyId": "agent:sis/starlight-visionary",
       "source": {
         "path": "agents/starlight-visionary.md",
-        "sha256": "b28737fa09e5a6aaddfc1529259c2fb2da33593ec1aee6a6d88e474e9520ac68"
+        "sha256": "9d427e24cbbab317425aa3d1ae4350225661f12e58869cfa1157f550868770fd"
       }
     },
     {
@@ -1629,7 +1629,7 @@
       "ontologyId": "agent:sis/starlight-voice-operator",
       "source": {
         "path": "agents/starlight-voice-operator.md",
-        "sha256": "4c5386b93e6646e4c1bd8dda9d0e89383b4d1268d708525b602976fe7b3a75a7"
+        "sha256": "dcfbb5146ea0edf96027a474b9ff32b93793523282cda5ec700a2653dcb4c51b"
       }
     },
     {
@@ -1640,7 +1640,7 @@
       "ontologyId": "agent:sis/starlight-voice---video-is",
       "source": {
         "path": "agents/starlight-voice-video-is.md",
-        "sha256": "fa134619d4dc1e2a29cda94ac8f9138fb8cc51dca1780697a61b29c72e42b5ca"
+        "sha256": "3d1d967d91e3d26ac4b0fee472679dd73ff6aa1a00eb91f2c0975a17c1f42e53"
       }
     },
     {
@@ -1651,7 +1651,7 @@
       "ontologyId": "agent:sis/starlight-wealth-is",
       "source": {
         "path": "agents/starlight-wealth-is.md",
-        "sha256": "59645ec9c17b71b7c8d0db84fee438164bd9925331c23433343571806f518bcd"
+        "sha256": "43b4096f4845a80742be221306e5c366da0f622f4b96e5e4c1a9d255c71c478d"
       }
     },
     {
@@ -1662,7 +1662,7 @@
       "ontologyId": "agent:sis/starlight-weaver",
       "source": {
         "path": "agents/starlight-weaver.md",
-        "sha256": "557c1208e02dcacda0de1936ffe8f6b1a07a3b93ada10cdffc731164f53b156a"
+        "sha256": "3e5bdb23c8a2b181504a12f851dd4fae01cfd014b231e704528792aefe7c9829"
       }
     },
     {
@@ -1671,7 +1671,7 @@
       "label": "business/digital-product-forge",
       "source": {
         "path": "skills/business/digital-product-forge.md",
-        "sha256": "26a84561390d52924993e7ada5dee9e8f6aaf0029843893d4f3b777233490b76"
+        "sha256": "01e44a96cc55255c4938e8d5bf7aff0b96773e9f1734d45d9248e2f9911c3ef2"
       }
     },
     {
@@ -1680,7 +1680,7 @@
       "label": "business/domain-intelligence",
       "source": {
         "path": "skills/business/domain-intelligence.md",
-        "sha256": "fe6f16987241e60c05ef8a13e0a2fc5bd580ae2e43971847609fe831fa7bbf9b"
+        "sha256": "7f5aac4648b064cd799247e0e534dcd5a1fcd40fb20761d6ff2b9e04ae84048e"
       }
     },
     {
@@ -1788,7 +1788,7 @@
       "label": "foundry/agent-forge",
       "source": {
         "path": "skills/foundry/agent-forge/SKILL.md",
-        "sha256": "156ba4557c54447ef60633ce40214be546157f87cad47862c2d6b754012fc5ee"
+        "sha256": "dd9d6de6cea6537bf24419f11b58d721bba39e9af7712e7eeee02d4638e80f79"
       }
     },
     {
@@ -1797,7 +1797,7 @@
       "label": "foundry/skill-forge",
       "source": {
         "path": "skills/foundry/skill-forge/SKILL.md",
-        "sha256": "42ebd1de5860c89e7b784e54124d7be4ab5ca328dd84106859c085b4332b7437"
+        "sha256": "40507faa28aeca27c4381740537f0bbd6ead0e5f7d3d9653c63b87ece4b76cd7"
       }
     },
     {
@@ -1806,7 +1806,7 @@
       "label": "foundry/system-forge",
       "source": {
         "path": "skills/foundry/system-forge/SKILL.md",
-        "sha256": "126047f9eb42077d6e6e4e65b03e8d1d8fbb3438d90d9e55e5cfbf013130493e"
+        "sha256": "bffb6794472f0ef67a2af60feebec3d255f4b0d7033064e6bd09ee043011f6e6"
       }
     },
     {
@@ -1815,7 +1815,7 @@
       "label": "foundry/taste-engine",
       "source": {
         "path": "skills/foundry/taste-engine/SKILL.md",
-        "sha256": "34336a2ed0c7319f8f4144f7d0b8a2d86d1a1e7dd13fca6b1abb3c1d8ba5dae8"
+        "sha256": "b19affd00dbd93b3580b2341792fdea27122273c8f6ecb9078a8a9542c03f612"
       }
     },
     {
@@ -1923,7 +1923,7 @@
       "label": "intelligence/hermes-search",
       "source": {
         "path": "skills/intelligence/hermes-search/SKILL.md",
-        "sha256": "53b63f446e206a802da608873b48356ff9a2886443008491e94517257a18081f"
+        "sha256": "d199d91d7ede5460b3dbc399e3a2d22d092a53c0f86d9b35550e8470c77e9225"
       }
     },
     {
@@ -1968,7 +1968,7 @@
       "label": "machine/heart",
       "source": {
         "path": "skills/machine/heart/SKILL.md",
-        "sha256": "7a9a31067c7e5b4ca2f6c00d47c2b22999073648db97a653819a415db3395b85"
+        "sha256": "550a6821f3338365ad033d404ae433e2d30ad1dee3f52a6ea7b36f69a22137f6"
       }
     },
     {
@@ -2040,7 +2040,7 @@
       "label": "memory/mempalace-obsidian-bridge",
       "source": {
         "path": "skills/memory/mempalace-obsidian-bridge.md",
-        "sha256": "c29f930593c8b2e68a7670941d202438791635bf4abeb9809a12aa2966d3658f"
+        "sha256": "91dae9c22e04549fac0888aad6dfd86319bd466d67cf515c5ae99c0e01ec0db1"
       }
     },
     {
@@ -2049,7 +2049,7 @@
       "label": "memory/sis-memory-orchestrator",
       "source": {
         "path": "skills/memory/sis-memory-orchestrator/SKILL.md",
-        "sha256": "929355570c0afda56793139248366ca36f6c28f983b23f89095a2f9f0e3b68d2"
+        "sha256": "aa0bc470361741d8134e7b8865603d1835ef37dc236e857bb4a13f16dd8a7360"
       }
     },
     {
@@ -2067,7 +2067,7 @@
       "label": "music-is/amplification-mesh",
       "source": {
         "path": "skills/music-is/amplification-mesh.md",
-        "sha256": "c17f5f6b01289a0cec33b1bf0092fe9fa936549ade002a79b6a93413d87379b7"
+        "sha256": "2451221277e607f519bdb58216cb33e7e9d6fb926f486d5e79b06b9d90e10aef"
       }
     },
     {
@@ -2076,7 +2076,7 @@
       "label": "music-is/asset-render",
       "source": {
         "path": "skills/music-is/asset-render.md",
-        "sha256": "8a7fe5a09de20a7c0af28f6e760d705fe5d13836563a91ad71eb46391751401b"
+        "sha256": "aca2d742bec9be0438bc9417ad9aed4407cd38717d9887f036d3b56ae6db2e5d"
       }
     },
     {
@@ -2085,7 +2085,7 @@
       "label": "music-is/catalog-systems",
       "source": {
         "path": "skills/music-is/catalog-systems.md",
-        "sha256": "ac44367b2bff18fcab88cf76fca068385b7830ab18ebf45aa05d7159295ef47b"
+        "sha256": "3edb6880bc84ffeb5cf9f2cf731481340ee14864a10b2c8e936cef1fe6c9ba44"
       }
     },
     {
@@ -2094,7 +2094,7 @@
       "label": "music-is/distribution-flow",
       "source": {
         "path": "skills/music-is/distribution-flow.md",
-        "sha256": "06e8cadab0ced0f09bb618e290bf205e06fad8e7a1ca40378f41ff4320fa0b0f"
+        "sha256": "4875a83ce3d26d72f4b687d1d04fc6815f43d802e00ddee70a3f2e98a99e09a5"
       }
     },
     {
@@ -2103,7 +2103,7 @@
       "label": "music-is/naming-intelligence",
       "source": {
         "path": "skills/music-is/naming-intelligence.md",
-        "sha256": "40ff2855546bd8eab1a4f44460ef84a2c9e6acaba639f185c1149d18aae43a67"
+        "sha256": "bf693264d35b64a336b85167b319451c67c8c11ec9f1353a585c435e7071561e"
       }
     },
     {
@@ -2112,7 +2112,7 @@
       "label": "music-is/persona-canon",
       "source": {
         "path": "skills/music-is/persona-canon.md",
-        "sha256": "8039ea1de7c9dd42638f32b5433b5437d58b9a02ec6b5ba19e74c233d0b65784"
+        "sha256": "58802b3e634ee718b3ffd5cde6b3605d9f489c5a67d0e7a08f499aa4bcf3aab7"
       }
     },
     {
@@ -2121,7 +2121,7 @@
       "label": "music-is/release-gate",
       "source": {
         "path": "skills/music-is/release-gate.md",
-        "sha256": "add7029979b38837ac1fcaea97ac7dbfbaccbb49beeb0f5a4b825f06083f27f0"
+        "sha256": "60ee1672040cd93417e551c85945463ee048eae9c8a544fa20502e661a4723ed"
       }
     },
     {
@@ -2130,7 +2130,7 @@
       "label": "music-is/royalty-graph",
       "source": {
         "path": "skills/music-is/royalty-graph.md",
-        "sha256": "7ff38240c81552e9391ae9bc319d00346ad907e8bd7f31456fa4f8eb477525b6"
+        "sha256": "dceb4a6e63a27aed24e14286fd3656c5510a583f6fdc593860abb8b01ea764d8"
       }
     },
     {
@@ -2139,7 +2139,7 @@
       "label": "music-is/song-intake",
       "source": {
         "path": "skills/music-is/song-intake.md",
-        "sha256": "0595db6fbd86c8299d872bad31768f541b73d9976ff0ec96a2897b0633d0801c"
+        "sha256": "e1757ea629267a5aac406bcd989b8429c2fd91b7c73958a5114cce2653aedb87"
       }
     },
     {
@@ -2148,7 +2148,7 @@
       "label": "music-is/suno-prompt",
       "source": {
         "path": "skills/music-is/suno-prompt.md",
-        "sha256": "d31a7b5573fc4f7dcc1a944e3d644acf0b907ef59a0783dfae942b8ae7a8ac46"
+        "sha256": "9373941fc6c2e1718f13be5d34da85345078e7ec5d4c3b3e150e21d5ae023a08"
       }
     },
     {
@@ -2166,7 +2166,7 @@
       "label": "orchestration/cli-tool-router",
       "source": {
         "path": "skills/orchestration/cli-tool-router.md",
-        "sha256": "c7665bda9684520279edb561792b5f3da47a2753675486299f0c755efca7655b"
+        "sha256": "fe18ae66f39a3a5be743acdfd5f1f288c8b1381eb1c6ab41edcc29ee9987ed95"
       }
     },
     {
@@ -2193,7 +2193,7 @@
       "label": "orchestration/hermes-swarm",
       "source": {
         "path": "skills/orchestration/hermes-swarm/SKILL.md",
-        "sha256": "57c528b2d4f85371917613f7113ecf1b21e622af7054cd26127b24a6877762f3"
+        "sha256": "39d175d1b87537899f96cf8a9f4526a468740b764bac3fccab523f19fe90f328"
       }
     },
     {
@@ -2337,7 +2337,7 @@
       "label": "safety/mutation-approval",
       "source": {
         "path": "skills/safety/mutation-approval/SKILL.md",
-        "sha256": "ca13b10aa92f3592b975adf9d77e36b8f6f78fe34a877c51ea26b76bd8bfc624"
+        "sha256": "e86a9ca12e0829ff8866a16aff535662a5e2a7018282595b519ed46a2fac6b69"
       }
     },
     {
@@ -2346,7 +2346,7 @@
       "label": "safety/permission-gate",
       "source": {
         "path": "skills/safety/permission-gate/SKILL.md",
-        "sha256": "65177778d469908b43954e1aac85acca1bbfb2283af6c40833f1109c070e9600"
+        "sha256": "aca0aa93be6f245a973a79efb0edaf1966db6e158b1d117def75e86aa9c04d86"
       }
     },
     {
@@ -2355,7 +2355,7 @@
       "label": "safety/private-public-split",
       "source": {
         "path": "skills/safety/private-public-split/SKILL.md",
-        "sha256": "0414683aec0f661bd9ac3b52b05619cf5f949626459074ee9cb1f69b2ddea5f4"
+        "sha256": "14fd63bf9db37481b816bdc2f684aa6ed82d46f0e1bd4534c41c64e87c40d9b0"
       }
     },
     {
@@ -2364,7 +2364,7 @@
       "label": "safety/secret-detector",
       "source": {
         "path": "skills/safety/secret-detector/SKILL.md",
-        "sha256": "5a3c508e08d64523c1532820a739022975c23c66c4ce8ad21def05b027e66d80"
+        "sha256": "775c30da8d9fe5971898065533be34e0d7bdb1f9eddd8083aada661984193fd7"
       }
     },
     {
@@ -2373,7 +2373,7 @@
       "label": "sound-intelligence/audience-architecture",
       "source": {
         "path": "skills/sound-intelligence/audience-architecture.md",
-        "sha256": "1e45e168a22469395a888a4b75dfd1e97075c6b864ce93b70dd0179d767009f5"
+        "sha256": "8c0f51537982a1248fca83773a19e1ce9dae0faf49001e68471aa8512853732a"
       }
     },
     {
@@ -2382,7 +2382,7 @@
       "label": "sound-intelligence/catalog-systems",
       "source": {
         "path": "skills/sound-intelligence/catalog-systems.md",
-        "sha256": "a75264fdee0592dae879283ff32c86d65a96b5ea8a8d3cea24379a2d9527a06d"
+        "sha256": "7f0d01c10c394224ea0e150d14ea6f273ad5d0a8acae304c1023b7e202718f61"
       }
     },
     {
@@ -2391,7 +2391,7 @@
       "label": "sound-intelligence/composition-architecture",
       "source": {
         "path": "skills/sound-intelligence/composition-architecture.md",
-        "sha256": "db48688a4a4534bbd0f648805a98c518a0501e5af3705ed348882ba01d0fbc9b"
+        "sha256": "8688fa31186c764042d409bf54442af485c1bd55eff51c22fbd1e5376b6220ce"
       }
     },
     {
@@ -2400,7 +2400,7 @@
       "label": "sound-intelligence/performance-design",
       "source": {
         "path": "skills/sound-intelligence/performance-design.md",
-        "sha256": "b60647c993b8b071bd4940c01cc663f5412295b1f27931253f6de4353724ed26"
+        "sha256": "9fa94eb006c7debb283f4bdfed76c1aec6f8f534d5d99ebdbba83a37a4dfb37a"
       }
     },
     {
@@ -2409,7 +2409,7 @@
       "label": "sound-intelligence/production-systems",
       "source": {
         "path": "skills/sound-intelligence/production-systems.md",
-        "sha256": "6e3024ebd682307f5c1a7715272a4ecd717a92c26a1a9323f04ab2998b67259a"
+        "sha256": "032dc7ed183e39be21a0f5f663633e2b278849c6b53d1c97e7072ebdb4d18993"
       }
     },
     {
@@ -2418,7 +2418,7 @@
       "label": "sound-intelligence/sync-licensing",
       "source": {
         "path": "skills/sound-intelligence/sync-licensing.md",
-        "sha256": "7509eeecf7494e919a886849707c4c5c4a3e6522c3a31a93c4bdf180fa7f7aa3"
+        "sha256": "5f8027527eb3d3ffe6089706f4741940884251a118bda8f69145fa3723a8193b"
       }
     },
     {
@@ -2445,7 +2445,7 @@
       "label": "vision/queen-swarms-visual",
       "source": {
         "path": "skills/vision/queen-swarms-visual.md",
-        "sha256": "3275937d6aafa76e616e9c0e426939932601c26177af2ed3c133f09344356a20"
+        "sha256": "7669ebe08767def70ed67def1b6a6210f3101dd00f30d76b173865dc3f5dc43c"
       }
     },
     {
@@ -2454,7 +2454,7 @@
       "label": "vision/voice-anti-slop",
       "source": {
         "path": "skills/vision/voice-anti-slop.md",
-        "sha256": "36779c36d51550d1c445f8237d89c0b83e89298248f225e03bf5f24330c20db6"
+        "sha256": "8ed3ab834a164c7a4b6afe97ab64601083b64cc53b176f979b9b4b0259430c32"
       }
     }
   ],
