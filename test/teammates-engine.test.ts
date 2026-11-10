@@ -88,4 +88,35 @@ describe("Starlight Teammates Engine", () => {
     assert.ok(result.executionTree.length > 0);
     assert.ok(result.content.includes("Completed:"));
   });
+
+  it("runs an autonomic tick and returns structured health sweep", async () => {
+    const engine = new StarlightTeammatesEngine();
+    const tick = await engine.runAutonomicTick();
+
+    assert.ok(tick.tickId.startsWith("tick-"));
+    assert.equal(tick.teammatesPolled, 5);
+    assert.equal(tick.details.length, 5);
+    assert.ok(tick.details.some(d => d.name === "Starlight Queen"));
+    assert.ok(tick.details.some(d => d.name === "GitHub Officer"));
+  });
+
+  it("retrieves pending approvals from persistent state", async () => {
+    const engine = new StarlightTeammatesEngine();
+    const result = await engine.dispatch("starlight-queen", "Spend $50 for domain registration");
+
+    assert.ok(result.approvalRequest);
+    const gateId = result.approvalRequest.id;
+
+    // Verify lookup by ID and list retrieval
+    const fetched = engine.getApproval(gateId);
+    assert.ok(fetched);
+    assert.equal(fetched.id, gateId);
+
+    const all = engine.getPendingApprovals();
+    assert.ok(all.some(g => g.id === gateId));
+
+    // Clean up
+    engine.resolveApproval(gateId, false);
+  });
 });
+

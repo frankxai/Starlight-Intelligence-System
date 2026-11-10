@@ -178,6 +178,9 @@ Commands:
   queen agent resume <session-id> Generate resume instructions and Claude continuation prompt for a session
   teammates list                  List active sovereign teammates, model tiers, and vaults
   teammates dispatch <id> <text>  Dispatch task to an autonomous teammate with model tier routing
+  teammates approve <id> [action] Resolve a governance approval gate (approve | reject)
+  teammates tick                  Trigger autonomic health & task sweep across all teammates
+  teammates status <id>           Show telemetry, active models, vaults, and tools for a teammate
 
 Options:
   --help, -h                      Show this help message
@@ -2007,7 +2010,66 @@ async function main(): Promise<void> {
         if (result.approvalRequest) {
           console.log(`\n[GOVERNANCE GATE] ${result.approvalRequest.title}`);
           console.log(`  ${result.approvalRequest.consequences}`);
+          console.log(`  Gate ID: ${result.approvalRequest.id}`);
+          console.log(`  To approve: starlight teammates approve ${result.approvalRequest.id}`);
         }
+      } else if (teammatesAction === "approve") {
+        const gateId = positionals[2];
+        const decision = positionals[3] || "approve";
+        if (!gateId) {
+          console.error("[starlight] Error: approve requires <gate-id> [approve|reject]");
+          process.exitCode = 1;
+          return;
+        }
+        const isApproved = decision.toLowerCase() !== "reject";
+        try {
+          const resolved = teammatesEngine.resolveApproval(gateId, isApproved);
+          console.log(`\n[starlight] Governance Gate Resolved: ${resolved.title}`);
+          console.log(`  Status:       ${resolved.status.toUpperCase()}`);
+          console.log(`  Consequences: ${resolved.consequences}`);
+        } catch (err: any) {
+          console.error(`[starlight] Error: ${err.message}`);
+          process.exitCode = 1;
+        }
+      } else if (teammatesAction === "tick") {
+        console.log("[starlight] Running autonomic tick across sovereign teammates fleet...");
+        const tick = await teammatesEngine.runAutonomicTick();
+        console.log(`\n[starlight] Autonomic Tick: ${tick.tickId}`);
+        console.log(`  Timestamp:         ${tick.timestamp}`);
+        console.log(`  Teammates Polled:  ${tick.teammatesPolled}`);
+        console.log(`  Active Workflows:  ${tick.activeWorkflows}`);
+        console.log(`  Pending Approvals: ${tick.pendingApprovals}\n`);
+        for (const d of tick.details) {
+          console.log(`  • ${d.name.padEnd(20)} [${d.status.toUpperCase()} | ${d.modelTier}]`);
+          console.log(`    Action: ${d.actionTaken}`);
+        }
+      } else if (teammatesAction === "status") {
+        const id = positionals[2];
+        if (!id) {
+          console.error("[starlight] Error: status requires <teammate-id>");
+          process.exitCode = 1;
+          return;
+        }
+        const t = teammatesEngine.getTeammate(id);
+        if (!t) {
+          console.error(`[starlight] Error: Teammate '${id}' not found.`);
+          process.exitCode = 1;
+          return;
+        }
+        console.log(`\n[starlight] Teammate Telemetry: ${t.name}`);
+        console.log(`  ID:              ${t.id}`);
+        console.log(`  Role:            ${t.role}`);
+        console.log(`  Domain / Voice:  ${t.domain} / ${t.voice}`);
+        console.log(`  Status:          ${t.status.toUpperCase()}`);
+        console.log(`  Default Tier:    ${t.defaultTier}`);
+        console.log(`  Active Models:   ${t.activeModels.join(", ")}`);
+        console.log(`  Bound Vaults:    ${t.activeVaults.join(", ")}`);
+        console.log(`  Connected Tools: ${t.connectedTools.join(", ")}`);
+        console.log(`  Unread Messages: ${t.unreadCount}`);
+        console.log(`  Last Active:     ${t.lastActive}\n`);
+      } else {
+        console.error(`[starlight] Unknown teammates action: "${teammatesAction}". Available: list, dispatch, approve, tick, status.`);
+        process.exitCode = 1;
       }
       break;
     }
