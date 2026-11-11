@@ -62,3 +62,5 @@
 - 2026-09-07T02:00:02.477Z · insights: 113 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 66 · decayed: 0 · archived: 0
 - 2026-09-10T02:00:02.704Z · insights: 115 · contradictions: 0 · promotions: 2 · queued: 0 · processed: 67 · decayed: 0 · archived: 0
 - 2026-11-10T03:15:05.228Z · insights: 59 · contradictions: 0 · promotions: 4 · processed: 25 · decayed: 195 · archived: 0 · sb_dirs: 5 · sb_promotions: 50 · sb_new: 28 · sb_contradictions: 0
+- 2026-11-11T18:00:00.000Z · insights: 119 · contradictions: 0 · promotions: 4 · processed: 70 · decayed: 152 · archived: 0 · horizon: 10-org-federation
+- 2026-11-11T02:00:03.390Z · insights: 163 · contradictions: 0 · promotions: 4 · processed: 93 · decayed: 236 · archived: 0 · sb_dirs: 5 · sb_promotions: 0 · sb_new: 0 · sb_contradictions: 0
