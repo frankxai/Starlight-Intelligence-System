@@ -26,8 +26,8 @@ importers:
         specifier: ^7.6.13
         version: 7.6.13
       '@types/node':
-        specifier: ^24.19.1
-        version: 24.19.1
+        specifier: ^24.19.2
+        version: 24.19.2
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -41,8 +41,8 @@ importers:
         specifier: ^4.23.15
         version: 4.23.15
       turbo:
-        specifier: 2.11.7
-        version: 2.11.7
+        specifier: 2.11.10
+        version: 2.11.10
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -60,14 +60,14 @@ importers:
         version: 7.0.15
     devDependencies:
       ai:
-        specifier: 7.0.133
-        version: 7.0.133(zod@4.6.5)
+        specifier: 7.0.165
+        version: 7.0.165(zod@4.6.7)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
       zod:
-        specifier: 4.6.5
-        version: 4.6.5
+        specifier: 4.6.7
+        version: 4.6.7
 
   packages/core:
     devDependencies:
@@ -82,8 +82,8 @@ importers:
         version: link:../core
     devDependencies:
       '@types/node':
-        specifier: 24.19.1
-        version: 24.19.1
+        specifier: 24.19.2
+        version: 24.19.2
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -91,41 +91,41 @@ importers:
   packages/mcp-server:
     dependencies:
       '@modelcontextprotocol/server':
-        specifier: 2.3.1
-        version: 2.3.1
+        specifier: 2.4.0
+        version: 2.4.0
       '@starlight-intelligence/core':
         specifier: workspace:^
         version: link:../core
       zod:
-        specifier: 4.6.5
-        version: 4.6.5
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@modelcontextprotocol/client':
-        specifier: 2.3.1
-        version: 2.3.1
+        specifier: 2.4.0
+        version: 2.4.0
       '@types/node':
-        specifier: 24.19.1
-        version: 24.19.1
+        specifier: 24.19.2
+        version: 24.19.2
       typescript:
         specifier: 5.9.3
         version: 5.9.3
 
 packages:
 
-  '@ai-sdk/gateway@4.0.108':
-    resolution: {integrity: sha512-UgtnyyuIpMSzhha89MAK6c2pTeQW8s9jLSmDeYI92NzqDsoyEYFZ/lYAXTXLUQxA25j5iTWPEnzGVl5adIy+8w==}
+  '@ai-sdk/gateway@4.0.138':
+    resolution: {integrity: sha512-7a/LGqioUyU2CmjRjMwnX4WR5V4vP3+YdPZEAbh7CH9OXf1GcPSsiySsHxNbqiDlDnL+KdqPvWeipIR7u/VFHA==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@5.0.57':
-    resolution: {integrity: sha512-giQ9mNwVzYUbahU2DG1FWEjXkDU8D8Hitz7Rk4AlRGtqh8Ss48msQ9+wEAXquWs/GYOETzxMMFsgcHK0i7TbUQ==}
+  '@ai-sdk/provider-utils@5.0.76':
+    resolution: {integrity: sha512-76QcCmVtSunSAbQBJtgQTTE8e+Yaz4rJJe1MRWnJ3GAQYUvNPHJejKx4jZTbhGGTdSSLaYcMBT62SISNgnGq9w==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider@4.0.25':
-    resolution: {integrity: sha512-vG0l7MUavfhn6c5+Z0y1/E6lKUrzecsLtFkuIknnHjAGAIiuwFDucafzebJuFVTZcLyhf8qhYYU2zeKP55Mymw==}
+  '@ai-sdk/provider@4.0.37':
+    resolution: {integrity: sha512-4uPgZ3qiX/JaQFr0dQoibUzHImZit9u05ro2BxGUnJwU4fV28BOAbKUa2OjQvqtM1tMac3bTKkaXdyzGovQXqg==}
     engines: {node: '>=22'}
 
   '@changesets/apply-release-plan@8.1.1':
@@ -365,16 +365,16 @@ packages:
     resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
     engines: {node: '>=20.0.0'}
 
-  '@modelcontextprotocol/client@2.3.1':
-    resolution: {integrity: sha512-mIGZXpHsjnZ6lD+gD/WCMpR5k8yVQQ8nNFH1N0Srf7AvnwTUMYD6pvTY8ng2+He5FfV7YMZLmrjL7cLa/cc3dQ==}
+  '@modelcontextprotocol/client@2.4.0':
+    resolution: {integrity: sha512-LgrD2OphHuG12vfKFKz6SOnq7bKHQmhGJIAYdD+MZBn2npHEyry6uD8zvktodtl5CQM85MO0anUyD9JwmUmxww==}
     engines: {node: '>=20'}
 
-  '@modelcontextprotocol/core@2.3.1':
-    resolution: {integrity: sha512-laVmIhPGpWi7rG9q+0UigblRN0Hws/Yjlb6qLFtVqryXVLkc4h+yN8z731POD2LnAGQlFe7/tXhUm7Bi0YB91g==}
+  '@modelcontextprotocol/core@2.4.0':
+    resolution: {integrity: sha512-z8QBKqdfXLPzkLQuG4xp8hrVEMm1PZ1IgxMN2sMbJiFiAKOWXnAzogXn2W4aqIBlP1ea6U5yiqVquvUNM1Cj6Q==}
     engines: {node: '>=20'}
 
-  '@modelcontextprotocol/server@2.3.1':
-    resolution: {integrity: sha512-e59MfWuSssj6DoQ96JCTqdW1AXT5/XtnTl0WWd6MU1Ka434fFUGGosCLJbGNySDhHGvxQWoRWK137FXYFkYNWw==}
+  '@modelcontextprotocol/server@2.4.0':
+    resolution: {integrity: sha512-rgR9yxSaAJ+bcsi/XroT/S2AfPiIWloXAnrdfYSCms9ivVju0ishu/wW0J21Ho6+ZOR1r7RyeRbjiRuF87ix5Q==}
     engines: {node: '>=20'}
 
   '@nodable/entities@3.0.0':
@@ -387,33 +387,33 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@turbo/darwin-64@2.11.7':
-    resolution: {integrity: sha512-Z2LFOxwbiJueD1miByXJS/BrW21vv6YaQXZustty5jEX4vQYw6zyh101Sz1QO7WG0mqBzKagZ/DoAeeujI0/Sw==}
+  '@turbo/darwin-64@2.11.10':
+    resolution: {integrity: sha512-By4idRap5+nLnMuRzLB4qkOPRlvNdyY1ne4VJYDyUoUB11H94k7uif9mbe3JT8JSNXs1D68uMcBj6hJ/jMQRvA==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.11.7':
-    resolution: {integrity: sha512-Vhv8ybgIflosNDSSRD9fNXHlCFA60dsGyTqQmc7l28SEX5jOaweCCD4BBYNd8/p0WGkw3e7tZbfA9w6FsujGvw==}
+  '@turbo/darwin-arm64@2.11.10':
+    resolution: {integrity: sha512-pyEYlVcuexOPa92p0Wlwl9YT1Is5D60lxN3ItWm3g30YLvFaUq86TF4BBWg5ZAc0uMTnrOzCvuCsOBTdzUWnRQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/linux-64@2.11.7':
-    resolution: {integrity: sha512-rAqRp3blQKk1+ylMGlZHAW0eJjVNuuGUm4ZrC6RU1Im8tLryvaO4a2zLQ/FQi1TRlmKqKV9YXBki2YeytlLbXA==}
+  '@turbo/linux-64@2.11.10':
+    resolution: {integrity: sha512-1tYeR/IDZ5HEdsb0jNq2L2xam5nMQ+g80tlV2BZmv4OFw+pMcUM0mMmUcfc5wXPPNHVNPuDMjh9Y8G8HgXPLZA==}
     cpu: [x64]
     os: [android, linux]
 
-  '@turbo/linux-arm64@2.11.7':
-    resolution: {integrity: sha512-thVYGov7S+llXAxrl3kBb/efalav0xhrjl5NHCR6AfKx14JkbqaetvbVwyss4FvZ9rt+Pv3xsTb+8SIYix8DTg==}
+  '@turbo/linux-arm64@2.11.10':
+    resolution: {integrity: sha512-HuekQxvVGhUd46g1Im/DKdOtglHr4/gguZAvzEpPUgtxNkztSa8lWhQEGQ+EmPQ0n7w19qjThFU+OfEEd0uvlw==}
     cpu: [arm64]
     os: [android, linux]
 
-  '@turbo/windows-64@2.11.7':
-    resolution: {integrity: sha512-ZIoKT7J7KutgYl4bGxmmgeUQjG+7E0nY8BF9dxUOiMH2vdTsM4JQ2uSwTYFkTR2Llbg6ghGjSmuZ8LQtkLEYjg==}
+  '@turbo/windows-64@2.11.10':
+    resolution: {integrity: sha512-UJOP3BkbreY3/JlMgJR6ZiimxYIBn+c+B4tnBIxD0E9c3Estmk+XoVNVBNBottZLNRXe3/ScgOU4+/k8tIWysg==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.11.7':
-    resolution: {integrity: sha512-88Xv2f7SLGVJ68lRRx8o375dKmnZYNdDtvlKcPA0kZpcF93eAQd8l96BKQ0/AMHG0bMJA0Z5QqoqtetxzNsC+g==}
+  '@turbo/windows-arm64@2.11.10':
+    resolution: {integrity: sha512-xOkEjF3ws/b/YNlc+bvJHMYBn+vL+QbEISZFVi0qS+ImmhA1X3/gmNmBrjjIG3dg6aeN+n6gQitzSkXQ286qJQ==}
     cpu: [arm64]
     os: [win32]
 
@@ -423,8 +423,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@24.19.1':
-    resolution: {integrity: sha512-aS3/DG0oM05K0RIXXP+hKjinGG5IgSSVGzswZxW3O0sS3pH4/fycXundUC9XsszgKCk4gHXylTEK6hyFxVxnoQ==}
+  '@types/node@24.19.2':
+    resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
 
   '@vercel/oidc@3.2.0':
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
@@ -433,8 +433,8 @@ packages:
   '@workflow/serde@4.1.0':
     resolution: {integrity: sha512-pav4F2BoirECWR7Nf1TKt+2eETcBj7jj4cBefQ8VXQCA6NPkaKeLfj/zMgi+3zYV5ZIBT4GuUiphsj0/b9hPQQ==}
 
-  ai@7.0.133:
-    resolution: {integrity: sha512-OjyVMdsDp4ORPSrRB9hiYGic4bzeiOtaOzBPxOM7jiavz6tSXuMrqLwd1eILGhN669VD0G/+jxaiweRqfVulYg==}
+  ai@7.0.165:
+    resolution: {integrity: sha512-cEeORsLF+9+fNzvo4nQo9hxgQoEfupjc9Xmq6OM2NGUwQQQdkHxByBdFoqnNfBE0H+qwhGQaZejvbCFFD84tBA==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -574,8 +574,8 @@ packages:
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
-  jose@6.2.12:
-    resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
+  jose@6.2.15:
+    resolution: {integrity: sha512-qdF6ewcZARtef63fJ9AKKZPgxw+t7USH6HLXYcD4CrdmSvDp79rpJSPFEKc90QBeGS63u1KQtN2MZQHC0yDIzA==}
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
@@ -731,8 +731,8 @@ packages:
   tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
-  turbo@2.11.7:
-    resolution: {integrity: sha512-RhXHbqfvY6o3xt/zSHCwSNwLrZlXiqHzewi4eAj9PtZ1T1CqgMJ2yIDb7SKPTG9IikTm925mfzL6hldQVdyNWw==}
+  turbo@2.11.10:
+    resolution: {integrity: sha512-3GJYwig8ygEI89oaOZdduJX8/aw6O9eRPYHoIt6T3FZl9hkKjiyIspufJoVgqXihPoJu8M5CSV0DlZvzfohBCw==}
     hasBin: true
 
   typescript@5.9.3:
@@ -743,8 +743,8 @@ packages:
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
+  undici@7.30.2:
+    resolution: {integrity: sha512-mLyPQnHwUxaM/rideoK/+KL8DaAJLRl4aBCfmX444aCSLnIaomqPLtNRe2jdCYcsk5wZzXrDIQC8ZeYNRAYyIA==}
     engines: {node: '>=20.18.1'}
 
   util-deprecate@1.0.2:
@@ -767,28 +767,28 @@ packages:
     engines: {node: '>= 14.6'}
     hasBin: true
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
-  '@ai-sdk/gateway@4.0.108(zod@4.6.5)':
+  '@ai-sdk/gateway@4.0.138(zod@4.6.7)':
     dependencies:
-      '@ai-sdk/provider': 4.0.25
-      '@ai-sdk/provider-utils': 5.0.57(zod@4.6.5)
+      '@ai-sdk/provider': 4.0.37
+      '@ai-sdk/provider-utils': 5.0.76(zod@4.6.7)
       '@vercel/oidc': 3.2.0
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@ai-sdk/provider-utils@5.0.57(zod@4.6.5)':
+  '@ai-sdk/provider-utils@5.0.76(zod@4.6.7)':
     dependencies:
-      '@ai-sdk/provider': 4.0.25
+      '@ai-sdk/provider': 4.0.37
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.1.1
-      undici: 7.30.0
-      zod: 4.6.5
+      undici: 7.30.2
+      zod: 4.6.7
 
-  '@ai-sdk/provider@4.0.25':
+  '@ai-sdk/provider@4.0.37':
     dependencies:
       json-schema: 0.4.0
 
@@ -1001,24 +1001,24 @@ snapshots:
       tinyglobby: 0.2.17
       yaml: 2.9.0
 
-  '@modelcontextprotocol/client@2.3.1':
+  '@modelcontextprotocol/client@2.4.0':
     dependencies:
-      '@modelcontextprotocol/core': 2.3.1
+      '@modelcontextprotocol/core': 2.4.0
       cross-spawn: 7.0.6
       eventsource: 3.0.7
       eventsource-parser: 3.1.1
-      jose: 6.2.12
+      jose: 6.2.15
       pkce-challenge: 5.0.1
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@modelcontextprotocol/core@2.3.1':
+  '@modelcontextprotocol/core@2.4.0':
     dependencies:
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@modelcontextprotocol/server@2.3.1':
+  '@modelcontextprotocol/server@2.4.0':
     dependencies:
-      '@modelcontextprotocol/core': 2.3.1
-      zod: 4.6.5
+      '@modelcontextprotocol/core': 2.4.0
+      zod: 4.6.7
 
   '@nodable/entities@3.0.0': {}
 
@@ -1026,31 +1026,31 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@turbo/darwin-64@2.11.7':
+  '@turbo/darwin-64@2.11.10':
     optional: true
 
-  '@turbo/darwin-arm64@2.11.7':
+  '@turbo/darwin-arm64@2.11.10':
     optional: true
 
-  '@turbo/linux-64@2.11.7':
+  '@turbo/linux-64@2.11.10':
     optional: true
 
-  '@turbo/linux-arm64@2.11.7':
+  '@turbo/linux-arm64@2.11.10':
     optional: true
 
-  '@turbo/windows-64@2.11.7':
+  '@turbo/windows-64@2.11.10':
     optional: true
 
-  '@turbo/windows-arm64@2.11.7':
+  '@turbo/windows-arm64@2.11.10':
     optional: true
 
   '@types/better-sqlite3@7.6.13':
     dependencies:
-      '@types/node': 24.19.1
+      '@types/node': 24.19.2
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@24.19.1':
+  '@types/node@24.19.2':
     dependencies:
       undici-types: 7.24.6
 
@@ -1058,12 +1058,12 @@ snapshots:
 
   '@workflow/serde@4.1.0': {}
 
-  ai@7.0.133(zod@4.6.5):
+  ai@7.0.165(zod@4.6.7):
     dependencies:
-      '@ai-sdk/gateway': 4.0.108(zod@4.6.5)
-      '@ai-sdk/provider': 4.0.25
-      '@ai-sdk/provider-utils': 5.0.57(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/gateway': 4.0.138(zod@4.6.7)
+      '@ai-sdk/provider': 4.0.37
+      '@ai-sdk/provider-utils': 5.0.76(zod@4.6.7)
+      zod: 4.6.7
 
   ajv@8.20.0:
     dependencies:
@@ -1212,7 +1212,7 @@ snapshots:
 
   jju@1.4.0: {}
 
-  jose@6.2.12: {}
+  jose@6.2.15: {}
 
   json-schema-traverse@1.0.0: {}
 
@@ -1364,20 +1364,20 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  turbo@2.11.7:
+  turbo@2.11.10:
     optionalDependencies:
-      '@turbo/darwin-64': 2.11.7
-      '@turbo/darwin-arm64': 2.11.7
-      '@turbo/linux-64': 2.11.7
-      '@turbo/linux-arm64': 2.11.7
-      '@turbo/windows-64': 2.11.7
-      '@turbo/windows-arm64': 2.11.7
+      '@turbo/darwin-64': 2.11.10
+      '@turbo/darwin-arm64': 2.11.10
+      '@turbo/linux-64': 2.11.10
+      '@turbo/linux-arm64': 2.11.10
+      '@turbo/windows-64': 2.11.10
+      '@turbo/windows-arm64': 2.11.10
 
   typescript@5.9.3: {}
 
   undici-types@7.24.6: {}
 
-  undici@7.30.0: {}
+  undici@7.30.2: {}
 
   util-deprecate@1.0.2: {}
 
@@ -1391,4 +1391,4 @@ snapshots:
 
   yaml@2.9.0: {}
 
-  zod@4.6.5: {}
+  zod@4.6.7: {}
