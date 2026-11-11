@@ -1,66 +1,59 @@
-# C:\Users\frank\Starlight-Intelligence-System\scripts\watch-launcher.ps1
-#
 # Starlight User-Session Launcher Watcher
-# Monitors C:\Users\frank\Starlight-Intelligence-System\private\launcher-trigger.txt
-# and executes commands in the active interactive desktop session.
+# Monitors <RepoRoot>\private\launcher-trigger.txt and delegates start/restart/kill
+# to scripts\restart-all-agents.ps1 -DirectLaunch inside the interactive desktop session.
 
 $ErrorActionPreference = 'Stop'
-$TriggerFile = "C:\Users\frank\Starlight-Intelligence-System\private\launcher-trigger.txt"
-$WtPath = "C:\Users\frank\AppData\Local\Microsoft\WindowsApps\wt.exe"
-$RestartScript = "C:\Users\frank\Starlight-Intelligence-System\scripts\restart-all-agents.ps1"
+$ScriptDir = $PSScriptRoot
+$RepoRoot  = (Resolve-Path "$ScriptDir\..").Path
+$TriggerFile = Join-Path $RepoRoot "private\launcher-trigger.txt"
+$RestartScript = Join-Path $ScriptDir "restart-all-agents.ps1"
 
 Write-Host "===================================================="
-Write-Host " Starlight User-Session Launcher Watcher (v1.0)" -ForegroundColor Green
+Write-Host " Starlight User-Session Launcher Watcher (v2.0)" -ForegroundColor Green
 Write-Host " Monitoring trigger file: $TriggerFile" -ForegroundColor Green
 Write-Host "===================================================="
 
-# Ensure trigger directory exists
 $TriggerDir = Split-Path -Parent $TriggerFile
-if (-not (Test-Path $TriggerDir)) {
+if (-not (Test-Path -LiteralPath $TriggerDir)) {
     New-Item -ItemType Directory -Path $TriggerDir -Force | Out-Null
 }
 
-# Clear stale trigger on startup
-if (Test-Path $TriggerFile) {
-    Remove-Item -Path $TriggerFile -Force
+if (Test-Path -LiteralPath $TriggerFile) {
+    Remove-Item -LiteralPath $TriggerFile -Force
 }
 
 while ($true) {
-    if (Test-Path $TriggerFile) {
+    if (Test-Path -LiteralPath $TriggerFile) {
         try {
-            $content = Get-Content $TriggerFile -Raw
-            $action = $content.Trim().ToLower()
-            
-            if ($action -eq "start" -or $action -eq "restart") {
-                Write-Host "[$(Get-Date)] Trigger detected: $action. Initiating launch..." -ForegroundColor Green
-                
-                # First, ensure existing agent processes are terminated
-                Write-Host "Cleaning up old agents..." -ForegroundColor Yellow
-                pwsh.exe -File $RestartScript -Action Kill
-                
-                # Resolve absolute path to pwsh
-                $pwshPath = "C:\Users\frank\AppData\Local\Microsoft\WindowsApps\pwsh.exe"
-                if (-not (Test-Path $pwshPath)) {
-                    $pwshPath = (Get-Command pwsh.exe -ErrorAction SilentlyContinue).Source
-                    if (-not $pwshPath) { $pwshPath = "powershell.exe" }
-                }
+            $content = Get-Content -LiteralPath $TriggerFile -Raw
+            $action = if ($content) { $content.Trim().ToLowerInvariant() } else { "" }
 
-                # Command arguments to launch Windows Terminal with four tabs
-                $Arguments = "-d C:\Users\frank\Starlight-Intelligence-System `"$pwshPath`" -NoExit -Command clsis `; new-tab -d C:\Users\frank\Arcanea `"$pwshPath`" -NoExit -Command agyarc `; new-tab -d C:\Users\frank\FrankX `"$pwshPath`" -NoExit -Command agyfx `; new-tab -d C:\Users\frank\agentic-creator-os `"$pwshPath`" -NoExit -Command acos"
-                
-                Write-Host "Launching Windows Terminal..." -ForegroundColor Cyan
-                Start-Process $WtPath -ArgumentList $Arguments
-                
-            } elseif ($action -eq "kill") {
-                Write-Host "[$(Get-Date)] Trigger detected: kill. Terminating all agents..." -ForegroundColor Yellow
-                pwsh.exe -File $RestartScript -Action Kill
+            $pwshPath = (Get-Command pwsh.exe -ErrorAction SilentlyContinue).Source
+            if (-not $pwshPath) { $pwshPath = (Get-Command powershell.exe -ErrorAction SilentlyContinue).Source }
+            if (-not $pwshPath) { $pwshPath = "pwsh.exe" }
+
+            switch ($action) {
+                "start" {
+                    Write-Host "[$(Get-Date)] Trigger detected: start. Spawning missing sessions..." -ForegroundColor Green
+                    & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $RestartScript -Action Start -DirectLaunch
+                }
+                "restart" {
+                    Write-Host "[$(Get-Date)] Trigger detected: restart. Performing clean restart..." -ForegroundColor Green
+                    & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $RestartScript -Action Restart -DirectLaunch
+                }
+                "kill" {
+                    Write-Host "[$(Get-Date)] Trigger detected: kill. Terminating target sessions..." -ForegroundColor Yellow
+                    & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $RestartScript -Action Kill -DirectLaunch
+                }
+                default {
+                    Write-Warning "[$(Get-Date)] Ignored unknown trigger payload: '$action'"
+                }
             }
         } catch {
             Write-Warning "Error processing trigger: $($_.Exception.Message)"
         } finally {
-            # Clean up the trigger file to prevent loop re-execution
-            if (Test-Path $TriggerFile) {
-                Remove-Item -Path $TriggerFile -Force
+            if (Test-Path -LiteralPath $TriggerFile) {
+                Remove-Item -LiteralPath $TriggerFile -Force -ErrorAction SilentlyContinue
             }
         }
     }

@@ -16,10 +16,12 @@ if (-not (Test-Path $ConfigFile)) {
     Write-Error "Config file not found at $ConfigFile"
     exit 1
 }
+$AgyToolsFile = Join-Path $ScriptDir "agy-tools.ps1"
 $config = Get-Content $ConfigFile -Raw | ConvertFrom-Json
 $machineConfig = $null
-if ($config.machines.PSObject.Properties[$Hostname]) {
-    $machineConfig = $config.machines.$Hostname
+$matchedHost = $config.machines.PSObject.Properties | Where-Object { $_.Name -ieq $Hostname } | Select-Object -First 1
+if ($matchedHost) {
+    $machineConfig = $matchedHost.Value
 } else {
     $machineConfig = $config.machines.DEFAULT_SECONDARY
 }
@@ -126,21 +128,48 @@ Write-Host "Using shell binary: $pwshPath" -ForegroundColor Gray
 
 # 2. Kill existing sessions first
 Write-Host "Terminating existing agent sessions..." -ForegroundColor Yellow
-pwsh.exe -File "$RepoRoot\scripts\restart-all-agents.ps1" -Action Kill
+& $pwshPath -NoProfile -ExecutionPolicy Bypass -File "$RepoRoot\scripts\restart-all-agents.ps1" -Action Kill
 
 # 3. Start agents using lpDesktop WinSta0\Default
+$HomeRoot = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
 $statusList = @()
 foreach ($repo in $machineConfig.auto_start_repos) {
+    $resolvedPath = $repo.path
+    if (-not (Test-Path -LiteralPath $resolvedPath)) {
+        $alt1 = Join-Path $HomeRoot $repo.name
+        $alt2 = Join-Path $HomeRoot "starlight\repos\$($repo.name)"
+        if (Test-Path -LiteralPath $alt1) { $resolvedPath = $alt1 }
+        elseif (Test-Path -LiteralPath $alt2) { $resolvedPath = $alt2 }
+    }
+
+    if (-not (Test-Path -LiteralPath $resolvedPath)) {
+        Write-Warning "  Skipping $($repo.name): directory not found at $resolvedPath"
+        $statusList += [ordered]@{
+            name = $repo.name
+            path = $resolvedPath
+            path_exists = $false
+            agent = $repo.agent
+            command = $repo.command
+            role = $repo.role
+            running = $false
+            pid = $null
+            details = "Skipped: repository path not found ($resolvedPath)"
+        }
+        continue
+    }
+
     Write-Host "Spawning visible shell for $($repo.name) in session desktop..." -ForegroundColor Cyan
     
-    $args = "-NoExit -Command `"$($repo.command)`""
-    $newPid = [InteractiveProcess]::Start($pwshPath, $args, $repo.path)
+    $escapedTools = $AgyToolsFile.Replace("'", "''")
+    $args = "-NoExit -Command `". '$escapedTools' $($repo.command)`""
+    $newPid = [InteractiveProcess]::Start($pwshPath, $args, $resolvedPath)
     
     if ($newPid -gt 0) {
         Write-Host "  Successfully spawned PID $newPid" -ForegroundColor Green
         $statusList += [ordered]@{
             name = $repo.name
-            path = $repo.path
+            path = $resolvedPath
+            path_exists = $true
             agent = $repo.agent
             command = $repo.command
             role = $repo.role
@@ -150,10 +179,11 @@ foreach ($repo in $machineConfig.auto_start_repos) {
         }
     } else {
         $err = -$newPid
-        Write-Error "  Failed to spawn process for $($repo.name). Win32 Error Code: $err"
+        Write-Warning "  Failed to spawn process for $($repo.name). Win32 Error Code: $err"
         $statusList += [ordered]@{
             name = $repo.name
-            path = $repo.path
+            path = $resolvedPath
+            path_exists = $true
             agent = $repo.agent
             command = $repo.command
             role = $repo.role
@@ -165,6 +195,10 @@ foreach ($repo in $machineConfig.auto_start_repos) {
 }
 
 # 4. Save status JS
+$cockpitDir = Split-Path -Parent $StatusJsFile
+if ($cockpitDir -and -not (Test-Path -LiteralPath $cockpitDir)) {
+    New-Item -ItemType Directory -Path $cockpitDir -Force | Out-Null
+}
 $statusData = [ordered]@{
     last_updated = (Get-Date).ToUniversalTime().ToString('o')
     hostname = $Hostname
@@ -174,6 +208,6 @@ $statusData = [ordered]@{
 }
 $jsonStr = $statusData | ConvertTo-Json -Depth 6
 $jsContent = "window.STARLIGHT_AGENT_STATUS = $jsonStr;"
-$jsContent | Set-Content -Path $StatusJsFile -Encoding utf8
+$jsContent | Set-Content -LiteralPath $StatusJsFile -Encoding utf8
 
 Write-Host "Status written to cockpit. Visible launch completed." -ForegroundColor Green

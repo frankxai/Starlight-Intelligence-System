@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Starlight Agent Control Center</title>
+<title>Starlight agent control center</title>
 <style>
 :root {
   --bg: #03030e;
   --bg-card: rgba(255, 255, 255, 0.03);
   --bg-card-hover: rgba(255, 255, 255, 0.06);
-  --border: rgba(127, 255, 212, 0.1);
+  --border: rgba(127, 255, 212, 0.12);
   --border-hover: rgba(127, 255, 212, 0.3);
   --teal: #7fffd4;
   --blue: #78a6ff;
   --purple: #bf95fc;
   --green: #50e3c2;
+  --amber: #fbbf24;
   --red: #ff5e7e;
   --text: #e2e8f0;
   --text-dim: #94a3b8;
@@ -22,7 +23,7 @@
   --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', Consolas, monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --radius: 16px;
-  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +37,6 @@ body {
   line-height: 1.6;
 }
 
-/* Aurora Backdrop Grid */
 .aurora-container {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
@@ -76,15 +76,14 @@ body {
 
 header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 header h1 {
   font-family: var(--font-mono);
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(26px, 3.6vw, 38px);
   font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  letter-spacing: 0.5px;
   background: linear-gradient(135deg, var(--teal), var(--blue), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -93,8 +92,7 @@ header h1 {
 
 header p {
   color: var(--text-dim);
-  font-size: 15px;
-  letter-spacing: 0.5px;
+  font-size: 14px;
 }
 
 header p span {
@@ -104,11 +102,11 @@ header p span {
 
 .layout-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 32px;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 28px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1020px) {
   .layout-grid { grid-template-columns: 1fr; }
 }
 
@@ -116,10 +114,10 @@ header p span {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px;
+  padding: 28px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transition: var(--transition);
+  transition: border-color var(--transition);
 }
 
 .card:hover {
@@ -128,15 +126,16 @@ header p span {
 
 .card-title {
   font-family: var(--font-mono);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.4px;
   color: var(--text-bright);
-  margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding-bottom: 12px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
 }
@@ -145,44 +144,54 @@ header p span {
   font-size: 11px;
   background: rgba(127, 255, 212, 0.1);
   color: var(--teal);
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 20px;
   border: 1px solid rgba(127, 255, 212, 0.2);
 }
 
-/* Agent List Layout */
+.machine-summary {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 18px;
+}
+
 .agent-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .agent-item {
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 12px;
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
   align-items: center;
   justify-content: space-between;
-  transition: var(--transition);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
 }
 
 .agent-item:hover {
   background: var(--bg-card-hover);
-  border-color: rgba(127, 255, 212, 0.15);
-  transform: translateX(4px);
+  border-color: rgba(127, 255, 212, 0.16);
+  transform: translateX(3px);
 }
 
 .agent-info {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+  flex: 1 1 320px;
 }
 
 .status-indicator {
   width: 12px;
   height: 12px;
+  margin-top: 6px;
   border-radius: 50%;
   flex-shrink: 0;
   box-shadow: 0 0 8px currentColor;
@@ -191,66 +200,96 @@ header p span {
   color: var(--green);
   background: var(--green);
 }
+.status-indicator.missing {
+  color: var(--amber);
+  background: var(--amber);
+}
 .status-indicator.stopped {
   color: var(--red);
   background: var(--red);
 }
 
+.agent-details {
+  min-width: 0;
+}
+
 .agent-details h3 {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-bright);
   margin-bottom: 4px;
   font-family: var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 .agent-details p.role {
   color: var(--text-dim);
   font-size: 13px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.agent-details p.runtime-note {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  margin-top: 6px;
+  overflow-wrap: anywhere;
 }
 
 .agent-details .meta-tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   font-size: 11px;
   font-family: var(--font-mono);
 }
 
 .meta-tags span {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   padding: 2px 8px;
   border-radius: 4px;
   color: var(--text-dim);
+  overflow-wrap: anywhere;
 }
 .meta-tags span.cmd-tag {
   color: var(--blue);
-  background: rgba(120, 166, 255, 0.1);
+  background: rgba(120, 166, 255, 0.12);
+}
+.meta-tags span.warn-tag {
+  color: var(--amber);
+  background: rgba(251, 191, 36, 0.12);
 }
 
 .pid-tag {
   font-family: var(--font-mono);
   font-size: 12px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 4px 10px;
   border-radius: 6px;
   color: var(--teal);
+  white-space: nowrap;
 }
 
-/* Strategy Panel styling */
+.pid-tag.stopped {
+  color: var(--text-dim);
+}
+
+.pid-tag.missing {
+  color: var(--amber);
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
 .strategy-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .strategy-item h4 {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--teal);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .strategy-item p {
@@ -259,49 +298,80 @@ header p span {
 }
 
 .strategy-item ul {
-  margin-left: 16px;
+  margin-left: 18px;
   margin-top: 6px;
   font-size: 13px;
   color: var(--text-dim);
 }
 
-/* Control Panel Actions */
 .control-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .action-btn {
+  width: 100%;
+  min-height: 46px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);
   color: var(--text);
-  padding: 14px 20px;
+  padding: 12px 16px;
   border-radius: 10px;
   cursor: pointer;
   font-family: var(--font-mono);
   font-size: 13px;
+  text-align: left;
   display: flex;
+  gap: 12px;
   justify-content: space-between;
   align-items: center;
-  transition: var(--transition);
-  text-decoration: none;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
 }
 
 .action-btn:hover {
   border-color: var(--teal);
-  background: rgba(127, 255, 212, 0.05);
+  background: rgba(127, 255, 212, 0.06);
   color: var(--teal);
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-color: var(--teal);
 }
 
 .action-btn .cmd-preview {
   font-size: 11px;
   color: var(--text-dim);
-  background: rgba(0,0,0,0.4);
-  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.42);
+  padding: 3px 8px;
   border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 36px 16px;
+  color: var(--text-dim);
+}
+
+.empty-state p.lead {
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.empty-state code {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+  color: var(--teal);
+  font-size: 12px;
 }
 
 .toast {
@@ -309,14 +379,14 @@ header p span {
   bottom: 24px; right: 24px;
   background: var(--teal);
   color: var(--bg);
-  padding: 12px 24px;
+  padding: 12px 20px;
   border-radius: 8px;
   font-family: var(--font-mono);
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 700;
   transform: translateY(100px);
   opacity: 0;
-  transition: var(--transition);
+  transition: transform var(--transition), opacity var(--transition);
   z-index: 100;
   box-shadow: 0 8px 24px rgba(127, 255, 212, 0.2);
 }
@@ -324,92 +394,105 @@ header p span {
   transform: translateY(0);
   opacity: 1;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora { animation: none; }
+  .card, .agent-item, .action-btn, .toast { transition: none; }
+  .agent-item:hover { transform: none; }
+}
 </style>
 </head>
 <body>
 
-<div class="aurora-container">
+<div class="aurora-container" aria-hidden="true">
   <div class="aurora aurora-1"></div>
   <div class="aurora aurora-2"></div>
 </div>
 
 <div class="container">
   <header>
-    <h1>Starlight Agent Control Center</h1>
-    <p>Host: <span id="current-hostname">DETECTING...</span> | State: <span id="last-updated">NEVER UPDATED</span></p>
+    <h1>Starlight agent control center</h1>
+    <p>Host: <span id="current-hostname">Detecting...</span> · Updated: <span id="last-updated">Not initialized</span></p>
   </header>
 
   <div class="layout-grid">
-    <!-- Main Left Column -->
     <main class="card">
       <div class="card-title">
-        <span>Active Agent Repositories</span>
-        <span class="badge" id="machine-role-badge">Unknown Machine</span>
+        <span>Active agent repositories</span>
+        <span class="badge" id="machine-role-badge">Unknown machine</span>
       </div>
+      <p class="machine-summary" id="machine-description" hidden></p>
 
       <div class="agent-grid" id="agent-list-container">
-        <!-- Render warning/uninitialized state by default -->
-        <div style="text-align: center; padding: 40px 0; color: var(--text-dim);">
-          <p style="margin-bottom: 16px; font-family: var(--font-mono);">No status data found.</p>
-          <p style="font-size: 13px;">Please run the status check command in your terminal to initialize:<br>
-          <code style="display: inline-block; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 6px; margin-top: 8px; color: var(--teal); font-size: 12px;">agent-status</code></p>
+        <div class="empty-state">
+          <p class="lead">No status snapshot found yet.</p>
+          <p style="font-size: 13px;">Run the status command in PowerShell to populate this view:<br>
+          <code>agent-status</code></p>
         </div>
       </div>
     </main>
 
-    <!-- Sidebar Right Column -->
-    <aside style="display: flex; flex-direction: column; gap: 32px;">
-      <!-- Operations card -->
-      <section class="card">
-        <div class="card-title">Quick Actions</div>
+    <aside style="display: flex; flex-direction: column; gap: 28px;">
+      <section class="card" aria-labelledby="quick-actions-heading">
+        <h2 class="card-title" id="quick-actions-heading">Quick actions</h2>
         <div class="control-actions">
-          <button class="action-btn" onclick="copyCommand('start-agents')">
-            <span>Start Missing</span>
+          <button type="button" class="action-btn" onclick="copyCommand('restart-all')">
+            <span>Restart all clean</span>
+            <span class="cmd-preview">restart-all</span>
+          </button>
+          <button type="button" class="action-btn" onclick="copyCommand('start-agents')">
+            <span>Start missing</span>
             <span class="cmd-preview">start-agents</span>
           </button>
-          <button class="action-btn" onclick="copyCommand('restart-agents')">
-            <span>Restart Clean</span>
-            <span class="cmd-preview">restart-agents</span>
-          </button>
-          <button class="action-btn" onclick="copyCommand('agent-status')">
-            <span>Refresh Status</span>
+          <button type="button" class="action-btn" onclick="copyCommand('agent-status')">
+            <span>Refresh status</span>
             <span class="cmd-preview">agent-status</span>
           </button>
-          <button class="action-btn" onclick="copyCommand('kill-agents')">
-            <span>Kill All Agents</span>
+          <button type="button" class="action-btn" onclick="copyCommand('restart-all -DryRun')">
+            <span>Preview restart plan</span>
+            <span class="cmd-preview">restart-all -DryRun</span>
+          </button>
+          <button type="button" class="action-btn" onclick="copyCommand('kill-agents')">
+            <span>Stop all agents</span>
             <span class="cmd-preview">kill-agents</span>
           </button>
         </div>
-        <p style="font-size: 12px; color: var(--text-dim); text-align: center;">Click any action to copy the command to your clipboard. Run it in your terminal.</p>
+        <p style="font-size: 12px; color: var(--text-dim); text-align: center;">Select any command to copy it to your clipboard, then paste it into PowerShell.</p>
       </section>
 
-      <!-- Strategy card -->
-      <section class="card">
-        <div class="card-title">Multi-Laptop Strategy</div>
+      <section class="card" aria-labelledby="multi-laptop-heading">
+        <h2 class="card-title" id="multi-laptop-heading">Multi-laptop profiles</h2>
         <div class="strategy-list">
           <div class="strategy-item">
-            <h4>Laptop 1: Primary Workhorse</h4>
-            <p><strong>Host: DESKTOP-1B4ICID</strong></p>
-            <p>Used for heavy development, running local command center servers, building and debugging models, and coordinating agent swarms across repos:</p>
+            <h4>Primary workhorse · DESKTOP-1B4ICID</h4>
+            <p>Full multi-repo development, local servers, and parallel agent sessions:</p>
             <ul>
-              <li>Starlight-Intelligence-System (clsis / stsis)</li>
-              <li>Arcanea Core (cla / sta / agyarc)</li>
-              <li>FrankX (cfx / stfx / agyfx)</li>
-              <li>agentic-creator-os (acos / aco)</li>
+              <li>Starlight-Intelligence-System (<code>clsis</code>)</li>
+              <li>Arcanea (<code>agyarc</code>)</li>
+              <li>FrankX (<code>agyfx</code>)</li>
+              <li>agentic-creator-os (<code>cdacos</code>)</li>
             </ul>
           </div>
           <div class="strategy-item">
-            <h4>Laptop 2: Field Operator</h4>
-            <p><strong>Host: Secondary / Field</strong></p>
-            <p>Focuses on memory capture, strategic review, vault updates, and mobile operations. Spawns minimal agents to conserve resources:</p>
+            <h4>Dual-screen companion · Starlight (Yoga Book 9i)</h4>
+            <p>Dual-OLED cockpit monitoring, vault coordination, and web publishing:</p>
             <ul>
-              <li>Starlight-Intelligence-System (clsis)</li>
-              <li>FrankX notes & logs (cfx)</li>
+              <li>Starlight-Intelligence-System (<code>clsis</code>)</li>
+              <li>starlight-command-center (<code>observatory</code>)</li>
+              <li>frankx.ai-vercel-website (<code>agyfxp</code>)</li>
             </ul>
           </div>
           <div class="strategy-item">
-            <h4>Sync Doctrine</h4>
-            <p>Append-only vault events sync via Syncthing/P2P immediately. Private credentials live strictly in local <code>.env.local</code>. Never commit raw API keys.</p>
+            <h4>Field fallback · DEFAULT_SECONDARY</h4>
+            <p>Minimal battery-conscious sessions when running on an unregistered host:</p>
+            <ul>
+              <li>Starlight-Intelligence-System (<code>clsis</code>)</li>
+              <li>FrankX (<code>agyfx</code>)</li>
+            </ul>
+          </div>
+          <div class="strategy-item">
+            <h4>Sync boundaries</h4>
+            <p>Vault JSONL events sync append-only. Local secrets stay in gitignored <code>.env.local</code> files and never enter git history.</p>
           </div>
         </div>
       </section>
@@ -417,63 +500,130 @@ header p span {
   </div>
 </div>
 
-<div class="toast" id="toast-message">Command copied to clipboard!</div>
+<div class="toast" id="toast-message" role="status" aria-live="polite">Command copied</div>
 
-<!-- Load dynamic status file -->
 <script src="agent-status-data.js"></script>
 
 <script>
+let toastTimer = null;
+
+function showToast(message) {
+  const toast = document.getElementById('toast-message');
+  toast.textContent = message;
+  toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2400);
+}
+
+function fallbackCopyText(text) {
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  area.style.position = 'fixed';
+  area.style.opacity = '0';
+  document.body.appendChild(area);
+  area.select();
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } catch (_) {
+    copied = false;
+  }
+  document.body.removeChild(area);
+  return copied;
+}
+
 function copyCommand(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    const toast = document.getElementById('toast-message');
-    toast.innerText = 'Copied: ' + text.substring(0, 30) + '...';
-    toast.classList.add('show');
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2500);
-  });
+  const label = text.length > 36 ? text.slice(0, 33) + '...' : text;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Copied: ' + label);
+    }).catch(() => {
+      showToast(fallbackCopyText(text) ? 'Copied: ' + label : 'Run in shell: ' + label);
+    });
+    return;
+  }
+  showToast(fallbackCopyText(text) ? 'Copied: ' + label : 'Run in shell: ' + label);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.STARLIGHT_AGENT_STATUS) {
-    const data = window.STARLIGHT_AGENT_STATUS;
-    
-    // Update headers
-    document.getElementById('current-hostname').innerText = data.hostname;
-    document.getElementById('machine-role-badge').innerText = data.machine_role;
-    
-    const localTime = new Date(data.last_updated).toLocaleString();
-    document.getElementById('last-updated').innerText = localTime;
-    
-    // Render list
-    const container = document.getElementById('agent-list-container');
-    container.innerHTML = ''; // Clear uninitialized state
-    
-    data.agents.forEach(agent => {
-      const item = document.createElement('div');
-      item.className = 'agent-item';
-      
-      const statusClass = agent.running ? 'running' : 'stopped';
-      const pidMarkup = agent.running ? `<span class="pid-tag">PID ${agent.pid}</span>` : '';
-      
-      item.innerHTML = `
-        <div class="agent-info">
-          <div class="status-indicator ${statusClass}"></div>
-          <div class="agent-details">
-            <h3>${agent.name}</h3>
-            <p class="role">${agent.role}</p>
-            <div class="meta-tags">
-              <span class="cmd-tag">${agent.command}</span>
-              <span>Agent: ${agent.agent}</span>
-              <span>${agent.path}</span>
-            </div>
-          </div>
-        </div>
-        ${pidMarkup}
-      `;
-      container.appendChild(item);
-    });
+  const data = window.STARLIGHT_AGENT_STATUS;
+  if (!data) return;
+
+  document.getElementById('current-hostname').textContent = data.hostname || 'Unknown';
+  document.getElementById('machine-role-badge').textContent = data.machine_role || 'Configured host';
+
+  const descEl = document.getElementById('machine-description');
+  if (data.machine_description) {
+    descEl.textContent = data.machine_description;
+    descEl.hidden = false;
   }
+
+  const parsedDate = data.last_updated ? new Date(data.last_updated) : null;
+  document.getElementById('last-updated').textContent =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? parsedDate.toLocaleString()
+      : String(data.last_updated || 'Unknown');
+
+  const container = document.getElementById('agent-list-container');
+  container.innerHTML = '';
+
+  const agents = Array.isArray(data.agents) ? data.agents : [];
+  if (agents.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <p class="lead">No auto-start repositories configured for this host.</p>
+        <p style="font-size: 13px;">Check <code>memory/agent-sessions.json</code> and run <code>agent-status</code>.</p>
+      </div>
+    `;
+    return;
+  }
+
+  agents.forEach((agent) => {
+    const item = document.createElement('div');
+    item.className = 'agent-item';
+
+    const pathMissing = agent.path_exists === false;
+    const statusClass = agent.running ? 'running' : (pathMissing ? 'missing' : 'stopped');
+    const statusLabel = agent.running
+      ? `PID ${escapeHtml(agent.pid)}`
+      : (pathMissing ? 'Path missing' : 'Stopped');
+    const pidBadgeClass = agent.running ? 'pid-tag' : (pathMissing ? 'pid-tag missing' : 'pid-tag stopped');
+    const missingTag = pathMissing ? '<span class="warn-tag">Directory missing</span>' : '';
+    const detailLine = agent.details
+      ? `<p class="runtime-note">${escapeHtml(agent.details)}</p>`
+      : '';
+
+    item.innerHTML = `
+      <div class="agent-info">
+        <div class="status-indicator ${statusClass}" aria-hidden="true"></div>
+        <div class="agent-details">
+          <h3>${escapeHtml(agent.name)}</h3>
+          <p class="role">${escapeHtml(agent.role || '')}</p>
+          <div class="meta-tags">
+            <span class="cmd-tag">${escapeHtml(agent.command)}</span>
+            <span>Agent: ${escapeHtml(agent.agent)}</span>
+            <span>${escapeHtml(agent.path)}</span>
+            ${missingTag}
+          </div>
+          ${detailLine}
+        </div>
+      </div>
+      <span class="${pidBadgeClass}">${statusLabel}</span>
+    `;
+    container.appendChild(item);
+  });
 });
 </script>
 
