@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "typescript": "5.9.3",
-    "@types/node": "24.19.1",
-    "@modelcontextprotocol/client": "2.3.1"
+    "@types/node": "24.19.2",
+    "@modelcontextprotocol/client": "2.4.0"
   },
   "exports": {
     ".": {
@@ -46,8 +46,8 @@
   },
   "dependencies": {
     "@starlight-intelligence/core": "workspace:^",
-    "@modelcontextprotocol/server": "2.3.1",
-    "zod": "4.6.5"
+    "@modelcontextprotocol/server": "2.4.0",
+    "zod": "4.6.7"
   },
   "bin": {
     "starlight-memory-mcp": "./dist/cli.js"
