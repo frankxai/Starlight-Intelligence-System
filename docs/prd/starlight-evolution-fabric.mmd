@@ -1,0 +1,51 @@
+flowchart TB
+    H["Founder / Creator / Agent Engineer"] --> UX["Starlight Nexus<br/>Evolution Home · Experiment Theater · Capability Atlas"]
+    UX --> Queen["Queen & Ops<br/>Mission admission · Permissions · Human decisions"]
+    Queen --> Eval["SIS Proving Ground<br/>Preregister · Evaluate · Compare · Falsify"]
+
+    subgraph Challenge["Evidence & Experimental Governance"]
+      Q["Research Foundry<br/>Source-linked hypotheses"]
+      Hold["Protected held-out dataset<br/>Separate access + versioned challenge"]
+      Eval --> Hold
+      Q --> Eval
+    end
+
+    subgraph Runtime["Qualified execution adapters"]
+      CF["Cloudflare Durable Agents<br/>Pi 1.5 · Browser Run · Traces"]
+      VC["Vercel AI SDK 7<br/>Eve · Sandbox · Workflow"]
+      CL["Anthropic<br/>Messages API · Claude Code/SDK · Managed Agents"]
+      EDGE["Local agents<br/>Yoga · C940 · Acer (admitted only)"]
+    end
+    Eval -->|Authorized and budgeted mission| CF
+    Eval -->|Authorized and budgeted mission| VC
+    Eval -->|Authorized and budgeted mission| CL
+    Eval -->|Authorized and budgeted mission| EDGE
+
+    CF --> Receipt["Source/Artifact/Cost Receipts<br/>OpenTelemetry · Git SHA · task digest"]
+    VC --> Receipt
+    CL --> Receipt
+    EDGE --> Receipt
+    Receipt --> Judge["Deterministic checks + calibrated quality<br/>Independent checker · anti-Goodhart"]
+    Judge --> Verdict{"Evidence-qualified?"}
+    Verdict -->|No| Feedback["Rejected / inconclusive<br/>Preserve failure + next hypothesis"]
+    Feedback --> Eval
+    Verdict -->|Shadow only| Review["Owner & independent review<br/>Explicit human promotion gate"]
+    Review -->|Approved| PR["GitHub Draft PR → reviewed main<br/>Canary → deployment receipt"]
+    PR --> Outcome["Accepted customer outcome<br/>Utility · reliability · human minutes · total cost"]
+    Outcome --> Feedback
+
+    subgraph Data["Existing Starlight Platform / Supabase"]
+      Tenant["Tenant · Principal · Membership<br/>Entitlement · Budget"]
+      Trace["agent_runs telemetry<br/>No tenant_id: server authorization bridge required"]
+    end
+    Queen -.-> Tenant
+    Receipt -.-> Trace
+    Judge -.->|Do not expose raw runs to tenants| Trace
+
+    Notion["Notion Product PRD + PR Review Room<br/>Human projection; not event ledger"] -.-> Review
+    Registry["Ops Registry and Quality Policy<br/>Portfolio source of truth"] -.-> Queen
+
+    classDef human fill:#e9dfcf,color:#30271d,stroke:#9c866e;
+    classDef danger fill:#ffedde,color:#702d1d,stroke:#d87862;
+    class H,UX,Notion human;
+    class Hold,Trace danger;
