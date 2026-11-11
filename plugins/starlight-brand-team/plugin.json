@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "starlight-brand-team",
+  "version": "0.1.0",
+  "description": "A portable personal-brand drafting and editorial review workflow using supplied sources.",
+  "author": {
+    "name": "Starlight Intelligence Systems"
+  },
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Starlight Brand Team",
+        "shortDescription": "Draft with your brand context",
+        "longDescription": "Use supplied brand notes to prepare a current brief, LinkedIn draft, speaker-profile outline and editorial review. Runs as a user-led conversation with explicit approval. Includes no hosted service or MCP connection.",
+        "developerName": "Starlight Intelligence Systems",
+        "category": "Productivity",
+        "capabilities": [
+          "Interactive"
+        ],
+        "defaultPrompt": "Run the fictional Starlight brand team demo and show the claim review."
+      }
+    }
+  }
+}

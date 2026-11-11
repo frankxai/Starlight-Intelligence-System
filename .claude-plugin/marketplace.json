@@ -1,0 +1,14 @@
+{
+  "name": "starlight-starters",
+  "owner": {
+    "name": "Starlight Intelligence Systems"
+  },
+  "plugins": [
+    {
+      "name": "starlight-brand-team",
+      "source": "./plugins/starlight-brand-team",
+      "description": "A portable personal-brand drafting and editorial review workflow using supplied sources."
+    }
+  ],
+  "description": "Portable, source-grounded workflows for personal brands; no hosted runtime."
+}
