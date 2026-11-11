@@ -17,6 +17,72 @@ export const PLUGIN_STARTER_PLUGINS = [
   "vibe-os-frequency-lab",
 ] as const;
 
+// Public distribution facts only. Never project account plugin IDs, workspace
+// bindings, private connection URLs, or operator inventory into this module.
+export const PLUGIN_ADOPTION = {
+  schemaVersion: "starlight.plugin-adoption.v1",
+  assessedAt: "2026-10-27",
+  publicDirectory: {
+    host: "ChatGPT",
+    status: "unverified",
+    listingUrl: null,
+    note: "No public ChatGPT directory listing is verified by this registry.",
+  },
+  officialDocs: [
+    { label: "Build a plugin", href: "https://developers.openai.com/plugins/build/plugins" },
+    { label: "Prepare public review", href: "https://developers.openai.com/plugins/deploy/submission" },
+  ],
+  paths: [
+    {
+      id: "local",
+      label: "Local source",
+      host: "Codex · Claude Code",
+      status: "Source available",
+      description: "Inspect the files, choose a compatible host, and try one bounded task in your own environment.",
+    },
+    {
+      id: "private",
+      label: "Private workspace",
+      host: "ChatGPT",
+      status: "Separate access",
+      description: "An owner’s private plugin stays in its account or authorized workspace. A source download does not grant that access.",
+    },
+    {
+      id: "directory",
+      label: "Public directory",
+      host: "ChatGPT",
+      status: "Availability unverified",
+      description: "Look for a verified public listing before connecting. Public source and a private installation do not establish directory approval.",
+    },
+  ],
+  candidates: [
+    {
+      id: "starlight-foundry",
+      name: "Starlight Foundry",
+      description: "Shape a reusable workflow, decide whether it needs an agent, and define the evidence that would prove it works.",
+      sourcePath: "plugins/starlight-foundry",
+      sourceUrl: "https://github.com/frankxai/Starlight-Intelligence-System/tree/main/plugins/starlight-foundry",
+      sourceLicense: "MIT",
+      packageType: "skills-only",
+      publicDirectoryStatus: "unverified",
+      publicDirectoryUrl: null,
+      prompt: "Turn my recurring task into the smallest reusable skill. Define its inputs, output, permissions, failure cases and one practical test. Show the files I can inspect; distinguish instructions from controls enforced by a runtime.",
+    },
+    {
+      id: "starlight-agent-designer",
+      name: "Starlight Agent Designer",
+      description: "Give an agent a useful job, an owner, a clear permission boundary and a testable outcome.",
+      sourcePath: "plugins/starlight-agent-designer",
+      sourceUrl: "https://github.com/frankxai/Starlight-Intelligence-System/tree/main/plugins/starlight-agent-designer",
+      sourceLicense: "MIT",
+      packageType: "skills-only",
+      publicDirectoryStatus: "unverified",
+      publicDirectoryUrl: null,
+      prompt: "Design an agent for one repeated job in my project. First check whether a simpler skill is enough. Produce its contract, minimum tool permissions, activation prompt, acceptance test and recovery path. Mark integrations that still need implementation.",
+    },
+  ],
+} as const;
+
 export const PLUGIN_MODULES_TAG =
   "starlight-intelligence-modules-2026-06-19";
 export const PLUGIN_MODULES_MODULE_NAME =
@@ -144,6 +210,8 @@ export function getPluginStarterLatestManifest() {
     assets: PLUGIN_STARTER_DOWNLOADS,
     plugins: PLUGIN_STARTER_PLUGINS,
     marketplaceName: "starlight-public",
+    host: "codex-local",
+    adoption: PLUGIN_ADOPTION,
     install: [
       `unzip ${PLUGIN_STARTER_MODULE_NAME}.zip`,
       "codex plugin marketplace add <path-to-extracted-bundle>",
@@ -179,6 +247,8 @@ export function getPluginModulesLatestManifest() {
     })),
     plugins: PLUGIN_MODULES_PLUGINS,
     marketplaceName: "starlight-public-modules",
+    host: "codex-local",
+    publicDirectory: PLUGIN_ADOPTION.publicDirectory,
     layoutCompatibility: {
       status: "requires-layout-repair",
       verifiedWith: "@openai/codex@0.163.0",

@@ -5,15 +5,17 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:vault-fetch && node scripts/check-metrics-contract.mjs && node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && node scripts/check-deploy-contract.mjs && next build",
+    "build": "npm run test:plugin-adoption && npm run test:build-kits && npm run test:vault-fetch && node scripts/check-metrics-contract.mjs && node scripts/check-public-install-contract.mjs && node scripts/check-layout-contract.mjs && node scripts/check-deploy-contract.mjs && next build",
     "check:public-install-contract": "node scripts/check-public-install-contract.mjs",
     "check:layout-contract": "node scripts/check-layout-contract.mjs",
     "check:deploy-contract": "node scripts/check-deploy-contract.mjs",
     "start": "next start",
     "lint": "eslint",
     "check:metrics": "node scripts/check-metrics-contract.mjs",
+    "test:plugin-adoption": "node --import ./scripts/test/register.mjs --test src/lib/plugin-adoption.test.mjs",
     "test:vault-fetch": "node --test src/lib/github-content.test.mjs",
-    "test:desk": "node --import ./scripts/test/register.mjs --test src/lib/desk/pricing.test.mjs src/lib/desk/provider.test.mjs src/lib/desk/cascade.test.mjs src/lib/desk/edge-meter.test.mjs src/lib/desk/vault.test.mjs src/lib/desk/run-limit.test.mjs src/lib/desk/run-limit.redis.test.mjs src/lib/desk/access.test.mjs src/lib/desk/signing.test.mjs src/lib/desk/cost-copy.test.mjs src/lib/desk/references.test.mjs src/lib/desk/run-receipt.test.mjs"
+    "test:desk": "node --import ./scripts/test/register.mjs --test src/lib/desk/pricing.test.mjs src/lib/desk/provider.test.mjs src/lib/desk/cascade.test.mjs src/lib/desk/edge-meter.test.mjs src/lib/desk/vault.test.mjs src/lib/desk/run-limit.test.mjs src/lib/desk/run-limit.redis.test.mjs src/lib/desk/access.test.mjs src/lib/desk/signing.test.mjs src/lib/desk/cost-copy.test.mjs src/lib/desk/references.test.mjs src/lib/desk/run-receipt.test.mjs",
+    "test:build-kits": "node --import ./scripts/test/register.mjs --test src/lib/build-kits.test.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "archive": "/downloads/starlight-launch-workbook-v1.zip",
+  "bytes": 15714,
+  "sha256": "dd06ada8bc09b724b7a08ee9ba22029af7827ec904f5423a9fcf2eb92239896b",
+  "files": [
+    {
+      "name": "LICENSE",
+      "bytes": 1069,
+      "sha256": "fa67d4783e083ed4a530ea98c21db36ffacfc4a5f16c85b1d6b2e8d6ae666d57"
+    },
+    {
+      "name": "README.md",
+      "bytes": 2329,
+      "sha256": "5ff50dd4b23d661a41cf4d5d86d67101fa77773dbb06adef8c7a4d75f622ce73"
+    },
+    {
+      "name": "delivery-checklist.md",
+      "bytes": 1834,
+      "sha256": "55b9dac6968a68c00e1d0c42be59f7df83c22a4d3bb991f535f5c831482c087b"
+    },
+    {
+      "name": "distribution-plan.md",
+      "bytes": 2613,
+      "sha256": "1ec8b1c64b7d18db16d138a04b5e743d4b116af5fe1f807a67e2ac3cbe615037"
+    },
+    {
+      "name": "economics.csv",
+      "bytes": 1020,
+      "sha256": "e67bbd11ea343b066a98954f9797cd21d2142dd5229780444ca9388f75651fa5"
+    },
+    {
+      "name": "offer-brief.md",
+      "bytes": 2549,
+      "sha256": "28bbf829c2648e373e655f30dea5b101d6703316149d6a69d0aa392a48cfc18e"
+    },
+    {
+      "name": "worked-example.md",
+      "bytes": 3278,
+      "sha256": "6c8ff161dd6ead60e4a94394b30b9c39a9e844a67b4c15c50c874832a46cc671"
+    }
+  ]
+}

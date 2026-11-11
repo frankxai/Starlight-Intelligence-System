@@ -39,6 +39,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/deploy", label: "Deploy Explorer", desc: "Own the public Starlight interface" },
       { href: "/quickstart", label: "Quickstart", desc: "Five minutes to first context" },
       { href: "/download", label: "Source & Modules", desc: "Build SIP source or get modules" },
+      { href: "/kits", label: "Builder kits", desc: "Free workflows, product workbook and first steps" },
       { href: "/cockpit", label: "Cockpit", desc: "The spec-trace console" },
       { href: "/architecture", label: "Architecture", desc: "How the pieces fit together" },
     ],
