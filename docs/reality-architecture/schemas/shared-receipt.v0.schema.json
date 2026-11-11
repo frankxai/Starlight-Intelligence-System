@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://starlightintelligence.org/schemas/shared-receipt.v0.schema.json",
+  "title": "Starlight Shared Receipt / Proof Contract v0",
+  "description": "Additive folding contract for Actualization Receipt, Foundry Evidence Receipt, Platform Release Receipt, and IncomeGraph Receipt nodes. Does NOT replace the existing domain schemas; those remain authoritative. This schema defines a common envelope so agents and the IncomeGraph can cite one Proof shape. Compat: existing JSON that validates against any of the three foundry/reality schemas can be wrapped without rewriting fields (see mapping doc).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "receiptId",
+    "receiptKind",
+    "createdAt",
+    "subject",
+    "status",
+    "evidence",
+    "compat"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": {
+      "const": "0.1.0",
+      "description": "Shared Receipt contract version. Independent of domain schemaVersion values."
+    },
+    "receiptId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "description": "Stable id. Prefer domain ids when wrapping (ra:receipt:…, foundry receiptId, or IncomeGraph node id)."
+    },
+    "receiptKind": {
+      "enum": [
+        "actualization",
+        "foundry-evidence",
+        "platform-release",
+        "income-graph",
+        "run"
+      ],
+      "description": "Which existing domain shape this envelope wraps or projects."
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "expiresAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Required in spirit for platform-release wraps; optional elsewhere."
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "version": { "type": ["string", "null"] },
+        "uriOrRef": { "type": ["string", "null"] },
+        "contentHash": {
+          "type": ["string", "null"],
+          "description": "sha256 hex when known; aligns with artifactSha256 / digest.sha256 / evidence content_hash."
+        },
+        "gitSha": { "type": ["string", "null"], "pattern": "^[a-f0-9]{7,64}$" }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Who produced or attested. Maps from actualization.actor, platform-release.attestation.actor, run-receipt decisions, or IncomeGraph owner/principal.",
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": { "enum": ["human", "agent", "team", "system"] },
+        "id": { "type": "string", "minLength": 1 },
+        "displayName": { "type": ["string", "null"] }
+      }
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdict"],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "PARTIAL",
+            "validated",
+            "experimental",
+            "revise",
+            "rejected",
+            "success",
+            "partial",
+            "failed",
+            "skipped",
+            "unverifiable",
+            "draft"
+          ],
+          "description": "Union of verdict enums across domain receipts. Prefer PASS/FAIL/PARTIAL for new shared writers; keep domain values when wrapping."
+        },
+        "criterion": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Normalized evidence refs. Empty allowed only for draft wraps; production wraps should carry at least one.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "ref"],
+        "properties": {
+          "id": { "type": ["string", "null"] },
+          "kind": {
+            "enum": [
+              "log",
+              "artifact",
+              "url",
+              "commit",
+              "metric",
+              "screenshot",
+              "test",
+              "ledger",
+              "payment",
+              "listing",
+              "analytics",
+              "document",
+              "interview",
+              "transcript",
+              "other"
+            ]
+          },
+          "ref": { "type": "string", "minLength": 1 },
+          "sha256": {
+            "type": ["string", "null"],
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "capturedAt": { "type": ["string", "null"], "format": "date-time" },
+          "redacted": { "type": ["boolean", "null"] }
+        }
+      }
+    },
+    "attestation": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Optional signature / DSSE handle. Aligns with platform-release.attestation and run-receipt envelopes; not required for draft IncomeGraph Receipt nodes.",
+      "properties": {
+        "method": {
+          "enum": ["none", "ed25519-dsse", "platform-release", "other"]
+        },
+        "keyid": { "type": ["string", "null"] },
+        "signature": { "type": ["string", "null"] },
+        "verificationUrl": { "type": ["string", "null"] },
+        "artifactSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "statementSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "incomeGraph": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "When receiptKind=income-graph (or when an IncomeGraph Receipt node cites this envelope).",
+      "properties": {
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{1,63}$",
+          "description": "IncomeGraph Receipt node id."
+        },
+        "graphId": { "type": ["string", "null"] },
+        "attestsToNodeIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Targets of attest edges: RevenueObservation | Experiment | Evidence | Maintenance."
+        },
+        "apiVersion": {
+          "enum": ["agenticincome.ai/v1", "agenticincome.ai/v1.1"]
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "description": "Domain-native body. MUST still validate against the cited domain schema when present. Shared writers may omit payload and only fill the envelope for cross-system citation.",
+      "additionalProperties": true,
+      "properties": {
+        "domainSchemaId": {
+          "type": "string",
+          "description": "e.g. https://starlightintelligence.org/schemas/actualization-receipt.v0.1.1.schema.json"
+        },
+        "domainSchemaVersion": { "type": "string" },
+        "body": {
+          "type": "object",
+          "description": "Exact JSON of the domain receipt (actualization | evidence-receipt | platform-release | run-receipt predicate)."
+        }
+      }
+    },
+    "compat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preservesDomainSchemas", "notes"],
+      "properties": {
+        "preservesDomainSchemas": {
+          "const": true,
+          "description": "Always true for v0: foundry/contracts/* and actualization-receipt.schema.json are not rewritten by this contract."
+        },
+        "wrappedDomain": {
+          "enum": [
+            "actualization-receipt.v0.1.1",
+            "foundry-evidence-receipt.1.0.0",
+            "platform-release-receipt.1.0.0",
+            "run-receipt.v1",
+            "income-graph-receipt-node.v1.1",
+            "none-envelope-only"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable compat note for reviewers."
+        }
+      }
+    },
+    "notes": { "type": ["string", "null"] }
+  }
+}

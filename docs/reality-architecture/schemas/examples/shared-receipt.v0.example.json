@@ -1,0 +1,50 @@
+{
+  "$schema": "https://starlightintelligence.org/schemas/shared-receipt.v0.schema.json",
+  "schemaVersion": "0.1.0",
+  "receiptId": "shared-rcpt-frankx-starter-kit-draft-2026-11-07",
+  "receiptKind": "income-graph",
+  "createdAt": "2026-11-07T05:20:00+01:00",
+  "subject": {
+    "name": "frankx.ai Starter Kit founder-zero IncomeGraph Receipt",
+    "version": "0.1.0",
+    "uriOrRef": "data/income-graph-frankx-starter-kit.json#receipt-starter-kit-draft",
+    "contentHash": null,
+    "gitSha": null
+  },
+  "actor": {
+    "kind": "agent",
+    "id": "grokbot",
+    "displayName": "Grok Bot (CTO platform eight-hour)"
+  },
+  "status": {
+    "verdict": "draft",
+    "criterion": "No paid customer Evidence yet; envelope is citation-only.",
+    "notes": "Branch-only shared contract example."
+  },
+  "evidence": [],
+  "attestation": {
+    "method": "none",
+    "keyid": null,
+    "signature": null,
+    "verificationUrl": null,
+    "artifactSha256": null,
+    "statementSha256": null
+  },
+  "incomeGraph": {
+    "nodeId": "receipt-starter-kit-draft",
+    "graphId": "frankx-starter-kit",
+    "attestsToNodeIds": ["evidence-gap-no-paid-starter"],
+    "apiVersion": "agenticincome.ai/v1.1"
+  },
+  "payload": {
+    "domainSchemaId": null,
+    "domainSchemaVersion": null,
+    "body": {}
+  },
+  "compat": {
+    "preservesDomainSchemas": true,
+    "wrappedDomain": "income-graph-receipt-node.v1.1",
+    "notes": "Example only. Does not rewrite foundry or actualization schemas."
+  },
+  "notes": "v0 additive envelope for cross-system citation."
+}
