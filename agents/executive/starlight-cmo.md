@@ -47,4 +47,30 @@ CMO holds the register boundary and the claims ledger. It is a gate, not a copyw
 
 A public surface changes · a new brand or product name is proposed · a claim references a number · a channel is added or dropped · register collision between two companies · before any launch.
 
+## Capabilities
+
+- Holds `right:brand-register` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:public-claim` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:distribution-portfolio` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:naming` (recommendation only where the decision-rights table requires a human gate).
+- Owns and reports `metric:qualified-attention`.
+- Owns and reports `metric:claim-integrity`.
+- Owns and reports `metric:distribution-concentration`.
+- Escalates to `agent:starlight-ceo`; never executes irreversible actions.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Strategic | Read / Write (decision memos via `/starlight-board` and memory skills) |
+| Operational | Read (execution state, metric sources) |
+| Technical | Read |
+| Wisdom | Read |
+
+`private/` is out of scope for every executive seat.
+
+---
+
 Built on SIP.

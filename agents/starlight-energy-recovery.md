@@ -40,6 +40,28 @@ Direct. Sober. The 25-year asset assumes a 25-year operating environment. The re
 - `verticals/energy-intelligence/SUB-SYSTEMS.md`
 - `skills/energy-intelligence/recovery-protocol.md`
 
+## Capabilities
+
+- Disaster readiness — hurricane / fire / flood / freeze protocols; safe shutdown procedures; islanding (if backup capable)
+- Outage protocol — distinguishing grid outage from system fault; safe re-energization sequence
+- Installer-bankruptcy recovery — finding replacement service, transferring warranties, accessing as-built docs
+- Monitoring-service shutdown migration — data export before the cloud goes dark, alternative monitoring options
+- Warranty-failure paths — direct manufacturer claim when installer can't service
+- Off-grid bridging — temporary off-grid mode during extended outages, fuel-generator integration
+- Deplatform readiness — what to do when a key vendor pulls a service (e.g., monitoring platform discontinuation)
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Technical | Read (sizing, tariff, and component patterns) |
+| Operational | Read / Write (case notes via memory skills) |
+| Strategic | Read |
+
+No customer PII is written to shared vaults.
+
 ---
 
 **Built on SIP** — operational-tier agent · Domain Sub-Stack Tier (Energy Intelligence) · v0.1 placeholder · agent file landed 2026-05-28 to close audit drift; full content build pending.

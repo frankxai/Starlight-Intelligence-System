@@ -48,4 +48,30 @@ CAIO makes the substrate answerable. It is the seat that can say "this agent is 
 
 A new agent or skill is proposed · a model route changes · eval thresholds move · SIP/SIS version bump · fleet cost review · `/forge`, `/prove`, `/evolve`, `/starlight-eval`.
 
+## Capabilities
+
+- Holds `right:model-routing-policy` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:agent-admission` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:eval-gate-threshold` (recommendation only where the decision-rights table requires a human gate).
+- Holds `right:substrate-version` (recommendation only where the decision-rights table requires a human gate).
+- Owns and reports `metric:cost-per-verified-outcome`.
+- Owns and reports `metric:eval-pass-rate`.
+- Owns and reports `metric:fleet-registration-drift`.
+- Escalates to `agent:starlight-ceo`; never executes irreversible actions.
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Strategic | Read / Write (decision memos via `/starlight-board` and memory skills) |
+| Operational | Read (execution state, metric sources) |
+| Technical | Read |
+| Wisdom | Read |
+
+`private/` is out of scope for every executive seat.
+
+---
+
 Built on SIP.

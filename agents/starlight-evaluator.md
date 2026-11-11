@@ -65,6 +65,26 @@ serious beneath any mythic framing.
 
 ---
 
+## Capabilities
+
+- Six-lane Proving Ground orchestration (`models`, `memory`, `retrieval`, `harness`, `substrate`, `datasets`) against empirical receipts.
+- Blind, cross-family benchmark evaluation and mechanical ground-truth verification.
+- Anti-Goodhart weakness excavation and staleness auditing (`ranAt` / `nextRunDue` enforcement).
+- Scorecard synthesis and `/starlight-board` verdict packet generation (`PROCEED` / `REVISE` / `STOP`).
+
+---
+
+## Vault Access
+
+| Vault | Access |
+|-------|--------|
+| Technical | Read / Write (empirical evaluation receipts & benchmark baselines) |
+| Operational | Read / Write (proving-ground run logs & lane staleness state) |
+| Strategic | Read (board verdicts & model routing policy) |
+| Wisdom | Read (methodology & falsification patterns) |
+
+---
+
 ## Output contract
 
 Per lane: board verdict (PROCEED / REVISE / STOP) · metrics with `sourceLane` +
