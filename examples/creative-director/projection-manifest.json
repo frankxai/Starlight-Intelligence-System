@@ -1,6 +1,6 @@
 {
   "schema": "starlight.creative-lab-projection.v1",
-  "kernelDigest": "a305e3dff932c291d63a655533b0e623b4b894039845b8330e74421ab9238910",
+  "kernelDigest": "1e426f0aa7e49249a123d99d208021aad10cd95276fb202d8596fa9564bd1fb5",
   "sourceRepository": "frankxai/Starlight-Intelligence-System",
   "kernelRef": "ba5971e79eaff6d0991729d8d1081e156475a12c",
   "inputs": {
@@ -10,17 +10,17 @@
   },
   "products": {
     "starlight": {
-      "htmlDigest": "b8d64e923e3da24700d90108007906bc9e43930889c90b52f031222810398503",
+      "htmlDigest": "c61ca3383437b62ce0806737090c53e54e362acb71bf4b00220e06b8b6e495e5",
       "nodes": 13,
       "edges": 16
     },
     "arcanea": {
-      "htmlDigest": "f86db8b3562edaa1cafbe21389db45ce767c7cd19058be22fff3f4ab4b73eeea",
+      "htmlDigest": "b08c40d66ace73d02fa4572df2d3c2576652d733376fd89031732ee0e7eda54e",
       "nodes": 13,
       "edges": 16
     },
     "gencreator": {
-      "htmlDigest": "b31ad884e95c1547e260f596e5444a11e72f4bb2a72087b4b6425325f1573a5a",
+      "htmlDigest": "d38fd831c78f9744811f2983e37d0e54cdcdcfc0fa8c41d88db1de44fb3c7261",
       "nodes": 7,
       "edges": 11
     }
