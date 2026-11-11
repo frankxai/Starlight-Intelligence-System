@@ -1,4 +1,5 @@
 const GITHUB_API = "https://api.github.com";
+const GITHUB_RAW = "https://raw.githubusercontent.com";
 const DEFAULT_REVALIDATE_SECONDS = 3600;
 const DEFAULT_MAX_ATTEMPTS = 2;
 const DEFAULT_RETRY_DELAY_MS = 125;
@@ -20,6 +21,40 @@ class GitHubContentFetchError extends Error {
 /** @param {number} status */
 function isTransientStatus(status) {
   return status === 408 || status === 425 || status === 429 || status >= 500;
+}
+
+/**
+ * 403/429 from the contents API is almost always the unauthenticated
+ * 60 req/h per-IP core quota being exhausted on shared serverless egress IPs.
+ * @param {number} status
+ */
+function isRateLimitStatus(status) {
+  return status === 403 || status === 429;
+}
+
+/**
+ * Public files are also served by raw.githubusercontent.com, which is not
+ * metered against the REST API core quota. Used only after the contents API
+ * rate-limits us; only a 200 is accepted (a 404 here may mean a private repo,
+ * so it must not be mistaken for an absent optional file).
+ *
+ * @param {string} repo
+ * @param {string} path
+ * @param {{ fetchImpl: typeof fetch, revalidateSeconds: number, requestTimeoutMs: number }} options
+ * @returns {Promise<string | null>}
+ */
+async function fetchRawFallback(repo, path, options) {
+  const { fetchImpl, revalidateSeconds, requestTimeoutMs } = options;
+  try {
+    const response = await fetchImpl(`${GITHUB_RAW}/${repo}/HEAD/${path}`, {
+      next: { revalidate: revalidateSeconds },
+      signal: AbortSignal.timeout(requestTimeoutMs),
+    });
+    if (!response.ok) return null;
+    return await response.text();
+  } catch {
+    return null;
+  }
 }
 
 /** @param {unknown} error */
@@ -78,6 +113,11 @@ function wait(milliseconds) {
  * render instead of accepting an empty vault as a successful regeneration.
  * Only a real 404 represents an absent optional vault file.
  *
+ * When the contents API rate-limits (403/429 — the unauthenticated per-IP
+ * quota is shared across serverless egress IPs), the same public file is read
+ * from raw.githubusercontent.com instead. Set GITHUB_TOKEN to raise the API
+ * quota; it is sent only when present.
+ *
  * @param {string} repo
  * @param {string} path
  * @param {{
@@ -87,6 +127,7 @@ function wait(milliseconds) {
  *   retryDelayMs?: number,
  *   requestTimeoutMs?: number,
  *   fetchImpl?: typeof fetch,
+ *   rawFallback?: boolean,
  *   logger?: Pick<Console, "warn" | "error">
  * }} [options]
  * @returns {Promise<string | null>}
@@ -99,6 +140,7 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
     retryDelayMs = DEFAULT_RETRY_DELAY_MS,
     requestTimeoutMs = DEFAULT_REQUEST_TIMEOUT_MS,
     fetchImpl = fetch,
+    rawFallback = true,
     logger = console,
   } = options;
 
@@ -117,6 +159,22 @@ export async function fetchGitHubTextFile(repo, path, options = {}) {
       });
 
       if (response.status === 404) return null;
+
+      if (rawFallback && isRateLimitStatus(response.status)) {
+        const raw = await fetchRawFallback(repo, path, {
+          fetchImpl,
+          revalidateSeconds,
+          requestTimeoutMs,
+        });
+        if (raw !== null) {
+          logger.warn("[vault/github] contents API rate-limited; served from raw CDN", {
+            repo,
+            path,
+            status: response.status,
+          });
+          return raw;
+        }
+      }
 
       if (!response.ok) {
         throw new GitHubContentFetchError(
