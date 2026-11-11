@@ -36,6 +36,33 @@
         }
       ]
     },
+    "Starlight": {
+      "role": "Cockpit & Frontend Innovation Laptop (Yoga Book 9i)",
+      "description": "Dual-screen mobile cockpit running Queen oversight, Observatory UI, and lightweight frontend polish.",
+      "auto_start_repos": [
+        {
+          "name": "Starlight-Intelligence-System",
+          "path": "C:\\Users\\frank\\starlight\\repos\\Starlight-Intelligence-System",
+          "agent": "claude",
+          "command": "clsis",
+          "role": "Vault sync, MCP tools, and memory hub"
+        },
+        {
+          "name": "starlight-command-center",
+          "path": "C:\\Users\\frank\\starlight\\repos\\starlight-command-center",
+          "agent": "antigravity",
+          "command": "observatory",
+          "role": "Observatory UI projection and fleet cockpit"
+        },
+        {
+          "name": "frankx.ai-vercel-website",
+          "path": "C:\\Users\\frank\\frankx.ai-vercel-website",
+          "agent": "antigravity",
+          "command": "cfxp",
+          "role": "Frontend UI polish and component development"
+        }
+      ]
+    },
     "DEFAULT_SECONDARY": {
       "role": "Secondary / Field Operator Laptop",
       "description": "Sovereign vault sync, lightweight writing, reading, and isolated agent tasks.",

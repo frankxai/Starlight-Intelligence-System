@@ -71,6 +71,12 @@ $activeProcs = Get-ActiveProcesses
 $statusList = @()
 foreach ($repo in $machineConfig.auto_start_repos) {
     $path = $repo.path
+    if (-not (Test-Path -LiteralPath $path)) {
+        $alt1 = Join-Path $env:USERPROFILE $repo.name
+        $alt2 = Join-Path $env:USERPROFILE "starlight\repos\$($repo.name)"
+        if (Test-Path -LiteralPath $alt1) { $path = $alt1 }
+        elseif (Test-Path -LiteralPath $alt2) { $path = $alt2 }
+    }
     $agent = $repo.agent
     
     $runningPid = $null
@@ -228,15 +234,15 @@ $statusData = [ordered]@{
     agents = $statusList
 }
 
-$jsonStr = $statusData | ConvertTo-Json -Depth 6
-$jsContent = "window.STARLIGHT_AGENT_STATUS = $jsonStr;"
-$jsContent | Set-Content -Path $StatusJsFile -Encoding utf8
-
 # Ensure cockpit directory exists (create if missing)
 $cockpitDir = Split-Path -Parent $StatusJsFile
 if (-not (Test-Path $cockpitDir)) {
     New-Item -ItemType Directory -Path $cockpitDir -Force | Out-Null
 }
+
+$jsonStr = $statusData | ConvertTo-Json -Depth 6
+$jsContent = "window.STARLIGHT_AGENT_STATUS = $jsonStr;"
+$jsContent | Set-Content -Path $StatusJsFile -Encoding utf8
 
 Write-Host "Updated browser status file: $StatusJsFile" -ForegroundColor Green
 
@@ -247,7 +253,8 @@ Write-Host "----------------------------------------------------"
 foreach ($item in $statusList) {
     $statusSymbol = if ($item.running) { "[RUNNING]" } else { "[STOPPED]" }
     $statusColor = if ($item.running) { "Green" } else { "Red" }
-    Write-Host "$($item.name,-30) $statusSymbol" -ForegroundColor $statusColor -NoNewline
+    $paddedName = $item.name.PadRight(32)
+    Write-Host "$paddedName $statusSymbol" -ForegroundColor $statusColor -NoNewline
     if ($item.running) {
         Write-Host " (PID $($item.pid)) | Command: $($item.command)" -ForegroundColor Gray
     } else {
