@@ -6,6 +6,8 @@ That two-layer shape changes how contribution works compared to a
 single-codebase project, so please read the brief overview below before
 opening your first PR.
 
+> **Where to contribute (5 November 2026):** This `frankxai/Starlight-Intelligence-System` repository is the canonical source and issue/PR queue. The same-named copies in `Starlight-Intelligence-Systems` and `Arcanea-Labs` are not alternative contribution targets. A proposed future organization/name change is **not yet in effect**; follow the official README rather than opening duplicate PRs. No private vault data, credentials or operator state is required for an ordinary fixture-backed contribution.
+
 > **TL;DR:** Operational-tier changes (vault writes, MCP server, skills,
 > agents, site, the 7 reference commands) follow normal OSS rules.
 > Substrate-tier changes (anything touching `SIP.md`, `SIS.md`,

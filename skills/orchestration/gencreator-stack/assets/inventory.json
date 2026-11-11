@@ -27,7 +27,7 @@
       ]
     },
     "business": {
-      "label": "Arcanea Labs BV",
+      "label": "Starlight Intelligence",
       "default_reasoning": "ChatGPT Project: BV+Tax (Dutch ops corpus)",
       "default_coding_primary": "minimal (docs only)",
       "default_coding_secondary": null,
