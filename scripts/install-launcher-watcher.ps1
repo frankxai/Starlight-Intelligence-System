@@ -1,24 +1,26 @@
-# C:\Users\frank\Starlight-Intelligence-System\scripts\install-launcher-watcher.ps1
-#
-# Registers the watch-launcher.ps1 script in the Windows Startup folder and runs it immediately.
+# Registers watch-launcher.ps1 in the Windows Startup folder and starts it immediately.
 
 $ErrorActionPreference = 'Stop'
-$ScriptPath = "C:\Users\frank\Starlight-Intelligence-System\scripts\watch-launcher.ps1"
+$ScriptDir = $PSScriptRoot
+$RepoRoot  = (Resolve-Path "$ScriptDir\..").Path
+$ScriptPath = Join-Path $ScriptDir "watch-launcher.ps1"
 $StartupFolder = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup"
 $ShortcutPath = Join-Path $StartupFolder "StarlightLauncherWatcher.lnk"
+
+$pwshBin = (Get-Command pwsh.exe -ErrorAction SilentlyContinue).Source
+if (-not $pwshBin) { $pwshBin = "pwsh.exe" }
 
 Write-Host "===================================================="
 Write-Host " Installing Starlight User-Session Watcher..." -ForegroundColor Green
 Write-Host "===================================================="
 
-# 1. Create Shortcut in Startup Folder
 try {
     Write-Host "Creating startup shortcut at: $ShortcutPath"
     $WshShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-    $Shortcut.TargetPath = "pwsh.exe"
-    $Shortcut.Arguments = "-WindowStyle Hidden -File `"$ScriptPath`""
-    $Shortcut.WorkingDirectory = "C:\Users\frank\Starlight-Intelligence-System"
+    $Shortcut.TargetPath = $pwshBin
+    $Shortcut.Arguments = "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$ScriptPath`""
+    $Shortcut.WorkingDirectory = $RepoRoot
     $Shortcut.Save()
     Write-Host "Shortcut created successfully." -ForegroundColor Green
 } catch {
@@ -26,9 +28,10 @@ try {
     exit 1
 }
 
-# 2. Kill any existing watcher processes first to avoid duplicates
 Write-Host "Checking for existing launcher watcher processes..."
-$watchers = Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'pwsh.exe' -and $_.CommandLine -match 'watch-launcher.ps1' }
+$watchers = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object {
+    $_.Name -in @('pwsh.exe', 'powershell.exe') -and $_.CommandLine -match 'watch-launcher\.ps1'
+}
 if ($watchers) {
     foreach ($w in $watchers) {
         Write-Host "Stopping existing watcher PID $($w.ProcessId)..." -ForegroundColor Yellow
@@ -36,10 +39,9 @@ if ($watchers) {
     }
 }
 
-# 3. Launch the watcher right now (hidden window)
 try {
     Write-Host "Starting launcher watcher now..."
-    Start-Process pwsh.exe -ArgumentList "-WindowStyle Hidden", "-File `"$ScriptPath`"" -WorkingDirectory "C:\Users\frank\Starlight-Intelligence-System"
+    Start-Process -FilePath $pwshBin -ArgumentList "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$ScriptPath`"" -WorkingDirectory $RepoRoot
     Write-Host "Watcher started successfully in the background." -ForegroundColor Green
 } catch {
     Write-Error "Failed to start watcher: $($_.Exception.Message)"

@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 # Starlight Intelligence System — Premium Antigravity CLI Integration
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
@@ -8,6 +8,13 @@
 #   . "$HOME\starlight\repos\Starlight-Intelligence-System\scripts\agy-tools.ps1"
 # ==============================================================================
 
+param(
+    [Parameter(Mandatory = $false, Position = 0)]
+    [string]$AutoRunCommand = "",
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$AutoRunArgs = @()
+)
+
 # Force console UTF-8 support
 try {
     if ([Console]::OutputEncoding.CodePage -ne 65001) {
@@ -16,14 +23,19 @@ try {
     }
 } catch {}
 
-$global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-# Multi-root resolution: Frank's primary active working repos are in C:\Users\frank ($HOME),
-# with auxiliary/canonical repos potentially under C:\Users\frank\starlight\repos.
-$global:REPOS_ROOT = "C:\Users\frank"
+$_sisHomeRoot = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+$_sisCloneParent = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$global:AGY_EXE_PATH = Join-Path $_sisHomeRoot "AppData\Local\agy\bin\agy.exe"
+# Multi-root resolution: primary active working repos in $HOME,
+# with auxiliary/Yoga Book repos under $HOME\starlight\repos or sibling to this checkout.
+$global:REPOS_ROOT = $_sisHomeRoot
 $global:REPOS_SEARCH_ROOTS = @(
-    "C:\Users\frank",
-    "C:\Users\frank\starlight\repos"
+    $_sisHomeRoot,
+    (Join-Path $_sisHomeRoot "starlight\repos")
 )
+if ($_sisCloneParent -and ($global:REPOS_SEARCH_ROOTS -notcontains $_sisCloneParent)) {
+    $global:REPOS_SEARCH_ROOTS += $_sisCloneParent
+}
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
     $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{}
@@ -418,6 +430,18 @@ function agy-forge {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-observatory {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "center"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-fxp {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "web"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # Alias for convenience
 Set-Alias -Name arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agysis -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
@@ -436,6 +460,16 @@ Set-Alias -Name agydpi -Value agy-dpi -Scope Global -Force -ErrorAction Silently
 Set-Alias -Name agyprod -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyproducts -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyforge -Value agy-forge -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name observatory -Value agy-observatory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agycenter -Value agy-observatory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-center -Value agy-observatory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agycockpit -Value agy-observatory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-cockpit -Value agy-observatory -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyfxp -Value agy-fxp -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyweb -Value agy-fxp -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-web -Value agy-fxp -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agywebsite -Value agy-fxp -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-website -Value agy-fxp -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyfrankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agy-frankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agystarlight -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
@@ -542,7 +576,9 @@ function Invoke-ClaudeYolo {
 
 function Invoke-CodexInRepo {
     param(
-        [string]$TargetPath
+        [string]$TargetPath,
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$Rest
     )
 
     if (-not (Test-Path $TargetPath)) {
@@ -564,8 +600,8 @@ function Invoke-CodexInRepo {
 
     Set-Location $TargetPath
     Write-Host "⚡ Switched context to: $TargetPath" -ForegroundColor DarkCyan
-    Write-Host "🚀 Spawning Codex..." -ForegroundColor Green
-    & $codexPath
+    Write-Host "🚀 Spawning Codex YOLO Agent..." -ForegroundColor Green
+    & $codexPath --dangerously-bypass-approvals-and-sandbox @Rest
 }
 
 # Helper: headless single-turn dispatch (used by /si fanout)
@@ -837,62 +873,62 @@ function cldpi {
 # Dedicated wrappers for Codex in repo context
 function cd-sis {
     $repo = Get-StarlightRepo "sis"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-fx {
     $repo = Get-StarlightRepo "fx"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-arc {
     $repo = Get-StarlightRepo "arc"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-app {
     $repo = Get-StarlightRepo "app"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-studio {
     $repo = Get-StarlightRepo "studio"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-brain {
     $repo = Get-StarlightRepo "brain"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-prompts {
     $repo = Get-StarlightRepo "prompts"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-acos {
     $repo = Get-StarlightRepo "acos"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-g {
     $repo = Get-StarlightRepo "g"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-vc {
     $repo = Get-StarlightRepo "vc"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-ani {
     $repo = Get-StarlightRepo "ani"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 function cd-dpi {
     $repo = Get-StarlightRepo "dpi"
-    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName }
+    if ($repo) { Invoke-CodexInRepo -TargetPath $repo.FullName @args }
 }
 
 # General fuzzy lookup for Claude Code YOLO
@@ -1296,6 +1332,69 @@ Set-Alias -Name status-all -Value starlight-status-all -Scope Global -Force -Err
 Set-Alias -Name cockpit -Value starlight-cockpit -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name dashboard -Value starlight-cockpit -Scope Global -Force -ErrorAction SilentlyContinue
 
+# Portable fallback for cfxp on secondary laptops where command-grid.ps1 is absent
+if (-not (Get-Command cfxp -ErrorAction SilentlyContinue)) {
+    function cfxp {
+        $repo = Get-StarlightRepo "web"
+        if ($repo) { Invoke-ClaudeYolo -TargetPath $repo.FullName }
+    }
+}
+
+# ------------------------------------------------------------------------------
+# Agent Fleet Session Recovery & Restart-All Lifecycle
+# ------------------------------------------------------------------------------
+
+function Invoke-StarlightAgentLifecycle {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('Status', 'Start', 'Restart', 'Kill')]
+        [string]$Action,
+        [Parameter(ValueFromRemainingArguments=$true)]
+        [string[]]$ExtraArgs
+    )
+
+    $scriptCandidates = @(
+        (Join-Path $PSScriptRoot 'restart-all-agents.ps1'),
+        (Join-Path $HOME 'Starlight-Intelligence-System\scripts\restart-all-agents.ps1'),
+        (Join-Path $HOME 'starlight\repos\Starlight-Intelligence-System\scripts\restart-all-agents.ps1')
+    )
+    $scriptPath = $scriptCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if (-not $scriptPath) {
+        Write-Error "restart-all-agents.ps1 not found in: $($scriptCandidates -join ', ')"
+        return
+    }
+
+    $pwshBin = (Get-Command pwsh.exe -ErrorAction SilentlyContinue).Source
+    if (-not $pwshBin) { $pwshBin = 'pwsh' }
+
+    & $pwshBin -NoProfile -ExecutionPolicy Bypass -File $scriptPath -Action $Action @ExtraArgs
+}
+
+function start-agents {
+    Invoke-StarlightAgentLifecycle -Action Start @args
+}
+
+function restart-agents {
+    Invoke-StarlightAgentLifecycle -Action Restart @args
+}
+
+function kill-agents {
+    Invoke-StarlightAgentLifecycle -Action Kill @args
+}
+
+function agent-status {
+    Invoke-StarlightAgentLifecycle -Action Status @args
+}
+
+Set-Alias -Name restart-all -Value restart-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name restart-all-agents -Value restart-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name start-all -Value start-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name start-all-agents -Value start-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name stop-agents -Value kill-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name stop-all-agents -Value kill-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name kill-all-agents -Value kill-agents -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agents-status -Value agent-status -Scope Global -Force -ErrorAction SilentlyContinue
+
 # Diagnostic and Verification Tools
 # ------------------------------------------------------------------------------
 
@@ -1432,14 +1531,20 @@ function Invoke-SiCouncil {
     & $script @args
 }
 
-if ($env:FRANK_QUIET_PROFILE -ne '1') {
-    Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-app/agyapp | agy-acos/agyacos | agy-run(ay)' -ForegroundColor Green
+if ($env:FRANK_QUIET_PROFILE -ne '1' -and -not $global:__STARLIGHT_AGY_TOOLS_BANNER_SHOWN) {
+    $global:__STARLIGHT_AGY_TOOLS_BANNER_SHOWN = $true
+    Write-Host 'Antigravity YOLO wrappers loaded: agy-sis/agysis | agy-fx/agyfx | agy-arc/agyarc | agy-fxp/agyfxp | observatory | agy-run(ay)' -ForegroundColor Green
     Write-Host 'Claude Code, Codex, Grok & DeepAgent integrations active:' -ForegroundColor Green
     Write-Host '  - cl / cd / gr / da (launches agent in current folder)' -ForegroundColor DarkGray
     Write-Host '  - cl <repo> / clsis / clfx / clarc / clapp / clstudio / clbrain / clprompts / clacos' -ForegroundColor DarkGray
     Write-Host '  - cd <repo> / cdsis / cdfx / cdarc / cdapp / cdstudio / cdbrain / cdprompts / cdacos' -ForegroundColor DarkGray
     Write-Host '  - gr <repo> / grsis / grfx / grarc / grapp / grstudio / grbrain / grprompts / gracos (or gk*)' -ForegroundColor DarkGray
     Write-Host '  - da <repo> / dasis / dafx / daarc / daapp / dastudio / dabrain / daprompts / daacos' -ForegroundColor DarkGray
+    Write-Host 'Session recovery: restart-all / restart-agents | start-agents | kill-agents | agent-status' -ForegroundColor Green
     Write-Host 'Starlight fanout + council: Invoke-SiFanout | Invoke-SiCouncil (si-dispatch.ps1 / si-council.ps1)' -ForegroundColor Green
     Write-Host 'Hook doctor: scripts/hook-doctor.ps1 (run any time for audit across harnesses)' -ForegroundColor DarkCyan
+}
+
+if ($AutoRunCommand) {
+    & $AutoRunCommand @AutoRunArgs
 }
