@@ -28,11 +28,11 @@ execFileSync(process.execPath, [npmCli, 'install', '--ignore-scripts', '--no-aud
   ...tarballs, 'ai@7.0.130', 'zod@4.6.5', '@modelcontextprotocol/client@2.3.1', 'typescript@5.9.3', '@types/node@24.0.0'],
 { cwd, stdio: 'inherit', timeout: 180_000 });
 for (const [folder, name] of targets) {
-  const file = folder === 'core' ? 'core.test.mjs' : folder === 'ai-sdk-adapter' ? 'adapter.test.mjs' : 'server.test.mjs';
+  const file = folder === 'core' ? 'core.test.mjs' : folder === 'ai-sdk-adapter' ? 'adapter.test.mjs' : folder === 'mcp-server' ? 'server.test.mjs' : 'elevenlabs.test.mjs';
   let test = readFileSync(join(root, 'packages', folder, 'test', file), 'utf8');
   test = test.replaceAll("'../dist/index.js'", JSON.stringify(name))
     .replaceAll("'../dist/gateway.js'", JSON.stringify(name + '/gateway'));
-  if (folder === 'core' || folder === 'mcp-server') test = test.replace("new URL('../package.json', import.meta.url)",
+  if (folder === 'core' || folder === 'mcp-server' || folder === 'elevenlabs') test = test.replace("new URL('../package.json', import.meta.url)",
     "new URL('../package.json', import.meta.resolve(" + JSON.stringify(name) + "))");
   if (folder === 'mcp-server') test = test.replace("new URL('../dist/cli.js', import.meta.url)", "new URL('./cli.js', import.meta.resolve('@starlight-intelligence/mcp'))");
   writeFileSync(join(cwd, folder + '.test.mjs'), test);
@@ -41,11 +41,14 @@ writeFileSync(join(cwd, 'consumer.ts'), `import type { VaultEntry, VaultType, Me
 import { withStarlightMemory } from '@starlight-intelligence/ai-sdk';
 import { createStarlightMcpServer } from '@starlight-intelligence/mcp';
 import { createGatewayReader } from '@starlight-intelligence/mcp/gateway';
+import { StarlightElevenLabsPipeline, createApprovedVoiceConsentGate, createStarlightElevenLabsToolSuite, type SynthesizeSpeechResult, type VoiceProvenanceRecord, type PlayableAudioPreview } from '@starlight-intelligence/elevenlabs';
 const sanitizer: VeilSanitizer = { sanitize: value => value };
 const reader: Pick<MemoryProvider, 'recall'> = { recall: async () => [] };
 createStarlightMcpServer({ memory: reader, tenantId: 'consumer', sanitizer });
-void withStarlightMemory; void createGatewayReader;
-type PublicContracts = VaultEntry | VaultType | MemoryEvent | SIPAttestation | HarnessContract;
+const voicePipeline = new StarlightElevenLabsPipeline();
+const voiceTools = createStarlightElevenLabsToolSuite(voicePipeline);
+void withStarlightMemory; void createGatewayReader; void createApprovedVoiceConsentGate; void voiceTools;
+type PublicContracts = VaultEntry | VaultType | MemoryEvent | SIPAttestation | HarnessContract | SynthesizeSpeechResult | VoiceProvenanceRecord | PlayableAudioPreview;
 `);
 execFileSync(process.execPath, [join(cwd, 'node_modules', 'typescript', 'bin', 'tsc'), '--noEmit', '--strict',
   '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'consumer.ts'],

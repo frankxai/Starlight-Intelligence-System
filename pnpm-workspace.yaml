@@ -2,6 +2,7 @@ packages:
   - packages/core
   - packages/ai-sdk-adapter
   - packages/mcp-server
+  - packages/elevenlabs
 
 autoInstallPeers: false
 
