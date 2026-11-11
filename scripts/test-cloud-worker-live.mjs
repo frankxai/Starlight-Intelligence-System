@@ -1,200 +1,134 @@
 #!/usr/bin/env node
-/**
- * Starlight Managed Cloud & Service Mesh — Live Production Verification Suite
- * Executes end-to-end regression tests against the deployed Cloudflare Edge Worker.
- * Built on SIP v1.1.1
- */
+/** Read-only containment smoke check. Never establishes production readiness. */
+import { pathToFileURL } from 'node:url';
 
-import assert from 'node:assert/strict';
+const DEFAULT_ENDPOINT = 'https://starlight-cloud-worker.frankxai.workers.dev';
+const PROBE_PATH = '/v1/__containment_probe__';
+const SYNTHETIC_TOKEN = 'containment-probe-not-an-issued-credential';
+const MAX_BYTES = 16 * 1024;
 
-const CLOUD_URL = process.env.STARLIGHT_CLOUD_URL || 'https://starlight-cloud-worker.frankxai.workers.dev';
-const API_KEY = process.env.STARLIGHT_API_KEY || 'starlight_live_frank_master_001';
-
-const HEADERS = {
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${API_KEY}`,
-};
-
-console.log(`\n🌌 Starlight Managed Cloud Production Test Suite`);
-console.log(`Target: ${CLOUD_URL}`);
-console.log(`Attestation: Built on SIP v1.1.1\n`);
-
-async function run() {
-  let passed = 0;
-  let total = 0;
-
-  async function test(name, fn) {
-    total++;
-    process.stdout.write(`  [${total}] ${name}... `);
-    try {
-      await fn();
-      console.log('✔ PASS');
-      passed++;
-    } catch (err) {
-      console.log('✖ FAIL');
-      console.error(err);
-      process.exitCode = 1;
-    }
+function originFor(endpoint) {
+  const url = new URL(endpoint);
+  if (url.protocol !== 'https:' || url.username || url.password ||
+      url.search || url.hash || url.pathname !== '/') {
+    throw new Error('Use an HTTPS origin without credentials, path, query or fragment.');
   }
-
-  // 1. Health & SIP Attestation
-  await test('GET /v1/health returns 200 with SIP attestation and D1/KV bindings', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/health`);
-    assert.equal(res.status, 200);
-    const data = await res.json();
-    assert.equal(data.status, 'healthy');
-    assert.equal(data.attestation, 'Built on SIP v1.1.1');
-    assert.equal(data.bindings?.d1, true);
-    assert.equal(data.bindings?.kv, true);
-    assert.equal(data.bindings?.vectorize, true);
-  });
-
-  // 2. Auth Gate Rejection
-  await test('Rejects unauthenticated requests with 401 Unauthorized', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/memory/query`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: 'test' }),
-    });
-    assert.equal(res.status, 401);
-  });
-
-  // 3. 3D Memory Palace
-  await test('GET /palace serves 3D Visual Memory Palace WebGL canvas', async () => {
-    const res = await fetch(`${CLOUD_URL}/palace`);
-    assert.equal(res.status, 200);
-    assert.ok(res.headers.get('content-type')?.includes('text/html'));
-    const html = await res.text();
-    assert.ok(html.includes('STARLIGHT HYPER-VAULT PALACE'));
-    assert.ok(html.includes('canvas-container'));
-  });
-
-  // 4. Memory Append with Edge Veil Scrubbing
-  let createdAtomId = '';
-  await test('POST /v1/memory/append persists memory atom to Edge D1 SQLite', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/memory/append`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({
-        content: `Live production verification run ${Date.now()}: Edge D1 SQLite hybrid persistence validated.`,
-        tier: 'technical',
-        tags: ['live-test', 'd1', 'production'],
-      }),
-    });
-    assert.equal(res.status, 201);
-    const data = await res.json();
-    assert.equal(data.success, true);
-    assert.ok(data.id.startsWith('urn:starlight:'));
-    createdAtomId = data.id;
-  });
-
-  // 5. Hybrid RRF Memory Query
-  await test('POST /v1/memory/query ranks memories via Hybrid RRF and temporal decay', async () => {
-    // 500ms edge replication buffer
-    await new Promise(r => setTimeout(r, 500));
-
-    const res = await fetch(`${CLOUD_URL}/v1/memory/query`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({
-        query: 'Edge D1 SQLite hybrid persistence',
-        tier: 'technical',
-      }),
-    });
-    assert.equal(res.status, 200);
-    const data = await res.json();
-    assert.ok(data.count >= 1);
-    assert.ok(data.results[0].vectorScore > 0);
-    assert.ok(data.results[0].combinedScore > 0);
-  });
-
-  // 6. AI Gateway with Edge Prompt Caching
-  await test('POST /v1/chat/completions executes with edge semantic prompt caching', async () => {
-    const prompt = {
-      model: 'starlight-edge',
-      messages: [{ role: 'user', content: 'Define the 6 Epistemic Tiers in Starlight architecture.' }],
-    };
-
-    const res1 = await fetch(`${CLOUD_URL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify(prompt),
-    });
-    assert.equal(res1.status, 200);
-    const data1 = await res1.json();
-    assert.equal(data1.cached, false);
-
-    const res2 = await fetch(`${CLOUD_URL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify(prompt),
-    });
-    assert.equal(res2.status, 200);
-    const data2 = await res2.json();
-    assert.equal(data2.cached, true);
-  });
-
-  // 7. Virtual MCP (vMCP) Context Reduction
-  await test('POST /v1/vmcp/synthesize achieves >80% prompt context token reduction', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/vmcp/synthesize`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({
-        activeIntent: 'Refactor database models and enforce AST safety',
-        activeFilePath: 'src/db/models.ts',
-      }),
-    });
-    assert.equal(res.status, 200);
-    const data = await res.json();
-    assert.ok(data.metrics.tokenSavingsPercent >= 80);
-    assert.equal(data.activeTools.length, 1);
-  });
-
-  // 8. Distributed Swarm Leases
-  let leaseId = '';
-  await test('POST /v1/swarm/lease/acquire grants non-conflicting flock lock', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/swarm/lease/acquire`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({
-        agentId: 'codex-agent-live-01',
-        worktree: '/repos/Starlight-Intelligence-System',
-        paths: ['src/engine/live.ts'],
-        ttlSeconds: 60,
-      }),
-    });
-    assert.equal(res.status, 200);
-    const data = await res.json();
-    assert.equal(data.status, 'acquired');
-    leaseId = data.leaseId;
-  });
-
-  await test('POST /v1/swarm/lease/release frees flock lock', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/swarm/lease/release`, {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify({ leaseId }),
-    });
-    assert.equal(res.status, 200);
-    const data = await res.json();
-    assert.equal(data.status, 'released');
-  });
-
-  // 9. MCP SSE Transport Handshake
-  await test('GET /v1/mcp/sse provides SSE endpoint handshake for Claude Code & Cursor', async () => {
-    const res = await fetch(`${CLOUD_URL}/v1/mcp/sse`, {
-      headers: { 'Authorization': `Bearer ${API_KEY}` },
-    });
-    assert.equal(res.status, 200);
-    assert.equal(res.headers.get('content-type'), 'text/event-stream');
-    const text = await res.text();
-    assert.ok(text.includes('/v1/mcp/messages?sessionId='));
-  });
-
-  console.log(`\nSummary: ${passed}/${total} Live Production Tests Passed 100%`);
+  return url.origin;
 }
 
-run().catch(err => {
-  console.error('Fatal live test failure:', err);
-  process.exit(1);
-});
+async function readJson(response, signal) {
+  if (!/^application\/json(?:\s*;|$)/i.test(response.headers.get('content-type') || '')) {
+    throw new Error('json_required');
+  }
+  const length = response.headers.get('content-length');
+  if (length !== null && (!/^\d+$/.test(length) || Number(length) > MAX_BYTES)) {
+    throw new Error('body_limit');
+  }
+  if (!response.body) throw new Error('body_missing');
+  const reader = response.body.getReader();
+  const cancel = () => { void reader.cancel().catch(() => {}); };
+  signal.addEventListener('abort', cancel, { once: true });
+  const chunks = [];
+  let size = 0;
+  try {
+    if (signal.aborted) throw new Error('deadline');
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > MAX_BYTES) throw new Error('body_limit');
+      chunks.push(value);
+    }
+    const bytes = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+    return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+  } finally {
+    signal.removeEventListener('abort', cancel);
+    cancel();
+  }
+}
+
+async function probe(origin, spec, fetchImpl, timeoutMs) {
+  const controller = new AbortController();
+  let timer;
+  let response;
+  const task = async () => {
+    response = await fetchImpl(`${origin}${spec.path}`, {
+      method: 'GET', redirect: 'error', cache: 'no-store',
+      signal: controller.signal,
+      headers: { Accept: 'application/json', ...spec.headers },
+    });
+    if (response.redirected || response.status >= 300 && response.status < 400) {
+      throw new Error('redirect_refused');
+    }
+    const body = await readJson(response, controller.signal);
+    return {
+      name: spec.name, passed: response.status === spec.status && spec.accept(body),
+      httpStatus: response.status,
+    };
+  };
+  try {
+    return await Promise.race([
+      task(),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => { controller.abort(); reject(new Error('deadline')); }, timeoutMs);
+      }),
+    ]);
+  } catch {
+    // WAF denial, transport failure and invalid bodies cannot prove containment.
+    // Keep provider diagnostics and response bodies out of the receipt.
+    return { name: spec.name, passed: false, httpStatus: response?.status ?? null };
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+    if (response?.body && !response.body.locked) void response.body.cancel().catch(() => {});
+  }
+}
+
+export async function checkCloudContainment({
+  endpoint = DEFAULT_ENDPOINT, fetchImpl = globalThis.fetch, timeoutMs = 5000,
+} = {}) {
+  const origin = originFor(endpoint);
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 5000) {
+    throw new Error('Probe timeout must be between 1 and 5000 milliseconds.');
+  }
+  const contained = body => body?.code === 'protected_api_unavailable' &&
+    body.success === undefined && body.results === undefined && body.choices === undefined;
+  const specs = [
+    {
+      name: 'public_health_reports_containment', path: '/v1/health', status: 200,
+      accept: body => body?.service === 'starlight-cloud-worker' &&
+        body.protectedApi?.status === 'unavailable' &&
+        body.protectedApi?.reason === 'identity_membership_verifier_missing',
+    },
+    {
+      name: 'anonymous_request_denied', path: PROBE_PATH, status: 401,
+      accept: body => body?.error === 'Unauthorized',
+    },
+    ...['tenant-a', 'tenant-b'].map(tenant => ({
+      name: `unissued_credential_${tenant}_contained`, path: PROBE_PATH, status: 503,
+      headers: { Authorization: `Bearer ${SYNTHETIC_TOKEN}`, 'X-Starlight-Tenant': tenant },
+      accept: contained,
+    })),
+  ];
+  const checks = [];
+  for (const spec of specs) checks.push(await probe(origin, spec, fetchImpl, timeoutMs));
+  return {
+    status: checks.every(check => check.passed) ? 'verified_contained' : 'unverified',
+    productionReady: false,
+    scope: 'Read-only ingress containment; no authenticated tenant, persistence, model, lease or cost qualification.',
+    checks,
+  };
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    const result = await checkCloudContainment({ endpoint: process.env.STARLIGHT_CLOUD_URL || DEFAULT_ENDPOINT });
+    console.log(JSON.stringify(result, null, 2));
+    if (result.status !== 'verified_contained') process.exitCode = 1;
+  } catch {
+    console.error('Containment check could not run: use an HTTPS origin and valid bounded configuration.');
+    process.exitCode = 1;
+  }
+}
