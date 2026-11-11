@@ -30,7 +30,7 @@ test("catalog deterministically covers every source profile without changing ide
   assert.equal(new Set(catalog.agents.map((agent) => agent.name)).size, catalog.count);
   const ontology = scanEstate({ includeSkills: false }).records.filter((record) => record.estate === "sis" && record.kind === "agent");
   for (const card of catalog.agents) {
-    const original = readFileSync(join(ROOT, card.source.path), "utf8");
+    const original = readFileSync(join(ROOT, card.source.path), "utf8").replace(/\r\n/g, "\n");
     assert.equal(card.profileName, parseFrontmatter(original).fm.name);
     assert.equal(card.source.sha256, hash(original));
     assert.equal(card.ontologyId, ontology.find((record) => record.sourceRef === card.source.path)?.id);
@@ -48,7 +48,7 @@ test("projected skills have actual local definitions and unknown legacy referenc
   for (const card of catalog.agents) {
     for (const skill of card.skills) {
       assert.match(skill.id, /^[a-z0-9][a-z0-9/-]+$/);
-      assert.equal(hash(readFileSync(join(ROOT, skill.source.path), "utf8")), skill.source.sha256);
+      assert.equal(hash(readFileSync(join(ROOT, skill.source.path), "utf8").replace(/\r\n/g, "\n")), skill.source.sha256);
     }
     assert.ok(!card.skills.some((skill) => ["Domain", "Validation", "Execution"].includes(skill.id)));
     for (const unresolved of card.unresolvedSkills) {

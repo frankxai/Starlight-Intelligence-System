@@ -620,3 +620,89 @@ export type {
   StageStatus,
   VerifyResult,
 } from './run-receipt.js';
+
+// Genius Architecture — Sovereign Profiling & Freedom Path
+export { StarlightGeniusEngine, geniusEngine } from './genius/index.js';
+export type {
+  GeniusProfile,
+  GeniusQuadrant,
+  GeniusQuadrantProfile,
+  GeniusVoiceSignature,
+  FreedomPathAction,
+  FreedomPathEvaluation,
+  TaskDecomposition,
+  DelegationPlan,
+} from './genius/index.js';
+
+// Isomorphic Client SDK (v8.5.2)
+export {
+  StarlightClient,
+  TeammatesNamespace,
+  SandboxNamespace,
+  VaultsNamespace,
+  GeniusNamespace,
+} from './client.js';
+export type {
+  StarlightClientOptions,
+  ClientMode,
+  TeammatesDispatchParams,
+  TeammatesApprovalParams,
+  TeammateDaemonStatus,
+  SandboxExecuteParams,
+  VaultSearchParams,
+  VaultRememberParams,
+  WorkflowsNamespace,
+  CouncilNamespace,
+} from './client.js';
+
+// Workflow Runner & Council Consensus (v8.5.2)
+export {
+  WorkflowRunner,
+  workflowRunner,
+  executeCouncilConsensus,
+} from './orchestration/workflow-runner.js';
+export type {
+  WorkflowStep,
+  WorkflowStepStatus,
+  WorkflowStepResult,
+  WorkflowStepExecution,
+  WorkflowDefinition,
+  WorkflowInfo,
+  WorkflowExecutionContext,
+  WorkflowRunOptions,
+  WorkflowExecutionSummary,
+  CouncilModelViewpoint,
+  CouncilConsensusResult,
+  CouncilConsensusOptions,
+} from './orchestration/workflow-runner.js';
+
+// SAGE Self-Healing & Autonomous Goal Execution
+export {
+  SelfHealingEngine,
+  defaultSelfHealingEngine,
+  runGoalStep,
+  runAutoHealingLoop,
+} from './orchestration/self-healing.js';
+export type {
+  GoalChecklistItem,
+  CodeHealthCheck,
+  GoalStepResult,
+  AutoHealingReport,
+  AutoHealingOptions,
+  OperationalCheckpointReceipt,
+} from './orchestration/self-healing.js';
+
+// Skills Dispatcher & Auto-Activation Substrate
+export {
+  SkillsDispatcher,
+  skillsDispatcher,
+} from './orchestration/skills-dispatcher.js';
+export type {
+  SkillPriority,
+  SkillRuleTrigger,
+  SkillRule,
+  SkillRulesFile,
+  SkillMatchResult,
+} from './orchestration/skills-dispatcher.js';
+
+

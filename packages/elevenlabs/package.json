@@ -1,0 +1,61 @@
+{
+  "name": "@starlight-intelligence/elevenlabs",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "description": "Consent-gated ElevenLabs speech synthesis, durable Cloudflare R2 storage, cryptographic provenance receipts, and multi-host agent tool contracts for Starlight Intelligence.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankxai/Starlight-Intelligence-System.git",
+    "directory": "packages/elevenlabs"
+  },
+  "homepage": "https://github.com/frankxai/Starlight-Intelligence-System/tree/main/packages/elevenlabs#readme",
+  "bugs": {
+    "url": "https://github.com/frankxai/Starlight-Intelligence-System/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "pnpm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@starlight-intelligence/core": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "typescript": "5.9.3"
+  },
+  "keywords": [
+    "starlight",
+    "elevenlabs",
+    "voice-synthesis",
+    "text-to-speech",
+    "cloudflare-r2",
+    "mcp",
+    "ai-sdk",
+    "provenance",
+    "gencreator"
+  ]
+}

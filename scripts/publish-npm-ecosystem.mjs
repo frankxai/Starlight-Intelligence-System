@@ -23,7 +23,7 @@ export function validateReceipt(receipt, sourceSha, directory, requireClean = tr
 }
 
 export const consumerChecks = ['actual-tarball-install', 'strict-public-declarations', 'core-integration',
-  'ai-sdk-generation-and-streaming', 'official-mcp-client-and-stdio'];
+  'ai-sdk-generation-and-streaming', 'official-mcp-client-and-stdio', 'elevenlabs-consent-and-provenance'];
 
 export function validateConsumerReceipt(consumer, manifestBytes, sourceSha) {
   if (consumer?.schemaVersion !== 1 || consumer.sourceSha !== sourceSha || consumer.passed !== true

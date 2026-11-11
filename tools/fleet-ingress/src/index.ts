@@ -10,6 +10,32 @@
  * Built on SIP — Starlight Intelligence Protocol v1.1.1.
  */
 
+export interface ScheduledController {
+  readonly scheduledTime: number;
+  readonly cron: string;
+  noRetry?(): void;
+}
+
+export interface ExecutionContext {
+  waitUntil(promise: Promise<any>): void;
+  passThroughOnException?(): void;
+}
+
+export interface Queue<T = any> {
+  send(message: T): Promise<void>;
+}
+
+export interface EstateHealthSweepReceipt {
+  status: 'healthy' | 'dispatched';
+  type: 'autonomous_estate_health_sweep';
+  substrate: 'starlight-fleet-ingress';
+  cron: string;
+  scheduledTime: string;
+  timestamp: string;
+  protocol: 'SIP-1.1.1';
+  details?: Record<string, any>;
+}
+
 export interface Env {
   GITHUB_WEBHOOK_SECRET?: string;
   GCP_PROJECT_ID?: string;
@@ -17,7 +43,9 @@ export interface Env {
   CLOUD_RUN_JOB?: string;
   GCP_SERVICE_ACCOUNT_TOKEN?: string;
   INGRESS_AUTH_BEARER?: string;
+  STARLIGHT_AGENT_JOBS?: Queue;
 }
+
 
 export interface WebhookEventMeta {
   event: string;
@@ -296,7 +324,86 @@ export async function handleRequest(request: Request, env: Env = {}): Promise<Re
     });
 }
 
+/**
+ * Create an autonomous estate health sweep receipt conforming to SIP protocol standards.
+ */
+export function createEstateHealthSweepReceipt(
+  cron: string,
+  scheduledTime: string,
+  env: Env = {}
+): EstateHealthSweepReceipt {
+  return {
+    status: env.STARLIGHT_AGENT_JOBS ? 'dispatched' : 'healthy',
+    type: 'autonomous_estate_health_sweep',
+    substrate: 'starlight-fleet-ingress',
+    cron,
+    scheduledTime,
+    timestamp: new Date().toISOString(),
+    protocol: 'SIP-1.1.1',
+    details: {
+      action: 'nightly_estate_health_audit_and_memory_consolidation',
+      region: env.GCP_REGION || 'europe-west4',
+      jobsQueueConfigured: Boolean(env.STARLIGHT_AGENT_JOBS),
+    },
+  };
+}
+
+/**
+ * Cloudflare Workers scheduled event handler for cron triggers.
+ * Executes nightly estate health audits, emits SIP-compliant sweep receipts,
+ * and queues background agent jobs when STARLIGHT_AGENT_JOBS is bound.
+ */
+export async function scheduled(
+  controller: ScheduledController,
+  env: Env = {},
+  ctx?: ExecutionContext
+): Promise<void> {
+  const scheduledTime = controller?.scheduledTime
+    ? new Date(controller.scheduledTime).toISOString()
+    : new Date().toISOString();
+  const cron = controller?.cron || '0 4 * * *';
+
+  console.log(`[starlight-fleet-ingress] Scheduled trigger invoked at ${scheduledTime} (cron: "${cron}")`);
+
+  // Execute an edge health ping to verify worker substrate availability
+  const healthPingRes = await handleRequest(
+    new Request('https://ingress.starlight.internal/health'),
+    env
+  );
+  const healthPingOk = healthPingRes.status === 200;
+
+  const receipt = createEstateHealthSweepReceipt(cron, scheduledTime, env);
+  if (receipt.details) {
+    receipt.details.healthPingStatus = healthPingOk ? 'healthy' : 'degraded';
+  }
+
+  // Queue to STARLIGHT_AGENT_JOBS if configured; otherwise emit autonomous receipt
+  if (env.STARLIGHT_AGENT_JOBS && typeof env.STARLIGHT_AGENT_JOBS.send === 'function') {
+    const jobPromise = env.STARLIGHT_AGENT_JOBS.send({
+      job: 'estate-health-audit',
+      action: 'nightly_estate_health_audit_and_memory_consolidation',
+      cron,
+      scheduledTime,
+      protocol: 'SIP-1.1.1',
+      receipt,
+    });
+
+    if (ctx && typeof ctx.waitUntil === 'function') {
+      ctx.waitUntil(jobPromise);
+    } else {
+      await jobPromise;
+    }
+    console.log(`[starlight-fleet-ingress] Queued estate health audit task to STARLIGHT_AGENT_JOBS`);
+  } else {
+    console.log(
+      `[starlight-fleet-ingress] Autonomous estate health sweep receipt emitted:`,
+      JSON.stringify(receipt)
+    );
+  }
+}
+
 export default {
   fetch: handleRequest,
+  scheduled,
 };
 
