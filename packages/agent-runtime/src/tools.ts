@@ -29,16 +29,27 @@ export interface McpToolPolicy {
    */
   allowlist: readonly string[];
   /**
-   * Fingerprints captured when the tools were last approved. When supplied, a server that
-   * changed a tool's description or schema is refused before its tools reach the model.
+   * Fingerprints captured when the tools were last approved.
+   *
+   * A baseline is REQUIRED when MCP servers are configured. Without one there is nothing to
+   * compare against, so a server that mutates a tool after approval is undetectable, and a
+   * caller who simply forgot the baseline would silently lose the guard. Pass
+   * `allowUnreviewed: true` to opt out explicitly, which is a decision rather than an omission.
    */
   baseline?: Record<string, string>;
+  /**
+   * Opt out of drift detection deliberately, for a surface whose servers are trusted and whose
+   * definitions are versioned elsewhere. The runtime reports this state so it can be seen.
+   */
+  allowUnreviewed?: boolean;
 }
 
 export interface McpToolSet {
   tools: ToolSet;
   /** Fingerprints of the tools now offered, for the caller to persist as the next baseline. */
   fingerprints: Record<string, string>;
+  /** True when drift detection was deliberately skipped for this load. */
+  unreviewed: boolean;
   close(): Promise<void>;
 }
 
@@ -52,17 +63,24 @@ export class McpToolError extends Error {
 /**
  * Decide whether an MCP tool may run without asking.
  *
- * MCP annotations are untrusted, server-provided hints. A tool that claims `readOnlyHint` is
- * still a claim by the server. The policy here is deliberately conservative: only an explicit
- * `readOnlyHint: true` runs unattended, and everything else needs a human.
+ * MCP annotations are untrusted, server-provided hints, and the spec defines their DEFAULTS to
+ * be the cautious ones: `readOnlyHint` defaults to false, and `openWorldHint` defaults to TRUE
+ * ("If true, this tool may interact with an 'open world' of external entities... Default: true").
+ * An omitted hint is therefore not an omission of information, it is an assertion that the tool
+ * is open-world.
+ *
+ * So only a tool that explicitly says `readOnlyHint: true` AND explicitly says
+ * `openWorldHint: false` may run unattended. Every other combination, including a missing
+ * annotation object, needs a human.
  */
 export function requiresApproval(toolName: string, metadata: unknown): boolean {
   const annotations = (metadata as McpProviderMetadata | undefined)?.annotations;
   if (!annotations) return true;
   if (annotations.readOnlyHint !== true) return true;
-  // A destructive or open-world tool is never "read only" in practice, whatever the hint says.
+  // The spec default for openWorldHint is true, so an omitted hint means open-world.
+  if (annotations.openWorldHint !== false) return true;
+  // A destructive tool is never "read only" in practice, whatever the hint says.
   if (annotations.destructiveHint === true) return true;
-  if (annotations.openWorldHint === true) return true;
   void toolName;
   return false;
 }
@@ -148,11 +166,22 @@ export async function loadMcpTools(
 
     if (policy.baseline) {
       assertNoToolDrift(fingerprints, policy.baseline);
+    } else if (!policy.allowUnreviewed) {
+      // Refuse rather than silently run unreviewed tools. The caller can still opt out
+      // explicitly with allowUnreviewed, but a forgotten baseline must not be the
+      // thing that disables the guard.
+      throw new McpToolError(
+        'MCP tools were configured without an approved baseline, so a server that ' +
+          'changed a tool after approval could not be detected. Supply the approved ' +
+          'fingerprints as toolPolicy.baseline, or set allowUnreviewed to accept that risk.',
+      );
     }
 
     return {
       tools: collected,
       fingerprints,
+      /** True when drift detection was deliberately skipped, so callers can surface it. */
+      unreviewed: !policy.baseline && policy.allowUnreviewed === true,
       async close() {
         await Promise.allSettled(clients.map(client => client.close()));
       },

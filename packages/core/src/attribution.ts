@@ -28,6 +28,15 @@ export interface AgentRunAttribution {
   output_tokens: number;
   /** Cost in USD. Sourced from the gateway's own accounting, never a local price table. */
   estimated_cost: number;
+  /**
+   * Whether `estimated_cost` is a real figure.
+   *
+   * Absent or false means the cost could not be determined (the gateway's usage
+   * ingestion is asynchronous, so a lookup can miss a generation that did happen).
+   * A zero with `cost_known: true` is a genuinely free generation. A zero without it is
+   * "unknown", and the two must never be confused in a ledger.
+   */
+  cost_known?: boolean;
   /** Time to first token, in milliseconds, as reported by the gateway. */
   latency_ms: number;
   outcome_status: 'completed' | 'failed' | 'aborted' | 'cancelled';
@@ -98,17 +107,27 @@ export function validateAttribution(record: AgentRunAttribution): AgentRunAttrib
  * The record is meant to be committed or shipped to a ledger, so a leaked bearer token in a
  * `provider` or `model` field would outlive the run that produced it.
  */
+/**
+ * Credential shapes worth redacting from an attribution record.
+ *
+ * The bearer pattern covers the full base64url alphabet plus padding, so a token is not
+ * partially redacted with its suffix left behind.
+ */
 const SECRET_PATTERN =
-  /(?:sk-ant-api[\w-]{16,}|sk-[A-Za-z0-9]{20,}|xai-[A-Za-z0-9]{20,}|AIzaSy[\w-]{20,}|gh[pousr]_[\w]{20,}|Bearer\s+[\w.-]{10,}|eyJ[\w-]{10,}\.[\w-]{10,}\.[\w-]{10,})/g;
+  /(?:sk-ant-api[\w-]{16,}|sk-[A-Za-z0-9]{20,}|xai-[A-Za-z0-9]{20,}|AIzaSy[\w-]{20,}|gh[pousr]_[\w]{20,}|npm_[\w]{20,}|re_[A-Za-z0-9]{20,}|Bearer\s+[A-Za-z0-9._~+/=-]{10,}|eyJ[\w-]{10,}\.[\w-]{10,}\.[\w-]{10,})/g;
 
 export function redactAttribution(record: AgentRunAttribution): AgentRunAttribution {
-  const clean = (value: string): string =>
-    value.replace(SECRET_PATTERN, '[REDACTED]');
+  const clean = (value: string): string => value.replace(SECRET_PATTERN, '[REDACTED]');
+  // Every string field is cleaned, not a chosen subset. A credential that arrives in
+  // brand_id or product_id is exactly as exposed as one in provider, and a redaction that
+  // only covers the fields the author happened to think of is not a boundary.
   return {
     ...record,
-    provider: clean(record.provider),
-    model: clean(record.model),
+    brand_id: clean(record.brand_id),
+    product_id: clean(record.product_id),
     agent_id: clean(record.agent_id),
     workflow_id: clean(record.workflow_id),
+    provider: clean(record.provider),
+    model: clean(record.model),
   };
 }

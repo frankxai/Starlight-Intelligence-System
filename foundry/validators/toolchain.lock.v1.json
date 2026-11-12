@@ -25,8 +25,8 @@
       "implementationPath": "tools/foundry/lib/upstream-conformance.mjs",
       "implementationSha256": "195f68ad4546108c78fc1006ea7597063281dbe79461f356fbda13426bc76365",
       "sourceClosure": {
-        "pnpm-lock.yaml": "51b50b5f5eac279135e552c1a453435e208ec8e908f103e59cf29a0c003f0f5a",
-        "package.json": "ec3391cc3c6e8d1640d32aeef08f01bb8a0fbb81c7ababd7e9a10e0493e09851",
+        "pnpm-lock.yaml": "e8f534f1081f9a7e0bb5e989669a80924cf40e8e0c0ab9099e9c5d8854c8ca20",
+        "package.json": "a20e250d95e766003ef08e0c4cd09213f005be20396e0b47bd913868883b3b94",
         "tools/foundry/lib/dependency-lock.mjs": "f958ff7a2dd17c41734590c5db2085131dce2693675fd848c412b092e99dce91",
         "tools/foundry/lib/io.mjs": "0cbb6aada3bd9072dac68e74f9b0b25f01fcd0e0aa3d502190348afb38b16718",
         "tools/foundry/lib/upstream-conformance.mjs": "195f68ad4546108c78fc1006ea7597063281dbe79461f356fbda13426bc76365"

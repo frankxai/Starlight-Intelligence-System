@@ -7,7 +7,7 @@
  * record.
  */
 
-import { isStepCount, ToolLoopAgent, type LanguageModel, type LanguageModelCallEndEvent } from 'ai';
+import { isStepCount, ToolLoopAgent, type LanguageModel, type LanguageModelCallEndEvent, type ToolSet } from 'ai';
 import type { AgentRunAttribution, AgentRunScope } from '@starlight-intelligence/core';
 import { resolveModel, resolveModelId, type AgentModelRoute } from './model.js';
 import { loadMcpTools, mcpToolApproval, type McpServerSpec, type McpToolPolicy } from './tools.js';
@@ -31,20 +31,32 @@ export interface AgentRuntimeOptions {
   instructions?: string;
   /** Maximum tool-calling steps. */
   maxSteps?: number;
-  /** Existing local tools, merged with the MCP tools. */
-  tools?: Record<string, unknown>;
+  /**
+   * Existing local tools, merged with the MCP tools.
+   *
+   * Typed as the AI SDK's own `ToolSet`, so an invalid tool definition is a compile error at
+   * the call site rather than a failure inside the SDK at run time.
+   */
+  tools?: ToolSet;
 }
 
 export interface AgentRuntime {
   /** The agent to call. */
-  agent: ToolLoopAgent<never, any, any>;
+  agent: ToolLoopAgent<never, ToolSet, any, never>;
   /** The resolved model, for surfaces that need it. */
   model: LanguageModel;
   /** The Gateway model id that was resolved. */
   modelId: string;
   /** Fingerprints of the MCP tools in use, for persisting the next approved baseline. */
   toolFingerprints: Record<string, string>;
-  /** The attribution record for the run that just completed. */
+  /** True when drift detection was deliberately skipped for this runtime's MCP tools. */
+  toolsUnreviewed: boolean;
+  /**
+   * The attribution record for the run that just completed.
+   *
+   * It covers every model call in the run, not only the last one, and it reports the run's
+   * real terminal state.
+   */
   attribution(): Promise<AgentRunAttribution>;
   /** Release MCP connections. */
   close(): Promise<void>;
@@ -67,12 +79,15 @@ export async function createAgentRuntime(options: AgentRuntimeOptions): Promise<
     : undefined;
   if (mcpTools) toolFingerprints = mcpTools.fingerprints;
 
-  const tools = {
-    ...(options.tools as Record<string, unknown> | undefined),
+  const tools: ToolSet = {
+    ...(options.tools ?? {}),
     ...(mcpTools?.tools ?? {}),
-  } as Record<string, never>;
+  };
 
-  let lastInput: AttributionInput | undefined;
+  // Every model call in the run is accumulated, not overwritten. A multi-step run costs
+  // the sum of its steps, and reporting only the last generation's cost understates it.
+  const calls: AttributionInput[] = [];
+  let outcome: AgentRunAttribution['outcome_status'] = 'completed';
 
   const agent = new ToolLoopAgent({
     model,
@@ -82,13 +97,26 @@ export async function createAgentRuntime(options: AgentRuntimeOptions): Promise<
     toolApproval: mcpToolApproval(),
     // Fires before client-side tools execute, so a run aborted mid-tool is still attributable.
     onLanguageModelCallEnd({ providerMetadata, usage }: LanguageModelCallEndEvent) {
-      lastInput = {
+      calls.push({
         scope: options.scope,
         model: modelId,
         usage,
         generationId: generationIdOf(providerMetadata),
         outcomeStatus: 'completed',
-      };
+      });
+    },
+    // The run's terminal state, so a failed or aborted run is not reported as completed.
+    onEnd({ finishReason }: { finishReason?: string }) {
+      if (finishReason === 'abort' || finishReason === 'aborted') outcome = 'aborted';
+      else if (finishReason === 'error') outcome = 'failed';
+      else if (finishReason === 'cancelled' || finishReason === 'cancel') outcome = 'cancelled';
+      else if (finishReason === 'length' || finishReason === 'content-filter') outcome = 'failed';
+    },
+    onAbort() {
+      outcome = 'aborted';
+    },
+    onError() {
+      outcome = 'failed';
     },
   });
 
@@ -97,13 +125,36 @@ export async function createAgentRuntime(options: AgentRuntimeOptions): Promise<
     model,
     modelId,
     toolFingerprints,
+    toolsUnreviewed: mcpTools?.unreviewed === true,
     async attribution(): Promise<AgentRunAttribution> {
-      if (!lastInput) {
+      if (calls.length === 0) {
         throw new Error(
           'No completed run to attribute. Call the agent before reading attribution().',
         );
       }
-      return buildAttribution(lastInput);
+      // Aggregate across every model call in the run.
+      const totals = calls.reduce(
+        (acc, call) => ({
+          inputTokens: acc.inputTokens + (call.usage?.inputTokens ?? 0),
+          outputTokens: acc.outputTokens + (call.usage?.outputTokens ?? 0),
+        }),
+        { inputTokens: 0, outputTokens: 0 },
+      );
+      const last = calls[calls.length - 1]!;
+      const record = await buildAttribution({
+        scope: options.scope,
+        model: last.model,
+        usage: {
+          inputTokens: totals.inputTokens,
+          outputTokens: totals.outputTokens,
+          totalTokens: totals.inputTokens + totals.outputTokens,
+          inputTokenDetails: { noCacheTokens: undefined, cacheReadTokens: undefined, cacheWriteTokens: undefined },
+          outputTokenDetails: { textTokens: undefined, reasoningTokens: undefined },
+        },
+        generationId: last.generationId,
+        outcomeStatus: outcome,
+      });
+      return record;
     },
     async close(): Promise<void> {
       await mcpTools?.close();

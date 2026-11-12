@@ -92,7 +92,11 @@ export function resolveModelId(route: AgentModelRoute): string {
   if (typeof modelId !== 'string' || modelId.trim() === '') {
     throw new ModelRouteError('An explicit route requires a non-empty gatewayModelId');
   }
-  assertGatewayModelId(modelId);
+  // Validate the namespace, not just the syntax: `anthropic/does-not-exist` is a
+  // well-formed id for a vendor the estate does route to, and `other/model` is a
+  // well-formed id for a vendor it does not. Both must fail here rather than
+  // later as an opaque provider error.
+  vendorOf(modelId);
   return modelId;
 }
 
@@ -114,7 +118,11 @@ export function resolveModel(route: AgentModelRoute): LanguageModel {
  */
 export function vendorOf(gatewayModelId: string): SupportedVendor {
   const prefix = assertGatewayModelId(gatewayModelId);
-  const vendor = VENDOR_BY_PREFIX[prefix];
+  // Own-property lookup only. A plain index read would resolve inherited keys
+  // such as "constructor" or "toString" to a function rather than failing.
+  const vendor = Object.prototype.hasOwnProperty.call(VENDOR_BY_PREFIX, prefix)
+    ? VENDOR_BY_PREFIX[prefix]
+    : undefined;
   if (!vendor) {
     throw new ModelRouteError(
       `Unknown gateway namespace "${prefix}"; the estate routes to ${Object.keys(VENDOR_BY_PREFIX).join(', ')}`,

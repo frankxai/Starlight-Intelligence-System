@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { McpToolError, requiresApproval } from '../dist/tools.js';
-import { buildAttribution, tokenSplits } from '../dist/attribution.js';
+import { McpToolError, requiresApproval } from '../dist/index.js';
+import { buildAttribution, tokenSplits } from '../dist/index.js';
 
 const scope = {
   brand_id: 'brand_starlight_intelligence',
@@ -12,10 +12,21 @@ const scope = {
 
 const metadata = annotations => ({ annotations });
 
-test('a tool the server marks read-only may run unattended', () => {
+test('a closed-domain read-only tool may run unattended', () => {
+  // The MCP spec defines openWorldHint's default as TRUE, so an unattended tool
+  // must say it is closed-domain explicitly.
+  assert.equal(
+    requiresApproval('read_doc', metadata({ readOnlyHint: true, openWorldHint: false })),
+    false,
+  );
+});
+
+test('an omitted open-world hint means open-world, so it needs approval', () => {
+  // MCP: "openWorldHint ... Default: true". Omitting the hint is an assertion
+  // that the tool touches an open world, not an omission of information.
   assert.equal(
     requiresApproval('read_doc', metadata({ readOnlyHint: true })),
-    false,
+    true,
   );
 });
 
@@ -135,9 +146,44 @@ test('a drifted tool definition is refused with a named error', async () => {
   assert.deepEqual(drift.removed, []);
 
   // The runtime refuses the drifted tools before they reach a model.
-  const { assertNoToolDrift } = await import('../dist/tools.js');
+  const { assertNoToolDrift } = await import('../dist/index.js');
   assert.throws(
     () => assertNoToolDrift(mutated, baseline),
     (error) => error instanceof McpToolError && /read_doc/.test(error.message),
   );
+});
+
+test('a credential in any emitted identifier is redacted, not only in provider and model', async () => {
+  // The scope fields are just as exposed as provider/model: the record is meant to be
+  // committed or shipped to a ledger, so a credential in brand_id must not survive.
+  const secret = 'sk-ant-api0123456789abcdefghij';
+  const record = await buildAttribution({
+    scope: {
+      brand_id: `brand_${secret}`,
+      product_id: `product_${secret}`,
+      agent_id: `agent_${secret}`,
+      workflow_id: `workflow_${secret}`,
+    },
+    model: `anthropic/${secret}`,
+    outcomeStatus: 'completed',
+  });
+  for (const key of ['brand_id', 'product_id', 'agent_id', 'workflow_id', 'model']) {
+    assert.ok(
+      !record[key].includes('sk-ant-api'),
+      `credential survived in ${key}: ${record[key]}`,
+    );
+  }
+});
+
+test('an uncosted generation is reported as unknown, not as a free one', async () => {
+  // Gateway usage ingestion is asynchronous: a lookup can miss a generation that
+  // happened. A zero cost that is indistinguishable from "free" corrupts the ledger.
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationId: undefined,
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.estimated_cost, 0);
+  assert.equal(record.cost_known, false, 'a missing cost must be marked unknown');
 });

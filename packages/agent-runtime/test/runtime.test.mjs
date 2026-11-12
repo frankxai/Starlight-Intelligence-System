@@ -5,7 +5,7 @@ import {
   SUPPORTED_VENDORS,
   resolveModelId,
   vendorOf,
-} from '../dist/model.js';
+} from '../dist/index.js';
 
 test('a tier route resolves to a gateway model id, and each tier is distinct', () => {
   const reasoning = resolveModelId({ kind: 'frontier', tier: 'reasoning-heavy' });
@@ -53,4 +53,21 @@ test('the vendor table covers all four vendors with the ids the gateway actually
 test('vendorOf rejects an id whose vendor segment is malformed', () => {
   assert.throws(() => vendorOf('Anthropic/claude'), ModelRouteError);
   assert.throws(() => vendorOf('/claude-opus-5.5'), ModelRouteError);
+});
+
+test('an explicit route for a vendor the estate does not route to fails at resolution', () => {
+  // A well-formed id for an unrouted vendor must fail here, not later as an
+  // opaque provider error. The namespace is the control, not the string shape.
+  assert.throws(
+    () => resolveModelId({ kind: 'explicit', gatewayModelId: 'unapproved/model' }),
+    (error) => error instanceof ModelRouteError && /Unknown gateway namespace/.test(error.message),
+  );
+});
+
+test('vendorOf does not resolve inherited object properties', () => {
+  // A plain index read would return Object.prototype members for keys like
+  // "constructor" and "toString" instead of failing.
+  assert.throws(() => vendorOf('constructor/model'), ModelRouteError);
+  assert.throws(() => vendorOf('toString/model'), ModelRouteError);
+  assert.throws(() => vendorOf('__proto__/model'), ModelRouteError);
 });

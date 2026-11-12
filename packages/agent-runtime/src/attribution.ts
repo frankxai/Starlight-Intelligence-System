@@ -64,8 +64,12 @@ export function generationIdOf(providerMetadata: unknown): string | undefined {
  * Fetch cost and latency for a generation from the gateway.
  *
  * Returns `undefined` rather than throwing when the generation cannot be looked up: a run that
- * happened still happened, and a missing cost must not erase the rest of the record. The caller
- * decides whether an uncosted run is acceptable.
+ * happened still happened, and a missing cost must not erase the rest of the record.
+ *
+ * The failure is REPORTED, not absorbed. Gateway usage ingestion is asynchronous and Vercel
+ * documents retrying lookup 404s, so "not found yet" is a normal transient state rather than a
+ * proof the generation was free. `buildAttribution` therefore marks the record as uncosted
+ * instead of substituting a zero that is indistinguishable from a genuinely free generation.
  */
 export async function fetchGenerationInfo(
   generationId: string,
@@ -95,12 +99,16 @@ export async function buildAttribution(
   let outputTokens = input.usage?.outputTokens ?? 0;
   let provider = input.model.split('/')[0] ?? input.model;
   let model = input.model;
+  // A generation that could not be priced is NOT a zero-cost generation. The distinction is
+  // carried explicitly so a ledger reading this cannot mistake "not known yet" for "free".
+  let costKnown = false;
 
   if (input.generationId) {
     const info = await fetchGenerationInfo(input.generationId);
     if (info) {
       cost = info.totalCost;
       latency = info.latency;
+      costKnown = true;
       // Prefer the gateway's counts when the SDK did not report usage.
       inputTokens = input.usage?.inputTokens ?? info.promptTokens;
       outputTokens = input.usage?.outputTokens ?? info.completionTokens;
@@ -121,6 +129,7 @@ export async function buildAttribution(
     estimated_cost: cost,
     latency_ms: latency,
     outcome_status: input.outcomeStatus,
+    ...(costKnown ? {} : { cost_known: false }),
   };
 
   return redactAttribution(validateAttribution(record));
