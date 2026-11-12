@@ -10,6 +10,7 @@ export const targets = [
   ['ai-sdk-adapter', '@starlight-intelligence/ai-sdk'],
   ['mcp-server', '@starlight-intelligence/mcp'],
   ['elevenlabs', '@starlight-intelligence/elevenlabs'],
+  ['agent-runtime', '@starlight-intelligence/agent-runtime'],
 ];
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 

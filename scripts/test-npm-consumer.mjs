@@ -28,7 +28,9 @@ execFileSync(process.execPath, [npmCli, 'install', '--ignore-scripts', '--no-aud
   ...tarballs, 'ai@7.0.130', 'zod@4.6.5', '@modelcontextprotocol/client@2.3.1', 'typescript@5.9.3', '@types/node@24.0.0'],
 { cwd, stdio: 'inherit', timeout: 180_000 });
 for (const [folder, name] of targets) {
-  const file = folder === 'core' ? 'core.test.mjs' : folder === 'ai-sdk-adapter' ? 'adapter.test.mjs' : folder === 'mcp-server' ? 'server.test.mjs' : 'elevenlabs.test.mjs';
+  const file = folder === 'core' ? 'core.test.mjs' : folder === 'ai-sdk-adapter' ? 'adapter.test.mjs'
+    : folder === 'agent-runtime' ? 'runtime.test.mjs'
+    : folder === 'elevenlabs' ? 'elevenlabs.test.mjs' : 'server.test.mjs';
   let test = readFileSync(join(root, 'packages', folder, 'test', file), 'utf8');
   test = test.replaceAll("'../dist/index.js'", JSON.stringify(name))
     .replaceAll("'../dist/gateway.js'", JSON.stringify(name + '/gateway'));

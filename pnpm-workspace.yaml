@@ -3,6 +3,7 @@ packages:
   - packages/ai-sdk-adapter
   - packages/mcp-server
   - packages/elevenlabs
+  - packages/agent-runtime
 
 autoInstallPeers: false
 
@@ -16,3 +17,8 @@ overrides:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@ai-sdk/mcp@2.0.97'
+  - '@ai-sdk/gateway@4.0.143'
+  - ai@7.0.170
