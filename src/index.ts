@@ -706,3 +706,7 @@ export type {
 } from './orchestration/skills-dispatcher.js';
 
 
+
+// Offline conversation projections are untrusted review candidates, never admitted work.
+export { importChatGptExport } from "./conversation-import.js";
+export type { ConversationImportResult, ConversationProjection, ConversationMessage, ConversationAttachment } from "./conversation-import.js";

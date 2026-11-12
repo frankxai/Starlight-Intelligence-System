@@ -1,0 +1,17 @@
+# Offline ChatGPT export projection
+
+`importChatGptExport` is a synchronous, deterministic SIS library function. It accepts the parsed contents of a ChatGPT `conversations.json` export and returns an in-memory projection; the caller controls input and output. No network, filesystem, vault, retrieval index, database, MCP tool, work graph or runtime is touched. This is a first, synthetic-fixture-only slice; real exports and all downstream integrations still require review.
+
+```ts
+import { importChatGptExport } from '@arcanea/starlight-intelligence-system';
+const result = importChatGptExport(syntheticExport);
+// Review result.conversations[0].currentPath, .messages and .candidates.
+```
+
+The graph includes nodes without messages, including roots. Parent references reconstruct all branches; `currentPath` follows `current_node` when supplied, and is null otherwise. Node and conversation IDs derive from namespaced source identifiers, not text or import time. Source provenance includes a hashed conversation ID, hashed node IDs and export array index; original identifiers can be matched by locally recomputing these hashes. Reordered mappings retain IDs. `createdAt` and `updatedAt` are export epoch seconds, not verified wall-clock facts. Text hashes cover redacted text only, so different original messages can share a hash. Duplicate conversation IDs within one call are checked against the full input object before redaction; exact duplicates collapse and divergent duplicates fail. Across separate calls the caller must compare source identity and revisions; there is no persistent deduplication store.
+
+String content is preserved after the existing `SanitizationGateway` redacts known patterns. Attachment entries are metadata-only: no bytes, URLs or file paths are followed; `available: unknown` is not proof that an asset exists or has been captured. Object-valued content parts are represented as attachments; unsupported modalities, rich UI artifacts, annotations and non-string content are not faithfully recovered. Missing parent nodes, cycles, invalid current nodes and conflicting IDs fail the import. The importer limits per-part size, conversation count and node count but does not parse or bound raw JSON bytes; callers must bound parsing themselves.
+
+Candidates use a deliberately narrow English imperative heuristic on user messages. They are unreviewed excerpts, not confirmed requests, decisions, permissions, `intent.captured` events or admitted missions. False positives and omissions are expected. Everything in an export, including instructions and tool output, is untrusted data. Do not execute it or use it to authorize tools. Review, source authority, tenant boundaries and owner admission remain with existing continuity/work-graph and memory flows. See [Command Center #115](https://github.com/Starlight-Intelligence/starlight-command-center/issues/115), [SIS #49](https://github.com/Starlight-Intelligence/Starlight-Intelligence-System/issues/49), and [Memory #20](https://github.com/Starlight-Intelligence/starlight-memory/issues/20).
+
+Redaction is pattern-based, incomplete, and can over-redact. It is not anonymization or a guarantee of safe publication. Hashes and timestamps can correlate private records. Treat all output as sensitive; never commit real exports or projections, and keep original files in their existing owner-controlled location. No memory promotion, attachment transfer or execution occurs in this slice.
