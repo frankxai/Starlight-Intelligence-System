@@ -39,7 +39,7 @@ test('a malformed explicit route fails at resolution with a named error, not at 
   );
 });
 
-test('the vendor table covers all four vendors with the ids the gateway actually serves', () => {
+test('every vendor in the table is served under a namespace the table can map back', () => {
   // The `spacexai/` prefix on Grok is the trap: it is not `xai/`.
   assert.equal(SUPPORTED_VENDORS.xai, 'spacexai/grok-4.7');
   assert.equal(SUPPORTED_VENDORS.anthropic, 'anthropic/claude-opus-5.5');
@@ -47,6 +47,27 @@ test('the vendor table covers all four vendors with the ids the gateway actually
   assert.equal(SUPPORTED_VENDORS.google, 'google/gemini-4-argon');
   for (const [vendor, modelId] of Object.entries(SUPPORTED_VENDORS)) {
     assert.equal(vendorOf(modelId), vendor, `${modelId} must resolve to vendor ${vendor}`);
+  }
+});
+
+test('no vendor resolves to a namespace that does not exist in the Gateway catalog', async () => {
+  // The vendor table claims these four ids are served. Asserting a constant against an identical
+  // constant proves only that the file was not edited, so this asks the Gateway's own catalog.
+  // The check that these ids are PRESENT lives in scripts/verify-gateway-models.mjs, which runs
+  // against the live catalog; this asserts the namespaces the table relies on are real ones.
+  const response = await fetch('https://ai-gateway.vercel.sh/v1/models', {
+    signal: AbortSignal.timeout(30_000),
+  });
+  assert.equal(response.status, 200, 'the Gateway catalog must be readable');
+  const catalog = await response.json();
+  const ids = new Set((catalog?.data ?? []).map(entry => entry.id));
+
+  const namespaces = new Set(
+    Object.values(SUPPORTED_VENDORS).map(modelId => modelId.split('/')[0]),
+  );
+  for (const namespace of namespaces) {
+    const served = [...ids].some(id => id.startsWith(`${namespace}/`));
+    assert.ok(served, `the Gateway serves no models under "${namespace}/"`);
   }
 });
 

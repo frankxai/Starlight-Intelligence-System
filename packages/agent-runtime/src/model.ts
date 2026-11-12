@@ -92,10 +92,15 @@ export function resolveModelId(route: AgentModelRoute): string {
   if (typeof modelId !== 'string' || modelId.trim() === '') {
     throw new ModelRouteError('An explicit route requires a non-empty gatewayModelId');
   }
-  // Validate the namespace, not just the syntax: `anthropic/does-not-exist` is a
-  // well-formed id for a vendor the estate does route to, and `other/model` is a
-  // well-formed id for a vendor it does not. Both must fail here rather than
-  // later as an opaque provider error.
+  // Validate the NAMESPACE, which is the control the estate owns: `other/model`
+  // is well-formed but routes to a vendor the estate has not chosen to spend on, so it
+  // must fail here rather than later as an opaque provider error.
+  //
+  // This deliberately does NOT check that the model exists within a routed namespace.
+  // `anthropic/does-not-exist` is well-formed for a routed vendor, and the only way to
+  // know it is absent is to ask the Gateway's live catalog, which is a network call
+  // that would make route resolution fail on connectivity. An absent model fails at
+  // call time with the Gateway's own error, which names it precisely.
   vendorOf(modelId);
   return modelId;
 }

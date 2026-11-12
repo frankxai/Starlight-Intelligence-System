@@ -36,14 +36,34 @@ test('an unannotated tool requires approval, because MCP annotations are untrust
   assert.equal(requiresApproval('mystery', metadata({ readOnlyHint: false })), true);
 });
 
-test('a destructive or open-world tool is never unattended, whatever the read-only hint says', () => {
+test('a destructive tool is refused even when it claims to be closed-domain', () => {
+  // `openWorldHint: false` is set so that ONLY the destructive hint can cause the refusal.
+  // Without it, the omitted open-world hint would already require approval and this test would
+  // pass even if destructive handling were removed.
   assert.equal(
-    requiresApproval('delete_thing', metadata({ readOnlyHint: true, destructiveHint: true })),
+    requiresApproval('delete_thing', metadata({
+      readOnlyHint: true,
+      openWorldHint: false,
+      destructiveHint: true,
+    })),
     true,
   );
+});
+
+test('an open-world tool is refused even when it claims to be read-only', () => {
+  // `destructiveHint` is left unset so that ONLY the open-world hint can cause the refusal.
   assert.equal(
     requiresApproval('fetch_remote', metadata({ readOnlyHint: true, openWorldHint: true })),
     true,
+  );
+});
+
+test('a closed-domain read-only tool is the only shape that runs unattended', () => {
+  // The negative control for the two tests above: if this stopped running unattended, the
+  // refusals above would prove nothing.
+  assert.equal(
+    requiresApproval('read_doc', metadata({ readOnlyHint: true, openWorldHint: false })),
+    false,
   );
 });
 
@@ -175,15 +195,156 @@ test('a credential in any emitted identifier is redacted, not only in provider a
   }
 });
 
-test('an uncosted generation is reported as unknown, not as a free one', async () => {
+test('a run with no generation to price is reported as unknown, not as a free one', async () => {
   // Gateway usage ingestion is asynchronous: a lookup can miss a generation that
   // happened. A zero cost that is indistinguishable from "free" corrupts the ledger.
   const record = await buildAttribution({
     scope,
     model: 'anthropic/claude-sonnet-5.5',
-    generationId: undefined,
+    generationIds: [],
     outcomeStatus: 'completed',
   });
   assert.equal(record.estimated_cost, 0);
   assert.equal(record.cost_known, false, 'a missing cost must be marked unknown');
+});
+
+test('a FAILED gateway lookup is reported as unknown, not as a free one', async () => {
+  // The lookup ran and came back empty. That is the transient-ingestion case, and it must not
+  // be recorded as a generation that cost nothing.
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationIds: ['gen_missing'],
+    lookup: async () => undefined,
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.estimated_cost, 0);
+  assert.equal(record.cost_known, false);
+});
+
+test('a SUCCESSFULLY priced generation is marked known, even when it cost nothing', async () => {
+  // The mirror image of the two tests above. A genuinely free generation and an unpriced one
+  // both show estimated_cost 0, so only cost_known tells them apart. If this asserted nothing,
+  // a free generation would be indistinguishable from an unknown one.
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationIds: ['gen_free'],
+    lookup: async () => ({
+      id: 'gen_free',
+      totalCost: 0,
+      generationTime: 40,
+      promptTokens: 10,
+      completionTokens: 4,
+      model: 'anthropic/claude-sonnet-5.5',
+      providerName: 'anthropic',
+    }),
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.estimated_cost, 0);
+  assert.equal(record.cost_known, true, 'a priced generation must be marked known');
+});
+
+test('a multi-step run is costed as the SUM of its generations, not the last one', async () => {
+  // Two steps costing USD 0.10 and USD 0.20 must be reported as USD 0.30. Reporting only the
+  // last generation's cost understates the run by a third.
+  const prices = { gen_a: 0.1, gen_b: 0.2 };
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationIds: ['gen_a', 'gen_b'],
+    lookup: async id => ({
+      id,
+      totalCost: prices[id],
+      generationTime: 100,
+      promptTokens: 50,
+      completionTokens: 10,
+      model: 'anthropic/claude-sonnet-5.5',
+      providerName: 'anthropic',
+    }),
+    outcomeStatus: 'completed',
+  });
+  // Compared with a tolerance: the sum of two IEEE-754 doubles is 0.30000000000000004, which is
+  // the correct amount to within 1e-17. The cost is not rounded, because rounding would lose a
+  // real fraction of a cent and turn a priced generation into an apparently free one.
+  assert.ok(
+    Math.abs(record.estimated_cost - 0.3) < 1e-12,
+    `expected 0.3, got ${record.estimated_cost}`,
+  );
+  assert.equal(record.cost_known, true);
+  assert.equal(record.latency_ms, 200, 'latency is summed across the run too');
+});
+
+test('a partially priced run is reported as unknown, because the total is a lower bound', async () => {
+  // One generation priced, one missing. The sum is a lower bound, not the run's cost, so the
+  // record must not claim to know it.
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationIds: ['gen_a', 'gen_b'],
+    lookup: async id =>
+      id === 'gen_a'
+        ? {
+            id,
+            totalCost: 0.1,
+            generationTime: 100,
+            promptTokens: 50,
+            completionTokens: 10,
+            model: 'anthropic/claude-sonnet-5.5',
+            providerName: 'anthropic',
+          }
+        : undefined,
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.estimated_cost, 0.1, 'the known part is still reported');
+  assert.equal(record.cost_known, false, 'a partial total is not a known total');
+});
+
+test('gateway token counts are the fallback when the SDK reported none', async () => {
+  // The SDK is silent about usage on some providers. The Gateway's counts are then the only
+  // source, and they are summed across the run's generations.
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    generationIds: ['gen_a', 'gen_b'],
+    lookup: async id => ({
+      id,
+      totalCost: 0.1,
+      generationTime: 100,
+      promptTokens: 30,
+      completionTokens: 5,
+      model: 'anthropic/claude-sonnet-5.5',
+      providerName: 'anthropic',
+    }),
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.input_tokens, 60);
+  assert.equal(record.output_tokens, 10);
+});
+
+test('the SDK token counts win over the gateway fallback', async () => {
+  const record = await buildAttribution({
+    scope,
+    model: 'anthropic/claude-sonnet-5.5',
+    usage: {
+      inputTokens: 120,
+      outputTokens: 45,
+      totalTokens: 165,
+      inputTokenDetails: {},
+      outputTokenDetails: {},
+    },
+    generationIds: ['gen_a'],
+    lookup: async id => ({
+      id,
+      totalCost: 0.1,
+      generationTime: 100,
+      promptTokens: 30,
+      completionTokens: 5,
+      model: 'anthropic/claude-sonnet-5.5',
+      providerName: 'anthropic',
+    }),
+    outcomeStatus: 'completed',
+  });
+  assert.equal(record.input_tokens, 120);
+  assert.equal(record.output_tokens, 45);
 });

@@ -89,7 +89,8 @@ export function requiresApproval(toolName: string, metadata: unknown): boolean {
  * Build the AI SDK `toolApproval` policy for a set of MCP tools.
  *
  * Read-only tools execute immediately. Everything else requires user approval with a reason that
- * names the reason, so the approver sees why rather than a bare tool name.
+ * names the ACTUAL reason, so the approver sees why rather than a bare tool name. A tool that
+ * claims to be read-only but is open-world is described as open-world, not as "not read-only".
  */
 export function mcpToolApproval() {
   return ({ toolCall }: { toolCall: { toolName: string; toolMetadata?: unknown } }) => {
@@ -97,15 +98,30 @@ export function mcpToolApproval() {
     if (!requiresApproval(toolCall.toolName, metadata)) {
       return 'not-applicable' as const;
     }
-    const annotations = metadata?.annotations;
-    const reason =
-      annotations?.destructiveHint === true
-        ? 'The MCP server marks this tool as destructive.'
-        : annotations?.readOnlyHint === false
-          ? 'The MCP server marks this tool as not read-only.'
-          : 'The MCP server does not mark this tool as read-only.';
-    return { type: 'user-approval' as const, reason };
+    return { type: 'user-approval' as const, reason: approvalReason(metadata) };
   };
+}
+
+/**
+ * The reason a tool needs approval, naming the condition that actually triggered it.
+ *
+ * The order matters: the most specific condition wins, so an approver is told about a
+ * destructive tool before being told it is open-world.
+ */
+export function approvalReason(metadata: McpProviderMetadata | undefined): string {
+  const annotations = metadata?.annotations;
+  if (!annotations) {
+    return 'The MCP server provided no annotations, so this tool cannot be treated as read-only.';
+  }
+  if (annotations.destructiveHint === true) {
+    return 'The MCP server marks this tool as destructive.';
+  }
+  if (annotations.readOnlyHint !== true) {
+    return 'The MCP server does not mark this tool as read-only.';
+  }
+  // Read-only, but not closed-domain. The MCP default for openWorldHint is true, so a tool that
+  // does not say otherwise is open-world.
+  return 'The MCP server does not mark this tool as closed-domain, so it may reach external systems.';
 }
 
 /**
@@ -128,6 +144,34 @@ export function assertNoToolDrift(
         'Re-review and re-approve before use.',
     );
   }
+}
+
+/**
+ * Apply the review policy to a loaded tool set.
+ *
+ * A baseline is REQUIRED when MCP servers are configured. Without one there is nothing to compare
+ * against, so a server that mutates a tool after approval is undetectable, and a caller who
+ * simply forgot the baseline would silently lose the guard. Opting out is a decision
+ * (`allowUnreviewed`), never an omission.
+ *
+ * This is separate from `loadMcpTools` so the decision can be tested without a live MCP server.
+ */
+export function applyToolReviewPolicy(
+  fingerprints: Record<string, string>,
+  policy: McpToolPolicy,
+): { unreviewed: boolean } {
+  if (policy.baseline) {
+    assertNoToolDrift(fingerprints, policy.baseline);
+    return { unreviewed: false };
+  }
+  if (!policy.allowUnreviewed) {
+    throw new McpToolError(
+      'MCP tools were configured without an approved baseline, so a server that ' +
+        'changed a tool after approval could not be detected. Supply the approved ' +
+        'fingerprints as toolPolicy.baseline, or set allowUnreviewed to accept that risk.',
+    );
+  }
+  return { unreviewed: true };
 }
 
 /**
@@ -163,25 +207,13 @@ export async function loadMcpTools(
     }
 
     const fingerprints = await fingerprintTools(collected);
-
-    if (policy.baseline) {
-      assertNoToolDrift(fingerprints, policy.baseline);
-    } else if (!policy.allowUnreviewed) {
-      // Refuse rather than silently run unreviewed tools. The caller can still opt out
-      // explicitly with allowUnreviewed, but a forgotten baseline must not be the
-      // thing that disables the guard.
-      throw new McpToolError(
-        'MCP tools were configured without an approved baseline, so a server that ' +
-          'changed a tool after approval could not be detected. Supply the approved ' +
-          'fingerprints as toolPolicy.baseline, or set allowUnreviewed to accept that risk.',
-      );
-    }
+    const { unreviewed } = applyToolReviewPolicy(fingerprints, policy);
 
     return {
       tools: collected,
       fingerprints,
       /** True when drift detection was deliberately skipped, so callers can surface it. */
-      unreviewed: !policy.baseline && policy.allowUnreviewed === true,
+      unreviewed,
       async close() {
         await Promise.allSettled(clients.map(client => client.close()));
       },

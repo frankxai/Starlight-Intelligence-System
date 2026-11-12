@@ -122,25 +122,35 @@ dependencies**. The `spacexai/grok-4.7` id is the one that a from-memory impleme
 wrong; it is written down here so it is not rediscovered.
 
 Tier defaults are resolved from a small, explicit, versioned table in the package — not from a
-hardcoded string at each call site. An explicit route wins over a tier. An unknown
-`gatewayModelId` is rejected at resolution time, not at call time.
+hardcoded string at each call site. An explicit route wins over a tier. A malformed id, or a
+namespace the estate does not route to, is rejected at resolution time rather than at call time. A
+well-formed id for a routed namespace that the Gateway does not serve is not checked at
+resolution: the only way to know is to ask the live catalog, which would make route resolution
+fail on a network blip. It fails at call time with the Gateway's own error.
+`packages/agent-runtime/scripts/verify-gateway-models.mjs` checks the estate's ids against that
+catalog out of band.
 
 ### 4.2 `tools.ts` — MCP tools into the AI SDK
 
 MCP tools reach the model through `@ai-sdk/mcp` (2.0.97), the official AI SDK MCP client, which
-already handles what the three hand-rolled servers re-implement: 2026-07-28 stateless discovery
-with legacy `initialize` fallback, `Mcp-Param-*` header mirroring, elicitation via
-`onElicitationRequest`, and session reattach.
+already handles what the three hand-rolled servers re-implement: protocol-version negotiation
+between `2026-07-28` and the legacy revisions (`2025-11-25`, `2025-06-18`, `2025-03-26`),
+`Mcp-Param-*` header mirroring, and elicitation.
 
 Three things the official client leaves to the application, and which the estate must supply:
 
-1. **Approval policy.** MCP annotations are untrusted, server-provided hints. The runtime derives a
-   conservative policy: `readOnlyHint === true` runs automatically; anything else requires
-   `toolApproval: 'user-approval'` with a reason. Approval lives on `toolApproval` in AI SDK 7;
-   `needsApproval` on the tool definition is deprecated.
+1. **Approval policy.** MCP annotations are untrusted, server-provided hints, and the MCP spec
+   defines their defaults to be the cautious ones: `readOnlyHint` defaults to false and
+   `openWorldHint` defaults to **true**. A tool therefore runs unattended only when it declares
+   `readOnlyHint: true` AND `openWorldHint: false`; a destructive or open-world tool never runs
+   unattended, whatever the hint claims. Everything else requires `toolApproval: 'user-approval'`
+   with a reason that names the condition that actually triggered it. Approval lives on
+   `toolApproval` in AI SDK 7; `needsApproval` on the tool definition is deprecated.
 2. **Tool-definition drift.** `fingerprintTools` and `detectToolDrift` (both exported from `ai`
-   7.0.133) detect a server mutating a tool's description or schema after approval. The runtime
-   takes a baseline and refuses to pass drifted tools to the model.
+   7.0.133) detect a server mutating a tool's description or schema after approval, or adding a
+   tool that was not in the baseline. The runtime requires a baseline — a forgotten baseline is
+   refused rather than silently skipping the guard — and refuses to pass drifted tools to the
+   model. `allowUnreviewed: true` is the explicit opt-out for trusted servers.
 3. **Bounded exposure.** A tool allowlist per surface. The estate measured the cost of the
    alternative: the shared tool plane exposes 38 tools, and an earlier audit found 6 duplicated MCP
    trees holding 556 MB.
@@ -150,21 +160,35 @@ Three things the official client leaves to the application, and which the estate
 This is the layer with a written requirement and zero implementations. The runtime emits, per run,
 exactly the dimensions `architecture_observability_and_cost_contract` names.
 
-`packages/core` gains the TypeScript types that its JSON Schemas already describe but never
-declared — `CostRecord`, `AgentRun`, `ApprovalGate` — plus a portable attribution record carrying
-`brand_id`, `product_id`, `agent_id`, `workflow_id`, `provider`, `model`, `input_tokens`,
-`output_tokens`, `estimated_cost`, `latency_ms`, `outcome_status`.
+`packages/core` gains the portable attribution record carrying `brand_id`, `product_id`,
+`agent_id`, `workflow_id`, `provider`, `model`, `input_tokens`, `output_tokens`, `estimated_cost`,
+`latency_ms`, `outcome_status`, plus `cost_known` so a generation the Gateway could not price is
+never read as a free one.
+
+Note on the existing schemas: `packages/core/schemas/cost-record.schema.json` and
+`agent-run.schema.json` describe **different** shapes — a ledger entry (`id`, `kind`, `amount`,
+`currencyOrUnit`, `timestamp`) and a work-packet run (`id`, `workPacketId`, `agentId`,
+`startedAt`, `status`). They are not the observability record the registry asks for, and this
+change does not declare types for them. The attribution record is its own contract, validated by
+`validateAttribution` in `packages/core/src/attribution.ts`.
 
 `packages/core` stays **zero-dependency**. The release audit enforces this
 (`scripts/verify-npm-ecosystem.mjs`: "Core must have zero dependencies", and a 20 kB runtime
 budget). So the attribution types live in `core` and the AI SDK binding lives in `agent-runtime`.
 
 Cost comes from the Gateway, not from a hand-rolled price table: `gateway.getGenerationInfo({ id })`
-returns `totalCost`, `latency`, `promptTokens`, `completionTokens`, `finishReason` and
-`providerName`. The generation id is available from `providerMetadata.gateway.generationId`, and
-`onLanguageModelCallEnd` fires before client-side tools execute, so a generation that is later
-aborted is still attributable. `usage.inputTokenDetails.cacheReadTokens` and
-`usage.outputTokenDetails.reasoningTokens` supply the cache and reasoning splits.
+returns `totalCost`, `generationTime`, `latency` (time to first token), `promptTokens`,
+`completionTokens`, `finishReason` and `providerName`. The generation id is available from
+`providerMetadata.gateway.generationId`, and `onLanguageModelCallEnd` fires before client-side
+tools execute, so a generation that is later aborted is still attributable.
+`usage.inputTokenDetails.cacheReadTokens` and `usage.outputTokenDetails.reasoningTokens` supply
+the cache and reasoning splits.
+
+A multi-step run has one generation per model call, and the run's cost is the SUM of their costs:
+taking the last one alone understates the run. Because the Gateway ingests usage asynchronously, a
+lookup can miss a generation that did happen, so a record carries `cost_known` — a generation that
+could not be priced is never reported as a free one, and a partly priced run is a lower bound
+rather than the run's cost.
 
 ### 4.4 `runtime.ts` — the composition
 
@@ -172,16 +196,26 @@ One call that gives an app a model, tools and attribution, so that no app assemb
 itself:
 
 ```ts
-const runtime = createAgentRuntime({
-  route: { kind: 'balanced' },
-  scope: { brandId, productId, agentId, workflowId },
+const runtime = await createAgentRuntime({
+  route: { kind: 'frontier', tier: 'balanced' },
+  scope: {
+    brand_id: 'brand_starlight_intelligence',
+    product_id: 'product_gencreator',
+    agent_id: 'agent_studio',
+    workflow_id: 'workflow_plan_week',
+  },
   mcp: [{ url: 'https://tools.example.com/mcp' }],
-  toolAllowlist: ['read_doc', 'search_docs'],
+  toolPolicy: { allowlist: ['read_doc', 'search_docs'], baseline: approvedFingerprints },
 });
 ```
 
 The runtime returns an AI SDK 7 `ToolLoopAgent` with `stopWhen: isStepCount(n)`, the resolved
 tools, and an `attribution()` accessor that returns the record for the run that just happened.
+
+Run state belongs to a **run**, not to the runtime: `onStart` fires exactly once per run and
+starts a fresh accumulator, so a second run cannot inherit the first run's tokens or its failure
+state. One runtime serves one run at a time; two overlapping runs cannot be attributed
+correctly, and the runtime says so rather than reporting a blended number.
 
 ## 5. What this deliberately does not do
 
@@ -206,19 +240,25 @@ tools, and an `attribution()` accessor that returns the record for the run that 
    `noUnusedLocals` and `noUnusedParameters` on.
 2. `packages/core` still has **zero** dependencies and stays under the 20 kB runtime budget that
    `scripts/verify-npm-ecosystem.mjs` enforces. The new types are type-only where possible.
-3. A tier route resolves to a Gateway id that exists in the live Gateway catalog, and an unknown
-   `gatewayModelId` throws at resolution with a named error, not at call time.
-4. The vendor table is asserted by a test: `anthropic/*`, `openai/*`, `google/*` and
-   `spacexai/grok-4.7` each resolve through `gateway()` with no vendor-specific import anywhere in
-   the package.
-5. An MCP tool whose `readOnlyHint` is absent or false requires approval; a `readOnlyHint: true`
-   tool does not. A server that mutates a tool's description after the baseline is captured is
-   refused by `detectToolDrift` before the tools reach the model.
+3. A tier route resolves to a Gateway id that exists in the live Gateway catalog, and a malformed
+   id or an unrouted namespace throws at resolution with a named error, not at call time. The
+   estate's ids are checked against the live catalog by
+   `packages/agent-runtime/scripts/verify-gateway-models.mjs`.
+4. The vendor table is asserted by a test against the Gateway's own catalog:
+   `anthropic/*`, `openai/*`, `google/*` and `spacexai/grok-4.7` each resolve through `gateway()`
+   with no vendor-specific import anywhere in the package.
+5. An MCP tool runs unattended only when it declares `readOnlyHint: true` AND
+   `openWorldHint: false`; anything else requires approval, with a reason that names the
+   condition that triggered it. A server that mutates a tool's description or adds a tool after
+   the baseline is captured is refused by `detectToolDrift` before the tools reach the model, and
+   a missing baseline is refused rather than silently skipping the guard.
 6. A completed run produces a record carrying all eleven dimensions named by
    `architecture_observability_and_cost_contract`, and the record validates against the
-   `packages/core` schema for the shape it claims.
+   `packages/core` schema for the shape it claims. A failed run produces a record too, with
+   `outcome_status: 'failed'`.
 7. Cost and latency come from the Gateway generation info, not from a locally maintained price
-   table. A test asserts the runtime reads `totalCost` and `latency` from `getGenerationInfo`.
+   table. A multi-step run is costed as the SUM of its generations. A record carries
+   `cost_known`, so a generation the Gateway could not price is never confused with a free one.
 8. No secret, bearer token or credential value appears in an attribution record.
 9. `pnpm run build:packages` and `pnpm run test:packages` pass, including the existing
    `ai-sdk-generation-and-streaming` and `official-mcp-client-and-stdio` consumer checks.
