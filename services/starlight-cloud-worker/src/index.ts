@@ -18,10 +18,13 @@ import type {
   QueryRequest, 
   QueryResponse, 
   VmcpRequest,
-  SwarmLeaseRequest,
-  SwarmLeaseResponse,
   TenantContext
 } from './types.js';
+import {
+  StarlightEdgeSandbox,
+  type SandboxExecutionRequest,
+  type SandboxExecutionResponse,
+} from './sandbox.js';
 
 export interface Env {
   ENVIRONMENT?: string;
@@ -29,12 +32,30 @@ export interface Env {
   STARLIGHT_DB?: any;      // Cloudflare D1 binding
   STARLIGHT_KV?: any;      // Cloudflare KV binding
   AI?: any;                // Cloudflare Workers AI binding
+  Sandbox?: any;           // Cloudflare Sandbox container / DO binding
+  SANDBOX_TOKEN?: string;  // Dedicated secret for sandbox container execution
+  OPS_TOKEN?: string;      // Operational authorization secret
   DEFAULT_HALF_LIFE_DAYS?: string;
+}
+
+/** Constant-time string equality check to mitigate timing side-channel attacks on authorization tokens without length leakage */
+function safeTimingEqual(a: string, b: string): boolean {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const encoder = new TextEncoder();
+  const aBuf = encoder.encode(a);
+  const bBuf = encoder.encode(b);
+  const maxLen = Math.max(aBuf.byteLength, bBuf.byteLength);
+  let diff = aBuf.byteLength ^ bBuf.byteLength;
+  for (let i = 0; i < maxLen; i++) {
+    const aByte = i < aBuf.byteLength ? aBuf[i] : 0;
+    const bByte = i < bBuf.byteLength ? bBuf[i] : 0;
+    diff |= aByte ^ bByte;
+  }
+  return diff === 0;
 }
 
 // In-memory fallback tenant store for edge execution and automated tests
 const MEMORY_INDEX = new Map<string, MemoryAtom[]>();
-const ACTIVE_LEASES = new Map<string, SwarmLeaseResponse>();
 const VMCP_ROUTER = new EdgeVirtualMcpRouter();
 
 export class StarlightCloudWorker {
@@ -83,7 +104,7 @@ export class StarlightCloudWorker {
       });
     }
 
-    // 4. Authenticate incoming API requests
+    // 4. Authenticate incoming API requests (Enforce Bearer Auth across all protected routes)
     const authHeader = request.headers.get('Authorization');
     if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
       return new Response(JSON.stringify({
@@ -92,13 +113,50 @@ export class StarlightCloudWorker {
       }), { status: 401, headers: this.CORS_HEADERS });
     }
 
-    const tenant = this.resolveTenant();
+    const tenant = this.resolveTenant(request, env);
     if (!tenant) {
       return new Response(JSON.stringify({
         error: 'Service Unavailable',
         code: 'protected_api_unavailable',
         message: 'Protected API unavailable: verified identity and tenant membership are not configured.',
       }), { status: 503, headers: { ...this.CORS_HEADERS, 'Cache-Control': 'no-store' } });
+    }
+
+    // 5. Cloudflare Edge Sandbox Health (requires verified tenant authorization)
+    if (url.pathname === '/v1/sandbox/health' || url.pathname === '/sandbox/health') {
+      const binding = env.Sandbox;
+      return new Response(JSON.stringify({
+        status: binding ? 'ready' : 'unconfigured',
+        sandbox: 'cloudflare/sandbox:next',
+        containerCpu: 1,
+        containerMemory: '1GB',
+        containerConfigured: !!binding,
+        attestation: 'Built on SIP v1.1.1',
+        timestamp: new Date().toISOString(),
+      }, null, 2), { status: 200, headers: this.CORS_HEADERS });
+    }
+
+    // 6. Cloudflare Edge Sandbox Execution (requires dedicated SANDBOX_TOKEN and verified tenant)
+    if (url.pathname === '/v1/sandbox/execute' && method === 'POST') {
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = env.SANDBOX_TOKEN;
+      if (!expectedToken || !safeTimingEqual(token, expectedToken)) {
+        return new Response(JSON.stringify({
+          error: 'Forbidden',
+          message: 'Invalid or unconfigured sandbox authorization token.',
+        }), { status: 403, headers: this.CORS_HEADERS });
+      }
+      try {
+        const reqBody = (await request.json()) as SandboxExecutionRequest;
+        const execResponse = await StarlightEdgeSandbox.execute(reqBody, env.Sandbox);
+        const status = execResponse.exitCode === 0 ? 200 : (!env.Sandbox ? 503 : 400);
+        return new Response(JSON.stringify(execResponse), { status, headers: this.CORS_HEADERS });
+      } catch (err: any) {
+        return new Response(JSON.stringify({
+          error: 'Execution failed',
+          message: err?.message || 'Execution error',
+        }), { status: 500, headers: this.CORS_HEADERS });
+      }
     }
 
     try {
@@ -141,21 +199,14 @@ export class StarlightCloudWorker {
         return new Response(JSON.stringify(result, null, 2), { status: 200, headers: this.CORS_HEADERS });
       }
 
-      // 8. Route Swarm Worktree Lease: POST /v1/swarm/lease/acquire
-      if (url.pathname === '/v1/swarm/lease/acquire' && method === 'POST') {
-        const body = (await request.json()) as SwarmLeaseRequest;
-        const result = this.handleLeaseAcquire(tenant, body);
-        return new Response(JSON.stringify(result, null, 2), { 
-          status: result.status === 'acquired' ? 200 : 409, 
-          headers: this.CORS_HEADERS 
-        });
-      }
-
-      // 9. Route Swarm Worktree Lease Release: POST /v1/swarm/lease/release
-      if (url.pathname === '/v1/swarm/lease/release' && method === 'POST') {
-        const { leaseId } = (await request.json()) as { leaseId: string };
-        ACTIVE_LEASES.delete(leaseId);
-        return new Response(JSON.stringify({ success: true, status: 'released', released: leaseId }), { status: 200, headers: this.CORS_HEADERS });
+      // 8. Leases moved to the control plane (services/starlight-control-plane), which holds them in
+      // a Durable Object with fences and expiry. The in-memory map here lost every lease on restart.
+      if (url.pathname.startsWith('/v1/swarm/lease/')) {
+        return new Response(JSON.stringify({
+          error: 'Gone',
+          code: 'leases_moved',
+          message: 'Leases are issued by the Starlight control plane: POST /v1/tasks/claim.',
+        }), { status: 410, headers: this.CORS_HEADERS });
       }
 
       // 10. Route Model Context Protocol (MCP) SSE Transport Handshake
@@ -184,7 +235,7 @@ export class StarlightCloudWorker {
     }
   }
 
-  private static resolveTenant(): TenantContext | null {
+  private static resolveTenant(_request: Request, _env: Env = {}): TenantContext | null {
     // No verified identity/membership authority is wired into this worker.
     // Contain every protected route until a reviewed verifier is integrated.
     // Token shape, caller-selected tenants and asserted Access headers are not
@@ -380,47 +431,6 @@ export class StarlightCloudWorker {
     };
   }
 
-  private static handleLeaseAcquire(tenant: TenantContext, req: SwarmLeaseRequest): SwarmLeaseResponse {
-    // Check conflicts
-    for (const lease of ACTIVE_LEASES.values()) {
-      const now = new Date().toISOString();
-      if (lease.expiresAt > now) {
-        for (const p of req.paths) {
-          if (lease.paths.includes(p) && lease.agentId !== req.agentId) {
-            return {
-              leaseId: `conflict_${Date.now()}`,
-              agentId: req.agentId,
-              worktree: req.worktree,
-              paths: req.paths,
-              acquiredAt: now,
-              expiresAt: now,
-              status: 'conflict',
-              conflictWith: lease.agentId,
-            };
-          }
-        }
-      }
-    }
-
-    const leaseId = `lease_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-    const acquiredAt = new Date().toISOString();
-    const ttl = req.ttlSeconds || 120;
-    const expiresAt = new Date(Date.now() + ttl * 1000).toISOString();
-
-    const lease: SwarmLeaseResponse = {
-      leaseId,
-      agentId: req.agentId,
-      worktree: req.worktree,
-      paths: req.paths,
-      acquiredAt,
-      expiresAt,
-      status: 'acquired',
-    };
-
-    ACTIVE_LEASES.set(leaseId, lease);
-    return lease;
-  }
-
   private static getPalaceHtml(): string {
     return `<!DOCTYPE html>
 <html lang="en">
@@ -448,15 +458,12 @@ export class StarlightCloudWorker {
   <div class="header-bar">
     <div class="title">STARLIGHT HYPER-VAULT PALACE</div>
     <div class="pill">Edge Mesh v0.3.0</div>
-    <div class="pill">Zero-Knowledge E2EE</div>
   </div>
 
   <div class="stats-card">
-    <h3>Epistemic Mesh Telemetry</h3>
-    <div class="stat-row"><span>Indexed Nodes:</span><span class="stat-val">1,560 Nodes</span></div>
-    <div class="stat-row"><span>Token Savings (vMCP):</span><span class="stat-val">82.0% Saved</span></div>
-    <div class="stat-row"><span>Active Agent Leases:</span><span class="stat-val">4 Harnesses</span></div>
-    <div class="stat-row"><span>Contradiction Rate:</span><span class="stat-val">0.00% (Harmonic)</span></div>
+    <h3>Preview</h3>
+    <div class="stat-row"><span>Live data:</span><span class="stat-val">not connected</span></div>
+    <p style="font-size:12px;color:#94a3b8;margin-top:6px">The points below are an illustration of the six vault tiers, not a count of stored memories.</p>
     <div class="tier-legend">
       <span class="tier-dot"><span class="dot" style="background:#38bdf8"></span>Strategic</span>
       <span class="tier-dot"><span class="dot" style="background:#818cf8"></span>Technical</span>
@@ -575,6 +582,77 @@ export class SwarmCoordinator {
     }), {
       status: 503,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+    });
+  }
+}
+
+export class Sandbox {
+  private state: any;
+  private env: Env;
+
+  constructor(state: any, env: Env) {
+    this.state = state;
+    this.env = env;
+  }
+
+  async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+    if (url.pathname === '/exec' && request.method === 'POST') {
+      const authHeader = request.headers.get('Authorization');
+      const token = authHeader?.replace(/^Bearer\s+/i, '').trim();
+      const expectedToken = this.env.SANDBOX_TOKEN;
+      if (!expectedToken || !token || !safeTimingEqual(token, expectedToken)) {
+        return new Response(JSON.stringify({
+          error: 'Forbidden',
+          message: 'Invalid or missing authorization for Sandbox DO execution',
+        }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      }
+
+      const body = (await request.json()) as SandboxExecutionRequest;
+      const res = await StarlightEdgeSandbox.execute(body, this.env.Sandbox);
+
+      // Persist container run in SQLite Durable Object storage using parameterized statement
+      if (this.state.storage?.sql) {
+        try {
+          this.state.storage.sql.exec(`
+            CREATE TABLE IF NOT EXISTS sandbox_runs (
+              id TEXT PRIMARY KEY,
+              command TEXT,
+              exit_code INTEGER,
+              duration_ms INTEGER,
+              timestamp TEXT
+            )
+          `);
+          const runId = crypto.randomUUID();
+          const cmdJson = JSON.stringify(body.command ?? []);
+          const ts = new Date().toISOString();
+          this.state.storage.sql.exec(
+            'INSERT INTO sandbox_runs (id, command, exit_code, duration_ms, timestamp) VALUES (?, ?, ?, ?, ?)',
+            runId,
+            cmdJson,
+            res.exitCode,
+            res.durationMs,
+            ts
+          );
+        } catch (err: any) {
+          console.error('[Sandbox DO] SQLite persistence error');
+        }
+      }
+
+      return new Response(JSON.stringify(res), {
+        status: res.exitCode === 0 ? 200 : 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const hasSandbox = !!this.env.Sandbox;
+    return new Response(JSON.stringify({
+      status: hasSandbox ? 'ready' : 'unconfigured',
+      sandbox: 'starlight-sandbox-container',
+      image: 'cloudflare/sandbox:next',
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }

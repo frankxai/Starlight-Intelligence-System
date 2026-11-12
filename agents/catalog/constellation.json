@@ -1,6 +1,6 @@
 {
   "schemaVersion": "starlight.specialist-constellation.v1",
-  "sourceDigest": "aae45b8094369a2d4b45f0a97bd06b332ca846bcf1c2de756b2bbb4938eebab5",
+  "sourceDigest": "86018da632aaca21054e92e3808656c90049c3a9d54ea7b083f4f140c8804590",
   "kind": "discovery-and-policy-projection",
   "execution": "No scheduler, delegation authority, runtime activation, or data access is created by an edge. Use the existing loop and work graph contracts.",
   "nodes": [
@@ -2224,6 +2224,15 @@
       }
     },
     {
+      "id": "skill:orchestration/starlight-teammates",
+      "kind": "skill",
+      "label": "orchestration/starlight-teammates",
+      "source": {
+        "path": "skills/orchestration/starlight-teammates/SKILL.md",
+        "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+      }
+    },
+    {
       "id": "skill:orchestration/workflow-design",
       "kind": "skill",
       "label": "orchestration/workflow-design",
@@ -3111,6 +3120,13 @@
     {
       "from": "agent:starlight-architect",
       "to": "skill:orchestration/hermes-swarm",
+      "relation": "uses-skill",
+      "status": "declared",
+      "sourceRef": "agents/starlight-architect.md"
+    },
+    {
+      "from": "agent:starlight-architect",
+      "to": "skill:orchestration/starlight-teammates",
       "relation": "uses-skill",
       "status": "declared",
       "sourceRef": "agents/starlight-architect.md"
@@ -6225,6 +6241,13 @@
     },
     {
       "from": "agent:starlight-orchestrator",
+      "to": "skill:orchestration/starlight-teammates",
+      "relation": "uses-skill",
+      "status": "declared",
+      "sourceRef": "agents/starlight-orchestrator.md"
+    },
+    {
+      "from": "agent:starlight-orchestrator",
       "to": "skill:orchestration/workflow-design",
       "relation": "uses-skill",
       "status": "declared",
@@ -6513,6 +6536,13 @@
     {
       "from": "agent:starlight-prime",
       "to": "skill:orchestration/multi-agent-coordination",
+      "relation": "uses-skill",
+      "status": "declared",
+      "sourceRef": "agents/starlight-prime.md"
+    },
+    {
+      "from": "agent:starlight-prime",
+      "to": "skill:orchestration/starlight-teammates",
       "relation": "uses-skill",
       "status": "declared",
       "sourceRef": "agents/starlight-prime.md"
@@ -7045,6 +7075,13 @@
     {
       "from": "agent:starlight-sentinel",
       "to": "skill:orchestration/sage-autonomous-execution",
+      "relation": "uses-skill",
+      "status": "declared",
+      "sourceRef": "agents/starlight-sentinel.md"
+    },
+    {
+      "from": "agent:starlight-sentinel",
+      "to": "skill:orchestration/starlight-teammates",
       "relation": "uses-skill",
       "status": "declared",
       "sourceRef": "agents/starlight-sentinel.md"

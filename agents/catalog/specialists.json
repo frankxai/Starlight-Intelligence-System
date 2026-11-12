@@ -1,7 +1,7 @@
 {
   "schemaVersion": "starlight.specialist-catalog.v1",
   "projection": "operational; original profiles and Foundry ontology IDs remain authoritative for their existing consumers",
-  "sourceDigest": "aae45b8094369a2d4b45f0a97bd06b332ca846bcf1c2de756b2bbb4938eebab5",
+  "sourceDigest": "86018da632aaca21054e92e3808656c90049c3a9d54ea7b083f4f140c8804590",
   "count": 151,
   "naming": {
     "default": "descriptive-role",
@@ -656,7 +656,7 @@
     },
     {
       "path": "scripts/build-specialist-catalog.mjs",
-      "sha256": "180f534aea686196328540ce2cf832f163da01c0692293942d991e0a29072ab5"
+      "sha256": "9874c7a0dcabcdf8d45ea7fd192509d33580ba725a096c9465c999bd577b9587"
     },
     {
       "path": "skills/business/digital-product-forge.md",
@@ -907,6 +907,10 @@
       "sha256": "620fdef0afdb8e58d4ab86f0f0ca248259b632a7909d3799c49150694fee1a29"
     },
     {
+      "path": "skills/orchestration/starlight-teammates/SKILL.md",
+      "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+    },
+    {
       "path": "skills/orchestration/workflow-design/SKILL.md",
       "sha256": "1efde099b3b6aecc5a96beca039b4f9138a88ea25d4f36b33656eae45927b847"
     },
@@ -968,7 +972,7 @@
     },
     {
       "path": "skills/skill-rules.json",
-      "sha256": "a28476d4d87e79179b3c75df8e80ce463deacaeb5b102189431404f702dbc877"
+      "sha256": "ade688aa044657cc4afc46784085ab83c08e0af614c8562911f0acd0784faef3"
     },
     {
       "path": "skills/sound-intelligence/audience-architecture.md",
@@ -4703,6 +4707,13 @@
           }
         },
         {
+          "id": "orchestration/starlight-teammates",
+          "source": {
+            "path": "skills/orchestration/starlight-teammates/SKILL.md",
+            "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+          }
+        },
+        {
           "id": "orchestration/yolo-scan",
           "source": {
             "path": "skills/orchestration/yolo-scan.md",
@@ -4759,6 +4770,8 @@
           "buy domain",
           "capability compiler",
           "cleanup candidates",
+          "community lead",
+          "computer teams",
           "connect",
           "connected",
           "contract interaction",
@@ -4773,6 +4786,7 @@
           "dedup",
           "disk usage",
           "dispatch swarm",
+          "dispatch teammate",
           "domain appraisal",
           "domain intelligence",
           "domain investing",
@@ -4802,6 +4816,7 @@
           "full IS sweep",
           "full portfolio",
           "gencreator stack",
+          "github officer",
           "hermes specialist",
           "hermes status",
           "hermes swarm",
@@ -4825,12 +4840,14 @@
           "portfolio sweep",
           "portfolio-level",
           "productize my expertise",
+          "queen teammate",
           "repo inventory",
           "repo size",
           "route to hermes",
           "run swarm",
           "run the workflow",
           "run workflow",
+          "search manager",
           "sell domain",
           "skill creator",
           "skills plugin",
@@ -4840,6 +4857,7 @@
           "stack constellation",
           "stack drift",
           "starlight architect",
+          "starlight teammates",
           "starlight-architect",
           "storage emergency",
           "sub-stack",
@@ -4851,6 +4869,10 @@
           "system-wide synthesis",
           "systems",
           "systems architect",
+          "teammate",
+          "teammate builder",
+          "teammate fleet",
+          "teammates",
           "tech stack across",
           "third-party",
           "tx trace",
@@ -13060,6 +13082,13 @@
           }
         },
         {
+          "id": "orchestration/starlight-teammates",
+          "source": {
+            "path": "skills/orchestration/starlight-teammates/SKILL.md",
+            "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+          }
+        },
+        {
           "id": "orchestration/workflow-design",
           "source": {
             "path": "skills/orchestration/workflow-design/SKILL.md",
@@ -13176,6 +13205,8 @@
           "claws",
           "codex",
           "collaborate",
+          "community lead",
+          "computer teams",
           "concurrent",
           "connect",
           "context",
@@ -13204,6 +13235,7 @@
           "digital products",
           "dispatch",
           "dispatch swarm",
+          "dispatch teammate",
           "dispatch to agent",
           "distribute",
           "distribution",
@@ -13247,6 +13279,7 @@
           "gemini",
           "gencreator stack",
           "generate image",
+          "github officer",
           "global update",
           "goal",
           "grok",
@@ -13326,6 +13359,7 @@
           "queen ledger visual",
           "queen motion",
           "queen swarms",
+          "queen teammate",
           "queen visual",
           "re-render",
           "release rails",
@@ -13348,6 +13382,7 @@
           "screenpipe",
           "scroll swarm",
           "search",
+          "search manager",
           "seedance",
           "sell domain",
           "send to cli",
@@ -13372,6 +13407,7 @@
           "stack drift",
           "starlight orchestrator",
           "starlight queen visual",
+          "starlight teammates",
           "starlight-orchestrator",
           "state",
           "steps",
@@ -13388,6 +13424,10 @@
           "synthesize all",
           "system-wide synthesis",
           "team",
+          "teammate",
+          "teammate builder",
+          "teammate fleet",
+          "teammates",
           "tech stack across",
           "third-party",
           "tiktok",
@@ -13958,6 +13998,13 @@
           }
         },
         {
+          "id": "orchestration/starlight-teammates",
+          "source": {
+            "path": "skills/orchestration/starlight-teammates/SKILL.md",
+            "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+          }
+        },
+        {
           "id": "orchestration/yolo-scan",
           "source": {
             "path": "skills/orchestration/yolo-scan.md",
@@ -14108,9 +14155,11 @@
           "cognitive ability test",
           "combine",
           "commit message",
+          "community lead",
           "compare",
           "compose",
           "composition",
+          "computer teams",
           "conflict",
           "connected",
           "consolidate",
@@ -14150,6 +14199,7 @@
           "disengaged",
           "dispatch",
           "dispatch swarm",
+          "dispatch teammate",
           "dispatch to agent",
           "domain scan",
           "dopamine",
@@ -14188,6 +14238,7 @@
           "generate image",
           "generate prompt",
           "genre style",
+          "github officer",
           "global update",
           "green-light",
           "grok",
@@ -14294,6 +14345,7 @@
           "queen ledger visual",
           "queen motion",
           "queen swarms",
+          "queen teammate",
           "queen visual",
           "quiet quitting",
           "quitting",
@@ -14330,6 +14382,7 @@
           "scroll swarm",
           "seamless",
           "search",
+          "search manager",
           "searchability",
           "send to cli",
           "send to council",
@@ -14349,6 +14402,7 @@
           "stack rank",
           "starlight prime",
           "starlight queen visual",
+          "starlight teammates",
           "starlight-prime",
           "state",
           "stay interview",
@@ -14376,6 +14430,10 @@
           "tapestry",
           "taste engine",
           "team is broken",
+          "teammate",
+          "teammate builder",
+          "teammate fleet",
+          "teammates",
           "tension and release",
           "termination",
           "three conversations",
@@ -16071,6 +16129,13 @@
           }
         },
         {
+          "id": "orchestration/starlight-teammates",
+          "source": {
+            "path": "skills/orchestration/starlight-teammates/SKILL.md",
+            "sha256": "4bc84b580911677e401caa0dcce17cdc34fc861bb6f4c530ad3e7ce33d89bb78"
+          }
+        },
+        {
           "id": "orchestration/yolo-scan",
           "source": {
             "path": "skills/orchestration/yolo-scan.md",
@@ -16198,6 +16263,8 @@
           "cleanup candidates",
           "co-founder",
           "cognitive ability test",
+          "community lead",
+          "computer teams",
           "confirm",
           "context compression",
           "coral",
@@ -16222,6 +16289,7 @@
           "disengaged",
           "disk usage",
           "dispatch swarm",
+          "dispatch teammate",
           "dolphin",
           "domain appraisal",
           "domain intelligence",
@@ -16251,6 +16319,7 @@
           "formalize the partnership",
           "full IS sweep",
           "full portfolio",
+          "github officer",
           "goal",
           "hard rejection gates",
           "hermes specialist",
@@ -16319,6 +16388,7 @@
           "qdrant",
           "quality",
           "quality rubric",
+          "queen teammate",
           "quiet quitting",
           "quitting",
           "ray",
@@ -16350,6 +16420,7 @@
           "sea lion",
           "sea turtle",
           "seal",
+          "search manager",
           "secrets",
           "security",
           "security and quality reviewer",
@@ -16367,6 +16438,7 @@
           "span of control",
           "species page",
           "starlight sentinel",
+          "starlight teammates",
           "starlight-sentinel",
           "stay interview",
           "storage emergency",
@@ -16381,6 +16453,10 @@
           "system-wide synthesis",
           "taste engine",
           "team is broken",
+          "teammate",
+          "teammate builder",
+          "teammate fleet",
+          "teammates",
           "transformation",
           "transmit",
           "trauma audit",

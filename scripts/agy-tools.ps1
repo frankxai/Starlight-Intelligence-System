@@ -1,4 +1,4 @@
-# ==============================================================================
+﻿# ==============================================================================
 # Starlight Intelligence System — Premium Antigravity CLI Integration
 # ==============================================================================
 # Built on SIP · Idempotent · Windows-optimized
@@ -17,53 +17,152 @@ try {
 } catch {}
 
 $global:AGY_EXE_PATH = "C:\Users\frank\AppData\Local\agy\bin\agy.exe"
-$canonical = "C:\Users\frank\starlight\repos"
-$global:REPOS_ROOT = if (Test-Path $canonical) { $canonical } else { "C:\Users\frank" }
+# Multi-root resolution: Frank's primary active working repos are in C:\Users\frank ($HOME),
+# with auxiliary/canonical repos potentially under C:\Users\frank\starlight\repos.
+$global:REPOS_ROOT = "C:\Users\frank"
+$global:REPOS_SEARCH_ROOTS = @(
+    "C:\Users\frank",
+    "C:\Users\frank\starlight\repos"
+)
 
 if (-not $global:STARLIGHT_REPO_SHORTCUTS) {
-    $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{
-        sis        = "Starlight-Intelligence-System"
-        starlight  = "Starlight-Intelligence-System"
-        fx         = "FrankX"
-        frankx     = "FrankX"
-        arc        = "arcanea-ecosystem"
-        arcanea    = "arcanea-ecosystem"
-        app        = "arcanea-ai-app"
-        claw       = "arcanea-claw"
-        orchestrator = "arcanea-orchestrator"
-        studio     = "arcanea-studio"
-        author     = "author-os"
-        aco        = "agentic-creator-os"
-        acos       = "agentic-creator-os"
-        anime      = "AnimeLegends"
-        ani        = "AnimeLegends"
-        dpi        = "dpi"
-        website    = "frankx.ai-vercel-website"
-        gencreator = "gencreator.ai"
-        g          = "gencreator.ai"
-        vibeclubs  = "vibeclubs.ai"
-        vc         = "vibeclubs.ai"
-        kura       = "kura"
-        doctor     = "mcp-doctor"
-        peak       = "peak-performance"
-        engine     = "prompt-engine"
-        prompts    = "prompt-library"
-        brain      = "second-brain-os"
-        cockpit    = "sentinel-swarm-cockpit"
-        swarm      = "starlight-swarm"
-        suno       = "suno-mcp-server"
-        visual     = "visual-intelligence"
-        clconfig   = "claude-code-config"
-        clhooks    = "claude-code-hooks"
-        clskills   = "claude-skills-library"
-        deepagent  = "deepagent"
-        da         = "deepagent"
-        agenticops = "agentic-ops"
-        products   = "digital-product-forge"
-        prod       = "digital-product-forge"
-        forge      = "digital-product-forge"
+    $global:STARLIGHT_REPO_SHORTCUTS = [ordered]@{}
+}
+$_canonicalShortcuts = [ordered]@{
+    sis          = "Starlight-Intelligence-System"
+    starlight    = "Starlight-Intelligence-System"
+    config       = "claude-code-config"
+    clconfig     = "claude-code-config"
+    memory       = "starlight-memory"
+    design       = "starlight-design-intelligence"
+    siweb        = "starlightintelligence.ai"
+    center       = "starlight-command-center"
+    cockpit      = "starlight-command-center"
+    kernel       = "starlight-kernel"
+    voice        = "starlight-voice"
+    evals        = "starlight-evals"
+    skills       = "starlight-agent-skills"
+    hub          = "agentic-ops-hub"
+    ops          = "agentic-ops"
+    agenticops   = "agentic-ops"
+    fx           = "FrankX"
+    frankx       = "FrankX"
+    arc          = "arcanea-ai-app"
+    arcanea      = "arcanea-ai-app"
+    app          = "arcanea-ai-app"
+    eco          = "arcanea-ecosystem"
+    claw         = "arcanea-claw"
+    orchestrator = "arcanea-orchestrator"
+    studio       = "arcanea-studio"
+    author       = "author-os"
+    aco          = "agentic-creator-os"
+    acos         = "agentic-creator-os"
+    anime        = "AnimeLegends"
+    ani          = "AnimeLegends"
+    dpi          = "dpi"
+    web          = "frankx.ai-vercel-website"
+    website      = "frankx.ai-vercel-website"
+    gencreator   = "gencreator.ai"
+    g            = "gencreator.ai"
+    vibeclubs    = "vibeclubs.ai"
+    vc           = "vibeclubs.ai"
+    kura         = "kura"
+    doctor       = "mcp-doctor"
+    peak         = "peak-performance"
+    engine       = "prompt-engine"
+    prompts      = "prompt-library"
+    brain        = "second-brain-os"
+    swarm        = "starlight-swarm"
+    suno         = "suno-mcp-server"
+    visual       = "visual-intelligence"
+    clhooks      = "claude-code-hooks"
+    clskills     = "claude-skills-library"
+    deepagent    = "deepagent"
+    da           = "deepagent"
+    products     = "digital-product-forge"
+    prod         = "digital-product-forge"
+    forge        = "digital-product-forge"
+}
+foreach ($_k in $_canonicalShortcuts.Keys) {
+    if (-not $global:STARLIGHT_REPO_SHORTCUTS.Contains($_k)) {
+        $global:STARLIGHT_REPO_SHORTCUTS[$_k] = $_canonicalShortcuts[$_k]
     }
 }
+
+# Canonical GitHub organization remotes for Starlight-Intelligence & federated estate repos
+$global:STARLIGHT_CANONICAL_REMOTES = [ordered]@{
+    "Starlight-Intelligence-System" = "https://github.com/Starlight-Intelligence/Starlight-Intelligence-System.git"
+    "claude-code-config"            = "https://github.com/Starlight-Intelligence/starlight-agent-config.git"
+    "starlight-agent-config"        = "https://github.com/Starlight-Intelligence/starlight-agent-config.git"
+    "starlight-memory"              = "https://github.com/Starlight-Intelligence/starlight-memory.git"
+    "starlight-design-intelligence" = "https://github.com/Starlight-Intelligence/starlight-design-intelligence.git"
+    "starlightintelligence.ai"      = "https://github.com/Starlight-Intelligence/starlightintelligence.ai.git"
+    "starlight-command-center"      = "https://github.com/Starlight-Intelligence/starlight-command-center.git"
+    "starlight-kernel"              = "https://github.com/Starlight-Intelligence/starlight-kernel.git"
+    "starlight-voice"               = "https://github.com/Starlight-Intelligence/starlight-voice.git"
+    "starlight-technology"          = "https://github.com/Starlight-Intelligence/starlight-technology.git"
+    "starlight-agent-skills"        = "https://github.com/Starlight-Intelligence/starlight-agent-skills.git"
+    "starlight-evals"               = "https://github.com/Starlight-Intelligence/starlight-evals.git"
+    "starlight-memory-vault"        = "https://github.com/Starlight-Intelligence-Systems/starlight-memory-vault.git"
+    "arcanea-ai-app"                = "https://github.com/Arcanea-Labs/arcanea-ai-app.git"
+    "FrankX"                        = "https://github.com/FrankX-AI/FrankX.git"
+}
+
+function Sync-StarlightFoundation {
+    param(
+        [switch]$FastForwardMain,
+        [switch]$Quiet
+    )
+    if (-not (Test-Path $global:REPOS_ROOT)) { return }
+
+    # 1. Ensure starlight-agent-config junction -> claude-code-config exists on both machines
+    $cfgJunction = Join-Path $global:REPOS_ROOT "starlight-agent-config"
+    $cfgTarget   = Join-Path $global:REPOS_ROOT "claude-code-config"
+    if ((Test-Path $cfgTarget) -and (-not (Test-Path $cfgJunction))) {
+        try {
+            New-Item -ItemType Junction -Path $cfgJunction -Target $cfgTarget -ErrorAction Stop | Out-Null
+            if (-not $Quiet) { Write-Host "[Starlight Foundation] Linked starlight-agent-config -> claude-code-config" -ForegroundColor Cyan }
+        } catch {}
+    }
+
+    # 2. Align canonical GitHub remotes across Starlight-Intelligence, Arcanea-Labs, and FrankX-AI
+    foreach ($dirName in $global:STARLIGHT_CANONICAL_REMOTES.Keys) {
+        $repoPath = Join-Path $global:REPOS_ROOT $dirName
+        if (-not (Test-Path (Join-Path $repoPath ".git"))) { continue }
+        $expectedUrl = $global:STARLIGHT_CANONICAL_REMOTES[$dirName]
+        $currentOrigin = (& git -C $repoPath remote get-url origin 2>$null)
+        if ($currentOrigin -and ($currentOrigin.Trim() -ne $expectedUrl)) {
+            & git -C $repoPath remote set-url origin $expectedUrl 2>$null
+            if (-not $Quiet) { Write-Host "[Starlight Foundation] Updated $dirName origin -> $expectedUrl" -ForegroundColor Green }
+        }
+    }
+
+    # 3. Ensure Starlight-Intelligence-System org remote also points to Starlight-Intelligence/Starlight-Intelligence-System
+    $sisPath = Join-Path $global:REPOS_ROOT "Starlight-Intelligence-System"
+    if (Test-Path (Join-Path $sisPath ".git")) {
+        $sisExpected = $global:STARLIGHT_CANONICAL_REMOTES["Starlight-Intelligence-System"]
+        $sisOrg = (& git -C $sisPath remote get-url org 2>$null)
+        if ($sisOrg -and ($sisOrg.Trim() -ne $sisExpected)) {
+            & git -C $sisPath remote set-url org $sisExpected 2>$null
+        }
+        if ($FastForwardMain) {
+            & git -C $sisPath fetch origin main --quiet 2>$null
+            $br = (& git -C $sisPath branch --show-current 2>$null)
+            $dirty = (& git -C $sisPath status --porcelain --untracked-files=no 2>$null)
+            if ($br -eq "main" -and (-not $dirty)) {
+                & git -C $sisPath merge --ff-only origin/main --quiet 2>$null
+                if (-not $Quiet) { Write-Host "[Starlight Foundation] Starlight-Intelligence-System fast-forwarded to origin/main" -ForegroundColor Green }
+            } elseif ($br -ne "main" -and (-not $Quiet)) {
+                Write-Host "[Starlight Foundation] Note: Starlight-Intelligence-System is on branch '$br' (run 'git checkout main' if clean)" -ForegroundColor Yellow
+            }
+        }
+    }
+    if (-not $Quiet) {
+        Write-Host "[Starlight Foundation] Verified canonical org remotes & junctions OK (SIS -> Starlight-Intelligence/Starlight-Intelligence-System)" -ForegroundColor DarkCyan
+    }
+}
+Set-Alias -Name sis-sync -Value Sync-StarlightFoundation -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-sync -Value Sync-StarlightFoundation -Scope Global -Force -ErrorAction SilentlyContinue
 
 function Get-StarlightRepo {
     param(
@@ -72,36 +171,54 @@ function Get-StarlightRepo {
         [switch]$Silent
     )
 
-    if (-not (Test-Path $global:REPOS_ROOT)) {
-        if (-not $Silent) { Write-Error "Repository root does not exist: $global:REPOS_ROOT" }
+    $searchRoots = @()
+    if ($global:REPOS_SEARCH_ROOTS) {
+        $searchRoots += $global:REPOS_SEARCH_ROOTS
+    }
+    if ($global:REPOS_ROOT -and ($searchRoots -notcontains $global:REPOS_ROOT)) {
+        $searchRoots = @($global:REPOS_ROOT) + $searchRoots
+    }
+    $validRoots = @($searchRoots | Where-Object { Test-Path $_ })
+    if ($validRoots.Count -eq 0) {
+        if (-not $Silent) { Write-Error "No valid repository roots found in: $($searchRoots -join ', ')" }
         return $null
     }
 
     $key = $RepoKey.Trim()
-    if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($key.ToLowerInvariant())) {
-        $mappedPath = Join-Path $global:REPOS_ROOT $global:STARLIGHT_REPO_SHORTCUTS[$key.ToLowerInvariant()]
-        if (Test-Path $mappedPath) {
-            return Get-Item $mappedPath
+    $keyLower = $key.ToLowerInvariant()
+
+    # 1. Match configured shortcut mapping first across valid roots
+    if ($global:STARLIGHT_REPO_SHORTCUTS.Contains($keyLower)) {
+        $targetDir = $global:STARLIGHT_REPO_SHORTCUTS[$keyLower]
+        foreach ($root in $validRoots) {
+            $mappedPath = Join-Path $root $targetDir
+            if (Test-Path $mappedPath) {
+                return Get-Item $mappedPath
+            }
         }
     }
 
-    $dirs = Get-ChildItem -Path $global:REPOS_ROOT -Directory
-    $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+    # 2. Match directory names across candidate roots
+    foreach ($root in $validRoots) {
+        $dirs = Get-ChildItem -Path $root -Directory -ErrorAction SilentlyContinue
 
-    if (-not $match) {
+        # Exact match
+        $match = $dirs | Where-Object { $_.Name -ieq $key } | Select-Object -First 1
+        if ($match) { return $match }
+
+        # Prefix match
         $match = $dirs | Where-Object { $_.Name.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase) } | Select-Object -First 1
-    }
+        if ($match) { return $match }
 
-    if (-not $match) {
+        # Substring match
         $match = $dirs | Where-Object { $_.Name -ilike "*$key*" } | Select-Object -First 1
+        if ($match) { return $match }
     }
 
-    if (-not $match) {
-        if (-not $Silent) { Write-Error "Could not resolve repository key '$RepoKey' inside $global:REPOS_ROOT." }
-        return $null
+    if (-not $Silent) {
+        Write-Error "Could not resolve repository key '$RepoKey' inside: $($validRoots -join ', ')."
     }
-
-    return $match
+    return $null
 }
 
 function Show-StarlightRepos {
@@ -110,16 +227,28 @@ function Show-StarlightRepos {
     )
 
     Write-Host "Available repositories to ${Verb}:" -ForegroundColor Cyan
-    Get-ChildItem -Path $global:REPOS_ROOT -Directory | Sort-Object Name | ForEach-Object {
-        Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+    $searchRoots = if ($global:REPOS_SEARCH_ROOTS) { $global:REPOS_SEARCH_ROOTS } else { @($global:REPOS_ROOT) }
+    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($root in $searchRoots) {
+        if (Test-Path $root) {
+            Get-ChildItem -Path $root -Directory -ErrorAction SilentlyContinue | Sort-Object Name | ForEach-Object {
+                if ($seen.Add($_.Name)) {
+                    Write-Host "  - $($_.Name)" -ForegroundColor DarkGray
+                }
+            }
+        }
     }
     Write-Host ""
-    Write-Host "Useful keys: sis, fx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
+    Write-Host "Useful keys: sis, fx, frankx, arc, app, claw, studio, author, aco, prompts, brain, cockpit, swarm, visual, g, vc, ani, dpi" -ForegroundColor DarkCyan
 }
 
 # Helper: Run history sync across harnesses
 function Invoke-HistorySync {
-    $syncScript = "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+    $syncScript = if (Test-Path "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\sync-harnesses.js") {
+        "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\sync-harnesses.js"
+    } else {
+        "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+    }
     if (Test-Path $syncScript) {
         Write-Host "🔄 Syncing harness histories..." -ForegroundColor DarkGray
         node $syncScript | Out-Null
@@ -167,12 +296,35 @@ function Invoke-AgyYolo {
 # Dedicated Wrappers
 # ------------------------------------------------------------------------------
 
-# agy-sis: Starlight Intelligence System YOLO
+# agy-sis: Starlight Intelligence System YOLO (auto-aligns Starlight-Intelligence org & main branch)
 function agy-sis {
+    param(
+        [string]$Prompt,
+        [switch]$Sync
+    )
+    if ($Sync -or ($Prompt -in @('--sync', '-sync', 'sync'))) {
+        Sync-StarlightFoundation -FastForwardMain
+        return
+    }
+    Sync-StarlightFoundation -FastForwardMain -Quiet
+    $repo = Get-StarlightRepo "sis"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-starlight {
     param([string]$Prompt)
     $repo = Get-StarlightRepo "sis"
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
+
+# agy-config: Starlight Agent Config YOLO
+function agy-config {
+    param([string]$Prompt)
+    Sync-StarlightFoundation -Quiet
+    $repo = Get-StarlightRepo "config"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+Set-Alias -Name agyconfig -Value agy-config -Scope Global -Force -ErrorAction SilentlyContinue
 
 # agy-fx: FrankX YOLO
 function agy-fx {
@@ -181,8 +333,20 @@ function agy-fx {
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
 }
 
+function agy-frankx {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "fx"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
 # agy-arc: Arcanea Ecosystem YOLO
 function agy-arc {
+    param([string]$Prompt)
+    $repo = Get-StarlightRepo "arc"
+    if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
+}
+
+function agy-arcanea {
     param([string]$Prompt)
     $repo = Get-StarlightRepo "arc"
     if ($repo) { Invoke-AgyYolo -TargetPath $repo.FullName -Prompt $Prompt }
@@ -272,6 +436,12 @@ Set-Alias -Name agydpi -Value agy-dpi -Scope Global -Force -ErrorAction Silently
 Set-Alias -Name agyprod -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyproducts -Value agy-products -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agyforge -Value agy-forge -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyfrankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-frankx -Value agy-fx -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agystarlight -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-starlight -Value agy-sis -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agyarcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-arcanea -Value agy-arc -Scope Global -Force -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------------------------
 # Generalized Fuzzy Conductor
@@ -302,6 +472,42 @@ function agy-run {
 # Global short aliases
 Set-Alias -Name ay -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
 Set-Alias -Name agy-yolo -Value agy-run -Scope Global -Force -ErrorAction SilentlyContinue
+
+# agy-resume: Resume an Antigravity conversation by ID or continue the most recent one
+function agy-resume {
+    param(
+        [Parameter(Mandatory=$false, Position=0)]
+        [string]$ConversationId,
+        [Parameter(Mandatory=$false, Position=1)]
+        [string]$RepoKey
+    )
+
+    if (-not (Test-Path $global:AGY_EXE_PATH)) {
+        Write-Error "Antigravity CLI not found at: $global:AGY_EXE_PATH"
+        return
+    }
+
+    if ($RepoKey) {
+        $repo = Get-StarlightRepo $RepoKey -Silent
+        if ($repo) {
+            Set-Location $repo.FullName
+            Write-Host "⚡ Switched context to: $($repo.FullName)" -ForegroundColor DarkCyan
+        }
+    }
+
+    if ($ConversationId) {
+        Write-Host "🔄 Resuming conversation '$ConversationId'..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --conversation $ConversationId --dangerously-skip-permissions
+    } else {
+        Write-Host "🔄 Continuing most recent conversation..." -ForegroundColor Green
+        & $global:AGY_EXE_PATH --continue --dangerously-skip-permissions
+    }
+}
+
+Set-Alias -Name agyresume -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agy-continue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+Set-Alias -Name agycontinue -Value agy-resume -Scope Global -Force -ErrorAction SilentlyContinue
+
 
 # Helper: Invoke Claude Code in a target path in YOLO mode
 function Invoke-ClaudeYolo {
@@ -950,19 +1156,26 @@ Set-Alias -Name gr -Value gr-intelligent -Scope Global -Force -ErrorAction Silen
 # ------------------------------------------------------------------------------
 
 function asph-cp {
-    powershell.exe -ExecutionPolicy Bypass -File "C:\Users\frank\agentic-ops\lifecycle\asph-checkpoint.ps1"
+    $script = if (Test-Path "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\asph-checkpoint.ps1") { "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\asph-checkpoint.ps1" } else { "C:\Users\frank\agentic-ops\lifecycle\asph-checkpoint.ps1" }
+    powershell.exe -ExecutionPolicy Bypass -File $script
 }
 
 function asph-rs {
-    powershell.exe -ExecutionPolicy Bypass -File "C:\Users\frank\agentic-ops\lifecycle\asph-resume.ps1"
+    $script = if (Test-Path "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\asph-resume.ps1") { "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\asph-resume.ps1" } else { "C:\Users\frank\agentic-ops\lifecycle\asph-resume.ps1" }
+    powershell.exe -ExecutionPolicy Bypass -File $script
 }
 
 function asph-sync {
-    node "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js"
+    $script = if (Test-Path "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\sync-harnesses.js") { "C:\Users\frank\starlight\repos\agentic-ops\lifecycle\sync-harnesses.js" } else { "C:\Users\frank\agentic-ops\lifecycle\sync-harnesses.js" }
+    node $script
 }
 
 function starlight-status-all {
-    $RegistryPath = "C:\Users\frank\repo-registry.json"
+    $RegistryPath = if (Test-Path "C:\Users\frank\starlight\repos\claude-code-config\harness\repo-registry.json") {
+        "C:\Users\frank\starlight\repos\claude-code-config\harness\repo-registry.json"
+    } else {
+        "C:\Users\frank\repo-registry.json"
+    }
     $ReposRoot = "C:\Users\frank\starlight\repos"
     
     if (-not (Test-Path $RegistryPath)) {
@@ -977,6 +1190,9 @@ function starlight-status-all {
     foreach ($r in $registry.repos) {
         if ($r.status -eq "active" -or $r.agentStatus -eq "active") {
             $path = Join-Path $ReposRoot $r.name
+            if (-not (Test-Path "$path\.git")) {
+                $path = Join-Path "C:\Users\frank" $r.name
+            }
             if (Test-Path "$path\.git") {
                 Set-Location $path
                 $branch = git branch --show-current 2>$null
@@ -1007,7 +1223,11 @@ function starlight-cockpit {
         [Parameter(Position=1, ValueFromRemainingArguments=$true)] $ActionArgs
     )
 
-    $cockpitDir = "C:\Users\frank\starlight-command-center"
+    $cockpitDir = if (Test-Path "C:\Users\frank\starlight\repos\starlight-command-center") {
+        "C:\Users\frank\starlight\repos\starlight-command-center"
+    } else {
+        "C:\Users\frank\starlight-command-center"
+    }
 
     switch ($Action) {
         { $_ -in @('app', 'desktop', 'start', 'launch') } {
@@ -1123,17 +1343,24 @@ function Test-AgentGridCli {
         }
         
         $dirName = $global:STARLIGHT_REPO_SHORTCUTS[$key]
-        $mappedPath = Join-Path $global:REPOS_ROOT $dirName
-        $exists = Test-Path $mappedPath
+        $searchRoots = if ($global:REPOS_SEARCH_ROOTS) { $global:REPOS_SEARCH_ROOTS } else { @($global:REPOS_ROOT) }
+        $found = $null
+        foreach ($root in $searchRoots) {
+            $mappedPath = Join-Path $root $dirName
+            if (Test-Path $mappedPath) {
+                $found = $mappedPath
+                break
+            }
+        }
 
-        if ($exists) {
+        if ($found) {
             Write-Host "  [OK] " -NoNewline -ForegroundColor Green
             Write-Host "$($key.ToUpperInvariant()) -> " -NoNewline -ForegroundColor Cyan
             Write-Host "$dirName exists." -ForegroundColor Gray
         } else {
             Write-Host "  [NOT FOUND] " -NoNewline -ForegroundColor DarkGray
             Write-Host "$($key.ToUpperInvariant()) -> " -NoNewline -ForegroundColor Yellow
-            Write-Host "$dirName does not exist under $global:REPOS_ROOT." -ForegroundColor DarkGray
+            Write-Host "$dirName does not exist." -ForegroundColor DarkGray
         }
     }
     Write-Host "======================================================================" -ForegroundColor Cyan
