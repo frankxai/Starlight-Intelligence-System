@@ -6,7 +6,7 @@ writers:
 - navigator
 - prime
 readers: all
-last_consolidated: '2026-11-11'
+last_consolidated: '2026-11-12'
 ---
 
 # Strategic Vault
@@ -34,6 +34,8 @@ last_consolidated: '2026-11-11'
 | 2026-06-16 | SAGE Autonomous Goal Execution (SAGE) Framework | architecture | 0.95 |
 | 2026-06-17 | Estate Factory Night Decisions — Web4 Model, Factory Locked, REVISE Progress + Closure, Push/PR | strategy | 0.95 |
 | 2026-06-17 | Continue — Estate Army Deploy Stub + README Polish + MCP Sync + All-Works Verif | strategy | 0.95 |
+| 2026-10-19 | Multi-Plane Truth Federation Governance & Directive Ledger | governance | 0.98 |
+| 2026-11-11 | 3-Tier Cognitive Mesh Sovereign Knowledge Strategy | architecture | 0.98 |
 
 ---
 
@@ -512,3 +514,41 @@ Core framework components implemented:
 **Source:** Starlight Architect & Antigravity (PR #451, agentic-ops#275, agentic-ops-hub#362)
 
 Federated 71 repositories across all 10 GitHub Organizations (Starlight-Intelligence, Starlight-Intelligence-Systems, Arcanea-Labs, GenCreator-ai, FrankX-AI, AI-Architect-Studio, AI-Architect-Academy, Agentic-Income, Life-Commons, and read-only oci-ai-architects) with 9/9 <Org>/.github governance repositories, draft-gated reusable CI workflows, and 2h/12h/1w Horizon Cadence verification.
+
+---
+
+### [2026-10-19] Multi-Plane Truth Federation Governance & Directive Ledger
+
+**Category:** governance / truth-federation / strategic
+**Confidence:** 0.98
+**Source:** `C:\Users\frank\starlight\inbox\H-truth-federation-2026-10-19.md`
+**Related:** `ops/DIRECTIVE_LEDGER.jsonl`, `TRUTH.md`
+
+**Strategic Decision:** Resolves truth fragmentation across three parallel reasoning planes:
+1. **Claude Plane:** `starlight/TRUTH.md` + `AGENTS.md`
+2. **Registry Plane:** `repos/agentic-ops`
+3. **ChatGPT Plane:** Founder Context Sync + Drive Context Pack
+
+**Precedence Order Formally Ratified:**
+`Frank's current words` $\to$ `starlight/TRUTH.md` $\to$ `agentic-ops Registry` $\to$ `repo-local AGENTS.md` $\to$ `Projections`.
+
+Every agent commit and PR requires provenance trailers (`Agent-Harness:`, `Agent-Model:`, `Directive-Ref:`, `Session-Ref:`). Directives are recorded in `ops/DIRECTIVE_LEDGER.jsonl` with bitemporal validity (`valid_from`, `recorded_at`, `plane`, `supersedes`).
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-11-11] 3-Tier Cognitive Mesh Sovereign Knowledge Strategy
+
+**Category:** architecture / sovereign-data / persistent-memory
+**Confidence:** 0.98
+**Source:** Gemini Carbon / 8-Hour Autonomous Plan Implementation
+**Related:** `docs/architecture/3-tier-cognitive-mesh.md`, `schemas/cognitive-mesh-d1.sql`
+
+**Strategic Decision:** To guarantee data sovereignty, zero local latency, and edge accessibility without recurring SaaS vendor lock-in, the Starlight Intelligence System formally standardizes on the **3-Tier Cognitive Mesh**:
+- **Tier 0:** Sovereign Git Markdown + JSONL truth. Permanent, portable, verifiable.
+- **Tier 1:** Local zero-latency swarm memory (`ruvector` Rust vector similarity + `AgentDB` trajectory memory + SQLite FTS5).
+- **Tier 2:** Global edge read/search plane using Cloudflare Vectorize (1024-dim cosine) + Cloudflare D1 serverless relational SQLite + Workers AI.
+- **Doctrine 0 Invariant:** Private financial ledgers and sensitive personal tokens remain strictly air-gapped in Tier 0 local gitignored space and never replicate to cloud vector endpoints.
+
+**Built on SIP — Starlight Intelligence Protocol**

@@ -6,7 +6,7 @@ writers:
 - architect
 - sentinel
 readers: all
-last_consolidated: '2026-11-11'
+last_consolidated: '2026-11-12'
 ---
 
 # Technical Vault
@@ -32,6 +32,9 @@ last_consolidated: '2026-11-11'
 | 2026-06-14 | Double-Loop Visual Quality Control Pattern | process-pattern | 0.95 |
 | 2026-06-15 | SVD Double-Loop CLI Pipeline & Nested API Parsing | tool-pattern | 0.98 |
 | 2026-09-01 | Architecture Blueprint Manifest | architecture-contract | 0.98 |
+| 2026-10-19 | Bitemporal Directive Ledger & Truth Federation Protocol | federation-pattern | 0.98 |
+| 2026-06-16 | Higgsfield Engineering Architecture & UI Systems Teardown | frontend-architecture | 0.95 |
+| 2026-11-11 | 3-Tier Cognitive Mesh Architecture: Sovereign Git, ruvector, and Cloudflare Vectorize + D1 | architecture-contract | 0.98 |
 
 ---
 
@@ -311,5 +314,60 @@ When developing autonomous client bridges to JSON-RPC tools and services (such a
 **First proof boundary:** Vercel project → authenticated protected-public HTTPS → Railway multi-service project → durable deterministic run receipt. Railway project IaC is `.railway/railway.ts`; a marketplace template is a derived release artifact. The two provider projects deploy and roll back independently.
 
 **Truth boundary:** Structural validity is only `contract-valid`. Source, deploy, integration, security, and rollback checks remain independently evidenced. Hermes and n8n are optional planned adapters until their own source and evidence exist.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-10-19] Bitemporal Directive Ledger & Truth Federation Protocol
+
+**Category:** federation-pattern / provenance / directive-ledger
+**Confidence:** 0.98
+**Source:** `C:\Users\frank\starlight\inbox\H-truth-federation-2026-10-19.md`
+**Related:** `ops/DIRECTIVE_LEDGER.jsonl`, `tools/directive-ledger.mjs`, `TRUTH.md`
+
+**Pattern:** Federates three independent execution planes (Claude Code/Codex, Jules/Registry, and ChatGPT Founder Context Sync) without monolithic database locking. Uses a bitemporal directive ledger (`ops/DIRECTIVE_LEDGER.jsonl`) tracking `valid_from`, `recorded_at`, plane, source, and supersession pointers.
+
+**Key Mechanisms:**
+1. **Bitemporal Queries:** Distinguishes when an assertion became true in the world (`valid_from`) from when the system recorded it (`recorded_at`).
+2. **Provenance Trailers:** All agent commits and PRs enforce four standardized git trailers:
+   - `Agent-Harness:` (e.g. `claude-code`, `gemini-cli`, `antigravity`)
+   - `Agent-Model:` (e.g. `gemini-2.5-pro`, `claude-3-7-sonnet`)
+   - `Directive-Ref:` (Ledger ID or TRUTH.md § section)
+   - `Session-Ref:` (Session UUID or timestamp)
+3. **Graphiti Episode Compatibility:** Emits Graphiti `add_episode` events to stream temporal facts into knowledge graphs without vendor lock-in.
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-06-16] Higgsfield Engineering Architecture & UI Systems Teardown
+
+**Category:** frontend-architecture / design-systems / media-pipeline
+**Confidence:** 0.95
+**Source:** `C:\Users\frank\starlight\inbox\stellar-cartography-philosophy.md`
+**Related:** `C:\Users\frank\starlight\design.md`, `C:\Users\frank\starlight\higgsfield\README.md`
+
+**Pattern:** Complete teardown of modern production-grade AI generation studios (Higgsfield.ai), detailing state management, layout paradigms, and media optimization pipelines:
+1. **Frontend Architecture:** Next.js 14 App Router, Radix UI headless component primitives, Framer Motion springs for physics-based fluid interactions, Valtio + Immer proxy-based state management, TanStack Query for caching.
+2. **Media Optimization Pipeline:** Three-subdomain CDN architecture separating assets (`assets.domain.com` for JS/fonts), static visuals (`static.domain.com` for images), and heavy streams (`cdn.domain.com` for mp4/webm). Cloudflare Image Resizing pipeline (`format=webp,fit=scale-down`).
+3. **Design System & Micro-Physics:** Root background (`#0f1113`), surface elevated cards (`#1c1e20`), high-contrast accents (lime/chartreuse `~#c6f135` for primary CTAs, hot pink/magenta `~#ff2d7e` for trending tags).
+
+**Built on SIP — Starlight Intelligence Protocol**
+
+---
+
+### [2026-11-11] 3-Tier Cognitive Mesh Architecture: Sovereign Git, ruvector, and Cloudflare Vectorize + D1
+
+**Category:** architecture-contract / vector-mesh / persistent-memory
+**Confidence:** 0.98
+**Source:** Gemini Carbon / God-Mode Autonomous Knowledge Substrate Implementation
+**Related:** `docs/architecture/3-tier-cognitive-mesh.md`, `schemas/cognitive-mesh-d1.sql`, `tools/mesh/cognitive-mesh-bridge.ts`
+
+**Architecture Contract:**
+1. **Tier 0 (Sovereign Ground Truth):** Markdown vaults + JSONL append-only logs in Git. Human readable, permanent, zero vendor lock-in.
+2. **Tier 1 (Local Swarm Memory):** In-process Rust `ruvector` dense similarity search ($<2$ms) + SQLite FTS5 ($<5$ms) + `AgentDB` (ReasoningBank trajectory store).
+3. **Tier 2 (Global Edge Distributed Mesh):** Cloudflare Vectorize (1024-dim cosine) + Cloudflare D1 serverless relational SQLite + Cloudflare Workers AI (`@cf/baai/bge-large-en-v1.5`).
+4. **Replication & Synchronization:** Outbox queue replicates Tier 0 mutations to Tier 1 and asynchronously synchronizes with Tier 2 edge. Fails closed on private financial and PII data (Doctrine 0).
 
 **Built on SIP — Starlight Intelligence Protocol**
