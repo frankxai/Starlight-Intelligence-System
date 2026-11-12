@@ -131,6 +131,7 @@ test('publication validates real artifact bytes and rejects forged registry inte
     return { name, version: '0.1.0', file, sha256: digest(bytes), integrity: 'sha512-' + createHash('sha512').update(bytes).digest('base64') };
   });
   const receipt = { schemaVersion: 1, sourceSha: 'a'.repeat(40), dirty: false, packages };
+  // Every declared target must produce a validated artifact, and no more.
   assert.equal(validateReceipt(receipt, receipt.sourceSha, run).length, targets.length);
   const malformed = { ...receipt, packages: packages.map((row, index) => index ? row : {
     ...row, version: '../outside', file: 'starlight-intelligence-core-../outside.tgz',
