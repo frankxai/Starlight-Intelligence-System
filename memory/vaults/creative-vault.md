@@ -5,7 +5,7 @@ retention: permanent
 writers:
 - weaver
 readers: all
-last_consolidated: '2026-11-12'
+last_consolidated: '2026-11-13'
 ---
 
 # Creative Vault

@@ -66,3 +66,5 @@
 - 2026-11-11T02:00:03.390Z · insights: 163 · contradictions: 0 · promotions: 4 · processed: 93 · decayed: 236 · archived: 0 · sb_dirs: 5 · sb_promotions: 0 · sb_new: 0 · sb_contradictions: 0
 - 2026-11-12T18:00:00.000Z · insights: 119 · contradictions: 0 · promotions: 4 · processed: 70 · decayed: 152 · archived: 0 · horizon: 10-org-federation
 - 2026-11-12T02:00:05.343Z · insights: 165 · contradictions: 0 · promotions: 4 · processed: 94 · decayed: 242 · archived: 0 · sb_dirs: 5 · sb_promotions: 0 · sb_new: 0 · sb_contradictions: 0
+- 2026-11-13T18:00:00.000Z · insights: 119 · contradictions: 0 · promotions: 4 · processed: 70 · decayed: 152 · archived: 0 · horizon: 10-org-federation
+- 2026-11-13T02:00:03.661Z · insights: 166 · contradictions: 0 · promotions: 4 · processed: 95 · decayed: 242 · archived: 0 · sb_dirs: 5 · sb_promotions: 0 · sb_new: 0 · sb_contradictions: 0
