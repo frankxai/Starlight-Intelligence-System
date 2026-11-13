@@ -20,6 +20,8 @@
 export const MARKER = 'starlight-signoff';
 export const SEVERITIES = ['info', 'low', 'medium', 'high', 'critical'];
 export const BLOCKING_SEVERITIES = ['high', 'critical'];
+import { DEPRECATED_MODELS } from './models.ts';
+
 export const DEFAULT_GATEWAY = 'starlight-review';
 // Per wait: until the first chunk, then between chunks. The whole review is bounded by the budget.
 export const DEFAULT_TIMEOUT_MS = 120_000;
@@ -119,12 +121,9 @@ export function harnessForModels(models: string[]): string {
   return `${families[0]}-ci`;
 }
 
-// Workers AI deprecations announced by Cloudflare (changelog, 2026-11-05). After the date the model
-// answers 410 Gone; refuse up front with a message that says what to change.
-export const DEPRECATED_MODELS: Record<string, string> = {
-  '@cf/moonshotai/kimi-k2.6': '2026-11-20',
-  '@cf/moonshotai/kimi-k2.7-code': '2026-11-20',
-};
+// Workers AI deprecations (ids and dates live in models.ts). After the date the model answers 410 Gone;
+// refuse up front with a message that says what to change.
+export { DEPRECATED_MODELS };
 
 export function checkDeprecations(models: string[], now: Date): string[] {
   const today = now.toISOString().slice(0, 10);
