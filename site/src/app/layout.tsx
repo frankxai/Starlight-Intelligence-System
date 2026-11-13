@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StarlightTrail } from "@/components/StarlightTrail";
 import { GalaxyWash } from "@/components/cinematic/GalaxyField";
+import { getShippedVersion } from "@/lib/product";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +38,6 @@ export const metadata: Metadata = {
   },
   description:
     "A multi-agent design and architecture system: named agents, skills, orchestration, durable memory, governance, and an open protocol. Founders and their agent fleets share one substrate — the human holds the keys.",
-  alternates: { canonical: "/" },
   openGraph: {
     title:
       "Starlight Intelligence — Multi-agent architecture for humans and their agents · Built on SIP",
@@ -70,7 +70,7 @@ const SCHEMA_GRAPH = {
       name: "Starlight Intelligence",
       url: "https://starlightintelligence.org",
       sameAs: [
-        "https://github.com/frankxai/Starlight-Intelligence-System",
+        "https://github.com/Starlight-Intelligence/Starlight-Intelligence-System",
         "https://www.npmjs.com/package/@arcanea/starlight-intelligence-system",
       ],
       description:
@@ -90,12 +90,12 @@ const SCHEMA_GRAPH = {
       "@type": "SoftwareSourceCode",
       "@id": "https://starlightintelligence.org/#source",
       name: "Starlight Intelligence System",
-      codeRepository: "https://github.com/frankxai/Starlight-Intelligence-System",
+      codeRepository: "https://github.com/Starlight-Intelligence/Starlight-Intelligence-System",
       programmingLanguage: "TypeScript",
       runtimePlatform: "Model Context Protocol",
       license: "https://opensource.org/licenses/MIT",
       author: { "@id": ORG_ID },
-      softwareVersion: "8.3.0",
+      softwareVersion: getShippedVersion(),
       description:
         "Substrate (SIP protocol + attestation) + reference operational layer (semantic vaults, hybrid retrieval, MCP server, platform adapters).",
     },

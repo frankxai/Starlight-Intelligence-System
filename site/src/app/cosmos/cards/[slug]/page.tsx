@@ -37,6 +37,7 @@ export async function generateMetadata({
   return {
     title: `${card.title} — Cosmos Knowledge`,
     description: card.tldr,
+    alternates: { canonical: `/cosmos/cards/${slug}` },
     openGraph: {
       title: `${card.title} — Starlight Cosmos`,
       description: card.tldr,

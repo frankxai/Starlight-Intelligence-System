@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/quickstart" },
   title: "Quickstart",
   description:
     "Build the current Starlight Intelligence source, connect one MCP client, and verify the live tool surface.",
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
     description:
       "Build the current source, connect one MCP client, and verify the live tool surface.",
     type: "article",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Quickstart" }],
+    url: "/quickstart",
+    siteName: "Starlight Intelligence",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence - Quickstart" }],
   },
   twitter: {
     card: "summary_large_image",

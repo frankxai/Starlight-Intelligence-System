@@ -13,6 +13,7 @@ import {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/verticals" },
   title: "Verticals",
   description:
     "Four reference Domain Sub-Stacks built on the Starlight Intelligence Protocol: Health, People, Sound, and Music. The pattern generalizes — spawn your own.",

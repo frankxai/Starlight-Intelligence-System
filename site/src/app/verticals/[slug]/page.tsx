@@ -39,6 +39,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: { canonical: `/verticals/${slug}` },
     openGraph: {
       title: `${title} — Starlight Intelligence`,
       description,

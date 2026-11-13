@@ -8,6 +8,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 21600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/asteroids" },
   title: "Asteroids — Live Close Approaches & the Mining Lens",
   description:
     "Near-Earth asteroids passing this week from NASA's NeoWs feed, plus the asteroid-mining economics lens: metals, volatiles, delta-v, and the business cases that actually pencil out.",

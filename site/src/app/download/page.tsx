@@ -32,6 +32,7 @@ import {
 } from "@/lib/plugin-starter-download";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/download" },
   title: "Download - Starlight Intelligence",
   description:
     "Access current Starlight source and published, checksum-backed plugin modules.",

@@ -6,6 +6,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/architecture" },
   title: "Architecture",
   description:
     "10 Intelligence Systems composed on the Starlight Intelligence Protocol substrate. JSONL as truth. SIP as contract. The Orchestrator routes the rest.",
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
     description:
       "10 Intelligence Systems composed on SIP. JSONL as truth, attestation as contract, sovereignty as invariant.",
     type: "article",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence — Architecture" }],
+    url: "/architecture",
+    siteName: "Starlight Intelligence",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence - Architecture" }],
   },
   twitter: {
     card: "summary_large_image",

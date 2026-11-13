@@ -1,31 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
+import { getCanonicalSipVersion, SIP_LAST_UPDATED } from "@/lib/sip";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Starlight Intelligence Protocol — v1.1.1",
-  description:
-    "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
-  openGraph: {
-    title: "Starlight Intelligence Protocol — v1.1.1",
-    description:
-      "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
-    type: "article",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Starlight Intelligence Protocol v1.1.1" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Starlight Intelligence Protocol — v1.1.1",
-    description:
-      "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.",
-    images: ["/opengraph-image"],
-  },
-};
+const PROTOCOL_DESCRIPTION =
+  "Six-layer protocol for sovereign creator alliances. File contract, attestation, MCP registry, commands, sovereignty, archetypes. MIT.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const version = await getCanonicalSipVersion();
+  return {
+    title: `Starlight Intelligence Protocol — ${version}`,
+    description: PROTOCOL_DESCRIPTION,
+    alternates: { canonical: "/protocol" },
+    openGraph: {
+      title: `Starlight Intelligence Protocol — ${version}`,
+      description: PROTOCOL_DESCRIPTION,
+      type: "article",
+      url: "/protocol",
+      siteName: "Starlight Intelligence",
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `Starlight Intelligence Protocol ${version}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Starlight Intelligence Protocol — ${version}`,
+      description: PROTOCOL_DESCRIPTION,
+      images: ["/opengraph-image"],
+    },
+  };
+}
 
 const SIP_GITHUB_URL =
-  "https://github.com/frankxai/Starlight-Intelligence-System/blob/main/SIP.md";
+  "https://github.com/Starlight-Intelligence/Starlight-Intelligence-System/blob/main/SIP.md";
 
 const FILE_CONTRACT_ROWS: Array<{
   file: string;
@@ -151,18 +158,40 @@ const MCP_REGISTRY_JSON = `{
   "attestation": { "built_on_sip": true }
 }`;
 
-const FOOTER_ATTESTATION = `---
+const FOOTER_ATTESTATION = (version: string) => `---
 Built on SIP — Starlight Intelligence Protocol
-- Substrate: starlightintelligence.org/protocol v1.1.1
+- Substrate: starlightintelligence.org/protocol ${version}
 - Verticals: [starlight]
 - Canon: ["none"]
 - Nodes: [Starlight Holding BV]
 Generated: 2026-04-22
 ---`;
 
-export default function ProtocolPage() {
+export default async function ProtocolPage() {
+  const version = await getCanonicalSipVersion();
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "@id": "https://starlightintelligence.org/protocol#article",
+    headline: `Starlight Intelligence Protocol — ${version}`,
+    description: PROTOCOL_DESCRIPTION,
+    version,
+    dateModified: SIP_LAST_UPDATED,
+    inLanguage: "en",
+    license: "https://opensource.org/licenses/MIT",
+    author: { "@id": "https://starlightintelligence.org/#organization" },
+    publisher: { "@id": "https://starlightintelligence.org/#organization" },
+    isPartOf: { "@id": "https://starlightintelligence.org/#website" },
+    mainEntityOfPage: { "@id": "https://starlightintelligence.org/protocol" },
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-white/[0.08]">
         <GalaxyField still="veil" />
@@ -174,7 +203,7 @@ export default function ProtocolPage() {
             Starlight Intelligence Protocol
           </h1>
           <p className="mt-4 font-mono text-[13px] normal-case tracking-wider text-slate-500">
-            v1.1.1
+            {version}
           </p>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.8] text-slate-400">
             The contract that lets sovereign parties compose intelligence
@@ -213,7 +242,7 @@ export default function ProtocolPage() {
             rel="noopener noreferrer"
             className="inline-flex min-h-8 items-center font-mono text-slate-400 transition-std hover:text-violet-300"
           >
-            frankxai/Starlight-Intelligence-System
+            Starlight-Intelligence/Starlight-Intelligence-System
           </a>
           <span className="text-slate-700">·</span>
           <span className="font-mono text-slate-400">SIP.md</span>
@@ -608,7 +637,7 @@ export default function ProtocolPage() {
               </code>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-[12px] leading-[1.8] text-slate-200">
-              {FOOTER_ATTESTATION}
+              {FOOTER_ATTESTATION(version)}
             </pre>
           </div>
 
@@ -630,7 +659,7 @@ export default function ProtocolPage() {
           </div>
 
           <p className="mt-10 text-[11px] normal-case tracking-wider text-slate-400">
-            Built on SIP · v1.1.1 · Authored by Frank Riemer (Starlight Holding
+            Built on SIP · {version} · Authored by Frank Riemer (Starlight Holding
             BV) · MIT
           </p>
         </section>
