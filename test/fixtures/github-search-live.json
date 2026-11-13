@@ -1,0 +1,98 @@
+{
+  "success": true,
+  "data": {
+    "alexandria": [
+      {
+        "provider": "github-com",
+        "capability": "repositories/search_repos",
+        "data": {
+          "count": 1,
+          "has_next": false,
+          "incomplete_results": false,
+          "next_page": null,
+          "observed_at_ms": 1794602951974,
+          "order": "desc",
+          "page": 1,
+          "per_page": 3,
+          "query": "repo:CopilotKit/CopilotKit",
+          "repositories": [
+            {
+              "archived": false,
+              "created_at": "2023-06-19T04:08:31Z",
+              "default_branch": "main",
+              "description": "The Frontend Stack for Agents & Generative UI. React, Angular, Mobile, Slack, and more.  Makers of the AG-UI Protocol",
+              "disabled": false,
+              "forks": 4826,
+              "full_name": "CopilotKit/CopilotKit",
+              "has_discussions": true,
+              "has_issues": true,
+              "has_pages": false,
+              "has_wiki": true,
+              "homepage": "https://docs.copilotkit.ai",
+              "id": 655515393,
+              "is_fork": false,
+              "is_template": false,
+              "language": "TypeScript",
+              "license": {
+                "key": "mit",
+                "name": "MIT License",
+                "spdx_id": "MIT",
+                "url": "https://api.github.com/licenses/mit"
+              },
+              "name": "CopilotKit",
+              "open_issues_and_prs": 436,
+              "owner": {
+                "avatar_url": "https://avatars.githubusercontent.com/u/131273140?v=4",
+                "html_url": "https://github.com/CopilotKit",
+                "id": 131273140,
+                "login": "CopilotKit",
+                "type": "Organization"
+              },
+              "parent_full_name": null,
+              "pushed_at": "2026-11-13T20:38:12Z",
+              "size_kb": 925304,
+              "source_url": "https://github.com/CopilotKit/CopilotKit",
+              "stars": 38690,
+              "topics": [
+                "agent",
+                "agent-native",
+                "agentic-ai",
+                "agents",
+                "ai",
+                "ai-agent",
+                "ai-assistant",
+                "assistant",
+                "assistant-chat-bots",
+                "copilot",
+                "copilot-chat",
+                "generative-ui",
+                "js",
+                "llm",
+                "nextjs",
+                "open-source",
+                "react",
+                "reactjs",
+                "ts",
+                "typescript"
+              ],
+              "updated_at": "2026-11-13T19:15:39Z",
+              "visibility": "public",
+              "watchers": null
+            }
+          ],
+          "sort": "updated",
+          "source_url": "https://github.com/search?type=repositories&q=repo%3ACopilotKit%2FCopilotKit",
+          "total_count": 1,
+          "upstream_requests": 1
+        },
+        "workflow": {
+          "version": "1.3.0",
+          "digest": "sha256:310d4c0f33d3a817c5267fe57e226b6e20974eb60a744871b7bbdd44fba80e32"
+        },
+        "records": 1,
+        "upstreamStatus": 200
+      }
+    ],
+    "creditsCost": 5
+  }
+}

@@ -1,0 +1,135 @@
+▶ v93 — Library routing
+  ✔ routes a wallet need to gmgn-ai and a paper need to a research provider (9.009399ms)
+  ✔ is deterministic and breaks ties on cost (2.677711ms)
+  ✔ prices per-record capabilities by expected records and honours maxCredits (1.135125ms)
+  ✔ reports unmet requiresOneOf groups and treats null as missing (0.223716ms)
+  ✔ validates declared option types and oneOf values before anything is charged (0.408253ms)
+  ✔ tokenises hyphenated tags so natural queries earn the tag weight (1.397248ms)
+✔ v93 — Library routing (16.276442ms)
+▶ v93 — router, budget and receipts
+  ✔ refuses over-budget calls before any transport call (2.208236ms)
+  ✔ refuses calls missing a required option before any charge (0.266861ms)
+  ✔ executes, debits the budget, appends a receipt with a stable hash (5.965388ms)
+  ✔ emits the attestation block only when SIP layers are declared, and never bills errors (0.637448ms)
+  ✖ native transport reads the estate corpus for free (1.15201ms)
+  ✔ Firecrawl transport posts an alexandria body with a request id and maps entries back by position (0.944509ms)
+  ✔ Firecrawl transport surfaces a terms gate as data, never billed, never accepted (0.217226ms)
+  ✔ reserves the price synchronously, so concurrent calls cannot both pass on the same credits (0.532649ms)
+  ✔ per-record capabilities need a declared ceiling, reserve ceiling times price, and an overrun suspends the capability (4.700429ms)
+  ✔ refuses a blank request id before anything is reserved (0.317738ms)
+  ✔ never shrinks a held reservation when the price drops before the retry (2.829058ms)
+  ✔ keeps a resumed session's ceiling and refuses to raise it (1.415125ms)
+  ✔ on a transport failure: keeps the reservation held, persists the request id, and a retry with that id reuses the hold (3.504142ms)
+  ✔ keeps the reservation when a successful response reports no usable charge (0.37934ms)
+  ✔ refuses to call the provider when the pending line cannot be written, and surfaces the request id when the outcome receipt cannot (3.77606ms)
+  ✔ matches batched Firecrawl entries by identity and treats a missing entry as uncertain (60.953463ms)
+  ✔ treats a Firecrawl 5xx as an uncertain outcome and keeps the reservation (0.679781ms)
+  ✔ refuses a ledger line that parses but cannot be tallied (0.742756ms)
+  ✔ validates the nested option contract when the catalogue loads (0.808764ms)
+  ✖ lets exactly one of two concurrent processes take over a stale lock (131.947423ms)
+  ✔ hashes an own __proto__ key as an ordinary record field (0.374933ms)
+  ✔ keeps unreconciled capabilities out of routing and refuses to execute them (1.675446ms)
+  ✔ rejects SIP layer names that are not slugs before anything is charged (0.300732ms)
+  ✔ creates the ledger, quarantine and lock files owner-only (2.274355ms)
+  ✔ holds a resumed session exclusively across processes and takes over a stale lock (57.388094ms)
+  ✔ restores spend per budget session and tolerates a cut-off ledger line (5.085477ms)
+  ✔ refuses a corrupt line in the middle of the ledger, and a complete but corrupt last line (1.330889ms)
+  ✔ rejects a malformed credit limit at startup (0.385319ms)
+✖ v93 — router, budget and receipts (294.610574ms)
+▶ v93 — replay deduplication and settled receipts (#424)
+  ✔ ReceiptLedger tracks settledIds, settledRequestIds, and settledReceipts per session and estate-wide (1.63793ms)
+  ✔ router rejects replay after a successful call without re-reserving or re-dispatching (1.534434ms)
+  ✔ router rejects replay after a call that exhausted the session ceiling without failing over_budget (1.355035ms)
+  ✔ router rejects replay after a definite failure without charging or re-dispatching (1.108334ms)
+  ✔ router rejects replay across a process restart (1.676087ms)
+  ✔ router throws retry_mismatch if replay changes capability or options of a settled call (0.86589ms)
+  ✔ router permits retry of an uncertain outcome and then rejects replay once settled (2.14436ms)
+  ✔ router rejects replay as replay_completed even if capability was suspended by an overrun (1.309526ms)
+  ✔ router rejects replay across restart without needing provider transport registered (1.535035ms)
+  ✔ joins an in-flight call with the same requestId instead of reserving and dispatching again (31.703914ms)
+  ✔ joins an in-flight call when the reservation already fills the session ceiling (30.874133ms)
+  ✔ translates ledger read error during settled lookup to receipt_persist_failed (0.762094ms)
+✔ v93 — replay deduplication and settled receipts (#424) (77.245673ms)
+ℹ tests 46
+ℹ suites 3
+ℹ pass 44
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 519.086155
+
+✖ failing tests:
+
+test at verification/build/test/v93-alexandria.test.js:182:5
+✖ native transport reads the estate corpus for free (1.15201ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b41b8871ab42/sis-adapter/verification/build/test/v93-alexandria.test.js:185:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at verification/build/test/v93-alexandria.test.js:506:5
+✖ lets exactly one of two concurrent processes take over a stale lock (131.947423ms)
+  AssertionError [ERR_ASSERTION]: unexpected: ["",""] node:internal/modules/package_json_reader:331
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'tsx' imported from /workspace/scratch/b41b8871ab42/sis-adapter/verification/build/
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:331:9)
+      at packageResolve (node:internal/modules/esm/resolve:784:25)
+      at moduleResolve (node:internal/modules/esm/resolve:873:18)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+      at #resolve (node:internal/modules/esm/loader:687:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+      at node:internal/modules/esm/loader:636:32 {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.22.1
+  node:internal/modules/package_json_reader:331
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'tsx' imported from /workspace/scratch/b41b8871ab42/sis-adapter/verification/build/
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:331:9)
+      at packageResolve (node:internal/modules/esm/resolve:784:25)
+      at moduleResolve (node:internal/modules/esm/resolve:873:18)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:705:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:725:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:763:56)
+      at #resolve (node:internal/modules/esm/loader:687:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:607:35)
+      at node:internal/modules/esm/loader:636:32 {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.22.1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/b41b8871ab42/sis-adapter/verification/build/test/v93-alexandria.test.js:515:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Suite.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

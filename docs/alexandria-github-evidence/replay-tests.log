@@ -1,0 +1,22 @@
+▶ v93 — replay deduplication and settled receipts (#424)
+  ✔ ReceiptLedger tracks settledIds, settledRequestIds, and settledReceipts per session and estate-wide (4.084921ms)
+  ✔ router rejects replay after a successful call without re-reserving or re-dispatching (4.794004ms)
+  ✔ router rejects replay after a call that exhausted the session ceiling without failing over_budget (1.3639ms)
+  ✔ router rejects replay after a definite failure without charging or re-dispatching (1.497723ms)
+  ✔ router rejects replay across a process restart (2.326004ms)
+  ✔ router throws retry_mismatch if replay changes capability or options of a settled call (1.41654ms)
+  ✔ router permits retry of an uncertain outcome and then rejects replay once settled (2.648721ms)
+  ✔ router rejects replay as replay_completed even if capability was suspended by an overrun (1.902565ms)
+  ✔ router rejects replay across restart without needing provider transport registered (1.986962ms)
+  ✔ joins an in-flight call with the same requestId instead of reserving and dispatching again (31.852303ms)
+  ✔ joins an in-flight call when the reservation already fills the session ceiling (32.310486ms)
+  ✔ translates ledger read error during settled lookup to receipt_persist_failed (1.047583ms)
+✔ v93 — replay deduplication and settled receipts (#424) (89.271513ms)
+ℹ tests 12
+ℹ suites 1
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 212.012308

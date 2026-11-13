@@ -1,0 +1,21 @@
+▶ governed GitHub federation contract
+  ✔ inspects the real discovery fixture, remains additive, and rejects changed price or schema (5.208008ms)
+  ✔ estimates requests and ceilings without treating unmeasured currency cost as zero (0.981623ms)
+  ✔ runs the observed numeric-record/page-object response through the existing money path conservatively (10.854259ms)
+  ✔ replays the acquired artifact after consumer failure without provider calls or double accounting (4.020274ms)
+  ✔ fails a settled request with missing capture rather than charging a fresh request (3.101596ms)
+  ✔ pins workflow bytes, retains the uncertain hold and retries with the original request identity (5.36148ms)
+  ✔ bounds 429/503 retries and preserves byte-identical request and idempotency keys (2.473226ms)
+  ✔ refuses exhausted local budgets before another provider dispatch (6.563677ms)
+  ✔ quarantines private, duplicate, mismatched owner and attribution fixtures before capture (12.176637ms)
+  ✔ rejects query/pagination mismatch and stops incomplete or 1000-result windows explicitly (2.05811ms)
+  ✔ keeps equal-looking names with different stable upstream IDs separate without merging people (0.465814ms)
+✔ governed GitHub federation contract (54.898131ms)
+ℹ tests 11
+ℹ suites 1
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 160.137173
