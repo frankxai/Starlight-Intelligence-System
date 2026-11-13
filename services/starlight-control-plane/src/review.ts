@@ -17,10 +17,12 @@
 //
 // Pure apart from the injected AI binding, GitHub client and store, so node --test drives it.
 
+// Imports come first so no executable declaration precedes them.
+import { DEPRECATED_MODELS } from './models.ts';
+
 export const MARKER = 'starlight-signoff';
 export const SEVERITIES = ['info', 'low', 'medium', 'high', 'critical'];
 export const BLOCKING_SEVERITIES = ['high', 'critical'];
-import { DEPRECATED_MODELS } from './models.ts';
 
 export const DEFAULT_GATEWAY = 'starlight-review';
 // Per wait: until the first chunk, then between chunks. The whole review is bounded by the budget.

@@ -191,9 +191,13 @@ test('unknown families, missing models and deprecated models fail closed', () =>
   const at = new Date(NOW);
   assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: REVIEWER_MODEL }, at), /known reviewer family/);
   assert.throws(() => readReviewConfig({}, at), /no default/);
-  const [dead] = Object.keys(DEPRECATED_MODELS);
-  assert.equal(readReviewConfig({ STARLIGHT_REVIEW_MODELS: dead }, at).warnings.length, 1);
-  assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: dead }, new Date(Date.UTC(2026, 10, 20))), /deprecated/);
+  // Check every deprecated id so the result does not depend on which key Object.keys lists first.
+  const dead = Object.keys(DEPRECATED_MODELS);
+  assert.ok(dead.length > 0);
+  for (const id of dead) {
+    assert.equal(readReviewConfig({ STARLIGHT_REVIEW_MODELS: id }, at).warnings.length, 1, id);
+    assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: id }, new Date(Date.UTC(2026, 10, 20))), /deprecated/, id);
+  }
 });
 
 test('the maker family cannot sign: gpt-ci on an OpenAI branch is triage only', async () => {
