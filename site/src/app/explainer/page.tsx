@@ -9,6 +9,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/explainer" },
   title: "Explainer",
   description:
     "Long-form public explainer for Starlight Intelligence System. Who it's for, how it works, what's different, and how to start.",

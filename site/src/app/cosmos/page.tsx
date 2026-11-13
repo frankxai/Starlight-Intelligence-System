@@ -9,6 +9,7 @@ import { CINEMATIC_STILLS, type CinematicStill } from "@/lib/cinematic";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cosmos" },
   title: "Starlight Cosmos — Explore the Universe as a Thinking Substrate",
   description:
     "Live NASA data, JWST imagery, asteroid close approaches, and deep knowledge cards on stars, elements, and the laws of the universe — each with prompts to explore with your own AI agents.",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata = {
+  alternates: { canonical: "/palace" },
   title: "Memory Palace",
   description:
     "A visualization of Starlight's six-vault memory substrate. Open memory/ in Obsidian to browse the same vaults locally.",

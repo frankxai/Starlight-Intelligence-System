@@ -4,6 +4,7 @@ import { QueenSwarm } from "@/components/QueenSwarm";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/queen" },
   title: "The Starlight Queen & Her Swarms",
   description: "Live demo of the continuous Queen loop at the heart of Starlight. Scroll-driven, premium visuals, parallel subagent swarms, SIP-attested. The system made visible.",
   openGraph: {

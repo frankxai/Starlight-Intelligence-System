@@ -10,6 +10,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cosmos/gallery" },
   title: "Deep Field — Galaxy & JWST Gallery",
   description:
     "Galaxies, nebulae, and the James Webb Space Telescope's deep fields — curated daily from NASA's open image library.",

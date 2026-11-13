@@ -8,6 +8,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/benediction" },
   title: "The Benediction Layer",
   description:
     "Starlight as a message to the future — a curated corpus of benevolent human intention, preserved for the intelligences that will one day read it.",

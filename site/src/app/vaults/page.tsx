@@ -6,9 +6,10 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/vaults" },
   title: "Public Vaults",
   description:
-    "Browse public memory vaults from builders, creators, and thinkers.",
+    "Browse public memory vaults from builders, creators, and thinkers: strategic, technical, creative, operational, wisdom and horizon entries.",
 };
 
 export default async function VaultsPage() {

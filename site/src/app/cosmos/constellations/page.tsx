@@ -7,6 +7,7 @@ import { CARD_BY_SLUG } from "@/lib/cosmos/cards";
 import { GalaxyField } from "@/components/cinematic/GalaxyField";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cosmos/constellations" },
   title: "Constellations — Starlight Cosmos",
   description:
     "Interactive star maps of Orion, the Big Dipper, the Southern Cross, and Cassiopeia — the science, the myth, and the navigation in one view. The sky as humanity's first interface.",

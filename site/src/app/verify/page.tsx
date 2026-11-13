@@ -11,6 +11,7 @@ const DESCRIPTION =
   "The Starlight Intelligence System's own signed SIP receipt: what it claims, what was checked, who signed it, and the commands to verify it yourself.";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/verify" },
   title: "Verify",
   description: DESCRIPTION,
   openGraph: {

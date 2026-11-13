@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   Activity,
   ArrowRight,
@@ -35,6 +36,10 @@ import {
 } from "@/lib/accents";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 type LayerCard = {
   name: string;

@@ -7,6 +7,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/badge" },
   title: "Built on SIP — attestation badge",
   description:
     "Embeddable badge for projects built on the Starlight Intelligence Protocol. Markdown, HTML, and shields.io snippets ready to paste.",

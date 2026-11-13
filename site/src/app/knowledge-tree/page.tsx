@@ -13,6 +13,7 @@ import {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/knowledge-tree" },
   title: "Knowledge Tree",
   description:
     "Starlight Knowledge Tree — an open intelligence graph for human capability, scientific knowledge, and contribution paths. Maps what exists, what matters, what you know, what you can build, and what unlocks next. A vertical built on SIS / SIP.",

@@ -13,6 +13,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/featured" },
   title: "Featured Meditations",
   description:
     "Every quoteworthy meditation from the Starlight public vaults — insights earned and written to breathe.",

@@ -7,6 +7,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cosmos/cards" },
   title: "Cosmos Knowledge Library",
   description:
     "Deep knowledge cards on stars, planets, asteroids, the elements they forge, and the laws they obey — each with prompts to explore with your own AI agents.",

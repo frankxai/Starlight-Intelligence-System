@@ -23,6 +23,13 @@ export async function getCanonicalSipVersion(): Promise<string> {
 }
 
 /**
+ * Last substantive revision of SIP.md, from
+ * `git log -1 --format=%cs -- SIP.md` when this pin was taken. Update it in the
+ * same commit that changes the spec.
+ */
+export const SIP_LAST_UPDATED = "2026-10-14";
+
+/**
  * Light validation — accept anything that looks like SemVer with optional
  * leading "v", or the literal string "latest". We intentionally do NOT
  * verify the version exists in the spec — that's v0.2 work. For now any

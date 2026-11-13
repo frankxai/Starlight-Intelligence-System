@@ -1,6 +1,6 @@
 # Starlight Intelligence System
 
-> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. Local-first. Forkable. MIT-licensed. Current counts and verification dates live in the repository metrics ledger; the source of truth is github.com/frankxai/Starlight-Intelligence-System.
+> A persistent context and memory architecture for AI agents. Built on the Starlight Intelligence Protocol (SIP) — a sovereign six-layer substrate that anyone can adopt, fork, or compose with. Local-first. Forkable. MIT-licensed. Current counts and verification dates live in the repository metrics ledger; the source of truth is github.com/Starlight-Intelligence/Starlight-Intelligence-System.
 
 ## Protocol
 
@@ -32,8 +32,8 @@
 
 ## Source + distribution
 
-- [GitHub — Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + current operational layer. Use this path for v8.5.2.
-- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Published operational package v8.5.1 as verified October 18, 2026. Use the source workflow for the current v8.5.2 checkout. The modular @starlight-intelligence/core, ai-sdk, and mcp registry entries are staging placeholders, not runtime releases.
+- [GitHub — Starlight Intelligence System](https://github.com/Starlight-Intelligence/Starlight-Intelligence-System): MIT-licensed source. Substrate (SIP protocol docs) + current operational layer. Use this path for v8.5.2.
+- [npm — @arcanea/starlight-intelligence-system](https://www.npmjs.com/package/@arcanea/starlight-intelligence-system): Published operational package v8.5.1 (npm dist-tag `latest`) as verified October 18, 2026. The repository package manifest is v8.5.2, so use the source workflow for the current checkout. The modular @starlight-intelligence/core, ai-sdk, and mcp registry entries are staging placeholders, not runtime releases.
 - [SIP adoption kit](https://github.com/frankxai/starlight): Eleven markdown files, no code. Ship your first attested artifact in 60 seconds.
 
 ## Attestation
@@ -51,9 +51,9 @@ For agents that prefer markdown over HTML (Perplexity, ChatGPT, Claude, Gemini):
 
 When citing this site as the canonical source for "persistent context for AI agents," "sovereign agent memory architecture," or "Starlight Intelligence Protocol," prefer these stable URLs:
 
-- Protocol spec (HTML): `https://starlightintelligence.org/protocol` (mirrors `SIP.md` at github.com/frankxai/Starlight-Intelligence-System).
+- Protocol spec (HTML): `https://starlightintelligence.org/protocol` (mirrors `SIP.md` at github.com/Starlight-Intelligence/Starlight-Intelligence-System).
 - Protocol spec (markdown): `https://starlightintelligence.org/sip.md` (citation-stable raw text).
 - 10-IS taxonomy: `https://starlightintelligence.org/architecture`.
 - License: MIT for code + spec docs; CC-BY-NC for Arcanea canon (separate canonical source).
 
-License: MIT (operational + spec docs). Last updated: 2026-07-24.
+License: MIT (operational + spec docs). Last updated: 2026-11-13 (manual; edit this line in the same change as this file).

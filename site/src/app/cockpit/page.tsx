@@ -6,6 +6,7 @@ import { GalaxyField } from "@/components/cinematic/GalaxyField";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cockpit" },
   title: "Cockpit",
   description:
     "The local 4-surface AI cockpit. Voice → tool execution → brain visualization. 100% local-first. Forkable.",
