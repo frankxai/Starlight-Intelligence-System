@@ -1,0 +1,296 @@
+{
+  "success": true,
+  "data": {
+    "alexandria": [
+      {
+        "provider": "firecrawl",
+        "capability": "find-tools",
+        "creditsCost": 0,
+        "data": {
+          "level": "tools",
+          "items": [
+            {
+              "id": "github-com/repositories/repo",
+              "provider": "github-com",
+              "capability": "repositories/repo",
+              "name": "Repo",
+              "description": "One GitHub repository by owner/name or URL: stars, forks, watchers, open issue+PR count, creation/last-push dates, primary language, topics, license, default branch, homepage and flags (archived, fork, template). One request to GET /repos/{owner}/{name}; an unknown repository is an error.",
+              "creditsCost": 5,
+              "perRecord": false,
+              "requiresOneOf": [
+                [
+                  "repo",
+                  "url"
+                ]
+              ],
+              "options": [
+                {
+                  "name": "repo",
+                  "type": "string",
+                  "in": "body",
+                  "about": "Repository as `owner/name`, for example `firecrawl/firecrawl`. Provide exactly one of repo or url. Pattern: ^@?/?[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?/[A-Za-z0-9._-]{1,100}(?:\\.git)?/?$."
+                },
+                {
+                  "name": "url",
+                  "type": "string",
+                  "in": "body",
+                  "about": "HTTPS github.com/{owner}/{name} URL; deeper paths (issues, tree, ...) are accepted and reduced to the repository. Provide exactly one of repo or url. Pattern: ^(?:https?://)?(?:www\\.)?github\\.com/[A-Za-z0-9-]{1,39}/[A-Za-z0-9._-]{1,100}(?:[/?#].*)?$."
+                }
+              ],
+              "response": {
+                "about": "One GitHub repository by owner/name or URL: stars, forks, watchers, open issue+PR count, creation/last-push dates, primary language, topics, license, default branch, homepage and flags (archived, fork, template). One request to GET /repos/{owner}/{name}; an unknown repository is an error.",
+                "key": "",
+                "paginated": false,
+                "fields": [
+                  {
+                    "name": "observed_at_ms",
+                    "type": "number",
+                    "about": "When the workflow read GitHub, Unix milliseconds."
+                  },
+                  {
+                    "name": "repo",
+                    "type": "string",
+                    "about": "Normalized owner/name the call resolved to."
+                  },
+                  {
+                    "name": "repository",
+                    "type": "object"
+                  },
+                  {
+                    "name": "source_url",
+                    "type": "string",
+                    "about": "The github.com page a human would read for the same answer."
+                  },
+                  {
+                    "name": "upstream_requests",
+                    "type": "number",
+                    "about": "GitHub API requests this call made."
+                  }
+                ]
+              },
+              "execute": {
+                "provider": "github-com",
+                "capability": "repositories/repo"
+              }
+            },
+            {
+              "id": "github-com/repositories/search_repos",
+              "provider": "github-com",
+              "capability": "repositories/search_repos",
+              "name": "Search repos",
+              "description": "Search public GitHub repositories with GitHub's search syntax (free text plus qualifiers such as language:rust, stars:>1000, topic:llm, org:firecrawl, created:>2025-01-01), sorted by best match, stars, forks, help-wanted issues or last update. Returns one page of repository records with stars, forks and dates; total_count is GitHub's overall match count, capped at 1000 reachable results (page * per_page <= 1000). Keyless search is limited to 10 requests per minute per IP. A user:, org: or repo: qualifier naming an account or repository that does not exist or is not visible fails with not_found; any other query GitHub rejects (bad qualifier value, page beyond 1000 results) fails with invalid_input and GitHub's message.",
+              "creditsCost": 5,
+              "perRecord": false,
+              "options": [
+                {
+                  "name": "order",
+                  "type": "string",
+                  "in": "body",
+                  "about": "order",
+                  "default": "desc",
+                  "oneOf": [
+                    "asc",
+                    "desc"
+                  ]
+                },
+                {
+                  "name": "page",
+                  "type": "number",
+                  "in": "body",
+                  "about": "page",
+                  "default": 1,
+                  "min": 1,
+                  "max": 100
+                },
+                {
+                  "name": "per_page",
+                  "type": "number",
+                  "in": "body",
+                  "about": "per_page",
+                  "default": 10,
+                  "min": 1,
+                  "max": 100
+                },
+                {
+                  "name": "query",
+                  "type": "string",
+                  "in": "body",
+                  "about": "GitHub repository search query.",
+                  "required": true
+                },
+                {
+                  "name": "sort",
+                  "type": "string",
+                  "in": "body",
+                  "about": "sort",
+                  "default": "best_match",
+                  "oneOf": [
+                    "best_match",
+                    "stars",
+                    "forks",
+                    "help_wanted_issues",
+                    "updated"
+                  ]
+                }
+              ],
+              "response": {
+                "about": "Search public GitHub repositories with GitHub's search syntax (free text plus qualifiers such as language:rust, stars:>1000, topic:llm, org:firecrawl, created:>2025-01-01), sorted by best match, stars, forks, help-wanted issues or last update. Returns one page of repository records with stars, forks and dates; total_count is GitHub's overall match count, capped at 1000 reachable results (page * per_page <= 1000). Keyless search is limited to 10 requests per minute per IP. A user:, org: or repo: qualifier naming an account or repository that does not exist or is not visible fails with not_found; any other query GitHub rejects (bad qualifier value, page beyond 1000 results) fails with invalid_input and GitHub's message.",
+                "key": "repositories",
+                "paginated": true,
+                "fields": [
+                  {
+                    "name": "archived",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "about": "RFC 3339 UTC"
+                  },
+                  {
+                    "name": "default_branch",
+                    "type": "string"
+                  },
+                  {
+                    "name": "description",
+                    "type": "string"
+                  },
+                  {
+                    "name": "disabled",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "forks",
+                    "type": "number",
+                    "about": "forks_count"
+                  },
+                  {
+                    "name": "full_name",
+                    "type": "string",
+                    "about": "owner/name as GitHub spells it."
+                  },
+                  {
+                    "name": "has_discussions",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "has_issues",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "has_pages",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "has_wiki",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "homepage",
+                    "type": "string",
+                    "about": "Project website; null when unset or blank."
+                  },
+                  {
+                    "name": "id",
+                    "type": "number"
+                  },
+                  {
+                    "name": "is_fork",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "is_template",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "language",
+                    "type": "string",
+                    "about": "Primary language as GitHub detects it."
+                  },
+                  {
+                    "name": "license",
+                    "type": "object"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "open_issues_and_prs",
+                    "type": "number",
+                    "about": "GitHub's open_issues_count, which includes open pull requests. Use issue_counts for issues only."
+                  },
+                  {
+                    "name": "owner",
+                    "type": "object"
+                  },
+                  {
+                    "name": "parent_full_name",
+                    "type": "string",
+                    "about": "For a fork, the repository it was forked from; null otherwise or in search results."
+                  },
+                  {
+                    "name": "pushed_at",
+                    "type": "string"
+                  },
+                  {
+                    "name": "size_kb",
+                    "type": "number"
+                  },
+                  {
+                    "name": "source_url",
+                    "type": "string",
+                    "about": "https://github.com/{owner}/{name}"
+                  },
+                  {
+                    "name": "stars",
+                    "type": "number",
+                    "about": "stargazers_count"
+                  },
+                  {
+                    "name": "topics",
+                    "type": "string[]"
+                  },
+                  {
+                    "name": "updated_at",
+                    "type": "string"
+                  },
+                  {
+                    "name": "visibility",
+                    "type": "string"
+                  },
+                  {
+                    "name": "watchers",
+                    "type": "number",
+                    "about": "subscribers_count (people watching). Null in search results, which do not carry it."
+                  }
+                ]
+              },
+              "execute": {
+                "provider": "github-com",
+                "capability": "repositories/search_repos"
+              }
+            }
+          ],
+          "total": 2,
+          "next": null,
+          "catalogueVersion": "sha256:5eccb58964cf5f0abe2de2f75a58a8b6de624057b0a17ea89518b22c94fa2f3e",
+          "mode": "browse",
+          "scope": {
+            "providers": [
+              "github-com"
+            ],
+            "capabilities": [
+              "repositories/search_repos",
+              "repositories/repo"
+            ]
+          },
+          "relatedToolsVersion": "35c75ce372315f0e01a7611d62180300e01567a03ce458e8e7571cefd7a85972",
+          "relatedTools": []
+        },
+        "alexandriaId": "b42a19cb66d5e7f15f1a9ac9ecf769280ad91cbdea630dc35522fef333f3c1ce"
+      }
+    ],
+    "creditsCost": 0
+  }
+}

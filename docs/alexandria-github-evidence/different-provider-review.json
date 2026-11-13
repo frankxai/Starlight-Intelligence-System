@@ -1,0 +1,41 @@
+{
+  "provider": "Cloudflare Workers AI",
+  "model": "@cf/qwen/qwen2.5-coder-32b-instruct",
+  "sourceHashes": {
+    "lib/network/github-claim.ts": "9b01536f77c9211f7ea815c9d9faaffcb708fdafe67fdeecc333a95b814a7920",
+    "components/network/GitHubOnboarding.tsx": "98b81c035f28c9f1e152edd55959a5eaf932dc0bd3a8b4ece7cf8875eef9b21a",
+    "app/api/v1/network/federation/route.ts": "ba81cca0bb5e52b7375d8d0e62c0acd2205705fb2006cfd0e28bec7f2e7e666f",
+    "SIS/src/alexandria/github.ts": "0d47e686f4fc434259cccb7a771321e5be27ecf72d898b9523757a155a9dcbc3"
+  },
+  "raw": {
+    "result": {
+      "response": "```json\n{\n  \"findings\": [\n    {\n      \"severity\": \"medium\",\n      \"file\": \"lib/network/github-claim.ts\",\n      \"attack\": \"Potential SSRF via GitHub API interaction\",\n      \"evidence\": \"The `readPublicGitHub` function constructs URLs using user-supplied input without further validation, which could lead to SSRF if the input is manipulated.\",\n      \"fix\": \"Validate and sanitize the `path` parameter in `readPublicGitHub` to ensure it only points to valid GitHub API endpoints.\",\n      \"covered\": [\"lib/network/github-claim.ts\", \"components/network/GitHubOnboarding.tsx\", \"app/api/v1/network/federation/route.ts\", \"SIS/src/alexandria/github.ts\"],\n      \"unread\": []\n    }\n  ]\n}\n```",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 13756,
+        "completion_tokens": 168,
+        "total_tokens": 13924,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "neurons": 840.632727272712
+      }
+    },
+    "success": true,
+    "errors": [],
+    "messages": []
+  },
+  "estimatedInferenceUsd": 0.00924696,
+  "billedCostUsd": null,
+  "adjudication": [
+    {
+      "finding": "Potential SSRF via unvalidated GitHub path",
+      "verdict": "not-reproduced",
+      "reason": "Transport fixes https://api.github.com, validates an anchored repository API path, rejects redirects, and supplies no token. New adversarial test rejects alternative hosts, path traversal and appended query injection before fetch. This is review evidence, not release certification."
+    }
+  ],
+  "scopeLimitations": [
+    "Static review of the three complete web additions, SIS adapter and scoped core integration diff. CSS, lockfile, full parent app/auth/SQL implementation and hosted behavior were outside this packet.",
+    "A different-provider model call ran; human/security release review and actual hosted enrollment remain required."
+  ]
+}
