@@ -4,9 +4,10 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { FALLBACK_MODEL, REMOVED_MODEL_NAMES, REVIEWER_MODEL, SECOND_FAMILY_MODEL } from '../src/models.ts';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 // Scan only hand-written source: these directories plus wrangler.jsonc. Walking the whole service
 // would read generated output, lockfiles and .git objects, where a removed id can appear without
 // meaning anyone still uses it.
@@ -15,7 +16,7 @@ const SCAN_FILES = ['wrangler.jsonc'];
 const SKIP_DIRS = new Set(['node_modules', 'dist', '.wrangler', '.git']);
 const SKIP_FILES = /(^|\/)(package-lock\.json|npm-shrinkwrap\.json|yarn\.lock|pnpm-lock\.yaml|bun\.lockb?)$/;
 // The definition file must name the ids it removes, and this test names them to plant one.
-const SELF = new Set(['src/models.ts']);
+const SELF = new Set(['src/models.ts', 'tests/models.test.mjs']);
 
 function* files(dir) {
   let names;
@@ -36,7 +37,7 @@ function* sourceFiles(root) {
 function scan(root) {
   const hits = [];
   for (const f of sourceFiles(root)) {
-    const rel = relative(root, f);
+    const rel = relative(root, f).replaceAll('\\', '/');
     if (SELF.has(rel) || SKIP_FILES.test(rel)) continue;
     let text;
     try { text = readFileSync(f, 'utf8').toLowerCase(); } catch { continue; }
@@ -59,7 +60,7 @@ test('the scan still fails on a planted removed id, and ignores skipped paths', 
     writeFileSync(join(dir, 'package-lock.json'), id);
     assert.deepEqual(scan(dir), [], 'skipped paths must not hit');
     writeFileSync(join(dir, 'src', 'planted.ts'), `const m = '@cf/vendor/${id}';`);
-    assert.deepEqual(scan(dir), [`${join('src', 'planted.ts')}: ${id}`]);
+    assert.deepEqual(scan(dir), [`src/planted.ts: ${id}`]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
