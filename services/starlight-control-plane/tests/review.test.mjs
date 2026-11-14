@@ -8,10 +8,11 @@ import {
   MAX_CHUNK_BYTES, callModel, chunkDiff, d1Store, extractAnswer, knobsFor, lastVerdictObject, modelInput, readReviewConfig,
   renderComment, runReview, shaMarker,
 } from '../src/review.ts';
+import { DEPRECATED_MODELS, FALLBACK_MODEL, REVIEWER_MODEL, SECOND_FAMILY_MODEL } from '../src/models.ts';
 import { memorySql } from './helpers.mjs';
 
 const SHA = 'a'.repeat(40);
-const OSS = '@cf/openai/gpt-oss-120b';
+const OSS = SECOND_FAMILY_MODEL;
 const QWEN = '@cf/qwen/qwen3.8-27b';
 const KIMI = '@cf/moonshotai/kimi-k2.8';
 const MSG = { owner: 'frankxai', repo: 'kernel', number: 7, sha: SHA, branch: 'agent/claude/x' };
@@ -188,10 +189,15 @@ test('a Claude or Anthropic model is refused: nothing runs, the comment is an ad
 
 test('unknown families, missing models and deprecated models fail closed', () => {
   const at = new Date(NOW);
-  assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: '@cf/zai-org/glm-5.3' }, at), /known reviewer family/);
+  assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: REVIEWER_MODEL }, at), /known reviewer family/);
   assert.throws(() => readReviewConfig({}, at), /no default/);
-  assert.equal(readReviewConfig({ STARLIGHT_REVIEW_MODELS: '@cf/moonshotai/kimi-k2.6' }, at).warnings.length, 1);
-  assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: '@cf/moonshotai/kimi-k2.6' }, new Date(Date.UTC(2026, 10, 20))), /deprecated/);
+  // Check every deprecated id so the result does not depend on which key Object.keys lists first.
+  const dead = Object.keys(DEPRECATED_MODELS);
+  assert.ok(dead.length > 0);
+  for (const id of dead) {
+    assert.equal(readReviewConfig({ STARLIGHT_REVIEW_MODELS: id }, at).warnings.length, 1, id);
+    assert.throws(() => readReviewConfig({ STARLIGHT_REVIEW_MODELS: id }, new Date(Date.UTC(2026, 10, 20))), /deprecated/, id);
+  }
 });
 
 test('the maker family cannot sign: gpt-ci on an OpenAI branch is triage only', async () => {
@@ -336,8 +342,8 @@ test('the outbox sends cf_review to the review queue, and an unbound queue retri
 
 // ---------- streaming, reasoning, retries, knobs (2026-11-09 harness fix) ----------
 
-const DS = '@cf/deepseek-ai/deepseek-v4.1-flash-1017';
-const GLM = '@cf/zai-org/glm-5.3';
+const DS = FALLBACK_MODEL;
+const GLM = REVIEWER_MODEL;
 const CHUNK = { label: 'part 1 of 1: src/a.ts', files: ['src/a.ts'], text: 'diff --git a/src/a.ts b/src/a.ts\n+x\n', bytes: 30 };
 const CALL_CFG = { gatewayId: 'starlight-review', timeoutMs: 200, budgetMs: 60_000, maxTokens: 32_000, concurrency: 3, knobs: readReviewConfig({ STARLIGHT_REVIEW_MODELS: OSS }, new Date(NOW)).knobs };
 const call = (ai, model = OSS) => callModel(ai, model, CHUNK, CALL_CFG, NOW + 60_000, () => NOW, { sleep: async () => {} });
